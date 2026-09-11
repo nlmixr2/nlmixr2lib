@@ -58,7 +58,7 @@ Hood_2021_medi7836 <- function() {
     lq  <- log(0.825);    label("Apparent inter-compartmental clearance Q/F (L/day, shared with complex)")# Hood 2021 Table 2: Q/F = 0.825 [0.638-1.13]
 
     # Structural PD parameters (IL13 turnover, complex distribution, assay fraction).
-    lkin   <- log(0.0173);  label("IL13 production rate Kin (nM/day; paper labels nmol/d but the steady-state baseline 0.096 pM = Kin/Kout requires nM/day)") # Hood 2021 Table 2: Kin = 0.0173 [0.0136-0.0227]
+    lkin   <- log(0.0173);  label("IL13 production rate Kin on the log scale; the paper labels nmol/d but the steady-state baseline 0.096 pM = Kin/Kout requires nM/day (nM/day)") # Hood 2021 Table 2: Kin = 0.0173 [0.0136-0.0227]
     lkout  <- log(180);     label("IL13 elimination rate constant Kout (1/day; estimated, not constrained to MEDI7836 kel)") # Hood 2021 Table 2: Kout = 180 [143-227]
     lvc_complex   <- log(13.6);    label("Apparent central volume of IL13:MEDI7836 complex Vcx/F (L)")           # Hood 2021 Table 2: Vcx/F = 13.6 [10.5-16.7]
     lcxfr  <- log(0.0429);  label("Fraction of total IL13:MEDI7836 complex captured by the bioanalytical PD assay (unitless)") # Hood 2021 Table 2: Cx fraction = 4.29% [2.98-5.96%]

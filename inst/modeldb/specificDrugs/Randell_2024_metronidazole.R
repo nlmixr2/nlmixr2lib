@@ -101,8 +101,8 @@ Randell_2024_metronidazole <- function() {
     # Structural parameters (Randell 2024 Table 1, 'optimized model').
     # CL = theta_CL * WT * [PMA^Hill / (TM50^Hill + PMA^Hill)]
     # V  = theta_V  * WT^theta_WT-V
-    lcl <- log(0.036);  label("Weight-normalized clearance at full maturation (theta_CL, L/h/kg)")  # Randell 2024 Table 1: theta_CL = 0.036 L/kg/h (RSE 4%; bootstrap 2.5th-97.5th 0.033-0.039)
-    lvc <- log(0.853);  label("Volume of distribution at WT = 1 kg (theta_V, L)")                   # Randell 2024 Table 1: theta_V = 0.853 L/kg (RSE 3%; bootstrap 0.802-0.921)
+    lcl <- log(0.036);  label("Weight-normalized clearance at full maturation (L/h/kg)")  # Randell 2024 Table 1: theta_CL = 0.036 L/kg/h (RSE 4%; bootstrap 2.5th-97.5th 0.033-0.039)
+    lvc <- log(0.853);  label("Volume of distribution at WT = 1 kg (L)")                   # Randell 2024 Table 1: theta_V = 0.853 L/kg (RSE 3%; bootstrap 0.802-0.921)
 
     # Body-weight exponents. The exponent on CL is the fixed linear relationship
     # carried over from the PTN_METRO base structural model (CLi = CL * WT^1);
@@ -111,7 +111,7 @@ Randell_2024_metronidazole <- function() {
     e_wt_vc <- 0.763;     label("Exponent of body weight on V (unitless)")                 # Randell 2024 Table 1: theta_WT-V = 0.763 (RSE 8%; bootstrap 0.645-0.876)
 
     # Sigmoidal Emax (Hill) maturation of CL on postmenstrual age, in weeks.
-    pma50_cl <- 25.6; label("Postmenstrual age at 50% of mature CL (TM50, weeks)")           # Randell 2024 Table 1: TM50 = 25.6 weeks (RSE 2%; bootstrap 24.4-26.5)
+    pma50_cl <- 25.6; label("Postmenstrual age at 50% of mature CL (weeks)")           # Randell 2024 Table 1: TM50 = 25.6 weeks (RSE 2%; bootstrap 24.4-26.5)
     hill_cl  <- 15.7; label("Hill coefficient of the PMA maturation function on CL (unitless)")  # Randell 2024 Table 1 as corrected by the 2025 erratum (doi:10.1128/aac.00972-25): Hill = 15.7, not the 7 printed in Table 1 row 7 (RSE 37%; bootstrap 8.4-41.0, which excludes 7)
 
     # Interindividual variability (Randell 2024 Table 1, reported as %CV).

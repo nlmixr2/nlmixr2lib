@@ -65,11 +65,11 @@ Lestini_2015_tgfbinhibitor <- function() {
     # are optimizer starting points, not the simulation truth or the
     # final-fit estimates.
     # ----------------------------------------------------------------------
-    lka   <- log(1.97);  label("First-order absorption rate (ka, 1/h)")            # Output_simulated_PKPD.txt: ka = 1.97
-    lcl   <- log(9.91);  label("Apparent clearance (CL/F, L/h)")                   # Output_simulated_PKPD.txt: Cl = 9.91
-    lvc   <- log(95.1);  label("Apparent central volume of distribution (Vc/F, L)") # Output_simulated_PKPD.txt: V = 95.1
-    lkout <- log(0.269); label("Biomarker turnover rate constant (kout, 1/h)")      # Output_simulated_PKPD.txt: kout = 0.269
-    lc50  <- log(0.307); label("Concentration giving 50% of maximal TGF-beta inhibition (C50, mg/L)")  # Output_simulated_PKPD.txt: C50 = 0.307
+    lka   <- log(1.97);  label("First-order absorption rate (1/h)")            # Output_simulated_PKPD.txt: ka = 1.97
+    lcl   <- log(9.91);  label("Apparent clearance (L/h)")                   # Output_simulated_PKPD.txt: Cl = 9.91
+    lvc   <- log(95.1);  label("Apparent central volume of distribution (L)") # Output_simulated_PKPD.txt: V = 95.1
+    lkout <- log(0.269); label("Biomarker turnover rate constant (1/h)")      # Output_simulated_PKPD.txt: kout = 0.269
+    lc50  <- log(0.307); label("Concentration giving 50% of maximal TGF-beta inhibition (mg/L)")  # Output_simulated_PKPD.txt: C50 = 0.307
 
     # IIV: Output_simulated_PKPD.txt reports omega values as standard deviations
     # on the log scale (Monolix globalSettings withVariance=no). nlmixr2's eta ini

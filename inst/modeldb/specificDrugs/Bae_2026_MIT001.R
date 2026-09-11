@@ -102,14 +102,14 @@ Bae_2026_MIT001 <- function() {
   ini({
     # Structural parameters (Bae 2026 Table 2, "Structural model").
     # Reference covariate values: ALT 16 IU/L, body weight 68.4 kg.
-    lcl     <- log(2.17);  label("Clearance at ALT 16 IU/L (CL, L/h)")                                  # Table 2, theta1
-    lvc     <- log(6.89);  label("Central volume of distribution (V1, L)")                              # Table 2, V1
-    lvp     <- log(23.6);  label("First peripheral volume of distribution at 68.4 kg (V2, L)")          # Table 2, theta3
-    lvp2    <- log(68.3);  label("Second peripheral volume of distribution at 68.4 kg (V3, L)")         # Table 2, theta4
-    lq      <- log(108);   label("Intercompartmental clearance between V1 and V2 (Q12, L/h)")           # Table 2, Q12
-    lq2     <- log(32.9);  label("Intercompartmental clearance between V1 and V3 (Q13, L/h)")           # Table 2, Q13
-    lka     <- log(0.757); label("First-order subcutaneous absorption rate constant (Ka, 1/h)")         # Table 2, Ka
-    lfdepot <- log(0.82);  label("Subcutaneous bioavailability (F, fraction)")                          # Table 2, F
+    lcl     <- log(2.17);  label("Clearance at ALT 16 IU/L (L/h)")                                  # Table 2, theta1
+    lvc     <- log(6.89);  label("Central volume of distribution (L)")                              # Table 2, V1
+    lvp     <- log(23.6);  label("First peripheral volume of distribution at 68.4 kg (L)")          # Table 2, theta3
+    lvp2    <- log(68.3);  label("Second peripheral volume of distribution at 68.4 kg (L)")         # Table 2, theta4
+    lq      <- log(108);   label("Intercompartmental clearance between V1 and V2 (L/h)")           # Table 2, Q12
+    lq2     <- log(32.9);  label("Intercompartmental clearance between V1 and V3 (L/h)")           # Table 2, Q13
+    lka     <- log(0.757); label("First-order subcutaneous absorption rate constant (1/h)")         # Table 2, Ka
+    lfdepot <- log(0.82);  label("Subcutaneous bioavailability (fraction)")                          # Table 2, F
 
     # Covariate effects (Bae 2026 Table 2 footnotes a, b, c).
     e_alt_cl <- -0.176;      label("Power exponent on (ALT / 16) for CL (unitless)")                    # Table 2, theta2, footnote a

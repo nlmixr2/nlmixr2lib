@@ -145,12 +145,12 @@ Mahadevan_2026_polymyxinB_meropenem_fosfomycin_KP00521 <- function() {
     bact_resistant_resistant_resistant1(0) <- cfu0 * mf_rrr
 
     # ---- 7. Observation -----------------------------------------------------
-    # The 1e-6 CFU/mL regularisation keeps Cc finite when a regimen drives the
+    # The 1e-6 CFU/mL regularisation keeps log_cfu finite when a regimen drives the
     # population to numerical extinction (the solver can undershoot to a small
     # negative value, and log10 of that is NaN). It is 8 orders of magnitude
     # below the 2 log10 CFU/mL LLOQ, so it never perturbs an observable count.
     # Same device as HernandezLozano_2025_apramycin_invitro.R.
-    Cc <- log10(CFUtot + 1e-6)
-    Cc ~ add(addSd)
+    log_cfu <- log10(CFUtot + 1e-6)
+    log_cfu ~ add(addSd)
   })
 }

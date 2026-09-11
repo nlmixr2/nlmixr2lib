@@ -84,10 +84,10 @@ Zhao_2014_ciprofloxacin <- function() {
     # Structural parameters -- reference values for the cohort medians
     # CW = 1955 g (= 1.955 kg), GA = 27.9 weeks, PNA = 27 days (= 0.8870
     # months), CREAT = 42 umol/L (Table 4 footnote).
-    lvc <- log(1.97);  label("Central volume of distribution at WT = 1.955 kg (V1, L)")             # Zhao 2014 Table 4 theta1 = 1.97 L (RSE 17.7%)
-    lvp <- log(1.93);  label("Peripheral volume of distribution at WT = 1.955 kg (V2, L)")          # Zhao 2014 Table 4 theta2 = 1.93 L (RSE 21.9%)
-    lq  <- log(2.5);   label("Inter-compartmental clearance at WT = 1.955 kg (Q, L/h)")             # Zhao 2014 Table 4 theta3 = 2.5 L/h (RSE 32.6%)
-    lcl <- log(0.366); label("Clearance at cohort-median reference (CL, L/h)")                      # Zhao 2014 Table 4 theta4 = 0.366 L/h (RSE 6.0%)
+    lvc <- log(1.97);  label("Central volume of distribution at WT = 1.955 kg (L)")             # Zhao 2014 Table 4 theta1 = 1.97 L (RSE 17.7%)
+    lvp <- log(1.93);  label("Peripheral volume of distribution at WT = 1.955 kg (L)")          # Zhao 2014 Table 4 theta2 = 1.93 L (RSE 21.9%)
+    lq  <- log(2.5);   label("Inter-compartmental clearance at WT = 1.955 kg (L/h)")             # Zhao 2014 Table 4 theta3 = 2.5 L/h (RSE 32.6%)
+    lcl <- log(0.366); label("Clearance at cohort-median reference (L/h)")                      # Zhao 2014 Table 4 theta4 = 0.366 L/h (RSE 6.0%)
 
     # Allometric exponents -- fixed at the standard adult-to-paediatric
     # values per Zhao 2014 Methods "Covariate analysis" paragraph 1

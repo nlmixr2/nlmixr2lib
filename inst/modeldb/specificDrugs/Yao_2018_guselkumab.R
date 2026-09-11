@@ -61,17 +61,17 @@ Yao_2018_guselkumab <- function() {
     # Structural parameters from Yao 2018 Table 4 (final reduced PopPK model).
     # Typical values are for the reference subject: 87.1 kg body weight (median),
     # no diabetes (DIS_DIAB = 0), White (RACE_WHITE = 1, equivalently source RACE = 0).
-    lcl <- log(0.516); label("Apparent clearance at reference covariates (CL/F, L/day)")  # Yao 2018 Table 4 (CL/F = 0.516 L/day for 87.1 kg, non-diabetic, White)
-    lvc <- log(13.5);  label("Apparent volume of distribution at reference covariates (V/F, L)")  # Yao 2018 Table 4 (V/F = 13.5 L for 87.1 kg)
-    lka <- log(1.11);  label("First-order SC absorption rate constant (Ka, 1/day)")  # Yao 2018 Table 4 (Ka = 1.11 1/day)
+    lcl <- log(0.516); label("Apparent clearance at reference covariates (L/day)")  # Yao 2018 Table 4 (CL/F = 0.516 L/day for 87.1 kg, non-diabetic, White)
+    lvc <- log(13.5);  label("Apparent volume of distribution at reference covariates (L)")  # Yao 2018 Table 4 (V/F = 13.5 L for 87.1 kg)
+    lka <- log(1.11);  label("First-order SC absorption rate constant (1/day)")  # Yao 2018 Table 4 (Ka = 1.11 1/day)
 
     # Covariate effect exponents and multipliers (Yao 2018 Table 4 footnotes b and c):
     #   CL/F = 0.516 * (BWT/87.1)^0.998 * 1.12^DIS_DIAB * 1.11^RACE       (RACE = 1 for non-White)
     #   V/F  = 13.5  * (BWT/87.1)^0.829
     e_wt_cl   <- 0.998; label("Power exponent of body weight on CL/F (unitless)")  # Yao 2018 Table 4 footnote b
     e_wt_vc   <- 0.829; label("Power exponent of body weight on V/F (unitless)")   # Yao 2018 Table 4 footnote c
-    e_diab_cl <- 1.12;  label("Multiplier on CL/F for diabetes (1.12^DIS_DIAB)")    # Yao 2018 Table 4 footnote b
-    e_race_cl <- 1.11;  label("Multiplier on CL/F for non-White race (1.11^(1-RACE_WHITE))")  # Yao 2018 Table 4 footnote b
+    e_diab_cl <- 1.12;  label("Multiplier on CL/F for diabetes, power form on DIS_DIAB (unitless)")    # Yao 2018 Table 4 footnote b
+    e_race_cl <- 1.11;  label("Multiplier on CL/F for non-White race, power form on 1 - RACE_WHITE (unitless)")  # Yao 2018 Table 4 footnote b
 
     # IIV. Yao 2018 Table 4 reports IIV as %CV with explicit footnote
     # "interindividual variability calculated as (variance)^(1/2) x 100%",
@@ -90,8 +90,8 @@ Yao_2018_guselkumab <- function() {
     # Methods "Base Model" section). Additive component fixed at 0.00289 ug/mL
     # based on a uniform-distribution probability characteristic associated
     # with the LLOQ of 0.01 ug/mL.
-    propSd <- 0.200;   label("Proportional residual error (SD, fraction)")  # Yao 2018 Table 4 (Proportional residual error CV% = 20.0)
-    addSd  <- 0.00289; label("Additive residual error (SD, ug/mL)")          # Yao 2018 Table 4 (Additive residual error fixed at 0.00289 ug/mL)
+    propSd <- 0.200;   label("Proportional residual error (fraction)")  # Yao 2018 Table 4 (Proportional residual error CV% = 20.0)
+    addSd  <- 0.00289; label("Additive residual error (ug/mL)")          # Yao 2018 Table 4 (Additive residual error fixed at 0.00289 ug/mL)
   })
   model({
     # Individual PK parameters. Reference subject: 87.1 kg, no diabetes, White.

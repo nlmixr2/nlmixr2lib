@@ -37,8 +37,8 @@ Tetschke_2018_erythropoiesis <- function() {
   )
 
   ini({
-    lbeta  <- log(1.02); label("Cell maturation amplification factor (beta, dimensionless)")  # Tetschke 2018 Section 4.2 (population fixed effect, SE 0.151)
-    lgamma <- log(0.46); label("EPO feedback amplification factor (gamma, dimensionless)")    # Tetschke 2018 Section 4.2 (population fixed effect, SE 0.0651)
+    lbeta  <- log(1.02); label("Cell maturation amplification factor (dimensionless)")  # Tetschke 2018 Section 4.2 (population fixed effect, SE 0.151)
+    lgamma <- log(0.46); label("EPO feedback amplification factor (dimensionless)")    # Tetschke 2018 Section 4.2 (population fixed effect, SE 0.0651)
 
     etalbeta  ~ 0.294   # Tetschke 2018 Section 4.2 (diagonal OMEGA, log-normal IIV variance, SE 0.125)
     etalgamma ~ 0.346   # Tetschke 2018 Section 4.2 (diagonal OMEGA, log-normal IIV variance, SE 0.148)

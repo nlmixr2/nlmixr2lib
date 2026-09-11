@@ -102,13 +102,13 @@ Bender_2014_trastuzumabEmtansine_mechanistic <- function() {
     # Structural parameters - cynomolgus monkey (default ini values)
     # Volumes stored in L (mL / 1000) and clearances in L/day so that dose in
     # mg and V in L give concentrations in mg/L = ug/mL directly.
-    lcl      <- log(0.0174);  label("Total trastuzumab clearance (CL_TT, L/day)")           # Bender 2014 Table II, cyno: 17.4 mL/day
-    lkplasma <- log(0.0939);  label("Plasma antibody degradation rate constant (k_plasma, 1/day)") # Bender 2014 Table II, cyno: 0.0939 /day
-    lvc      <- log(0.148);   label("Central volume shared by all DAR species (V1, L)")      # Bender 2014 Table II, cyno: 148 mL
-    lq     <- log(0.0255);  label("Distributional clearance to peripheral1 (CLd2, L/day)") # Bender 2014 Table II, cyno: 25.5 mL/day
-    lvp      <- log(0.0572);  label("Peripheral volume 1 shared by all DAR species (V2, L)") # Bender 2014 Table II, cyno: 57.2 mL
-    lq2     <- log(0.0812);  label("Distributional clearance to peripheral2 (CLd3, L/day)") # Bender 2014 Table II, cyno: 81.2 mL/day
-    lvp2     <- log(0.127);   label("Peripheral volume 2 shared by all DAR species (V3, L)") # Bender 2014 Table II, cyno: 127 mL
+    lcl      <- log(0.0174);  label("Total trastuzumab clearance (L/day)")           # Bender 2014 Table II, cyno: 17.4 mL/day
+    lkplasma <- log(0.0939);  label("Plasma antibody degradation rate constant (1/day)") # Bender 2014 Table II, cyno: 0.0939 /day
+    lvc      <- log(0.148);   label("Central volume shared by all DAR species (L)")      # Bender 2014 Table II, cyno: 148 mL
+    lq     <- log(0.0255);  label("Distributional clearance to peripheral1 (L/day)") # Bender 2014 Table II, cyno: 25.5 mL/day
+    lvp      <- log(0.0572);  label("Peripheral volume 1 shared by all DAR species (L)") # Bender 2014 Table II, cyno: 57.2 mL
+    lq2     <- log(0.0812);  label("Distributional clearance to peripheral2 (L/day)") # Bender 2014 Table II, cyno: 81.2 mL/day
+    lvp2     <- log(0.127);   label("Peripheral volume 2 shared by all DAR species (L)") # Bender 2014 Table II, cyno: 127 mL
     lkhi     <- log(0.341);   label("Shared upper-chain deconjugation rate k_7->6 = k_6->5 = k_5->4 = k_4->3 = k_3->2 (1/day)") # Bender 2014 Table II, cyno: 0.341 /day
     lk21     <- log(0.255);   label("DAR2 deconjugation rate constant k_2->1 (1/day)")       # Bender 2014 Table II, cyno: 0.255 /day
     lk10     <- log(0.0939);  label("DAR1 deconjugation rate constant k_1->0 (1/day)")       # Bender 2014 Table II, cyno: 0.0939 /day

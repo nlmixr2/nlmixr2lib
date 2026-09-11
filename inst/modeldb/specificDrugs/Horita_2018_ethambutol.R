@@ -53,10 +53,10 @@ Horita_2018_ethambutol <- function() {
     # canonical 0.75 / 1.0 theoretical values. The Table 4 IIV column lists 'Fixed'
     # for these rows, which means no IIV is estimated on the exponent -- not that the
     # exponent value itself is held fixed during fitting.
-    e_wt_cl <- 0.382; label("Allometric exponent on CL/F (estimated, unitless)")   # Table 4: Exponent (BW on CL/F) = 0.382 (RSE 24%)
-    e_wt_q  <- 0.474; label("Allometric exponent on Q/F  (estimated, unitless)")   # Table 4: Exponent (BW on Q/F)  = 0.474 (RSE 44%)
-    e_wt_vc <- 0.228; label("Allometric exponent on V1/F (estimated, unitless)")   # Table 4: Exponent (BW on V1/F) = 0.228 (RSE 84%)
-    e_wt_vp <- 0.858; label("Allometric exponent on V2/F (estimated, unitless)")   # Table 4: Exponent (BW on V2/F) = 0.858 (RSE 60%)
+    e_wt_cl <- 0.382; label("Allometric exponent on CL/F (unitless)")   # Table 4: Exponent (BW on CL/F) = 0.382 (RSE 24%)
+    e_wt_q  <- 0.474; label("Allometric exponent on Q/F (unitless)")   # Table 4: Exponent (BW on Q/F)  = 0.474 (RSE 44%)
+    e_wt_vc <- 0.228; label("Allometric exponent on V1/F (unitless)")   # Table 4: Exponent (BW on V1/F) = 0.228 (RSE 84%)
+    e_wt_vp <- 0.858; label("Allometric exponent on V2/F (unitless)")   # Table 4: Exponent (BW on V2/F) = 0.858 (RSE 60%)
 
     # Inter-individual variability. Table 4 IIV column reports 'omega (CV%)' on the
     # log scale (variance = omega^2).

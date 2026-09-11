@@ -94,7 +94,7 @@ whose sourcing needed a judgement call.
 |---|---|---|
 | 3-compartment PK ODEs, sequential zero-order-then-first-order absorption | n/a | Text S1 `$SUBROUTINES ADVAN12 TRANS4`, single dosing compartment with `D1` |
 | `lcl`, `lvc`, `lvp`, `lvp2`, `lq`, `lq2`, `lka`, `lduration`, `lfcap` | 6.28, 46.0, 28.3, 30.9, 3.57, 0.688, 0.803, 1.27, 0.882 | Table 1, "PK parameters" block |
-| `e_wt_cl` = 0.75, `allo_v` = 1.0 (both `fixed()`) | 0.75, 1.0 | Table 1 footnote equations; Text S1 `$THETA` 12 and 13 carry `FIX` |
+| `e_wt_cl` = 0.75, `e_wt_vc_vp` = 1.0 (both `fixed()`) | 0.75, 1.0 | Table 1 footnote equations; Text S1 `$THETA` 12 and 13 carry `FIX` |
 | Covariate ratios on CL/F | 0.896, 0.900, 0.910, 1.19, 0.951, 0.862, 0.851 | Table 1, "Covariate effects" block |
 | PK IIV variances | (CV%/100)^2 | Table 1 "CV%" rows; footnote defines CV% as "square root of variance x 100" |
 | PK residual error (patient studies) | 37.5% proportional | Table 1; Text S1 `$ERROR` branch 2 |

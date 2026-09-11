@@ -51,11 +51,11 @@ Zhao_2012_abacavir <- function() {
   ini({
     # Structural PK parameters (Zhao 2012 Table 3 "Final estimate" column).
     # Reference weight for the CL/F covariate term is the population median (12 kg).
-    lka <- log(0.758); label("Absorption rate constant (ka, 1/h)")                                              # Table 3 Ka = 0.758 1/h
-    lcl <- log(13.4);  label("Apparent oral clearance at 12 kg reference (CL/F, L/h)")                          # Table 3 theta_4 = 13.4 L/h
-    lvc <- log(4.94);  label("Apparent central volume of distribution (V1/F, L)")                               # Table 3 V1/F = 4.94 L
-    lvp <- log(8.12);  label("Apparent peripheral volume of distribution (V2/F, L)")                            # Table 3 V2/F = 8.12 L
-    lq  <- log(1.25);  label("Apparent inter-compartmental clearance (Q/F, L/h)")                               # Table 3 Q/F = 1.25 L/h
+    lka <- log(0.758); label("Absorption rate constant (1/h)")                                              # Table 3 Ka = 0.758 1/h
+    lcl <- log(13.4);  label("Apparent oral clearance at 12 kg reference (L/h)")                          # Table 3 theta_4 = 13.4 L/h
+    lvc <- log(4.94);  label("Apparent central volume of distribution (L)")                               # Table 3 V1/F = 4.94 L
+    lvp <- log(8.12);  label("Apparent peripheral volume of distribution (L)")                            # Table 3 V2/F = 8.12 L
+    lq  <- log(1.25);  label("Apparent inter-compartmental clearance (L/h)")                               # Table 3 Q/F = 1.25 L/h
 
     # Estimated power-form covariate effect on CL/F.
     # CL/F_j = 13.4 * (WT_j / 12)^e_wt_cl with reference WT = 12 kg (cohort median).

@@ -204,9 +204,9 @@ Zhao_2026_venetoclax <- function() {
     # and retained the one-compartment structure (Discussion).
     # ka fixed at the literature value because the sparse TDM sampling scheme
     # carries few absorption-phase samples (Structural Model; Limitations).
-    lka <- fixed(log(0.15)); label("Absorption rate constant (ka, 1/h)")  # Zhao 2026 Table 3, ka = 0.15 1/h, taken from published literature
-    lcl <- log(4.8);         label("Apparent clearance at reference covariates (CL/F, L/h)")  # Zhao 2026 Table 3, CL/F = 4.8 L/h (RSE 26.5%, 95% CI 2.3-7.3); Eq. 6
-    lvc <- log(124.7);       label("Apparent volume of distribution at reference total protein (V/F, L)")  # Zhao 2026 Table 3, V/F = 124.7 L (RSE 15.0%, 95% CI 87.8-161.7); Eq. 5
+    lka <- fixed(log(0.15)); label("Absorption rate constant (1/h)")  # Zhao 2026 Table 3, ka = 0.15 1/h, taken from published literature
+    lcl <- log(4.8);         label("Apparent clearance at reference covariates (L/h)")  # Zhao 2026 Table 3, CL/F = 4.8 L/h (RSE 26.5%, 95% CI 2.3-7.3); Eq. 6
+    lvc <- log(124.7);       label("Apparent volume of distribution at reference total protein (L)")  # Zhao 2026 Table 3, V/F = 124.7 L (RSE 15.0%, 95% CI 87.8-161.7); Eq. 5
 
     # ----- Covariate effects (Zhao 2026 Eq. 5 and Eq. 6; Table 3) -----
     # Continuous covariates enter as a mean-centred power (Eq. 1,

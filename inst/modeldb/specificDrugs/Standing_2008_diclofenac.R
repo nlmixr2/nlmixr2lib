@@ -69,7 +69,7 @@ Standing_2008_diclofenac <- function() {
     # Methods page 848 ('Bioavailability ... with limits forcing the
     # combined bioavailability to equal 100%'); F2 is therefore not a
     # separately estimated parameter.
-    lfdepot <- log(0.70); label("Arm-1 bioavailability fraction (F1, unitless)") # Table 2: F1 = 0.70 (RSE 7.6%); F2 fixed at 1 - F1
+    lfdepot <- log(0.70); label("Arm-1 bioavailability fraction (unitless)") # Table 2: F1 = 0.70 (RSE 7.6%); F2 fixed at 1 - F1
     # Paper reports t1/2,A1 = 0.09 h; ka1 = log(2)/t1/2,A1 = 7.70 1/h.
     lka1  <- log(log(2) / 0.09); label("Arm-1 absorption rate constant ka1 (1/h)")  # Table 2: t1/2A1 = 0.09 h (RSE 50.1%); ka1 = ln(2)/t1/2A1
 

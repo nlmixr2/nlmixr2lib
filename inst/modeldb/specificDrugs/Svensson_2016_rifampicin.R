@@ -83,7 +83,7 @@ Svensson_2016_rifampicin <- function() {
     lcl     <- fixed(log(10.0 * 24))     ; label("Apparent oral clearance CL/F (L/day) at the preinduced state, standardized to 70 kg")  # Svensson 2016 Table 2 CL/F = 10.0 L/h * 24 = 240 L/day; carried from Smythe 2012 Table 3
     lvc     <- fixed(log(86.7))          ; label("Apparent central volume of distribution V/F (L), standardized to 70 kg")               # Svensson 2016 Table 2 V/F = 86.7 L; carried from Smythe 2012 Table 3
     lmtt    <- fixed(log(0.713 / 24))    ; label("Mean transit time (day, on log scale)")                                                  # Svensson 2016 Table 2 MTT = 0.713 h / 24 = 0.0297 day; carried from Smythe 2012 Table 3
-    nn_fix  <- fixed(1)                  ; label("Number of transit compartments (integer, unitless)")                                    # Svensson 2016 Table 2 NN = 1.00 FIX; carried from Smythe 2012 Table 3 'No. of transit compartments = 1 FIX'
+    nn_fix  <- fixed(1)                  ; label("Number of transit compartments, integer-valued (unitless)")                                    # Svensson 2016 Table 2 NN = 1.00 FIX; carried from Smythe 2012 Table 3 'No. of transit compartments = 1 FIX'
     lemax   <- fixed(log(1.04))          ; label("Maximal fractional increase in the enzyme production rate (unitless)")                  # Svensson 2016 Table 2 Emax = 1.04; carried from Smythe 2012 Table 3
     lec50   <- fixed(log(0.0705))        ; label("Rifampicin plasma concentration producing half Emax (mg/L)")                            # Svensson 2016 Table 2 EC50 = 0.0705 mg/L; carried from Smythe 2012 Table 3
     lkenz   <- fixed(log(0.00369 * 24))  ; label("Rate constant for first-order degradation of the enzyme pool (1/day)")                  # Svensson 2016 Table 2 kENZ = 0.00369/h * 24 = 0.0886/day; carried from Smythe 2012 Table 3
@@ -115,9 +115,9 @@ Svensson_2016_rifampicin <- function() {
     # =========================================================================
     # Rifampicin drug effects on the bacterial states (Svensson 2016
     # Table 2 'Exposure-response parameters'). All three effects act on
-    # plasma concentration Crif = central / vc (in mg/L).
+    # plasma concentration Cc = central / vc (in mg/L).
     # =========================================================================
-    fg_on_off <- fixed(1.00)            ; label("Fractional inhibition of fast-multiplying growth when rifampicin Crif > 0 (unitless, on/off)") # Svensson 2016 Table 2 FGon/off = 1.00 FIX (estimated close to 1 and then fixed)
+    fg_on_off <- fixed(1.00)            ; label("Fractional inhibition of fast-multiplying growth when rifampicin Cc > 0 (unitless, on/off)") # Svensson 2016 Table 2 FGon/off = 1.00 FIX (estimated close to 1 and then fixed)
     lsdk      <- log(0.200)             ; label("Second-order slow-multiplying death rate SDk (L/mg/day); estimated typical value")              # Svensson 2016 Table 2 SDk = 0.200 L/mg/day (RSE 41.6%, 95% CI 0.0854-0.390)
     lndk      <- log(0.106)             ; label("Second-order nonmultiplying death rate NDk (L/mg/day); estimated typical value")                # Svensson 2016 Table 2 NDk = 0.106 L/mg/day (RSE 19.0%, 95% CI 0.0643-0.188)
 
@@ -184,15 +184,15 @@ Svensson_2016_rifampicin <- function() {
     kfs <- kfslin * t
 
     # --- 5. Rifampicin plasma concentration (mg/L) and the on/off drug
-    #        indicator. Once dosing has begun, Crif stays above zero
+    #        indicator. Once dosing has begun, Cc stays above zero
     #        between doses, so FGon/off = 1 effectively shuts off
     #        fast-multiplying growth for the entire treatment window
     #        (Svensson 2016 Discussion paragraph 7: 'As the model included
     #        no concentration-dependent effect on fast-multiplying bacteria,
     #        but only complete inhibition of the growth of fast-multiplying
     #        bacteria, no circadian change is seen for this state.').
-    Crif <- central / vc
-    ind_drug <- (Crif > 0)
+    Cc <- central / vc
+    ind_drug <- (Cc > 0)
     fg_inhib <- 1 - fg_on_off * ind_drug
 
     # --- 6. Total live bacteria (used in the Gompertz growth term). The
@@ -203,8 +203,8 @@ Svensson_2016_rifampicin <- function() {
     # --- 7. PK ODE system (single transit absorption + central + ENZ pool).
     d/dt(depot)     <- -ktr * depot
     d/dt(transit1)  <-  ktr * depot - ktr * transit1
-    d/dt(central)   <-  ktr * transit1 - cl_base * enz_pool * Crif
-    d/dt(enz_pool)  <-  kenz * (1 + emax * Crif / (ec50 + Crif)) - kenz * enz_pool
+    d/dt(central)   <-  ktr * transit1 - cl_base * enz_pool * Cc
+    d/dt(enz_pool)  <-  kenz * (1 + emax * Cc / (ec50 + Cc)) - kenz * enz_pool
 
     # Enzyme pool starts at unity by construction (Smythe 2012 Eq 1
     # 'To normalize the enzyme concentrations to unity at baseline, the
@@ -215,9 +215,9 @@ Svensson_2016_rifampicin <- function() {
     d/dt(fast) <- kg * fast * log(bmax / total_bact) * fg_inhib -
                   kfs * fast - kfn * fast + ksf * slow
     d/dt(slow) <- kfs * fast - ksf * slow - ksn * slow + kns * nonm -
-                  sdk * Crif * slow
+                  sdk * Cc * slow
     d/dt(nonm) <- kfn * fast + ksn * slow - kns * nonm -
-                  ndk * Crif * nonm
+                  ndk * Cc * nonm
 
     # Initial bacterial loads at infection (t = 0). N0 = 0 is the standard
     # MTP initial condition (no nonmultiplying bacteria at the moment of

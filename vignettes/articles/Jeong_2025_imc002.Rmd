@@ -1,0 +1,486 @@
+---
+title: "IMC-002 anti-CD47 antibody (Jeong 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{IMC-002 anti-CD47 antibody (Jeong 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+ui <- rxode2::rxode(readModelDb("Jeong_2025_imc002"))
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.1111/cts.70321>
+* Supplement (Data S1, NONMEM control stream; Figure S1; Table S1):
+  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12370379/supplementaryFiles>
+
+IMC-002 is a fully human anti-CD47 IgG4 monoclonal antibody. Jeong 2025 fitted a
+semi-mechanistic target-mediated drug disposition (TMDD) model to the phase Ia
+dose-escalation data and used it to recommend a phase Ib regimen of 20 mg/kg
+every three weeks (Q3W).
+
+# Population
+
+Twelve patients with advanced solid tumours (9 hepatocellular carcinoma, 2 breast
+cancer, 1 gallbladder cancer) who had failed standard therapy were enrolled in a
+single-centre phase Ia open-label dose-escalation study in the Republic of Korea
+(NCT05276310). Three patients were assigned to each of four dose levels (5, 10,
+20 and 30 mg/kg), given as a 3 h intravenous infusion every two weeks until
+progression or withdrawal, yielding 213 free-IMC-002 concentrations. Mean age was
+58.8 years (SD 8.0) and mean weight 64.5 kg (SD 10.2); 8 patients were male and 4
+female, and all 12 were Korean (Jeong 2025 Table 1; sampling schedule in Table
+S1). Weight, sex and age were screened as covariates by stepwise covariate
+modelling (forward p = 0.05, backward p = 0.01) and **none was retained**, so the
+packaged model carries no covariate effects.
+
+The same information is available programmatically:
+
+```{r population}
+str(ui$population, max.level = 1)
+```
+
+# Model structure
+
+Four states are solved. `central` and `peripheral1` carry drug **amounts**
+(umol); `target` (CD47) and `complex` (the IMC-002-CD47 complex) carry
+**concentrations** (umol/L) referred to the central volume. That asymmetry is the
+published parameterisation and is why the volume factors differ between the drug
+and receptor equations.
+
+Two distinct binding processes act:
+
+* **CD47, in the central compartment, as full second-order TMDD.** The
+  association rate is derived as `Kon = Koff / KD,CD47` from two in-house fixed
+  constants; CD47 turns over by zero-order synthesis `Ksyn` and first-order
+  degradation `Kdeg`, so its drug-free baseline is `Ksyn / Kdeg`. The complex is
+  catabolised, which is the nonlinear elimination route.
+* **FcRn, in the peripheral space, at quasi-steady state.** Drug taken up at
+  `Kup` equilibrates with a fixed total FcRn pool by the QSS quadratic; the bound
+  fraction is recycled back to plasma at `Krec`. Because the FcRn pool is finite,
+  this limb saturates at high peripheral concentrations.
+
+```{r structure}
+cat(vapply(ui$lstExpr, function(e) paste(deparse(e), collapse = "\n"), character(1)),
+    sep = "\n")
+```
+
+# Source trace
+
+Per-parameter origin is recorded as an in-file comment beside each `ini()` entry
+in `inst/modeldb/specificDrugs/Jeong_2025_imc002.R`. Collected here for review.
+"Data S1" is the NONMEM control stream supplied as Supporting Information.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lvc` (Vc) | 4.19 L | Table 2, RSE 4%; Data S1 `$THETA` 1 |
+| `lksyn` (Ksyn) | 0.0027 umol/L/h | Table 2, RSE 8%; Data S1 `$THETA` 2 |
+| `lkdeg` (Kdeg) | 0.0213 1/h, fixed | Table 2 (starred); sec. 3.2, from CD47 half-life (ref. 14); Data S1 `$THETA` 3 FIX |
+| `lkd` (KD,CD47) | 0.046 umol/L, fixed | Table 2 (starred); sec. 3.2, in-house binding; Data S1 `$THETA` 4 FIX |
+| `lk2` (Koff) | 90.4 1/h, fixed | Table 2 (starred); sec. 3.2, in-house binding; Data S1 `$THETA` 5 FIX |
+| `lcl` (CL) | 0.0115 L/h | Table 2, RSE 12%; Data S1 `$THETA` 6 |
+| `lvp` (Vp) | 85.1 L | Table 2, RSE 18%; Data S1 `$THETA` 7 |
+| `lkup` (Kup) | 0.0097 1/h | Table 2, RSE 5%; Data S1 `$THETA` 8 |
+| `lkss` (KD,FcRn) | 0.117 umol/L, fixed | Table 2 (starred); Data S1 `$THETA` 9 FIX ("KSS1") |
+| `lc_fcrn_t` (Rtot,FcRn) | 0.291 umol/L, fixed | Table 2 (starred); sec. 3.2, from Li 2018 (ref. 15); Data S1 `$THETA` 10 FIX |
+| `lkrec` (Krec) | 0.0142 1/h | Table 2, RSE 11%; Data S1 `$THETA` 11 |
+| `lkint` (Kel,D-R complex) | 0.0188 1/h | Table 2, RSE 13%; Data S1 `$THETA` 12 |
+| `expSd` | 0.119 log units | Table 2 row "Proportional error", RSE 9%; Data S1 `$THETA` 13 |
+| IIV variances | 0.037 (Vc), 0.319 (CL) | Table 2 "Interindividual variability" rows |
+| IIV covariance | 0.0199 | Data S1 `$OMEGA BLOCK(2)` only; not printed in Table 2 |
+| `Kon = Koff / KD,CD47` | n/a | Data S1 `$PK`; paper sec. 3.2 symbol list |
+| `target(0) = Ksyn / Kdeg` | n/a | Data S1 `$PK` (`BASE`); paper sec. 3.2 initial conditions |
+| QSS quadratic for free peripheral drug | n/a | Data S1 `$DES` (`DAA` / `Dfree` / `Dcpx`); paper sec. 3.2 equation for `C` |
+| `d/dt(central)`, `d/dt(target)`, `d/dt(complex)`, `d/dt(peripheral1)` | n/a | Data S1 `$DES`; paper sec. 3.2 differential equations |
+
+# Unit conversion
+
+The model is parameterised entirely in molar units because the fixed binding
+constants (`KD,CD47`, `KD,FcRn`, `Rtot,FcRn`) and the estimated `Ksyn` are all
+reported in umol/L. The paper prescribes doses in mg/kg and reports exposures in
+ug/mL, so a molecular weight is needed to move between the two. Jeong 2025 does
+not report the molecular weight of IMC-002; a representative human IgG4 value is
+assumed here and flagged in "Assumptions and deviations".
+
+```{r units}
+MW  <- 146000      # g/mol, assumed human IgG4 molecular weight (NOT from the paper)
+WT  <- 64.5        # kg, Table 1 mean body weight
+TAU <- 21 * 24     # h, Q3W dosing interval
+NCYC <- 8L         # cycles simulated; the paper reports steady state by cycle 5
+MEC <- 24          # ug/mL, minimum effective concentration (sec. 2.3)
+
+mgkg_to_umol <- function(mgkg) mgkg * WT * 1000 / MW   # mg/kg -> umol for a 64.5 kg patient
+umolL_to_ugmL <- function(x) x * MW / 1000             # umol/L -> ug/mL
+```
+
+# Structural checks
+
+These are deterministic typical-value checks with no simulated variability, so
+they are exact rather than cohort-dependent and can be asserted tightly.
+
+```{r structural-checks}
+# Guard: the model must solve as an ODE system. A cl/vc pair can make rxode2
+# auto-substitute a linear closed-form solution and silently discard the ODEs.
+stopifnot(!isTRUE(ui$linCmt),
+          identical(ui$state, c("central", "target", "complex", "peripheral1")))
+
+mod_typ <- rxode2::zeroRe(readModelDb("Jeong_2025_imc002"))
+ev_typ <- rxode2::et(amt = mgkg_to_umol(20), dur = 3, ii = TAU,
+                     until = TAU * (NCYC - 1), cmt = "central") |>
+  rxode2::et(seq(0, TAU * NCYC, by = 0.25), cmt = "central")
+sim_typ <- rxode2::rxSolve(mod_typ, ev_typ, returnType = "data.frame",
+                           atol = 1e-12, rtol = 1e-10, maxsteps = 1e6)
+
+# 1. Drug-free CD47 baseline must equal Ksyn / Kdeg exactly (Data S1 $PK BASE).
+base_expected <- 0.0027 / 0.0213
+stopifnot(abs(sim_typ$target[1] / base_expected - 1) < 1e-8)
+
+# 2. Steady-state mass balance. Over one dosing interval at steady state the dose
+#    must equal what leaves the system: linear clearance from central plus
+#    catabolism of the drug-CD47 complex. This is the cheapest gate that pins the
+#    whole ODE system, including the two fixed binding constants.
+trap <- function(x, y) sum(diff(x) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+ss <- sim_typ |>
+  dplyr::filter(time >= TAU * (NCYC - 1), time <= TAU * NCYC) |>
+  dplyr::arrange(time)
+elim_linear  <- trap(ss$time, ss$kel * ss$central)
+elim_complex <- trap(ss$time, ss$kint * ss$complex)
+elim_total   <- elim_linear + elim_complex
+stopifnot(abs(elim_total / mgkg_to_umol(20) - 1) < 0.01)
+
+tibble::tibble(
+  Check = c("CD47 baseline = Ksyn/Kdeg",
+            "Steady-state mass balance (dose vs eliminated)",
+            "Share of elimination via linear CL",
+            "Share of elimination via CD47-complex catabolism"),
+  Value = c(sprintf("%.6f umol/L", sim_typ$target[1]),
+            sprintf("%.4f%% error", 100 * abs(elim_total / mgkg_to_umol(20) - 1)),
+            sprintf("%.1f%%", 100 * elim_linear / elim_total),
+            sprintf("%.1f%%", 100 * elim_complex / elim_total))
+) |>
+  knitr::kable(caption = "Deterministic structural checks at 20 mg/kg Q3W steady state.")
+```
+
+At 20 mg/kg roughly half the dose is cleared by catabolism of the drug-CD47
+complex, consistent with the paper's statement that IMC-002 "is mainly eliminated
+through drug-complex catabolism, not in the blood compartment" (sec. 4).
+
+# Virtual cohort
+
+The published simulations drew 1000 subjects per regimen. Rather than resample
+randomly, the cohort below is a **deterministic product-quadrature lattice** over
+the bivariate log-normal IIV on Vc and CL: 14 stratified quantile points per eta,
+transformed by the Cholesky factor of the published OMEGA. This gives 196
+subjects per arm (inside the 200-per-arm cap), reproduces the published variances
+exactly, and -- unlike random sampling -- is identical on every machine
+regardless of the number of solver threads. That removes the usual source of
+locally-passing / CI-failing assertions.
+
+```{r cohort}
+K <- 14L
+z <- stats::qnorm((seq_len(K) - 0.5) / K)
+z <- z / sqrt(mean(z^2))   # rescale so the lattice variance is exactly 1
+etas <- as.matrix(expand.grid(z_vc = z, z_cl = z)) %*% t(t(chol(ui$omega)))
+colnames(etas) <- c("etalvc", "etalcl")
+
+# The lattice reproduces the published OMEGA diagonal exactly.
+lattice_var <- diag(stats::var(etas) * (nrow(etas) - 1) / nrow(etas))
+stopifnot(max(abs(lattice_var / diag(ui$omega) - 1)) < 1e-8)
+
+doses <- c(5, 10, 20, 30)
+arm_levels <- paste0(doses, " mg/kg")
+
+subjects <- lapply(seq_along(doses), function(i) {
+  tibble::tibble(
+    id     = (i - 1L) * nrow(etas) + seq_len(nrow(etas)),  # disjoint id ranges per arm
+    etalvc = etas[, "etalvc"],
+    etalcl = etas[, "etalcl"],
+    arm    = factor(arm_levels[i], levels = arm_levels),
+    amt    = mgkg_to_umol(doses[i])
+  )
+}) |>
+  dplyr::bind_rows()
+
+obs_grid <- unique(c(seq(0, TAU * (NCYC - 1), by = 12),
+                     seq(TAU * (NCYC - 1), TAU * NCYC, by = 3)))
+
+events <- dplyr::bind_rows(
+  tidyr::crossing(subjects, time = seq(0, TAU * (NCYC - 1), by = TAU)) |>
+    dplyr::mutate(evid = 1L, dur = 3, cmt = "central"),
+  tidyr::crossing(dplyr::select(subjects, -amt), time = obs_grid) |>
+    dplyr::mutate(evid = 0L, amt = NA_real_, dur = NA_real_, cmt = "central")
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+`etalvc` / `etalcl` are supplied per subject in the event table and `omega = NA`
+suppresses resampling, so the lattice is used exactly as constructed.
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  readModelDb("Jeong_2025_imc002"), events, omega = NA,
+  keep = "arm", returnType = "data.frame",
+  atol = 1e-10, rtol = 1e-8, maxsteps = 1e5
+)
+sim <- sim |>
+  dplyr::mutate(arm = factor(as.character(arm), levels = arm_levels),
+                conc = umolL_to_ugmL(Cc))
+stopifnot(!anyNA(sim$conc), all(sim$conc >= 0))
+```
+
+# Replicate published figures
+
+```{r figure-3, fig.cap = "Replicates Figure 3 of Jeong 2025: simulated IMC-002 concentration over the steady-state Q3W dosing interval by dose level, with the 24 ug/mL MEC."}
+sim |>
+  dplyr::filter(time >= TAU * (NCYC - 1), time <= TAU * NCYC) |>
+  dplyr::mutate(t_in_tau = time - TAU * (NCYC - 1)) |>
+  dplyr::group_by(arm, t_in_tau) |>
+  dplyr::summarise(Q05 = stats::quantile(conc, 0.05),
+                   Q50 = stats::median(conc),
+                   Q95 = stats::quantile(conc, 0.95), .groups = "drop") |>
+  ggplot(aes(t_in_tau, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = MEC, linetype = "dashed", colour = "grey40") +
+  facet_wrap(~arm) +
+  scale_y_log10() +
+  labs(x = "Time within the Q3W interval (h)", y = "IMC-002 (ug/mL)",
+       title = "Steady-state Q3W profiles by dose level",
+       caption = "Replicates Figure 3 of Jeong 2025. Dashed line: MEC 24 ug/mL.")
+```
+
+Figure 2 of Jeong 2025 is a visual predictive check overlaying the observed phase
+Ia concentrations, which are not publicly available (Data Availability
+Statement), so only the simulation-only Figure 3 is reproduced here.
+
+The TMDD mechanism itself is not plotted in the paper, but the packaged model
+exposes it directly: free CD47 is driven far below its `Ksyn / Kdeg` baseline
+while drug is present and recovers between doses.
+
+```{r target-occupancy, fig.cap = "Free CD47 and the IMC-002-CD47 complex over the steady-state interval (typical-value subject, 20 mg/kg Q3W). Not a published figure."}
+sim_typ |>
+  dplyr::filter(time >= TAU * (NCYC - 1), time <= TAU * NCYC) |>
+  dplyr::transmute(t_in_tau = time - TAU * (NCYC - 1),
+                   `Free CD47` = target, `IMC-002-CD47 complex` = complex) |>
+  tidyr::pivot_longer(-t_in_tau, names_to = "species", values_to = "conc") |>
+  ggplot(aes(t_in_tau, conc, colour = species)) +
+  geom_line() +
+  geom_hline(yintercept = base_expected, linetype = "dashed", colour = "grey40") +
+  labs(x = "Time within the Q3W interval (h)", y = "Concentration (umol/L)",
+       colour = NULL,
+       caption = "Dashed line: drug-free CD47 baseline Ksyn/Kdeg.") +
+  theme(legend.position = "bottom")
+```
+
+# PKNCA validation
+
+NCA is taken over the final simulated dosing interval, which is at steady state
+(the paper reports steady state by cycle 5; cycle 8 is simulated). `auclast` over
+that interval is AUCtau and `cmin` is the steady-state trough: the profile
+declines monotonically after each infusion, so the minimum sits at one of the two
+interval endpoints, and at steady state both are troughs. (The MEC section below
+uses the end-of-interval trough explicitly; the two agree to within 2%.)
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::transmute(id, time, Cc = conc, arm)
+
+# Guarantee a time-zero record per subject (Cc = 0 pre-dose) so PKNCA has an anchor.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, arm) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, arm, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, arm, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::select(id, time, amt, arm)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id)
+
+intervals <- data.frame(
+  start   = TAU * (NCYC - 1),
+  end     = TAU * NCYC,
+  auclast = TRUE,
+  cmax    = TRUE,
+  cmin    = TRUE,
+  tmax    = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_long <- as.data.frame(nca_res)
+
+# A gate that cannot go red is worse than none: confirm every arm/parameter cell
+# actually produced a value.
+stopifnot(nrow(nca_long) > 0, !anyNA(nca_long$PPORRES))
+stopifnot(setequal(unique(nca_long$PPTESTCD), c("auclast", "cmax", "cmin", "tmax")))
+```
+
+## Comparison against published NCA
+
+Jeong 2025 Table 3 reports the **mean** of each parameter over its 1000 simulated
+subjects. `ncaComparisonTable()` aggregates per-subject results with the median
+by default, so the simulated side is pre-aggregated to arm means here to match
+the published statistic.
+
+```{r nca_compare}
+sim_wide <- nca_long |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmin")) |>
+  dplyr::mutate(arm = factor(as.character(arm), levels = arm_levels)) |>
+  dplyr::group_by(arm, PPTESTCD) |>
+  dplyr::summarise(value = mean(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = value)
+
+published <- tibble::tibble(
+  arm     = factor(arm_levels, levels = arm_levels),
+  auclast = c(8689, 23760, 66036, 116776),   # Table 3, AUCtau (ug*h/mL)
+  cmin    = c(5.2, 15.6, 58.8, 122.4)        # Table 3, Ctrough (ug/mL)
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = as.data.frame(sim_wide),
+  reference = as.data.frame(published),
+  by        = "arm",
+  units     = c(auclast = "ug*h/mL", cmin = "ug/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, align = c("l", "l", "r", "r", "r"),
+             caption = "Simulated vs. Jeong 2025 Table 3 (Q3W steady state). * differs by >20%.")
+attr(cmp, "footnote")
+```
+
+```{r nca_gate}
+# ncaComparisonTable's "% diff" column is formatted character, so the gate is
+# computed numerically from the underlying values.
+gate <- published |>
+  dplyr::rename(ref_auc = auclast, ref_cmin = cmin) |>
+  dplyr::left_join(sim_wide, by = "arm") |>
+  dplyr::mutate(pct_auc  = 100 * (auclast / ref_auc - 1),
+                pct_cmin = 100 * (cmin / ref_cmin - 1))
+
+# The cohort is a deterministic lattice, so these numbers do not move between
+# machines or thread counts. Realised: AUCtau -7.2 / -8.8 / -1.8 / +2.1 %,
+# Ctrough -1.9 / -7.1 / +3.0 / +7.8 %. The 20% bound leaves headroom for the
+# assumed molecular weight (the one non-paper input) while still going red on a
+# mis-transcribed volume, dose or unit -- encoding the drug in mass rather than
+# molar units, for instance, moves these by 30 to 95%.
+stopifnot(max(abs(gate$pct_auc)) < 20, max(abs(gate$pct_cmin)) < 20)
+
+gate |>
+  dplyr::transmute(
+    `Dose level`             = arm,
+    `AUCtau % diff`          = round(pct_auc, 1),
+    `Ctrough % diff`         = round(pct_cmin, 1)
+  ) |>
+  knitr::kable(caption = "Numeric deviation from Jeong 2025 Table 3.")
+```
+
+## Proportion of patients above the MEC
+
+Table 3 also reports the percentage of simulated patients whose steady-state
+trough exceeds the 24 ug/mL MEC. This is the criterion the 20 mg/kg Q3W
+recommendation rests on.
+
+```{r mec}
+mec_sim <- sim |>
+  dplyr::filter(time >= TAU * (NCYC - 1), time <= TAU * NCYC) |>
+  dplyr::group_by(arm, id) |>
+  dplyr::summarise(ctrough = conc[which.max(time)], .groups = "drop") |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(simulated = 100 * mean(ctrough > MEC), .groups = "drop")
+
+mec_cmp <- mec_sim |>
+  dplyr::mutate(published = c(NA, 15.6, 74.6, 90.5),   # Table 3 "C trough over MEC (%)"
+                difference = simulated - published)
+
+# Realised absolute differences: 6.4 / 3.5 / 2.4 percentage points (deterministic).
+stopifnot(max(abs(mec_cmp$difference), na.rm = TRUE) < 15)
+
+mec_cmp |>
+  dplyr::transmute(`Dose level` = arm,
+                   `Simulated % above MEC` = round(simulated, 1),
+                   `Published % above MEC` = published,
+                   `Difference (points)`   = round(difference, 1)) |>
+  knitr::kable(caption = "Percentage of patients with steady-state Q3W trough above 24 ug/mL, vs Jeong 2025 Table 3.")
+```
+
+The model reproduces the paper's decision: at 20 mg/kg Q3W roughly three quarters
+of patients hold a trough above the MEC, against roughly one in ten at 10 mg/kg.
+Table 3 has no entry for 5 mg/kg, and the model puts that arm at 0%.
+
+# Assumptions and deviations
+
+* **Molecular weight (the only non-paper input).** The model is molar throughout,
+  but doses are prescribed in mg/kg and exposures reported in ug/mL. Jeong 2025
+  never states the molecular weight of IMC-002, so `MW = 146000 g/mol` -- a
+  representative value for a human IgG4 monoclonal antibody -- is assumed here to
+  convert. Every ug/mL figure in this vignette therefore carries that assumption;
+  the packaged model file itself does not, and is dosed in umol.
+* **The printed equation for the free peripheral concentration has a typo; Data
+  S1 settles it.** Section 3.2 prints
+  `C = 0.5 * [(Ctot,p - Ap - KD,FcRn) + sqrt((Ctot,p - Ap - KD,FcRn)^2 + 4*KD,FcRn*Ctot,p)]`,
+  in which `Ap` is defined two lines later as the *amount* of IMC-002 in the
+  peripheral compartment -- subtracting an amount from a concentration. Data S1
+  `$DES` writes the same line as `DAA = A(4)/VP - FcRn - KSS1`, i.e. the middle
+  term is the total FcRn concentration `Rtot,FcRn`, which is also what the
+  standard quasi-steady-state root requires. The control-stream form is encoded.
+* **Complex elimination is reproduced with its published volume factor.** Both
+  the printed equation and Data S1 write the complex catabolism term as
+  `Kel,D-R complex * ADR47 / Vc`, which is dimensionally inconsistent with the
+  rest of that equation (the other terms are umol/L/h; this one is umol/L/h/L).
+  The estimate 0.0188 1/h was obtained under that form, so it is reproduced
+  verbatim: rescaling it to remove the stray volume would change the model rather
+  than correct it. The effective first-order rate on the complex is therefore
+  0.0188 / 4.19 = 0.00449 1/h.
+* **`Kup` is a rate constant, not a clearance.** Table 2 tags `Kup` as "(L/h)",
+  but the equations use it as `Kup * AD` on an amount, which requires 1/h. The
+  label in the model file records 1/h.
+* **Residual error is log-additive, not proportional.** Table 2 labels the row
+  "Proportional error", but Data S1 `$ERROR` fits `IPRED = LOG(A(1)/VC)` with
+  `Y = IPRED + W*EPS(1)`, `W = THETA(13)` and `$SIGMA 1 FIX`. That is a
+  log-normal residual, encoded as `Cc ~ lnorm(expSd)`. At 0.119 the two forms are
+  numerically close. The Table 2 row "Residual variability 1*" is the fixed
+  `$SIGMA` scaffolding, not a separate parameter.
+* **The IIV covariance comes from the supplement only.** Table 2 prints the two
+  variances but no correlation; Data S1 `$OMEGA BLOCK(2)` supplies the
+  off-diagonal 0.0199 (correlation 0.183). Its diagonals reproduce Table 2
+  exactly, which is what supports treating the block as final rather than initial
+  estimates.
+* **Where Table 2 and Data S1 disagree slightly, Table 2 wins.** Data S1 carries
+  `Ksyn 0.00273` vs Table 2 `0.0027`, `Vp 85` vs `85.1`, and `Kup 0.00968` vs
+  `0.0097`; the published final table is used for all three, with the control
+  stream supplying structure.
+* **Cohort construction.** The published simulations used 1000 randomly sampled
+  subjects per regimen; this vignette uses a 196-point deterministic quadrature
+  lattice per arm (14 x 14 stratified quantiles of the two etas, rescaled to
+  reproduce the published variances exactly). Means over a lattice and over 1000
+  random draws are not identical, which contributes part of the residual
+  deviation in the comparison tables.
+* **Body weight is held at the Table 1 mean (64.5 kg).** Weight was screened and
+  not retained as a covariate, so it enters only through the mg/kg dose
+  conversion; using the mean weight matches the paper's per-dose-level reporting.
+* **No observed data.** The phase Ia concentrations are not publicly available,
+  so the visual predictive check of Figure 2 and the goodness-of-fit plots of
+  Figure S1 cannot be reproduced. Validation here is against the published
+  simulation summary (Table 3) and the model's own internal mass balance.

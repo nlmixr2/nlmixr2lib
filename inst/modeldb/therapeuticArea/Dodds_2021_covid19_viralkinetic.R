@@ -219,7 +219,7 @@ Dodds_2021_covid19_viralkinetic <- function() {
     virus(0)    <- V0
 
     # =========================================================================
-    # 6. Observation outputs. Vlog10 is the log10 free-virion concentration
+    # 6. Observation outputs. log10_viral_load is the log10 free-virion concentration
     # (log10 copies/mL); the 1e-12 floor prevents -Inf when virus -> 0
     # after eradication. cellsInfectedCum is the cumulative loss of
     # target cells from infection (T0 - target), the third metric in
@@ -227,7 +227,7 @@ Dodds_2021_covid19_viralkinetic <- function() {
     # No residual error is defined: this is a deterministic simulation
     # model with all parameters fixed to consensus values.
     # =========================================================================
-    Vlog10           <- log10(virus + 1e-12)
+    log10_viral_load           <- log10(virus + 1e-12)
     cellsInfectedCum <- T0 - target
   })
 }

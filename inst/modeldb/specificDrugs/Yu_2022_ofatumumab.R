@@ -111,7 +111,7 @@ Yu_2022_ofatumumab <- function() {
   ini({
     # ---- Structural PK (Yu 2022 Table 3 final-model estimates) ---------------
     lka      <- log(0.157);    label("Population first-order SC absorption rate ka (1/day)")                                  # Yu 2022 Table 3
-    logitfdepot <- log(0.685 / (1 - 0.685)); label("Logit population SC bioavailability F (typical F = 0.685)")               # Yu 2022 Table 3
+    logitfdepot <- log(0.685 / (1 - 0.685)); label("Logit population SC bioavailability F, typical F = 0.685 (unitless logit)")               # Yu 2022 Table 3
     lvc      <- log(2.62);     label("Population central volume of distribution Vc (L)")                                      # Yu 2022 Table 3
     lkep     <- log(1.31);     label("Population complex internalisation rate k_e(P) (1/day)")                                # Yu 2022 Table 3
     lcl      <- log(0.34);     label("Population free-drug clearance CL (L/day)")                                             # Yu 2022 Table 3

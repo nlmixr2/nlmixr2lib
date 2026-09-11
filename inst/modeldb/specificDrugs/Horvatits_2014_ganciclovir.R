@@ -87,10 +87,10 @@ Horvatits_2014_ganciclovir <- function() {
     # Structural PK -- Yang 2023 Table 3, Horvatits et al. (2014) row. No
     # covariates; these are the covariate-free typical values. Clearances in L/h,
     # volumes in L. IV-only model, so no absorption parameters.
-    lcl <- log(2.2) ; label("Total clearance during CVVHDF (CL, L/h)")            # Yang 2023 Table 3 (Horvatits 2014): CL = 2.2
-    lvc <- log(32.4); label("Central volume of distribution (Vc, L)")             # Yang 2023 Table 3 (Horvatits 2014): Vc = 32.4
-    lq  <- log(16.8); label("Inter-compartmental clearance (Q, L/h)")             # Yang 2023 Table 3 (Horvatits 2014): Q = 16.8
-    lvp <- log(33.5); label("Peripheral volume of distribution (Vp, L)")          # Yang 2023 Table 3 (Horvatits 2014): Vp = 33.5
+    lcl <- log(2.2) ; label("Total clearance during CVVHDF (L/h)")            # Yang 2023 Table 3 (Horvatits 2014): CL = 2.2
+    lvc <- log(32.4); label("Central volume of distribution (L)")             # Yang 2023 Table 3 (Horvatits 2014): Vc = 32.4
+    lq  <- log(16.8); label("Inter-compartmental clearance (L/h)")             # Yang 2023 Table 3 (Horvatits 2014): Q = 16.8
+    lvp <- log(33.5); label("Peripheral volume of distribution (L)")          # Yang 2023 Table 3 (Horvatits 2014): Vp = 33.5
 
     # Between-subject variability. Yang 2023 Methods: %CV = sqrt(omega^2) * 100%,
     # so variance = (BSV% / 100)^2. This is the only model in the repository that

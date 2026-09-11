@@ -326,7 +326,7 @@ Pan_2026_adalimumab <- function() {
     # the exponent 1 in the Code S1 TVV line.
 
     e_conc_ada_cl <- 0.368
-    label("Power exponent of ADA level on CL/F ((CONC_ADA_AUML/76.03)^e_conc_ada_cl)")
+    label("Power exponent of ADA level on CL/F, CONC_ADA_AUML/76.03 scaling (unitless)")
     # Table 2 "coeff ADA on CL" = 0.368 (RSE 6.6%). Code S1 THETA(4),
     # CLARIA = (ARIA/76.03)**THETA(4). Table S3 confirms 0.368 for the
     # final model, against 0.366 and 0.382 for the two two-compartment
@@ -341,7 +341,7 @@ Pan_2026_adalimumab <- function() {
     # SEXF directly with no sign change.
 
     e_waist_cl <- 0.888
-    label("Power exponent of waist circumference on CL/F ((WAIST/101)^e_waist_cl)")
+    label("Power exponent of waist circumference on CL/F, WAIST/101 scaling (unitless)")
     # Table 2 "coeff waist on CL" = 0.888 (RSE 18.2%). Code S1 THETA(7),
     # CLWAIST = (WAIST/101)**THETA(7).
 
@@ -381,7 +381,7 @@ Pan_2026_adalimumab <- function() {
     # Data S1 Code S2 $PK / $DES.
     # ================================================================
     lrbase <- log(14.3)
-    label("Baseline PASI score (PASI units)")
+    label("Baseline PASI score on the log scale (points)")
     # Table 3 "Baseline PASI" = 14.3 (RSE 4.6%). Code S2 BSL = THETA(1),
     # used both as the PASI initial condition A_0(3) and to pin
     # KIN = BSL*KOUT so the drug-free system sits exactly at baseline.
@@ -426,7 +426,7 @@ Pan_2026_adalimumab <- function() {
     # Code S2 $ERROR: Y = IPRED + EPS(1), additive only, on the PASI
     # score itself (IPRED = A(3), the PASI compartment).
     addSd_pasi <- 3.2
-    label("Additive residual error for PASI score (PASI units)")
+    label("Additive residual error SD for PASI score (points)")
     # Table 3 "Additive error (SD)" = 3.2 (RSE 7.8%), reported as an SD.
   })
 

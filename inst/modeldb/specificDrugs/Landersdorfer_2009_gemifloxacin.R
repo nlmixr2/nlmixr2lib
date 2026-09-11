@@ -77,9 +77,9 @@ Landersdorfer_2009_gemifloxacin <- function() {
     # not refit in this extraction so the values are treated as fixed.
     # Coefficient = (with / without) - 1; the model() block applies it as
     # param = param_baseline * (1 + e_prob_<param> * CONMED_PROBENECID).
-    e_prob_ka        <- fixed( 0.06913); label("Probenecid effect on absorption rate Ka (fold-change, unitless)")            # 0.897 / 0.839 - 1; Table 3
-    e_prob_ltlag     <- fixed(-0.42152); label("Probenecid effect on absorption lag Tlag (fold-change, unitless)")           # 0.129 / 0.223 - 1; Table 3
-    e_prob_cl_nonren <- fixed(-0.16667); label("Probenecid effect on non-renal clearance CL_NR (fold-change, unitless)")     # 21.0 / 25.2  - 1; Table 3
+    e_prob_ka        <- fixed( 0.06913); label("Probenecid effect on absorption rate Ka, expressed as a fold-change (unitless)")            # 0.897 / 0.839 - 1; Table 3
+    e_prob_ltlag     <- fixed(-0.42152); label("Probenecid effect on absorption lag Tlag, expressed as a fold-change (unitless)")           # 0.129 / 0.223 - 1; Table 3
+    e_prob_cl_nonren <- fixed(-0.16667); label("Probenecid effect on non-renal clearance CL_NR, expressed as a fold-change (unitless)")     # 21.0 / 25.2  - 1; Table 3
 
     # IIV -- between-subject log-normal variances computed from the
     # Landersdorfer 2009 Table 3 "%coefficient of variation" entries via the

@@ -252,15 +252,15 @@ Mauro_2025_nilotinib_lowfat <- function() {
 
   ini({
     # ---- Disposition -- Supplemental Table 3, 'Typical Values' ----
-    lcl <- log(34.3); label("Clearance (CL, L/h)") # Suppl. Table 3: CL = 34.3 L/h (RSE 3.18%, 95% CI 32.1-36.4)
-    lvc <- log(551); label("Central volume of distribution (V1, L)") # Suppl. Table 3: V1 = 551 L (RSE 2.71%, 95% CI 522-581)
-    lq <- log(5.56); label("Inter-compartmental clearance (Q, L/h)") # Suppl. Table 3: Q = 5.56 L/h (RSE 19.1%, 95% CI 3.48-7.63)
-    lvp <- log(217); label("Peripheral volume of distribution (V2, L)") # Suppl. Table 3: V2 = 217 L (RSE 6.74%, 95% CI 188-246)
+    lcl <- log(34.3); label("Clearance (L/h)") # Suppl. Table 3: CL = 34.3 L/h (RSE 3.18%, 95% CI 32.1-36.4)
+    lvc <- log(551); label("Central volume of distribution (L)") # Suppl. Table 3: V1 = 551 L (RSE 2.71%, 95% CI 522-581)
+    lq <- log(5.56); label("Inter-compartmental clearance (L/h)") # Suppl. Table 3: Q = 5.56 L/h (RSE 19.1%, 95% CI 3.48-7.63)
+    lvp <- log(217); label("Peripheral volume of distribution (L)") # Suppl. Table 3: V2 = 217 L (RSE 6.74%, 95% CI 188-246)
 
     # ---- Primary absorption: lagged zero-order input into central ----
-    ld1 <- log(2.41); label("Duration of the zero-order absorption input into central (D1, h)") # Suppl. Table 3: D1 = 2.41 h (RSE 1.61%, 95% CI 2.33-2.48)
-    ltlag <- log(0.0866); label("Absorption lag time of the zero-order input (ALAG1, h)") # Suppl. Table 3: ALAG1 = 0.0866 h (RSE 21.0%, 95% CI 0.0510-0.122)
-    lfdepot <- fixed(log(1)); label("Relative bioavailability of the capsule reference at 400 mg fasted (F1, fraction)") # Suppl. Info F1 equations: F1_capsule = 1 * (DOSE/400)^theta10, i.e. F1 is anchored at 1 for the capsule reference dose
+    ld1 <- log(2.41); label("Duration of the zero-order absorption input into central (h)") # Suppl. Table 3: D1 = 2.41 h (RSE 1.61%, 95% CI 2.33-2.48)
+    ltlag <- log(0.0866); label("Absorption lag time of the zero-order input (h)") # Suppl. Table 3: ALAG1 = 0.0866 h (RSE 21.0%, 95% CI 0.0510-0.122)
+    lfdepot <- fixed(log(1)); label("Relative bioavailability of the capsule reference at 400 mg fasted (fraction)") # Suppl. Info F1 equations: F1_capsule = 1 * (DOSE/400)^theta10, i.e. F1 is anchored at 1 for the capsule reference dose
 
     # ---- Secondary depot: delayed late re-absorption ----
     lka2 <- log(0.141); label("First-order absorption rate constant from the secondary depot (1/h)") # Suppl. Table 3: absorption from secondary depot = 0.141 1/h (RSE 6.16%, 95% CI 0.124-0.158)

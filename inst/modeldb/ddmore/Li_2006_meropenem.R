@@ -77,10 +77,10 @@ Li_2006_meropenem <- function() {
   ini({
     # Structural typical values; from DDMODEL00000213 .mdl parObj, which Model_Accommodations.txt
     # certifies as Li 2006's published estimates ("Original model was used as described in publication").
-    lcl <- log(14.6); label("Clearance for AGE = 35 yr, CLCR = 83 mL/min, typical individual (CL, L/h)")  # DDMODEL00000213 parObj POP_CL
-    lvc <- log(10.8); label("Central volume of distribution at WT = 70 kg, typical individual (V1, L)")  # DDMODEL00000213 parObj POP_V1
-    lq  <- log(18.6); label("Inter-compartmental clearance, typical individual (Q, L/h)")  # DDMODEL00000213 parObj POP_Q
-    lvp <- log(12.6); label("Peripheral volume of distribution, typical individual (V2, L)")  # DDMODEL00000213 parObj POP_V2
+    lcl <- log(14.6); label("Clearance for AGE = 35 yr, CLCR = 83 mL/min, typical individual (L/h)")  # DDMODEL00000213 parObj POP_CL
+    lvc <- log(10.8); label("Central volume of distribution at WT = 70 kg, typical individual (L)")  # DDMODEL00000213 parObj POP_V1
+    lq  <- log(18.6); label("Inter-compartmental clearance, typical individual (L/h)")  # DDMODEL00000213 parObj POP_Q
+    lvp <- log(12.6); label("Peripheral volume of distribution, typical individual (L)")  # DDMODEL00000213 parObj POP_V2
 
     # Covariate effects (power form via the .mdl INDIVIDUAL_VARIABLES log-linear block)
     e_age_cl  <- -0.34; label("AGE effect on CL: exponent of (AGE / 35) (unitless)")  # DDMODEL00000213 parObj COV_CL_AGE

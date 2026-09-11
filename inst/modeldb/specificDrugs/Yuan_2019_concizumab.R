@@ -89,8 +89,8 @@ Yuan_2019_concizumab <- function() {
     clup             <- fixed(1.48);    label("Endothelial nonspecific pinocytosis clearance into endosome 2 (L/day)")          # Yuan 2019 Table 2 (Yuan 2018)
     cle              <- fixed(5.75);    label("Lysosomal catabolism clearance from endosomes (L/day)")                          # Yuan 2019 Table 2 (Yuan 2018)
     krec             <- fixed(124.7);   label("FcRn-bound antibody recycling rate from endosomes to plasma (1/day)")            # Yuan 2019 Table 2 (Hopkins and Trowbridge 1983)
-    ve1              <- fixed(0.0035);  label("Endosome volume for mTFPI-mediated endocytosis (Ve1, L)")                        # Yuan 2019 Table 2 (Li 2014): 0.005% of 70 kg body weight = 0.0035 L
-    ve2              <- fixed(0.0035);  label("Endosome volume for nonspecific pinocytosis (Ve2, L)")                           # Yuan 2019 Table 2 (Li 2014): 0.005% of 70 kg body weight = 0.0035 L
+    ve1              <- fixed(0.0035);  label("Endosome volume for mTFPI-mediated endocytosis (L)")                        # Yuan 2019 Table 2 (Li 2014): 0.005% of 70 kg body weight = 0.0035 L
+    ve2              <- fixed(0.0035);  label("Endosome volume for nonspecific pinocytosis (L)")                           # Yuan 2019 Table 2 (Li 2014): 0.005% of 70 kg body weight = 0.0035 L
     fcrn_b           <- fixed(49800);   label("FcRn baseline concentration in endosomes (nM)")                                  # Yuan 2019 Table 2 (Shah and Betts 2012)
     k1on_per_nm_day  <- fixed(20.8224); label("Antibody-FcRn association rate constant in endosomes (1/(nM*day))")              # Yuan 2019 Table 2: 2.41e5 1/(M*s) (adalimumab-human FcRn, Suzuki 2010) * 86400 s/day / 1e9 nM/M = 20.8224 1/(nM*day)
     k1off_per_day    <- fixed(13996.8); label("Antibody-FcRn complex dissociation rate constant in endosomes (1/day)")          # Yuan 2019 Table 2: 0.162 1/s (adalimumab-human FcRn, Suzuki 2010) * 86400 s/day = 13996.8 1/day

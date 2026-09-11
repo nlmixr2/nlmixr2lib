@@ -80,11 +80,11 @@ Hu_2026_clesrovimab <- function() {
   )
 
   ini({
-    lka  <- log(0.286);  label("Absorption rate (Ka, 1/day)")
-    lcl  <- log(0.0197); label("Apparent clearance at 5 kg reference weight, full maturation, White/Other race (CL/F, L/day)")
-    lvc  <- log(0.514);  label("Apparent central volume of distribution at 5 kg reference weight (Vc/F, L)")
-    lvp  <- log(0.316);  label("Apparent peripheral volume of distribution at 5 kg reference weight (Vp/F, L)")
-    lq   <- log(0.0406); label("Apparent intercompartmental clearance at 5 kg reference weight (Q/F, L/day)")
+    lka  <- log(0.286);  label("Absorption rate (1/day)")
+    lcl  <- log(0.0197); label("Apparent clearance at 5 kg reference weight, full maturation, White/Other race (L/day)")
+    lvc  <- log(0.514);  label("Apparent central volume of distribution at 5 kg reference weight (L)")
+    lvp  <- log(0.316);  label("Apparent peripheral volume of distribution at 5 kg reference weight (L)")
+    lq   <- log(0.0406); label("Apparent intercompartmental clearance at 5 kg reference weight (L/day)")
 
     e_wt_cl_q  <- 0.524; label("Allometric (WT) exponent shared across CL/F and Q/F (unitless)")
     e_wt_vc_vp <- 0.662; label("Allometric (WT) exponent shared across Vc/F and Vp/F (unitless)")

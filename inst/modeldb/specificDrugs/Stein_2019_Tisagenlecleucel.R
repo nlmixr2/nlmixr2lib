@@ -37,12 +37,12 @@ Stein_2019_Tisagenlecleucel <- function() {
     # positive. Comedication effects Ftoci = 1.2 and Fster = 1.0 (Table 1)
     # are not implemented in this model file: see vignette Assumptions and
     # deviations for the rationale.
-    lfoldx <- log(3900);   label("Fold expansion of tisagenlecleucel from baseline (foldx, unitless)")    # Stein 2019 Table 1
-    ltmax  <- log(9.3);    label("Time to maximal expansion (Tmax, days)")                                # Stein 2019 Table 1
-    lcmax  <- log(24000);  label("Maximum transgene-copy level after expansion (Cmax, copies/ug)")        # Stein 2019 Table 1
-    lalpha <- log(0.16);   label("Rapid contraction rate constant (alpha, 1/day)")                        # Stein 2019 Table 1
-    lfb    <- log(0.0079); label("Fraction of transgene copies surviving from peak into slow decline (FB, unitless)")  # Stein 2019 Table 1
-    lbeta  <- log(0.0032); label("Slow terminal decline rate constant (beta, 1/day)")                     # Stein 2019 Table 1
+    lfoldx <- log(3900);   label("Fold expansion of tisagenlecleucel from baseline (unitless)")    # Stein 2019 Table 1
+    ltmax  <- log(9.3);    label("Time to maximal expansion (days)")                                # Stein 2019 Table 1
+    lcmax  <- log(24000);  label("Maximum transgene-copy level after expansion (copies/ug)")        # Stein 2019 Table 1
+    lalpha <- log(0.16);   label("Rapid contraction rate constant (1/day)")                        # Stein 2019 Table 1
+    lfb    <- log(0.0079); label("Fraction of transgene copies surviving from peak into slow decline (unitless)")  # Stein 2019 Table 1
+    lbeta  <- log(0.0032); label("Slow terminal decline rate constant (1/day)")                     # Stein 2019 Table 1
 
     # Inter-individual variability. Stein 2019 Table 1 reports the random-effect
     # variances on the log-transformed parameters (Monolix omega^2); they are

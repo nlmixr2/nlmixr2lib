@@ -112,8 +112,8 @@ Liang_2024_rituximab_pla2r <- function() {
     # Initial (pre-treatment) anti-PLA2R titer, the "A" of Liang 2024 Eq. 5. The
     # paper does not report a fitted population value, so the cohort baseline
     # titer of Table 1 is used; see the note above for the moment matching.
-    le0   <- log(129.64);  label("Initial anti-PLA2R titer (A, U/mL)")                        # Liang 2024 Table 1: baseline anti-PLA2R titer 260.3 +/- 453.2 U/mL; log-normal median = 260.3 / sqrt(1 + (453.2/260.3)^2) = 129.64
-    lkel  <- log(0.029336); label("Anti-PLA2R elimination rate constant (ke,PLA2R, 1/day)")   # Liang 2024 Section 3.6: mean ke,PLA2R = 0.033 +/- 0.017 /day; log-normal median = 0.033 / sqrt(1 + (0.017/0.033)^2) = 0.029336
+    le0   <- log(129.64);  label("Initial anti-PLA2R titer (U/mL)")                        # Liang 2024 Table 1: baseline anti-PLA2R titer 260.3 +/- 453.2 U/mL; log-normal median = 260.3 / sqrt(1 + (453.2/260.3)^2) = 129.64
+    lkel  <- log(0.029336); label("Anti-PLA2R elimination rate constant (1/day)")   # Liang 2024 Section 3.6: mean ke,PLA2R = 0.033 +/- 0.017 /day; log-normal median = 0.033 / sqrt(1 + (0.017/0.033)^2) = 0.029336
 
     # Between-subject variability, log-normal, from the reported SDs.
     etale0  ~ 1.394093                                                                       # Liang 2024 Table 1: omega^2 = log(1 + (453.2/260.3)^2) = 1.394093

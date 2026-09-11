@@ -52,17 +52,17 @@ Hussein_2005_levocetirizine <- function() {
     # at WT = 0 and the per-kg slope e_wt_cl; V/F is a multiplicative form
     # where exp(lvc) is V/F per kg of body weight and the per-subject volume
     # is exp(lvc) * WT.
-    lcl <- log(0.244); label("Intercept of CL/F at WT = 0 (theta_CL, L/h)")            # Hussein 2005 Table 3 final-model q_CL
+    lcl <- log(0.244); label("Intercept of CL/F at WT = 0 (L/h)")            # Hussein 2005 Table 3 final-model q_CL
     lvc <- log(0.639); label("V/F per kg of body weight (theta_V/F per WT, L/kg)")     # Hussein 2005 Table 3 final-model q_V (no intercept)
 
     # Per-kg slope for the linear CL/F covariate effect (units: L/h/kg).
-    e_wt_cl <- 0.0442; label("Slope of CL/F on body weight (theta_CL,WT, L/h/kg)")     # Hussein 2005 Table 3 final-model q_CL,WT
+    e_wt_cl <- 0.0442; label("Slope of CL/F on body weight (L/h/kg)")     # Hussein 2005 Table 3 final-model q_CL,WT
 
     # ka was modelled as ka = theta_ka + CL/V to guard against flip-flop;
     # theta_ka is the additive offset reported in Table 3 with %CV(IIV) =
     # 105.4. CL/V contributes on average less than 5% to ka (Hussein 2005
     # Table 3 footnote a).
-    lka <- log(1.140); label("Additive offset on ka in ka = theta_ka + CL/V (theta_ka, 1/h)") # Hussein 2005 Table 3 final-model q_ka
+    lka <- log(1.140); label("Additive offset on ka in ka = theta_ka + CL/V (1/h)") # Hussein 2005 Table 3 final-model q_ka
 
     # Bioavailability fixed at 1.0 for the compliant population. Hussein 2005
     # additionally estimated F_noncomp = 0.281 (Table 3, q_F1) for 12% of

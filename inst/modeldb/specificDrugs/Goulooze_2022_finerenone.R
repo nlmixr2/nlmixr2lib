@@ -14,7 +14,7 @@ Goulooze_2022_finerenone <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     depot  = list(analyte = "finerenone", units = NA_character_, specimen = "administration site", verified = FALSE),
-    serumK = list(analyte = "potassium", units = NA_character_, specimen = "serum", verified = FALSE)
+    serum_k = list(analyte = "potassium", units = NA_character_, specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list(
@@ -223,9 +223,9 @@ Goulooze_2022_finerenone <- function() {
     # send an explicit amt = 0 dose event into the depot to clear the metric.
     # -----------------------------------------------------------------------
     d/dt(depot)  <- 0
-    d/dt(serumK) <- kin - kout * (1 - eff) * (1 - teff) * serumK
-    serumK(0)    <- baseK
+    d/dt(serum_k) <- kin - kout * (1 - eff) * (1 - teff) * serum_k
+    serum_k(0)    <- baseK
 
-    serumK ~ prop(propSd)
+    serum_k ~ prop(propSd)
   })
 }

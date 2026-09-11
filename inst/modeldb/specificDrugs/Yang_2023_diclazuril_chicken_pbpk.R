@@ -54,12 +54,12 @@ Yang_2023_diclazuril_chicken_pbpk <- function() {
     # optimised against the published concentration-time data. All are
     # FIXED at the published point estimates.
     # ---------------------------------------------------------------------
-    lk_mus <- fixed(log(0.1299)); label("Muscle:plasma partition coefficient (Pmu, unitless)")       # Yang 2023 Table 3 / Section 3.1 (area method)
-    lk_skf <- fixed(log(0.0955)); label("Skin + fat:plasma partition coefficient (Psf, unitless)")   # Yang 2023 Table 3 / Section 3.1 (area method)
-    lk_kid <- fixed(log(0.6813)); label("Kidney:plasma partition coefficient (Pki, unitless)")       # Yang 2023 Table 3 / Section 3.1 (area method)
-    lk_liv <- fixed(log(0.9613)); label("Liver:plasma partition coefficient (Pli, unitless)")        # Yang 2023 Table 3 + footnote 5 / Section 3.1 (optimised)
-    lk_lun <- fixed(log(0.5603)); label("Lung:plasma partition coefficient (Plu, unitless)")         # Yang 2023 Table 3 + footnote 5 / Section 3.1 (optimised)
-    lk_res <- fixed(log(1.2965)); label("Rest-of-body:plasma partition coefficient (Pre, unitless)") # Yang 2023 Table 3 + footnote 5 / Section 3.1 (optimised)
+    lk_mus <- fixed(log(0.1299)); label("Muscle:plasma partition coefficient (unitless)")       # Yang 2023 Table 3 / Section 3.1 (area method)
+    lk_skf <- fixed(log(0.0955)); label("Skin + fat:plasma partition coefficient (unitless)")   # Yang 2023 Table 3 / Section 3.1 (area method)
+    lk_kid <- fixed(log(0.6813)); label("Kidney:plasma partition coefficient (unitless)")       # Yang 2023 Table 3 / Section 3.1 (area method)
+    lk_liv <- fixed(log(0.9613)); label("Liver:plasma partition coefficient (unitless)")        # Yang 2023 Table 3 + footnote 5 / Section 3.1 (optimised)
+    lk_lun <- fixed(log(0.5603)); label("Lung:plasma partition coefficient (unitless)")         # Yang 2023 Table 3 + footnote 5 / Section 3.1 (optimised)
+    lk_res <- fixed(log(1.2965)); label("Rest-of-body:plasma partition coefficient (unitless)") # Yang 2023 Table 3 + footnote 5 / Section 3.1 (optimised)
 
     # ---------------------------------------------------------------------
     # Absorption and elimination, all optimised in acslXtreme with the
@@ -68,9 +68,9 @@ Yang_2023_diclazuril_chicken_pbpk <- function() {
     # no standard errors on these, and the Monte Carlo SDs in Table 4 are
     # uncertainty for sensitivity analysis, not estimated random effects.
     # ---------------------------------------------------------------------
-    lka       <- fixed(log(0.1234));   label("First-order absorption rate constant from intestinal contents (Ka, 1/h)")        # Yang 2023 Section 3.1 / Table 4 / supplement `constant ka=0.1234`
-    lkgut     <- fixed(log(0.3838));   label("First-order fecal excretion rate constant for unabsorbed drug (Kgut, 1/h)")      # Yang 2023 Section 3.1 / Table 4 / supplement `CONSTANT kgut=0.3838`
-    lclhe     <- fixed(log(0.00344));  label("Hepatic clearance per unit body weight (Clhe, L/h/kg)")                          # Yang 2023 Section 3.1 / Table 4 / supplement `constant clhe=0.00344`
+    lka       <- fixed(log(0.1234));   label("First-order absorption rate constant from intestinal contents (1/h)")        # Yang 2023 Section 3.1 / Table 4 / supplement `constant ka=0.1234`
+    lkgut     <- fixed(log(0.3838));   label("First-order fecal excretion rate constant for unabsorbed drug (1/h)")      # Yang 2023 Section 3.1 / Table 4 / supplement `CONSTANT kgut=0.3838`
+    lclhe     <- fixed(log(0.00344));  label("Hepatic clearance per unit body weight (L/h/kg)")                          # Yang 2023 Section 3.1 / Table 4 / supplement `constant clhe=0.00344`
 
     # ---------------------------------------------------------------------
     # Residual error. Yang 2023 is a deterministic PBPK model fitted to

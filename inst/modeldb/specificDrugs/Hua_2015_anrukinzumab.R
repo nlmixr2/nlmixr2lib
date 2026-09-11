@@ -65,19 +65,19 @@ Hua_2015_anrukinzumab <- function() {
   ini({
     # Structural PK parameters -- reference values for a 75-kg non-UC subject
     # with baseline albumin 4.3 g/dL (Hua 2015 Table 3, Final model column).
-    lka     <- log(0.0119); label("First-order SC absorption rate constant (Ka, 1/h)")                         # Hua 2015 Table 3: Ka,pop = 0.0119 /h
-    lcl     <- log(0.00732); label("Systemic clearance for 75-kg non-UC subject at ALB 4.3 g/dL (CL, L/h)")    # Hua 2015 Table 3: CL,pop = 0.00732 L/h
-    lvc     <- log(3.81);   label("Central volume of distribution for 75-kg subject (Vc, L)")                  # Hua 2015 Table 3: Vc,pop = 3.81 L
-    lvp     <- log(2.17);   label("Peripheral volume of distribution for 75-kg subject (Vp, L)")               # Hua 2015 Table 3: Vp,pop = 2.17 L
-    lq      <- log(0.0224); label("Inter-compartmental clearance (Q, L/h)")                                    # Hua 2015 Table 3: Q,pop = 0.0224 L/h
-    lfdepot <- log(0.973);  label("SC bioavailability in non-moderate-to-severe-asthma subjects (F, log-scale)")  # Hua 2015 Table 3: F,pop = 0.973
+    lka     <- log(0.0119); label("First-order SC absorption rate constant (1/h)")                         # Hua 2015 Table 3: Ka,pop = 0.0119 /h
+    lcl     <- log(0.00732); label("Systemic clearance for 75-kg non-UC subject at ALB 4.3 g/dL (L/h)")    # Hua 2015 Table 3: CL,pop = 0.00732 L/h
+    lvc     <- log(3.81);   label("Central volume of distribution for 75-kg subject (L)")                  # Hua 2015 Table 3: Vc,pop = 3.81 L
+    lvp     <- log(2.17);   label("Peripheral volume of distribution for 75-kg subject (L)")               # Hua 2015 Table 3: Vp,pop = 2.17 L
+    lq      <- log(0.0224); label("Inter-compartmental clearance (L/h)")                                    # Hua 2015 Table 3: Q,pop = 0.0224 L/h
+    lfdepot <- log(0.973);  label("SC bioavailability F in non-moderate-to-severe-asthma subjects, log scale (fraction)")  # Hua 2015 Table 3: F,pop = 0.973
 
     # Allometric exponents on body weight (reference 75 kg; Hua 2015 Table 3).
-    e_wt_cl    <- fixed(0.75); label("Allometric exponent of WT on CL")                        # Hua 2015 Table 3 / Methods: fixed to 0.75
-    e_wt_vc_vp <- 0.688;       label("Allometric exponent of WT on Vc and Vp (estimated, shared)")             # Hua 2015 Table 3: theta_WT (Vc,Vp) = 0.688
+    e_wt_cl    <- fixed(0.75); label("Allometric exponent of WT on CL (unitless)")                        # Hua 2015 Table 3 / Methods: fixed to 0.75
+    e_wt_vc_vp <- 0.688;       label("Allometric exponent of WT on Vc and Vp, estimated and shared (unitless)")             # Hua 2015 Table 3: theta_WT (Vc,Vp) = 0.688
 
     # Covariate effects on CL and F (Hua 2015 Table 3 final model).
-    e_alb_cl <- -1.07;  label("Power exponent of baseline albumin on CL ((ALB/4.3)^e_alb_cl)")                 # Hua 2015 Table 3: theta_albumin = -1.07
+    e_alb_cl <- -1.07;  label("Power exponent of baseline albumin on CL, ALB/4.3 scaling in g/dL (unitless)")                 # Hua 2015 Table 3: theta_albumin = -1.07
     e_uc_cl  <-  0.728; label("Fractional increase in CL for UC patients vs. non-UC (unitless)")               # Hua 2015 Table 3: f0_UC = 0.728
     e_sa_f   <- -0.309; label("Fractional change in SC bioavailability for moderate-to-severe asthma (unitless)")  # Hua 2015 Table 3: theta_sA = -0.309
 

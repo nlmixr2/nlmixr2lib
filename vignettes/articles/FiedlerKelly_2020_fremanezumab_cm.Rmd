@@ -34,7 +34,7 @@ This vignette covers the chronic-migraine (CM) exposure-response model from Fied
 
 The CM model relates monthly moderate-to-severe (M/S) headache days to fremanezumab Cav and time-on-treatment via a Hill-in-time placebo and a power-of-Cav drug effect, both centered on individual baseline:
 
-$$\text{msHeadacheDays}(t, C_{av}) = \text{BL}_i + \text{Max}_{P,i}\,\frac{t^{H_i}}{T_{50}^{H_i} + t^{H_i}} - \text{BL}_i \cdot \theta_{D,i}\,\left(\frac{C_{av}}{\text{Cav}_{\text{med}}}\right)^{\theta_{E,i}}$$
+$$\text{ms_headache_days}(t, C_{av}) = \text{BL}_i + \text{Max}_{P,i}\,\frac{t^{H_i}}{T_{50}^{H_i} + t^{H_i}} - \text{BL}_i \cdot \theta_{D,i}\,\left(\frac{C_{av}}{\text{Cav}_{\text{med}}}\right)^{\theta_{E,i}}$$
 
 with the individual baseline a piecewise-linear function of baseline acute-medication days,
 
@@ -56,7 +56,7 @@ Per-parameter origin is recorded as an in-file comment next to each `ini()` entr
 
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|
-| Composite endpoint equation `msHeadacheDays = BL + maxPLC*t^H/(T50^H+t^H) - BL * drugInt * (Cav/CavMedian)^drugExp` | n/a | Figure 2B; Methods — E-R Analysis Methodology |
+| Composite endpoint equation `ms_headache_days = BL + maxPLC*t^H/(T50^H+t^H) - BL * drugInt * (Cav/CavMedian)^drugExp` | n/a | Figure 2B; Methods — E-R Analysis Methodology |
 | Piecewise-linear baseline `BL = bl_cm + slope_AM * max(0, ACUTE_MED_DAYS - 5)` | n/a | Results — Monthly Headache Days of at Least Moderate Severity in Patients With CM |
 | `bl_cm` (typical baseline at AM ≤ 5 d/mo) | 10.2 d/mo | Table S4 |
 | `slope_AM` (slope on AM days > 5) | 0.460 d/d | Table S4 |
@@ -84,10 +84,10 @@ ev_check <- data.frame(
   ACUTE_MED_DAYS = 0
 )
 sim_check <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = ev_check, returnType = "data.frame")
-sim_check[, c("time", "msHeadacheDays")]
+sim_check[, c("time", "ms_headache_days")]
 ```
 
-The month-3 placebo M/S-headache-day count is `r round(sim_check$msHeadacheDays[sim_check$time == 3], 2)`, a reduction of `r round(10.2 - sim_check$msHeadacheDays[sim_check$time == 3], 2)` days from the typical baseline (paper narrative: "approximately 3.5 days with placebo"). The asymptotic placebo reduction (Max_PLC = -6.24 d) matches the paper's "typical maximal reduction from baseline of approximately 6 days with placebo treatment".
+The month-3 placebo M/S-headache-day count is `r round(sim_check$ms_headache_days[sim_check$time == 3], 2)`, a reduction of `r round(10.2 - sim_check$ms_headache_days[sim_check$time == 3], 2)` days from the typical baseline (paper narrative: "approximately 3.5 days with placebo"). The asymptotic placebo reduction (Max_PLC = -6.24 d) matches the paper's "typical maximal reduction from baseline of approximately 6 days with placebo treatment".
 
 # Virtual cohort
 
@@ -158,8 +158,8 @@ Figures 3c-d and 4b-5b of Fiedler-Kelly 2020 plot the simulated mean monthly M/S
 sim_iiv |>
   group_by(regimen, time) |>
   summarise(
-    mean_md = mean(msHeadacheDays),
-    sd_md   = sd(msHeadacheDays),
+    mean_md = mean(ms_headache_days),
+    sd_md   = sd(ms_headache_days),
     .groups = "drop"
   ) |>
   ggplot(aes(time, mean_md, colour = regimen, fill = regimen)) +
@@ -183,7 +183,7 @@ baseline_per_id <- events |>
 
 responders <- sim_iiv |>
   left_join(baseline_per_id, by = c("id", "regimen")) |>
-  mutate(reduction_pct = 100 * (BL - msHeadacheDays) / BL,
+  mutate(reduction_pct = 100 * (BL - ms_headache_days) / BL,
          responder     = reduction_pct >= 50)
 
 responder_summary <- responders |>
@@ -211,8 +211,8 @@ narrative_compare <- sim_typ |>
   filter(time == 3) |>
   group_by(regimen) |>
   summarise(
-    typical_md_month3 = round(mean(msHeadacheDays), 2),
-    typical_reduction = round(10.2 - mean(msHeadacheDays), 2),
+    typical_md_month3 = round(mean(ms_headache_days), 2),
+    typical_reduction = round(10.2 - mean(ms_headache_days), 2),
     .groups = "drop"
   )
 
@@ -236,6 +236,6 @@ PKNCA is the wrong validation target here for the same reasons as in the EM vign
 - **Cav as a per-period covariate, not a model output.** The CAV column must be supplied per row by the user, derived externally from the Fiedler-Kelly 2019 popPK model (`FiedlerKelly_2019_fremanezumab`).
 - **Cav values in the virtual cohort.** Hand-tuned from the Results section's regimen medians; for exact reproduction of the paper's full simulation, drive the model with EB Cav from the Fiedler-Kelly 2019 popPK simulator.
 - **`ACUTE_MED_DAYS` distribution.** The virtual cohort draws from N(5.73, 7.01) truncated at 0 (Supplementary Table S2 mean and SD across the pooled CM cohort). The actual data is right-skewed with median 1.75 d/mo.
-- **Observation variable is `msHeadacheDays`, not `Cc`.** Convention waiver as in the EM vignette.
+- **Observation variable is `ms_headache_days`, not `Cc`.** Convention waiver as in the EM vignette.
 - **`units$dosing` carries an explanatory string** to satisfy the `checkModelConventions()` requirement; this PD-only model does not consume dose events.
 - **MU-referencing warning.** As in the EM vignette: `etalogitDrugInt`'s link goes through inverse-logit. Affects refitting, not simulation.

@@ -150,12 +150,12 @@ Wallender_2021_piperaquine <- function() {
     # gives 867 * 97 / (97 + 96) = 436 L/d, matching the superseded
     # median-centred estimate of 435 L/d.
     # ------------------------------------------------------------------
-    lcl  <- log(867)   ; label("Apparent oral clearance at the reference weight, extrapolated to full enzyme maturation (CL/F, L/day)")     # Table 2 Clearance 867 L/d (10.2% RSE, 95% CI 727-1064)
-    lvc  <- log(592)   ; label("Apparent central volume of distribution at the reference weight (Vc/F, L)")                                 # Table 2 Volume of central compartment 592 L (10.1% RSE, 95% CI 484-717)
-    lq   <- log(511)   ; label("Apparent intercompartmental clearance to the first peripheral compartment at the reference weight (Q1/F, L/day)")  # Table 2 Intercompartmental clearance 1 = 511 L/d (12.4% RSE, 95% CI 401-645)
-    lvp  <- log(7240)  ; label("Apparent first peripheral volume of distribution at the reference weight (Vp1/F, L)")                       # Table 2 Volume of peripheral compartment 1 = 7240 L (8.2% RSE, 95% CI 6210-8440)
-    lq2  <- log(671)   ; label("Apparent intercompartmental clearance to the second peripheral compartment at the reference weight (Q2/F, L/day)") # Table 2 Intercompartmental clearance 2 = 671 L/d (16.8% RSE, 95% CI 461-934)
-    lvp2 <- log(1060)  ; label("Apparent second peripheral volume of distribution at the reference weight (Vp2/F, L)")                      # Table 2 Volume of peripheral compartment 2 = 1060 L (18.2% RSE, 95% CI 731-1510)
+    lcl  <- log(867)   ; label("Apparent oral clearance at the reference weight, extrapolated to full enzyme maturation (L/day)")     # Table 2 Clearance 867 L/d (10.2% RSE, 95% CI 727-1064)
+    lvc  <- log(592)   ; label("Apparent central volume of distribution at the reference weight (L)")                                 # Table 2 Volume of central compartment 592 L (10.1% RSE, 95% CI 484-717)
+    lq   <- log(511)   ; label("Apparent intercompartmental clearance to the first peripheral compartment at the reference weight (L/day)")  # Table 2 Intercompartmental clearance 1 = 511 L/d (12.4% RSE, 95% CI 401-645)
+    lvp  <- log(7240)  ; label("Apparent first peripheral volume of distribution at the reference weight (L)")                       # Table 2 Volume of peripheral compartment 1 = 7240 L (8.2% RSE, 95% CI 6210-8440)
+    lq2  <- log(671)   ; label("Apparent intercompartmental clearance to the second peripheral compartment at the reference weight (L/day)") # Table 2 Intercompartmental clearance 2 = 671 L/d (16.8% RSE, 95% CI 461-934)
+    lvp2 <- log(1060)  ; label("Apparent second peripheral volume of distribution at the reference weight (L)")                      # Table 2 Volume of peripheral compartment 2 = 1060 L (18.2% RSE, 95% CI 731-1510)
 
     # Mean transit time of the whole absorption chain. Two transit
     # compartments were PRE-SPECIFIED (Table 2 footnote b; the Peer
@@ -168,7 +168,7 @@ Wallender_2021_piperaquine <- function() {
     # never writes the absorption ODEs; this reading was ratified by the
     # operator (sidecar oare_PMC8602248 request-001 q4, option A) and the
     # sensitivity of the alternative reading is recorded in the vignette.
-    lmtt <- log(0.045) ; label("Mean transit time of the absorption chain (MTT, day)")                                                      # Table 2 Absorption transit time 0.045 d (9.1% RSE, 95% CI 0.034-0.048)
+    lmtt <- log(0.045) ; label("Mean transit time of the absorption chain (day)")                                                      # Table 2 Absorption transit time 0.045 d (9.1% RSE, 95% CI 0.034-0.048)
 
     # Allometric exponents applied A PRIORI, not estimated: "Clearance
     # and volume parameters were allometrically scaled for bodyweight a
@@ -195,7 +195,7 @@ Wallender_2021_piperaquine <- function() {
     # tabulated as "Relative bioavailability (F) = 1" under the
     # pre-specified footnote, so it is an anchor rather than an estimate.
     # ------------------------------------------------------------------
-    lfdepot <- fixed(log(1)) ; label("Relative oral bioavailability at the reference covariates and on a directly observed dosing occasion (F, unitless)")  # Table 2 Relative bioavailability (F) = 1, pre-specified anchor; Eq. 2 theta_F
+    lfdepot <- fixed(log(1)) ; label("Relative oral bioavailability at the reference covariates and on a directly observed dosing occasion (unitless)")  # Table 2 Relative bioavailability (F) = 1, pre-specified anchor; Eq. 2 theta_F
 
     e_waz_fdepot       <- 0.113 ; label("Fractional change in relative oral bioavailability per unit of weight-for-age z-score above the cohort median of -0.5 (unitless)")  # Table 2 theta Weight for age z-score = 0.113 (18.9% RSE, 95% CI 0.061-0.137)
     e_selfadmin_fdepot <- 0.397 ; label("Multiplicative effect of a self-administered rather than directly observed dosing occasion on relative oral bioavailability (unitless)")  # Table 2 theta Self-administered DP = 0.397 (7.8% RSE, 95% CI 0.344-0.465); 1 - 0.397 = 60% lower

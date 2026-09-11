@@ -283,12 +283,19 @@ knitr::kable(tbl, caption = "Venisse 2008 Table 2 typical values vs. packaged-fi
 
 # Assumptions and deviations
 
-- **Single-output observation on `Cc`**. The nlmixr2lib convention names
-  the model's primary observation `Cc`. For both Venisse models `Cc` is
-  the natural log of the Candida CFU/mL count (with a +1 floor to avoid
-  log(0) under saturating caspofungin), not a drug concentration. The
-  drug concentration is the derived quantity `cc <- central / vc` and is
-  not observed.
+- **The single observation is a fungal burden, not a concentration.** For
+  both Venisse models the observed output is the natural log of the Candida
+  CFU/mL count (with a +1 floor to avoid log(0) under saturating
+  caspofungin), and it is named `log_cfu`, the registered canonical for a
+  log CFU PD output. The drug concentration is `Cc <- central / vc`, the
+  registered canonical for a central-compartment concentration, and is not
+  observed.
+
+  These two names were previously swapped: `Cc` held the fungal burden and
+  the drug concentration was the near-homographic `cc`. That mis-stated the
+  convention -- `Cc` denotes the central drug concentration whether or not
+  it is the observed output -- and left the two quantities distinguishable
+  only by letter case.
 - **NONMEM exponential residual mapped to additive on log scale**. The
   paper reports the residual as "exponential" with the variance summarised
   as a percent CV on the linear CFU/mL scale (Table 2: 197% for

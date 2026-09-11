@@ -110,11 +110,11 @@ AlSallami_2016_unfractionatedHeparin <- function() {
     # (exponent 1) on FFM and WT, respectively, with reference FFM = 15 kg
     # and reference WT = 20 kg (Al-Sallami 2016 Table 2 covariate model).
     lcl  <- log(0.603)
-    label("Clearance at reference FFM = 15 kg (CL, L/h)")                              # Al-Sallami 2016 Table 2 final model: theta_CL = 0.603 (L/h per 15 kg FFM)
+    label("Clearance at reference FFM = 15 kg (L/h)")                              # Al-Sallami 2016 Table 2 final model: theta_CL = 0.603 (L/h per 15 kg FFM)
     lvc  <- log(0.751)
-    label("Central volume of distribution at reference WT = 20 kg (V, L)")             # Al-Sallami 2016 Table 2 final model: theta_V = 0.751 (L per 20 kg WT)
+    label("Central volume of distribution at reference WT = 20 kg (L)")             # Al-Sallami 2016 Table 2 final model: theta_V = 0.751 (L per 20 kg WT)
     tdur <- fixed(0.1)
-    label("IV bolus zero-order input duration (D1, h)")                          # Al-Sallami 2016 Table 2 footnote: theta_D1 = 0.1 h (fixed)
+    label("IV bolus zero-order input duration (h)")                          # Al-Sallami 2016 Table 2 footnote: theta_D1 = 0.1 h (fixed)
 
     # --- PK inter-individual variability (Al-Sallami 2016 Table 2) ---
     # Exponential ETA model. omega^2 = log(CV^2 + 1).
@@ -139,7 +139,7 @@ AlSallami_2016_unfractionatedHeparin <- function() {
     # PK parameters fixed at the Table 2 final-model estimates above. The
     # parameters marked with * in Table 3 are fixed from the PK model.
     lrbase <- log(35.6)
-    label("Baseline aPTT (E0, s)")                                                     # Al-Sallami 2016 Table 3 final model: theta_E0 = 35.6 s
+    label("Baseline aPTT (s)")                                                     # Al-Sallami 2016 Table 3 final model: theta_E0 = 35.6 s
     lslope <- log(0.67)
     label("Linear slope of aPTT vs heparin concentration (slope, s per IU/L)")         # Al-Sallami 2016 Table 3 final model: theta_SLP = 0.67
 

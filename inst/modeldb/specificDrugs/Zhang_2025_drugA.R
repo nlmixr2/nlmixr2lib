@@ -193,7 +193,7 @@ Zhang_2025_drugA <- function() {
     # Table S1 Keo = 0.0469 /day; Data S4 PD $THETA(7) 0.0469 (K50).
 
     e_region_china_ic50 <- fixed(2.6)
-    label("Ratio of IC50 in Region X patients to IC50 in typical patients (R_regionX, unitless)")
+    label("Ratio of IC50 in Region X patients to IC50 in typical patients (unitless)")
     # Data S4 PD $THETA(8) COV_CN, entered as COV_CN**(POP-1) and set to
     # the scenario value via "COV_CN_VALUE FIX"; the MCMP generating
     # script sets COV_CN_VALUE_PD <- 2.6. Zhang 2025 Table 1 and the

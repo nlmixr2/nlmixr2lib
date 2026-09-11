@@ -47,9 +47,9 @@ Kielbasa_2020_galcanezumab <- function() {
     # ka:    0.0199 /h * 24 h/day = 0.4776 /day
     # CL/F:  0.00785 L/h * 24 h/day = 0.1884 L/day
     # V/F:   7.33 L (unchanged)
-    lka <- log(0.4776); label("Absorption rate constant (ka, 1/day)")                       # Kielbasa 2020 Table 3 (0.0199 /h * 24)
-    lcl <- log(0.1884); label("Apparent clearance for a 73.6 kg subject (CL/F, L/day)")     # Kielbasa 2020 Table 3 (0.00785 L/h * 24)
-    lvc <- log(7.33);   label("Apparent volume of distribution (V/F, L)")                   # Kielbasa 2020 Table 3
+    lka <- log(0.4776); label("Absorption rate constant (1/day)")                       # Kielbasa 2020 Table 3 (0.0199 /h * 24)
+    lcl <- log(0.1884); label("Apparent clearance for a 73.6 kg subject (L/day)")     # Kielbasa 2020 Table 3 (0.00785 L/h * 24)
+    lvc <- log(7.33);   label("Apparent volume of distribution (L)")                   # Kielbasa 2020 Table 3
 
     # Allometric (power-model) exponent for body weight on CL/F.
     # Model form (equation 2 of Kielbasa 2020): CL/F = theta1 * (WT/MED)^theta2

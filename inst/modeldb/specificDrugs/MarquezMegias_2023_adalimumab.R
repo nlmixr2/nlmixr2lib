@@ -65,7 +65,7 @@ MarquezMegias_2023_adalimumab <- function() {
     #   CL/F = CL/F_pop * (1 + AAA * e_ada_cl) * (ALB / 3.77)^e_alb_cl
     # AAA effect (multiplier in 1 + AAA*coef) was fixed to the reference
     # model value because only 9/54 patients were AAA-positive.
-    e_ada_cl <- fixed(4.5);     label("AAA multiplicative effect on CL/F (in 1 + AAA*e_ada_cl); Ternant 2015 reference value") # Marquez-Megias 2023 Section 3.2 (text), Table 3 (Reference Model column reports 4.5)
+    e_ada_cl <- fixed(4.5);     label("AAA multiplicative effect on CL/F, applied as 1 + ADA_POS * e_ada_cl; Ternant 2015 reference value (fraction)") # Marquez-Megias 2023 Section 3.2 (text), Table 3 (Reference Model column reports 4.5)
     e_alb_cl <- -2.33;          label("Power exponent of albumin on CL/F ((ALB/3.77)^e_alb_cl, ALB in g/dL)")                          # Marquez-Megias 2023 Table 3 (Final model)
 
     # Inter-individual variability. Table 3 reports IIV_CL/F = 0.667 and

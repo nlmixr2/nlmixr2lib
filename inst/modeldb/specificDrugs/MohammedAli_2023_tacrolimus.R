@@ -251,7 +251,7 @@ MohammedAli_2023_tacrolimus <- function() {
     # Table 3 row 'MTT (h) = 2.91 (RSE 15.5%)'; Results section 3.2 'mean absorption transit time of 2 h 55 min'
 
     nn_fix <- fixed(2)
-    label("Number of Savic transit compartments NN (integer, unitless)")
+    label("Number of Savic transit compartments NN, integer-valued (unitless)")
     # Table 3 row 'NN = 2 FIX'; Results section 3.2 'the number of absorption compartments were fixed to 2'
 
     lka <- log(0.72)

@@ -51,7 +51,7 @@ Lee_2011_parkinson_progression <- function() {
   units <- list(
     time          = "month (4 weeks; see description and vignette Errata for the source-paper week-vs-month unit discrepancy)",
     dosing        = "(none; the drug effect is encoded via the ON_TREATMENT covariate, not via drug input)",
-    concentration = "(change from baseline in total UPDRS score, unitless; observation deltaUPDRS)"
+    concentration = "(change from baseline in total UPDRS score, unitless; observation d_updrs)"
   )
 
   covariateData <- list(
@@ -181,8 +181,8 @@ Lee_2011_parkinson_progression <- function() {
     # symptomatic benefit saturates. This matches Lee 2011 Figure 1's
     # 'symptomatic effect' curve shape (initial dip, then parallel to
     # the natural-progression line).
-    deltaUPDRS <- slope * time - symeff * (1 - exp(-ke0 * time))
+    d_updrs <- slope * time - symeff * (1 - exp(-ke0 * time))
 
-    deltaUPDRS ~ add(addSd)
+    d_updrs ~ add(addSd)
   })
 }

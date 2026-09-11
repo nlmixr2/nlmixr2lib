@@ -66,8 +66,8 @@ Bosch_2024_cotadutide_qsp <- function() {
       sep = " "
     ),
     concentration = paste(
-      "Cotadutide total plasma concentration Cmedi is in pmol/L",
-      "(central / vc); free concentration Cmedif = Cmedi * fumedi.",
+      "Cotadutide total plasma concentration Cc is in pmol/L",
+      "(central / vc); free concentration Cmedif = Cc * fumedi.",
       "Endogenous outputs: plasma glucose Cglc in mmol/L, insulin Cins",
       "in pmol/L, GLP-1 Cglp in pmol/L, glucagon Cglg in pmol/L,",
       "GIP Cgip in pmol/L.",
@@ -419,8 +419,8 @@ Bosch_2024_cotadutide_qsp <- function() {
     # 3. Cotadutide plasma concentration (free) and endogenous species
     #    concentrations.
     # ---------------------------------------------------------------------
-    Cmedi  <- central / vc
-    Cmedif <- Cmedi * fu
+    Cc  <- central / vc
+    Cmedif <- Cc * fu
 
     Cglc <- glucose  / vcglc
     Cins <- insulin  / vcins

@@ -90,7 +90,7 @@ Schaefer_1996_ciprofloxacin <- function() {
     # paper's directly-proportional Vc = 0.698 * WT and Vp = 1.3 * WT are
     # recovered by exp(lvc) * (WT / 70)^1 and exp(lvp) * (WT / 70)^1.
 
-    lka       <- log(0.644);        label("Absorption rate constant (Ka, 1/h)")                                              # Table 4 theta5 = 0.644 /h (SE 25.3%)
+    lka       <- log(0.644);        label("Absorption rate constant (1/h)")                                              # Table 4 theta5 = 0.644 /h (SE 25.3%)
     lcl       <- log(8.8);          label("Weight-independent intercept term of total CL (L/h)")                             # Table 4 theta1 = u1 = 8.8 L/h (SE 10.0%); CL = u1 + u8 * WT
     lvc       <- log(0.698 * 70);   label("Central volume Vc at 70 kg reference (L); Vc = 0.698 * WT")                       # Table 4 theta2 = u2 = 0.698 L/kg (SE 12.7%); V2 = u2 * WT
     lvp       <- log(1.3   * 70);   label("Peripheral volume Vp at 70 kg reference (L); Vp = 1.3 * WT")                      # Table 4 theta3 = u3 = 1.3 L/kg (SE 9.5%); V3 = u3 * WT

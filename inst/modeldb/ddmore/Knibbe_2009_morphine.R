@@ -46,7 +46,7 @@ Knibbe_2009_morphine <- function() {
       notes              = paste(
         "Time-varying body weight at the time of each dose / observation.",
         "Source NONMEM column BWS reports body weight in grams; convert to canonical WT (kg) via WT = BWS / 1000.",
-        "The source model uses the un-normalised expression WT^e_wt_cl on each clearance and WT^allo_v on each volume,",
+        "The source model uses the un-normalised expression WT^e_wt_cl on each clearance and WT^e_wt_vc on each volume,",
         "i.e. an implicit reference weight of 1 kg (the typical-value parameters are the per-kg^exponent constants)."
       ),
       source_name        = "BWS"
@@ -96,7 +96,7 @@ Knibbe_2009_morphine <- function() {
 
     # Morphine central volume V1 (NONMEM CMT 1, the dosed compartment).
     lvc <- log(1.99)
-    label("Morphine central volume V1 per kg^allo_v (L)")
+    label("Morphine central volume V1 per kg^e_wt_vc (L)")
     # Output_real_run4.lst, FINAL PARAMETER ESTIMATE: TH 2 = 1.99E+00.
 
     # Morphine inter-compartmental clearance Q (CMT1 <-> CMT4).
@@ -141,7 +141,7 @@ Knibbe_2009_morphine <- function() {
     e_wt_cl <- 1.44
     label("Allometric exponent of body weight on clearances (unitless)")
     # Output_real_run4.lst FINAL: TH 4 = 1.44E+00.
-    allo_v <- fix(1.00)
+    e_wt_vc <- fix(1.00)
     label("Allometric exponent of body weight on volumes (unitless, from source)")
     # Output_real_run4.lst FINAL: TH 5 = 1.00E+00; source `.mod` $THETA flag `1 FIX`.
 
@@ -193,10 +193,10 @@ Knibbe_2009_morphine <- function() {
     # Source `.mod` uses days (PNA > 10); 10 days / (365.25/12) months = 10/30.4375.
     pna_threshold <- 10 / 30.4375
 
-    # Body-weight scaling factors. allo_v is fixed at 1.0 in the source
+    # Body-weight scaling factors. e_wt_vc is fixed at 1.0 in the source
     # (source NONMEM `$THETA 1 FIX`); e_wt_cl is estimated.
     bw_cl_factor <- WT^e_wt_cl
-    bw_v_factor  <- WT^allo_v
+    bw_v_factor  <- WT^e_wt_vc
 
     # Individual structural parameters.
     # Morphine central volume V1.

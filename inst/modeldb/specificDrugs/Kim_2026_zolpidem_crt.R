@@ -207,22 +207,22 @@ Kim_2026_zolpidem_crt <- function() {
     # values. See modellib("Kim_2026_zolpidem") for the estimating run.
 
     lka <- fixed(log(11.7))
-    label("Absorption rate constant, depot -> central (Ka, 1/h)")                    # Kim 2026 Table 2: Ka = 11.7 1/h. Data S3 $THETA(3) = "(11.7) FIX".
+    label("Absorption rate constant, depot -> central (1/h)")                    # Kim 2026 Table 2: Ka = 11.7 1/h. Data S3 $THETA(3) = "(11.7) FIX".
 
     lcl <- fixed(log(18.0))
-    label("Apparent clearance (CL/F, L/h)")                                          # Kim 2026 Table 2: CL/F = 18.0 L/h. Data S3 $THETA(1) = "(18) FIX".
+    label("Apparent clearance (L/h)")                                          # Kim 2026 Table 2: CL/F = 18.0 L/h. Data S3 $THETA(1) = "(18) FIX".
 
     lvc <- fixed(log(64.0))
-    label("Apparent central volume of distribution (Vc/F, L)")                       # Kim 2026 Table 2: Vc/F = 64.0 L. Data S3 $THETA(2) = "(64) FIX".
+    label("Apparent central volume of distribution (L)")                       # Kim 2026 Table 2: Vc/F = 64.0 L. Data S3 $THETA(2) = "(64) FIX".
 
     lmtt <- fixed(log(0.25))
-    label("Mean transit time of the absorption chain (MTT, h)")                      # Kim 2026 Table 2: MTT = 0.25 h. Data S3 $THETA(4) = "(0.25) FIX".
+    label("Mean transit time of the absorption chain (h)")                      # Kim 2026 Table 2: MTT = 0.25 h. Data S3 $THETA(4) = "(0.25) FIX".
 
     lnn <- fixed(log(19.4))
-    label("Number of transit compartments (NN, unitless)")                           # Kim 2026 Table 2: NN = 19.4. Data S3 $THETA(5) = "(19.4) FIX".
+    label("Number of transit compartments (unitless)")                           # Kim 2026 Table 2: NN = 19.4. Data S3 $THETA(5) = "(19.4) FIX".
 
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability (BIO, fraction)")                                # Kim 2026 Table 2: BIO = "1 Fixed". Data S3 $THETA(6) = "(1) FIX".
+    label("Relative bioavailability (fraction)")                                # Kim 2026 Table 2: BIO = "1 Fixed". Data S3 $THETA(6) = "(1) FIX".
 
     etalka ~ fixed(2.48)
     # Kim 2026 Table 2: IIV Ka = 330.8 %CV. Data S3 $OMEGA(3,3) = "2.48 FIX".
@@ -250,16 +250,16 @@ Kim_2026_zolpidem_crt <- function() {
     # block.
 
     lec50 <- log(282)
-    label("Half-maximal effective concentration for CRT (EC50, ug/L)")               # Kim 2026 Table 3: EC50 = 282 ug/L (RSE 8.5%; SIR median 286, 95% CI 252-328). Data S3 $THETA(9) "C_EC50". Base model without covariates was 209.
+    label("Half-maximal effective concentration for CRT (ug/L)")               # Kim 2026 Table 3: EC50 = 282 ug/L (RSE 8.5%; SIR median 286, 95% CI 252-328). Data S3 $THETA(9) "C_EC50". Base model without covariates was 209.
 
     lhill <- log(6)
-    label("Hill coefficient of the CRT concentration-response (HILL, unitless)")     # Kim 2026 Table 3: HILL = 6 (RSE 8.8%; SIR median 5.97, 95% CI 5.17-6.98). Data S3 $THETA(12) "C_HILL". Base model without covariates was 7.73. Results 3.2.3 notes the CRT relationship is the steepest of the three endpoints.
+    label("Hill coefficient of the CRT concentration-response (unitless)")     # Kim 2026 Table 3: HILL = 6 (RSE 8.8%; SIR median 5.97, 95% CI 5.17-6.98). Data S3 $THETA(12) "C_HILL". Base model without covariates was 7.73. Results 3.2.3 notes the CRT relationship is the steepest of the three endpoints.
 
     lrbase <- log(437)
     label("Baseline choice reaction time (BASE, msec)")                              # Kim 2026 Table 3: BASE = 437 msec (RSE 1.8%; SIR median 437, 95% CI 423-452). Data S3 $THETA(10) "C_CRT0".
 
     lemax <- fixed(log(5.6))
-    label("Maximum fractional drug effect on CRT (MAXdrug, unitless)")               # Kim 2026 Table 3: MAXdrug = "5.6 Fixed". Data S3 $THETA(11) = "(5.6) FIX". Results 3.2.3: "The MAXdrug parameter was fixed at 5.6, based on the observation that the maximum CRT value (2219 ms) was 6.6-fold higher than the minimum CRT value (337 ms)" -- i.e. a 6.6-fold maximum corresponds to a fractional increase of 5.6 over baseline.
+    label("Maximum fractional drug effect on CRT (unitless)")               # Kim 2026 Table 3: MAXdrug = "5.6 Fixed". Data S3 $THETA(11) = "(5.6) FIX". Results 3.2.3: "The MAXdrug parameter was fixed at 5.6, based on the observation that the maximum CRT value (2219 ms) was 6.6-fold higher than the minimum CRT value (337 ms)" -- i.e. a 6.6-fold maximum corresponds to a fractional increase of 5.6 over baseline.
 
     # ====================================================================
     # COVARIATE EFFECTS ON THE CRT PARAMETERS

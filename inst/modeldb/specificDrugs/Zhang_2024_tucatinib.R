@@ -176,12 +176,12 @@ Zhang_2024_tucatinib <- function() {
     # as CL/F (L/h), Vc/F (L), Q/F (L/h), Vp/F (L); Ka in 1/h; Tlag in h.
     # The supplementary NONMEM control stream fixes F1 = 1 at the reference
     # (TF1 = 1), so the reported CL/F is numerically the model's `cl`.
-    lcl     <- log(112)   ; label("Apparent oral clearance in healthy participants (CL/F, L/h)")        # Zhang 2024 Table 1 CL/F healthy = 112 (4.3% RSE); bootstrap 112 (105, 119)
-    lvc     <- log(125)   ; label("Apparent central volume of distribution (Vc/F, L)")                  # Zhang 2024 Table 1 Vc/F = 125 (11.3% RSE); bootstrap 104 (62.4, 145)
-    lq      <- log(89.9)  ; label("Apparent inter-compartmental clearance (Q/F, L/h)")                  # Zhang 2024 Table 1 Q/F = 89.9 (5.4% RSE); bootstrap 83.4 (72.4, 97)
-    lvp     <- log(635)   ; label("Apparent peripheral volume of distribution (Vp/F, L)")               # Zhang 2024 Table 1 Vp/F = 635 (4.0% RSE); bootstrap 659 (594, 740)
-    lka     <- log(0.424) ; label("First-order absorption rate constant (Ka, 1/h)")                     # Zhang 2024 Table 1 Ka = 0.424 (5.3% RSE); bootstrap 0.385 (0.333, 0.453)
-    ltlag   <- log(0.392) ; label("Absorption lag time (Tlag, h)")                                      # Zhang 2024 Table 1 Tlag = 0.392 (0.56% RSE); bootstrap 0.395 (0.385, 0.445)
+    lcl     <- log(112)   ; label("Apparent oral clearance in healthy participants (L/h)")        # Zhang 2024 Table 1 CL/F healthy = 112 (4.3% RSE); bootstrap 112 (105, 119)
+    lvc     <- log(125)   ; label("Apparent central volume of distribution (L)")                  # Zhang 2024 Table 1 Vc/F = 125 (11.3% RSE); bootstrap 104 (62.4, 145)
+    lq      <- log(89.9)  ; label("Apparent inter-compartmental clearance (L/h)")                  # Zhang 2024 Table 1 Q/F = 89.9 (5.4% RSE); bootstrap 83.4 (72.4, 97)
+    lvp     <- log(635)   ; label("Apparent peripheral volume of distribution (L)")               # Zhang 2024 Table 1 Vp/F = 635 (4.0% RSE); bootstrap 659 (594, 740)
+    lka     <- log(0.424) ; label("First-order absorption rate constant (1/h)")                     # Zhang 2024 Table 1 Ka = 0.424 (5.3% RSE); bootstrap 0.385 (0.333, 0.453)
+    ltlag   <- log(0.392) ; label("Absorption lag time (h)")                                      # Zhang 2024 Table 1 Tlag = 0.392 (0.56% RSE); bootstrap 0.395 (0.385, 0.445)
 
     # Relative bioavailability at the reference (healthy participant) is the
     # structural anchor F1 = 1: the supplementary control stream sets

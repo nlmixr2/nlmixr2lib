@@ -360,7 +360,7 @@ Ashraf_2024_codeine <- function() {
     as_ref <- 2    # reference CYP2D6 activity score, paper Section 3.2
 
     allo_cl_factor <- (WT / wt_ref)^e_wt_cl_q
-    allo_v  <- (WT / wt_ref)^e_wt_vc_vp
+    allom_v  <- (WT / wt_ref)^e_wt_vc_vp
 
     # ------------------------------------------------------------
     # Individual codeine parameters. IIV on k_a, V_c and F only;
@@ -368,7 +368,7 @@ Ashraf_2024_codeine <- function() {
     # ------------------------------------------------------------
     ka     <- exp(lka + etalka)
     cl     <- exp(lcl) * allo_cl_factor
-    vc     <- exp(lvc + etalvc) * allo_v
+    vc     <- exp(lvc + etalvc) * allom_v
     fdepot <- exp(lfdepot + etalfdepot)
 
     # ------------------------------------------------------------
@@ -376,7 +376,7 @@ Ashraf_2024_codeine <- function() {
     # IIV. The glucuronide parameters are not weight-scaled.
     # ------------------------------------------------------------
     cl_morphine <- exp(lcl_morphine + etalcl_morphine) * allo_cl_factor
-    vc_morphine <- exp(lvc_morphine) * allo_v
+    vc_morphine <- exp(lvc_morphine) * allom_v
     cl_c6g      <- exp(lcl_c6g)
     vc_c6g      <- exp(lvc_c6g)
     cl_m3g      <- exp(lcl_m3g)

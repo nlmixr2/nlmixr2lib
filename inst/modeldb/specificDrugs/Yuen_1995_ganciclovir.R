@@ -167,9 +167,9 @@ Yuen_1995_ganciclovir <- function() {
     # coefficients, so the reference subject for lvc / lvp is WT = 1 kg. Clearances
     # in L/h, volumes in L. IV-only model, so no absorption parameters.
     lcl <- log(0.382); label("Covariate-free intercept of clearance (L/h)")              # Yang 2023 Table 3 (Yuen 1995): CL = 0.382 + 0.168 * BW * CLcr/100 * (1-T) * (1-CMV)
-    lvc <- log(0.381); label("Central volume coefficient at WT = 1 kg (Vc, L/kg)")       # Yang 2023 Table 3 (Yuen 1995): Vc = 0.381 * BW
-    lvp <- log(0.511); label("Peripheral volume coefficient at WT = 1 kg (Vp, L/kg)")    # Yang 2023 Table 3 (Yuen 1995): Vp = 0.511 * BW
-    lq  <- log(13.4) ; label("Inter-compartmental clearance (Q, L/h; not weight-scaled)") # Yang 2023 Table 3 (Yuen 1995): Q = 13.4
+    lvc <- log(0.381); label("Central volume coefficient at WT = 1 kg (L/kg)")       # Yang 2023 Table 3 (Yuen 1995): Vc = 0.381 * BW
+    lvp <- log(0.511); label("Peripheral volume coefficient at WT = 1 kg (L/kg)")    # Yang 2023 Table 3 (Yuen 1995): Vp = 0.511 * BW
+    lq  <- log(13.4) ; label("Inter-compartmental clearance (L/h; not weight-scaled)") # Yang 2023 Table 3 (Yuen 1995): Q = 13.4
 
     # Covariate effects on clearance. The renal-elimination slope acts on the
     # PRODUCT of body weight and creatinine clearance, so weight and CLcr are not

@@ -86,12 +86,12 @@ Storset_2014_tacrolimus <- function() {
     #   V1p/F = 6290 * (FFM/60)                                L
     #   Qp/F  = 1200 * (FFM/60)^(3/4)                          L/h
     #   V2p/F = 32100 * (FFM/60)                               L
-    lka  <- log(1.01);   label("Absorption rate constant (Ka, 1/h)")                               # Storset 2014 Table 2 final theory-based model (RSE 9%)
-    ltlag <- log(0.41);  label("Absorption lag time (Tlag, h)")                                    # Storset 2014 Table 2 final theory-based model (RSE 8%)
-    lcl  <- log(811);    label("Apparent plasma clearance at FFM 60 kg, CYP3A5 non-expresser (CLp/F, L/h)")    # Storset 2014 Table 2 footnote (original model equation); RSE 10% on the haematocrit-standardized estimate
-    lvc  <- log(6290);   label("Apparent plasma central volume at FFM 60 kg (V1p/F, L)")           # Storset 2014 Table 2 footnote (original model equation); RSE 11%
-    lq   <- log(1200);   label("Apparent plasma intercompartmental clearance at FFM 60 kg (Qp/F, L/h)") # Storset 2014 Table 2 footnote (original model equation); RSE 13%
-    lvp  <- log(32100);  label("Apparent plasma peripheral volume at FFM 60 kg (V2p/F, L)")        # Storset 2014 Table 2 footnote (original model equation); RSE 16%
+    lka  <- log(1.01);   label("Absorption rate constant (1/h)")                               # Storset 2014 Table 2 final theory-based model (RSE 9%)
+    ltlag <- log(0.41);  label("Absorption lag time (h)")                                    # Storset 2014 Table 2 final theory-based model (RSE 8%)
+    lcl  <- log(811);    label("Apparent plasma clearance at FFM 60 kg, CYP3A5 non-expresser (L/h)")    # Storset 2014 Table 2 footnote (original model equation); RSE 10% on the haematocrit-standardized estimate
+    lvc  <- log(6290);   label("Apparent plasma central volume at FFM 60 kg (L)")           # Storset 2014 Table 2 footnote (original model equation); RSE 11%
+    lq   <- log(1200);   label("Apparent plasma intercompartmental clearance at FFM 60 kg (L/h)") # Storset 2014 Table 2 footnote (original model equation); RSE 13%
+    lvp  <- log(32100);  label("Apparent plasma peripheral volume at FFM 60 kg (L)")        # Storset 2014 Table 2 footnote (original model equation); RSE 16%
 
     # ----- Allometric exponents on FFM (theory-based, fixed) -----
     # Storset 2014 Methods Equation 2: 'P = Pstd * (SIZE/SIZE_std)^b' with b
@@ -112,7 +112,7 @@ Storset_2014_tacrolimus <- function() {
     # Predisone)] * 0.82 (if CYP3A5 expresser) * 2.68 (if first day
     # post-transplant)'.
     pred_max <- 0.67; label("Maximum fractional reduction in F due to prednisolone induction (unitless)")      # Storset 2014 Table 2 Predmax = -67%; 95% CI -41%, -89% (RSE 19%)
-    pred_50  <- 35;   label("Prednisolone daily dose causing half-maximum reduction in F (Pred50, mg/day)")    # Storset 2014 Table 2 Pred50 = 35 mg; 95% CI 7, 50 (RSE 40%)
+    pred_50  <- 35;   label("Prednisolone daily dose causing half-maximum reduction in F (mg/day)")    # Storset 2014 Table 2 Pred50 = 35 mg; 95% CI 7, 50 (RSE 40%)
     e_cyp3a5_exp_fdepot <- log(0.82); label("Log-multiplicative effect of CYP3A5 expresser on F (unitless)")    # Storset 2014 Table 2 (CYP3A5 expresser F factor 0.82; 95% CI 0.71, 0.98)
     lfday1 <- log(2.68); label("Log-multiplicative effect of first day post-transplant on F (unitless)")        # Storset 2014 Table 2 (Fday1 factor 2.68; 95% CI 2.28, 3.09; RSE 8%)
 

@@ -92,7 +92,7 @@ Chakraborty_2012_canakinumab <- function() {
     # Reported as 70.0% (back-calculated from a logit-scale estimate;
     # Table IV footnote a). Encoded on the logit scale here so the model
     # remains numerically stable if the value is later perturbed.
-    lfdepot <- log(0.700 / (1 - 0.700)); label("Logit-scale subcutaneous bioavailability (Sp2/0 cell line; F1 = 0.70)")  # Chakraborty 2012 Table IV
+    lfdepot <- log(0.700 / (1 - 0.700)); label("Logit-scale subcutaneous bioavailability; Sp2/0 cell line, F1 = 0.70 (unitless logit)")  # Chakraborty 2012 Table IV
 
     # ------------------------------------------------------------------
     # Covariate exponents -- centred-power model

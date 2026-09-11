@@ -127,27 +127,27 @@ Xu_2025_aficamten <- function() {
     # Structural parameters. Typical values describe a MALE participant with
     # oHCM weighing 80 kg, dosed as a tablet without a high-fat meal
     # (Xu 2025 Section 3.1.3 and Figure S3).
-    lcl <- log(2.62); label("Apparent clearance (CL/F, L/h)")                            # Xu 2025 Table 1
-    lvc <- log(18.1); label("Apparent central volume of distribution (Vc/F, L)")         # Xu 2025 Table 1
-    lq  <- log(57.6); label("Apparent intercompartmental clearance (Q/F, L/h)")          # Xu 2025 Table 1
-    lvp <- log(295);  label("Apparent peripheral volume of distribution (Vp/F, L)")      # Xu 2025 Table 1
+    lcl <- log(2.62); label("Apparent clearance (L/h)")                            # Xu 2025 Table 1
+    lvc <- log(18.1); label("Apparent central volume of distribution (L)")         # Xu 2025 Table 1
+    lq  <- log(57.6); label("Apparent intercompartmental clearance (L/h)")          # Xu 2025 Table 1
+    lvp <- log(295);  label("Apparent peripheral volume of distribution (L)")      # Xu 2025 Table 1
 
     # Ka: Table 1 reports 0.337 1/h; Figure S3 prints 0.373 1/h for the same
     # quantity. Table 1 is used -- see the vignette Errata section for the full
     # reconciliation. Table 1 lists the unit as "L/h", which is a typographical
     # error; Ka is a first-order rate constant (1/h) per the Data S1 control
     # stream comment ";5 KA 1/hr".
-    lka <- log(0.337); label("First-order absorption rate constant (Ka, 1/h)")           # Xu 2025 Table 1
+    lka <- log(0.337); label("First-order absorption rate constant (1/h)")           # Xu 2025 Table 1
 
     # Absorption lag time: separately estimated for the capsule (phase 1) and
     # the pooled tablet (phase 2 / phase 3 / commercial) formulations.
-    ltlag_tab <- log(0.229); label("Absorption lag time, tablet formulations (Tlag, h)") # Xu 2025 Table 1
-    ltlag_cap <- log(0.248); label("Absorption lag time, capsule formulation (Tlag, h)") # Xu 2025 Table 1
+    ltlag_tab <- log(0.229); label("Absorption lag time, tablet formulations (h)") # Xu 2025 Table 1
+    ltlag_cap <- log(0.248); label("Absorption lag time, capsule formulation (h)") # Xu 2025 Table 1
 
     # Relative bioavailability is anchored at 1 for the reference arm
     # (Data S1 control stream: TVF1 = 1 * (1 + FASTED*THETA(29)) * ...,
     # with the fasted and standard-meal coefficients fixed to 0).
-    lfdepot <- fixed(log(1)); label("Relative bioavailability of the reference arm (F1, unitless)") # Xu 2025 Data S1 control stream
+    lfdepot <- fixed(log(1)); label("Relative bioavailability of the reference arm (unitless)") # Xu 2025 Data S1 control stream
 
     # Body-weight power exponents, normalised to a standard 80 kg. One exponent
     # is shared by CL/F and Q/F, a second by Vc/F and Vp/F.

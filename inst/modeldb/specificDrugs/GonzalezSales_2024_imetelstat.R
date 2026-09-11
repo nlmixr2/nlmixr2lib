@@ -154,13 +154,13 @@ GonzalezSales_2024_imetelstat <- function() {
     # Structural parameters -- typical values for a 70 kg reference patient with male sex,
     # solid-tumor reference disease, reference dose 108 umol, time = 0.
     # All values from Gonzalez-Sales 2024 Table 2 (final population PK parameter estimates).
-    lcl     <- log(1.00);    label("Clearance from central compartment (CL, L/h per 70 kg)")                  # Table 2: CL = 1.00 L/h/70 kg (RSE 3.50%)
-    lvc     <- log(4.08);    label("Central volume of distribution (Vc, L per 70 kg)")                       # Table 2: Vc = 4.08 L/70 kg (RSE 2.55%)
-    lkback  <- log(0.0253);  label("Transfer rate constant from peripheral binding pool to central (Kback, 1/h per 70 kg)") # Table 2: Kback = 0.0253 1/h/70 kg (RSE 7.58%)
-    lbmax   <- log(15.0);    label("Total concentration of target binding sites (Bmax, umol/L)")             # Table 2: Bmax = 15.0 umol/L (RSE 7.08%)
-    lkint   <- log(0.103);   label("Internalisation rate constant from bound complex to peripheral pool (Kint, 1/h)") # Table 2: Kint = 0.103 (RSE 9.08%); supplement S1 units 'L/h/70 kg' interpreted as 1/h with implicit unit volume per the Snoeck saturable-distribution convention -- see vignette Assumptions and deviations
+    lcl     <- log(1.00);    label("Clearance from central compartment (L/h per 70 kg)")                  # Table 2: CL = 1.00 L/h/70 kg (RSE 3.50%)
+    lvc     <- log(4.08);    label("Central volume of distribution (L per 70 kg)")                       # Table 2: Vc = 4.08 L/70 kg (RSE 2.55%)
+    lkback  <- log(0.0253);  label("Transfer rate constant from peripheral binding pool to central (1/h per 70 kg)") # Table 2: Kback = 0.0253 1/h/70 kg (RSE 7.58%)
+    lbmax   <- log(15.0);    label("Total concentration of target binding sites (umol/L)")             # Table 2: Bmax = 15.0 umol/L (RSE 7.08%)
+    lkint   <- log(0.103);   label("Internalisation rate constant from bound complex to peripheral pool (1/h)") # Table 2: Kint = 0.103 (RSE 9.08%); supplement S1 units 'L/h/70 kg' interpreted as 1/h with implicit unit volume per the Snoeck saturable-distribution convention -- see vignette Assumptions and deviations
     lkon    <- log(0.159);   label("Binding rate constant (Kon, L/(umol*h))")                                # Table 2: Kon = 0.159 (RSE 8.52%); supplement S1 units 'L^2/(umol/L * h)' interpreted as L/(umol*h) per dimensional analysis -- see vignette Assumptions and deviations
-    lkoff   <- log(0.609);   label("Dissociation rate constant from bound complex (Koff, 1/h)")              # Table 2: Koff = 0.609 (RSE 10.7%); supplement S1 units 'L/h' interpreted as 1/h per dimensional analysis
+    lkoff   <- log(0.609);   label("Dissociation rate constant from bound complex (1/h)")              # Table 2: Koff = 0.609 (RSE 10.7%); supplement S1 units 'L/h' interpreted as 1/h per dimensional analysis
 
     # Allometric exponents -- theory-based, fixed (Gonzalez-Sales 2024 Methods, 'Base structural model',
     # Equation 1: 'theory-based allometric exponents for body weight of 1, 0.75, and -0.25 were
@@ -180,7 +180,7 @@ GonzalezSales_2024_imetelstat <- function() {
     #                                         = TVCL * ... * T50 / (T50 + TIME).
     # At t = 0, CL = TVCL (baseline). At t = cl_t50, CL = TVCL/2 (half of baseline). As t -> Inf,
     # CL -> 0 in the limit; in practice the function decays slowly given cl_t50 ~ 245 days.
-    lcl_t50 <- log(5880); label("Half-time of the time effect on CL (cl_t50, hours)")              # Table 2: 'Effect of time on CL' = 5880 h (RSE 6.37%)
+    lcl_t50 <- log(5880); label("Half-time of the time effect on CL (hours)")              # Table 2: 'Effect of time on CL' = 5880 h (RSE 6.37%)
 
     # Covariate effects on Vc (multiplicative; categorical effects via exp(coef * indicator)).
     e_dis_mm_vc <- -0.233; label("Exponential coefficient of DIS_MM on Vc (unitless)")                       # Table 2: 'Effect of MM malignancy on Vc' = -0.233 (RSE 28.3%); MM patients have exp(-0.233) = 0.79-fold Vc

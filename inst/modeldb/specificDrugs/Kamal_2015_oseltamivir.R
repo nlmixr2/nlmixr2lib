@@ -21,7 +21,7 @@ Kamal_2015_oseltamivir <- function() {
     "2e-11 to 4e-11 m^2 per epithelial cell), infected_cells(0) = 0, and",
     "virus(0) = 10^0.25 TCID50/mL (the viral-titer lower limit of",
     "quantification, used as the inoculation viral titer). The viral",
-    "load viralLoad (TCID50/mL of nasal wash, canonical PD-output name)",
+    "load viral_load (TCID50/mL of nasal wash, canonical PD-output name)",
     "is the single observed output with proportional residual error,",
     "equivalent to the paper's log10-transformed additive-error model.",
     "The three viral-dynamics compartments are declared paper-specific",
@@ -43,7 +43,7 @@ Kamal_2015_oseltamivir <- function() {
   units <- list(
     time          = "day",
     dosing        = "mg per administered oseltamivir dose (per-record DOSE covariate; 0 during placebo and outside the 5-day b.i.d. treatment window)",
-    concentration = "TCID50/mL of nasal wash (viralLoad)"
+    concentration = "TCID50/mL of nasal wash (viral_load)"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -103,8 +103,8 @@ Kamal_2015_oseltamivir <- function() {
     # clinically meaningful parameter reported in Table 2; the directly
     # fit NONMEM parameter ED50* is derived inside model() from
     # ED50 = ED50* / (Emax / log10(2) - 1).
-    lemax <- log(2.35); label("Maximum log10-fold inhibition of viral production rate p by oseltamivir (Emax, log10 units)")  # Table 2: Emax = 2.35, %SEM 25
-    led50 <- log(3.2);  label("Oseltamivir dose producing 50% (2-fold) reduction of viral production rate p (ED50, mg)")       # Table 2: ED50 = 3.2 mg, %SEM 69
+    lemax <- log(2.35); label("Maximum log10-fold inhibition of viral production rate p by oseltamivir (log10 units)")  # Table 2: Emax = 2.35, %SEM 25
+    led50 <- log(3.2);  label("Oseltamivir dose producing 50% (2-fold) reduction of viral production rate p (mg)")       # Table 2: ED50 = 3.2 mg, %SEM 69
 
     # Inter-individual variability. Table 2 reports IIV on p_prod
     # (65% CV) and Emax (82% CV); no IIV on beta_inf, c_clr, delta_clr,
@@ -116,10 +116,10 @@ Kamal_2015_oseltamivir <- function() {
 
     # Residual error. The paper fit viral titer on the log10 scale with
     # additive error, which corresponds to a proportional error model
-    # on untransformed viralLoad (Kamal 2015 Materials and Methods,
+    # on untransformed viral_load (Kamal 2015 Materials and Methods,
     # last paragraph of the "Influenza model and oseltamivir
     # pharmacodynamics" section). Reported sigma_error = 14% CV.
-    propSd <- 0.14; label("Proportional residual error on viral load viralLoad (fraction)")  # Table 2: sigma_error = 14% CV
+    propSd <- 0.14; label("Proportional residual error on viral load viral_load (fraction)")  # Table 2: sigma_error = 14% CV
   })
 
   model({
@@ -170,10 +170,10 @@ Kamal_2015_oseltamivir <- function() {
     virus(0)          <- 10^0.25
 
     # Observation: free viral load (TCID50/mL of nasal wash; canonical
-    # PD-output name viralLoad). The source paper fit log10(V) with
+    # PD-output name viral_load). The source paper fit log10(V) with
     # additive error which corresponds to a proportional error model
-    # on the untransformed viralLoad in nlmixr2.
-    viralLoad <- virus
-    viralLoad ~ prop(propSd)
+    # on the untransformed viral_load in nlmixr2.
+    viral_load <- virus
+    viral_load ~ prop(propSd)
   })
 }

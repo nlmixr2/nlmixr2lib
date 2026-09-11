@@ -77,11 +77,11 @@ Suleiman_2019_risankizumab <- function() {
     # Structural parameters from Suleiman 2019 Table 3 (final population PK model).
     # Typical values are for the reference subject (70 kg, ALB 44 g/L, CREAT 76 umol/L,
     # CRP 2.8 mg/L, ADA titer < 128, phase III drug supply).
-    lcl     <- log(0.243);  label("Clearance (CL, L/day)")                              # Suleiman 2019 Table 3
-    lvc     <- log(4.86);   label("Central volume of distribution (Vc, L)")             # Suleiman 2019 Table 3
-    lka     <- log(0.229);  label("First-order SC absorption rate (ka, 1/day)")         # Suleiman 2019 Table 3
-    lq      <- log(0.656);  label("Intercompartmental clearance (Q, L/day)")            # Suleiman 2019 Table 3
-    lvp     <- log(4.25);   label("Peripheral volume of distribution (Vp, L)")          # Suleiman 2019 Table 3
+    lcl     <- log(0.243);  label("Clearance (L/day)")                              # Suleiman 2019 Table 3
+    lvc     <- log(4.86);   label("Central volume of distribution (L)")             # Suleiman 2019 Table 3
+    lka     <- log(0.229);  label("First-order SC absorption rate (1/day)")         # Suleiman 2019 Table 3
+    lq      <- log(0.656);  label("Intercompartmental clearance (L/day)")            # Suleiman 2019 Table 3
+    lvp     <- log(4.25);   label("Peripheral volume of distribution (L)")          # Suleiman 2019 Table 3
 
     # Absolute SC bioavailability is parameterized on the logit scale with additive
     # IIV in logit space (Suleiman 2019 Eq. 2 / Sect. 2.3). The phase III
@@ -128,7 +128,7 @@ Suleiman_2019_risankizumab <- function() {
     # Residual error: proportional, 19% CV (Suleiman 2019 Table 3).
     # For the prop(propSd) model C_obs = C_pred * (1 + eps) with var(eps) = propSd^2,
     # so propSd = 0.19 corresponds to the 19% CV reported.
-    propSd <- 0.19; label("Proportional residual error (SD, fraction)")        # Suleiman 2019 Table 3
+    propSd <- 0.19; label("Proportional residual error (fraction)")        # Suleiman 2019 Table 3
   })
   model({
     # Individual PK parameters. Reference subject: 70 kg, ALB 44 g/L,

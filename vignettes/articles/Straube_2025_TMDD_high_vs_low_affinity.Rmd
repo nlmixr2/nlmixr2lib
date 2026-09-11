@@ -1,0 +1,656 @@
+---
+title: "TMDD high vs low-affinity approximations: omalizumab, caplacizumab and linagliptin (Straube 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{TMDD high vs low-affinity approximations: omalizumab, caplacizumab and linagliptin (Straube 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Straube (2025) revisits the classical Mager & Jusko target-mediated drug
+disposition (TMDD) model and derives *high-affinity* ($K_M \ll R_T$) and
+*low-affinity* ($K_M \gg R_T$) approximations of it. Section 3.2 of the paper
+then fits the **full** TMDD model to published PK data for three molecules, and
+those fits are what this package carries: the approximations are analytical
+results that the vignette checks the fitted models against, not separate models.
+
+Each drug was fitted twice: a one-compartment fit in the main text (Table 2,
+Figure 5) and a two-compartment refit in the supplement (Table S1,
+Figures S2-S3). Both are reported by the author with complete parameter tables
+and dedicated figures, so both are packaged.
+
+```{r models}
+mods <- c(
+  "Straube_2025_omalizumab_1cmt",   "Straube_2025_omalizumab_2cmt",
+  "Straube_2025_caplacizumab_1cmt", "Straube_2025_caplacizumab_2cmt",
+  "Straube_2025_linagliptin_1cmt",  "Straube_2025_linagliptin_2cmt"
+)
+# readModelDb() returns the model FUNCTION; rxode2::rxode() resolves it to the
+# ui exactly once so every accessor below works.
+ui <- lapply(mods, function(n) rxode2::rxode(readModelDb(n)))
+names(ui) <- mods
+
+tibble::tibble(
+  Model       = mods,
+  Structure   = vapply(ui, function(u) paste(u$state, collapse = ", "), character(1)),
+  `Source table` = c("Table 2", "Table S1", "Table 2", "Table S1", "Table 2", "Table S1")
+) |>
+  knitr::kable(caption = "The six packaged fits and their ODE states.")
+```
+
+* Citation: `r ui[[1]]$reference`
+* Article: <https://doi.org/10.1002/psp4.70048>
+* Supplement (Data S1: derivations, Table S1, Figures S1-S3):
+  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12256580/supplementaryFiles>
+
+# Population
+
+The three datasets are all previously published profiles that Straube digitised
+and re-fitted; no new subjects were studied.
+
+* **Omalizumab** (`r ui[["Straube_2025_omalizumab_1cmt"]]$population$species`,
+  n = `r ui[["Straube_2025_omalizumab_1cmt"]]$population$n_subjects`) --
+  total drug, total target and free target for two patients in a phase I study
+  after a single subcutaneous dose, digitised from Meno-Tetang & Lowe (2005).
+  `Vc`, `CL` and `Rb` were estimated patient-specific; everything else is pooled
+  across the two patients. Omalizumab is an anti-IgE monoclonal antibody; this
+  is the paper's **low-affinity** example.
+* **Caplacizumab / ALX-0081** -- a single-domain antibody against von Willebrand
+  factor, dosed intravenously at 0.02, 0.4 and 8 mg/kg, digitised from Glassman
+  & Muzykantov (2020). The paper's **high-affinity** example with
+  target-mediated exposure enhancement (TMEE).
+* **Linagliptin** -- a small-molecule DPP-4 inhibitor dosed intravenously at
+  0.5, 2.5 and 10 mg, also from Glassman & Muzykantov (2020). A second
+  high-affinity / TMEE example, but one where the paper reports the
+  approximations work markedly less well.
+
+These are **deterministic individual / typical-value fits**: Straube reports no
+between-subject variability and no residual error, so none is encoded. The full
+metadata is available programmatically:
+
+```{r population}
+str(ui[["Straube_2025_caplacizumab_1cmt"]]$population, max.level = 1)
+```
+
+# Source trace
+
+Every `ini()` entry carries an in-file comment naming its source location. The
+table below collects them.
+
+| Symbol | Parameter | 1-cmt source | 2-cmt source |
+|---|---|---|---|
+| $V_c$ | `lvc` | Table 2 | Table S1 |
+| $V_p$ | `lvp` | n/a | Table S1 |
+| $CL$ | `lcl` | Table 2 | Table S1 |
+| $Q$ | `lq` | n/a | Table S1 |
+| $k_a$ | `lka` (omalizumab) | Table 2 | Table S1 |
+| $F$ | `lfdepot` (omalizumab) | Table 2, footnote `*` (fixed) | Table S1, footnote `*` (fixed) |
+| $k_{off}$ | `lk2` | Table 2 | Table S1 |
+| $K_d$ | `lkd` | Table 2 | Table S1 |
+| $R_b$ | `lrbase` | Table 2 | Table S1 |
+| $k_{eR}$ | `lkdeg` | Table 2 | Table S1 |
+| $k_{eDR}$ | `lkint` | Table 2 | Table S1 |
+
+Quantities the tables print but that are **derived** in `model()` rather than
+stored, exactly as the tables' own row labels define them:
+$k_{eD} = CL/V_c$, $k_{on} = k_{off}/K_d$ (Equation 7),
+$k_{syn} = k_{eR}R_b$ (Figure 1), and the target accumulation ratio
+$T_{acc} = k_{eR}/k_{eDR}$ (Equation 14).
+
+| Equation | Source |
+|---|---|
+| `d/dt(central)`, `d/dt(target)`, `d/dt(complex)` | Equation (2) |
+| `target(0) <- rbase * vc` | Equation (3) |
+| depot + `f(depot)` (omalizumab) | Equation (S20)-(S21); see Errata |
+| `peripheral1` distribution (2-cmt) | Equation (S18) |
+| `Cc <- (central + complex)/vc` ($D_T$) | Section 2.1, $D_T = D + DR$ |
+| `ftbr <- freeTarget/rbase` | Equation (28) |
+
+## Table consistency
+
+The packaged parameters must reproduce every *derived* quantity the paper
+prints. This is a closed-form check on the paper's own tables and needs no
+simulation.
+
+```{r table-consistency}
+printed <- tibble::tribble(
+  ~Model,                            ~keD,   ~ksyn,  ~kon,   ~Tacc,   ~KM_Kd,
+  "Straube_2025_omalizumab_1cmt",    0.0025,  1.130,  1.430,  5.058,  1.051,
+  "Straube_2025_omalizumab_2cmt",    0.13,    1.15,   1.01,   5.7,    1.08,
+  "Straube_2025_caplacizumab_1cmt", 58.80,   10.394,  2.3e4,  0.334,  1.01,
+  "Straube_2025_caplacizumab_2cmt", 65.6,    10.24,   2.3e4,  0.334,  1.01,
+  "Straube_2025_linagliptin_1cmt",   8.94,   18.529, 22.73,  86.804,  1.069,
+  "Straube_2025_linagliptin_2cmt",  11.37,    1.573, 22.73,   5.399,  1.061
+)
+
+encoded <- lapply(mods, function(n) {
+  g <- function(p) unname(exp(ui[[n]]$theta[[p]]))
+  tibble::tibble(
+    Model = n,
+    keD   = g("lcl") / g("lvc"),
+    ksyn  = g("lkdeg") * g("lrbase"),
+    kon   = g("lk2") / g("lkd"),
+    Tacc  = g("lkdeg") / g("lkint"),
+    KM_Kd = 1 + g("lkint") / g("lk2")
+  )
+}) |> dplyr::bind_rows()
+
+consistency <- printed |>
+  tidyr::pivot_longer(-Model, names_to = "Quantity", values_to = "Printed") |>
+  dplyr::inner_join(
+    encoded |> tidyr::pivot_longer(-Model, names_to = "Quantity", values_to = "Encoded"),
+    by = c("Model", "Quantity")
+  ) |>
+  dplyr::mutate(`% diff` = 100 * (Encoded - Printed) / Printed)
+
+# Deterministic: no simulation, no RNG, so a tight bound is the right bound.
+# Every residual is a printed-rounding artefact -- the largest (omalizumab keD,
+# 1.9%) comes from Table 2 printing keD to two significant figures (0.0025 for
+# 0.002548). 2.5% still goes red on a mis-transcribed digit.
+stopifnot(max(abs(consistency$`% diff`)) < 2.5)
+
+consistency |>
+  dplyr::arrange(dplyr::desc(abs(`% diff`))) |>
+  head(8) |>
+  knitr::kable(digits = c(0, 0, 5, 5, 2),
+               caption = "Largest deviations between encoded and printed derived quantities.")
+```
+
+# Dose levels
+
+There is no virtual cohort here: the models are deterministic fits with no IIV,
+so the "cohort" is the set of dose levels the paper itself simulated. Doses are
+in nmol, the unit Equation (3) uses ($D_0$ is "the drug dose (in nanomole)").
+
+```{r doses}
+MW <- c(omalizumab = 149000, caplacizumab = 28000, linagliptin = 472.54)  # Table 2, MW row
+
+# Omalizumab and linagliptin doses are absolute mass, so the nmol dose follows
+# from the molecular weight alone: mg / (g/mol) = 1e-3 mol, i.e. 1e6 nmol.
+mg_to_nmol <- function(mg, mw) mg / mw * 1e6
+
+# Caplacizumab doses are reported only as mg/kg and the paper states neither the
+# species nor the body weight (see Errata). The nmol doses are therefore
+# back-computed from the paper's OWN Vc and the initial total-drug concentration
+# read off Figure 5b (~133 ug/mL for 8 mg/kg), then scaled by the mg/kg ratio.
+# ug/mL / (g/mol) * 1e6 gives nM; nM * L is already nmol.
+cap_top_ugml <- 133
+cap_top_nmol <- cap_top_ugml / MW[["caplacizumab"]] * 1e6 *
+  exp(ui[["Straube_2025_caplacizumab_1cmt"]]$theta[["lvc"]])
+
+doses <- dplyr::bind_rows(
+  tibble::tibble(drug = "omalizumab",   treatment = c("90 mg SC", "270 mg SC"),
+                 amt = mg_to_nmol(c(90, 270), MW[["omalizumab"]]), cmt = "depot"),
+  tibble::tibble(drug = "caplacizumab", treatment = c("0.02 mg/kg", "0.4 mg/kg", "8 mg/kg"),
+                 amt = cap_top_nmol * c(0.02, 0.4, 8) / 8, cmt = "central"),
+  tibble::tibble(drug = "linagliptin",  treatment = c("0.5 mg", "2.5 mg", "10 mg"),
+                 amt = mg_to_nmol(c(0.5, 2.5, 10), MW[["linagliptin"]]), cmt = "central")
+)
+knitr::kable(doses, digits = 3, caption = "Dose levels simulated, in nmol.")
+```
+
+The linagliptin conversion is self-checking: 10 mg / 472.54 g/mol / 104.854 L =
+`r round(mg_to_nmol(10, MW[["linagliptin"]]) / exp(ui[["Straube_2025_linagliptin_1cmt"]]$theta[["lvc"]]), 1)`
+nM, matching the ~200 nM intercept of the 10 mg curve in Figure 5c.
+
+# Simulation
+
+```{r simulate}
+# Solve one (model, dose) pair over a window scaled to that model's own
+# complex-elimination time constant.
+solve_one <- function(model, amt, cmt, treatment, tmax, n = 1500) {
+  ev <- rxode2::et(amt = amt, cmt = cmt)
+  ev <- rxode2::et(ev, seq(0, tmax, length.out = n))
+  # useLinCmt = FALSE: rxode2's automatic ODE -> linCmt conversion must not be
+  # allowed to reinterpret the cl/vc pair and discard the explicit binding ODEs.
+  s <- rxode2::rxSolve(ui[[model]], ev, returnType = "data.frame", useLinCmt = FALSE)
+  if (is.null(s$id)) s$id <- 1L      # rxSolve omits `id` for a single subject
+  s$model <- model
+  s$treatment <- treatment
+  s
+}
+```
+
+# Replicate published figures
+
+## Figure 5a -- omalizumab (low-affinity example)
+
+```{r figure-5a}
+# Replicates Figure 5a of Straube 2025: total drug (upper) and total / free
+# target (lower) after a single 90 mg subcutaneous dose.
+oma <- solve_one("Straube_2025_omalizumab_1cmt",
+                 doses$amt[doses$treatment == "90 mg SC"], "depot", "90 mg SC", tmax = 60)
+
+oma |>
+  dplyr::select(time, `Total drug (D_T)` = Cc, `Total target (R_T)` = totalTarget,
+                `Free target (R)` = freeTarget) |>
+  tidyr::pivot_longer(-time) |>
+  ggplot(aes(time, value)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~name, scales = "free_y") +
+  labs(x = "Time (days)", y = "Concentration (nM)",
+       caption = "Replicates Figure 5a of Straube 2025 (90 mg SC omalizumab).") +
+  theme_bw()
+```
+
+The published Figure 5a peaks at roughly 60 nM around day 4-6 and falls to
+about 20 nM by day 60; total target rises above its
+`r round(exp(ui[["Straube_2025_omalizumab_1cmt"]]$theta[["lrbase"]]), 2)` nM
+baseline because $T_{acc} \approx 5 > 1$, while free target is suppressed and
+then recovers.
+
+```{r figure-5a-check}
+peak <- max(oma$Cc)
+rb_oma <- exp(ui[["Straube_2025_omalizumab_1cmt"]]$theta[["lrbase"]])
+# Deterministic solve of a fixed model at a fixed dose -- no cohort, no RNG.
+stopifnot(
+  peak > 55 && peak < 70,                                  # Figure 5a peak ~60 nM
+  oma$time[which.max(oma$Cc)] > 2 && oma$time[which.max(oma$Cc)] < 8,
+  max(oma$totalTarget) > rb_oma,                           # Tacc > 1 -> RT rises
+  min(oma$freeTarget) < 0.2 * rb_oma                       # free target suppressed
+)
+```
+
+## Figures 5b and 5c -- caplacizumab and linagliptin (high-affinity examples)
+
+```{r figure-5bc}
+# Replicates Figures 5b and 5c of Straube 2025. Both panels are plotted on the
+# paper's x-axis units (hours) although the models work in days.
+hi <- dplyr::bind_rows(
+  lapply(which(doses$drug == "caplacizumab"), function(i)
+    solve_one("Straube_2025_caplacizumab_1cmt", doses$amt[i], "central",
+              doses$treatment[i], tmax = 80 / 24)),
+  lapply(which(doses$drug == "linagliptin"), function(i)
+    solve_one("Straube_2025_linagliptin_1cmt", doses$amt[i], "central",
+              doses$treatment[i], tmax = 100 / 24))
+)
+hi <- hi |> dplyr::mutate(
+  drug = ifelse(grepl("caplacizumab", model), "ALX-0081 (caplacizumab)", "Linagliptin"),
+  # Figure 5b plots ug/mL; Figure 5c plots nM.
+  y = ifelse(grepl("caplacizumab", model), Cc * MW[["caplacizumab"]] / 1e6, Cc),
+  treatment = factor(treatment,
+                     levels = c("0.02 mg/kg", "0.4 mg/kg", "8 mg/kg",
+                                "0.5 mg", "2.5 mg", "10 mg"))
+)
+
+ggplot(hi, aes(time * 24, y, colour = treatment)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~drug, scales = "free") +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Total drug (ug/mL for ALX-0081; nM for linagliptin)",
+       colour = NULL,
+       caption = "Replicates Figures 5b and 5c of Straube 2025 (upper panels).") +
+  theme_bw()
+```
+
+```{r figure-5bc-ftbr}
+# Lower panels of Figures 5b and 5c: free target to baseline ratio (Equation 28).
+ftbr <- dplyr::bind_rows(
+  lapply(which(doses$drug == "caplacizumab"), function(i)
+    solve_one("Straube_2025_caplacizumab_1cmt", doses$amt[i], "central",
+              doses$treatment[i], tmax = 500 / 24)),
+  lapply(which(doses$drug == "linagliptin"), function(i)
+    solve_one("Straube_2025_linagliptin_1cmt", doses$amt[i], "central",
+              doses$treatment[i], tmax = 25 / 24))
+) |>
+  dplyr::mutate(drug = ifelse(grepl("caplacizumab", model),
+                              "ALX-0081 (caplacizumab)", "Linagliptin"))
+
+ggplot(ftbr, aes(time * 24, ftbr, colour = treatment)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~drug, scales = "free_x") +
+  labs(x = "Time (h)", y = "FTBR", colour = NULL,
+       caption = "Replicates Figures 5b and 5c of Straube 2025 (lower panels).") +
+  theme_bw()
+```
+
+# Mechanistic validation
+
+The paper's analytical results give several closed-form predictions that the
+packaged full-TMDD models must satisfy. All are deterministic, so the bounds
+below are tight by design (see pattern 11 of the skill's failure-pattern notes).
+
+## Drug-free steady state (Equation 3)
+
+With no dose, the target must sit exactly at its basal level $R_b$ for all
+time -- this is what ties `target(0) <- rbase * vc` to `ksyn <- kdeg * rbase`.
+
+```{r gate-steady-state}
+ss <- vapply(mods, function(n) {
+  s  <- rxode2::rxSolve(ui[[n]], rxode2::et(seq(0, 30, length.out = 200)),
+                        returnType = "data.frame", useLinCmt = FALSE)
+  max(abs(s$freeTarget - exp(ui[[n]]$theta[["lrbase"]])))
+}, numeric(1))
+stopifnot(max(ss) < 1e-8)
+knitr::kable(tibble::tibble(Model = mods, `Max |R - Rb| (nM)` = ss),
+             caption = "Drug-free steady-state hold. Exact by construction.")
+```
+
+## Sub-saturating high-affinity kinetics (Equation 12)
+
+For a high-affinity drug dosed below the target level ($D_T(0) \le R_b$),
+Equation (12) predicts that total drug decays as a *single exponential* with
+half-life $\ln(2)/k_{eDR}$, and hence that $AUC_{0-\infty} = (D_0/V_c)/k_{eDR}$
+and $C_{max} = D_0/V_c$. The 0.02 mg/kg caplacizumab dose is exactly this case
+-- and the paper singles it out in the Figure 5 caption ("for 0.02 mg/kg the
+cross-over time does not exist since the initial drug concentration is lower
+than the target concentration").
+
+```{r gate-eq12}
+u <- ui[["Straube_2025_caplacizumab_1cmt"]]
+g <- function(p) unname(exp(u$theta[[p]]))
+D0  <- doses$amt[doses$treatment == "0.02 mg/kg"]
+sub <- solve_one("Straube_2025_caplacizumab_1cmt", D0, "central", "0.02 mg/kg",
+                 tmax = 8 * log(2) / g("lkint"), n = 4000)
+
+stopifnot(sub$Cc[1] < g("lrbase"))          # confirms Equation (12) applies at all
+w   <- sub$time > 6 * log(2) / g("lkint")   # terminal window, clear of the noise floor
+slope <- coef(lm(log(sub$Cc[w]) ~ sub$time[w]))[2]
+
+eq12 <- tibble::tibble(
+  Quantity  = c("DT(0) (nM)", "terminal t1/2 (d)"),
+  Predicted = c(D0 / g("lvc"), log(2) / g("lkint")),
+  Observed  = c(sub$Cc[1], -log(2) / slope)
+) |> dplyr::mutate(`% diff` = 100 * (Observed - Predicted) / Predicted)
+
+# Achieved -0.7%; 3 still goes red on a mis-transcribed keDR, Vc or dose.
+stopifnot(max(abs(eq12$`% diff`)) < 3)
+knitr::kable(eq12, digits = 4,
+             caption = "Equation (12) closed form vs the full TMDD solve.")
+```
+
+## Cross-over time (Equation 15)
+
+Above saturation, Equation (15) predicts the time $t_c$ at which
+$D_T$ falls to meet $R_T$.
+
+```{r gate-eq15}
+crossover <- lapply(
+  list(c("Straube_2025_caplacizumab_1cmt", "8 mg/kg", "3"),
+       c("Straube_2025_linagliptin_1cmt",  "10 mg",   "5")),
+  function(x) {
+    uu <- ui[[x[1]]]; gg <- function(p) unname(exp(uu$theta[[p]]))
+    d0 <- doses$amt[doses$treatment == x[2]]
+    keD <- gg("lcl") / gg("lvc"); ksyn <- gg("lkdeg") * gg("lrbase")
+    tc <- (1 / keD) * log((ksyn / keD + d0 / gg("lvc") - gg("lrbase")) / (ksyn / keD))
+    s  <- solve_one(x[1], d0, "central", x[2], tmax = as.numeric(x[3]), n = 20000)
+    tibble::tibble(Model = x[1], Dose = x[2],
+                   `Eq (15) tc (h)` = tc * 24,
+                   `Simulated DT=RT (h)` = s$time[which(s$Cc <= s$totalTarget)[1]] * 24)
+  }) |> dplyr::bind_rows() |>
+  dplyr::mutate(`% diff` = 100 * (`Simulated DT=RT (h)` - `Eq (15) tc (h)`) / `Eq (15) tc (h)`)
+
+# Eq (15) comes from the high-affinity APPROXIMATION (Eq 13), so a few percent
+# of approximation error is expected and is itself the paper's subject; the
+# larger caplacizumab residual is the keD >> keR regime the paper flags in
+# Figure 3b. 10% still goes red on a transcription error.
+stopifnot(max(abs(crossover$`% diff`)) < 10)
+knitr::kable(crossover, digits = 3,
+             caption = "Equation (15) cross-over time vs the simulated DT = RT crossing.")
+```
+
+## Target suppression and recovery (Equations 29-31)
+
+The FTBR must be strongly suppressed while the target is saturated and return
+to unity once drug has washed out. Suppression is measured over the paper's own
+figure windows; recovery needs a longer window, because for linagliptin the
+free target does not approach baseline monotonically (below).
+
+```{r gate-ftbr}
+suppression <- ftbr |> dplyr::group_by(drug, treatment) |>
+  dplyr::summarise(`FTBR min` = min(ftbr), .groups = "drop")
+
+# Recovery over a full-washout window rather than the figure window.
+washout <- dplyr::bind_rows(lapply(seq_len(nrow(doses))[doses$drug != "omalizumab"], function(i) {
+  model <- if (doses$drug[i] == "caplacizumab") "Straube_2025_caplacizumab_1cmt"
+           else "Straube_2025_linagliptin_1cmt"
+  s <- solve_one(model, doses$amt[i], "central", doses$treatment[i], tmax = 30, n = 2000)
+  tibble::tibble(treatment = doses$treatment[i],
+                 `FTBR max (overshoot)` = max(s$ftbr),
+                 `FTBR at 30 d` = dplyr::last(s$ftbr))
+}))
+
+rec <- suppression |> dplyr::inner_join(washout, by = "treatment")
+
+# Deterministic solves. Achieved: suppression <= 0.64, |1 - FTBR(30 d)| <= 7.4e-5.
+stopifnot(all(rec$`FTBR min` < 0.75),
+          all(abs(rec$`FTBR at 30 d` - 1) < 1e-3))
+knitr::kable(rec, digits = 5,
+             caption = "Target suppression, transient overshoot, and recovery to baseline.")
+```
+
+For linagliptin the FTBR *overshoots* baseline by up to
+`r round(100 * (max(rec$"FTBR max (overshoot)") - 1))`% before settling. This is
+the expected consequence of $T_{acc} = k_{eR}/k_{eDR} \approx 87 \gg 1$: by
+Equation (32) the total target accumulates towards $T_{acc}R_b$ while drug is
+present, so as the complex is cleared the liberated free target transiently
+exceeds its basal level. The paper's Figure 5c is drawn on a 0-25 h window with
+the y-axis capped at 1, so it shows only the rise. Caplacizumab, with
+$T_{acc} = 0.334 < 1$, shows no overshoot -- its total target is *depleted*
+rather than accumulated, and the FTBR approaches 1 from below.
+
+## Affinity classification (Equation 33)
+
+Equation (33) classifies a drug as high-affinity when
+$K_M \ll \min(T_{acc}R_b, R_b)$ and low-affinity when
+$K_M \gg \max(T_{acc}R_b, R_b)$, with $K_M = K_d(1 + k_{eDR}/k_{off})$
+(Equation 7). This reproduces the paper's own assignment of each molecule.
+
+```{r gate-eq33}
+cls <- lapply(mods[c(1, 3, 5)], function(n) {
+  gg <- function(p) unname(exp(ui[[n]]$theta[[p]]))
+  KM <- gg("lkd") * (1 + gg("lkint") / gg("lk2"))
+  Tacc <- gg("lkdeg") / gg("lkint"); Rb <- gg("lrbase")
+  tibble::tibble(Model = n, `KM (nM)` = KM, `Tacc*Rb (nM)` = Tacc * Rb, `Rb (nM)` = Rb,
+                 `KM / min(Tacc*Rb, Rb)` = KM / min(Tacc * Rb, Rb),
+                 `KM / max(Tacc*Rb, Rb)` = KM / max(Tacc * Rb, Rb))
+}) |> dplyr::bind_rows()
+
+# The paper states KM/(Tacc*Rb) = 3.3e-4 for ALX-0081 and "about 100-fold
+# larger" for linagliptin (section 3.2).
+alx <- cls$`KM / min(Tacc*Rb, Rb)`[grepl("caplacizumab", cls$Model)]
+lin <- cls$`KM / min(Tacc*Rb, Rb)`[grepl("linagliptin",  cls$Model)]
+stopifnot(abs(alx - 3.3e-4) / 3.3e-4 < 0.1,   # paper: 3.3e-4
+          lin / alx > 30, lin / alx < 300)     # paper: "about 100-fold larger"
+knitr::kable(cls, digits = 5,
+             caption = "Equation (33) affinity classification, one-compartment fits.")
+```
+
+Omalizumab sits between the two limits -- the paper notes that its $K_M$ "is in
+the same order of magnitude as $T_{acc}R_b$", which is why the low-affinity
+approximation reproduces it only approximately.
+
+# PKNCA validation
+
+NCA on the simulated total-drug profiles for the two intravenously dosed
+molecules. The observation window is eight terminal half-lives, long enough to
+capture $AUC_{0-\infty}$ but short enough that the tail has not decayed into
+solver noise (which would corrupt the half-life fit).
+
+```{r pknca}
+nca_sims <- lapply(which(doses$drug %in% c("caplacizumab", "linagliptin")), function(i) {
+  model <- if (doses$drug[i] == "caplacizumab") "Straube_2025_caplacizumab_1cmt"
+           else "Straube_2025_linagliptin_1cmt"
+  solve_one(model, doses$amt[i], "central", doses$treatment[i],
+            tmax = 8 * log(2) / exp(ui[[model]]$theta[["lkint"]]), n = 4000)
+}) |> dplyr::bind_rows()
+
+# Only `!is.na(Cc)` -- a `time > 0` or `Cc > 0` filter would drop the time-zero
+# row that anchors AUC0-*.
+sim_nca <- nca_sims |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+stopifnot(nrow(sim_nca) > 0, !anyNA(sim_nca$Cc), all(sim_nca$Cc >= 0))
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_df  <- doses |>
+  dplyr::filter(drug %in% c("caplacizumab", "linagliptin")) |>
+  dplyr::transmute(id = 1L, time = 0, amt, treatment)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- data.frame(start = 0, end = Inf,
+                        cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against the paper's closed-form predictions
+
+Straube reports no NCA table, but Equations (12) and (17) *are* closed-form NCA
+predictions: for a high-affinity drug the terminal half-life is
+$\ln(2)/k_{eDR}$ at every dose, and $C_{max} = D_0/V_c$ for an IV bolus.
+
+```{r nca-compare}
+reference <- doses |>
+  dplyr::filter(drug %in% c("caplacizumab", "linagliptin")) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    .m = if (drug == "caplacizumab") "Straube_2025_caplacizumab_1cmt"
+         else "Straube_2025_linagliptin_1cmt",
+    cmax      = amt / exp(ui[[.m]]$theta[["lvc"]]),
+    half.life = log(2) / exp(ui[[.m]]$theta[["lkint"]])
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::select(treatment, cmax, half.life)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res, reference = reference, by = "treatment",
+  units = c(cmax = "nM", half.life = "day"), tolerance_pct = 20
+)
+knitr::kable(cmp, caption = paste(
+  "Simulated NCA vs the paper's closed-form predictions.",
+  "* differs from reference by >20%."))
+```
+
+```{r nca-gate}
+# ncaComparisonTable's "% diff" column is FORMATTED CHARACTER, so gate on raw
+# numbers computed here rather than parsing the rendered table.
+obs <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "half.life")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::inner_join(reference, by = "treatment", suffix = c("_obs", "_ref")) |>
+  dplyr::mutate(cmax_pct = 100 * (cmax_obs - cmax_ref) / cmax_ref,
+                thalf_pct = 100 * (half.life_obs - half.life_ref) / half.life_ref,
+                drug = ifelse(grepl("mg/kg", treatment), "caplacizumab", "linagliptin"))
+
+# Cmax = D0/Vc is exact for an IV bolus, for both drugs.
+stopifnot(max(abs(obs$cmax_pct)) < 0.5)
+
+# The half-life claim holds for caplacizumab (achieved -0.8%) but NOT for
+# linagliptin -- see the deviation discussion below. Gate the case that holds
+# and keep the other visible in the table above rather than widening to cover it.
+stopifnot(max(abs(obs$thalf_pct[obs$drug == "caplacizumab"])) < 3)
+knitr::kable(obs |> dplyr::select(treatment, cmax_pct, thalf_pct),
+             digits = 2,
+             caption = "Percent difference from the closed-form predictions.")
+```
+
+### Known deviation: the linagliptin terminal half-life
+
+For linagliptin the simulated terminal half-life is about
+`r round(mean(obs$half.life_obs[obs$drug == "linagliptin"]), 2)` days against
+the $\ln(2)/k_{eDR} = `r round(log(2)/exp(ui[["Straube_2025_linagliptin_1cmt"]]$theta[["lkint"]]), 2)`$
+days that Equation (17) predicts -- a `r round(mean(obs$thalf_pct[obs$drug == "linagliptin"]))`%
+deviation, identical across all three doses.
+
+This is not an encoding error; it reproduces a result the paper itself reports.
+Equation (17) is the *high-affinity approximation*, which requires binding to be
+fast relative to drug elimination. Linearising the full binding system
+(Equation 2) about the basal target level gives a slow eigenvalue that is the
+true terminal rate constant, and it equals $k_{eDR}$ only in that fast-binding
+limit:
+
+```{r eigen}
+slow_eigen <- function(n) {
+  gg <- function(p) unname(exp(ui[[n]]$theta[[p]]))
+  konRb <- (gg("lk2") / gg("lkd")) * gg("lrbase"); keD <- gg("lcl") / gg("lvc")
+  A <- matrix(c(-(konRb + keD), gg("lk2"), konRb, -(gg("lk2") + gg("lkint"))), 2, 2, byrow = TRUE)
+  max(Re(eigen(A)$values))
+}
+tibble::tibble(
+  Model = mods[c(3, 5)],
+  `koff / keD` = vapply(mods[c(3, 5)], function(n)
+    exp(ui[[n]]$theta[["lk2"]]) / (exp(ui[[n]]$theta[["lcl"]]) / exp(ui[[n]]$theta[["lvc"]])),
+    numeric(1)),
+  `t1/2 from slow eigenvalue (d)` = vapply(mods[c(3, 5)],
+    function(n) -log(2) / slow_eigen(n), numeric(1)),
+  `ln(2)/keDR (d)` = vapply(mods[c(3, 5)],
+    function(n) log(2) / exp(ui[[n]]$theta[["lkint"]]), numeric(1)),
+  `Simulated (d)` = c(mean(obs$half.life_obs[obs$drug == "caplacizumab"]),
+                      mean(obs$half.life_obs[obs$drug == "linagliptin"]))
+) |>
+  knitr::kable(digits = 4, caption = paste(
+    "The simulated terminal half-life tracks the slow eigenvalue of the",
+    "linearised binding system, not ln(2)/keDR, whenever koff is not large",
+    "relative to keD."))
+```
+
+Caplacizumab has $k_{off}/k_{eD} \approx 1.4$ with an extremely fast on-rate,
+so the approximation holds; linagliptin has $k_{off}/k_{eD} \approx 0.19$, and
+the paper's own supplement (Equations S11-S17, Figure S1) analyses exactly this
+$k_{off} \ll k_{eD}$ regime as the case where "the quasi-steady state
+assumption leading to Equation (5) is not valid anymore". Consistently, the
+main text states that "the approximation for $D_T$ (especially the slow
+terminal elimination phase) is much better for ALX-0081 than for linagliptin"
+(section 3.2), which is what Figure 5c shows: the dashed Equation (17) curves
+lie well above the solid full-model curves at late times.
+
+# Assumptions and deviations
+
+* **Subcutaneous bioavailability (omalizumab).** Supplement Equation (S20) is
+  printed as $dD_{dep}/dt = -k_a F D_{dep}$ with $dD/dt = k_a F D_{dep}/V_c$.
+  Taken literally, $F$ is then only a rescaling of the absorption rate constant
+  and the *entire* dose reaches the central compartment. Simulating that form
+  gives a peak of 143 nM at day 9, against roughly 60 nM at day 4-6 in
+  Figure 5a; encoding $F$ as an ordinary bioavailable fraction
+  (`f(depot) <- exp(lfdepot)`) gives 61.6 nM at day 4.25 and reproduces the
+  figure. The models therefore use standard bioavailability, and this is the
+  only place where the encoding departs from an equation as printed.
+* **Caplacizumab doses are figure-derived.** The paper reports the ALX-0081
+  doses only as mg/kg and states neither the species nor the body weight; its
+  fitted $V_c$ of 0.046 L is not consistent with an adult human, and the
+  upstream data source (Glassman & Muzykantov 2020) is not open access. The
+  nmol doses used here were back-computed from the paper's own $V_c$ and the
+  ~133 ug/mL initial concentration of the 8 mg/kg profile in Figure 5b, then
+  scaled by the mg/kg ratio. This is a **figure-derived** input, not a
+  paper-tabulated one. It is self-consistent: the resulting 0.02 mg/kg profile
+  starts at 11.9 nM, below the 32.8 nM target level, which is exactly the
+  condition the Figure 5 caption gives for that dose having no cross-over time.
+  No model parameter depends on it.
+* **Printed rounding.** Several Table 2 / Table S1 columns are rounded more
+  coarsely than the quantities derived from them. `keD = CL/Vc` computed from
+  the printed `CL` and `Vc` differs from the printed `keD` by 1.9% (omalizumab,
+  Table 2, where `keD` is printed as 0.0025 for 0.002548), 0.9% (caplacizumab
+  Table 2) and 1.2% (caplacizumab Table S1); `kon = koff/Kd` differs by up to
+  1.2%; and `Tacc = keR/keDR` differs by 1.3% for omalizumab Table S1, where
+  `keDR` is printed to two significant figures. The primary estimates (`CL`,
+  `Vc`, `koff`, `Kd`, `keR`, `keDR`) are encoded as printed and the derived
+  quantities are computed in `model()`, so these residuals are visible in the
+  table-consistency check rather than hidden.
+* **Target accumulation ratio $T_{acc}$ is not a stored parameter.** It is
+  exactly $k_{eR}/k_{eDR}$ (Equation 14) and is recovered as `kdeg/kint`, so
+  storing it would duplicate an existing degree of freedom. Where the paper
+  *fixed* $T_{acc}$ (caplacizumab, Table 2 footnote a) and estimated $k_{eR}$,
+  the derived $k_{eDR}$ is encoded un-`fixed()` because it inherits $k_{eR}$'s
+  uncertainty; the in-file comment records this.
+* **Specimen is not stated.** The paper does not say whether concentrations are
+  plasma or serum, so every circulating `compartmentData` entry is marked
+  `verified = FALSE` with `specimen = "plasma"` as the assumption.
+* **No IIV and no residual error.** These are individual (omalizumab) or
+  typical-value (caplacizumab, linagliptin) deterministic fits; the paper
+  reports no variance components, and none were invented.
+* **Two patients, one encoded.** The omalizumab files carry the Figure 5a /
+  Figure S3a patient. The second patient's patient-specific values are recorded
+  in each file's `population$notes`.

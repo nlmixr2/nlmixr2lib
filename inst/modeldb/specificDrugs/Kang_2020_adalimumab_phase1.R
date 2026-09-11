@@ -118,7 +118,7 @@ Kang_2020_adalimumab_phase1 <- function() {
 
     # Anti-drug-antibody effects on CL/F (Equation 5 terms theta7 and theta8).
     # The reference is an ADA-POSITIVE subject at a titre of 16.
-    e_ada_neg_cl   <- log(0.421) ; label("Effect of a negative ADA test on log CL/F, versus an ADA titre of 16 (log-scale)")  # Table 2: (ADA-) * exp(theta7) = 0.421 (95% CI 0.399, 0.444); Section 3.2.1 "Subjects with negative ADA test had approximately 42.1% (39.9%, 44.4%) of CL/F in subjects with ADA titre value of 16"
+    e_ada_neg_cl   <- log(0.421) ; label("Effect of a negative ADA test on log CL/F versus an ADA titre of 16, log-scale (unitless)")  # Table 2: (ADA-) * exp(theta7) = 0.421 (95% CI 0.399, 0.444); Section 3.2.1 "Subjects with negative ADA test had approximately 42.1% (39.9%, 44.4%) of CL/F in subjects with ADA titre value of 16"
     e_ada_titer_cl <- 0.242      ; label("Power exponent on (ADA_TITER/16) for CL/F (unitless)")                              # Table 2: (ADA/16)^theta8 = 0.242 (95% CI 0.229, 0.255)
 
     # IIV: full 5x5 block on log CL/F, log Vc/F, log Q/F, log Vp/F and log ka.

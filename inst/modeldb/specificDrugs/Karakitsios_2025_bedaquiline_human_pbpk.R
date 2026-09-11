@@ -233,7 +233,7 @@ Karakitsios_2025_bedaquiline_human_pbpk <- function() {
     # infinities for t = 0"; the value is not reported. See vignette Errata.
     tau_caseum  <- fixed(1e-3)  ; label("Onset-time regulariser tau of equation (S15) (h)")
     flys_cell   <- fixed(0.078) ; label("Lysosomal contribution to cellular volume fLys(AM) (unitless)")  # Supporting Information: 7.8% in rat alveolar macrophages (Ufuk 2017), "assumed that the lysosomal contribution to the cellular volume in humans is the same as in rats"
-    ratio_cas1  <- fixed(1.67)  ; label("Volume ratio outer caseum : caseum-1 (ratio1, unitless)")        # Supporting Information: "The same value of 1.67 was used for ratio1 in humans as well"
+    ratio_cas1  <- fixed(1.67)  ; label("Volume ratio outer caseum : caseum-1 (unitless)")        # Supporting Information: "The same value of 1.67 was used for ratio1 in humans as well"
     ratio_inner <- fixed(1.0)   ; label("Volume ratio caseum(n-1) : caseum(n) for n = 2..6 (unitless)")   # Supporting Information: "a value equal to 1 was used for all other ratios, namely ratio2 to ratio6"
 
     # =====================================================================

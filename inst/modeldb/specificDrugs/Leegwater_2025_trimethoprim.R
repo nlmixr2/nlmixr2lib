@@ -140,10 +140,10 @@ Leegwater_2025_trimethoprim <- function() {
     # Structural parameters - Leegwater 2025 Table 2, cross-checked against
     # the trimethoprim $THETA block of the supplement control stream (all
     # values there are the final estimates entered as FIX for simulation).
-    lka <- log(0.337); label("First-order absorption rate constant (ka, 1/h)")                                       # Table 2: 0.337 1/h, RSE 54%, bootstrap 95% CI 0.095-0.877; control stream $THETA(3) "0.337 FIX". The Discussion flags this as the one imprecise parameter, attributed to routinely-collected dosing times.
-    lcl <- log(4.21); label("Apparent clearance at eGFR 68 mL/min/1.73 m^2 without CRRT (CL/F, L/h)")                # Table 2: 4.21 L/h, RSE 13%, bootstrap 95% CI 3.21-5.42; control stream $THETA(1) "4.21 FIX"
-    lvc <- log(134); label("Apparent central volume of distribution (Vc/F, L)")                                      # Table 2: 134 L, RSE 10%, bootstrap 95% CI 105-161; control stream $THETA(2) "134 FIX"
-    lfdepot <- fixed(log(1)); label("Oral bioavailability (F, unitless)")                                            # Table 2: "Biological availability 1 Fixed". Results: estimated first, found to be ~100%, then fixed to 100% with similar model performance. The control stream carries no F1 term, i.e. F = 1.
+    lka <- log(0.337); label("First-order absorption rate constant (1/h)")                                       # Table 2: 0.337 1/h, RSE 54%, bootstrap 95% CI 0.095-0.877; control stream $THETA(3) "0.337 FIX". The Discussion flags this as the one imprecise parameter, attributed to routinely-collected dosing times.
+    lcl <- log(4.21); label("Apparent clearance at eGFR 68 mL/min/1.73 m^2 without CRRT (L/h)")                # Table 2: 4.21 L/h, RSE 13%, bootstrap 95% CI 3.21-5.42; control stream $THETA(1) "4.21 FIX"
+    lvc <- log(134); label("Apparent central volume of distribution (L)")                                      # Table 2: 134 L, RSE 10%, bootstrap 95% CI 105-161; control stream $THETA(2) "134 FIX"
+    lfdepot <- fixed(log(1)); label("Oral bioavailability (unitless)")                                            # Table 2: "Biological availability 1 Fixed". Results: estimated first, found to be ~100%, then fixed to 100% with similar model performance. The control stream carries no F1 term, i.e. F = 1.
 
     # Covariate effects on apparent clearance. These are mutually exclusive
     # branches, not multiplicative layers: control stream $PK evaluates

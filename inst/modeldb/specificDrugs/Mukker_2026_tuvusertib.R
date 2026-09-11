@@ -84,18 +84,18 @@ Mukker_2026_tuvusertib <- function() {
     # --- Structural parameters: Mukker 2026 Table 1 (final POPPK model) -------
     # Log-transformed in ini() so re-fits stay on the positive real line; the
     # paper reports linear-scale values.
-    lka   <- log(0.441); label("Absorption rate constant (KA, 1/h)")                       # Table 1: KA = 0.441 1/h (bootstrap 95% CI 0.391, 0.505)
-    lcl   <- log(55.7);  label("Apparent clearance at the drug-free baseline (CL/F, L/h)") # Table 1: CL/F = 55.7 L/h (48.5, 66.1)
-    lvc   <- log(30.0);  label("Apparent central volume of distribution (VC/F, L)")        # Table 1: VC/F = 30.0 L (17.3, 46.6)
-    lq    <- log(3.59);  label("Apparent intercompartmental clearance (Q/F, L/h)")         # Table 1: Q/F = 3.59 L/h (2.70, 4.99)
-    lvp   <- log(136);   label("Apparent peripheral volume of distribution (VP/F, L)")     # Table 1: VP/F = 136 L (85.3, 191)
-    ltlag <- log(0.369); label("Absorption lag time (ALAG1, h)")                           # Table 1: ALAG1 = 0.369 h (0.346, 0.400)
+    lka   <- log(0.441); label("Absorption rate constant (1/h)")                       # Table 1: KA = 0.441 1/h (bootstrap 95% CI 0.391, 0.505)
+    lcl   <- log(55.7);  label("Apparent clearance at the drug-free baseline (L/h)") # Table 1: CL/F = 55.7 L/h (48.5, 66.1)
+    lvc   <- log(30.0);  label("Apparent central volume of distribution (L)")        # Table 1: VC/F = 30.0 L (17.3, 46.6)
+    lq    <- log(3.59);  label("Apparent intercompartmental clearance (L/h)")         # Table 1: Q/F = 3.59 L/h (2.70, 4.99)
+    lvp   <- log(136);   label("Apparent peripheral volume of distribution (L)")     # Table 1: VP/F = 136 L (85.3, 191)
+    ltlag <- log(0.369); label("Absorption lag time (h)")                           # Table 1: ALAG1 = 0.369 h (0.346, 0.400)
 
     # Clearance-compartment turnover (Mukker 2026 Figure 2a; Supplement S1).
     # KCL is both the zero-order production rate INTO the clearance compartment
     # and the drug-free first-order loss rate constant out of it, so the state
     # sits at 1 in the absence of drug (see model() for the algebra).
-    lkcl  <- log(0.0878); label("Clearance-compartment turnover rate constant (KCL, 1/h)") # Table 1: KCL = 0.0878 1/h (0.0682, 0.115)
+    lkcl  <- log(0.0878); label("Clearance-compartment turnover rate constant (1/h)") # Table 1: KCL = 0.0878 1/h (0.0682, 0.115)
     slp   <- 0.303;       label("Tuvusertib effect on clearance-compartment loss (SLP, %/(ng/mL))") # Table 1: SLP = 0.303 %/(ng/mL) (0.216, 0.407)
 
     # --- Interindividual variability -----------------------------------------

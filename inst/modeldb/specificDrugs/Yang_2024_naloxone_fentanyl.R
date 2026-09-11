@@ -130,46 +130,46 @@ Yang_2024_naloxone_fentanyl <- function() {
 
     # --- Naloxone PK (Yang 2024 Table S4; control stream (C) THETA 1-6)
     lktr_naloxone <- fixed(log(0.696))
-    label("Naloxone transit absorption rate constant (KTR, 1/min)")            # (C) THETA 1 = 0.696; Table S4
+    label("Naloxone transit absorption rate constant (1/min)")            # (C) THETA 1 = 0.696; Table S4
     lcl_naloxone <- fixed(log(3.26))
-    label("Naloxone apparent clearance at 70 kg (CL/F, L/min)")                # (C) THETA 2 = 3.26; Table S4
+    label("Naloxone apparent clearance at 70 kg (L/min)")                # (C) THETA 2 = 3.26; Table S4
     e_wt_cl_naloxone <- fixed(0.538)
     label("Allometric exponent of body weight on naloxone CL/F (unitless)")    # (C) THETA 3 = 0.538; Table S4
     lvc_naloxone <- fixed(log(404))
-    label("Naloxone apparent central volume (V2/F, L)")                        # (C) THETA 4 = 404; Table S4
+    label("Naloxone apparent central volume (L)")                        # (C) THETA 4 = 404; Table S4
     lq_naloxone <- fixed(log(0.0847))
-    label("Naloxone apparent intercompartmental clearance (Q/F, L/min)")       # (C) THETA 5 = 0.0847; Table S4
+    label("Naloxone apparent intercompartmental clearance (L/min)")       # (C) THETA 5 = 0.0847; Table S4
     lvp_naloxone <- fixed(log(81.8))
-    label("Naloxone apparent peripheral volume (V3/F, L)")                     # (C) THETA 6 = 81.8; Table S4
+    label("Naloxone apparent peripheral volume (L)")                     # (C) THETA 6 = 81.8; Table S4
 
     # --- Fentanyl PK (Table S7; control stream (C) THETA 7-10)
     lcl <- fixed(log(0.98))
-    label("Fentanyl clearance (CL, L/min)")                                    # (C) THETA 7 = 0.98; Table S7
+    label("Fentanyl clearance (L/min)")                                    # (C) THETA 7 = 0.98; Table S7
     lvc <- fixed(log(19.5))
-    label("Fentanyl central volume (V1, L)")                                   # (C) THETA 8 = 19.5; Table S7
+    label("Fentanyl central volume (L)")                                   # (C) THETA 8 = 19.5; Table S7
     lq <- fixed(log(3.51))
-    label("Fentanyl intercompartmental clearance (Q2, L/min)")                 # (C) THETA 9 = 3.51; Table S7
+    label("Fentanyl intercompartmental clearance (L/min)")                 # (C) THETA 9 = 3.51; Table S7
     lvp <- fixed(log(150))
-    label("Fentanyl peripheral volume (V2, L)")                                # (C) THETA 10 = 150; Table S7
+    label("Fentanyl peripheral volume (L)")                                # (C) THETA 10 = 150; Table S7
 
     # --- Biophase equilibration (equation 1)
     lke0_naloxone <- fixed(log(0.106))
-    label("Naloxone biophase equilibration rate constant (ke0, 1/min)")        # (C) THETA 11 = 0.106; Table S7
+    label("Naloxone biophase equilibration rate constant (1/min)")        # (C) THETA 11 = 0.106; Table S7
     lke0 <- fixed(log(0.0422))
-    label("Fentanyl biophase equilibration rate constant (ke0, 1/min)")        # (C) THETA 12 = 0.0422; Table S7
+    label("Fentanyl biophase equilibration rate constant (1/min)")        # (C) THETA 12 = 0.0422; Table S7
 
     # --- Fractional Emax PD with competitive naloxone antagonism
     # (equations 11-12)
     lec50 <- fixed(log(1.140))
-    label("Fentanyl half-maximal effect-site concentration (EC50, ng/mL)")     # (C) THETA 13 = 1.140; Table S7
+    label("Fentanyl half-maximal effect-site concentration (ng/mL)")     # (C) THETA 13 = 1.140; Table S7
     lalpha <- fixed(log(0.91))
-    label("Fentanyl intrinsic activity (alpha, unitless 0-1)")                 # (C) THETA 14 = 0.91; Table S7
+    label("Fentanyl intrinsic activity (unitless 0-1)")                 # (C) THETA 14 = 0.91; Table S7
     lhill <- fixed(log(2.68))
-    label("Fentanyl sigmoidicity slope parameter (n, unitless)")               # (C) THETA 15 = 2.68; Table S7
+    label("Fentanyl sigmoidicity slope parameter (unitless)")               # (C) THETA 15 = 2.68; Table S7
     lec50_naloxone <- fixed(log(0.6021768))
-    label("Naloxone half-maximal effect-site concentration, from Olofsen 2010 (EC50, ng/mL)")  # (C) $ERROR EC50N = 0.6021768; Table S7 rounds to 0.602
+    label("Naloxone half-maximal effect-site concentration, from Olofsen 2010 (ng/mL)")  # (C) $ERROR EC50N = 0.6021768; Table S7 rounds to 0.602
     le0 <- fixed(log(20.2))
-    label("Baseline minute ventilation (V0, L/min)")                           # Table S7: V0 20.2 L/min (carried as the E0 data column in control stream (C))
+    label("Baseline minute ventilation (L/min)")                           # Table S7: V0 20.2 L/min (carried as the E0 data column in control stream (C))
 
     # --- IIV. Control stream (C) $OMEGA entries 1-8, in order. Each
     # equals the square of the Table S7 "IIV (%)" column (e.g. fentanyl
@@ -244,7 +244,7 @@ Yang_2024_naloxone_fentanyl <- function() {
 
     # ---- Outputs
     Cc <- central / vc
-    Cnal <- central_naloxone / vc_naloxone
+    Cc_naloxone <- central_naloxone / vc_naloxone
     # Fractional Emax with competitive naloxone antagonism, equation 12 /
     # control stream (C) $ERROR:
     #   NALEFF = 1 + Ce_nal/EC50_nal

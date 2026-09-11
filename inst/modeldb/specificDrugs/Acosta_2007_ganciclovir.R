@@ -94,13 +94,13 @@ Acosta_2007_ganciclovir <- function() {
     # Structural PK -- Yang 2023 Table 3, Acosta et al. (2007) row. Body weight
     # enters un-normalized, so the reference subject is WT = 1 kg. Clearance in
     # L/h, volume in L, ka in 1/h. One-compartment model with a depot.
-    lcl <- log(0.146); label("Clearance coefficient at WT = 1 kg (CL, L/h)")            # Yang 2023 Table 3 (Acosta 2007): CL = 0.146 * BW^1.68
-    lvc <- log(1.15) ; label("Central volume coefficient at WT = 1 kg (V, L)")          # Yang 2023 Table 3 (Acosta 2007): V = 1.15 * BW
-    lka <- log(0.591); label("First-order oral absorption rate constant (ka, 1/h)")     # Yang 2023 Table 3 (Acosta 2007): Ka = 0.591
+    lcl <- log(0.146); label("Clearance coefficient at WT = 1 kg (L/h)")            # Yang 2023 Table 3 (Acosta 2007): CL = 0.146 * BW^1.68
+    lvc <- log(1.15) ; label("Central volume coefficient at WT = 1 kg (L)")          # Yang 2023 Table 3 (Acosta 2007): V = 1.15 * BW
+    lka <- log(0.591); label("First-order oral absorption rate constant (1/h)")     # Yang 2023 Table 3 (Acosta 2007): Ka = 0.591
 
     # Oral bioavailability of ganciclovir from a valganciclovir milligram dose of
     # the liquid formulation (no molecular-weight conversion was applied).
-    lfdepot <- log(0.536); label("Oral bioavailability of ganciclovir from liquid valganciclovir (F, fraction)")  # Yang 2023 Table 3 (Acosta 2007): F = 0.536
+    lfdepot <- log(0.536); label("Oral bioavailability of ganciclovir from liquid valganciclovir (fraction)")  # Yang 2023 Table 3 (Acosta 2007): F = 0.536
 
     # Covariate effects. The CL exponent 1.68 is a non-canonical estimated value;
     # the volume exponent is 1 (linear in weight) as printed and is fixed.

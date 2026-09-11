@@ -77,20 +77,20 @@ Feng_2012_higenamine <- function() {
     # ---- Structural PK parameters (Feng 2012 Table 4) -------------------
     # Two-compartment disposition with Michaelis-Menten (saturable)
     # elimination from the central compartment. Time unit = min throughout.
-    lvc   <- log(18.7);  label("Central volume of distribution (Vc, L)")                     # Table 4: Vc = 18.7 L (estimate %CV 6.6)
-    lvp   <- log(43.0);  label("First peripheral volume of distribution (Vp, L)")            # Table 4: Vp = 43.0 L (estimate %CV 3.3)
-    lq    <- log(3.8);   label("Inter-compartmental clearance (CLd, L/min)")                 # Table 4: CLd = 3.8 L/min (estimate %CV 5.2)
-    lvmax <- log(48.3);  label("Maximum elimination rate (Vmax, ug/min)")                    # Table 4: Vmax = 48.3 (estimate %CV 1.4) -- see Errata in vignette: paper labels Vmax (L/min) but dimensional analysis of the standard Michaelis-Menten elimination rate = Vmax * Cc / (Km + Cc) with Vmax in ug/min reproduces the published Cmax and NCA CL (250 L/h).
-    lkm   <- log(3.1);   label("Michaelis-Menten constant (Km, ug/L)")                       # Table 4: Km = 3.1 ug/L (estimate %CV 3.7)
+    lvc   <- log(18.7);  label("Central volume of distribution (L)")                     # Table 4: Vc = 18.7 L (estimate %CV 6.6)
+    lvp   <- log(43.0);  label("First peripheral volume of distribution (L)")            # Table 4: Vp = 43.0 L (estimate %CV 3.3)
+    lq    <- log(3.8);   label("Inter-compartmental clearance (L/min)")                 # Table 4: CLd = 3.8 L/min (estimate %CV 5.2)
+    lvmax <- log(48.3);  label("Maximum elimination rate (ug/min)")                    # Table 4: Vmax = 48.3 (estimate %CV 1.4) -- see Errata in vignette: paper labels Vmax (L/min) but dimensional analysis of the standard Michaelis-Menten elimination rate = Vmax * Cc / (Km + Cc) with Vmax in ug/min reproduces the published Cmax and NCA CL (250 L/h).
+    lkm   <- log(3.1);   label("Michaelis-Menten constant (ug/L)")                       # Table 4: Km = 3.1 ug/L (estimate %CV 3.7)
 
     # ---- Structural PD parameters (Feng 2012 Table 4) -------------------
     # Direct-effect Emax model with baseline for heart rate:
     #   HR = E0 + Emax * Cc / (EC50 + Cc)
     # No effect compartment / no hysteresis -- per Methods page 1355: "a
     # simple direct effect model with baseline".
-    le0    <- log(68);   label("Baseline heart rate (E0, bpm)")                              # Table 4: E0 = 68 bpm (estimate %CV 2.0)
-    lemax  <- log(73);   label("Maximum drug-induced increase in heart rate (Emax, bpm)")    # Table 4: Emax = 73 bpm (estimate %CV 3.8)
-    lec50  <- log(8.1);  label("Higenamine concentration producing 50% of Emax (EC50, ug/L)")# Table 4: EC50 = 8.1 ug/L (estimate %CV 9.1)
+    le0    <- log(68);   label("Baseline heart rate (bpm)")                              # Table 4: E0 = 68 bpm (estimate %CV 2.0)
+    lemax  <- log(73);   label("Maximum drug-induced increase in heart rate (bpm)")    # Table 4: Emax = 73 bpm (estimate %CV 3.8)
+    lec50  <- log(8.1);  label("Higenamine concentration producing 50% of Emax (ug/L)")# Table 4: EC50 = 8.1 ug/L (estimate %CV 9.1)
 
     # ---- IIV (Feng 2012 Table 4 'Inter-individual variability (%CV)') --
     # The column is reported in %CV; converted to log-normal omega^2 via

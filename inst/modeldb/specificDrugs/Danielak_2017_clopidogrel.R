@@ -98,7 +98,7 @@ Danielak_2017_clopidogrel <- function() {
     label("Clopidogrel apparent total clearance CL/F (L/h)")                    # Danielak 2017 Table 2 final-model CL/F = 14,500 L/h (total apparent clearance; sum of conversion-to-H4 plus competing carboxylic-acid esterase pathway)
 
     lfm <- log(0.045)
-    label("Typical fraction of clopidogrel converted to the active H4 metabolite (TVFM, unitless)")  # Danielak 2017 Table 2 final-model FM = 0.045 (constrained <= 0.20 during estimation because ~85% of the absorbed dose is inactivated by CES1 to the carboxylic acid; Discussion page 1628)
+    label("Typical fraction of clopidogrel converted to the active H4 metabolite (unitless)")  # Danielak 2017 Table 2 final-model FM = 0.045 (constrained <= 0.20 during estimation because ~85% of the absorbed dose is inactivated by CES1 to the carboxylic acid; Discussion page 1628)
 
     lfdepot <- fixed(log(1))
     label("Clopidogrel bioavailability into depot (F1, 1 -- absolute F not identifiable without IV clopidogrel data)")  # Danielak 2017 Methods page 1626: "The relative bioavailability (F) of clopidogrel ... was assumed a typical value of unity."

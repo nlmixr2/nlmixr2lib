@@ -388,7 +388,7 @@ NOWSM (177%), and EMAX (103%) reported in Table S3.
   canonical registers in `inst/references/compartment-names.md` and
   `inst/references/parameter-names.md` as part of this extraction. The
   registration follows the same "paper-specific PD-endpoint output states"
-  pattern as `dbp` (Hansson 2013), `bcva`, `walkDist`, `fev1pp`, `hfs_grade`,
+  pattern as `dbp` (Hansson 2013), `bcva`, `walk_dist`, `fev1pp`, `hfs_grade`,
   and other clinical-score PD endpoints already in the register.
 - **PNA canonical is months.** The Eudy-Byrne 2021 paper estimates NOWSM in
   units of 1/day, but the canonical `PNA` covariate is in months (see

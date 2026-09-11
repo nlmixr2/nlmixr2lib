@@ -51,15 +51,15 @@ Salinger_2013_magnesiumSulfate <- function() {
     # subject: 55 kg maternal body weight, 0.8 mg/dL serum creatinine.
     # Dose units used here: mg of elemental Mg (multiply g of MgSO4-7H2O by 0.0986).
     # Concentration units: mg/L of total magnesium (administered + endogenous BL).
-    lcl     <- log(4.81);  label("Clearance for the reference subject (CL, L/h)")             # Salinger 2013 Table 2 (48.1 dL/h = 80.1 mL/min)
-    lvc     <- log(15.6);  label("Volume of distribution for the reference subject (V, L)")    # Salinger 2013 Table 2 (156 dL)
-    lka     <- log(0.317); label("Intramuscular first-order absorption rate (KA, 1/h)")        # Salinger 2013 Table 2
-    lfdepot <- log(0.862); label("Intramuscular bioavailability (F, fraction)")                # Salinger 2013 Table 2
-    lrbase     <- log(20.8);  label("Endogenous steady-state baseline magnesium (BL, mg/L)")      # Salinger 2013 Table 2 (0.85 mmol/L = 2.08 mg/dL = 20.8 mg/L)
+    lcl     <- log(4.81);  label("Clearance for the reference subject (L/h)")             # Salinger 2013 Table 2 (48.1 dL/h = 80.1 mL/min)
+    lvc     <- log(15.6);  label("Volume of distribution for the reference subject (L)")    # Salinger 2013 Table 2 (156 dL)
+    lka     <- log(0.317); label("Intramuscular first-order absorption rate (1/h)")        # Salinger 2013 Table 2
+    lfdepot <- log(0.862); label("Intramuscular bioavailability (fraction)")                # Salinger 2013 Table 2
+    lrbase     <- log(20.8);  label("Endogenous steady-state baseline magnesium (mg/L)")      # Salinger 2013 Table 2 (0.85 mmol/L = 2.08 mg/dL = 20.8 mg/L)
 
     # Covariate effects from Salinger 2013 Table 2.
-    e_wt_vc    <- 0.692; label("Power exponent of body weight on V (theta_1, unitless)")              # Salinger 2013 Table 2
-    e_creat_cl <- 1.48;  label("Power exponent of (0.8 / serum creatinine) on CL (theta_2, unitless)") # Salinger 2013 Table 2
+    e_wt_vc    <- 0.692; label("Power exponent of body weight on V (unitless)")              # Salinger 2013 Table 2
+    e_creat_cl <- 1.48;  label("Power exponent of (0.8 / serum creatinine) on CL (unitless)") # Salinger 2013 Table 2
 
     # No inter-individual variability is included. Salinger 2013 Methods state:
     # "because we had only a single data point per woman, we did not attempt to
@@ -70,7 +70,7 @@ Salinger_2013_magnesiumSulfate <- function() {
     # The paper reports residual variability on the *total* observed magnesium
     # concentration (administered + BL), consistent with the Methods statement
     # that "the administered magnesium was modelled as additive to BL."
-    propSd <- 0.229; label("Proportional residual error (SD, fraction)")  # Salinger 2013 Table 2
+    propSd <- 0.229; label("Proportional residual error (fraction)")  # Salinger 2013 Table 2
   })
   model({
     # Individual PK parameters. Reference subject: WT = 55 kg, CREAT = 0.8 mg/dL.

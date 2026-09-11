@@ -130,17 +130,17 @@ Yang_2024_naloxone_morphine <- function() {
 
     # --- Naloxone PK (Yang 2024 Table S4; control stream (B) THETA 1-6)
     lktr_naloxone <- fixed(log(0.696))
-    label("Naloxone transit absorption rate constant (KTR, 1/min)")            # (B) THETA 1 = 0.696; Table S4
+    label("Naloxone transit absorption rate constant (1/min)")            # (B) THETA 1 = 0.696; Table S4
     lcl_naloxone <- fixed(log(3.26))
-    label("Naloxone apparent clearance at 70 kg (CL/F, L/min)")                # (B) THETA 2 = 3.26; Table S4
+    label("Naloxone apparent clearance at 70 kg (L/min)")                # (B) THETA 2 = 3.26; Table S4
     e_wt_cl_naloxone <- fixed(0.538)
     label("Allometric exponent of body weight on naloxone CL/F (unitless)")    # (B) THETA 3 = 0.538; Table S4
     lvc_naloxone <- fixed(log(404))
-    label("Naloxone apparent central volume (V2/F, L)")                        # (B) THETA 4 = 404; Table S4
+    label("Naloxone apparent central volume (L)")                        # (B) THETA 4 = 404; Table S4
     lq_naloxone <- fixed(log(0.0847))
-    label("Naloxone apparent intercompartmental clearance (Q/F, L/min)")       # (B) THETA 5 = 0.0847; Table S4
+    label("Naloxone apparent intercompartmental clearance (L/min)")       # (B) THETA 5 = 0.0847; Table S4
     lvp_naloxone <- fixed(log(81.8))
-    label("Naloxone apparent peripheral volume (V3/F, L)")                     # (B) THETA 6 = 81.8; Table S4
+    label("Naloxone apparent peripheral volume (L)")                     # (B) THETA 6 = 81.8; Table S4
 
     # --- Morphine PK, micro-constant parameterisation (Table S6;
     # control stream (B) THETA 7-12). Table S6 labels k10 / k12 / k21 /
@@ -149,42 +149,42 @@ Yang_2024_naloxone_morphine <- function() {
     # 1.57 L/min recovers the textbook morphine clearance, which the
     # tabulated label could not.
     lvc <- fixed(log(5.11))
-    label("Morphine central volume (V1, L)")                                   # (B) THETA 7 = 5.11; Table S6
+    label("Morphine central volume (L)")                                   # (B) THETA 7 = 5.11; Table S6
     lkel <- fixed(log(0.308))
-    label("Morphine elimination micro-constant (k10, 1/min)")                  # (B) THETA 8 = 0.308 [1/min]; Table S6
+    label("Morphine elimination micro-constant (1/min)")                  # (B) THETA 8 = 0.308 [1/min]; Table S6
     lk12 <- fixed(log(0.177))
-    label("Morphine central-to-peripheral1 micro-constant (k12, 1/min)")       # (B) THETA 9 = 0.177 [1/min]; Table S6
+    label("Morphine central-to-peripheral1 micro-constant (1/min)")       # (B) THETA 9 = 0.177 [1/min]; Table S6
     lk21 <- fixed(log(0.0907))
-    label("Morphine peripheral1-to-central micro-constant (k21, 1/min)")       # (B) THETA 10 = 0.0907 [1/min]; Table S6
+    label("Morphine peripheral1-to-central micro-constant (1/min)")       # (B) THETA 10 = 0.0907 [1/min]; Table S6
     lk13 <- fixed(log(0.299))
-    label("Morphine central-to-peripheral2 micro-constant (k13, 1/min)")       # (B) THETA 11 = 0.299 [1/min]; Table S6
+    label("Morphine central-to-peripheral2 micro-constant (1/min)")       # (B) THETA 11 = 0.299 [1/min]; Table S6
     lk31 <- fixed(log(0.0134))
-    label("Morphine peripheral2-to-central micro-constant (k31, 1/min)")       # (B) THETA 12 = 0.0134 [1/min]; Table S6
+    label("Morphine peripheral2-to-central micro-constant (1/min)")       # (B) THETA 12 = 0.0134 [1/min]; Table S6
 
     # --- Biophase equilibration (equation 1). Olofsen 2010 reports the
     # plasma-effect-site equilibration HALF-LIFE; control stream (B)
     # converts it in $DES as ke0 = 0.693 / t(1/2)ke0. The conversion is
     # done here so that ke0 is the stored parameter.
     lke0_naloxone <- fixed(log(0.693 / 11.2))
-    label("Naloxone biophase equilibration rate constant (ke0, 1/min)")        # (B) THETA 13 = 11.2 min half-life -> 0.06188 1/min; Table S6
+    label("Naloxone biophase equilibration rate constant (1/min)")        # (B) THETA 13 = 11.2 min half-life -> 0.06188 1/min; Table S6
     lke0 <- fixed(log(0.693 / 74.4))
-    label("Morphine biophase equilibration rate constant (ke0, 1/min)")        # (B) THETA 14 = 74.4 min half-life -> 0.009315 1/min; Table S6
+    label("Morphine biophase equilibration rate constant (1/min)")        # (B) THETA 14 = 74.4 min half-life -> 0.009315 1/min; Table S6
 
     # --- MOP receptor association / dissociation (equations 4, 8, 9)
     lkon <- fixed(log(0.002989416))
-    label("Morphine receptor association rate constant (kon, mL/ng/min)")      # (B) THETA 15 = 0.002989416 (Table S6 rounds to 0.00299)
+    label("Morphine receptor association rate constant (mL/ng/min)")      # (B) THETA 15 = 0.002989416 (Table S6 rounds to 0.00299)
     lkoff <- fixed(log(0.138))
-    label("Morphine receptor dissociation rate constant (koff, 1/min)")        # (B) THETA 16 = 0.138; Table S6
+    label("Morphine receptor dissociation rate constant (1/min)")        # (B) THETA 16 = 0.138; Table S6
     lec50_naloxone <- fixed(log(0.6021768))
-    label("Naloxone half-maximal effect-site concentration (C50, ng/mL)")      # (B) THETA 17 = 0.6021768 (Table S6 rounds to 0.602)
+    label("Naloxone half-maximal effect-site concentration (ng/mL)")      # (B) THETA 17 = 0.6021768 (Table S6 rounds to 0.602)
     lhill_naloxone <- fixed(log(4.18))
-    label("Naloxone competitive-displacement shape parameter (gamma, unitless)")  # (B) THETA 18 = 4.18; Table S6
+    label("Naloxone competitive-displacement shape parameter (unitless)")  # (B) THETA 18 = 4.18; Table S6
 
     # --- Linear transduction function (equation 10)
     lalpha <- fixed(log(1))
-    label("Morphine intrinsic activity (alpha, unitless 0-1)")                 # Table S6: alpha = 1 (control stream (B) $ERROR writes E = E0*(1 - A(12)) with no alpha term, i.e. alpha = 1)
+    label("Morphine intrinsic activity (unitless 0-1)")                 # Table S6: alpha = 1 (control stream (B) $ERROR writes E = E0*(1 - A(12)) with no alpha term, i.e. alpha = 1)
     le0 <- fixed(log(26.5))
-    label("Baseline minute ventilation (V0, L/min)")                           # Table S6: V0 26.5 L/min (carried as the E0 data column in control stream (B))
+    label("Baseline minute ventilation (L/min)")                           # Table S6: V0 26.5 L/min (carried as the E0 data column in control stream (B))
 
     # --- IIV. Control stream (B) $OMEGA entries 1-13, in order. Each
     # equals the square of the Table S6 "IIV (%)" column (e.g. morphine
@@ -291,7 +291,7 @@ Yang_2024_naloxone_morphine <- function() {
 
     # ---- Outputs
     Cc <- central / vc
-    Cnal <- central_naloxone / vc_naloxone
+    Cc_naloxone <- central_naloxone / vc_naloxone
     VE <- e0 * (1 - alpha * RL_op)
     ERATIO <- VE / e0
 

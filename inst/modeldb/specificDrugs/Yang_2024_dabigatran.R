@@ -116,12 +116,12 @@ Yang_2024_dabigatran <- function() {
     # (Supplementary Material $PK has no F1 statement), so F is implicitly 1.
     # The typical values below are the fasting, ABCB1 rs4148738 non-CT values;
     # the covariate terms in model() shift them to the other strata.
-    lka   <- log(0.38);  label("First-order absorption rate constant, fasting (ka, 1/h)")                              # Yang 2024 Table 4 KA = 0.38 (RSE 16.2%, 95% CI 0.26-0.50)
-    ltlag <- log(0.48);  label("Absorption lag time, fasting (ALAG, h)")                                               # Yang 2024 Table 4 ALAG = 0.48 (RSE 5%, 95% CI 0.44-0.53)
-    lcl   <- log(122);   label("Apparent clearance, fasting (CL/F, L/h)")                                              # Yang 2024 Table 4 CL = 122 (RSE 5.6%, 95% CI 108.61-135.39)
-    lvc   <- log(245);   label("Apparent central volume of distribution, ABCB1 rs4148738 non-CT (V2/F, L)")            # Yang 2024 Table 4 V2 = 245 (RSE 14.1%, 95% CI 177.18-312.82)
-    lq    <- log(70.80); label("Apparent inter-compartmental clearance (Q/F, L/h)")                                    # Yang 2024 Table 4 Q = 70.80 (RSE 7.9%, 95% CI 59.80-81.80)
-    lvp   <- log(756);   label("Apparent peripheral volume of distribution (V3/F, L)")                                 # Yang 2024 Table 4 V3 = 756 (RSE 10.6%, 95% CI 599.20-912.80)
+    lka   <- log(0.38);  label("First-order absorption rate constant, fasting (1/h)")                              # Yang 2024 Table 4 KA = 0.38 (RSE 16.2%, 95% CI 0.26-0.50)
+    ltlag <- log(0.48);  label("Absorption lag time, fasting (h)")                                               # Yang 2024 Table 4 ALAG = 0.48 (RSE 5%, 95% CI 0.44-0.53)
+    lcl   <- log(122);   label("Apparent clearance, fasting (L/h)")                                              # Yang 2024 Table 4 CL = 122 (RSE 5.6%, 95% CI 108.61-135.39)
+    lvc   <- log(245);   label("Apparent central volume of distribution, ABCB1 rs4148738 non-CT (L)")            # Yang 2024 Table 4 V2 = 245 (RSE 14.1%, 95% CI 177.18-312.82)
+    lq    <- log(70.80); label("Apparent inter-compartmental clearance (L/h)")                                    # Yang 2024 Table 4 Q = 70.80 (RSE 7.9%, 95% CI 59.80-81.80)
+    lvp   <- log(756);   label("Apparent peripheral volume of distribution (L)")                                 # Yang 2024 Table 4 V3 = 756 (RSE 10.6%, 95% CI 599.20-912.80)
 
     # ---- Covariate effects ----------------------------------------------
     # Linear proportional deviations, theta_i = theta_tv * (1 + theta_cov * COV).

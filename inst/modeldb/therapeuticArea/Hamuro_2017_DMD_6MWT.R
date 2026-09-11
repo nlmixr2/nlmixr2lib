@@ -24,7 +24,7 @@ Hamuro_2017_DMD_6MWT <- function() {
   units <- list(
     time          = "year",
     dosing        = "n/a (disease-progression model with no drug dosing)",
-    concentration = "m (six-minute walk test distance, observation walkDist)"
+    concentration = "m (six-minute walk test distance, observation walk_dist)"
   )
 
   covariateData <- list(
@@ -113,9 +113,9 @@ Hamuro_2017_DMD_6MWT <- function() {
     # that this point of non-differentiability is acceptable for
     # the expectation-maximisation (QRPEM) estimator that the
     # original fit used.
-    walkDist <- (walk_dev <= walk_decl) * walk_dev +
+    walk_dist <- (walk_dev <= walk_decl) * walk_dev +
                 (walk_dev >  walk_decl) * walk_decl
 
-    walkDist ~ add(addSd)
+    walk_dist ~ add(addSd)
   })
 }

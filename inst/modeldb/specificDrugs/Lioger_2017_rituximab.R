@@ -80,9 +80,9 @@ Lioger_2017_rituximab <- function() {
     # AIC 4524.4 vs. 4645.5, lower shrinkages Shk10 = 31% vs. ShCL = 49%, and
     # decreased Vc/elimination-parameter correlation rk10 = 0.15 vs. rCL = 0.32).
     lvc <- log(4.1);  label("Typical central volume of distribution (V1, L) for a median-BSA female at first course") # Lioger 2017 Table 2 final V1 = 4.1 (RSE 7%)
-    lk10 <- log(0.11); label("Typical elimination rate constant (k10, 1/day)")                                       # Lioger 2017 Table 2 final k10 = 0.11 (RSE 8%)
-    lk12 <- log(0.42); label("Typical central -> peripheral rate constant (k12, 1/day)")                             # Lioger 2017 Table 2 final k12 = 0.42 (RSE 6%)
-    lk21 <- log(0.25); label("Typical peripheral -> central rate constant (k21, 1/day)")                             # Lioger 2017 Table 2 final k21 = 0.25 (RSE 4%)
+    lk10 <- log(0.11); label("Typical elimination rate constant (1/day)")                                       # Lioger 2017 Table 2 final k10 = 0.11 (RSE 8%)
+    lk12 <- log(0.42); label("Typical central -> peripheral rate constant (1/day)")                             # Lioger 2017 Table 2 final k12 = 0.42 (RSE 6%)
+    lk21 <- log(0.25); label("Typical peripheral -> central rate constant (1/day)")                             # Lioger 2017 Table 2 final k21 = 0.25 (RSE 4%)
 
     # Covariate effects on V1 (Lioger 2017 Table 2 "final estimate" column).
     # Continuous covariates use median-centred power form V1 = V1_typ *
@@ -115,8 +115,8 @@ Lioger_2017_rituximab <- function() {
     # (Methods 'Interindividual, intercourse and residual models':
     # Yo,ij = Yp,ij * (1 + prop,ij) + add,ij). Table 2 reports the SDs
     # sigma_add and sigma_prop directly.
-    addSd  <- 0.31; label("Additive residual error (SD, mg/L)")           # Lioger 2017 Table 2 sigma_add = 0.31 (RSE 4%)
-    propSd <- 0.27; label("Proportional residual error (SD, fraction)")   # Lioger 2017 Table 2 sigma_prop = 0.27 (RSE 2%)
+    addSd  <- 0.31; label("Additive residual error (mg/L)")           # Lioger 2017 Table 2 sigma_add = 0.31 (RSE 4%)
+    propSd <- 0.27; label("Proportional residual error (fraction)")   # Lioger 2017 Table 2 sigma_prop = 0.27 (RSE 2%)
   })
 
   model({

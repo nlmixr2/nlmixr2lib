@@ -128,7 +128,7 @@ Agoram_2006_darbepoetin_alfa <- function() {
     # Results equation 7: F = F0 + p1 * Dose; Dose in ug). IIV on F0 and p1
     # was fixed at 0 in the final model (Table 3 footnote: 'Interindividual
     # random variance was fixed at 0 in the PK model').
-    f0depot <- 0.448;    label("Intercept of SC bioavailability vs. dose (F0, fraction)")               # Agoram 2006 Table 3: F0 = 0.448 (%SEP 10.2; IIV fixed at 0)
+    f0depot <- 0.448;    label("Intercept of SC bioavailability vs. dose (fraction)")               # Agoram 2006 Table 3: F0 = 0.448 (%SEP 10.2; IIV fixed at 0)
     p1depot <- 0.000586; label("Linear slope of SC bioavailability vs. SC dose amount (per ug)")        # Agoram 2006 Table 3: p1 = 5.86e-4 per ug (%SEP 37.2; IIV fixed at 0)
 
     # Covariate effects (normalized power model; Agoram 2006 Results equations

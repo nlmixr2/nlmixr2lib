@@ -187,10 +187,10 @@ Bijleveld_2016_gentamicin <- function() {
     # column). All four typical values are reported on the linear scale per
     # 70 kg reference; nlmixr2lib log-transforms positive-constrained
     # parameters.
-    lcl <- log(1.89);  label("Clearance (CL, L/h per 70 kg)")                     # Bijleveld 2016 Table 2 Final model: 1.89 L/h/70 kg
-    lvc <- log(32.5);  label("Central volume of distribution (Vc, L per 70 kg)")   # Bijleveld 2016 Table 2 Final model: 32.5 L/70 kg
-    lq  <- log(2.01);  label("Intercompartmental clearance (Q, L/h per 70 kg)")    # Bijleveld 2016 Table 2 Final model: 2.01 L/h/70 kg
-    lvp <- log(30.3);  label("Peripheral volume of distribution (Vp, L per 70 kg)") # Bijleveld 2016 Table 2 Final model: 30.3 L/70 kg
+    lcl <- log(1.89);  label("Clearance (L/h per 70 kg)")                     # Bijleveld 2016 Table 2 Final model: 1.89 L/h/70 kg
+    lvc <- log(32.5);  label("Central volume of distribution (L per 70 kg)")   # Bijleveld 2016 Table 2 Final model: 32.5 L/70 kg
+    lq  <- log(2.01);  label("Intercompartmental clearance (L/h per 70 kg)")    # Bijleveld 2016 Table 2 Final model: 2.01 L/h/70 kg
+    lvp <- log(30.3);  label("Peripheral volume of distribution (L per 70 kg)") # Bijleveld 2016 Table 2 Final model: 30.3 L/70 kg
 
     # Allometric body-weight exponents (Bijleveld 2016 Methods 'Structural
     # model' and Results 'Pharmacokinetic model building': 'Parameters

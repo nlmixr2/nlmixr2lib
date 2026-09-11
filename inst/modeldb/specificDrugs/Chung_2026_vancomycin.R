@@ -84,8 +84,8 @@ Chung_2026_vancomycin <- function() {
     # gives a typical pre-4th-dose trough near the observed cohort median of
     # 8.9 mg/L. mL/min would put a 70 kg subject at 0.83 L/h, roughly an order
     # of magnitude below any published adult vancomycin clearance.
-    lcl <- log(13.9); label("Clearance at WT = 70 kg, full PMA maturation and SCr = 34 umol/L (CL, L/h)")  # Chung 2026 Methods 'PopPK model identification', Equation (1): coefficient 13.9
-    lvc <- log(65.5); label("Volume of distribution at WT = 70 kg (V, L)")                                  # Chung 2026 Methods 'PopPK model identification', Equation (2): coefficient 65.5
+    lcl <- log(13.9); label("Clearance at WT = 70 kg, full PMA maturation and SCr = 34 umol/L (L/h)")  # Chung 2026 Methods 'PopPK model identification', Equation (1): coefficient 13.9
+    lvc <- log(65.5); label("Volume of distribution at WT = 70 kg (L)")                                  # Chung 2026 Methods 'PopPK model identification', Equation (2): coefficient 65.5
 
     # Body-weight exponents. Both equations print an exponent of exactly 1 with
     # no uncertainty, i.e. linear (not 0.75-allometric) weight scaling that was
@@ -96,7 +96,7 @@ Chung_2026_vancomycin <- function() {
     # Sigmoidal Emax (Hill) maturation of CL on postmenstrual age, in weeks.
     # TM50 = 47.7 weeks is the Rhodin 2009 renal-maturation half-time, but the
     # Hill coefficient of 0.739 is far shallower than Rhodin's 3.4.
-    pma50_cl <- 47.7;  label("Postmenstrual age at 50% of mature CL (TM50, weeks)")                   # Chung 2026 Equation (1): 47.7 in the PMA^0.739 / (PMA^0.739 + 47.7^0.739) term
+    pma50_cl <- 47.7;  label("Postmenstrual age at 50% of mature CL (weeks)")                   # Chung 2026 Equation (1): 47.7 in the PMA^0.739 / (PMA^0.739 + 47.7^0.739) term
     hill_cl  <- 0.739; label("Hill coefficient of the PMA maturation function on CL (unitless)")      # Chung 2026 Equation (1): exponent 0.739 on both PMA and 47.7
 
     # Renal-function effect on CL. Negative, so a higher serum creatinine

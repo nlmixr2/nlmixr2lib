@@ -67,12 +67,12 @@ Brekkan_2016_factorIX <- function() {
     # Structural parameters - typical values for a 70 kg reference subject
     # (Brekkan 2016 Table 2). CL and Q in mL/h; V1, V2, V3 in mL; baseline
     # FIX activity in U/mL.
-    lcl    <- log(319.8)  ; label("Clearance for the reference 70 kg subject (CL, mL/h)")                     # Brekkan 2016 Table 2: CL = 319.8 mL/h
-    lvc    <- log(5922)   ; label("Central volume of distribution for the reference 70 kg subject (V1, mL)") # Brekkan 2016 Table 2: V1 = 5922 mL
-    lvp    <- log(828.9)  ; label("Peripheral volume of distribution 1 for the reference 70 kg subject (V2, mL)") # Brekkan 2016 Table 2: V2 = 828.9 mL
-    lq     <- log(1049)   ; label("Intercompartmental clearance to peripheral 1 (Q2, mL/h)")                 # Brekkan 2016 Table 2: Q2 = 1049 mL/h
-    lvp2   <- log(2234)   ; label("Peripheral volume of distribution 2 for the reference 70 kg subject (V3, mL)") # Brekkan 2016 Table 2: V3 = 2234 mL
-    lq2    <- log(160.4)  ; label("Intercompartmental clearance to peripheral 2 (Q3, mL/h)")                 # Brekkan 2016 Table 2: Q3 = 160.4 mL/h
+    lcl    <- log(319.8)  ; label("Clearance for the reference 70 kg subject (mL/h)")                     # Brekkan 2016 Table 2: CL = 319.8 mL/h
+    lvc    <- log(5922)   ; label("Central volume of distribution for the reference 70 kg subject (mL)") # Brekkan 2016 Table 2: V1 = 5922 mL
+    lvp    <- log(828.9)  ; label("Peripheral volume of distribution 1 for the reference 70 kg subject (mL)") # Brekkan 2016 Table 2: V2 = 828.9 mL
+    lq     <- log(1049)   ; label("Intercompartmental clearance to peripheral 1 (mL/h)")                 # Brekkan 2016 Table 2: Q2 = 1049 mL/h
+    lvp2   <- log(2234)   ; label("Peripheral volume of distribution 2 for the reference 70 kg subject (mL)") # Brekkan 2016 Table 2: V3 = 2234 mL
+    lq2    <- log(160.4)  ; label("Intercompartmental clearance to peripheral 2 (mL/h)")                 # Brekkan 2016 Table 2: Q3 = 160.4 mL/h
 
     # Endogenous baseline FIX activity. Brekkan 2016 estimates this as a
     # structural parameter rather than subtracting an empirical baseline before

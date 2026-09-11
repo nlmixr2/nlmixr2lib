@@ -201,8 +201,39 @@ Use `references/model-file-template.md` as the starting skeleton and the two bes
 The file body has this shape:
 
 1. `description`, `reference`, `vignette`, `units`, `covariateData`, `population` — metadata before `ini()`. `vignette` is the basename of the validation vignette in `vignettes/articles/` (e.g., `"Clegg_2024_nirsevimab"`, no path, no extension); `buildModelDb()` extracts it so the list-of-models table can link to the rendered vignette on the pkgdown site.
-2. `ini()` — parameters with `label()` and a trailing **in-file comment pointing to the source location** for every value. **Wrap fixed parameters in `fixed()`** — see the "Fixed parameters" subsection below.
+2. `ini()` — parameters with `label()` and a trailing **in-file comment pointing to the source location** for every value. **Wrap fixed parameters in `fixed()`** — see the "Fixed parameters" subsection below. **Quote source-table text in those comments with SINGLE quotes** — see "Quoting inside `ini()` comments" below.
 3. `model()` — derived terms → individual parameters → micro-constants → ODEs → bioavailability → observation and error.
+
+### Quoting inside `ini()` comments
+
+**Never put a double quote in a trailing comment inside `ini()`. Use single quotes.**
+
+```r
+# WRONG - the model will not re-parse
+etalcl ~ 0.186   # Table 2, row "eta CL variance" = 0.186 (43.1% CV)
+
+# RIGHT
+etalcl ~ 0.186   # Table 2, row 'eta CL variance' = 0.186 (43.1% CV)
+```
+
+rxode2 promotes a trailing comment on an `ini()` line that has no `label()`
+into `label("<comment>")`. An embedded double quote terminates that generated
+string early, and the re-parse fails inside `.rxReplaceCommentWithLabel()` —
+so the model errors at load and its vignette dies at render, not at write time.
+
+This bites **eta / omega lines specifically**, because those conventionally
+carry no `label()` and are exactly where an author wants to quote a source
+table's row name (`$OMEGA`, "eta CL variance", "POPIIV KA 34.6%"). Lines that
+do carry a `label()` are unaffected — rxode2 does not promote a comment when a
+label is already present.
+
+The enumerating test `no ini() line carries a quoted trailing comment rxode2
+would promote into a broken label` in `tests/testthat/test-checkModelConventions.R`
+catches this, but only once the file is written and the suite is run. It has
+been reintroduced by independent extractions in two consecutive consolidation
+merges (15 lines across the Nakashima valproic-acid models on 2026-09-05;
+18 lines across seven models on 2026-09-09), which is why the rule is here
+rather than only in the test.
 
 ### Fixed parameters in `ini()`
 

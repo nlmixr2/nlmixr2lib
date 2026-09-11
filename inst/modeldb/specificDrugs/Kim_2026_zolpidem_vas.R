@@ -183,22 +183,22 @@ Kim_2026_zolpidem_vas <- function() {
     # values. See modellib("Kim_2026_zolpidem") for the estimating run.
 
     lka <- fixed(log(11.7))
-    label("Absorption rate constant, depot -> central (Ka, 1/h)")                    # Kim 2026 Table 2: Ka = 11.7 1/h. Data S4 $THETA(3) = "(11.7) FIX".
+    label("Absorption rate constant, depot -> central (1/h)")                    # Kim 2026 Table 2: Ka = 11.7 1/h. Data S4 $THETA(3) = "(11.7) FIX".
 
     lcl <- fixed(log(18.0))
-    label("Apparent clearance (CL/F, L/h)")                                          # Kim 2026 Table 2: CL/F = 18.0 L/h. Data S4 $THETA(1) = "(18) FIX".
+    label("Apparent clearance (L/h)")                                          # Kim 2026 Table 2: CL/F = 18.0 L/h. Data S4 $THETA(1) = "(18) FIX".
 
     lvc <- fixed(log(64.0))
-    label("Apparent central volume of distribution (Vc/F, L)")                       # Kim 2026 Table 2: Vc/F = 64.0 L. Data S4 $THETA(2) = "(64) FIX".
+    label("Apparent central volume of distribution (L)")                       # Kim 2026 Table 2: Vc/F = 64.0 L. Data S4 $THETA(2) = "(64) FIX".
 
     lmtt <- fixed(log(0.25))
-    label("Mean transit time of the absorption chain (MTT, h)")                      # Kim 2026 Table 2: MTT = 0.25 h. Data S4 $THETA(4) = "(0.25) FIX".
+    label("Mean transit time of the absorption chain (h)")                      # Kim 2026 Table 2: MTT = 0.25 h. Data S4 $THETA(4) = "(0.25) FIX".
 
     lnn <- fixed(log(19.4))
-    label("Number of transit compartments (NN, unitless)")                           # Kim 2026 Table 2: NN = 19.4. Data S4 $THETA(5) = "(19.4) FIX".
+    label("Number of transit compartments (unitless)")                           # Kim 2026 Table 2: NN = 19.4. Data S4 $THETA(5) = "(19.4) FIX".
 
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability (BIO, fraction)")                                # Kim 2026 Table 2: BIO = "1 Fixed". Data S4 $THETA(6) = "(1) FIX".
+    label("Relative bioavailability (fraction)")                                # Kim 2026 Table 2: BIO = "1 Fixed". Data S4 $THETA(6) = "(1) FIX".
 
     etalka ~ fixed(2.48)
     # Kim 2026 Table 2: IIV Ka = 330.8 %CV. Data S4 $OMEGA(3,3) = "2.48 FIX".
@@ -226,10 +226,10 @@ Kim_2026_zolpidem_vas <- function() {
     # $THETA block. Results 3.2.4 confirms EC50 146 ug/L and HILL 1.92.
 
     lec50 <- log(146)
-    label("Half-maximal effective concentration for sedation VAS (EC50, ug/L)")      # Kim 2026 Table 3: EC50 = 146 ug/L (RSE 12.7%; SIR median 147, 95% CI 118-184). Data S4 $THETA(9). The lowest of the three endpoint potencies -- Discussion: "the rank order of potency (VAS > DSST > CRT) suggests that zolpidem produces measurable sedative effects at lower concentrations".
+    label("Half-maximal effective concentration for sedation VAS (ug/L)")      # Kim 2026 Table 3: EC50 = 146 ug/L (RSE 12.7%; SIR median 147, 95% CI 118-184). Data S4 $THETA(9). The lowest of the three endpoint potencies -- Discussion: "the rank order of potency (VAS > DSST > CRT) suggests that zolpidem produces measurable sedative effects at lower concentrations".
 
     lhill <- log(1.92)
-    label("Hill coefficient of the VAS concentration-response (HILL, unitless)")     # Kim 2026 Table 3: HILL = 1.92 (RSE 16.3%; SIR median 1.89, 95% CI 1.47-2.49). Data S4 $THETA(10).
+    label("Hill coefficient of the VAS concentration-response (unitless)")     # Kim 2026 Table 3: HILL = 1.92 (RSE 16.3%; SIR median 1.89, 95% CI 1.47-2.49). Data S4 $THETA(10).
 
     # ====================================================================
     # PIECEWISE-LINEAR BASELINE VAS SPLINE (LOGIT SCALE)

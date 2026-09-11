@@ -151,17 +151,17 @@ Pitsiu_2023_atacicept <- function() {
 
   ini({
     # --- Structural PK, typical 70 kg subject (Table 1, "NONMEM estimates") ---
-    lcl    <- log(0.324);    label("Apparent nonspecific clearance for a 70 kg subject (CL/F, L/h)")           # Table 1 CL/F 0.324 (95% CI 0.298-0.350, RSE 4.10%)
-    lvc    <- log(36.3);     label("Apparent central volume of distribution for a 70 kg subject (Vc/F, L)")    # Table 1 Vc/F 36.3 (95% CI 31.9-40.7, RSE 6.14%)
-    lq     <- log(0.149);    label("Apparent inter-compartmental clearance (Q/F, L/h)")                        # Table 1 Q/F 0.149 (95% CI 0.114-0.184, RSE 11.9%)
-    lvp    <- log(38.5);     label("Apparent peripheral volume of distribution (Vp/F, L)")                     # Table 1 Vp/F 38.5 (95% CI 31.0-46.0, RSE 9.90%)
-    lka    <- log(0.0705);   label("First-order subcutaneous absorption rate constant (Ka, 1/h)")              # Table 1 Ka 0.0705 (95% CI 0.0595-0.0815, RSE 7.94%)
+    lcl    <- log(0.324);    label("Apparent nonspecific clearance for a 70 kg subject (L/h)")           # Table 1 CL/F 0.324 (95% CI 0.298-0.350, RSE 4.10%)
+    lvc    <- log(36.3);     label("Apparent central volume of distribution for a 70 kg subject (L)")    # Table 1 Vc/F 36.3 (95% CI 31.9-40.7, RSE 6.14%)
+    lq     <- log(0.149);    label("Apparent inter-compartmental clearance (L/h)")                        # Table 1 Q/F 0.149 (95% CI 0.114-0.184, RSE 11.9%)
+    lvp    <- log(38.5);     label("Apparent peripheral volume of distribution (L)")                     # Table 1 Vp/F 38.5 (95% CI 31.0-46.0, RSE 9.90%)
+    lka    <- log(0.0705);   label("First-order subcutaneous absorption rate constant (1/h)")              # Table 1 Ka 0.0705 (95% CI 0.0595-0.0815, RSE 7.94%)
 
     # --- Target binding and turnover (QSS TMDD) ---
-    lkss   <- log(19.9);     label("Quasi-steady-state constant for atacicept-target binding (Kss, ng/mL)")    # Table 1 Kss 19.9 (95% CI 14.4-25.4, RSE 14.1%)
-    lkint  <- log(0.000618); label("Drug-target complex elimination rate constant (Kint, 1/h)")                # Table 1 Kint 0.000618 (95% CI 0.000572-0.000664, RSE 3.83%)
-    lkdeg  <- log(0.00362);  label("Free-target elimination rate constant (Kdeg, 1/h)")                        # Table 1 Kdeg 0.00362 (95% CI 0.00307-0.00417, RSE 7.82%)
-    lrbase <- log(715);      label("Baseline total-target concentration at the reference BLyS of 2.56 ng/mL (Rmax, ng/mL)")  # Table 1 Rmax 715 (95% CI 613-817, RSE 7.27%)
+    lkss   <- log(19.9);     label("Quasi-steady-state constant for atacicept-target binding (ng/mL)")    # Table 1 Kss 19.9 (95% CI 14.4-25.4, RSE 14.1%)
+    lkint  <- log(0.000618); label("Drug-target complex elimination rate constant (1/h)")                # Table 1 Kint 0.000618 (95% CI 0.000572-0.000664, RSE 3.83%)
+    lkdeg  <- log(0.00362);  label("Free-target elimination rate constant (1/h)")                        # Table 1 Kdeg 0.00362 (95% CI 0.00307-0.00417, RSE 7.82%)
+    lrbase <- log(715);      label("Baseline total-target concentration at the reference BLyS of 2.56 ng/mL (ng/mL)")  # Table 1 Rmax 715 (95% CI 613-817, RSE 7.27%)
 
     # --- Covariate effects ---
     # Allometric exponents held constant during estimation ("0.75 fixed" /

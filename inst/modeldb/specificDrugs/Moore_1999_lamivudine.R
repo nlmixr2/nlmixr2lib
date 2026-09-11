@@ -67,9 +67,9 @@ Moore_1999_lamivudine <- function() {
 
   ini({
     # Structural parameters at the reference patient (CRCL index ~1, WT = 70 kg, male)
-    lka  <- log(4.65);  label("Absorption rate constant (ka, 1/h)")                     # Table 2 (theta_3 = 4.65 h^-1)
-    lcl  <- log(25.1);  label("Apparent oral clearance reference (CL/F, L/h)")          # Table 2 (theta_1 = 25.1 L/h)
-    lvc  <- log(128);   label("Apparent volume of distribution (V/F, L)")               # Table 2 (theta_2 = 128 L)
+    lka  <- log(4.65);  label("Absorption rate constant (1/h)")                     # Table 2 (theta_3 = 4.65 h^-1)
+    lcl  <- log(25.1);  label("Apparent oral clearance reference (L/h)")          # Table 2 (theta_1 = 25.1 L/h)
+    lvc  <- log(128);   label("Apparent volume of distribution (L)")               # Table 2 (theta_2 = 128 L)
 
     # Covariate-effect exponent on the renal-function index ((140 - AGE)/(CREAT * 100))
     e_renal_cl <- 0.468; label("Power exponent of renal-function index on CL/F")        # Table 2 (theta_4 = 0.468)

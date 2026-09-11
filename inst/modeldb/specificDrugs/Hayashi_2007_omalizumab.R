@@ -63,14 +63,14 @@ Hayashi_2007_omalizumab <- function() {
     # Structural parameters - reference 61.1 kg body weight, 482.4 ng/mL baseline IgE.
     # All CL and V are reported as apparent (divided by SC bioavailability f).
     # Time unit converted from h (paper) to d for nlmixr2lib convention: x_per_day = x_per_h * 24.
-    lka          <- log(0.0200 * 24);  label("Apparent SC absorption rate constant for omalizumab (ka, 1/d; paper: 0.0200 /h)")          # Hayashi 2007 Table 3
-    lcl          <- log(0.00732 * 24); label("Apparent CL of free omalizumab at 61.1 kg (CL_X/f, L/d; paper: 7.32 mL/h)")                # Hayashi 2007 Table 3
-    ldcl_complex <- log(0.00586 * 24); label("Apparent excess CL of complex over free omalizumab (Delta_CL_C/f, L/d; paper: 5.86 mL/h)") # Hayashi 2007 Table 3
-    lcl_ige      <- log(0.071 * 24);   label("Apparent CL of free IgE at 482.4 ng/mL baseline (CL_E/f, L/d; paper: 71.0 mL/h)")          # Hayashi 2007 Table 3
+    lka          <- log(0.0200 * 24);  label("Apparent SC absorption rate constant for omalizumab (1/d; paper: 0.0200 /h)")          # Hayashi 2007 Table 3
+    lcl          <- log(0.00732 * 24); label("Apparent CL of free omalizumab at 61.1 kg (L/d; paper: 7.32 mL/h)")                # Hayashi 2007 Table 3
+    ldcl_complex <- log(0.00586 * 24); label("Apparent excess CL of complex over free omalizumab (L/d; paper: 5.86 mL/h)") # Hayashi 2007 Table 3
+    lcl_ige      <- log(0.071 * 24);   label("Apparent CL of free IgE at 482.4 ng/mL baseline (L/d; paper: 71.0 mL/h)")          # Hayashi 2007 Table 3
     lvc          <- log(5.9);          label("Apparent V_d of omalizumab and IgE at 61.1 kg (V_X/f = V_E/f, L; paper: 5900 mL)")          # Hayashi 2007 Table 3 (V_E/f assumed equal to V_X/f, footnote double-dagger)
-    lvc_complex  <- log(3.63);         label("Apparent V_d of omalizumab-IgE complex (V_C/f, L; paper: 3630 mL)")                          # Hayashi 2007 Table 3
-    lp_ige       <- log(0.1595 * 24);  label("Apparent rate of IgE production at 482.4 ng/mL baseline (P_E/f, nmol/d; paper: 30.3 ug/h = 0.1595 nmol/h)") # Hayashi 2007 Table 3 footnote dagger (30.3 ug/h corresponds to 0.159 nmol/h)
-    lkd0         <- log(1.07);         label("Equilibrium dissociation constant at central = total_target (Kd0, nM)")                                 # Hayashi 2007 Table 3
+    lvc_complex  <- log(3.63);         label("Apparent V_d of omalizumab-IgE complex (L; paper: 3630 mL)")                          # Hayashi 2007 Table 3
+    lp_ige       <- log(0.1595 * 24);  label("Apparent rate of IgE production at 482.4 ng/mL baseline (nmol/d; paper: 30.3 ug/h = 0.1595 nmol/h)") # Hayashi 2007 Table 3 footnote dagger (30.3 ug/h corresponds to 0.159 nmol/h)
+    lkd0         <- log(1.07);         label("Equilibrium dissociation constant at central = total_target (nM)")                                 # Hayashi 2007 Table 3
 
     # Covariate effects (power form; Hayashi 2007 page 555 equations).
     e_wt_cl      <-  0.911;  label("Power exponent of body weight on CL_X/f (unitless)")     # Hayashi 2007 Table 3

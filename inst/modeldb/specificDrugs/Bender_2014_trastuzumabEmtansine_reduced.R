@@ -68,13 +68,13 @@ Bender_2014_trastuzumabEmtansine_reduced <- function() {
     # Paper uses absolute volumes in mL and clearances in mL/day; here V is
     # stored in L (mL/1000) and CL in L/day so that dose in mg and V in L give
     # Cc = central / vc directly in mg/L = ug/mL.
-    lcl    <- log(0.0199);  label("Total trastuzumab clearance (CL_TT, L/day)")             # Bender 2014 Table III, cyno: 19.9 mL/day
-    lvc    <- log(0.154);   label("Central volume shared by T-DM1 and DAR0 (V1, L)")         # Bender 2014 Table III, cyno: 154 mL
-    lq   <- log(0.0568);  label("Distributional clearance to peripheral1 (CLd2, L/day)")   # Bender 2014 Table III, cyno: 56.8 mL/day
-    lvp    <- log(0.0500);  label("Peripheral volume 1 shared by T-DM1 and DAR0 (V2, L)")    # Bender 2014 Table III, cyno: 50.0 mL
-    lq2   <- log(0.0604);  label("Distributional clearance to peripheral2 (CLd3, L/day)")   # Bender 2014 Table III, cyno: 60.4 mL/day
-    lvp2   <- log(0.0847);  label("Peripheral volume 2 shared by T-DM1 and DAR0 (V3, L)")    # Bender 2014 Table III, cyno: 84.7 mL
-    lcldec <- log(0.0220);  label("Deconjugation clearance from T-DM1 to DAR0 (CL_DEC, L/day)") # Bender 2014 Table III, cyno: 22.0 mL/day
+    lcl    <- log(0.0199);  label("Total trastuzumab clearance (L/day)")             # Bender 2014 Table III, cyno: 19.9 mL/day
+    lvc    <- log(0.154);   label("Central volume shared by T-DM1 and DAR0 (L)")         # Bender 2014 Table III, cyno: 154 mL
+    lq   <- log(0.0568);  label("Distributional clearance to peripheral1 (L/day)")   # Bender 2014 Table III, cyno: 56.8 mL/day
+    lvp    <- log(0.0500);  label("Peripheral volume 1 shared by T-DM1 and DAR0 (L)")    # Bender 2014 Table III, cyno: 50.0 mL
+    lq2   <- log(0.0604);  label("Distributional clearance to peripheral2 (L/day)")   # Bender 2014 Table III, cyno: 60.4 mL/day
+    lvp2   <- log(0.0847);  label("Peripheral volume 2 shared by T-DM1 and DAR0 (L)")    # Bender 2014 Table III, cyno: 84.7 mL
+    lcldec <- log(0.0220);  label("Deconjugation clearance from T-DM1 to DAR0 (L/day)") # Bender 2014 Table III, cyno: 22.0 mL/day
 
     # IIV - cynomolgus Table III; log-normal, omega^2 = log(CV^2 + 1)
     etalcl    ~ 0.038454   # cyno CL_TT CV 19.8%  (rat CV 24.6% -> 0.05878)

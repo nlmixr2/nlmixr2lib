@@ -74,13 +74,13 @@ Struemper_2017_belimumab <- function() {
   ini({
     # Structural parameters -- typical values from Struemper 2017 Table 3 (final SC popPK model)
     # Reported in mL / mL per day; converted to L / L per day by dividing by 1000.
-    lka      <- log(0.235);    label("Absorption rate constant (Kabs, 1/day)")                                    # Table 3 THETA(5)
-    lcl      <- log(0.204);    label("Clearance for the reference adult (CL, L/day)")                             # Table 3 THETA(1): 204 mL/day
-    lvc      <- log(2.300);    label("Central volume of distribution for the reference adult (Vc, L)")            # Table 3 THETA(2): 2300 mL
-    lq       <- log(0.698);    label("Intercompartmental clearance (Q, L/day)")                                   # Table 3 THETA(3): 698 mL/day
-    lvp      <- log(2.650);    label("Peripheral volume of distribution (Vp, L)")                                 # Table 3 THETA(4): 2650 mL
-    lfdepot  <- log(0.742);    label("Subcutaneous bioavailability (F, fraction)")                                # Table 3 THETA(6)
-    lalag    <- log(0.179);    label("Absorption lag time (ALAG, day)")                                           # Table 3 THETA(7)
+    lka      <- log(0.235);    label("Absorption rate constant (1/day)")                                    # Table 3 THETA(5)
+    lcl      <- log(0.204);    label("Clearance for the reference adult (L/day)")                             # Table 3 THETA(1): 204 mL/day
+    lvc      <- log(2.300);    label("Central volume of distribution for the reference adult (L)")            # Table 3 THETA(2): 2300 mL
+    lq       <- log(0.698);    label("Intercompartmental clearance (L/day)")                                   # Table 3 THETA(3): 698 mL/day
+    lvp      <- log(2.650);    label("Peripheral volume of distribution (L)")                                 # Table 3 THETA(4): 2650 mL
+    lfdepot  <- log(0.742);    label("Subcutaneous bioavailability (fraction)")                                # Table 3 THETA(6)
+    lalag    <- log(0.179);    label("Absorption lag time (day)")                                           # Table 3 THETA(7)
 
     # Fixed allometric body-weight exponents (reference 67 kg)
     # Effect column in Table 3 lists each as 9 (BWT/67)^e with no estimate ("-"), i.e. fixed.
@@ -94,7 +94,7 @@ Struemper_2017_belimumab <- function() {
     # Estimated covariate effects on CL and Vc (Struemper 2017 Table 3)
     e_alb_cl <- -0.736;  label("Power exponent of baseline albumin on CL (reference 41 g/L)")                     # Table 3 BALB effect on CL
     e_igg_cl <-  0.347;  label("Power exponent of baseline IgG on CL (reference 13.7 g/L)")                       # Table 3 BIGG effect on CL
-    e_bmi_vc <- -0.610;  label("Power exponent of baseline BMI on Vc (reference 24.7 kg/m^2)")                    # Table 3 BBMI effect on Vc
+    e_bmi_vc <- -0.610;  label("Power exponent of baseline BMI on Vc, reference 24.7 kg/m^2 (unitless)")                    # Table 3 BBMI effect on Vc
 
     # Inter-individual variability (Struemper 2017 Table 3)
     # OMEGA(1,1) on CL, OMEGA(2,2) on V1 (Vc), OMEGA(2,1) = covariance(CL,V1); no Ka / F / ALAG IIV reported.

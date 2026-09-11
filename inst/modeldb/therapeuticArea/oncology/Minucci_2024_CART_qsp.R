@@ -258,7 +258,7 @@ Minucci_2024_CART_qsp <- function() {
     # Minucci 2024 fitted each patient individually with trust-region
     # optimisation and did not publish a population residual-error
     # model. Nominal fixed additive-log SD is retained for simulation
-    # (typical-value CK output; Cc has units cells/uL). Use rxode2's
+    # (typical-value CK output; log_car has units cells/uL). Use rxode2's
     # zeroRe(mod) at simulation time to zero this residual for a
     # deterministic typical-value trajectory.
     addSd <- fixed(0.1)
@@ -378,7 +378,7 @@ Minucci_2024_CART_qsp <- function() {
     # residual error (see ini() addSd note). Use rxode2::zeroRe(mod)
     # in the vignette to zero this residual for deterministic
     # typical-value trajectories.
-    Cc <- log(CAR_perUL + 1e-30)
-    Cc ~ add(addSd)
+    log_car <- log(CAR_perUL + 1e-30)
+    log_car ~ add(addSd)
   })
 }

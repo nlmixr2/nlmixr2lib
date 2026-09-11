@@ -100,8 +100,8 @@ Wright_2016_allopurinol <- function() {
     # for urate did not improve the fit and was unstable (Wright 2016
     # Results: 'A turnover model for urate did not provide a better
     # description of the data and was unstable.').
-    lemax  <- log(0.409); label("Maximum fractional inhibition of urate by oxypurinol (Emax, unitless)")    # Wright 2016 Table 3: Emax = 0.409 (RSE 12%); bootstrap median 0.414 [0.323, 0.595]
-    lec50  <- log(83.9);  label("Oxypurinol concentration at half-maximum urate inhibition (C50, umol/L)")  # Wright 2016 Table 3: C50 = 83.9 (RSE 17.4%); bootstrap median 87.9 [61.3, 173]
+    lemax  <- log(0.409); label("Maximum fractional inhibition of urate by oxypurinol (unitless)")    # Wright 2016 Table 3: Emax = 0.409 (RSE 12%); bootstrap median 0.414 [0.323, 0.595]
+    lec50  <- log(83.9);  label("Oxypurinol concentration at half-maximum urate inhibition (umol/L)")  # Wright 2016 Table 3: C50 = 83.9 (RSE 17.4%); bootstrap median 87.9 [61.3, 173]
     lhill  <- log(1.30);  label("Empirical Hill coefficient lambda (unitless)")                              # Wright 2016 Table 3: lambda = 1.30 (RSE 11%); bootstrap median 1.26 [1.05, 1.59]
     lrbase <- log(0.511); label("Baseline plasma urate U0 at reference CRCL = 6 L/h, no diuretic (mmol/L)") # Wright 2016 Table 3: U0 = 0.511 (RSE 2.3%); bootstrap median 0.508 [0.487, 0.530]
 

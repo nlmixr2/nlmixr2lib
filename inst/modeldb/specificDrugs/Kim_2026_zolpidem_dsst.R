@@ -207,22 +207,22 @@ Kim_2026_zolpidem_dsst <- function() {
     # See modellib("Kim_2026_zolpidem") for the estimating run.
 
     lka <- fixed(log(11.7))
-    label("Absorption rate constant, depot -> central (Ka, 1/h)")                    # Kim 2026 Table 2: Ka = 11.7 1/h. Data S2 $THETA(3) = "(11.7) FIX".
+    label("Absorption rate constant, depot -> central (1/h)")                    # Kim 2026 Table 2: Ka = 11.7 1/h. Data S2 $THETA(3) = "(11.7) FIX".
 
     lcl <- fixed(log(18.0))
-    label("Apparent clearance (CL/F, L/h)")                                          # Kim 2026 Table 2: CL/F = 18.0 L/h. Data S2 $THETA(1) = "(18) FIX".
+    label("Apparent clearance (L/h)")                                          # Kim 2026 Table 2: CL/F = 18.0 L/h. Data S2 $THETA(1) = "(18) FIX".
 
     lvc <- fixed(log(64.0))
-    label("Apparent central volume of distribution (Vc/F, L)")                       # Kim 2026 Table 2: Vc/F = 64.0 L. Data S2 $THETA(2) = "(64) FIX".
+    label("Apparent central volume of distribution (L)")                       # Kim 2026 Table 2: Vc/F = 64.0 L. Data S2 $THETA(2) = "(64) FIX".
 
     lmtt <- fixed(log(0.25))
-    label("Mean transit time of the absorption chain (MTT, h)")                      # Kim 2026 Table 2: MTT = 0.25 h. Data S2 $THETA(4) = "(0.25) FIX".
+    label("Mean transit time of the absorption chain (h)")                      # Kim 2026 Table 2: MTT = 0.25 h. Data S2 $THETA(4) = "(0.25) FIX".
 
     lnn <- fixed(log(19.4))
-    label("Number of transit compartments (NN, unitless)")                           # Kim 2026 Table 2: NN = 19.4. Data S2 $THETA(5) = "(19.4) FIX".
+    label("Number of transit compartments (unitless)")                           # Kim 2026 Table 2: NN = 19.4. Data S2 $THETA(5) = "(19.4) FIX".
 
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability (BIO, fraction)")                                # Kim 2026 Table 2: BIO = "1 Fixed". Data S2 $THETA(6) = "(1) FIX".
+    label("Relative bioavailability (fraction)")                                # Kim 2026 Table 2: BIO = "1 Fixed". Data S2 $THETA(6) = "(1) FIX".
 
     etalka ~ fixed(2.48)
     # Kim 2026 Table 2: IIV Ka = 330.8 %CV. Data S2 $OMEGA(3,3) = "2.48 FIX".
@@ -251,19 +251,19 @@ Kim_2026_zolpidem_dsst <- function() {
     # (DSST) block, reproduced in the Data S2 $THETA block.
 
     lic50 <- log(205)
-    label("Half-maximal inhibitory concentration for DSST (IC50, ug/L)")             # Kim 2026 Table 3: IC50 = 205 ug/L (RSE 7.5%; SIR median 204, 95% CI 183-232). Data S2 $THETA(9) "D_IC50". Base model without covariates was 188.
+    label("Half-maximal inhibitory concentration for DSST (ug/L)")             # Kim 2026 Table 3: IC50 = 205 ug/L (RSE 7.5%; SIR median 204, 95% CI 183-232). Data S2 $THETA(9) "D_IC50". Base model without covariates was 188.
 
     lhill <- log(2.54)
-    label("Hill coefficient of the DSST concentration-response (HILL, unitless)")    # Kim 2026 Table 3: HILL = 2.54 (RSE 11.1%; SIR median 2.55, 95% CI 2.17-2.99). Data S2 $THETA(10) "D_HILL".
+    label("Hill coefficient of the DSST concentration-response (unitless)")    # Kim 2026 Table 3: HILL = 2.54 (RSE 11.1%; SIR median 2.55, 95% CI 2.17-2.99). Data S2 $THETA(10) "D_HILL".
 
     lrbase <- log(68.2)
-    label("Baseline DSST score before any learning effect (BASE, score)")            # Kim 2026 Table 3: BASE = 68.2 score (RSE 3.3%; SIR median 67.9, 95% CI 63.6-72.8). Data S2 $THETA(11) "D_BASE".
+    label("Baseline DSST score before any learning effect (score)")            # Kim 2026 Table 3: BASE = 68.2 score (RSE 3.3%; SIR median 67.9, 95% CI 63.6-72.8). Data S2 $THETA(11) "D_BASE".
 
     lemax_learn <- log(14.4)
-    label("Maximum learning (practice) effect on DSST (MAXlearn, score)")            # Kim 2026 Table 3: MAXlearn = 14.4 score (RSE 10.6%; SIR median 14.8, 95% CI 11.6-17.5). Data S2 $THETA(12) "D_MAX".
+    label("Maximum learning (practice) effect on DSST (score)")            # Kim 2026 Table 3: MAXlearn = 14.4 score (RSE 10.6%; SIR median 14.8, 95% CI 11.6-17.5). Data S2 $THETA(12) "D_MAX".
 
     lt50_learn <- log(4.3)
-    label("Time to half-maximal learning effect on DSST (LRPAR, h)")                 # Kim 2026 Table 3: LRPAR = 4.3 h (RSE 38.6%; SIR median 4.29, 95% CI 1.62-9.22). Data S2 $THETA(13) "D_LRPAR". Results 3.2.2 / Discussion: 4.3 h implies "approximately 85% of the maximal learning effect would be achieved within 24 h" -- 24/(24 + 4.3) = 0.848, which confirms that the learning term runs on absolute study time.
+    label("Time to half-maximal learning effect on DSST (h)")                 # Kim 2026 Table 3: LRPAR = 4.3 h (RSE 38.6%; SIR median 4.29, 95% CI 1.62-9.22). Data S2 $THETA(13) "D_LRPAR". Results 3.2.2 / Discussion: 4.3 h implies "approximately 85% of the maximal learning effect would be achieved within 24 h" -- 24/(24 + 4.3) = 0.848, which confirms that the learning term runs on absolute study time.
 
     # ====================================================================
     # COVARIATE EFFECTS ON THE DSST PARAMETERS

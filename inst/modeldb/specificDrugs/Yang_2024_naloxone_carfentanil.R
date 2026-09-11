@@ -157,35 +157,35 @@ Yang_2024_naloxone_carfentanil <- function() {
 
     # --- Naloxone PK (Yang 2024 Table S4; control stream (D) THETA 1-6)
     lktr_naloxone <- fixed(log(0.696))
-    label("Naloxone transit absorption rate constant (KTR, 1/min)")            # (D) THETA 1 = 0.696; Table S4
+    label("Naloxone transit absorption rate constant (1/min)")            # (D) THETA 1 = 0.696; Table S4
     lcl_naloxone <- fixed(log(3.26))
-    label("Naloxone apparent clearance at 70 kg (CL/F, L/min)")                # (D) THETA 2 = 3.26; Table S4
+    label("Naloxone apparent clearance at 70 kg (L/min)")                # (D) THETA 2 = 3.26; Table S4
     e_wt_cl_naloxone <- fixed(0.538)
     label("Allometric exponent of body weight on naloxone CL/F (unitless)")    # (D) THETA 3 = 0.538; Table S4
     lvc_naloxone <- fixed(log(404))
-    label("Naloxone apparent central volume (V2/F, L)")                        # (D) THETA 4 = 404; Table S4
+    label("Naloxone apparent central volume (L)")                        # (D) THETA 4 = 404; Table S4
     lq_naloxone <- fixed(log(0.0847))
-    label("Naloxone apparent intercompartmental clearance (Q/F, L/min)")       # (D) THETA 5 = 0.0847; Table S4
+    label("Naloxone apparent intercompartmental clearance (L/min)")       # (D) THETA 5 = 0.0847; Table S4
     lvp_naloxone <- fixed(log(81.8))
-    label("Naloxone apparent peripheral volume (V3/F, L)")                     # (D) THETA 6 = 81.8; Table S4
+    label("Naloxone apparent peripheral volume (L)")                     # (D) THETA 6 = 81.8; Table S4
 
     # --- Carfentanil PK, Scenario 1 (Table S8; control stream (D)
     # THETA 7-10). For Scenario 2 use log(1.165), log(14), log(100) for
     # lcl, lvc and lvp respectively; lq is identical in both scenarios.
     lcl <- fixed(log(0.705))
-    label("Carfentanil clearance, allometric Scenario 1 (CL, L/min)")          # (D) THETA 7 = 0.705; Table S8 Scenario 1 (Scenario 2: 1.165)
+    label("Carfentanil clearance, allometric Scenario 1 (L/min)")          # (D) THETA 7 = 0.705; Table S8 Scenario 1 (Scenario 2: 1.165)
     lvc <- fixed(log(36))
-    label("Carfentanil central volume, allometric Scenario 1 (V1, L)")         # (D) THETA 8 = 36; Table S8 Scenario 1 (Scenario 2: 14)
+    label("Carfentanil central volume, allometric Scenario 1 (L)")         # (D) THETA 8 = 36; Table S8 Scenario 1 (Scenario 2: 14)
     lq <- fixed(log(3.51))
-    label("Carfentanil intercompartmental clearance, assumed equal to fentanyl (Q2, L/min)")  # (D) THETA 9 = 3.51; Table S8, both scenarios
+    label("Carfentanil intercompartmental clearance, assumed equal to fentanyl (L/min)")  # (D) THETA 9 = 3.51; Table S8, both scenarios
     lvp <- fixed(log(272))
-    label("Carfentanil peripheral volume, allometric Scenario 1 (V2, L)")      # (D) THETA 10 = 272; Table S8 Scenario 1 (Scenario 2: 100)
+    label("Carfentanil peripheral volume, allometric Scenario 1 (L)")      # (D) THETA 10 = 272; Table S8 Scenario 1 (Scenario 2: 100)
 
     # --- Biophase equilibration (equation 1)
     lke0_naloxone <- fixed(log(0.106))
-    label("Naloxone biophase equilibration rate constant (ke0, 1/min)")        # (D) THETA 11 = 0.106; Table S8
+    label("Naloxone biophase equilibration rate constant (1/min)")        # (D) THETA 11 = 0.106; Table S8
     lke0 <- fixed(log(0.0422))
-    label("Carfentanil biophase equilibration rate constant, assumed equal to fentanyl (ke0, 1/min)")  # (D) THETA 12 = 0.0422; Table S8
+    label("Carfentanil biophase equilibration rate constant, assumed equal to fentanyl (1/min)")  # (D) THETA 12 = 0.0422; Table S8
 
     # --- MOP receptor association / dissociation (equation 13).
     # Concentrations are in pM, so kon has units pM^-n min^-1. These are
@@ -195,32 +195,32 @@ Yang_2024_naloxone_carfentanil <- function() {
     # 2.47e-04*60 = 1.482e-02; 3.96e-02*60 = 2.376), an independent
     # confirmation that the pM scale is the intended one.
     lkon <- fixed(log(0.00059724))
-    label("Carfentanil receptor association rate constant (kon, pM^-n/min)")   # (D) THETA 13 = 0.00059724; Table S8
+    label("Carfentanil receptor association rate constant (pM^-n/min)")   # (D) THETA 13 = 0.00059724; Table S8
     lkoff <- fixed(log(0.014802))
-    label("Carfentanil receptor dissociation rate constant (koff, 1/min)")     # (D) THETA 14 = 0.014802; Table S8
+    label("Carfentanil receptor dissociation rate constant (1/min)")     # (D) THETA 14 = 0.014802; Table S8
     lhill <- fixed(log(1.025))
-    label("Carfentanil binding slope of the dose-effect relationship (n, unitless)")  # (D) THETA 15 = 1.025; Table S8
+    label("Carfentanil binding slope of the dose-effect relationship (unitless)")  # (D) THETA 15 = 1.025; Table S8
     lkon_naloxone <- fixed(log(0.010014))
-    label("Naloxone receptor association rate constant (kon, pM^-n/min)")      # (D) THETA 16 = 0.010014; Table S8
+    label("Naloxone receptor association rate constant (pM^-n/min)")      # (D) THETA 16 = 0.010014; Table S8
     lkoff_naloxone <- fixed(log(2.3754))
-    label("Naloxone receptor dissociation rate constant (koff, 1/min)")        # (D) THETA 17 = 2.3754; Table S8
+    label("Naloxone receptor dissociation rate constant (1/min)")        # (D) THETA 17 = 2.3754; Table S8
     lhill_naloxone <- fixed(log(0.858))
-    label("Naloxone binding slope of the dose-effect relationship (n, unitless)")  # (D) THETA 18 = 0.858; Table S8
+    label("Naloxone binding slope of the dose-effect relationship (unitless)")  # (D) THETA 18 = 0.858; Table S8
 
     # --- Ventilation-CO2 steady-state relationship (equation 14).
     # Control stream (D) $ERROR hardcodes these four FDA constants
     # rather than declaring them as THETAs; they are lifted to ini()
     # here so a downstream user can see and vary them.
     g0 <- fixed(0.42)
-    label("Baseline slope of the ventilation-PeCO2 curve without opioid (G, L/min/mmHg)")  # (D) $ERROR G0 = 0.42; Appendix S1 Carfentanil section
+    label("Baseline slope of the ventilation-PeCO2 curve without opioid (L/min/mmHg)")  # (D) $ERROR G0 = 0.42; Appendix S1 Carfentanil section
     bmax_co2 <- fixed(29.65)
-    label("Maximum opioid-induced shift of the ventilation-PeCO2 curve (Bmax, mmHg)")      # (D) $ERROR BMAX = 29.65; Appendix S1 Carfentanil section
+    label("Maximum opioid-induced shift of the ventilation-PeCO2 curve (mmHg)")      # (D) $ERROR BMAX = 29.65; Appendix S1 Carfentanil section
     p1 <- fixed(5.2)
-    label("Occupancy exponent on the ventilation-PeCO2 slope term (P1, unitless)")         # (D) $ERROR P1 = 5.2; Appendix S1 Carfentanil section
+    label("Occupancy exponent on the ventilation-PeCO2 slope term (unitless)")         # (D) $ERROR P1 = 5.2; Appendix S1 Carfentanil section
     p2 <- fixed(1.629)
-    label("Occupancy exponent on the ventilation-PeCO2 offset term (P2, unitless)")        # (D) $ERROR P2 = 1.629; Appendix S1 Carfentanil section
+    label("Occupancy exponent on the ventilation-PeCO2 offset term (unitless)")        # (D) $ERROR P2 = 1.629; Appendix S1 Carfentanil section
     le0 <- fixed(log(24))
-    label("Baseline minute ventilation (VB, L/min)")                           # Appendix S1 Carfentanil section: VB assumed 24 (printed mL/min, a typo for L/min) with 21.8% IIV
+    label("Baseline minute ventilation (L/min)")                           # Appendix S1 Carfentanil section: VB assumed 24 (printed mL/min, a typo for L/min) with 21.8% IIV
 
     # --- IIV. Control stream (D) $OMEGA entries 1-12, in order. The
     # three naloxone-PK terms are the Table S4 estimates; every
@@ -340,7 +340,7 @@ Yang_2024_naloxone_carfentanil <- function() {
 
     # ---- Outputs
     Cc <- central / vc
-    Cnal <- central_naloxone / vc_naloxone
+    Cc_naloxone <- central_naloxone / vc_naloxone
     # Linear ventilation-versus-CO2 relationship at steady state,
     # equation 14 / control stream (D) $ERROR:
     #   E = (G - G*RL^P1) * (E0/G - Bmax*RL^P2)

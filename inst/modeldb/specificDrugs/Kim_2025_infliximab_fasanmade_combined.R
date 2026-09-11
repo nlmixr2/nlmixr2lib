@@ -104,10 +104,10 @@ Kim_2025_infliximab_fasanmade_combined <- function() {
     #   lvc = log(52.4 * 65 / 1000) = log(3.406 L)
     #   lvp = log(19.6 * 65 / 1000) = log(1.274 L)
     #   lq  = log(2.26 * 65 / 1000) = log(0.1469 L/day)
-    lcl <- log(0.3523); label("Typical clearance for the reference subject (CL, L/day)")                    # Data S1 model #6 $THETA1 = 5.42 mL/kg/day * 65 kg / 1000; Table S2 "5.42"
-    lvc <- log(3.406);  label("Typical central volume for the reference subject (Vc, L)")                   # Data S1 model #6 $THETA2 = 52.4 mL/kg * 65 kg / 1000; Table S2 "52.4"
-    lvp <- log(1.274);  label("Typical peripheral volume for the reference subject (Vp, L)")                # Data S1 model #6 $THETA3 = 19.6 mL/kg * 65 kg / 1000; Table S2 "19.6"
-    lq  <- log(0.1469); label("Typical inter-compartmental clearance for the reference subject (Q, L/day)") # Data S1 model #6 $THETA4 = 2.26 mL/kg/day * 65 kg / 1000; Table S2 "2.26"
+    lcl <- log(0.3523); label("Typical clearance for the reference subject (L/day)")                    # Data S1 model #6 $THETA1 = 5.42 mL/kg/day * 65 kg / 1000; Table S2 "5.42"
+    lvc <- log(3.406);  label("Typical central volume for the reference subject (L)")                   # Data S1 model #6 $THETA2 = 52.4 mL/kg * 65 kg / 1000; Table S2 "52.4"
+    lvp <- log(1.274);  label("Typical peripheral volume for the reference subject (L)")                # Data S1 model #6 $THETA3 = 19.6 mL/kg * 65 kg / 1000; Table S2 "19.6"
+    lq  <- log(0.1469); label("Typical inter-compartmental clearance for the reference subject (L/day)") # Data S1 model #6 $THETA4 = 2.26 mL/kg/day * 65 kg / 1000; Table S2 "2.26"
 
     # Covariate effects. The three e_wt_* values are the exponents on the PER-KG
     # parameters; model() adds the +1 that converts them to total-parameter
@@ -123,12 +123,12 @@ Kim_2025_infliximab_fasanmade_combined <- function() {
     # body weight. The two encodings agree exactly at the 65 kg reference and
     # diverge away from it (about 62% apart in CL at 30 kg). This file follows
     # Kim 2025; the divergence is flagged in the validation vignette.
-    e_wt_cl  <- -0.313; label("Power exponent of body weight on per-kg CL ((WT/65)^(1 + e_wt_cl) on total CL)")  # Data S1 model #6 $THETA8 = -0.313
-    e_wt_vc  <- -0.233; label("Power exponent of body weight on per-kg Vc ((WT/65)^(1 + e_wt_vc) on total Vc)")  # Data S1 model #6 $THETA9 = -0.233
-    e_wt_vp  <- -0.588; label("Power exponent of body weight on per-kg Vp ((WT/65)^(1 + e_wt_vp) on total Vp)")  # Data S1 model #6 $THETA10 = -0.588
-    e_alb_cl <- -0.855; label("Power exponent of serum albumin on CL ((ALB/4.1)^e_alb_cl)")                      # Data S1 model #6 $THETA5 = -0.855
-    e_ada_cl <-  0.291; label("Fractional increase in CL when ADA-positive (1 + e_ada_cl)")                      # Data S1 model #6 $THETA6 = 0.291
-    e_imm_cl <- -0.137; label("Fractional change in CL on a concomitant immunomodulator (1 + e_imm_cl)")         # Data S1 model #6 $THETA7 = -0.137
+    e_wt_cl  <- -0.313; label("Power exponent of body weight on per-kg CL, WT/65 scaling applied as 1 + e_wt_cl (unitless)")  # Data S1 model #6 $THETA8 = -0.313
+    e_wt_vc  <- -0.233; label("Power exponent of body weight on per-kg Vc, WT/65 scaling applied as 1 + e_wt_vc (unitless)")  # Data S1 model #6 $THETA9 = -0.233
+    e_wt_vp  <- -0.588; label("Power exponent of body weight on per-kg Vp, WT/65 scaling applied as 1 + e_wt_vp (unitless)")  # Data S1 model #6 $THETA10 = -0.588
+    e_alb_cl <- -0.855; label("Power exponent of serum albumin on CL, ALB/4.1 scaling in g/dL (unitless)")                      # Data S1 model #6 $THETA5 = -0.855
+    e_ada_cl <-  0.291; label("Fractional increase in CL when ADA-positive, applied as 1 + e_ada_cl * ADA_POS (fraction)")                      # Data S1 model #6 $THETA6 = 0.291
+    e_imm_cl <- -0.137; label("Fractional change in CL on a concomitant immunomodulator, applied as 1 + e_imm_cl * CONMED_IMMUNOMOD (fraction)")         # Data S1 model #6 $THETA7 = -0.137
 
     # Inter-individual variability; OMEGA = (CV)^2 per Kim 2025's control-stream
     # annotation, with each %CV given in the stream comment and Table S2.

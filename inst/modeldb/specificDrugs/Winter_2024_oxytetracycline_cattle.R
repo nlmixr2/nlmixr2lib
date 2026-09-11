@@ -91,20 +91,20 @@ Winter_2024_oxytetracycline_cattle <- function() {
     # (they match Supplementary Table S4, not Table 1). Structure is taken
     # from the control stream; every value is taken from Tables 1 and 2.
     # ------------------------------------------------------------------
-    lvc  <- log(126)     ; label("Central volume of distribution, adult (V1, mL/kg)")                              # Winter 2024 Table 1 tvV1 (adult) = 126 mL/kg
-    lvp  <- log(914)     ; label("First peripheral volume of distribution, adult (V2, mL/kg)")                     # Winter 2024 Table 1 tvV2 (adult) = 914 mL/kg
-    lvp2 <- log(2564)    ; label("Second peripheral volume of distribution, adult (V3, mL/kg)")                    # Winter 2024 Table 1 tvV3 (adult) = 2,564 mL/kg
-    lcl  <- log(62.67)   ; label("Plasma clearance, adult (Cl, mL/kg/h)")                                          # Winter 2024 Table 1 tvCl (adult) = 62.67 mL/kg/h
-    lq   <- log(485)     ; label("Inter-compartmental clearance central <-> peripheral1, adult (Cld2, mL/kg/h)")   # Winter 2024 Table 1 tvCld2 (adult) = 485 mL/kg/h
-    lq2  <- log(19.96)   ; label("Inter-compartmental clearance central <-> peripheral2, adult (Cld3, mL/kg/h)")   # Winter 2024 Table 1 tvCld3 (adult) = 19.96 mL/kg/h
+    lvc  <- log(126)     ; label("Central volume of distribution, adult (mL/kg)")                              # Winter 2024 Table 1 tvV1 (adult) = 126 mL/kg
+    lvp  <- log(914)     ; label("First peripheral volume of distribution, adult (mL/kg)")                     # Winter 2024 Table 1 tvV2 (adult) = 914 mL/kg
+    lvp2 <- log(2564)    ; label("Second peripheral volume of distribution, adult (mL/kg)")                    # Winter 2024 Table 1 tvV3 (adult) = 2,564 mL/kg
+    lcl  <- log(62.67)   ; label("Plasma clearance, adult (mL/kg/h)")                                          # Winter 2024 Table 1 tvCl (adult) = 62.67 mL/kg/h
+    lq   <- log(485)     ; label("Inter-compartmental clearance central <-> peripheral1, adult (mL/kg/h)")   # Winter 2024 Table 1 tvCld2 (adult) = 485 mL/kg/h
+    lq2  <- log(19.96)   ; label("Inter-compartmental clearance central <-> peripheral2, adult (mL/kg/h)")   # Winter 2024 Table 1 tvCld3 (adult) = 19.96 mL/kg/h
 
     # Absorption after intramuscular long-acting product. Two parallel
     # first-order sites: a rapid one (Ka1, no lag) and a slow one (Ka2,
     # entered after Tlag). Winter 2024 Figure 3 and Supplementary Data S1
     # dosepoint(Abs1, ...) / dosepoint(Abs2, tlag = (Tlag), ...).
-    lka1  <- log(0.214)  ; label("Rapid first-order absorption rate constant (Ka1, 1/h)")                          # Winter 2024 Table 1 tvKa1 = 0.214 1/h (mean absorption time 4.57 h)
-    lka2  <- log(0.0441) ; label("Slow first-order absorption rate constant (Ka2, 1/h)")                           # Winter 2024 Table 1 tvKa2 = 0.0441 1/h (mean absorption time 22.1 h)
-    ltlag <- log(14.96)  ; label("Lag time before the slow (Ka2) absorption site starts releasing (Tlag, h)")      # Winter 2024 Table 1 tvTlag for ka2 = 14.96 h
+    lka1  <- log(0.214)  ; label("Rapid first-order absorption rate constant (1/h)")                          # Winter 2024 Table 1 tvKa1 = 0.214 1/h (mean absorption time 4.57 h)
+    lka2  <- log(0.0441) ; label("Slow first-order absorption rate constant (1/h)")                           # Winter 2024 Table 1 tvKa2 = 0.0441 1/h (mean absorption time 22.1 h)
+    ltlag <- log(14.96)  ; label("Lag time before the slow (Ka2) absorption site starts releasing (h)")      # Winter 2024 Table 1 tvTlag for ka2 = 14.96 h
 
     # Bioavailability. Supplementary Data S1 is explicit that only the TOTAL
     # bioavailability is ilogit-transformed --
@@ -116,7 +116,7 @@ Winter_2024_oxytetracycline_cattle <- function() {
     # "to prevent the bioavailability being estimated greater than 100%".
     # See the vignette Errata for the Table 1 "Units = ilogit" annotation on
     # the tvFrapid row, which the control stream contradicts.
-    lffo        <- log(0.757) ; label("Fraction of the bioavailable dose entering the rapid (Ka1) absorption site (Frapid, fraction)")   # Winter 2024 Table 1 tvFrapid = 0.757
+    lffo        <- log(0.757) ; label("Fraction of the bioavailable dose entering the rapid (Ka1) absorption site (fraction)")   # Winter 2024 Table 1 tvFrapid = 0.757
     logitfdepot <- 1.281      ; label("Total intramuscular bioavailability on the ilogit scale (F1; expit(1.281) = 0.783)")              # Winter 2024 Table 1 tvF1 = 1.281 (ilogit scale; the table annotates the back-transform as a total F of 78.6%)
 
     # ------------------------------------------------------------------

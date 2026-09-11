@@ -116,11 +116,11 @@ Suyagh_2011_metronidazole <- function() {
     #   V  = 0.726 * WT
     # =========================================================================
     lcl <- log(0.0247)
-    label("Clearance for the 1.0 kg, 30-week PMA reference (CL, L/h)")
+    label("Clearance for the 1.0 kg, 30-week PMA reference (L/h)")
     # Suyagh 2011 abstract: CL typical value 0.0247 L/h.
 
     lvc <- log(0.726)
-    label("Per-kg volume of distribution (V/WT, L/kg)")
+    label("Per-kg volume of distribution (L/kg)")
     # Suyagh 2011 abstract: V = 0.726 * WT, so the typical V/WT slope is
     # 0.726 L/kg.
 

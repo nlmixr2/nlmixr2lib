@@ -57,24 +57,24 @@ Li_2014_penicillinG_cattle <- function() {
     # Structural parameters from Li 2014 Table 2 (cattle, final PK model).
     # Volumes in litres; clearances in L/h; absorption rate constants in 1/h;
     # bioavailabilities as fractions (paper Table 2 reports %, converted here).
-    lvc       <- log(3.45);  label("Central volume of distribution (Vc, L)")                                   # Li 2014 Table 2 V1
-    lvp       <- log(20.8);  label("First peripheral volume of distribution (Vp, L)")                          # Li 2014 Table 2 V2
-    lvp2      <- log(30.3);  label("Second peripheral volume of distribution (Vp2, L)")                        # Li 2014 Table 2 V3
-    lv_liver  <- log(11.2);  label("Liver compartment volume of distribution (V_liver, L)")                    # Li 2014 Table 2 VL
-    lv_kidney <- log(12.5);  label("Kidney compartment volume of distribution (V_kidney, L)")                  # Li 2014 Table 2 VK
-    lcl       <- log(105);   label("Central clearance (CL, L/h)")                                              # Li 2014 Table 2 CL1
-    lq        <- log(24.8);  label("Inter-compartmental clearance central <-> peripheral1 (Q, L/h)")           # Li 2014 Table 2 CL2
-    lq2       <- log(9.65);  label("Inter-compartmental clearance central <-> peripheral2 (Q2, L/h)")          # Li 2014 Table 2 CL3
-    lq_liver  <- log(21.5);  label("Inter-compartmental clearance central <-> liver (Q_liver, L/h)")           # Li 2014 Table 2 CLL
-    lq_kidney <- log(21.5);  label("Inter-compartmental clearance central <-> kidney (Q_kidney, L/h)")         # Li 2014 Table 2 CLK
-    lka_im_na  <- log(0.31); label("First-order absorption rate constant after IM penicillin sodium (Ka, 1/h)")     # Li 2014 Table 2 Kim1
-    lka_im_pro <- log(0.22); label("First-order absorption rate constant after IM procaine penicillin (Ka, 1/h)")   # Li 2014 Table 2 Kim2
-    lka_sc     <- log(0.56); label("First-order absorption rate constant after SC procaine penicillin (Ka, 1/h)")   # Li 2014 Table 2 Ksc
-    lka_oral   <- log(0.38); label("First-order absorption rate constant after oral procaine penicillin (Ka, 1/h)") # Li 2014 Table 2 Kpo
-    lfdepot_im_na  <- log(0.801); label("Bioavailability of IM penicillin sodium (F, fraction)")        # Li 2014 Table 2 Fim1 (80.1%)
-    lfdepot_im_pro <- log(0.913); label("Bioavailability of IM procaine penicillin (F, fraction)")      # Li 2014 Table 2 Fim2 (91.3%)
-    lfdepot_sc     <- log(0.752); label("Bioavailability of SC procaine penicillin (F, fraction)")      # Li 2014 Table 2 Fsc  (75.2%)
-    lfdepot_oral   <- log(0.424); label("Bioavailability of oral procaine penicillin (F, fraction)")    # Li 2014 Table 2 Fpo  (42.4%)
+    lvc       <- log(3.45);  label("Central volume of distribution (L)")                                   # Li 2014 Table 2 V1
+    lvp       <- log(20.8);  label("First peripheral volume of distribution (L)")                          # Li 2014 Table 2 V2
+    lvp2      <- log(30.3);  label("Second peripheral volume of distribution (L)")                        # Li 2014 Table 2 V3
+    lv_liver  <- log(11.2);  label("Liver compartment volume of distribution (L)")                    # Li 2014 Table 2 VL
+    lv_kidney <- log(12.5);  label("Kidney compartment volume of distribution (L)")                  # Li 2014 Table 2 VK
+    lcl       <- log(105);   label("Central clearance (L/h)")                                              # Li 2014 Table 2 CL1
+    lq        <- log(24.8);  label("Inter-compartmental clearance central <-> peripheral1 (L/h)")           # Li 2014 Table 2 CL2
+    lq2       <- log(9.65);  label("Inter-compartmental clearance central <-> peripheral2 (L/h)")          # Li 2014 Table 2 CL3
+    lq_liver  <- log(21.5);  label("Inter-compartmental clearance central <-> liver (L/h)")           # Li 2014 Table 2 CLL
+    lq_kidney <- log(21.5);  label("Inter-compartmental clearance central <-> kidney (L/h)")         # Li 2014 Table 2 CLK
+    lka_im_na  <- log(0.31); label("First-order absorption rate constant after IM penicillin sodium (1/h)")     # Li 2014 Table 2 Kim1
+    lka_im_pro <- log(0.22); label("First-order absorption rate constant after IM procaine penicillin (1/h)")   # Li 2014 Table 2 Kim2
+    lka_sc     <- log(0.56); label("First-order absorption rate constant after SC procaine penicillin (1/h)")   # Li 2014 Table 2 Ksc
+    lka_oral   <- log(0.38); label("First-order absorption rate constant after oral procaine penicillin (1/h)") # Li 2014 Table 2 Kpo
+    lfdepot_im_na  <- log(0.801); label("Bioavailability of IM penicillin sodium (fraction)")        # Li 2014 Table 2 Fim1 (80.1%)
+    lfdepot_im_pro <- log(0.913); label("Bioavailability of IM procaine penicillin (fraction)")      # Li 2014 Table 2 Fim2 (91.3%)
+    lfdepot_sc     <- log(0.752); label("Bioavailability of SC procaine penicillin (fraction)")      # Li 2014 Table 2 Fsc  (75.2%)
+    lfdepot_oral   <- log(0.424); label("Bioavailability of oral procaine penicillin (fraction)")    # Li 2014 Table 2 Fpo  (42.4%)
 
     # Covariate effects (Li 2014 Table 2 covariate factors). Power model:
     # P_i = P_pop * (cov/ref)^theta * exp(eta). The paper did not report the

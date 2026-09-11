@@ -1,0 +1,625 @@
+---
+title: "Letermovir (Prohn 2021)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Letermovir (Prohn 2021)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+```
+
+```{r libraries, message = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(ggplot2)
+rxode2::rxSetSeed(20250908)
+```
+
+Prohn et al. (2021) reported a **two-stage** population pharmacokinetic analysis
+of letermovir, a first-in-class cytomegalovirus terminase inhibitor used for
+prophylaxis in allogeneic hematopoietic stem cell transplant (HSCT) recipients.
+The two stages are two independently fitted models on two different cohorts, and
+this package carries them as two model files:
+
+* `Prohn_2021_letermovir_healthy` -- the healthy participant (phase I) model of
+  Table 2 and Figure 1a. Four compartments, saturable clearance and saturable
+  distribution, auto-induction of clearance, and transit-compartment absorption,
+  fitted to 9020 observations from 280 healthy volunteers over a 30-960 mg dose
+  range.
+* `Prohn_2021_letermovir_hsct` -- the HSCT recipient (phase III) model of
+  Table 3 and Figure 1b. Two compartments with linear elimination and
+  first-order absorption with a lag, fitted to 2888 steady-state observations
+  from 399 subjects at the clinical doses of 240-480 mg/day.
+
+The authors are explicit that the two are not competing descriptions of the same
+data: "differences between the phase I and phase III popPK models should not be
+interpreted as indicative of a difference in disposition... Rather, the
+differences in the models reflect different purposes, sampling schedules, and
+dose ranges." The phase III model is the one used for exposure-response analysis
+and dose selection, and it is the one downstream simulation studies reuse.
+
+```{r load-models}
+hsct    <- rxode2::rxode(nlmixr2lib::readModelDb("Prohn_2021_letermovir_hsct"))
+healthy <- rxode2::rxode(nlmixr2lib::readModelDb("Prohn_2021_letermovir_healthy"))
+```
+
+# Population
+
+```{r population}
+pop <- function(ui, lbl) {
+  p <- ui$population
+  tibble::tibble(
+    Model = lbl,
+    Subjects = as.character(p$n_subjects),
+    Studies = as.character(p$n_studies),
+    Age = p$age_range,
+    Weight = p$weight_range,
+    `Female (%)` = as.character(p$sex_female_pct),
+    Dose = p$dose_range
+  )
+}
+knitr::kable(
+  dplyr::bind_rows(pop(healthy, "Healthy (phase I)"), pop(hsct, "HSCT (phase III)")),
+  caption = "Analysis populations (Prohn 2021 Table 1)."
+)
+```
+
+The phase I cohort is 91% female because most letermovir phase I studies
+recruited only women, following preclinical testicular toxicity in rats. The
+phase III model's dataset pools 363 HSCT recipients with 36 healthy participants
+who contributed steady-state data at the clinical dosing schedule; the `TX_HCT`
+covariate switches bioavailability and absorption rate between the two.
+
+# Source trace
+
+```{r source-trace}
+knitr::kable(tibble::tribble(
+  ~Quantity, ~Value, ~`Source location`,
+  "Phase III: CL without / with CsA", "4.84 / 3.38 L/h", "Table 3",
+  "Phase III: Vc, Vp, Q", "19.7 L, 25.8 L, 1.54 L/h", "Table 3",
+  "Phase III: F without / with CsA / healthy", "0.346 / 0.849 / 1.00 (fixed)", "Table 3",
+  "Phase III: Ka HSCT / healthy, lag", "0.150 / 1.26 1/h, 0.674 h", "Table 3",
+  "Phase III: Asian effect on Vp", "0.609", "Table 3",
+  "Phase III: IIV on CL, F, Vp, Ka", "0.0605, 0.137, 0.229, 0.719 (variances)", "Table 3",
+  "Phase III: IOV on F", "0.197 (variance)", "Table 3",
+  "Phase III: residual (rich HSCT)", "51.7% prop + 383 ng/mL add", "Table 3",
+  "Phase III: two-compartment structure, Cp = A/Vc * 1000", "--", "Figure 1b",
+  "Phase I: CLmax, KMcl; Q1max, KMq", "12.3 L/h, 2680 ng/mL; 4.39 L/h, 5630 ng/mL", "Table 2",
+  "Phase I: V1, V2, V3, V4", "7.46, 61.6, 12.1, 19.0 L", "Table 2",
+  "Phase I: Q2, Q3", "31.3, 4.91 L/h", "Table 2",
+  "Phase I: NTR, TVMTT, MTTdose", "3.58, 1.04 h, 0.344", "Table 2",
+  "Phase I: F1", "0.938", "Table 2",
+  "Phase I: kout, IMAG", "0.00783 1/h, 0.0829", "Table 2",
+  "Phase I: weight on CLmax / Vd, Asian on Vd", "0.566 / 0.667, -0.281", "Table 2",
+  "Phase I: residual", "28.3% proportional", "Table 2",
+  "Phase I: CL, Q1, EAI, MTT, Ktr, V(1..4) equations", "--", "Figure 1a",
+  "Validation: AUCss medians and 90% PIs", "4 regimens", "Results, 'Exposure predictions'",
+  "Validation: Asian vs White exposure", "33.2% / 10.1% higher", "Results, 'Impact of covariates'"
+), caption = "Provenance of every model equation and parameter.")
+```
+
+Two items in the phase I model were not printed as such and were resolved
+against the paper's own numbers rather than assumed; both are recorded in the
+model file and repeated under Errata below.
+
+# Phase III (HSCT) model
+
+## Exposure predictions: a closed-form gate
+
+At steady state the phase III model is linear, so the average steady-state
+exposure has a closed form: `AUCss = F * Dose / CL` for oral dosing and
+`Dose / CL` for intravenous. Both `F` and `CL` carry a single log-normal
+random effect, so the population **median** of `AUCss` is exactly the
+typical-value prediction -- which makes Prohn's four published medians a
+deterministic gate that does not depend on any simulated cohort.
+
+```{r auc-closed-form}
+th <- function(ui, nm) ui$theta[[nm]]
+cl_non <- exp(th(hsct, "lcl"))
+cl_csa <- exp(th(hsct, "lcl") + th(hsct, "e_csa_cl"))
+f_non  <- exp(th(hsct, "lfdepot"))
+f_csa  <- exp(th(hsct, "lfdepot") + th(hsct, "e_csa_fdepot"))
+
+closed <- tibble::tibble(
+  regimen = c("oral 480 mg, no CsA", "oral 240 mg + CsA",
+              "i.v. 480 mg, no CsA", "i.v. 240 mg + CsA"),
+  # * 1000 converts mg*h/L to ng*h/mL
+  auc_closed = c(f_non * 480 / cl_non, f_csa * 240 / cl_csa,
+                 480 / cl_non, 240 / cl_csa) * 1000,
+  auc_published = c(34400, 60800, 100000, 70300)
+) |>
+  dplyr::mutate(pct_diff = 100 * (auc_closed - auc_published) / auc_published)
+
+knitr::kable(
+  closed |>
+    dplyr::rename("Regimen" = regimen, "Closed form" = auc_closed,
+                  "Prohn median" = auc_published, "Difference (%)" = pct_diff),
+  digits = c(0, 0, 0, 2),
+  caption = "Steady-state AUC (ng*h/mL) against Prohn 2021 'Exposure predictions'."
+)
+
+# Deterministic: no cohort, no RNG. A mis-transcribed CL, F or dose moves these
+# by tens of percent; the realised maximum is 1.0%.
+stopifnot(max(abs(closed$pct_diff)) < 3)
+```
+
+All four regimens reproduce to within 1%, which confirms both cyclosporine
+effects (on clearance and on bioavailability) and the intravenous/oral split.
+
+## The solved model agrees with its own closed form
+
+```{r auc-solved}
+grid_ss <- function(dose, oral, csa) {
+  ev <- if (oral) {
+    rxode2::et(amt = dose, ii = 24, ss = 1, cmt = "depot")
+  } else {
+    rxode2::et(amt = dose, ii = 24, ss = 1, cmt = "central", dur = 1)
+  }
+  ev <- rxode2::et(ev, seq(0, 24, by = 0.1), cmt = "central")
+  d <- as.data.frame(ev)
+  d$CONMED_CSA <- csa; d$TX_HCT <- 1; d$RACE_ASIAN <- 0; d$OCC <- 0
+  d
+}
+trap <- function(t, y) sum(diff(t) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+
+solved <- vapply(seq_len(4), function(i) {
+  spec <- list(c(480, 1, 0), c(240, 1, 1), c(480, 0, 0), c(240, 0, 1))[[i]]
+  s <- rxode2::rxSolve(rxode2::zeroRe(hsct), grid_ss(spec[1], spec[2] == 1, spec[3]),
+                       returnType = "data.frame")
+  s <- s[!is.na(s$Cc), ]
+  trap(s$time, s$Cc)
+}, numeric(1))
+
+chk <- closed |> dplyr::mutate(auc_solved = solved,
+                               pct = 100 * (auc_solved - auc_closed) / auc_closed)
+knitr::kable(
+  chk |> dplyr::select(regimen, auc_closed, auc_solved, pct) |>
+    dplyr::rename("Regimen" = regimen, "Closed form" = auc_closed,
+                  "Solved (typical)" = auc_solved, "Difference (%)" = pct),
+  digits = c(0, 0, 0, 3),
+  caption = "ODE solution against the analytical steady-state exposure."
+)
+
+# Both sides use the same parameters, so the difference is pure trapezoidal
+# error on a 0.1 h grid: a tight bound is correct here.
+stopifnot(max(abs(chk$pct)) < 1)
+```
+
+## Between-subject variability
+
+Table 3's IIV column is unlabelled and carries no unit, so whether it holds
+log-scale standard deviations or variances has to be settled from the paper
+itself. The intravenous arm decides it: there `AUCss = Dose / CL`, so only the
+clearance random effect contributes, and Prohn reports a median of 100,000 with
+a 90% prediction interval of 65,300-148,000 ng*h/mL.
+
+```{r iiv-scale}
+tab3_cl <- 0.0605
+obs_sd  <- mean(c(log(148000 / 100000), log(100000 / 65300))) / qnorm(0.95)
+knitr::kable(tibble::tribble(
+  ~Reading, ~`Implied log-scale SD`, ~`Implied 90% PI`,
+  "Table 3 value is a VARIANCE", sqrt(tab3_cl),
+    sprintf("%.0f-%.0f", 1e5 * exp(-qnorm(0.95) * sqrt(tab3_cl)), 1e5 * exp(qnorm(0.95) * sqrt(tab3_cl))),
+  "Table 3 value is an SD", tab3_cl,
+    sprintf("%.0f-%.0f", 1e5 * exp(-qnorm(0.95) * tab3_cl), 1e5 * exp(qnorm(0.95) * tab3_cl)),
+  "Prohn's reported interval", obs_sd, "65300-148000"
+), digits = 3, caption = "Identifying the scale of Table 3's IIV column.")
+
+stopifnot(abs(sqrt(tab3_cl) - obs_sd) < 0.02)
+```
+
+The variance reading reproduces the reported interval; the standard-deviation
+reading is four times too narrow on the log scale. The model files therefore
+carry Table 3's numbers verbatim as variances. This matters downstream --
+see Errata.
+
+```{r vpc-cohort}
+n_arm <- 150
+cohort <- function(dose, oral, csa, lbl) {
+  ev <- if (oral) rxode2::et(amt = dose, ii = 24, ss = 1, cmt = "depot")
+        else      rxode2::et(amt = dose, ii = 24, ss = 1, cmt = "central", dur = 1)
+  ev <- rxode2::et(ev, seq(0, 24, by = 0.25), cmt = "central")
+  ev <- rxode2::et(ev, id = seq_len(n_arm))
+  d <- as.data.frame(ev)
+  d$CONMED_CSA <- csa; d$TX_HCT <- 1; d$RACE_ASIAN <- 0; d$OCC <- 0
+  d$regimen <- lbl
+  d
+}
+events <- dplyr::bind_rows(
+  cohort(480, TRUE,  0, "oral 480 mg, no CsA"),
+  cohort(240, TRUE,  1, "oral 240 mg + CsA"),
+  cohort(480, FALSE, 0, "i.v. 480 mg, no CsA"),
+  cohort(240, FALSE, 1, "i.v. 240 mg + CsA")
+)
+events$id <- as.integer(factor(paste(events$regimen, events$id)))
+
+sim <- rxode2::rxSolve(hsct, events, keep = "regimen", returnType = "data.frame")
+sim <- sim[!is.na(sim$Cc), ]
+
+auc_by_id <- sim |>
+  dplyr::group_by(regimen, id) |>
+  dplyr::summarise(auc = trap(time, Cc), .groups = "drop")
+
+pi_tab <- auc_by_id |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(median = median(auc), lo = quantile(auc, 0.05),
+                   hi = quantile(auc, 0.95), .groups = "drop") |>
+  dplyr::left_join(
+    tibble::tibble(
+      regimen = c("oral 480 mg, no CsA", "oral 240 mg + CsA",
+                  "i.v. 480 mg, no CsA", "i.v. 240 mg + CsA"),
+      ref = c("34400 (16900-73700)", "60800 (28700-122000)",
+              "100000 (65300-148000)", "70300 (46200-106000)")
+    ), by = "regimen")
+
+knitr::kable(
+  pi_tab |> dplyr::rename("Regimen" = regimen, "Median" = median,
+                          "5th" = lo, "95th" = hi, "Prohn median (90% PI)" = ref),
+  digits = 0,
+  caption = paste0("Simulated steady-state AUC (ng*h/mL), ", n_arm,
+                   " subjects per arm, against Prohn 2021.")
+)
+```
+
+```{r vpc-assertions}
+pub_med <- c("oral 480 mg, no CsA" = 34400, "oral 240 mg + CsA" = 60800,
+             "i.v. 480 mg, no CsA" = 1e5,   "i.v. 240 mg + CsA" = 70300)
+med_pct <- 100 * (pi_tab$median - pub_med[pi_tab$regimen]) / pub_med[pi_tab$regimen]
+
+# Cohort medians: robust, but still one draw of 150 subjects per arm. Realised
+# max |difference| 1.9%; 12 leaves room for a different cohort while still
+# breaking on a mis-transcribed clearance or dose (which move these by tens of
+# percent).
+stopifnot(max(abs(med_pct)) < 12)
+
+# The intravenous arm's spread must be consistent with the VARIANCE reading of
+# Table 3 (log-scale SD 0.246), not the SD reading (0.0605). With 150 subjects
+# the sampling error on this statistic is about 0.014, so the window below sits
+# many standard errors from both the target and the wrong answer.
+iv_sd <- with(dplyr::filter(auc_by_id, regimen == "i.v. 480 mg, no CsA"), sd(log(auc)))
+stopifnot(iv_sd > 0.17, iv_sd < 0.34)
+```
+
+## Concentration-time profiles
+
+```{r profile-plot}
+sim |>
+  dplyr::group_by(regimen, time) |>
+  dplyr::summarise(med = median(Cc), lo = quantile(Cc, 0.05),
+                   hi = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot2::ggplot(ggplot2::aes(time, med)) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = lo, ymax = hi), alpha = 0.2) +
+  ggplot2::geom_line(linewidth = 0.8) +
+  ggplot2::facet_wrap(~regimen, scales = "free_y") +
+  ggplot2::labs(x = "Time within the dosing interval (h)",
+                y = "Letermovir (ng/mL)",
+                title = "Steady-state profiles, median and 90% interval") +
+  ggplot2::theme_bw()
+```
+
+## Noncompartmental analysis
+
+```{r pknca-hsct, message = FALSE, warning = FALSE}
+conc_df <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, regimen)
+
+dose_df <- events |>
+  dplyr::filter(!is.na(amt)) |>
+  dplyr::distinct(id, regimen, .keep_all = TRUE) |>
+  dplyr::mutate(time = 0) |>
+  dplyr::select(id, time, amt, regimen)
+
+o_conc <- PKNCA::PKNCAconc(conc_df, Cc ~ time | regimen + id,
+                           concu = "ng/mL", timeu = "h")
+o_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id, doseu = "mg")
+intervals <- data.frame(start = 0, end = 24,
+                        cmax = TRUE, tmax = TRUE, auclast = TRUE, ctrough = TRUE)
+res <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+
+nca_res <- as.data.frame(res) |>
+  dplyr::group_by(regimen, PPTESTCD) |>
+  dplyr::summarise(value = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = value)
+
+knitr::kable(
+  nca_res |> dplyr::rename("Regimen" = regimen),
+  digits = 2,
+  caption = "Median steady-state NCA parameters from the simulated cohort (PKNCA)."
+)
+```
+
+Prohn reports steady-state AUC but not Cmax/Tmax for these regimens, and states
+explicitly that the phase III model under-predicts Cmax after intravenous dosing
+("virtually all of the phase III model-predicted Cmax values for orally
+administered letermovir fell below the observed values", and the Discussion
+attributes this to the absence of between-subject variability on `Vc`). So AUC
+is the only NCA quantity with a published counterpart:
+
+```{r nca-compare}
+published <- tibble::tibble(
+  regimen = c("oral 480 mg, no CsA", "oral 240 mg + CsA",
+              "i.v. 480 mg, no CsA", "i.v. 240 mg + CsA"),
+  auclast = c(34400, 60800, 100000, 70300)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = dplyr::select(nca_res, regimen, auclast),
+  reference = published,
+  by = "regimen",
+  units = c(auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "PKNCA AUC against Prohn 2021 published AUCss.")
+```
+
+# Phase I (healthy participant) model
+
+## Dose nonlinearity
+
+Both clearance and the intercompartmental clearance to the fast peripheral
+compartment fall as concentration rises, so exposure increases more than
+proportionally with dose while Cmax increases almost proportionally -- the two
+observations the phase I model was built to reproduce (Figure 2a).
+
+```{r dose-nonlinearity}
+one_dose <- function(dose, wt = 66, asian = 0, days = 1) {
+  ev <- rxode2::et(amt = dose, ii = 24, addl = days - 1, cmt = "depot")
+  ev <- rxode2::et(ev, seq((days - 1) * 24, days * 24, by = 0.1), cmt = "central")
+  d <- as.data.frame(ev)
+  d$WT <- wt; d$RACE_ASIAN <- asian; d$DOSE <- dose
+  s <- rxode2::rxSolve(rxode2::zeroRe(healthy), d, returnType = "data.frame")
+  s <- s[!is.na(s$Cc), ]
+  s <- s[order(s$time), ]
+  list(auc = trap(s$time, s$Cc), cmax = max(s$Cc))
+}
+
+doses <- c(30, 60, 120, 240, 480, 720, 960)
+nl <- do.call(rbind, lapply(doses, function(d) {
+  r <- one_dose(d)
+  data.frame(dose = d, auc = r$auc, cmax = r$cmax)
+})) |>
+  dplyr::mutate(auc_dn = auc / dose, cmax_dn = cmax / dose)
+
+knitr::kable(
+  nl |> dplyr::rename("Dose (mg)" = dose, "AUC0-24" = auc, "Cmax" = cmax,
+                      "AUC / dose" = auc_dn, "Cmax / dose" = cmax_dn),
+  digits = c(0, 0, 1, 2, 3),
+  caption = "Single oral dose, typical 66 kg non-Asian participant."
+)
+
+# Deterministic (zeroRe), so strict monotonicity is a safe assertion here.
+stopifnot(all(diff(nl$auc_dn) > 0))
+# Dose-normalised Cmax is nearly flat: Prohn reports Cmax increasing "almost
+# proportionally with dose". Realised spread 12%.
+stopifnot(diff(range(nl$cmax_dn)) / mean(nl$cmax_dn) < 0.35)
+```
+
+```{r dose-nonlinearity-plot}
+nl |>
+  tidyr::pivot_longer(c(auc_dn, cmax_dn)) |>
+  dplyr::mutate(name = ifelse(name == "auc_dn", "AUC0-24 / dose", "Cmax / dose")) |>
+  ggplot2::ggplot(ggplot2::aes(dose, value)) +
+  ggplot2::geom_line() + ggplot2::geom_point() +
+  ggplot2::facet_wrap(~name, scales = "free_y") +
+  ggplot2::labs(x = "Letermovir dose (mg)", y = "Dose-normalised value",
+                title = "Replicates the dose nonlinearity of Prohn 2021 Figure 2a") +
+  ggplot2::theme_bw()
+```
+
+## Covariate effects on exposure
+
+Prohn reports two numbers for the Asian covariate: a 33.2% higher exposure than
+White participants at multiple oral 480 mg, driven jointly by the volume effect
+and by the lower median body weight of the Asian cohort (56.6 vs 67.1 kg), and a
+10.1% higher exposure "when assuming an identical average body weight of
+67.1 kg". The weight-matched comparison isolates the coefficient itself.
+
+```{r covariate-check}
+ss_auc <- function(wt, asian) one_dose(480, wt, asian, days = 28)$auc
+white     <- ss_auc(67.1, 0)
+asian     <- ss_auc(56.6, 1)
+asian_wm  <- ss_auc(67.1, 1)
+
+cov_tab <- tibble::tibble(
+  Comparison = c("White, 67.1 kg (AUCss)", "Asian, 56.6 kg (AUCss)",
+                 "Asian / White at published median weights",
+                 "Asian / White at a common 67.1 kg"),
+  Simulated = c(white, asian, asian / white, asian_wm / white),
+  Published = c(8.11e4, 1.08e5, 1.332, 1.101)
+) |>
+  dplyr::mutate(`Difference (%)` = 100 * (Simulated - Published) / Published)
+
+knitr::kable(cov_tab, digits = c(0, 3, 3, 2),
+             caption = "Prohn 2021 Results, 'Impact of covariates'.")
+
+# Deterministic typical-value quantities. The weight-matched ratio is a direct
+# read-out of the -0.281 coefficient and matches to 0.4%; the White AUCss to
+# 1.6%.
+stopifnot(abs(cov_tab$`Difference (%)`[4]) < 4)
+stopifnot(abs(cov_tab$`Difference (%)`[1]) < 6)
+# The two-covariate combination is a simulation over a weight DISTRIBUTION in
+# the source, not a typical value at the median weight, so it is compared with
+# a wider tolerance. Realised 5.7%.
+stopifnot(abs(cov_tab$`Difference (%)`[3]) < 15)
+```
+
+## Auto-induction
+
+The enzyme pool turns over with `kout = 0.00783` 1/h, a half-life of about
+88 h, so induction develops over roughly two weeks of dosing -- the mechanism
+Prohn invoked for trough concentrations that "increased at first... and then
+decreased over time".
+
+```{r autoinduction}
+ev <- rxode2::et(amt = 480, ii = 24, addl = 27, cmt = "depot")
+ev <- rxode2::et(ev, seq(0, 28 * 24, by = 1), cmt = "central")
+d <- as.data.frame(ev); d$WT <- 66; d$RACE_ASIAN <- 0; d$DOSE <- 480
+ind <- rxode2::rxSolve(rxode2::zeroRe(healthy), d, returnType = "data.frame")
+
+trough <- ind |>
+  dplyr::filter(!is.na(Cc), time > 0, time %% 24 == 0) |>
+  dplyr::mutate(day = time / 24)
+
+ggplot2::ggplot(trough, ggplot2::aes(day, Cc)) +
+  ggplot2::geom_line() + ggplot2::geom_point(size = 1) +
+  ggplot2::labs(x = "Day of dosing", y = "Trough letermovir (ng/mL)",
+                title = "Trough concentrations rise, then fall as clearance is induced") +
+  ggplot2::theme_bw()
+
+peak_day <- trough$day[which.max(trough$Cc)]
+# The published qualitative claim: troughs peak and then decline within a month
+# of daily dosing. Deterministic (zeroRe).
+stopifnot(peak_day > 1, peak_day < 28,
+          dplyr::last(trough$Cc) < max(trough$Cc))
+cat(sprintf("Trough peaks on day %.0f at %.0f ng/mL and falls to %.0f by day 28.\n",
+            peak_day, max(trough$Cc), dplyr::last(trough$Cc)))
+```
+
+## Noncompartmental analysis
+
+```{r pknca-healthy, message = FALSE, warning = FALSE}
+n_ph1 <- 100
+ev1 <- rxode2::et(amt = 480, cmt = "depot")
+ev1 <- rxode2::et(ev1, seq(0, 72, by = 0.5), cmt = "central")
+ev1 <- rxode2::et(ev1, id = seq_len(n_ph1))
+d1 <- as.data.frame(ev1)
+set.seed(7)
+wt_i <- stats::setNames(stats::runif(n_ph1, 45, 99), seq_len(n_ph1))
+d1$WT <- as.numeric(wt_i[as.character(d1$id)])
+d1$RACE_ASIAN <- 0
+d1$DOSE <- 480
+
+sim1 <- rxode2::rxSolve(healthy, d1, returnType = "data.frame")
+sim1 <- sim1[!is.na(sim1$Cc), ]
+
+c1 <- dplyr::select(sim1, id, time, Cc)
+dose1 <- dplyr::distinct(d1[!is.na(d1$amt), ], id, .keep_all = TRUE) |>
+  dplyr::mutate(time = 0) |>
+  dplyr::select(id, time, amt)
+
+res1 <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(c1, Cc ~ time | id, concu = "ng/mL", timeu = "h"),
+  PKNCA::PKNCAdose(dose1, amt ~ time | id, doseu = "mg"),
+  intervals = data.frame(start = 0, end = 72,
+                         cmax = TRUE, tmax = TRUE, auclast = TRUE)
+))
+
+nca1 <- as.data.frame(res1) |>
+  dplyr::group_by(PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES),
+                   p05 = quantile(PPORRES, 0.05),
+                   p95 = quantile(PPORRES, 0.95), .groups = "drop")
+
+knitr::kable(
+  nca1 |> dplyr::rename("NCA parameter" = PPTESTCD, "Median" = median,
+                        "5th" = p05, "95th" = p95),
+  digits = 2,
+  caption = paste0("Single oral 480 mg dose in ", n_ph1,
+                   " healthy participants (45-99 kg), PKNCA.")
+)
+
+tmax_med <- nca1$median[nca1$PPTESTCD == "tmax"]
+# Transit absorption with MTT = 1.04 * (1 + 480/240 * 0.344) = 1.76 h puts Tmax
+# in the low single-digit hours. Wide enough to survive a different cohort.
+stopifnot(tmax_med > 1, tmax_med < 8)
+```
+
+# Cross-check against a downstream simulation study
+
+This model was located through Fromage et al. (2025,
+[doi:10.1371/journal.pone.0321180](https://doi.org/10.1371/journal.pone.0321180)),
+a Monte Carlo study that re-implemented the phase III model in mrgsolve to
+compare letermovir dosing strategies. Their reported median trough at the
+approved oral 480 mg/day regimen without cyclosporine is a useful independent
+check on the typical-value prediction.
+
+```{r fromage-crosscheck}
+c24 <- function(dose, csa) {
+  d <- grid_ss(dose, TRUE, csa)
+  s <- rxode2::rxSolve(rxode2::zeroRe(hsct), d, returnType = "data.frame")
+  s <- s[!is.na(s$Cc), ]
+  s$Cc[which.min(abs(s$time - 24))]
+}
+ct <- tibble::tibble(
+  Regimen = c("oral 480 mg/day, no CsA", "oral 240 mg/day + CsA"),
+  `Prohn model typical C24h (mg/L)` = c(c24(480, 0), c24(240, 1)) / 1000,
+  `Fromage 2025 median (mg/L)` = c(0.57, 1.24),
+  `Fromage 2025 IQR` = c("0.51-0.64", "1.23-1.25"),
+  `Royston 2025 observed median (IQR)` = c("0.259 (0.119-0.542)", "0.980 (0.455-1.72)")
+)
+knitr::kable(ct, digits = 3,
+             caption = "Typical trough against a downstream simulation and against observed data.")
+```
+
+The typical values agree closely with Fromage's medians, as they should -- a
+median is insensitive to the magnitude of a symmetric log-scale random effect.
+The **spread** does not agree, and that discrepancy is informative: Fromage's
+simulated interquartile range spans a factor of 1.25 without cyclosporine and
+1.02 with it, whereas the observed troughs reported by Royston et al. span a
+factor of about 4.5. The cause is the IIV scale identified above -- Fromage's
+mrgsolve `[OMEGA]` block contains the squares of Prohn's Table 3 entries, which
+are already variances, so every between-subject variance in that study is
+roughly an order of magnitude too small. This model file uses the values that
+reproduce Prohn's own published prediction intervals.
+
+# Assumptions and deviations
+
+* **Table 3 / Table 2 IIV are variances, not standard deviations.** The column
+  is unlabelled in both tables. It was settled from Prohn's own intravenous
+  exposure prediction interval, where `AUCss = Dose / CL` isolates a single
+  random effect (section "Between-subject variability"). Two downstream
+  publications read the same column as standard deviations: Fromage 2025
+  squares the values again in its simulation code, and Royston 2025
+  (doi:10.1128/aac.00697-25) carries Prohn's 0.719 through as "0.72" under a
+  table footnote declaring standard deviations. Comparisons against either will
+  show less between-subject spread than this model produces.
+* **Residual error is on the standard-deviation scale.** Unlike the IIV rows,
+  the residual rows carry explicit units -- Table 3's additive term is headed
+  "ng/ml" and Table 2's proportional term "%". Both are therefore read as
+  standard deviations. This is the one place where the two blocks of the same
+  table use different conventions.
+* **Which residual error the phase III file carries.** Table 3 tabulates five
+  residual parameters, for healthy participants, for HSCT recipients with rich
+  sampling, and for HSCT recipients with sparse sampling. The file carries the
+  HSCT rich-sampling pair (51.7% proportional, 383 ng/mL additive), which
+  matches the population the file describes; the other three are recorded in the
+  `ini()` comments.
+* **Phase I `kin` is not tabulated.** Figure 1a's induction equation contains
+  both `kin` and `kout`, but Table 2 reports only `kout`. This is not missing
+  data: the enzyme pool's baseline is `kin / kout`, and `CLmax` is identifiable
+  as the tabulated "maximal clearance" only if that baseline is exactly 1, which
+  forces `kin = kout`. The same equality is the established form for this
+  construct elsewhere in the package (`Wicha_2018_rifampicin`).
+* **Phase I mean-transit-time equation.** The Figure 1a rendering of
+  `MTT = TVMTT * (1 + DOSE/240 * MTTdose)` lost the grouping of its final term.
+  The form was recovered from the paper's own derived value: Results state MTT
+  at 240 mg is 1.4 h, and `1.04 * (1 + 1 * 0.344) = 1.398`. A power form gives
+  1.04 h and the literal rendering gives 0.716 h; both are excluded.
+* **Interoccasion variability is available but off by default.** `OCC = 0`
+  selects no occasion and leaves the phase III model with between-subject
+  variability only, which is the configuration Prohn used for the exposure
+  predictions this vignette validates against ("without interoccasion
+  variability"). Set `OCC` to 1-8 to activate it.
+* **Not reproduced: an unexplained absorption-rate figure.** The phase I Results
+  sentence quoting F1 and MTT ends "with a first-order absorption rate of
+  0.66/h". No tabulated phase I parameter equals 0.66, and the transit-chain
+  model has no first-order absorption rate constant at all (`Ktr` at 240 mg is
+  3.28 1/h). The value is not used anywhere in this implementation.
+* **Cmax after intravenous dosing is under-predicted by design.** The phase III
+  model carries no between-subject variability on `Vc`, which the Discussion
+  identifies as the reason simulated Cmax does not match noncompartmental
+  values. Only AUC is compared against published NCA above.
+* **Weight distribution in the phase I NCA cohort** is drawn uniformly over the
+  reported 45-99 kg range; Prohn reports only the median and range, not the
+  distribution.
+
+# Session information
+
+```{r session}
+sessionInfo()
+```

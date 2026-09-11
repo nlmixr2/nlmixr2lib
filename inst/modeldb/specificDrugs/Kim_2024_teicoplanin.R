@@ -57,12 +57,12 @@ Kim_2024_teicoplanin <- function() {
     # NONMEM parameterisation: CL = theta1 * (CE/105.27)^theta2, V1 = theta3,
     # Q2 = theta4, V2 = theta5, Q3 = theta6, V3 = theta7 * (WT/67.85)^theta8.
     # NONMEM V1/V2/V3 map to canonical vc/vp/vp2, and Q2/Q3 to q/q2.
-    lcl  <- log(0.693); label("Total clearance at CRCL = 105.27 mL/min (CL, L/h)")                    # Kim 2024 Table 2 theta1 = 0.693 (RSE 2.97%; bootstrap 0.693, 95% CI 0.653-0.74)
-    lvc  <- log(3.96);  label("Central volume of distribution (V1, L)")                               # Kim 2024 Table 2 theta3 = 3.96 (RSE 8.41%; bootstrap 3.97, 95% CI 3.15-4.62)
-    lq   <- log(4.45);  label("Intercompartmental clearance central <-> peripheral1 (Q2, L/h)")       # Kim 2024 Table 2 theta4 = 4.45 (RSE 11.6%; bootstrap 4.45, 95% CI 3.63-5.86)
-    lvp  <- log(8.24);  label("First peripheral volume of distribution (V2, L)")                      # Kim 2024 Table 2 theta5 = 8.24 (RSE 8.32%; bootstrap 8.33, 95% CI 7.07-9.85)
-    lq2  <- log(1.76);  label("Intercompartmental clearance central <-> peripheral2 (Q3, L/h)")       # Kim 2024 Table 2 theta6 = 1.76 (RSE 9.7%; bootstrap 1.75, 95% CI 1.44-2.13)
-    lvp2 <- log(69.8);  label("Second peripheral volume of distribution at WT = 67.85 kg (V3, L)")    # Kim 2024 Table 2 theta7 = 69.8 (RSE 8.74%; bootstrap 69.7, 95% CI 55.8-82.6)
+    lcl  <- log(0.693); label("Total clearance at CRCL = 105.27 mL/min (L/h)")                    # Kim 2024 Table 2 theta1 = 0.693 (RSE 2.97%; bootstrap 0.693, 95% CI 0.653-0.74)
+    lvc  <- log(3.96);  label("Central volume of distribution (L)")                               # Kim 2024 Table 2 theta3 = 3.96 (RSE 8.41%; bootstrap 3.97, 95% CI 3.15-4.62)
+    lq   <- log(4.45);  label("Intercompartmental clearance central <-> peripheral1 (L/h)")       # Kim 2024 Table 2 theta4 = 4.45 (RSE 11.6%; bootstrap 4.45, 95% CI 3.63-5.86)
+    lvp  <- log(8.24);  label("First peripheral volume of distribution (L)")                      # Kim 2024 Table 2 theta5 = 8.24 (RSE 8.32%; bootstrap 8.33, 95% CI 7.07-9.85)
+    lq2  <- log(1.76);  label("Intercompartmental clearance central <-> peripheral2 (L/h)")       # Kim 2024 Table 2 theta6 = 1.76 (RSE 9.7%; bootstrap 1.75, 95% CI 1.44-2.13)
+    lvp2 <- log(69.8);  label("Second peripheral volume of distribution at WT = 67.85 kg (L)")    # Kim 2024 Table 2 theta7 = 69.8 (RSE 8.74%; bootstrap 69.7, 95% CI 55.8-82.6)
 
     # Covariate effects - both are estimated power exponents (not fixed
     # allometric constants); each carries an RSE and a bootstrap CI in Table 2,

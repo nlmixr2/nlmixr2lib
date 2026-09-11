@@ -61,9 +61,9 @@ Damnjanovic_2023_lamotrigine <- function() {
     # trough plasma concentration data did not give information regarding the extent
     # and rate of absorption processes, the absorption rate was set at 1.57 h-1 based
     # on literature values." (Results, LTG paragraph). Table 2(b) prints no SE / RSE.
-    lka <- fixed(log(1.57));  label("Absorption rate constant (Ka, 1/h)")                  # Table 2(b): Ka = 1.57 1/h, no SE/RSE reported
-    lvc <- log(5.15);         label("Apparent central volume of distribution (V/F, L)")    # Table 2(b): V = 5.15 L (SE 1.18, RSE 22.9%)
-    lcl <- log(0.15);         label("Apparent oral clearance (CL/F, L/h)")                 # Table 2(b): Cl = 0.15 L/h (SE 0.02, RSE 13.3%)
+    lka <- fixed(log(1.57));  label("Absorption rate constant (1/h)")                  # Table 2(b): Ka = 1.57 1/h, no SE/RSE reported
+    lvc <- log(5.15);         label("Apparent central volume of distribution (L)")    # Table 2(b): V = 5.15 L (SE 1.18, RSE 22.9%)
+    lcl <- log(0.15);         label("Apparent oral clearance (L/h)")                 # Table 2(b): Cl = 0.15 L/h (SE 0.02, RSE 13.3%)
 
     # Weight on V/F. This exponent was ESTIMATED (SE and RSE are both printed),
     # unlike the fixed 1 / 0.75 pair used for levetiracetam and valproic acid.

@@ -186,23 +186,23 @@ Abegesah_2025_durvalumab <- function() {
     # Categorical covariates enter CL_cat.cov (page 3) as multiplicative
     # factors of the form (1 + theta) using the signed Table 4 estimate, with
     # the reference level contributing a factor of exactly 1.
-    e_ecog_cl <- -0.0501; label("Fractional change in CL for ECOG performance status >= 1") # Table 4: ECOG status on CL = -0.0501; page 3 CL_cat.cov: (1 - 0.0501)_{ECOGbin=1}
-    e_sexf_cl <- -0.161; label("Fractional change in CL for female sex")                    # Table 4: Sex on CL = -0.161; page 3 CL_cat.cov: (1 - 0.161)_{female}
-    e_chemo_cl <- -0.163; label("Fractional change in CL for durvalumab + chemotherapy")    # Table 4: COMB1 on CL = -0.163; page 3 CL_cat.cov: (1 - 0.163)_{comb=1}
-    e_treme_cl <- -0.0929; label("Fractional change in CL for durvalumab + tremelimumab + chemotherapy") # Table 4: COMB2 on CL = -0.0929; page 3 CL_cat.cov: (1 - 0.0929)_{comb=2}
+    e_ecog_cl <- -0.0501; label("Fractional change in CL for ECOG performance status >= 1 (fraction)") # Table 4: ECOG status on CL = -0.0501; page 3 CL_cat.cov: (1 - 0.0501)_{ECOGbin=1}
+    e_sexf_cl <- -0.161; label("Fractional change in CL for female sex (fraction)")                    # Table 4: Sex on CL = -0.161; page 3 CL_cat.cov: (1 - 0.161)_{female}
+    e_chemo_cl <- -0.163; label("Fractional change in CL for durvalumab + chemotherapy (fraction)")    # Table 4: COMB1 on CL = -0.163; page 3 CL_cat.cov: (1 - 0.163)_{comb=1}
+    e_treme_cl <- -0.0929; label("Fractional change in CL for durvalumab + tremelimumab + chemotherapy (fraction)") # Table 4: COMB2 on CL = -0.0929; page 3 CL_cat.cov: (1 - 0.0929)_{comb=2}
 
     # Tumor-type indicators. The tumtyp = 1 sign follows the page 3 equation,
     # which prints (1 - 0.0101) where Table 4 prints +0.0101; see the
     # covariateData[[TUMTP_OTHER]] note and the vignette Errata.
-    e_tumtp_other_cl <- -0.0101; label("Fractional change in CL for the residual 'other' tumor type") # Page 3 CL_cat.cov: (1 - 0.0101)_{tumtyp=1}; Table 4 "Tumor type 1 on CL" prints +0.0101 (RSE 185%, bootstrap 95% CI [-0.0228; 0.0466])
-    e_tumtp_bladder_cl <- 0.0698; label("Fractional change in CL for bladder (urothelial) carcinoma")  # Table 4: Tumor type 2 on CL = 0.0698; page 3 CL_cat.cov: (1 + 0.0698)_{tumtyp=2}; Fig. 1 "TUM TYP Bladder" +7%
-    e_tumtp_btc_cl <- 0.166; label("Fractional change in CL for biliary tract cancer")                 # Table 4: Tumor type 3 on CL = 0.166; page 3 CL_cat.cov: (1 + 0.166)_{tumtyp=3}; Fig. 1 "TUM TYP BTC" +16.6%
+    e_tumtp_other_cl <- -0.0101; label("Fractional change in CL for the residual 'other' tumor type (fraction)") # Page 3 CL_cat.cov: (1 - 0.0101)_{tumtyp=1}; Table 4 "Tumor type 1 on CL" prints +0.0101 (RSE 185%, bootstrap 95% CI [-0.0228; 0.0466])
+    e_tumtp_bladder_cl <- 0.0698; label("Fractional change in CL for bladder urothelial carcinoma (fraction)")  # Table 4: Tumor type 2 on CL = 0.0698; page 3 CL_cat.cov: (1 + 0.0698)_{tumtyp=2}; Fig. 1 "TUM TYP Bladder" +7%
+    e_tumtp_btc_cl <- 0.166; label("Fractional change in CL for biliary tract cancer (fraction)")                 # Table 4: Tumor type 3 on CL = 0.166; page 3 CL_cat.cov: (1 + 0.166)_{tumtyp=3}; Fig. 1 "TUM TYP BTC" +16.6%
 
     # ---- Covariate effects on the central volume -------------------------
     # Page 3 Vc equation: Vc,i = 3.42 * (WT_i / 69.4)^0.515 * 1_male
     #                            * (1 - 0.140)_female
     e_wt_vc <- 0.515; label("Power exponent of body weight on Vc (unitless)")               # Table 4: Body weight on V1 = 0.515; page 3 Vc equation: (WT_i / 69.4)^0.515
-    e_sexf_vc <- -0.140; label("Fractional change in Vc for female sex")                    # Table 4: Sex on V1 = -0.140; page 3 Vc equation: (1 - 0.140)_{female}
+    e_sexf_vc <- -0.140; label("Fractional change in Vc for female sex (fraction)")                    # Table 4: Sex on V1 = -0.140; page 3 Vc equation: (1 - 0.140)_{female}
 
     # ---- Between-subject variability -------------------------------------
     # Table 4 "Interindividual variability" block. The Methods state that

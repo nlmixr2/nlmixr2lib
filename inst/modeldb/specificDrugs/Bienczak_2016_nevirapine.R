@@ -116,7 +116,7 @@ Bienczak_2016_nevirapine <- function() {
     # =========================================================================
     lmtt   <- log(0.56);   label("Mean transit time MTT through the NTRANS-compartment chain (h)")           # Bienczak 2016 Table 3 row 'MTT (h) = 0.56 (0.49-0.70)'
     lka    <- log(0.84);   label("First-order absorption rate from the last transit to central (1/h)")      # Bienczak 2016 Table 3 row 'Ka (1/h) = 0.84 (0.67-1.12)'
-    nn_fix <- fixed(3);    label("Number of Savic-style transit compartments (integer, unitless)")           # Bienczak 2016 Table 3 row 'NTRANS (number) = 3 (fixed)'; paper Methods 'Structural model' paragraph 2 / Table 3 footnote: 'The number of transit compartments was first estimated and then fixed during the covariate analysis in order to improve model stability. The number was then re-estimated in the final model and proved not to be different from that previously fixed.'
+    nn_fix <- fixed(3);    label("Number of Savic-style transit compartments, integer-valued (unitless)")           # Bienczak 2016 Table 3 row 'NTRANS (number) = 3 (fixed)'; paper Methods 'Structural model' paragraph 2 / Table 3 footnote: 'The number of transit compartments was first estimated and then fixed during the covariate analysis in order to improve model stability. The number was then re-estimated in the final model and proved not to be different from that previously fixed.'
 
     # =========================================================================
     # Well-stirred hepatic-extraction parameters (Bienczak 2016 Methods

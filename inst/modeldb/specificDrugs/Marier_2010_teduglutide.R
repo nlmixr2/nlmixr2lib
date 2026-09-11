@@ -132,10 +132,10 @@ Marier_2010_teduglutide <- function() {
     # 95% percentile interval, under "Population PK Parameters" rather than
     # under "Covariate model". Both strata share the single BSV on Ka that
     # Table V reports (39.5%), so etalka keeps its bare canonical name.
-    lka_abdomen  <- log(0.299); label("First-order SC absorption rate constant for abdominal injection (Ka_abd, 1/h)")        # Marier 2010 Table V: Ka_abd = 0.299 1/h (bootstrap 0.280-0.320)
-    lka_armthigh <- log(0.206); label("First-order SC absorption rate constant for arm or thigh injection (Ka_other, 1/h)")   # Marier 2010 Table V: Ka_other = 0.206 1/h (bootstrap 0.171-0.242)
-    lcl          <- log(12.4);  label("Apparent clearance at reference weight for men (CL/F, L/h)")                           # Marier 2010 Table V: CL/F = 12.4 L/h (bootstrap 11.9-13.0); Table VI
-    lvc          <- log(32.8);  label("Apparent central volume of distribution at reference weight (Vc/F, L)")                # Marier 2010 Table V: Vc/F = 32.8 L (bootstrap 30.6-34.9); Table VI
+    lka_abdomen  <- log(0.299); label("First-order SC absorption rate constant for abdominal injection (1/h)")        # Marier 2010 Table V: Ka_abd = 0.299 1/h (bootstrap 0.280-0.320)
+    lka_armthigh <- log(0.206); label("First-order SC absorption rate constant for arm or thigh injection (1/h)")   # Marier 2010 Table V: Ka_other = 0.206 1/h (bootstrap 0.171-0.242)
+    lcl          <- log(12.4);  label("Apparent clearance at reference weight for men (L/h)")                           # Marier 2010 Table V: CL/F = 12.4 L/h (bootstrap 11.9-13.0); Table VI
+    lvc          <- log(32.8);  label("Apparent central volume of distribution at reference weight (L)")                # Marier 2010 Table V: Vc/F = 32.8 L (bootstrap 30.6-34.9); Table VI
 
     # Absorption lag time. Marier 2010 fixed both the typical value and its
     # BSV: Results, "Structural Model Buildup" -- "The absorption lag time
@@ -143,7 +143,7 @@ Marier_2010_teduglutide <- function() {
     # estimated with the model to stabilize the model and facilitate
     # convergence" -- and Table VI prints "0.208 (Fixed)" / "31.6 (fixed)".
     # Consistent with this, ALAG carries no row in the Table V bootstrap.
-    ltlag <- fixed(log(0.208)); label("Absorption lag time (ALAG, h)")                                                        # Marier 2010 Table VI: ALAG = 0.208 h (Fixed)
+    ltlag <- fixed(log(0.208)); label("Absorption lag time (h)")                                                        # Marier 2010 Table VI: ALAG = 0.208 h (Fixed)
 
     # ---- Covariate effects (Marier 2010 Table V "Covariate model"; Table VI) ----
     # Both weight effects are power functions on WT / 70.9 (Methods, "Covariate

@@ -66,15 +66,15 @@ Bergen_2017_meropenem <- function() {
     # not the observed agar-plate log10 mutation frequencies in Table 1
     # (Discussion: "the estimated subpopulations did not directly reflect
     # bacterial counts on meropenem-containing agar plates at 5x and 10x MIC").
-    log10mf_i <- -3.66; label("Log10 mutation frequency, intermediate subpopulation seed (LogMF_I, log10 unitless)") # Bergen 2017 Table 3 (LogMF_I = -3.66; SE 5.2%)
-    log10mf_r <- -6.28; label("Log10 mutation frequency, resistant subpopulation seed (LogMF_R, log10 unitless)")    # Bergen 2017 Table 3 (LogMF_R = -6.28; SE 6.9%)
+    log10mf_i <- -3.66; label("Log10 mutation frequency, intermediate subpopulation seed (log10 unitless)") # Bergen 2017 Table 3 (LogMF_I = -3.66; SE 5.2%)
+    log10mf_r <- -6.28; label("Log10 mutation frequency, resistant subpopulation seed (log10 unitless)")    # Bergen 2017 Table 3 (LogMF_R = -6.28; SE 6.9%)
 
     # --- Inhibition of successful replication by meropenem (Table 3) ---
     # Imax_Rep_S was estimated at 0.999 and fixed at 1.0 (footnote b);
     # Hill_S was estimated at 1.03 and fixed at 1.0 (footnote c).
-    imax_rep_s <- fixed(1.0); label("Maximum inhibition of replication, susceptible (Imax_Rep_S, unitless)") # Bergen 2017 Table 3 (footnote b: estimated 0.999, fixed to 1.0)
-    imax_rep_i <- 0.673;      label("Maximum inhibition of replication, intermediate (Imax_Rep_I, unitless)")        # Bergen 2017 Table 3 (Imax_Rep_I = 0.673; SE 56.3%)
-    imax_rep_r <- 0.956;      label("Maximum inhibition of replication, resistant (Imax_Rep_R, unitless)")           # Bergen 2017 Table 3 (Imax_Rep_R = 0.956; SE 25.0%)
+    imax_rep_s <- fixed(1.0); label("Maximum inhibition of replication, susceptible (unitless)") # Bergen 2017 Table 3 (footnote b: estimated 0.999, fixed to 1.0)
+    imax_rep_i <- 0.673;      label("Maximum inhibition of replication, intermediate (unitless)")        # Bergen 2017 Table 3 (Imax_Rep_I = 0.673; SE 56.3%)
+    imax_rep_r <- 0.956;      label("Maximum inhibition of replication, resistant (unitless)")           # Bergen 2017 Table 3 (Imax_Rep_R = 0.956; SE 25.0%)
 
     ic50_rep_s <- 0.648; label("Meropenem concn for 50% Imax_Rep, susceptible (mg/L)")  # Bergen 2017 Table 3 (IC50_Rep_S = 0.648; SE 39.8%)
     ic50_rep_i <- 2.96;  label("Meropenem concn for 50% Imax_Rep, intermediate (mg/L)") # Bergen 2017 Table 3 (IC50_Rep_I = 2.96; SE 45.3%)
@@ -182,11 +182,11 @@ Bergen_2017_meropenem <- function() {
 
     # 10. Observation: total viable count on the log10 scale; an additive 1e-6
     #     floor protects log10 when all states are driven near zero by sustained
-    #     bactericidal exposure. Cc is the nlmixr2lib single-output convention;
+    #     bactericidal exposure. log_cfu is the nlmixr2lib single-output convention;
     #     the underlying quantity is log10 CFU/mL, not a drug concentration --
     #     see units$concentration. Additive residual SD on log10 scale matches
     #     Table 3 SD_CFU.
-    Cc <- log10(cfu_all + 1e-6)
-    Cc ~ add(addSd)
+    log_cfu <- log10(cfu_all + 1e-6)
+    log_cfu ~ add(addSd)
   })
 }

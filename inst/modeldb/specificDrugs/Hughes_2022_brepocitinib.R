@@ -265,9 +265,9 @@ Hughes_2022_brepocitinib <- function() {
     # bioavailability enters separately through f(depot), so lcl and lvc
     # below are the paper's CL/Frel and Vc/Frel exactly as tabulated.
     # ==================================================================
-    lka     <- log(3.46)     ; label("Absorption rate constant (ka, 1/h)")                              # Table 3 'First-order absorption rate constant (ka)' = 3.46 (95% CI 3.04 to 3.88); Equation 7. Table 3 and the Abstract print the unit as 'h'; a first-order rate constant is 1/h, and 3.46 1/h is what reproduces the reported 5.04 h half-life population and the sub-1 h NCA tmax
-    lcl     <- log(18.7)     ; label("Apparent oral clearance before Frel correction (CL/Frel, L/h)")   # Table 3 'Apparent clearance (CL/F)' = 18.7 (16.9 to 20.5); Equation 9
-    lvc     <- log(136)      ; label("Apparent central volume before Frel correction (Vc/Frel, L)")     # Table 3 'Apparent volume of distribution (Vc/F)' = 136 (124 to 148); Equation 10
+    lka     <- log(3.46)     ; label("Absorption rate constant (1/h)")                              # Table 3 'First-order absorption rate constant (ka)' = 3.46 (95% CI 3.04 to 3.88); Equation 7. Table 3 and the Abstract print the unit as 'h'; a first-order rate constant is 1/h, and 3.46 1/h is what reproduces the reported 5.04 h half-life population and the sub-1 h NCA tmax
+    lcl     <- log(18.7)     ; label("Apparent oral clearance before Frel correction (L/h)")   # Table 3 'Apparent clearance (CL/F)' = 18.7 (16.9 to 20.5); Equation 9
+    lvc     <- log(136)      ; label("Apparent central volume before Frel correction (L)")     # Table 3 'Apparent volume of distribution (Vc/F)' = 136 (124 to 148); Equation 10
     ltlag   <- log(0.240)    ; label("Absorption lag time of the tablet formulation (h)")               # Table 3 'Absorption lag (Alag)' = 0.240 (0.234 to 0.246); Equation 6
     lfdepot <- fixed(log(1)) ; label("Relative bioavailability of the reference condition (unitless)")  # Equation 8: Frel,i = 1 * (1 - 0.283 * Fed) * (1 + 0.351 * Dose>=175mg). The leading 1 is a structural anchor with no Table 3 row, not an estimate
 

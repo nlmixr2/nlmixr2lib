@@ -64,11 +64,11 @@ Csajka_2004_indinavir <- function() {
     # Reference subject: 70 kg female on indinavir 800 mg three-times-daily
     # without concomitant ritonavir.
     lcl <- log(32.4)
-    label("Apparent oral clearance, female reference, no ritonavir (CL/F, L/h)")  # Csajka 2004 Table 3: CL_female = 32.4 L/h (95% CI 27.8-37.2)
+    label("Apparent oral clearance, female reference, no ritonavir (L/h)")  # Csajka 2004 Table 3: CL_female = 32.4 L/h (95% CI 27.8-37.2)
     lvc <- log(65.7)
-    label("Apparent volume of distribution (V/F, L)")                             # Csajka 2004 Table 3: V/F = 65.7 L (95% CI 55.9-76.0)
+    label("Apparent volume of distribution (L)")                             # Csajka 2004 Table 3: V/F = 65.7 L (95% CI 55.9-76.0)
     lka <- log(1.0)
-    label("First-order absorption rate constant (ka, 1/h)")                       # Csajka 2004 Table 3: Ka = 1.0 1/h (95% CI 0.80-1.41)
+    label("First-order absorption rate constant (1/h)")                       # Csajka 2004 Table 3: Ka = 1.0 1/h (95% CI 0.80-1.41)
 
     # Bioavailability fixed at 1: indinavir was only given orally, so CL
     # and V are apparent (CL/F, V/F). Csajka 2004 Table 3 footnote h: "F

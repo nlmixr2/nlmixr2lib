@@ -12,7 +12,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
   units <- list(
     time          = "h",
     dosing        = "mg (polymyxin B or colistin base, IV bolus or 1-h infusion into IVM central reservoir)",
-    concentration = "log10 CFU/mL (Cc, observed viable count on drug-free agar)"
+    concentration = "log10 CFU/mL (log_cfu, observed viable count on drug-free agar)"
   )
 
   paper_specific_compartments <- c("bact_s", "bact_r", "bact_d", "r_adapt")
@@ -200,7 +200,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # ---------------------------------------------------------------
     # Polymyxin concentration in the IVM central reservoir (mg/L).
     # ---------------------------------------------------------------
-    c_polymyxin <- central / v_ivm
+    Cc <- central / v_ivm
 
     # ---------------------------------------------------------------
     # Cation displacement at the lipid-A receptor (Eq 4):
@@ -213,7 +213,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # rxode2 parser false-positive mu-reference detection that
     # mis-flags 'pop_param + pop_param' as 'THETA + ETA' syntax.
     # ---------------------------------------------------------------
-    c_polymyxin_um  <- c_polymyxin / mw_polymyxin
+    c_polymyxin_um  <- Cc / mw_polymyxin
     kd_ratio        <- kd_cations / kd_polymyxin
     denom_baseline  <- (kd_cations) + (c_cations)
     denom_drug      <- kd_ratio * c_polymyxin_um
@@ -229,7 +229,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     not_occ_h        <- not_occ ^ hill_binding
     ec50_h           <- ec50 ^ hill_binding
     f_polymyxin_eff  <- not_occ_h / ((ec50_h) + (not_occ_h))
-    c_polymyxin_eff  <- f_polymyxin_eff * c_polymyxin / (1 + r_adapt)
+    c_polymyxin_eff  <- f_polymyxin_eff * Cc / (1 + r_adapt)
 
     # ---------------------------------------------------------------
     # Bacterial killing (Eq 7):
@@ -248,7 +248,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # effective polymyxin concentration (Stim)" but the printed Eq 8
     # uses C_polymyxin -- trust the equation per the operator policy.
     # ---------------------------------------------------------------
-    stim <- s_max * c_polymyxin / ((sc50) + (c_polymyxin))
+    stim <- s_max * Cc / ((sc50) + (Cc))
 
     # ---------------------------------------------------------------
     # Fitness cost (Eq 10): only active when G_inhib_max > 0.
@@ -309,7 +309,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # convention for in-vitro PD).
     # ---------------------------------------------------------------
     cfu_obs <- bact_s + bact_r + 1
-    Cc      <- log10(cfu_obs)
-    Cc      ~ add(addSd)
+    log_cfu      <- log10(cfu_obs)
+    log_cfu      ~ add(addSd)
   })
 }

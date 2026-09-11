@@ -213,16 +213,16 @@ Fromage_2025_mycophenolic_acid <- function() {
   ini({
     # Double-gamma absorption, component 1 (the fast phase). Stored as
     # (ntr, mtt); a1 = ntr1 + 1 and b1 = a1/mtt1 recover Table 2 exactly.
-    lntr1 <- log(1280.97 - 1); label("Gamma component 1 shape minus 1 (ntr1, dimensionless)")  # Fromage 2025 Table 2: a1 = 1280.97 (RSE 0.25%); ntr1 = a1 - 1
+    lntr1 <- log(1280.97 - 1); label("Gamma component 1 shape minus 1 (dimensionless)")  # Fromage 2025 Table 2: a1 = 1280.97 (RSE 0.25%); ntr1 = a1 - 1
     lmtt1 <- log(1280.97 / 418.42); label("Gamma component 1 mean absorption time MAT1 (h)")   # Fromage 2025 Table 2: a1 = 1280.97, b1 = 418.42 1/h; MAT1 = a1/b1 = 3.061 h
 
     # Double-gamma absorption, component 2 (the slow phase; carries the
     # indication covariate).
-    lntr2 <- log(395.34 - 1); label("Gamma component 2 shape minus 1 (ntr2, dimensionless)")   # Fromage 2025 Table 2: a2 = 395.34 (RSE 2.30%); ntr2 = a2 - 1
+    lntr2 <- log(395.34 - 1); label("Gamma component 2 shape minus 1 (dimensionless)")   # Fromage 2025 Table 2: a2 = 395.34 (RSE 2.30%); ntr2 = a2 - 1
     lmtt2 <- log(395.34 / 95.69); label("Gamma component 2 mean absorption time MAT2 (h)")     # Fromage 2025 Table 2: a2 = 395.34, b2 = 95.69 1/h; MAT2 = a2/b2 = 4.131 h (the paper's Discussion quotes 4.09 h for this group; see vignette Errata)
 
     # Fraction of the dose absorbed through the fast (component 1) phase.
-    lfdepot <- log(0.79); label("Fraction absorbed via the fast gamma phase (r, dimensionless)")  # Fromage 2025 Table 2: r = 0.79 (RSE 2.14%)
+    lfdepot <- log(0.79); label("Fraction absorbed via the fast gamma phase (dimensionless)")  # Fromage 2025 Table 2: r = 0.79 (RSE 2.14%)
 
     # Disposition.
     lvc  <- log(100 / 7.87); label("Apparent central volume Vd/F (L)")                        # Fromage 2025 Table 2: FAIV = 7.87 mg/L (RSE 3.35%); V/F = 100/FAIV = 12.71 L (Abstract: 12.60 L)

@@ -61,9 +61,9 @@ Damnjanovic_2023_valproic_acid <- function() {
     # plasma concentration data collected did not provide information about the
     # amount and pace of absorption processes, Ka was set at 1.68 h-1 based on the
     # literature Ka values." (Results, VA paragraph). Table 2(c) prints no SE / RSE.
-    lka <- fixed(log(1.68));  label("Absorption rate constant (Ka, 1/h)")                  # Table 2(c): Ka = 1.68 1/h, no SE/RSE reported
-    lvc <- log(15.61);        label("Apparent central volume of distribution (V/F, L)")    # Table 2(c): V = 15.61 L (SE 4.84, RSE 31.0%)
-    lcl <- log(0.12);         label("Apparent oral clearance (CL/F, L/h)")                 # Table 2(c): Cl = 0.12 L/h (SE 0.013, RSE 10.4%)
+    lka <- fixed(log(1.68));  label("Absorption rate constant (1/h)")                  # Table 2(c): Ka = 1.68 1/h, no SE/RSE reported
+    lvc <- log(15.61);        label("Apparent central volume of distribution (L)")    # Table 2(c): V = 15.61 L (SE 4.84, RSE 31.0%)
+    lcl <- log(0.12);         label("Apparent oral clearance (L/h)")                 # Table 2(c): Cl = 0.12 L/h (SE 0.013, RSE 10.4%)
 
     # Allometric exponent on body weight, FIXED (Table 2(c) prints "-" for SE and
     # RSE). The p < 0.001 is the Wald test on the covariate's inclusion.
