@@ -106,9 +106,9 @@ refers to the unnumbered display equations printed in Section 3.1 of the paper.
 | `lvp2` (V3/F) | 13.0 L | Table 2, "Apparent second peripheral volume of distribution" (RSE 11.9%) |
 | `ld1` (Tk0) | 0.908 h | Table 2, "Duration zero-order absorption" (RSE 4.7%) |
 | `ltlag` (ALAG) | 0.276 h | Table 2, "Lag time" (RSE 0.5%) |
-| `fk0` (Fk0) | 0.693 | Table 2, "Fraction zero-order absorption" (RSE 2.9%) |
+| `fzo` (Fk0) | 0.693 | Table 2, "Fraction zero-order absorption" (RSE 2.9%) |
 | `lfdepot` (Frel at 60 mg) | 1 (fixed) | Sect. 3.1 Frel Eq.; Frel is purely relative, anchored at the 60 mg reference |
-| `bpratio` | 0.573 | Table 2, "Blood-plasma ratio" (RSE 2%) |
+| `bpr` | 0.573 | Table 2, "Blood-plasma ratio" (RSE 2%) |
 | `e_dis_healthy_cl` | 0.3161 | **Derived** from the two Table 2 typical values: 22.9 / 17.4 - 1 |
 | `e_hepimp_sev_cl` | -0.366 | Table 2, "Effect of severe hepatic impairment on CL/F"; Sect. 3.1 CL/F Eq. |
 | `e_conmed_itraconazole_cl` | -0.662 | Table 2, "Itraconazole effect on CL/F"; Sect. 3.1 CL/F Eq. |
@@ -147,8 +147,8 @@ th <- ui$theta
 
 # Fk0 / Tk0 / ka relationship, Sect. 3.1.
 tk0_ref <- exp(th[["ld1"]])
-fk0_ref <- th[["fk0"]]
-ka_derived <- fk0_ref / (tk0_ref * (1 - fk0_ref))
+fzo_ref <- th[["fzo"]]
+ka_derived <- fzo_ref / (tk0_ref * (1 - fzo_ref))
 
 # Frel ratio between the 60 mg and 10 mg doses, Sect. 3.1 / Discussion.
 frel_ratio_60_10 <- (60 / 60)^th[["e_dose_atogepant_mg_fdepot"]] /
@@ -170,7 +170,7 @@ structural <- tibble::tribble(
   "Lag time after a high-fat meal (h)",        0.46,       alag_fed,
   "Tk0 shortening, early phase 1 tablet (%)", 35.0,        tk0_pct_shorter,
   "CL/F in healthy participants (L/h)",       22.9,        cl_healthy,
-  "Blood-to-plasma ratio",                     0.573,      th[["bpratio"]]
+  "Blood-to-plasma ratio",                     0.573,      th[["bpr"]]
 ) |>
   mutate(`Diff (%)` = 100 * (Model - Published) / Published)
 
@@ -696,7 +696,7 @@ stopifnot(
 * **The blood-to-plasma ratio is a derived output, not a second endpoint.**
   Studies CGP-PK-02 and CGP-MD-01 contributed dried-blood-sample concentrations,
   which the model relates to plasma through the estimated ratio of 0.573. The
-  packaged model computes `Cb = Cc * bpratio` as an output column rather than
+  packaged model computes `Cb = Cc * bpr` as an output column rather than
   declaring a second estimated endpoint, because the source stratifies residual
   error by **study**, not by matrix, so a separate endpoint would carry the same
   error magnitude and add no information -- while forcing every observation row

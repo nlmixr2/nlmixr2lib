@@ -144,6 +144,59 @@ Source-paper aliases that translate to `ltlag` without sidecar:
 Inside `model()` the bare name is `tlag`. Apply via `alag(depot) <- tlag`
 or `alag(<cmt>) <- tlag` (preferred over carrying a separate `lag` compartment).
 
+### Sequential zero-order then first-order absorption
+
+Canonical zero-order input duration: **`ld1`** (log duration of the zero-order
+release into the depot), applied via `dur(depot) <- d1`. Dose records must carry
+`rate = -2` for rxode2 to use the modelled duration.
+
+Canonical zero-order time fraction: **`fzo`** (bare; logit-scale sibling
+`logitfzo` when a paper estimates it on the logit scale). `fzo` is the fraction
+of the TOTAL ABSORPTION TIME CONSTANT that is zero-order --
+
+    fzo = d1 / (d1 + 1/ka)
+
+-- and is **NOT** a split of the dose between a zero-order and a first-order
+pathway. The two readings are different models: a dose split is a parallel
+input, whereas `fzo` reparameterises a strictly sequential one. Papers
+reporting this idiom frequently gloss it loosely as "the fraction of the dose
+absorbed by a zero-order process"; the arithmetic, not the prose, settles it.
+
+`fzo` exists so that `ka` need not be estimated independently of `d1`:
+
+    ka = fzo / (d1 * (1 - fzo))
+
+Because `ka` is then derived, any covariate applied to `d1` propagates into
+`ka`. A source table may therefore label such an effect as acting "on ka" while
+its own display equation applies it to the duration; encode it on `d1`, which
+reproduces both.
+
+Verify the reading before adopting it: substitute the paper's tabulated `fzo`
+and `d1` into the relation and confirm it returns the paper's own reported
+`ka`. Founding example: `Schlachter_2026_atogepant.R` (Fk0 0.693, Tk0 0.908 h;
+`0.908 / (0.908 + 1/2.486) = 0.693` and `0.693 / (0.908 * 0.307) = 2.486`,
+reproducing the reported derived ka of 2.48/h).
+
+Source-paper aliases that translate to `fzo` without sidecar: `Fk0`, `FR`,
+`FRAC0`, `F_ZERO`. Bare rather than log-transformed because it is bounded in
+(0, 1); use `logitfzo` when the source estimates a logit.
+
+### Blood-to-plasma concentration ratio
+
+Canonical: **`bpr`** (blood:plasma concentration ratio, unitless). Used both as
+a PBPK distribution input and, in popPK models pooling plasma with whole-blood
+or dried-blood-sample (DBS) assays, as the factor relating the two matrices:
+`Cb <- bpr * Cc`.
+
+Source-paper aliases that translate to `bpr` without sidecar: `Rb`, `R_BP`,
+`B:P`, `BP`, `blood-plasma ratio`. Suffix per analyte when a model carries
+several (`bpr_<analyte>`), as in `Luo_2024_perindopril_pbpk.R`
+(`bpr` / `bpr_perat`).
+
+Examples: `Luo_2024_perindopril_pbpk.R` (both `fixed(1)`, assumed),
+`Schlachter_2026_atogepant.R` (estimated 0.573, RSE 2%; relates the DBS arm of
+the pooled dataset to the plasma prediction).
+
 ## Gastrointestinal transit and enterohepatic rate constants
 
 First-order rate constants for the gut-lumen mass balance in oral PBPK models

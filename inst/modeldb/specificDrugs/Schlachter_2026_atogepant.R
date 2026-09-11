@@ -481,7 +481,7 @@ Schlachter_2026_atogepant <- function() {
     # log-transformed. Check against the source: 0.908 / (0.908 + 1/2.486)
     # = 0.693, and Fk0 / [Tk0 * (1 - Fk0)] = 0.693 / (0.908 * 0.307) = 2.486,
     # reproducing the derived ka of 2.48/h printed in Section 3.1.
-    fk0 <- 0.693; label("Fraction of the total absorption time constant that is zero-order, Fk0 (fraction)")  # Table 2 'Fraction zero-order absorption (Fk0)' 0.693 (RSE 2.9%, 95% CI 0.654-0.732)
+    fzo <- 0.693; label("Fraction of the total absorption time constant that is zero-order, Fk0 (fraction)")  # Table 2 'Fraction zero-order absorption (Fk0)' 0.693 (RSE 2.9%, 95% CI 0.654-0.732)
 
     # Relative bioavailability is purely relative and is anchored at 1 for the
     # 60 mg reference dose with no interacting comedication; the whole
@@ -492,7 +492,7 @@ Schlachter_2026_atogepant <- function() {
 
     # Blood-to-plasma ratio converting the plasma prediction to the
     # dried-blood-sample matrix used by studies CGP-PK-02 and CGP-MD-01.
-    bpratio <- 0.573; label("Blood-to-plasma concentration ratio (fraction)")  # Table 2 'Blood-plasma ratio' 0.573 (RSE 2%, 95% CI 0.550-0.596); Section 3.1 'blood concentrations were predicted to be 57.3% of those in plasma'
+    bpr <- 0.573; label("Blood-to-plasma concentration ratio (fraction)")  # Table 2 'Blood-plasma ratio' 0.573 (RSE 2%, 95% CI 0.550-0.596); Section 3.1 'blood concentrations were predicted to be 57.3% of those in plasma'
 
     # ---- Covariate effects on apparent clearance. Section 2.3.1 gives the
     #      categorical form as P_TV * (1 + theta_Xm), so each estimate is a
@@ -598,7 +598,7 @@ Schlachter_2026_atogepant <- function() {
     d1 <- exp(ld1 + etald1) *
       (DOSE_ATOGEPANT_MG / 60)^e_dose_atogepant_mg_d1 *
       (1 + e_form_atogepant_earlytab_d1 * FORM_ATOGEPANT_EARLYTAB)
-    ka   <- fk0 / (d1 * (1 - fk0))
+    ka   <- fzo / (d1 * (1 - fzo))
     tlag <- exp(ltlag) * (1 + e_fed_highfat_tlag * FED_HIGHFAT)
 
     # 5. Relative bioavailability: a power function of dose plus the
@@ -641,7 +641,7 @@ Schlachter_2026_atogepant <- function() {
     #    separate endpoint would add no information while forcing every
     #    observation row in every downstream simulation to carry a dvid.
     Cc <- central / vc * 1000
-    Cb <- Cc * bpratio
+    Cb <- Cc * bpr
 
     # The proportional residual error magnitude is study-specific. When all
     # three study indicators are 0 the record falls in the reference stratum,
