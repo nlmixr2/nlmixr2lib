@@ -25,9 +25,8 @@ library(ggplot2)
   the article landing page and from Europe PMC as `PRP2-13-e70109-s001.docx`
   under PMC12046122.
 
-Qin 2025 is a single paper carrying **eleven** separately fitted models. Ten of
-them are packaged here; the eleventh is described under
-[Not yet packaged](#not-yet-packaged).
+Qin 2025 is a single paper carrying **eleven** separately fitted models. All
+eleven are packaged here.
 
 | Model | `modellib()` name | Source |
 |---|---|---|
@@ -41,6 +40,7 @@ them are packaged here; the eleventh is described under
 | E-R, JAK2 V617F change at week 52 | `Qin_2025_ropeginterferon_jak2_week52` | Table 4, Equation (5) |
 | E-R, titration-phase ALT increase | `Qin_2025_ropeginterferon_alt_increase` | Results 3.4, Equation (3) |
 | E-R, titration-phase AST increase | `Qin_2025_ropeginterferon_ast_increase` | Results 3.4, Equation (3) |
+| E-R, maintenance-phase anemia | `Qin_2025_ropeginterferon_anemia` | Results 3.4, Equation (3), Figure 5C-D |
 
 ```{r load-models}
 mod_pk   <- rxode2::rxode(readModelDb("Qin_2025_ropeginterferon"))
@@ -53,6 +53,7 @@ mod_jak24 <- rxode2::rxode(readModelDb("Qin_2025_ropeginterferon_jak2_week24"))
 mod_jak52 <- rxode2::rxode(readModelDb("Qin_2025_ropeginterferon_jak2_week52"))
 mod_alt  <- rxode2::rxode(readModelDb("Qin_2025_ropeginterferon_alt_increase"))
 mod_ast  <- rxode2::rxode(readModelDb("Qin_2025_ropeginterferon_ast_increase"))
+mod_anemia <- rxode2::rxode(readModelDb("Qin_2025_ropeginterferon_anemia"))
 ```
 
 # Population
@@ -240,7 +241,9 @@ trace <- tibble::tribble(
   "JAK2 week 24: b0 / b_exposure / b_weight", "30.728 (SE 11.601) / -0.51 (SE 0.141) / -0.435 (SE 0.169)", "Table 4",
   "JAK2 week 52: b0 / b_exposure", "-8.528 (SE 7.812) / -0.43 (SE 0.194)", "Table 4",
   "ALT increase: b0 / b_exposure", "-4.099 (SE 0.9843) / 0.1156 (SE 0.0399)", "Results 3.4 (running text)",
-  "AST increase: b0 / b_exposure", "-4.75194 (SE 1.123) / 0.143564 (SE 0.0453)", "Results 3.4 (running text)"
+  "AST increase: b0 / b_exposure", "-4.75194 (SE 1.123) / 0.143564 (SE 0.0453)", "Results 3.4 (running text)",
+  "Anemia: b0 / b_exposure / b_JAK2", "-6.95416 (SE 1.9606) / 0.056548 (SE 0.0258) / 0.041351 (SE 0.0175)", "Results 3.4 (running text)",
+  "Anemia covariate scale: baseline JAK2 V617F in PER CENT", "77.8 [0.0210, 97.5] A19-201; 61.2 [4.70, 96.4] A20-202", "Table 1"
 )
 knitr::kable(trace, caption = "Source trace for every model equation and parameter.")
 ```
@@ -661,6 +664,109 @@ cross <- er_safety |>
 stopifnot(cross$d[cross$CAV == 0] < 0, any(cross$d > 0))
 ```
 
+The anemia model is the only one of the three significant exposure-safety
+regressions that retained a covariate, so it is a surface rather than a curve.
+Figure 5D draws it at the first quartile, median and third quartile of baseline
+*JAK2* V617F allele burden, but Qin 2025 does not print those three quartile
+values, so the panel below is drawn at burdens that **are** printed: the two
+study medians from Table 1 (61.2% in A20-202 and 77.8% in A19-201) plus a low
+anchor. This replicates the panel's structure and slope, not its three specific
+lines.
+
+Note the exposure axis. This model's `CAV` is the **maintenance-phase** average,
+the complement of the titration-phase window used by the two transaminase
+models above; it is systematically higher, because it excludes the period when
+patients had not yet reached their titrated dose. The two `CAV` columns are not
+interchangeable even though they share a name.
+
+```{r fig5cd}
+jak_levels <- c(20, 61.2, 77.8)
+er_anemia <- tidyr::expand_grid(JAK2 = jak_levels, CAV = cav_grid) |>
+  dplyr::mutate(
+    p = eval_er(mod_anemia, CAV,
+                extra = tibble::tibble(TUM_JAK2_V617F_VAF = JAK2),
+                out = "prob_anemia"),
+    JAK2 = factor(sprintf("%.1f%%", JAK2)))
+
+ggplot(er_anemia, aes(CAV, p, colour = JAK2)) +
+  geom_line(linewidth = 0.8) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(x = "Cavg, maintenance phase (ng/mL)",
+       y = "Probability of a maintenance-phase anemia event",
+       colour = "Baseline JAK2 V617F",
+       title = "Replicates Figure 5C-D of Qin 2025",
+       subtitle = paste(
+         "Anemia risk rises with exposure and with the size of the",
+         "driver-mutant clone at baseline.")) +
+  theme_bw() + theme(legend.position = "top")
+```
+
+```{r anemia-checks}
+p_anemia <- function(cav, jak) {
+  1 / (1 + exp(-(-6.95416 + 0.056548 * cav + 0.041351 * jak)))
+}
+grid_chk <- tidyr::expand_grid(CAV = c(0, 20, 40), JAK2 = c(0, 61.2, 77.8))
+chk_anemia <- grid_chk |>
+  dplyr::mutate(
+    `Model` = eval_er(mod_anemia, CAV,
+                      extra = tibble::tibble(TUM_JAK2_V617F_VAF = JAK2),
+                      out = "prob_anemia"),
+    `Closed form` = p_anemia(CAV, JAK2)) |>
+  dplyr::rename("Cavg, maintenance (ng/mL)" = CAV,
+                "Baseline JAK2 V617F (%)" = JAK2,
+                "Model P(anemia)" = Model)
+knitr::kable(chk_anemia, digits = 4,
+             caption = paste(
+               "Maintenance-phase anemia probabilities against the closed",
+               "form. Both sides evaluate the same fixed coefficients, so",
+               "this is a pure numerical-error check and the tolerance is",
+               "machine precision."))
+stopifnot(
+  max(abs(chk_anemia$`Model P(anemia)` - chk_anemia$`Closed form`)) < 1e-8)
+```
+
+Two further checks pin the two things most easily lost in transcription: the
+**scale** of the allele-burden column and the **sign** of both slopes. Each is
+arithmetic on fixed published coefficients, so each is exact.
+
+```{r anemia-scale-check}
+# 1. SCALE. The coefficient is per PERCENTAGE POINT, so a 10-point increase
+#    multiplies the odds by exp(0.041351*10) = 1.512. Supplying the 0-1
+#    FRACTION instead of the per cent would shrink every covariate
+#    contribution 100-fold; at the A19-201 median that is the difference
+#    between a 25-fold and a 1.03-fold odds multiplier.
+odds <- function(p) p / (1 - p)
+or_10pt <- odds(p_anemia(30, 70)) / odds(p_anemia(30, 60))
+or_median_burden <- odds(p_anemia(30, 77.8)) / odds(p_anemia(30, 0))
+or_fraction_bug <- odds(p_anemia(30, 0.778)) / odds(p_anemia(30, 0))
+
+# 2. SIGN. Both slopes are positive: higher exposure and a larger baseline
+#    clone each RAISE anemia risk. Qin 2025 Results 3.4: "anemia increased
+#    with increasing exposure and baseline JAK2 V617F".
+mono_cav <- diff(p_anemia(cav_grid, 61.2))
+mono_jak <- diff(p_anemia(30, seq(0, 100, by = 1)))
+
+knitr::kable(
+  tibble::tibble(
+    Quantity = c("Odds ratio per 10 percentage points of baseline burden",
+                 "Odds ratio at the A19-201 median burden (77.8%) vs 0%",
+                 "Same, if the 0-1 fraction were supplied by mistake"),
+    Value = c(or_10pt, or_median_burden, or_fraction_bug)),
+  digits = 3,
+  caption = paste(
+    "The third row is the failure mode this check exists to catch: a",
+    "fraction-scaled column collapses a 25-fold effect to essentially",
+    "nothing, and would not otherwise be visible in the output."))
+
+stopifnot(
+  abs(or_10pt - exp(0.041351 * 10)) < 1e-8,
+  abs(or_median_burden - exp(0.041351 * 77.8)) < 1e-6,
+  or_fraction_bug < 1.05,          # the fraction bug is near-invisible
+  or_median_burden > 20,           # the correct per-cent reading is not
+  all(mono_cav > 0), all(mono_jak > 0)
+)
+```
+
 # PKNCA validation
 
 ```{r pknca}
@@ -1035,19 +1141,59 @@ capacity that sets `ksyn`, not the modelled total-target state.
   inherited PK layer matches the standalone PK model exactly.
 * **New register entries.** This extraction registers the PD-output canonicals
   `hct`, `prob_chr`, `prob_alt_increase`, `prob_ast_increase` and `djak2v617f`
-  in `inst/references/compartment-names.md`. The platelet and white-cell states
-  reuse the existing `circ_plt` and `circ_wbc` canonicals rather than minting
-  synonyms.
+  in `inst/references/compartment-names.md`, and the covariate canonical
+  `TUM_JAK2_V617F_VAF` in `inst/references/covariate-columns.md`. The platelet
+  and white-cell states reuse the existing `circ_plt` and `circ_wbc` canonicals
+  rather than minting synonyms, and the anemia model's exposure column reuses
+  `CAV`.
+* **Seven mutually non-interchangeable `CAV` columns.** All seven E-R models
+  name their exposure metric `CAV`, but the averaging windows differ and the
+  values are not substitutable: weeks 0-24 and weeks 0-52 from first dose for
+  the efficacy models, a study-dependent titration-phase window (weeks 0-16 in
+  A19-201, weeks 0-6 in A20-202) for the transaminase models, and that window's
+  complement -- the maintenance phase to end of treatment -- for the anemia
+  model. A data assembler must build each column separately, per study.
 
-# Not yet packaged
+# The eleventh model and its new covariate canonical
 
-Qin 2025's eleventh model is the **maintenance-phase anemia** exposure-safety
-logistic regression (Results 3.4): `logit(P) = -6.95416 + 0.056548 * CAV +
-0.041351 * JAK2`, where `JAK2` is the **baseline JAK2 V617F allele burden in
-per cent**. It is not packaged here because that covariate has no canonical
-entry in `inst/references/covariate-columns.md`: it is a continuous somatic
-variant allele frequency in a clonal neoplasm, which is neither a germline
-`SNP_<GENE>_RS<rsid>` genotype nor an alias of the binary `TUM_<GENE>_MUT`
-family nor of `CTDNA`. Registering a new canonical is an operator decision, so
-the model is deferred rather than shipped under a guessed column name. The
-`prob_anemia` output canonical it would need already exists.
+Qin 2025's eleventh model, the **maintenance-phase anemia** exposure-safety
+logistic regression (Results 3.4), was deferred on first extraction and is now
+packaged as `Qin_2025_ropeginterferon_anemia`. The delay was a naming decision,
+not a reporting gap: the model is fully reported, but its covariate --
+**baseline *JAK2* V617F allele burden, in per cent** -- had no canonical entry
+in `inst/references/covariate-columns.md`, and minting one is an operator
+decision rather than an extractor's.
+
+It is registered here as **`TUM_JAK2_V617F_VAF`** (operator-ratified), a
+continuous somatic variant allele frequency on a 0-100 per cent scale. The
+three near neighbours it is deliberately *not* filed under:
+
+* **`SNP_JAK2_RS77375493`.** *JAK2* V617F does have an rsid, so this would be
+  mechanically well formed under the auto-approve `SNP_<GENE>_RS<rsid>` family.
+  But every registered `SNP_*` column carries a germline **genotype** -- an
+  allele count or a carrier indicator -- whereas this is a somatic **clone
+  fraction** that moves under treatment. A value of `61.2` under a `SNP_` name
+  would be ambiguous between an allele count and a per cent.
+* **`TUM_<GENE>_MUT`** (`TUM_EGFR_MUT`, `TUM_TP53_MUT`, `TUM_IGHV_MUT`, ...).
+  The right family, but every existing member is a binary 0/1 presence call.
+  This is their continuous sibling, and founds a `TUM_<GENE>_<VARIANT>_VAF`
+  sub-family. The variant token is kept because *JAK2* exon 12 mutations are a
+  separate assayable abnormality in polycythaemia vera, which Qin 2025's
+  Discussion names explicitly.
+* **`CTDNA`.** Circulating tumour DNA burden in mutant molecules per mL of
+  plasma -- a different analyte, assay and unit. Worth flagging because a fuzzy
+  canonical lookup of "baseline JAK2 V617F allele burden" returns `CTDNA` as a
+  confident but wrong match.
+
+The `prob_anemia` output canonical the model needs already existed.
+
+**The per-cent scale is load-bearing.** The coefficient 0.041351 is per
+percentage point, so a column supplied as a 0-1 fraction understates every
+covariate contribution 100-fold -- silently, since the result is still a
+probability in range. At the A19-201 median burden that is the difference
+between a 25-fold and a 1.03-fold odds multiplier. The `anemia-scale-check`
+chunk above asserts on exactly this. Qin 2025 Table 1's `JAK2 V617F (%)` row
+also carries a trap of its own: the Overall column reads 31.9% because it pools
+in the 48 phase I healthy volunteers, who are 0 by construction, so the
+patient-population summary is the per-study medians (77.8% and 61.2%) and not
+the Overall figure.

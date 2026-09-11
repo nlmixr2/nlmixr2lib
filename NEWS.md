@@ -80,7 +80,7 @@
 
 - Add Morales Junior 2025 cefepime ([doi:10.1007/s40262-025-01485-5](https://doi.org/10.1007/s40262-025-01485-5)) -- critically ill children and young adults in a pediatric intensive care unit.
 
-- Add Qin 2025 ropeginterferon alfa-2b ([doi:10.1002/prp2.70109](https://doi.org/10.1002/prp2.70109)) -- healthy Chinese and Japanese adults and patients with polycythaemia vera; ten models (population PK, three hematologic PK-PD, six exposure-response).
+- Add Qin 2025 ropeginterferon alfa-2b ([doi:10.1002/prp2.70109](https://doi.org/10.1002/prp2.70109)) -- healthy Chinese and Japanese adults and patients with polycythaemia vera; eleven models (population PK, three hematologic PK-PD, seven exposure-response).
 
 - Add Koele 2025 BTZ-043 population PK and bacterial-load exposure-response models ([doi:10.1093/jac/dkaf076](https://doi.org/10.1093/jac/dkaf076)) -- adults with drug-susceptible pulmonary tuberculosis on 14 days of BTZ-043 monotherapy.
 
