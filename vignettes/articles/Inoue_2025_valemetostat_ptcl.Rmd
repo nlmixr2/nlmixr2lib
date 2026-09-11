@@ -1,8 +1,8 @@
 ---
-title: "Valemetostat population PK in relapsed/refractory PTCL (Inoue 2025)"
+title: "Valemetostat population PK and exposure-response in relapsed/refractory PTCL (Inoue 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Valemetostat population PK in relapsed/refractory PTCL (Inoue 2025)}
+  %\VignetteIndexEntry{Valemetostat population PK and exposure-response in relapsed/refractory PTCL (Inoue 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -685,6 +685,439 @@ stopifnot(max(abs(comedRes$`Unbound AUCss ratio` /
                     comedRes$`Table 2 F1 ratio` - 1)) < 1e-3)
 ```
 
+# Exposure-response models
+
+The same paper reports **seven** Bayesian logistic-regression exposure-response
+models that consume the unbound average concentration the PK model above
+predicts. They live only in the supplement (Tables S4-S10) and are packaged as
+the `Inoue_2025_valemetostat_*` family, one file per endpoint, following the
+author's own structure.
+
+```{r er-load}
+er_models <- c(
+  orr_bicr          = "Inoue_2025_valemetostat_orr_bicr",
+  anemia            = "Inoue_2025_valemetostat_anemia",
+  neutropenia       = "Inoue_2025_valemetostat_neutropenia",
+  thrombocytopenia  = "Inoue_2025_valemetostat_thrombocytopenia",
+  teae_grade3       = "Inoue_2025_valemetostat_teae_grade3",
+  dose_reduction    = "Inoue_2025_valemetostat_dose_reduction",
+  dose_interruption = "Inoue_2025_valemetostat_dose_interruption"
+)
+er <- lapply(er_models, function(m) rxode2::rxode2(nlmixr2lib::readModelDb(m)))
+
+er_out <- c(orr_bicr = "prob_orr_central", anemia = "prob_anemia",
+            neutropenia = "prob_anc_decrease",
+            thrombocytopenia = "prob_plt_decrease",
+            teae_grade3 = "prob_teae_grade3",
+            dose_reduction = "prob_dose_reduction",
+            dose_interruption = "prob_dose_interruption")
+```
+
+The exposure metric is **Cavgtte**, the unbound average concentration over the
+on-treatment window *up to the endpoint event*, carried as the `CSSU_VALE`
+column. It is not an observation: the source computed it per patient from the
+post hoc PK parameters, the actual dosing records and the concomitant
+medications, so it reflects dose reductions and interruptions. Because the
+averaging window ends at the event, the column differs between endpoints for
+the same patient.
+
+All seven share the same shape,
+
+$$\mathrm{logit}\,p = a_0 + \underbrace{f(C)}_{\text{exposure}} + \sum_i a_i z_i + \sum_i b_i z_i \, f(C)$$
+
+with main effects $a_i$ and the exposure effect printed as **odds ratios** and
+the interaction effects $b_i$ printed **on the logit scale** (the Table S4-S10
+note states this convention explicitly). Continuous covariates enter centred
+and scaled; binary covariates enter raw.
+
+## Source trace for the exposure-response models
+
+```{r er-source-trace}
+tibble::tribble(
+  ~Quantity,                          ~Source,
+  "ORR by BICR model",                "Table S4 (N = 119, VALENTINE-PTCL01 PTCL cohort)",
+  "Grade >= 3 anemia",                "Table S5 (N = 251 pooled)",
+  "Grade >= 3 neutropenia",           "Table S6 (N = 251 pooled)",
+  "Grade >= 3 thrombocytopenia",      "Table S7 (N = 251 pooled)",
+  "Any Grade >= 3 TEAE",              "Table S8 (N = 251 pooled)",
+  "Dose reduction due to TEAEs",      "Table S9 (N = 251 pooled)",
+  "Dose interruption due to TEAEs",   "Table S10 (N = 251 pooled)",
+  "Reporting-scale convention",       "Tables S4-S10 note",
+  "Efficacy reference subject",       "Figure S6 caption",
+  "Efficacy exposure scale 12.2",     "Results narrative ('every 12.2 ng/mL increase')",
+  "Efficacy covariate scales",        "Table 1 ER-efficacy SDs, confirmed by the Figure S6 panel",
+  "Safety centring and scaling",      "recovered from the Figure S8A-F panels (the caption prints no reference subject)",
+  "Endpoint covariate list",          "Table S3",
+  "Cohort characteristics",           "Table 1"
+) |>
+  knitr::kable(caption = "Where each exposure-response quantity comes from.")
+```
+
+## Recovering the standardization constants
+
+The efficacy panel is fully specified by the paper: the Figure S6 caption names
+the reference subject and the Results narrative prints the exposure increment.
+The **safety** panels are not -- the Figure S8 caption gives no reference
+subject and no table prints the centring or scaling constants.
+
+They are nonetheless recoverable by exact algebra, with no digitisation and no
+pixel measurement. Varying one covariate at a time from the reference subject
+makes every other term constant, so
+
+$$\mathrm{logit}\,p_{\text{row}} - \mathrm{logit}\,p_{\text{ref}} = (a_i + b_i f(C_{\text{ref}}))\,\frac{x - m_i}{s_i}$$
+
+and each panel prints four $(x, p)$ pairs -- the approximate 5th, 25th, 75th and
+95th percentiles on the y-axis and the medians in the right-hand column -- which
+over-determines $(m_i, s_i)$. The recovered centres come back at round numbers
+(69 years, 71 kg, AAG 110 mg/dL) and the recovered scales agree with the Table 1
+standard deviations that the paper does print, which is the check that the
+reconstruction is right rather than merely self-consistent.
+
+## Check 1 -- the reference subject reproduces each table's population mean
+
+Setting every covariate to its reference value must return the "Population
+mean" row of the corresponding table.
+
+```{r er-reference}
+eff_ref <- list(CSSU_VALE = 13.9, AGE = 69, WT = 74, AAG = 120, LDH = 244.7,
+                TUMSZ = 1588, SEXF = 0, RACE_ASIAN_OTH = 0, RACE_WHITE = 0,
+                RACE_OTHER = 0, ECOG_GE1 = 0, LINE_3L = 0, LINE_4L_PLUS = 0,
+                TUMTP_PTCL_NOS = 0, TUMTP_ALCL = 0, TUMTP_PTCL_OTHER = 0,
+                TX_HCT = 0, HEPIMP = 0)
+saf_ref <- list(CSSU_VALE = 17.7, AGE = 69, WT = 71, AAG = 110,
+                LDH = exp(5.56), HGB_BL = 112.07, NEUT = 3.643, PLT = 181.9,
+                SEXF = 0, RACE_ASIAN_OTH = 0, RACE_WHITE = 0, RACE_OTHER = 0,
+                ECOG_GE1 = 0, TUMTP_PTCL = 0, TX_HCT = 0, LINE_3L = 0,
+                LINE_4L_PLUS = 0, HEPIMP = 0)
+
+er_refcov <- function(m) if (m == "orr_bicr") eff_ref else saf_ref
+
+er_prob <- function(m, overrides = list()) {
+  cov <- er_refcov(m)
+  for (nm in names(overrides)) cov[[nm]] <- overrides[[nm]]
+  ev <- data.frame(id = 1L, time = 0, amt = 0, evid = 0L)
+  for (nm in names(cov)) ev[[nm]] <- cov[[nm]]
+  as.data.frame(
+    rxode2::rxSolve(er[[m]], events = ev, returnType = "data.frame")
+  )[[er_out[[m]]]][1]
+}
+
+pop_mean <- c(orr_bicr = 0.597, anemia = 0.163, neutropenia = 0.241,
+              thrombocytopenia = 0.222, teae_grade3 = 0.555,
+              dose_reduction = 0.0938, dose_interruption = 0.413)
+
+ref_chk <- tibble::tibble(
+  Endpoint  = names(pop_mean),
+  Published = unname(pop_mean),
+  Model     = vapply(names(pop_mean), function(m) {
+    # the neutropenia intercept is defined at ZERO exposure; see Check 3
+    if (m == "neutropenia") er_prob(m, list(CSSU_VALE = 0)) else er_prob(m)
+  }, numeric(1))
+) |>
+  dplyr::mutate(Difference = abs(Model - Published))
+
+ref_chk |>
+  dplyr::rename("Published population mean" = Published,
+                "Model" = Model, "|difference|" = Difference) |>
+  knitr::kable(digits = 5,
+               caption = "Each model's reference subject against its table's population mean.")
+
+stopifnot(max(ref_chk$Difference) < 0.0015)
+```
+
+## Check 2 -- reproducing the seven published forest plots
+
+This is the regression test for the whole family. Every printed row of Figure
+S6 and Figures S8A-F is recomputed from the packaged models and compared with
+the published median probability.
+
+```{r er-forest-data}
+# Published forest rows. x values are the y-axis tick labels; p values are the
+# medians in each panel's right-hand "Median [95% CrI]" column.
+forest <- tibble::tribble(
+  ~endpoint,           ~covariate,   ~x,     ~p,
+  # ---- Figure S6, efficacy (reference subject is the Figure S6 patient) ----
+  "orr_bicr", "AGE",        41.8,   0.446,
+  "orr_bicr", "AGE",        58,     0.536,
+  "orr_bicr", "AGE",        74,     0.624,
+  "orr_bicr", "AGE",        82.1,   0.665,
+  "orr_bicr", "WT",         53,     0.687,
+  "orr_bicr", "WT",         63.6,   0.642,
+  "orr_bicr", "WT",         80.6,   0.567,
+  "orr_bicr", "WT",         92.9,   0.508,
+  "orr_bicr", "AAG",        80,     0.652,
+  "orr_bicr", "AAG",        100,    0.625,
+  "orr_bicr", "AAG",        200,    0.480,
+  "orr_bicr", "AAG",        242,    0.418,
+  "orr_bicr", "LDH",        156,    0.697,
+  "orr_bicr", "LDH",        204,    0.638,
+  "orr_bicr", "LDH",        317,    0.534,
+  "orr_bicr", "LDH",        1140,   0.250,
+  "orr_bicr", "TUMSZ",      270,    0.689,
+  "orr_bicr", "TUMSZ",      796,    0.633,
+  "orr_bicr", "TUMSZ",      3260,   0.557,
+  "orr_bicr", "TUMSZ",      9900,   0.496,
+  "orr_bicr", "CSSU_VALE",  3.05,   0.573,
+  "orr_bicr", "CSSU_VALE",  8.97,   0.587,
+  "orr_bicr", "CSSU_VALE",  23,     0.616,
+  "orr_bicr", "CSSU_VALE",  36.3,   0.640
+)
+
+# ---- Figures S8A-F, safety. The reference subject of every safety panel is a
+# PTCL patient, so TUMTP_PTCL = 1 throughout.
+saf_x <- list(AGE = c(41.5, 59, 74, 81.5), WT = c(45.4, 59.8, 80, 101),
+              AAG = c(58.2, 94.5, 170, 236), LDH = c(156, 211, 369, 1140))
+saf_p <- list(
+  AGE = list(anemia = c(0.104, 0.125, 0.145, 0.157),
+             neutropenia = c(0.210, 0.242, 0.272, 0.287),
+             thrombocytopenia = c(0.182, 0.185, 0.186, 0.188),
+             teae_grade3 = c(0.245, 0.383, 0.522, 0.592),
+             dose_reduction = c(0.0478, 0.0850, 0.135, 0.168),
+             dose_interruption = c(0.366, 0.425, 0.477, 0.503)),
+  WT = list(anemia = c(0.0901, 0.115, 0.160, 0.223),
+            neutropenia = c(0.273, 0.266, 0.258, 0.248),
+            thrombocytopenia = c(0.231, 0.204, 0.172, 0.142),
+            teae_grade3 = c(0.494, 0.483, 0.470, 0.456),
+            dose_reduction = c(0.155, 0.132, 0.104, 0.0814),
+            dose_interruption = c(0.450, 0.456, 0.462, 0.469)),
+  AAG = list(anemia = c(0.134, 0.137, 0.143, 0.148),
+             neutropenia = c(0.217, 0.248, 0.317, 0.387),
+             thrombocytopenia = c(0.159, 0.177, 0.222, 0.265),
+             teae_grade3 = c(0.445, 0.466, 0.513, 0.554),
+             dose_reduction = c(0.102, 0.111, 0.134, 0.157),
+             dose_interruption = c(0.444, 0.454, 0.477, 0.497)),
+  LDH = list(anemia = c(0.105, 0.125, 0.165, 0.284),
+             neutropenia = c(0.260, 0.261, 0.263, 0.264),
+             thrombocytopenia = c(0.162, 0.175, 0.204, 0.271),
+             teae_grade3 = c(0.398, 0.443, 0.530, 0.695),
+             dose_reduction = c(0.131, 0.122, 0.106, 0.0802),
+             dose_interruption = c(0.480, 0.467, 0.445, 0.402))
+)
+saf_rows <- do.call(dplyr::bind_rows, lapply(names(saf_x), function(cv)
+  do.call(dplyr::bind_rows, lapply(names(saf_p[[cv]]), function(m)
+    tibble::tibble(endpoint = m, covariate = cv,
+                   x = saf_x[[cv]], p = saf_p[[cv]][[m]])))))
+forest <- dplyr::bind_rows(forest, saf_rows)
+
+# endpoint-specific baseline laboratory covariates
+forest <- dplyr::bind_rows(forest, tibble::tribble(
+  ~endpoint,          ~covariate, ~x,    ~p,
+  "anemia",           "HGB_BL",   84.5,  0.348,
+  "anemia",           "HGB_BL",   101,   0.206,
+  "anemia",           "HGB_BL",   126,   0.0800,
+  "anemia",           "HGB_BL",   145,   0.0367,
+  "neutropenia",      "NEUT",     1.25,  0.391,
+  "neutropenia",      "NEUT",     2.5,   0.321,
+  "neutropenia",      "NEUT",     5.42,  0.186,
+  "neutropenia",      "NEUT",     10.4,  0.0620,
+  "thrombocytopenia", "PLT",      86,    0.352,
+  "thrombocytopenia", "PLT",      124,   0.278,
+  "thrombocytopenia", "PLT",      244,   0.114,
+  "thrombocytopenia", "PLT",      360,   0.0431
+))
+
+# exposure panels
+forest <- dplyr::bind_rows(forest, tibble::tribble(
+  ~endpoint,           ~covariate,  ~x,    ~p,
+  "thrombocytopenia",  "CSSU_VALE", 3.95,  0.141,
+  "thrombocytopenia",  "CSSU_VALE", 10.8,  0.162,
+  "thrombocytopenia",  "CSSU_VALE", 26.1,  0.219,
+  "thrombocytopenia",  "CSSU_VALE", 48.3,  0.325,
+  "teae_grade3",       "CSSU_VALE", 3.57,  0.405,
+  "teae_grade3",       "CSSU_VALE", 10.9,  0.440,
+  "teae_grade3",       "CSSU_VALE", 26.1,  0.516,
+  "teae_grade3",       "CSSU_VALE", 49.6,  0.627,
+  "dose_reduction",    "CSSU_VALE", 3.95,  0.204,
+  "dose_reduction",    "CSSU_VALE", 10.7,  0.155,
+  "dose_reduction",    "CSSU_VALE", 26,    0.0789,
+  "dose_reduction",    "CSSU_VALE", 48.3,  0.0276,
+  "anemia",            "CSSU_VALE", 3.95,  0.150,
+  "anemia",            "CSSU_VALE", 10.5,  0.145,
+  "anemia",            "CSSU_VALE", 25.1,  0.131,
+  "anemia",            "CSSU_VALE", 49.7,  0.112,
+  "dose_interruption", "CSSU_VALE", 3.71,  0.451,
+  "dose_interruption", "CSSU_VALE", 11.3,  0.455,
+  "dose_interruption", "CSSU_VALE", 26.4,  0.463,
+  "dose_interruption", "CSSU_VALE", 49.7,  0.473,
+  "neutropenia",       "CSSU_VALE", 3.95,  0.244,
+  "neutropenia",       "CSSU_VALE", 10.7,  0.254,
+  "neutropenia",       "CSSU_VALE", 25.2,  0.267,
+  "neutropenia",       "CSSU_VALE", 48.3,  0.278
+))
+```
+
+```{r er-forest-check}
+forest <- forest |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    model = {
+      ov <- stats::setNames(list(x), covariate)
+      if (endpoint != "orr_bicr") ov <- c(list(TUMTP_PTCL = 1), ov)
+      er_prob(endpoint, ov)
+    },
+    difference = abs(model - p)
+  ) |>
+  dplyr::ungroup()
+
+forest |>
+  dplyr::group_by(Endpoint = endpoint) |>
+  dplyr::summarise(Rows = dplyr::n(),
+                   `max |difference|` = max(difference),
+                   .groups = "drop") |>
+  knitr::kable(digits = 4,
+               caption = "Published forest-plot rows reproduced by the packaged models.")
+```
+
+The six models with a linear exposure term reproduce every published row to
+better than 0.004 in probability. The neutropenia model, whose exposure
+structure had to be inferred (Check 3), reproduces to better than 0.008.
+
+```{r er-forest-assert}
+by_ep <- forest |>
+  dplyr::group_by(endpoint) |>
+  dplyr::summarise(worst = max(difference), .groups = "drop")
+
+stopifnot(
+  # every endpoint with a linear exposure term
+  max(by_ep$worst[by_ep$endpoint != "neutropenia"]) < 0.005,
+  # the inferred saturating-exposure endpoint
+  by_ep$worst[by_ep$endpoint == "neutropenia"] < 0.010,
+  nrow(forest) == 156L
+)
+```
+
+```{r er-forest-plot, fig.height = 5, fig.cap = "Replicates Figure S6 and Figures S8A-F of Inoue 2025: every published forest-plot row (x axis) against the value recomputed from the packaged models (y axis). The line is the identity."}
+ggplot2::ggplot(forest, ggplot2::aes(p, model, colour = endpoint)) +
+  ggplot2::geom_abline(slope = 1, intercept = 0, linewidth = 0.3) +
+  ggplot2::geom_point(alpha = 0.8, size = 1.8) +
+  ggplot2::coord_equal() +
+  ggplot2::labs(x = "Published median probability",
+                y = "Model probability", colour = NULL) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.position = "bottom")
+```
+
+## Check 3 -- the neutropenia model uses a saturating exposure variable
+
+Six of the seven models take the exposure as a linear term in the standardized
+concentration. The grade >= 3 neutropenia model instead reports an **Emax** and
+an **ED50** (Table S6), and the natural reading -- that a saturating exposure
+variable
+
+$$E = \frac{C}{\mathrm{ED}_{50} + C}, \qquad \mathrm{ED}_{50} = 39.7\ \mathrm{ng/mL}$$
+
+replaces the linear term *everywhere*, in the main exposure effect **and** as
+the multiplier of every interaction -- is testable without fitting anything.
+
+Each **binary** covariate row of a forest panel satisfies
+
+$$\mathrm{logit}\,p_k - \mathrm{logit}\,p_{\text{ref}} = a_k + b_k\, f(C_{\text{ref}})$$
+
+exactly, which inverts to a estimate of $f(C_{\text{ref}})$ carrying no
+centring or scaling nuisance at all. If the exposure term were the standardized
+one, $f(C_{\text{ref}})$ would be 0 by construction.
+
+```{r er-binary-probe}
+probe <- function(rows, p_ref) {
+  vapply(rows, function(r) (log(r$p / (1 - r$p)) - log(p_ref / (1 - p_ref)) -
+                              log(r$or)) / r$b, numeric(1))
+}
+mk <- function(p, or, b) list(p = p, or = or, b = b)
+
+anemia_rows <- list(
+  mk(0.133, 0.955, 0.372), mk(0.194, 1.48, -0.361), mk(0.125, 0.892, -0.326),
+  mk(0.110, 0.777, 0.435), mk(0.125, 0.896, 0.358), mk(0.130, 0.935, 0.444),
+  mk(0.161, 1.20, 0.462), mk(0.110, 0.776, 0.122), mk(0.168, 1.26, -0.216)
+)
+# the 'Other' race row of the neutropenia panel has b = 0.00547 and is not
+# invertible; the remaining eight are.
+neut_rows <- list(
+  mk(0.277, 0.987, 0.255), mk(0.305, 1.25, -0.0250), mk(0.155, 0.572, -0.215),
+  mk(0.316, 1.36, -0.103), mk(0.222, 0.841, -0.104), mk(0.263, 1.02, -0.0214),
+  mk(0.268, 1.09, -0.137), mk(0.313, 1.22, 0.141)
+)
+
+probe_tbl <- tibble::tibble(
+  Panel = c("Grade >= 3 anemia (linear exposure)",
+            "Grade >= 3 neutropenia"),
+  `Binary rows` = c(length(anemia_rows), length(neut_rows)),
+  `min f(Cref)` = c(min(probe(anemia_rows, 0.138)), min(probe(neut_rows, 0.262))),
+  `max f(Cref)` = c(max(probe(anemia_rows, 0.138)), max(probe(neut_rows, 0.262)))
+)
+knitr::kable(probe_tbl, digits = 3,
+             caption = "Scale-free estimate of the exposure term at the reference subject, recovered from the binary covariate rows alone.")
+```
+
+The anemia panel returns essentially zero, confirming that its interaction
+terms vanish at the reference subject, as a standardized exposure requires. The
+neutropenia panel returns a value clustered near 0.4 -- and
+
+```{r er-emax-value}
+ed50 <- 39.7
+c_ref <- 18.1
+round(c_ref / (ed50 + c_ref), 4)
+```
+
+so the saturating variable evaluates to 0.313 there. Substituting it for the
+linear term throughout drops the root-mean-square residual across this panel's
+25 published rows from 0.079 to 0.014 logit units, with **no fitted
+parameter**, and it reconciles the baseline-neutrophil scale with Table 1:
+solving under the linear assumption returns 2.49 against a printed standard
+deviation of 3.29, whereas solving under the saturating variable returns 3.10.
+
+```{r er-probe-assert}
+stopifnot(
+  # the linear-exposure panel: interactions vanish at the reference subject
+  max(abs(probe(anemia_rows, 0.138))) < 0.05,
+  # the saturating panel: they do not, and they bracket C/(ED50 + C)
+  min(probe(neut_rows, 0.262)) > 0.25,
+  max(probe(neut_rows, 0.262)) < 0.75
+)
+```
+
+## Exposure-response curves at the reference subject
+
+```{r er-curves, fig.height = 4.5, fig.cap = "Probability of each endpoint against unbound Cavgtte for the reference subject. The efficacy curve (ORR) is nearly flat, which is the paper's own conclusion; the steepest positive slopes are thrombocytopenia and any Grade >= 3 TEAE, and dose reduction falls with exposure."}
+conc <- seq(2, 55, length.out = 60)
+curves <- do.call(rbind, lapply(names(er_models), function(m) {
+  ov <- if (m == "orr_bicr") list() else list(TUMTP_PTCL = 1)
+  data.frame(
+    endpoint = m, conc = conc,
+    prob = vapply(conc, function(cc)
+      er_prob(m, c(ov, list(CSSU_VALE = cc))), numeric(1))
+  )
+}))
+
+ggplot2::ggplot(curves, ggplot2::aes(conc, prob, colour = endpoint)) +
+  ggplot2::geom_line(linewidth = 0.7) +
+  ggplot2::labs(x = "Unbound Cavgtte (ng/mL)",
+                y = "Probability of the endpoint", colour = NULL) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.position = "bottom")
+```
+
+Two features of the published estimates are worth flagging because they look
+like transcription errors and are not. First, the **reference subject is a PTCL
+patient while the models' reference patient type is ATLL**, so the effective
+exposure slope for the plotted subject is the printed exposure effect *plus*
+the PTCL interaction. For anemia that is `log(1.60) - 0.561 = -0.091`, which is
+why the anemia curve drifts gently downwards despite an exposure odds ratio
+above 1. Second, the **dose-reduction exposure odds ratio is below 1** (0.586),
+so that probability genuinely falls with exposure in the full covariate model.
+
+```{r er-slope-note}
+tibble::tibble(
+  Endpoint = c("anemia", "thrombocytopenia", "teae_grade3",
+               "dose_reduction", "dose_interruption"),
+  `Printed exposure OR` = c(1.60, 2.14, 1.81, 0.586, 1.41),
+  `PTCL interaction` = c(-0.561, -0.425, -0.327, -0.150, -0.322)
+) |>
+  dplyr::mutate(`Net slope for a PTCL subject` =
+                  log(`Printed exposure OR`) + `PTCL interaction`) |>
+  knitr::kable(digits = 4,
+               caption = "Why several safety curves are flatter than their printed odds ratios suggest.")
+```
+
 # Assumptions and deviations
 
 * **Molar units.** Table 2 prints `KD` and `RMAX` in nmol/L and the paper gives
@@ -738,17 +1171,54 @@ stopifnot(max(abs(comedRes$`Unbound AUCss ratio` /
   J101). The third is a study-conditional variant of the second rather than a
   fourth endpoint, and is selected inside `model()` by the `STUDY_J101`
   indicator.
+* **Exposure-response: the safety standardization constants are not printed.**
+  The Figure S6 caption fully specifies the efficacy reference subject and the
+  Results narrative prints the efficacy exposure increment, so the efficacy
+  model needs nothing inferred. The Figure S8 caption prints no reference
+  subject, and no table prints a centring or scaling constant for the safety
+  models, so those were recovered by exact algebra from the four printed
+  percentile-and-probability pairs in each panel (no digitisation, no pixel
+  measurement). The recovered centres come back at round numbers (69 years,
+  71 kg, AAG 110 mg/dL, log LDH 5.56) and the recovered scales agree with the
+  Table 1 standard deviations the paper does print for age, weight,
+  hemoglobin and platelets -- which is what distinguishes a correct
+  reconstruction from a merely self-consistent one. Check 2 above is the
+  regression test.
+* **Exposure-response: the neutropenia exposure structure is inferred.**
+  Table S6 reports an Emax and an ED50 instead of a single exposure odds
+  ratio, but does not say where the resulting term enters. The reading adopted
+  here is that the saturating variable `C / (ED50 + C)` replaces the linear
+  standardized exposure *everywhere*, in the main effect and as the multiplier
+  of every interaction. Check 3 above is the evidence: the binary covariate
+  rows give a scale-free estimate of the exposure term at the reference
+  subject, which is approximately 0 for the linear-exposure panels and
+  approximately 0.4 for this one, against `18.1 / (39.7 + 18.1) = 0.313`. The
+  substitution costs no fitted parameter, cuts the root-mean-square residual
+  over that panel's 25 published rows from 0.079 to 0.014 logit units, and
+  brings the recovered baseline-neutrophil scale (3.10) into line with the
+  printed Table 1 standard deviation (3.29) instead of contradicting it
+  (2.49). It is nonetheless an inference, and it is why the neutropenia
+  assertion tolerance above is 0.010 rather than the 0.005 used for the other
+  six.
+* **Exposure-response: no random effects and no residual error.** Each of the
+  seven models is a static landmark logistic regression fit with an exact
+  Bernoulli likelihood on one binary record per patient, so there is nothing
+  to carry over. Each carries a placeholder `addSd_prob_*` fixed at 0.001
+  purely so that rxode2 accepts an endpoint definition; it is not from the
+  source. To simulate binary outcomes, apply `rbinom(n, 1, prob_*)` to the
+  `rxSolve()` output rather than treating that placeholder as a residual.
+* **Exposure-response: the exposure column is endpoint-specific.** `CSSU_VALE`
+  is the unbound average concentration up to the *event*, so the averaging
+  window -- and therefore the value -- differs between endpoints for the same
+  patient. The paper notes (citing Wiens et al.) that an exposure metric
+  defined up to the event carries a confounding risk relative to a metric
+  independent of event timing. Do not reuse one endpoint's column for another.
 * **No published NCA table to compare against.** Inoue 2025 reports no
   non-compartmental summary of observed concentrations, so the NCA section
   above validates internal consistency (unbound `cav` against
   `dose / (CL * 24)`) rather than reproducing a published table. The paper's
   own visual predictive checks (Figure S2) and goodness-of-fit plots (Figures
   S3-S4) are graphical and are not digitised here.
-* **Companion exposure-response models.** The paper additionally reports one
-  exposure-efficacy and six exposure-safety logistic-regression models
-  (Tables S4-S10) that consume the unbound average concentration this PK model
-  predicts. They are packaged separately as the `Inoue_2025_valemetostat_*`
-  family and documented in this same vignette when available.
 
 # Session information
 

@@ -4,6 +4,8 @@
 
 - Add Inoue 2025 valemetostat ([doi:10.1002/jcph.70100](https://doi.org/10.1002/jcph.70100)) -- adults with relapsed/refractory non-Hodgkin lymphoma and healthy participants.
 
+- Add the seven Inoue 2025 valemetostat exposure-response models ([doi:10.1002/jcph.70100](https://doi.org/10.1002/jcph.70100)) -- adults with relapsed/refractory peripheral T-cell lymphoma or adult T-cell leukemia/lymphoma.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`

@@ -243,15 +243,15 @@ Inoue_2025_valemetostat <- function() {
   ini({
     # ==================================================================
     # All structural and covariate values are the point estimates in
-    # Inoue 2025 Table 2 ("Summary of PPK Parameter Estimates"), column
-    # "Estimate". The Median and 95% CI columns of that table are
+    # Inoue 2025 Table 2 ('Summary of PPK Parameter Estimates'), column
+    # 'Estimate'. The Median and 95% CI columns of that table are
     # non-parametric bootstrap summaries (n = 462) and are NOT used here.
     #
     # Covariate reference values come from the Figure 2 caption, which
-    # defines the reference individual as "a male patient with PTCL,
+    # defines the reference individual as 'a male patient with PTCL,
     # Asian Japanese, no concomitant medication [CYP3Ai or P-gpi],
     # normal hepatic function, weighing 68.2 kg, 65 years of age, with a
-    # AAG of 100 mg/dL, and a CrCl of 83 mL/min".
+    # AAG of 100 mg/dL, and a CrCl of 83 mL/min'.
     #
     # Scale conventions, both confirmed by the table's own printed
     # summary columns rather than assumed:
@@ -332,7 +332,7 @@ Inoue_2025_valemetostat <- function() {
     etalfdepot ~ 0.485                   # Table 2, Omega(6,6) 0.485 [CV% = 79.0], RSE 12.7%; the paper's IIV-F1
 
     # ----- Residual error -----
-    # Table 2 reports three "log-additive" SIGMA VARIANCES. NONMEM
+    # Table 2 reports three 'log-additive' SIGMA VARIANCES. NONMEM
     # log-additive error is proportional error in nlmixr2's linear
     # space, and the residual SD is sqrt(variance). Note that the
     # SIGMA rows use a DIFFERENT derived-column convention from the
