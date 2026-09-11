@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Garcia-Hervalejo 2026 teicoplanin ([doi:10.3390/pharmaceutics18010100](https://doi.org/10.3390/pharmaceutics18010100)) — adults with hematological malignancies treated for febrile neutropenia.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`

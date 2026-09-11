@@ -4310,6 +4310,8 @@ navbar:
         href: articles/ButraguenoLaiseca_2025_teicoplanin.html
       - text: "Teicoplanin (Chen 2023)"
         href: articles/Chen_2023_teicoplanin.html
+      - text: "Teicoplanin (GarciaHervalejo 2026)"
+        href: articles/GarciaHervalejo_2026_teicoplanin.html
       - text: "Teicoplanin (Kim 2024)"
         href: articles/Kim_2024_teicoplanin.html
       - text: "Teicoplanin (Sun 2025)"
@@ -5616,6 +5618,7 @@ articles:
   - articles/Gaohua_2015_lung_pbpk
   - articles/Gaohua_2023_permeabilityLimited_pbpk
   - articles/Garcia_2025_garadacimab
+  - articles/GarciaHervalejo_2026_teicoplanin
   - articles/Garg_2014_pertuzumab
   - articles/Garmann_2017_BAY81_8973
   - articles/Garonzik_2016_daptomycin
