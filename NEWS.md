@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Penney 2025 T-cell engager TMDD model ([doi:10.1111/cts.70384](https://doi.org/10.1111/cts.70384)) — generic human and cynomolgus-monkey TCE half-life prediction.
+
 - Rename the seven covariate canonicals that were carried in non-ALL-CAPS form
   purely because a source paper spelled them that way: `dilution` ->
   `DILUTION`, `nonECZTRA` -> `NON_ECZTRA`, `ooc1`-`ooc4` -> `OOC1`-`OOC4`, and

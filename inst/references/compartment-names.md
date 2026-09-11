@@ -617,6 +617,14 @@ The three canonicals below describe the drug-target-effector-cell mass-action bi
 - **Example models:** `Poels_2025_elranatamab_qsp.R`.
 - **Notes:** Founding example Poels 2025 (Supplementary Eq 18). Use `drug_cd3_tumor` for solid-tumour sites and this name when the site of action is marrow (haematological malignancies).
 
+### target_cd3_central (**canonical free CD3 receptor pool in the central compartment**)
+- **Type:** compartment
+- **Role:** Free (undrugged) CD3 receptor concentration on circulating T cells (nM), carried as a dynamic turnover state with zero-order synthesis and first-order internalisation. The free-receptor binding partner of `drug_cd3_central`, which is the drug-bound dimer of the same receptor.
+- **Source aliases:**
+  - `CD3` -- Penney 2025 Equation 2 notation.
+- **Example models:** `Penney_2025_tce_tmdd_qsp.R`.
+- **Notes:** Founding example Penney 2025 (Eq 2). Named into the free-target family beside `target_bonemarrow` rather than as a bare `cd3_central`, so that the FREE receptor pool stays typographically distinct from the drug-CD3 COMPLEX states `drug_cd3_central` / `drug_cd3_tumor` / `drug_cd3_bonemarrow`; `cd3_central` would be a near-homograph of `drug_cd3_central` (operator decision, 2026-09-11). Like `target_bonemarrow` it is not matched by `targetLocationRegex`, which admits only `csf` / `isf` / `peripheral<n>`, so it is registered explicitly. Use this only when the free CD3 pool is an ODE STATE. Betts 2019 and Poels 2025 instead derive free CD3 algebraically from a T-cell density and a per-cell receptor count (see `parameter-names.md` `cd3_receptors`), which needs no compartment; Penney 2025 needs the state because CD3 is depleted by internalisation of the drug-CD3 dimer and resupplied by synthesis, so its level is drug-dependent. Baseline is `cd3_receptors * tcell_blood / N_A`, the same conversion the derived form uses. A model that carries a second, antigen-specific free target alongside CD3 uses the bare `target` for it, as Penney 2025 does for its unspecified TAA.
+
 ### target_bonemarrow (**canonical soluble target in bone marrow**)
 - **Type:** compartment
 - **Role:** Free (unbound) soluble target shed into the bone marrow (pM). Site-suffixed member of the registered `target` family, in the same sense as `target_csf` / `target_isf`. In Poels 2025 the shedding rate is proportional to tumour burden, which makes this state a burden-tracking drug sink rather than a fixed pool.
