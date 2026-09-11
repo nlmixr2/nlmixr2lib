@@ -663,8 +663,10 @@ below.
   the notation convention used by the authors, and that a natural-log covariate
   would conventionally be named `LNBW`. Under the natural-log reading every
   volume would be larger by a factor of 2.303 (V at the median 28.1 kg would be
-  757 L rather than 329 L). **This choice is unresolved and is the subject of an
-  open question to the maintainers.** Nothing on disk discriminates the two
+  757 L rather than 329 L). **The base-10 reading was ratified by the
+  maintainers on 2026-09-11 on the strength of that notation convention; the
+  base remains unresolved in the source itself and can only be settled by the
+  authors.** Nothing on disk discriminates the two
   readings: Table 3 reports interval-average concentrations, which are
   `dose/(CL * tau)` and therefore exactly independent of V (the residual scan in
   this vignette finds no interior optimum in V -- the fit improves monotonically
