@@ -44,6 +44,9 @@
   physical unit otherwise (24). Two parameters that carried no `label()` at all
   (`Kretsos_2014_olokizumab` `propSd` and `propSd_crp`) now have one. No
   parameter value, model structure or parameter name changes.
+
+- Add Bertin 2026 propofol ([doi:10.1007/s40262-025-01585-2](https://doi.org/10.1007/s40262-025-01585-2)) -- critically ill adults with and without extracorporeal membrane oxygenation.
+
 - Add Kumta 2025 piperacillin and tazobactam ([doi:10.1128/aac.00601-24](https://doi.org/10.1128/aac.00601-24)) -- critically ill neurosurgical adults with an external ventricular drain.
 
 - Add Huang 2025 colistin sulfate ([doi:10.1177/00368504251325334](https://doi.org/10.1177/00368504251325334)) -- critically ill adults on continuous veno-venous hemodiafiltration.

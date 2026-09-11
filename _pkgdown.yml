@@ -3536,6 +3536,8 @@ navbar:
         href: articles/Mohamed_2013_procainamide.html
       - text: "Proguanil (Khwarg 2024)"
         href: articles/Khwarg_2024_proguanil.html
+      - text: "Propofol (Bertin 2026)"
+        href: articles/Bertin_2026_propofol.html
       - text: "Propofol (Chi 2018)"
         href: articles/Chi_2018_propofol.html
       - text: "Propofol (Diepstraten 2013)"
@@ -5209,6 +5211,7 @@ articles:
   - articles/Bergmann_2014_tacrolimus
   - articles/Berkhout_2015_osteoporosis_placebo
   - articles/Berthaud_2025_cefazolin
+  - articles/Bertin_2026_propofol
   - articles/Bertrand_2011_S33138
   - articles/Betts_2018_mAb_linear_PK
   - articles/Betts_2019_pf_06671008
