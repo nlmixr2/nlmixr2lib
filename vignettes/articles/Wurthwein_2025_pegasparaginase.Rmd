@@ -856,15 +856,17 @@ used with the reading given.
   BSA = 1 m^2 for better comparison". The `ini()` values are therefore the
   printed numbers, and `model()` renormalises the BSA factor to 1 at BSA = 1 m^2
   so that they mean exactly what the table says.
-* **New covariate canonical, NAME PROVISIONAL.** No anti-PEG antibody column
-  existed in `inst/references/covariate-columns.md`. The pre-existing anti-PEG
-  antibody level is genuinely distinct from every registered anti-drug-antibody
-  canonical: it targets the polyethylene-glycol moiety rather than the drug, it
-  is present before any exposure (which is why it can act on the first dose),
-  and it has no zero-encoding for "negative" subjects. `ABPEG_IGM` and
-  `ABPEG_IGG` are proposed as a new `ABPEG_<isotype>` family and are **awaiting
-  operator ratification** (sidecar `oasweep_PMC12540506` request-001). If the
-  operator prefers a different name the change is a rename in three files.
+* **New covariate canonical.** No anti-PEG antibody column existed in
+  `inst/references/covariate-columns.md` before this extraction. The
+  pre-existing anti-PEG antibody level is genuinely distinct from every
+  registered anti-drug-antibody canonical: it targets the polyethylene-glycol
+  moiety rather than the drug, it is present before any exposure (which is why
+  it can act on the first dose), and it has no zero-encoding for "negative"
+  subjects. `ABPEG_IGM` and `ABPEG_IGG` were therefore registered as a new
+  `ABPEG_<isotype>` family, with these models as the founding examples. The
+  isotype is carried in the name rather than folded into a single column
+  because papers routinely assay both against different cut points and retain
+  only one, as Wurthwein 2025 does in ESM Table S6.
 * **Compartment naming.** The authors' control stream names the 14 states
   `CENTRAL` and `PERI2`-`PERI14`. `peripheral<n>` would be misleading here --
   these are not classical peripheral distribution compartments; there is no
