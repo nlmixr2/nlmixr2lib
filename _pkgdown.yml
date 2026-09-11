@@ -3244,6 +3244,8 @@ navbar:
         href: articles/Krekels_2015_paracetamol.html
       - text: "Paracetamol (Lau 2026)"
         href: articles/Lau_2026_paracetamol.html
+      - text: "Paracetamol (Padavia 2024)"
+        href: articles/Padavia_2024_paracetamol.html
       - text: "Paracetamol (Wattanakul 2016)"
         href: articles/Wattanakul_2016_paracetamol.html
       - text: "Paracetamol (Wu 2025)"
@@ -6321,6 +6323,7 @@ articles:
   - articles/Ozdin_2025_dexamethasone
   - articles/Padari_2012_meropenem
   - articles/Padari_2018_penicillin_G
+  - articles/Padavia_2024_paracetamol
   - articles/Padoin_1998_cephalexin_rat
   - articles/Paiboonvong_2025_sitafloxacin
   - articles/Pan_2026_adalimumab
