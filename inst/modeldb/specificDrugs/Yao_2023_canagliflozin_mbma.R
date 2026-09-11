@@ -81,16 +81,16 @@ Yao_2023_canagliflozin_mbma <- function() {
   # ==========================================================================
   ini({
     lcl <- log(12.0)
-    label("Apparent clearance from the central compartment (CL/F, L/h)")  # Yao 2023 Table 1 (RSE 6.20%)
+    label("Apparent clearance from the central compartment (L/h)")  # Yao 2023 Table 1 (RSE 6.20%)
 
     lvc <- log(85.5)
-    label("Apparent central volume of distribution (Vc/F, L)")  # Yao 2023 Table 1 (RSE 4.60%)
+    label("Apparent central volume of distribution (L)")  # Yao 2023 Table 1 (RSE 4.60%)
 
     lq <- log(9.77)
-    label("Apparent distribution clearance between central and peripheral compartments (CLD/F, L/h)")  # Yao 2023 Table 1 (RSE 10.8%)
+    label("Apparent distribution clearance between central and peripheral compartments (L/h)")  # Yao 2023 Table 1 (RSE 10.8%)
 
     lvp <- log(108)
-    label("Apparent peripheral volume of distribution (VT/F, L)")  # Yao 2023 Table 1 (RSE 6.40%)
+    label("Apparent peripheral volume of distribution (L)")  # Yao 2023 Table 1 (RSE 6.40%)
 
     lktr <- log(6.38)
     label("Transit / absorption rate constant Kt (1/h)")  # Yao 2023 Table 1 (RSE 4.60%)

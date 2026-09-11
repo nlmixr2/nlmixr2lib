@@ -101,9 +101,9 @@ Yang_2026_lurasidone <- function() {
   ini({
     # Structural parameters -- Yang 2026 Table 3 (Final model, Estimated column) and the
     # final model equation printed in Section 3.3.
-    lka <- fixed(log(0.679)); label("Absorption rate constant (Ka, 1/h)")                                              # Table 3 "Ka (h-1) 0.679,FIX"; fixed from Hu 2017 healthy-Chinese PK because the sparse trough design could not identify it (Sections 2.5, 3.2)
-    lcl <- log(339); label("Apparent clearance at the reference age of 22 years without valproate (CL/F, L/h)")        # Table 3 CL/F = 339 (RSD 7%; bootstrap median 337, 95% CI 283-394)
-    lvc <- log(13600); label("Apparent volume of distribution (V/F, L)")                                               # Table 3 V/F = 13600 (RSD 20%; bootstrap median 13531, 95% CI 8802-19807)
+    lka <- fixed(log(0.679)); label("Absorption rate constant (1/h)")                                              # Table 3 "Ka (h-1) 0.679,FIX"; fixed from Hu 2017 healthy-Chinese PK because the sparse trough design could not identify it (Sections 2.5, 3.2)
+    lcl <- log(339); label("Apparent clearance at the reference age of 22 years without valproate (L/h)")        # Table 3 CL/F = 339 (RSD 7%; bootstrap median 337, 95% CI 283-394)
+    lvc <- log(13600); label("Apparent volume of distribution (L)")                                               # Table 3 V/F = 13600 (RSD 20%; bootstrap median 13531, 95% CI 8802-19807)
 
     # Covariate effects on CL/F -- both enter multiplicatively; see model() for the exact form.
     e_age_cl <- 0.0125; label("Fractional decrease in CL/F per year of age above the 22-year reference (1/year)")      # Table 3 theta CL-AGE = 0.0125 (RSD 16%; bootstrap median 0.0122, 95% CI 0.0062-0.0172). Table 3 reports the positive magnitude; the minus sign is carried by the Section 3.3 equation.

@@ -79,13 +79,13 @@ Zheng_2016_sifalimumab <- function() {
     # CL = theta1 * (WT/64.3)^theta5 * (BGENE21/12.04)^theta6 * (1 + theta7 * CONMED_STEROID)
     e_wt_cl       <- 0.45; label("Power exponent of WT on CL (unitless, reference 64.3 kg)") # Zheng 2016 Table 2, theta5
     e_bgene21_cl  <- 0.09; label("Power exponent of BGENE21 on CL (unitless, reference 12.04)") # Zheng 2016 Table 2, theta6
-    e_conmed_steroid_cl  <- 0.11; label("Fractional increase in CL for baseline conmed_steroid users")      # Zheng 2016 Table 2, theta7
+    e_conmed_steroid_cl  <- 0.11; label("Fractional increase in CL for baseline corticosteroid users (fraction)")      # Zheng 2016 Table 2, theta7
 
     # Covariate effects on V1 - power-form on WT and DOSE, fractional on CONMED_STEROID.
     # V1 = theta2 * (WT/64.3)^theta8 * (DOSE/600)^theta9 * (1 - theta10 * CONMED_STEROID)
     e_wt_vc       <- 0.36; label("Power exponent of WT on V1 (unitless, reference 64.3 kg)") # Zheng 2016 Table 2, theta8
     e_dose_vc     <- 0.06; label("Power exponent of DOSE on V1 (unitless, reference 600 mg)") # Zheng 2016 Table 2, theta9
-    e_conmed_steroid_vc  <- 0.09; label("Fractional decrease in V1 for baseline conmed_steroid users")      # Zheng 2016 Table 2, theta10
+    e_conmed_steroid_vc  <- 0.09; label("Fractional decrease in V1 for baseline corticosteroid users (fraction)")      # Zheng 2016 Table 2, theta10
 
     # IIV - log-normal / exponential BSV assumed on CL and V1 (Zheng 2016 Table 2).
     # Converting CV% to log-scale variance via omega^2 = log(CV^2 + 1):

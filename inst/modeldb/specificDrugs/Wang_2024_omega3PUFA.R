@@ -58,9 +58,9 @@ Wang_2024_omega3PUFA <- function() {
     # The parenthesised value in that column is the relative standard error of the
     # estimate, not an IIV: the residual-error term sigma also carries one, and a
     # residual-error parameter has no inter-individual variability.
-    lka <- log(1.175);   label("Absorption rate constant at the reference HDL-C of 1.38 mmol/L (Ka, 1/h)")               # Table 2: Ka = 1.175 (RSE 0.096%); printed final-model equation p. 3
-    lvc <- log(26.151);  label("Apparent central volume of distribution at the reference HDL-C of 1.38 mmol/L (V/F, L)") # Table 2: V = 26.151 L (RSE 1.451%); printed final-model equation p. 3
-    lcl <- log(0.411);   label("Apparent clearance at the reference HDL-C of 1.38 mmol/L (CL/F, L/h)")                   # Table 2: CL = 0.411 L/h (RSE 0.000%); printed final-model equation p. 3
+    lka <- log(1.175);   label("Absorption rate constant at the reference HDL-C of 1.38 mmol/L (1/h)")               # Table 2: Ka = 1.175 (RSE 0.096%); printed final-model equation p. 3
+    lvc <- log(26.151);  label("Apparent central volume of distribution at the reference HDL-C of 1.38 mmol/L (L)") # Table 2: V = 26.151 L (RSE 1.451%); printed final-model equation p. 3
+    lcl <- log(0.411);   label("Apparent clearance at the reference HDL-C of 1.38 mmol/L (L/h)")                   # Table 2: CL = 0.411 L/h (RSE 0.000%); printed final-model equation p. 3
 
     # ---- HDL-C power covariate exponents: printed final-model equations, p. 3 --
     # Ka = 1.175 * (HDL/1.38)^0.007  * exp(etaKa)

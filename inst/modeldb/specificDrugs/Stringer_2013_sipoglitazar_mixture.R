@@ -121,13 +121,13 @@ Stringer_2013_sipoglitazar_mixture <- function() {
     # companion genotype model every stratum carries a suffix; CL and V are
     # apparent (CL/F, V/F) because bioavailability is unknown (Table A1
     # footnote a).
-    lcl_em <- log(5.04); label("Apparent clearance, extensive-metaboliser subpopulation POP1 (CL/F, L/h)")     # Suppl. Table A1: CL POP1 (EM) = 5.04 L/h (RSE 3.85%)
-    lcl_im <- log(3.35); label("Apparent clearance, intermediate-metaboliser subpopulation POP2 (CL/F, L/h)")  # Suppl. Table A1: CL POP2 (IM) = 3.35 L/h (RSE 2.38%)
-    lcl_pm <- log(1.53); label("Apparent clearance, poor-metaboliser subpopulation POP3 (CL/F, L/h)")          # Suppl. Table A1: CL POP3 (PM) = 1.53 L/h (RSE 2.64%)
+    lcl_em <- log(5.04); label("Apparent clearance, extensive-metaboliser subpopulation POP1 (L/h)")     # Suppl. Table A1: CL POP1 (EM) = 5.04 L/h (RSE 3.85%)
+    lcl_im <- log(3.35); label("Apparent clearance, intermediate-metaboliser subpopulation POP2 (L/h)")  # Suppl. Table A1: CL POP2 (IM) = 3.35 L/h (RSE 2.38%)
+    lcl_pm <- log(1.53); label("Apparent clearance, poor-metaboliser subpopulation POP3 (L/h)")          # Suppl. Table A1: CL POP3 (PM) = 1.53 L/h (RSE 2.64%)
 
-    lvc <- log(9.06);   label("Apparent central volume of distribution (V/F, L)")     # Suppl. Table A1: V = 9.06 L (RSE 2.41%)
-    lvp <- log(1.703);  label("Apparent peripheral volume of distribution (V2/F, L)") # Suppl. Table A1: V2 = 0.188 (RSE 4.93%) as a fraction of the central volume (footnote b); 0.188 * 9.06 L = 1.703 L
-    lq  <- log(0.311);  label("Intercompartmental clearance (Q/F, L/h)")              # Suppl. Table A1: Q = 0.311 L/h (RSE 6.72%)
+    lvc <- log(9.06);   label("Apparent central volume of distribution (L)")     # Suppl. Table A1: V = 9.06 L (RSE 2.41%)
+    lvp <- log(1.703);  label("Apparent peripheral volume of distribution (L)") # Suppl. Table A1: V2 = 0.188 (RSE 4.93%) as a fraction of the central volume (footnote b); 0.188 * 9.06 L = 1.703 L
+    lq  <- log(0.311);  label("Apparent intercompartmental clearance (L/h)")              # Suppl. Table A1: Q = 0.311 L/h (RSE 6.72%)
 
     # Absorption: zero-order release of duration D1 into the depot followed by
     # first-order transfer at ka. See the companion genotype model and the

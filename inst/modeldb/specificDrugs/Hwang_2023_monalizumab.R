@@ -85,10 +85,10 @@ Hwang_2023_monalizumab <- function() {
     # Structural parameters - typical values for a subject at the population
     # median covariates (WT = 70.6 kg, ALB = 3.80 g/dL, male, former smoker).
     # CL and Q reported in L/day; V1 and V2 in L. The model keeps time in days.
-    lcl <- log(0.255); label("Clearance for the typical adult at population-median covariates (CL, L/day)") # Hwang 2023 Table 2, p. 821: CL = 0.255 L/day
-    lvc <- log(3.58);  label("Central volume of distribution at population-median covariates (V1, L)")     # Hwang 2023 Table 2, p. 821: V1 = 3.58 L
-    lq  <- log(0.567); label("Intercompartmental clearance (Q, L/day)")                                    # Hwang 2023 Table 2, p. 821: Q  = 0.567 L/day
-    lvp <- log(2.78);  label("Peripheral volume of distribution (V2, L)")                                  # Hwang 2023 Table 2, p. 821: V2 = 2.78 L
+    lcl <- log(0.255); label("Clearance for the typical adult at population-median covariates (L/day)") # Hwang 2023 Table 2, p. 821: CL = 0.255 L/day
+    lvc <- log(3.58);  label("Central volume of distribution at population-median covariates (L)")     # Hwang 2023 Table 2, p. 821: V1 = 3.58 L
+    lq  <- log(0.567); label("Intercompartmental clearance (L/day)")                                    # Hwang 2023 Table 2, p. 821: Q  = 0.567 L/day
+    lvp <- log(2.78);  label("Peripheral volume of distribution (L)")                                  # Hwang 2023 Table 2, p. 821: V2 = 2.78 L
 
     # Covariate effects on CL (Hwang 2023 Table 2; continuous power form per
     # Methods 'Covariate Considerations', p. 820: P = theta * (X / M(X))^theta_j).

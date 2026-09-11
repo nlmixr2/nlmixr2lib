@@ -133,10 +133,10 @@ Thoueille_2024_rilpivirine <- function() {
     # =====================================================================
 
     # --- Disposition -----------------------------------------------------
-    lcl <- log(6.74)  ; label("Apparent clearance (CL, L/h)")                                 # Table 2 'CL (L/h) 6.74 (RSE 3)', bootstrap median 6.68 [5.41-7.37]; control stream $THETA(1) 6.74
-    lvc <- log(277)   ; label("Apparent central volume of distribution (V3, L)")              # Table 2 'V3 (L) 277 (RSE 25)', bootstrap median 274 [184-433]; control stream $THETA(2) 277
-    lq  <- log(4.08)  ; label("Apparent inter-compartmental clearance (Q, L/h)")              # Table 2 'Q (L/h) 4.08 (RSE 40)', bootstrap median 4.03 [1.75-9.30]; control stream $THETA(3) 4.08
-    lvp <- log(839)   ; label("Apparent peripheral volume of distribution (V4, L)")           # Table 2 'V4 (L) 839 (RSE 11)', bootstrap median 853 [407-1365]; control stream $THETA(4) 839
+    lcl <- log(6.74)  ; label("Apparent clearance (L/h)")                                 # Table 2 'CL (L/h) 6.74 (RSE 3)', bootstrap median 6.68 [5.41-7.37]; control stream $THETA(1) 6.74
+    lvc <- log(277)   ; label("Apparent central volume of distribution (L)")              # Table 2 'V3 (L) 277 (RSE 25)', bootstrap median 274 [184-433]; control stream $THETA(2) 277
+    lq  <- log(4.08)  ; label("Apparent inter-compartmental clearance (L/h)")              # Table 2 'Q (L/h) 4.08 (RSE 40)', bootstrap median 4.03 [1.75-9.30]; control stream $THETA(3) 4.08
+    lvp <- log(839)   ; label("Apparent peripheral volume of distribution (L)")           # Table 2 'V4 (L) 839 (RSE 11)', bootstrap median 853 [407-1365]; control stream $THETA(4) 839
 
     # --- Oral absorption -------------------------------------------------
     # The oral dose is a zero-order input directly into the central
@@ -145,8 +145,8 @@ Thoueille_2024_rilpivirine <- function() {
     # F3 = THETA(5) * EXP(ETA(2)). Intramuscular administration is taken as
     # completely bioavailable, so Foral is a RELATIVE bioavailability of the
     # oral route versus the intramuscular route (Thoueille 2024 Results 3.1).
-    lfdepot_oral <- log(0.654) ; label("Relative bioavailability of oral versus intramuscular rilpivirine (Foral, fraction)")  # Table 2 'F oral (%) 65.4 (RSE 5)', bootstrap median 64.8 [52.6-73.3]; control stream $THETA(5) 0.654
-    ld1_oral <- fixed(log(4))  ; label("Zero-order absorption duration for the oral dose (Doral, h)")                          # Table 2 'D oral (h) 4 FIX'; control stream $THETA(7) '4 FIX'. Thoueille 2024 Methods: fixed to 4 h from the Edurant label and preliminary estimation because too few samples were drawn just after oral intake
+    lfdepot_oral <- log(0.654) ; label("Relative bioavailability of oral versus intramuscular rilpivirine (fraction)")  # Table 2 'F oral (%) 65.4 (RSE 5)', bootstrap median 64.8 [52.6-73.3]; control stream $THETA(5) 0.654
+    ld1_oral <- fixed(log(4))  ; label("Zero-order absorption duration for the oral dose (h)")                          # Table 2 'D oral (h) 4 FIX'; control stream $THETA(7) '4 FIX'. Thoueille 2024 Methods: fixed to 4 h from the Edurant label and preliminary estimation because too few samples were drawn just after oral intake
 
     # --- Long-acting intramuscular absorption ----------------------------
     # The injected dose is split between two parallel first-order pathways.
@@ -155,9 +155,9 @@ Thoueille_2024_rilpivirine <- function() {
     # Fi.m.fast_i = exp(TEMP + eta) / (1 + exp(TEMP + eta)), which keeps the
     # fraction inside (0, 1) for every eta draw. The slow fraction is the
     # remainder, Fi.m.slow = 1 - Fi.m.fast.
-    logitfdepot <- log(0.276 / (1 - 0.276)) ; label("Logit of the fraction of the intramuscular dose released via the fast absorption pathway (Fi.m.fast, fraction)")  # Table 2 'F i.m.fast (%) 27.6 (RSE 9)', bootstrap median 27.5 [22.5-32.4]; control stream $THETA(6) 0.276; logit(0.276) = -0.9642
-    lka  <- log(0.00214)  ; label("First-order absorption rate constant of the fast intramuscular pathway (kafast, 1/h)")  # Table 2 'k a fast (h-1) 0.00214 (RSE 11)', bootstrap median 0.00211 [0.00167-0.00266]; control stream $THETA(8) 0.00214
-    lka2 <- log(0.000229) ; label("First-order absorption rate constant of the slow intramuscular pathway (kaslow, 1/h)")  # Table 2 'k a slow (h-1) 0.000229 (RSE 11)', bootstrap median 0.000225 [0.000108-0.000292]; control stream $THETA(9) 0.000229. ln(2)/kaslow = 3027 h = 18.0 weeks, the reported apparent half-life
+    logitfdepot <- log(0.276 / (1 - 0.276)) ; label("Logit of the fraction of the intramuscular dose released via the fast absorption pathway (fraction)")  # Table 2 'F i.m.fast (%) 27.6 (RSE 9)', bootstrap median 27.5 [22.5-32.4]; control stream $THETA(6) 0.276; logit(0.276) = -0.9642
+    lka  <- log(0.00214)  ; label("First-order absorption rate constant of the fast intramuscular pathway (1/h)")  # Table 2 'k a fast (h-1) 0.00214 (RSE 11)', bootstrap median 0.00211 [0.00167-0.00266]; control stream $THETA(8) 0.00214
+    lka2 <- log(0.000229) ; label("First-order absorption rate constant of the slow intramuscular pathway (1/h)")  # Table 2 'k a slow (h-1) 0.000229 (RSE 11)', bootstrap median 0.000225 [0.000108-0.000292]; control stream $THETA(9) 0.000229. ln(2)/kaslow = 3027 h = 18.0 weeks, the reported apparent half-life
 
     # --- Between-subject variability -------------------------------------
     # Values are the $OMEGA variances of the supplementary control stream.

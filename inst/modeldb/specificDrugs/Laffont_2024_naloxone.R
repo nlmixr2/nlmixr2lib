@@ -34,14 +34,14 @@ Laffont_2024_naloxone <- function() {
 
   ini({
     # Structural parameters -- Laffont 2024 Table 2 (IN naloxone)
-    lcl    <- log(396);          label("Apparent clearance (CL/F, L/h)")                          # Table 2: CL/F = 396 L/h
-    lvc    <- log(65.7);         label("Apparent central volume of distribution (Vc/F, L)")       # Table 2: Vc/F = 65.7 L
-    lq     <- fixed(log(284));   label("Apparent intercompartmental clearance (Q/F, L/h)")        # Table 2: Q/F = 284 (fixed to Yassen 2007 ref 30)
-    lvp    <- fixed(log(102));   label("Apparent peripheral volume of distribution (Vp/F, L)")    # Table 2: Vp/F = 102 (fixed to Yassen 2007 ref 30)
-    lka    <- log(0.998);        label("First-order absorption rate constant (KA, 1/h)")          # Table 2: KA = 0.998 1/h
-    ld2    <- log(0.689);        label("Zero-order absorption duration (D2, h)")                  # Table 2: D2 = 0.689 h
+    lcl    <- log(396);          label("Apparent clearance (L/h)")                          # Table 2: CL/F = 396 L/h
+    lvc    <- log(65.7);         label("Apparent central volume of distribution (L)")       # Table 2: Vc/F = 65.7 L
+    lq     <- fixed(log(284));   label("Apparent intercompartmental clearance (L/h)")        # Table 2: Q/F = 284 (fixed to Yassen 2007 ref 30)
+    lvp    <- fixed(log(102));   label("Apparent peripheral volume of distribution (L)")    # Table 2: Vp/F = 102 (fixed to Yassen 2007 ref 30)
+    lka    <- log(0.998);        label("First-order absorption rate constant (1/h)")          # Table 2: KA = 0.998 1/h
+    ld2    <- log(0.689);        label("Zero-order absorption duration (h)")                  # Table 2: D2 = 0.689 h
     lfk0   <- log(0.183);        label("Fraction of intranasal dose absorbed via zero-order route (FK0)")  # Table 2: FK0 = 0.183
-    lalag1 <- log(0.0717);       label("Lag time of first-order absorption (ALAG1, h)")            # Table 2: ALAG1 = 0.0717 h
+    lalag1 <- log(0.0717);       label("Lag time of first-order absorption (h)")            # Table 2: ALAG1 = 0.0717 h
 
     # IIV -- Table 2 reports CV%; log-normal variance = log(1 + CV^2)
     etalcl  ~ log(1 + 0.391^2)                                                                   # Table 2: IIV CL/F = 39.1 %CV

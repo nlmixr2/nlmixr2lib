@@ -122,32 +122,32 @@ Lu_2019_polatuzumab <- function() {
     # ----- acMMAE structural parameters (Lu 2019 Table 1, theta1-theta11) -----
     # Reference subject: 75 kg, ALB 35 g/L, TUMSZ 5000 mm^2, B-cell 1 cell/uL,
     # male, R/R, non-Asian, normal hepatic function, ECOG >= 1, single-agent.
-    lcl_exp_kdes      <- log(0.0046);  label("Rate constant of CL_TIME exponential decay (cl_exp_kdes, 1/h)")     # Lu 2019 Table 1, theta1
-    lcl_exp_component   <- log(0.00623); label("Initial CL_TIME at time 0 for the reference subject (CL_TIME, L/h)") # Lu 2019 Table 1, theta2
-    lcl     <- log(0.0344);  label("acMMAE nonspecific linear clearance after repeated dosing (CL_SS, L/h)") # Lu 2019 Table 1, theta3
-    lvc        <- log(3.15);    label("acMMAE central volume (Vc, L)")                                 # Lu 2019 Table 1, theta4
-    lvp        <- log(3.98);    label("acMMAE peripheral volume (Vp, L)")                              # Lu 2019 Table 1, theta5
-    lq         <- log(0.0145);  label("acMMAE intercompartmental clearance (Q, L/h)")               # Lu 2019 Table 1, theta6
-    lvmax      <- log(0.0203);  label("acMMAE Michaelis-Menten maximum elimination rate (Vmax, ng/mL/h)") # Lu 2019 Table 1, theta7
-    lkm_ac     <- log(0.604);   label("acMMAE Michaelis-Menten constant (KM, ng/mL)")                  # Lu 2019 Table 1, theta8
-    clss_emax  <- 0.223;        label("Maximum fractional effect of cycle on CL_NS (CLSSEMAX, unitless)") # Lu 2019 Table 1, theta9
-    lt50_mo    <- log(3.53);    label("Time of half-maximal cycle effect on CL_NS (T50, months)")      # Lu 2019 Table 1, theta10 (converted to hours inside model() via T50_hr = T50_mo * 24 * 30)
-    gamma_ns   <- 2.27;         label("Sigmoidicity of the CL_NS(t) Hill function (gamma, unitless)")  # Lu 2019 Table 1, theta11
+    lcl_exp_kdes      <- log(0.0046);  label("Rate constant of CL_TIME exponential decay (1/h)")     # Lu 2019 Table 1, theta1
+    lcl_exp_component   <- log(0.00623); label("Initial CL_TIME at time 0 for the reference subject (L/h)") # Lu 2019 Table 1, theta2
+    lcl     <- log(0.0344);  label("acMMAE nonspecific linear clearance after repeated dosing (L/h)") # Lu 2019 Table 1, theta3
+    lvc        <- log(3.15);    label("acMMAE central volume (L)")                                 # Lu 2019 Table 1, theta4
+    lvp        <- log(3.98);    label("acMMAE peripheral volume (L)")                              # Lu 2019 Table 1, theta5
+    lq         <- log(0.0145);  label("acMMAE intercompartmental clearance (L/h)")               # Lu 2019 Table 1, theta6
+    lvmax      <- log(0.0203);  label("acMMAE Michaelis-Menten maximum elimination rate (ng/mL/h)") # Lu 2019 Table 1, theta7
+    lkm_ac     <- log(0.604);   label("acMMAE Michaelis-Menten constant (ng/mL)")                  # Lu 2019 Table 1, theta8
+    clss_emax  <- 0.223;        label("Maximum fractional effect of cycle on CL_NS (unitless)") # Lu 2019 Table 1, theta9
+    lt50_mo    <- log(3.53);    label("Time of half-maximal cycle effect on CL_NS (months)")      # Lu 2019 Table 1, theta10 (converted to hours inside model() via T50_hr = T50_mo * 24 * 30)
+    gamma_ns   <- 2.27;         label("Sigmoidicity of the CL_NS(t) Hill function (unitless)")  # Lu 2019 Table 1, theta11
 
     # ----- Unconjugated MMAE structural parameters (Lu 2019 Table 1, theta12-theta21) -----
     # CL_MMAE / V_MMAE / Q_MMAE / V2_MMAE are *apparent* parameters: the
     # absolute fraction of formation of MMAE from acMMAE cannot be estimated,
     # so the systemic CL/V values are scaled by 1 / (true fraction of formation).
-    lvc_mmae   <- log(82.2);    label("Unconjugated MMAE apparent central volume (V_MMAE, L)")         # Lu 2019 Table 1, theta12
-    lcl_mmae   <- log(1.89);    label("Unconjugated MMAE apparent linear clearance (CL_MMAE, L/h)") # Lu 2019 Table 1, theta13
-    lq_mmae    <- log(36.3);    label("Unconjugated MMAE apparent intercompartmental clearance (Q_MMAE, L/h)") # Lu 2019 Table 1, theta14
-    lvp_mmae   <- log(200);     label("Unconjugated MMAE apparent peripheral volume (V2_MMAE, L)")     # Lu 2019 Table 1, theta15
-    lvmax_mmae <- log(0.0307);  label("Unconjugated MMAE Michaelis-Menten maximum elimination rate (Vmax_MMAE, ng/mL/h)") # Lu 2019 Table 1, theta16
-    lkss_mmae  <- log(0.581);   label("Unconjugated MMAE Michaelis-Menten constant (KSS, ng/mL)")      # Lu 2019 Table 1, theta17
+    lvc_mmae   <- log(82.2);    label("Unconjugated MMAE apparent central volume (L)")         # Lu 2019 Table 1, theta12
+    lcl_mmae   <- log(1.89);    label("Unconjugated MMAE apparent linear clearance (L/h)") # Lu 2019 Table 1, theta13
+    lq_mmae    <- log(36.3);    label("Unconjugated MMAE apparent intercompartmental clearance (L/h)") # Lu 2019 Table 1, theta14
+    lvp_mmae   <- log(200);     label("Unconjugated MMAE apparent peripheral volume (L)")     # Lu 2019 Table 1, theta15
+    lvmax_mmae <- log(0.0307);  label("Unconjugated MMAE Michaelis-Menten maximum elimination rate (ng/mL/h)") # Lu 2019 Table 1, theta16
+    lkss_mmae  <- log(0.581);   label("Unconjugated MMAE Michaelis-Menten constant (ng/mL)")      # Lu 2019 Table 1, theta17
     lfrac_clt  <- log(3.70);    label("FRAC_CLT: ratio of acMMAE-MMAE conversion fraction for CL_t pathway relative to CL_NS (unitless)") # Lu 2019 Table 1, theta18
     lfrac_mm   <- log(2.72);    label("FRAC_MM: ratio of acMMAE-MMAE conversion fraction for CL_MM pathway relative to CL_NS (unitless)") # Lu 2019 Table 1, theta19
-    lalph_mo   <- log(0.167);   label("Rate constant of FRAC_NS time-decay (alpha, 1/month)")          # Lu 2019 Table 1, theta20 (converted to 1/h inside model() via alpha_hr = alpha_mo / (24 * 30))
-    frac_t     <- 0.139;        label("Initial-time-dependent multiplier of FRAC_NS (FRAC_T, unitless)") # Lu 2019 Table 1, theta21
+    lalph_mo   <- log(0.167);   label("Rate constant of FRAC_NS time-decay (1/month)")          # Lu 2019 Table 1, theta20 (converted to 1/h inside model() via alpha_hr = alpha_mo / (24 * 30))
+    frac_t     <- 0.139;        label("Initial-time-dependent multiplier of FRAC_NS (unitless)") # Lu 2019 Table 1, theta21
 
     # ----- Covariate effects on acMMAE parameters (Lu 2019 Table 2, theta22-theta37) -----
     # WT enters all acMMAE clearance and volume parameters as power effects
@@ -170,7 +170,7 @@ Lu_2019_polatuzumab <- function() {
     e_line1l_kdes   <-  3.38;      label("Multiplicative effect of treatment-naive status on cl_exp_kdes (unitless)")          # Lu 2019 Table 2, theta32
     e_combo_rg_kdes <-  0.932;     label("Multiplicative effect of anti-CD20 combination on cl_exp_kdes (unitless)")           # Lu 2019 Table 2, theta33
     e_line1l_cl_time <- 3.53;      label("Multiplicative effect of treatment-naive status on CL_TIME (unitless)")        # Lu 2019 Table 2, theta34
-    tmbd50_cl_time  <-  1150;      label("Half-maximal-effect TUMSZ on CL_TIME (Michaelis-Menten-style scaling, mm^2 SPD; effect = TUMSZ / (tmbd50_cl_time + TUMSZ))") # Lu 2019 Table 2, theta35
+    tmbd50_cl_time  <-  1150;      label("Half-maximal-effect TUMSZ on CL_TIME as sum of products of diameters, Michaelis-Menten-style scaling; effect = TUMSZ / (tmbd50_cl_time + TUMSZ) (mm^2)") # Lu 2019 Table 2, theta35
     bcell_thr_cl_time <- 121;      label("B-cell threshold below which BLBCELL has no effect on CL_TIME (cells/uL; effect = max(1, BLBCELL/threshold)^exponent)") # Lu 2019 Table 2, theta36
     e_blbcell_cl_time <- 0.578;    label("Power exponent of max(1, BLBCELL/threshold) on CL_TIME (unitless)")           # Lu 2019 Table 2, theta37
 

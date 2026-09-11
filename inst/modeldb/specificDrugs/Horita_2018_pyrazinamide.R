@@ -54,8 +54,8 @@ Horita_2018_pyrazinamide <- function() {
     # The Table 4 IIV column lists 'Fixed' for these rows, which means no IIV is
     # estimated on the exponent (typical for allometric exponents) -- not that the
     # exponent value itself is held fixed during fitting.
-    e_wt_cl <- 0.735; label("Allometric exponent on CL/F (estimated, unitless)")    # Table 4: Exponent (BW on CL/F) = 0.735 (RSE 10%)
-    e_wt_vc <- 0.677; label("Allometric exponent on V/F  (estimated, unitless)")    # Table 4: Exponent (BW on V/F)  = 0.677 (RSE 11%)
+    e_wt_cl <- 0.735; label("Allometric exponent on CL/F (unitless)")    # Table 4: Exponent (BW on CL/F) = 0.735 (RSE 10%)
+    e_wt_vc <- 0.677; label("Allometric exponent on V/F (unitless)")    # Table 4: Exponent (BW on V/F)  = 0.677 (RSE 11%)
 
     # Inter-individual variability. Table 4 IIV column reports 'omega (CV%)' on the
     # log scale (variance = omega^2). The paper additionally reports an MTT IIV

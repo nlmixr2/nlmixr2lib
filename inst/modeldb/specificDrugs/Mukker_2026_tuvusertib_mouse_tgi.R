@@ -75,18 +75,18 @@ Mukker_2026_tuvusertib_mouse_tgi <- function() {
     # under which the paper's own Figure 4c translational simulation (human
     # ng/mL concentrations driving this TGI system) produces any tumor effect
     # at all. Encoded here as L/kg accordingly.
-    lvc  <- fixed(log(9.834));  label("Apparent central volume of distribution (V1, L/kg; Table S1 prints mL/kg -- see file note)")     # Table S1: V1 = 9.834
-    lvp  <- fixed(log(10.202)); label("Apparent peripheral volume of distribution (V2, L/kg; Table S1 prints mL/kg -- see file note)")  # Table S1: V2 = 10.202
-    lcl  <- fixed(log(7.216));  label("Apparent clearance from the central compartment (Cl1, L/h/kg; Table S1 prints mL/h/kg)")         # Table S1: Cl1 = 7.216
-    lq   <- fixed(log(1.02));   label("Apparent intercompartmental clearance (Cl2, L/h/kg; Table S1 prints mL/h/kg)")                   # Table S1: Cl2 = 1.02
-    lka  <- fixed(log(1.3));    label("Absorption rate constant (k01, 1/h)")                                                            # Table S1: k01 = 1.3 1/h
+    lvc  <- fixed(log(9.834));  label("Apparent central volume of distribution (L/kg; Table S1 prints mL/kg -- see file note)")     # Table S1: V1 = 9.834
+    lvp  <- fixed(log(10.202)); label("Apparent peripheral volume of distribution (L/kg; Table S1 prints mL/kg -- see file note)")  # Table S1: V2 = 10.202
+    lcl  <- fixed(log(7.216));  label("Apparent clearance from the central compartment (L/h/kg; Table S1 prints mL/h/kg)")         # Table S1: Cl1 = 7.216
+    lq   <- fixed(log(1.02));   label("Apparent intercompartmental clearance (L/h/kg; Table S1 prints mL/h/kg)")                   # Table S1: Cl2 = 1.02
+    lka  <- fixed(log(1.3));    label("Absorption rate constant (1/h)")                                                            # Table S1: k01 = 1.3 1/h
 
     # ---------------------------------------------------------------------
     # Simeoni tumor-growth-inhibition parameters -- Table S1.
     # ---------------------------------------------------------------------
-    ltumorExpGrowth  <- fixed(log(0.0022));  label("Tumor growth rate during the initial exponential phase (lambda0, 1/h)")            # Table S1: lambda0 = 0.0022 1/h
-    ltumorLinGrowth  <- fixed(log(6.4));     label("Tumor growth rate during the later linear phase (lambda1, mm^3/h)")                # Table S1: lambda1 = 6.4 Vol/h
-    ldamageTransit   <- fixed(log(0.0003));  label("Rate at which damaged cells progress through the death chain (k1, 1/h)")           # Table S1: k1 = 0.0003 1/h
+    ltumorExpGrowth  <- fixed(log(0.0022));  label("Tumor growth rate during the initial exponential phase (1/h)")            # Table S1: lambda0 = 0.0022 1/h
+    ltumorLinGrowth  <- fixed(log(6.4));     label("Tumor growth rate during the later linear phase (mm^3/h)")                # Table S1: lambda1 = 6.4 Vol/h
+    ldamageTransit   <- fixed(log(0.0003));  label("Rate at which damaged cells progress through the death chain (1/h)")           # Table S1: k1 = 0.0003 1/h
     ldrugSlope       <- fixed(log(0.00002)); label("Rate of drug-induced irreversible cell damage (k2, 1/(h*ng/mL))")                  # Table S1: k2 = 0.00002 1/h/conc.
     psi              <- fixed(20);           label("Switch sharpness between the exponential and linear growth phases (unitless)")     # Table S1: psi = 20
 

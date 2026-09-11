@@ -149,8 +149,8 @@ Rosario_2015_vedolizumab <- function() {
     lvc    <- log(3.19);   label("Central volume of distribution Vc for the reference UC patient (L)")  # Table 2: Vc = 3.19 L
     lvp    <- log(1.65);   label("Peripheral volume of distribution Vp for 70 kg (L)")          # Table 2: Vp = 1.65 L
     lq     <- log(0.12);   label("Intercompartmental clearance Q for 70 kg (L/day)")            # Table 2: Q = 0.12 L/day
-    lvmax  <- log(0.265);  label("Maximum elimination rate of the Michaelis-Menten pathway for 70 kg (Vmax, mg/day)")  # Table 2: Vmax = 0.265 mg/day
-    lkm    <- log(0.964);  label("Michaelis-Menten constant (Km, ug/mL)")                       # Table 2: Km = 0.964 ug/mL
+    lvmax  <- log(0.265);  label("Maximum elimination rate of the Michaelis-Menten pathway for 70 kg (mg/day)")  # Table 2: Vmax = 0.265 mg/day
+    lkm    <- log(0.964);  label("Michaelis-Menten constant (ug/mL)")                       # Table 2: Km = 0.964 ug/mL
 
     # Continuous covariate effects (power-form; Table S4 "NULL effect = 0" entries).
     e_wt_cl     <-  0.362;  label("Weight exponent on CLL (unitless; reference 70 kg)")          # Table S4: weight on CLL = 0.362
@@ -162,18 +162,18 @@ Rosario_2015_vedolizumab <- function() {
     e_wt_vc     <-  0.467;  label("Weight exponent on Vc (unitless; reference 70 kg)")           # Table S4: weight on Vc = 0.467
 
     # Fixed allometric exponents (Table S4: "1 Fixed", "0.75 Fixed").
-    e_wt_vp   <- fixed(1);    label("Allometric exponent of WT on Vp")                # Table S4: weight on Vp = 1 Fixed
-    e_wt_vmax <- fixed(0.75); label("Allometric exponent of WT on Vmax")              # Table S4: weight on Vmax = 0.75 Fixed
-    e_wt_q    <- fixed(0.75); label("Allometric exponent of WT on Q")                 # Table S4: weight on Q = 0.75 Fixed
+    e_wt_vp   <- fixed(1);    label("Allometric exponent of WT on Vp (unitless)")                # Table S4: weight on Vp = 1 Fixed
+    e_wt_vmax <- fixed(0.75); label("Allometric exponent of WT on Vmax (unitless)")              # Table S4: weight on Vmax = 0.75 Fixed
+    e_wt_q    <- fixed(0.75); label("Allometric exponent of WT on Q (unitless)")                 # Table S4: weight on Q = 0.75 Fixed
 
     # Categorical covariate multipliers (Table S4 "NULL effect = 1").
-    e_priortnf_cl   <- 1.04;  label("Prior TNF-alpha antagonist multiplier on CLL (power form: CLL * 1.04^PRIOR_TNF)")   # Table S4
-    e_ada_cl        <- 1.12;  label("ADA-positive multiplier on CLL (power form: CLL * 1.12^ADA_POS)")                    # Table S4
-    e_conmed_aza_cl <- 0.998; label("Concomitant azathioprine multiplier on CLL (power form: CLL * 0.998^CONMED_AZA)")    # Table S4
-    e_conmed_mp_cl  <- 1.04;  label("Concomitant 6-MP multiplier on CLL (power form: CLL * 1.04^CONMED_MP)")              # Table S4
-    e_conmed_mtx_cl <- 0.983; label("Concomitant methotrexate multiplier on CLL (power form: CLL * 0.983^CONMED_MTX)")    # Table S4
-    e_conmed_amino_cl <- 1.02; label("Concomitant aminosalicylate multiplier on CLL (power form: CLL * 1.02^CONMED_AMINO)")  # Table S4
-    e_ibd_cd_vc     <- 1.01;  label("Crohn's-vs-UC multiplier on Vc (power form: Vc * 1.01^IBD_CD)")                      # Table S4
+    e_priortnf_cl   <- 1.04;  label("Prior TNF-alpha antagonist multiplier on CLL, power form CLL * 1.04^PRIOR_TNF (unitless)")   # Table S4
+    e_ada_cl        <- 1.12;  label("ADA-positive multiplier on CLL, power form CLL * 1.12^ADA_POS (unitless)")                    # Table S4
+    e_conmed_aza_cl <- 0.998; label("Concomitant azathioprine multiplier on CLL, power form CLL * 0.998^CONMED_AZA (unitless)")    # Table S4
+    e_conmed_mp_cl  <- 1.04;  label("Concomitant 6-MP multiplier on CLL, power form CLL * 1.04^CONMED_MP (unitless)")              # Table S4
+    e_conmed_mtx_cl <- 0.983; label("Concomitant methotrexate multiplier on CLL, power form CLL * 0.983^CONMED_MTX (unitless)")    # Table S4
+    e_conmed_amino_cl <- 1.02; label("Concomitant aminosalicylate multiplier on CLL, power form CLL * 1.02^CONMED_AMINO (unitless)")  # Table S4
+    e_ibd_cd_vc     <- 1.01;  label("Crohn's-vs-UC multiplier on Vc, power form Vc * 1.01^IBD_CD (unitless)")                      # Table S4
 
     # Interindividual variability -- Rosario 2015 Table S2 and Table S3.
     # Table S2 reports %CV = 100 * omega (lognormal SD); therefore:

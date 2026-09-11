@@ -230,11 +230,11 @@ Maleki_2024_brepocitinib <- function() {
     # so the Table 3 Estimate is used for that row instead. Parameters with
     # no footnote equation take the Table 3 Estimate column, their only source.
     # ==================================================================
-    lka     <- log(2.66)     ; label("Absorption rate constant for non-UC subjects (Ka, 1/h)")             # Table 3 row 'Ka (1/h)', Estimate column
-    lcl     <- log(17.49)    ; label("Apparent oral clearance (CL/F, L/h)")                                # Table 3 footnote e (CL/F = 17.49 L/h); Abstract and Discussion give 17.5
-    lvc     <- log(88.52)    ; label("Apparent central volume of distribution (Vc/F, L)")                  # Table 3 footnote f (Vc/F = 88.52 L); Abstract gives 88.5
-    lq      <- log(0.55)     ; label("Apparent inter-compartmental clearance (Q/F, L/h)")                  # Table 3 row 'Q/F (L/h)', Estimate column
-    lvp     <- log(232.5)    ; label("Apparent peripheral volume of distribution (Vp/F, L)")               # Table 3 row 'Vp/F (L)', Estimate column; poorly identified, bootstrap 95% CI (12, 455)
+    lka     <- log(2.66)     ; label("Absorption rate constant for non-UC subjects (1/h)")             # Table 3 row 'Ka (1/h)', Estimate column
+    lcl     <- log(17.49)    ; label("Apparent oral clearance (L/h)")                                # Table 3 footnote e (CL/F = 17.49 L/h); Abstract and Discussion give 17.5
+    lvc     <- log(88.52)    ; label("Apparent central volume of distribution (L)")                  # Table 3 footnote f (Vc/F = 88.52 L); Abstract gives 88.5
+    lq      <- log(0.55)     ; label("Apparent inter-compartmental clearance (L/h)")                  # Table 3 row 'Q/F (L/h)', Estimate column
+    lvp     <- log(232.5)    ; label("Apparent peripheral volume of distribution (L)")               # Table 3 row 'Vp/F (L)', Estimate column; poorly identified, bootstrap 95% CI (12, 455)
     ltlag   <- log(0.26)     ; label("Absorption lag time of the tablet formulation (h)")                  # Table 3 row 'Tlag of tablet formulation (h)', Estimate column; footnote b: Tlag = 0 for suspension
     lfdepot <- fixed(log(1)) ; label("Relative bioavailability at daily doses of 100 mg or less (unitless)") # Table 3 row 'Frel' = 1 with no bootstrap entry, i.e. a structural anchor
 

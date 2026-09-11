@@ -63,10 +63,10 @@ Stricker_2015_aminocaproic_acid <- function() {
   ini({
     # Structural parameters at the 70 kg reference weight (Stricker 2015 Table 5 final-model column).
     # Units converted from the paper's mL/min/70kg to L/h/70kg by * 60 / 1000.
-    lcl <- log(9.18);   label("Clearance for a 70 kg subject (CL, L/h)")                            # Stricker 2015 Table 5: 153 mL/min/70kg
-    lvc <- log(8.78);   label("Central volume of distribution for a 70 kg subject (V1, L)")        # Stricker 2015 Table 5: 8.78 L/70kg
-    lq  <- log(11.94);  label("Intercompartmental clearance for a 70 kg subject (Q, L/h)")         # Stricker 2015 Table 5: 199 mL/min/70kg
-    lvp <- log(15.80);  label("Peripheral volume of distribution for a 70 kg subject (V2, L)")     # Stricker 2015 Table 5: 15.80 L/70kg
+    lcl <- log(9.18);   label("Clearance for a 70 kg subject (L/h)")                            # Stricker 2015 Table 5: 153 mL/min/70kg
+    lvc <- log(8.78);   label("Central volume of distribution for a 70 kg subject (L)")        # Stricker 2015 Table 5: 8.78 L/70kg
+    lq  <- log(11.94);  label("Intercompartmental clearance for a 70 kg subject (L/h)")         # Stricker 2015 Table 5: 199 mL/min/70kg
+    lvp <- log(15.80);  label("Peripheral volume of distribution for a 70 kg subject (L)")     # Stricker 2015 Table 5: 15.80 L/70kg
 
     # Allometric exponents, fixed at physiologic values per Stricker 2015 Methods 'Full covariate model'
     # ("an allometric power parameter ... fixed at 0.75 for clearances and at 1 for volumes").

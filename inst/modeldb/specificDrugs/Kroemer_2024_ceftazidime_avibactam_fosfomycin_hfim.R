@@ -224,7 +224,7 @@ Kroemer_2024_ceftazidime_avibactam_fosfomycin_hfim <- function() {
 
     # ---- 10. Outputs (log10 CFU/mL) ----
     # Total count = S + R + R_CZA + R_FOF (Fig. 3 caption).
-    Cc <- log10(cfu_all + eps)
+    log_cfu <- log10(cfu_all + eps)
     # Text S5: "To account for the lower limit of quantification of the less
     # susceptible subpopulations a baseline was set to 0 log10(CFU/mL)". The
     # +1 CFU/mL inside the log10 realises that baseline smoothly: the output sits
@@ -234,7 +234,7 @@ Kroemer_2024_ceftazidime_avibactam_fosfomycin_hfim <- function() {
     CFUrcza <- log10(bact_resistant_cza + 1)
     CFUrfof <- log10(bact_resistant_fof + 1)
 
-    Cc      ~ add(addSd)
+    log_cfu      ~ add(addSd)
     CFUrcza ~ add(addSd_CFUrcza)
     CFUrfof ~ add(addSd_CFUrfof)
   })

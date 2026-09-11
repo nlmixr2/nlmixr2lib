@@ -114,6 +114,10 @@ Related references:
 
     # IIV — eta + transformed parameter name. Use a block for correlated IIV.
     # Use ~ fixed(<var>) for IIVs the paper held constant from a prior publication.
+    # SINGLE-quote any source-table text in these comments: rxode2 promotes a
+    # trailing comment on a line with no label() into label("<comment>"), and an
+    # embedded double quote terminates that string early so the model will not
+    # re-parse. Eta lines carry no label(), so this is where it bites.
     # Use fixed(0) inside a c(...) block for off-diagonals NONMEM fixed to zero.
     etalcl + etalvc ~ c(<var_cl>, <cov_cl_vc>, <var_vc>)  # <source location>
     etalka          ~ <var_ka>                              # <source location>
@@ -140,7 +144,7 @@ Related references:
     # 2. Individual parameters
     ka <- exp(lka + etalka)
     cl <- exp(lcl + etalcl) * (WT / <ref_wt>)^e_wt_cl  # * maturation_cl * race_cl ...
-    vc <- exp(lvc + etalvc) * (WT / <ref_wt>)^allo_v
+    vc <- exp(lvc + etalvc) * (WT / <ref_wt>)^e_wt_vc_vp
 
     # 3. Micro-constants (if using explicit ODEs)
     kel <- cl / vc
@@ -170,8 +174,8 @@ Related references:
   model({
     ka <- exp(lka + etalka)
     cl <- exp(lcl + etalcl) * (WT / <ref_wt>)^e_wt_cl
-    vc <- exp(lvc + etalvc) * (WT / <ref_wt>)^allo_v
-    vp <- exp(lvp) * (WT / <ref_wt>)^allo_v
+    vc <- exp(lvc + etalvc) * (WT / <ref_wt>)^e_wt_vc_vp
+    vp <- exp(lvp) * (WT / <ref_wt>)^e_wt_vc_vp
     q  <- exp(lq)  * (WT / <ref_wt>)^e_wt_cl
     Cc <- linCmt()
     Cc ~ prop(propSd)

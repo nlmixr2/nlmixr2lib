@@ -98,11 +98,11 @@ Cella_2012_midazolam_infants_adults <- function() {
     #       2002 prior the authors cited for Model 2 (Vc = 0.38 L/kg)
     #       and recovers physically plausible kinetics for both infants
     #       and adults.
-    lka <- log(8.21 / 60);   label("First-order absorption rate constant (Ka, 1/min)")             # Cella 2012 Table 2 (Ka = 8.21 h^-1, converted to /min)
-    lcl <- log(0.234);       label("Clearance at WT = 70 kg reference (CL, L/min)")                # Cella 2012 Table 2 (CL = 0.234 with allometric WT effect)
-    lvc <- log(0.312);       label("Central volume of distribution per kg body weight (Vc/WT, L/kg)") # Cella 2012 Table 2 (Vc = 0.312; per-kg interpretation per sidecar response 001 Q2)
-    lq  <- log(1.34);        label("Inter-compartmental clearance (Q, L/min)")                     # Cella 2012 Table 2
-    lvp <- log(16.5);        label("Peripheral volume of distribution (Vp, L)")                    # Cella 2012 Table 2
+    lka <- log(8.21 / 60);   label("First-order absorption rate constant (1/min)")             # Cella 2012 Table 2 (Ka = 8.21 h^-1, converted to /min)
+    lcl <- log(0.234);       label("Clearance at WT = 70 kg reference (L/min)")                # Cella 2012 Table 2 (CL = 0.234 with allometric WT effect)
+    lvc <- log(0.312);       label("Central volume of distribution per kg body weight (L/kg)") # Cella 2012 Table 2 (Vc = 0.312; per-kg interpretation per sidecar response 001 Q2)
+    lq  <- log(1.34);        label("Inter-compartmental clearance (L/min)")                     # Cella 2012 Table 2
+    lvp <- log(16.5);        label("Peripheral volume of distribution (L)")                    # Cella 2012 Table 2
 
     e_wt_cl <- fixed(0.75);  label("Allometric exponent of WT on CL (unitless)")                   # Cella 2012 Methods + Mahmood 1996 ref [46] (fixed at classic 0.75)
 
@@ -113,7 +113,7 @@ Cella_2012_midazolam_infants_adults <- function() {
     etalvp ~ 0.29446                                                                                # Cella 2012 Table 2 (IIV Vp 58.5% CV)
 
     # Residual error (40.0% CV proportional, linear-scale SD = 0.40)
-    propSd <- 0.40;          label("Proportional residual error (SD, fraction)")                   # Cella 2012 Table 2 (residual 40.0% CV, proportional model)
+    propSd <- 0.40;          label("Proportional residual error (fraction)")                   # Cella 2012 Table 2 (residual 40.0% CV, proportional model)
   })
   model({
     # Individual PK parameters.

@@ -114,11 +114,11 @@ Wang_2025_somatrogon <- function() {
     #
     # Reference subject for the structural values: 15 kg, ADA-negative.
     # =========================================================================
-    lcl <- log(0.478);  label("Apparent clearance at 15 kg, ADA-negative (CL/F, L/h)")          # Wang 2025 Table 5 'CL/F (L/h)', uniform prior set posterior mean 0.478 (90% CrI 0.416, 0.545)
-    lq  <- log(0.065);  label("Apparent intercompartmental clearance at 15 kg (Q/F, L/h)")      # Wang 2025 Table 5 'Q/F (L/h)', uniform prior set posterior mean 0.065 (90% CrI 0.039, 0.098)
-    lvc <- log(6.805);  label("Apparent central volume of distribution at 15 kg (Vc/F, L)")     # Wang 2025 Table 5 'Vc/F (L)', uniform prior set posterior mean 6.805 (90% CrI 4.775, 9.503)
-    lvp <- log(2.303);  label("Apparent peripheral volume of distribution at 15 kg (Vp/F, L)")  # Wang 2025 Table 5 'Vp/R (L)' [sic; Vp/F per the table abbreviations], uniform prior set posterior mean 2.303 (90% CrI 1.568, 3.125)
-    lka <- log(0.178);  label("First-order absorption rate constant (Ka, 1/h)")                 # Wang 2025 Table 5 'Ka (1/h)', uniform prior set posterior mean 0.178 (90% CrI 0.11, 0.309)
+    lcl <- log(0.478);  label("Apparent clearance at 15 kg, ADA-negative (L/h)")          # Wang 2025 Table 5 'CL/F (L/h)', uniform prior set posterior mean 0.478 (90% CrI 0.416, 0.545)
+    lq  <- log(0.065);  label("Apparent intercompartmental clearance at 15 kg (L/h)")      # Wang 2025 Table 5 'Q/F (L/h)', uniform prior set posterior mean 0.065 (90% CrI 0.039, 0.098)
+    lvc <- log(6.805);  label("Apparent central volume of distribution at 15 kg (L)")     # Wang 2025 Table 5 'Vc/F (L)', uniform prior set posterior mean 6.805 (90% CrI 4.775, 9.503)
+    lvp <- log(2.303);  label("Apparent peripheral volume of distribution at 15 kg (L)")  # Wang 2025 Table 5 'Vp/R (L)' [sic; Vp/F per the table abbreviations], uniform prior set posterior mean 2.303 (90% CrI 1.568, 3.125)
+    lka <- log(0.178);  label("First-order absorption rate constant (1/h)")                 # Wang 2025 Table 5 'Ka (1/h)', uniform prior set posterior mean 0.178 (90% CrI 0.11, 0.309)
 
     ltlag <- log(1.116); label("Absorption lag time (h)")                                       # Wang 2025 Table 5 'Lag time (h)', uniform prior set posterior mean 1.116 (90% CrI 0.282, 1.625); applied to the depot only (Data S5: tlag[1] = lag0, tlag[2] = tlag[3] = 0)
 

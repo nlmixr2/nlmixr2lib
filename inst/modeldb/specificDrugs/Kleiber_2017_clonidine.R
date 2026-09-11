@@ -110,8 +110,8 @@ Kleiber_2017_clonidine <- function() {
     # months, so model() converts to weeks internally via pna_weeks = PNA * 4.345
     # and the coefficients below stay in paper-natural weeks units.
     # ----------------------------------------------------------------------
-    hill_pna_cl <- 3.02; label("Hill exponent for PNA maturation of CL (Theta1, unitless)")            # Table 3 final model
-    t50_pna_cl  <- 1.13; label("Postnatal age at 50% of mature CL (T50_PNA, weeks)")                    # Table 3 final model
+    hill_pna_cl <- 3.02; label("Hill exponent for PNA maturation of CL (unitless)")            # Table 3 final model
+    t50_pna_cl  <- 1.13; label("Postnatal age at 50% of mature CL (weeks)")                    # Table 3 final model
 
     # ----------------------------------------------------------------------
     # Diuretic effect on CL -- Eq 6 form (Table 3 / Table 4 multivariate step 4).
@@ -119,7 +119,7 @@ Kleiber_2017_clonidine <- function() {
     # i.e. 34.1% reduction in CL when any diuretic is active (paper Table 4
     # remark: "Cl decreased by 34% with use of diuretics").
     # ----------------------------------------------------------------------
-    e_diur_cl <- 0.659; label("Multiplicative CL ratio when any diuretic is active (Theta2, unitless)")  # Table 3 final model
+    e_diur_cl <- 0.659; label("Multiplicative CL ratio when any diuretic is active (unitless)")  # Table 3 final model
 
     # ----------------------------------------------------------------------
     # On-ECMO sigmoidal Emax effect on V -- Eq 9 (Table 3 final model).
@@ -128,9 +128,9 @@ Kleiber_2017_clonidine <- function() {
     # ~40 h the multiplier is near 1, above ~65 h it saturates near 1.55; paper
     # Discussion: "Maximal VD was reached 72 h after initiation of ECMO".
     # ----------------------------------------------------------------------
-    emax_tec_v <- 0.55; label("Maximal fractional increase in V during ECMO (Emax, unitless)")       # Table 3 final model
-    t50_tec_v  <- 51.7; label("Time on ECMO at 50% of maximal V effect (T50_EC, hour)")              # Table 3 final model
-    hill_tec_v <- 18.5; label("Hill exponent for t_ECMO effect on V (Theta3, unitless)")             # Table 3 final model
+    emax_tec_v <- 0.55; label("Maximal fractional increase in V during ECMO (unitless)")       # Table 3 final model
+    t50_tec_v  <- 51.7; label("Time on ECMO at 50% of maximal V effect (hour)")              # Table 3 final model
+    hill_tec_v <- 18.5; label("Hill exponent for t_ECMO effect on V (unitless)")             # Table 3 final model
 
     # ----------------------------------------------------------------------
     # Inter-individual variability -- Table 3 final model.

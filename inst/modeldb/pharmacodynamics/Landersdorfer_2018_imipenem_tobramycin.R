@@ -152,8 +152,8 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     # Residual error
     # =============================================================
     # Table 1: "SD of residual error on log10 scale" = 0.304. The
-    # packaged observation Cc is log10(total viable count) (per
-    # the Wicha 2017 convention for HFIM PD models, where Cc
+    # packaged observation log_cfu is log10(total viable count) (per
+    # the Wicha 2017 convention for HFIM PD models, where log_cfu
     # carries log10 CFU/mL rather than a drug concentration); the
     # additive residual SD enters in log10 units directly.
     addSd <- 0.304
@@ -286,11 +286,11 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     # =============================================================
     # 1 CFU/mL floor mirrors the experimental limit of counting
     # (paper: counts below 1.0 log10 CFU/mL plotted as zero).
-    # Variable named Cc per nlmixr2lib single-output convention;
+    # Variable named log_cfu per nlmixr2lib single-output convention;
     # values are log10 CFU/mL (not a drug concentration). Matches
     # Wicha 2017 pharmacodynamics/ pattern.
     cfu_obs_floor <- cfu_total + 1
-    Cc <- log10(cfu_obs_floor)
-    Cc ~ add(addSd)
+    log_cfu <- log10(cfu_obs_floor)
+    log_cfu ~ add(addSd)
   })
 }

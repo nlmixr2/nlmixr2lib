@@ -63,9 +63,9 @@ Hall_2017_dapsone <- function() {
     # hinge basis functions for that parameter evaluate to zero (e.g., the Ka
     # intercept applies when WT > 74.8 and (WT > 63.7 or BUN <= 7); the Vc
     # intercept applies when WT <= 69.8). Log-transformed for log-normal IIV.
-    lka <- log(3.967);  label("Absorption-rate MARS intercept (Ka, 1/h)")   # Table 2 Eq. (2)
-    lcl <- log(2.048);  label("Clearance MARS intercept (CL, L/h)")         # Table 2 Eq. (3)
-    lvc <- log(36.648); label("Central volume MARS intercept (Vc, L)")      # Table 2 Eq. (4)
+    lka <- log(3.967);  label("Absorption-rate MARS intercept (1/h)")   # Table 2 Eq. (2)
+    lcl <- log(2.048);  label("Clearance MARS intercept (L/h)")         # Table 2 Eq. (3)
+    lvc <- log(36.648); label("Central volume MARS intercept (L)")      # Table 2 Eq. (4)
 
     # MARS hinge-function coefficients. Held FIXED at the Hall 2017 Table 2
     # values; these come from a MARS regression on individual posthoc PK

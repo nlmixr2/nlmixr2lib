@@ -85,10 +85,10 @@ Chen_2024_adebrelimab <- function() {
     # carries more significant figures than the rounded Chen 2024 Table 2
     # values quoted in each trailing comment. CL and Q are already reported
     # in L/day, so the day time unit needs no conversion.
-    lcl <- log(0.237784); label("Baseline clearance at t = 0 for the reference patient (CL, L/day)")      # Chen 2024 Data S1 $THETA(1); Table 2 final model CL = 0.238 L/day
-    lvc <- log(3.22559);  label("Central volume of distribution for the reference patient (V1, L)")       # Chen 2024 Data S1 $THETA(2); Table 2 final model V1 = 3.23 L
-    lq  <- log(0.703417); label("Intercompartmental clearance (Q, L/day)")                                # Chen 2024 Data S1 $THETA(3); Table 2 final model Q = 0.703 L/day
-    lvp <- log(1.69298);  label("Peripheral volume of distribution for the reference patient (V2, L)")    # Chen 2024 Data S1 $THETA(4); Table 2 final model V2 = 1.69 L
+    lcl <- log(0.237784); label("Baseline clearance at t = 0 for the reference patient (L/day)")      # Chen 2024 Data S1 $THETA(1); Table 2 final model CL = 0.238 L/day
+    lvc <- log(3.22559);  label("Central volume of distribution for the reference patient (L)")       # Chen 2024 Data S1 $THETA(2); Table 2 final model V1 = 3.23 L
+    lq  <- log(0.703417); label("Intercompartmental clearance (L/day)")                                # Chen 2024 Data S1 $THETA(3); Table 2 final model Q = 0.703 L/day
+    lvp <- log(1.69298);  label("Peripheral volume of distribution for the reference patient (L)")    # Chen 2024 Data S1 $THETA(4); Table 2 final model V2 = 1.69 L
 
     # Empirical time-varying clearance (sigmoid maximal-change function of
     # time since the first dose; Chen 2024 Equation 1):
@@ -116,13 +116,13 @@ Chen_2024_adebrelimab <- function() {
     # All five act multiplicatively on CL (Data S1: CLCOV =
     # CLADA*CLALB*CLBW*CLNEUT*CLSLD); body weight additionally acts on both
     # volumes with two separately estimated exponents.
-    e_ada_pos_cl <- 0.185112;  label("ADA-positive fractional change on CL vs the ADA-negative reference")  # Chen 2024 Data S1 $THETA(8); Table 2 final model ADA on CL = 0.185
-    e_alb_cl     <- -0.861333; label("ALB exponent on CL (power form (ALB / 41.4)^theta)")                  # Chen 2024 Data S1 $THETA(9); Table 2 final model Albumin on CL = -0.861
-    e_wt_cl      <- 0.70974;   label("WT exponent on CL (power form (WT / 64)^theta)")                      # Chen 2024 Data S1 $THETA(10); Table 2 final model Body weight on CL = 0.710
-    e_neut_cl    <- 0.158825;  label("NEUT exponent on CL (power form (NEUT / 4150)^theta)")                # Chen 2024 Data S1 $THETA(11); Table 2 final model Neutrophil count on CL = 0.159
-    e_tum_sld_cl <- 0.102909;  label("TUM_SLD exponent on CL (power form (TUM_SLD / 90)^theta)")            # Chen 2024 Data S1 $THETA(12); Table 2 final model SLD on CL = 0.103
-    e_wt_vc      <- 0.576703;  label("WT exponent on Vc (power form (WT / 64)^theta)")                      # Chen 2024 Data S1 $THETA(13); Table 2 final model Body weight on V1 = 0.577
-    e_wt_vp      <- 1.79986;   label("WT exponent on Vp (power form (WT / 64)^theta)")                      # Chen 2024 Data S1 $THETA(14); Table 2 final model Body weight on V2 = 1.8
+    e_ada_pos_cl <- 0.185112;  label("ADA-positive fractional change on CL vs the ADA-negative reference (fraction)")  # Chen 2024 Data S1 $THETA(8); Table 2 final model ADA on CL = 0.185
+    e_alb_cl     <- -0.861333; label("ALB power exponent on CL, ALB/41.4 scaling (unitless)")                  # Chen 2024 Data S1 $THETA(9); Table 2 final model Albumin on CL = -0.861
+    e_wt_cl      <- 0.70974;   label("WT power exponent on CL, WT/64 scaling (unitless)")                      # Chen 2024 Data S1 $THETA(10); Table 2 final model Body weight on CL = 0.710
+    e_neut_cl    <- 0.158825;  label("NEUT power exponent on CL, NEUT/4150 scaling (unitless)")                # Chen 2024 Data S1 $THETA(11); Table 2 final model Neutrophil count on CL = 0.159
+    e_tum_sld_cl <- 0.102909;  label("TUM_SLD power exponent on CL, TUM_SLD/90 scaling (unitless)")            # Chen 2024 Data S1 $THETA(12); Table 2 final model SLD on CL = 0.103
+    e_wt_vc      <- 0.576703;  label("WT power exponent on Vc, WT/64 scaling (unitless)")                      # Chen 2024 Data S1 $THETA(13); Table 2 final model Body weight on V1 = 0.577
+    e_wt_vp      <- 1.79986;   label("WT power exponent on Vp, WT/64 scaling (unitless)")                      # Chen 2024 Data S1 $THETA(14); Table 2 final model Body weight on V2 = 1.8
 
     # IIV. Chen 2024 estimated a full 3x3 covariance block across CL, V1 and
     # V2 (Table 2 "Cov" rows; Data S1 $OMEGA BLOCK(3)) plus an independent

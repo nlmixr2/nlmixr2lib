@@ -172,8 +172,8 @@ Songvut_2026_andrographolide <- function() {
     # dependence, so simulation event tables carry observation records
     # only, each with its AUC_ANDRO value. AUC_ANDRO = 0 makes the
     # sigmoid vanish and returns e0.
-    viralLoadReduction <- e0 + emax * AUC_ANDRO^hill / (auc50^hill + AUC_ANDRO^hill)
+    viral_loadReduction <- e0 + emax * AUC_ANDRO^hill / (auc50^hill + AUC_ANDRO^hill)
 
-    viralLoadReduction ~ add(addSd)
+    viral_loadReduction ~ add(addSd)
   })
 }

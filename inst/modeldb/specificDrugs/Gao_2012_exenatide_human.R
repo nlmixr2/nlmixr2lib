@@ -97,14 +97,14 @@ Gao_2012_exenatide_human <- function() {
     # kel of 0.01333). The printed table value is used here; the ~3%
     # difference is pure display rounding, not a discrepancy.
     # ------------------------------------------------------------------
-    lkel  <- log(0.013)     ; label("Linear elimination rate constant from the central compartment (kel, 1/min)")     # Table 3 Humans: kel = 0.013 (CV 198%)
-    lk12  <- log(0.0685)    ; label("Transfer rate constant central -> peripheral1 (kpt, 1/min)")                     # Table 3 Humans: kpt = 0.0685 (CV 262%)
-    lk21  <- log(0.0846)    ; label("Transfer rate constant peripheral1 -> central (ktp, 1/min)")                     # Table 3 Humans: ktp = 0.0846 (CV 168%)
-    lvc   <- log(0.111)     ; label("Central volume of distribution per kilogram (Vc, L/kg)")                         # Table 3 Humans: Vc = 111 mL/kg = 0.111 L/kg (CV 168%)
+    lkel  <- log(0.013)     ; label("Linear elimination rate constant from the central compartment (1/min)")     # Table 3 Humans: kel = 0.013 (CV 198%)
+    lk12  <- log(0.0685)    ; label("Transfer rate constant central -> peripheral1 (1/min)")                     # Table 3 Humans: kpt = 0.0685 (CV 262%)
+    lk21  <- log(0.0846)    ; label("Transfer rate constant peripheral1 -> central (1/min)")                     # Table 3 Humans: ktp = 0.0846 (CV 168%)
+    lvc   <- log(0.111)     ; label("Central volume of distribution per kilogram (L/kg)")                         # Table 3 Humans: Vc = 111 mL/kg = 0.111 L/kg (CV 168%)
     lkon  <- log(0.000411)  ; label("Second-order association rate constant of exendin-4 with GLP-1R (kon, 1/(pM*min))") # Table 3 Humans: kon = 0.000411 (CV 351%)
-    lkoff <- log(0.566)     ; label("First-order dissociation rate constant of the drug-receptor complex (koff, 1/min)") # Table 3 Humans: koff = 0.566 (CV 399%)
-    lkint <- log(0.00342)   ; label("Internalisation / degradation rate constant of the drug-receptor complex (kint, 1/min)") # Table 3 Humans: kint = 0.00342 (CV 587%)
-    lrtot <- fixed(log(1240)); label("Total GLP-1R concentration, held constant (Rtot, pmol/L)")                      # Table 3 Humans: Rtot = 1240 pM (FIXED); Results 'Human PK': Rtot "was unable to be estimated; thus, this parameter was fixed as a computer generalized value of 1.24 nM"
+    lkoff <- log(0.566)     ; label("First-order dissociation rate constant of the drug-receptor complex (1/min)") # Table 3 Humans: koff = 0.566 (CV 399%)
+    lkint <- log(0.00342)   ; label("Internalisation / degradation rate constant of the drug-receptor complex (1/min)") # Table 3 Humans: kint = 0.00342 (CV 587%)
+    lrtot <- fixed(log(1240)); label("Total GLP-1R concentration, held constant (pmol/L)")                      # Table 3 Humans: Rtot = 1240 pM (FIXED); Results 'Human PK': Rtot "was unable to be estimated; thus, this parameter was fixed as a computer generalized value of 1.24 nM"
 
     # ------------------------------------------------------------------
     # Subcutaneous absorption. Gao 2012 Table 3 reports only the RANGE of
@@ -118,8 +118,8 @@ Gao_2012_exenatide_human <- function() {
     # (0.3 and 0.4 ug/kg). Substitute the value for the dose group being
     # simulated.
     # ------------------------------------------------------------------
-    lka     <- log(0.0148)   ; label("First-order subcutaneous absorption rate constant at the lowest doses (ka, 1/min)") # Table 3 Humans: ka range 0.00550-0.0148 (CV 14-17%); upper end assigned to the lowest doses per Fig. 7A
-    lfdepot <- fixed(log(1)) ; label("Absolute subcutaneous bioavailability (F, fraction)")                           # Table 3 Humans: F = 1 (fixed); Results 'Human PK': "Bioavailability was fixed at 1"
+    lka     <- log(0.0148)   ; label("First-order subcutaneous absorption rate constant at the lowest doses (1/min)") # Table 3 Humans: ka range 0.00550-0.0148 (CV 14-17%); upper end assigned to the lowest doses per Fig. 7A
+    lfdepot <- fixed(log(1)) ; label("Absolute subcutaneous bioavailability (fraction)")                           # Table 3 Humans: F = 1 (fixed); Results 'Human PK': "Bioavailability was fixed at 1"
 
     # ------------------------------------------------------------------
     # Residual error. Gao 2012 Methods states the variance model

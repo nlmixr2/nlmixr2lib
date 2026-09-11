@@ -301,7 +301,7 @@ MohammedAli_2025_tacrolimus <- function() {
     # F is lower in expressers (Results section 3.2.2).
     # =====================================================================
     lfdepot_lcp_nonexpr <- fixed(log(1))
-    label("Relative bioavailability F, LCP-Tac in CYP3A5 nonexpressers (reference, fraction)")
+    label("Relative bioavailability F, LCP-Tac in CYP3A5 nonexpressers (fraction)")
     # Table 3 row 'F LCP-Tac_PM = 1 FIX'
 
     lfdepot_ir_nonexpr <- log(0.745)

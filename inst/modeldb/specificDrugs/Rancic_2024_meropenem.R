@@ -249,8 +249,8 @@ Rancic_2024_meropenem <- function() {
     # count near the cohort norm and no comedication is about 3.6 - 3.8 L/h, in
     # line with the base model's 3.80 L/h (Results paragraph 2).
     # =========================================================================
-    lcl <- log(5.29); label("Clearance intercept theta1 (CL, L/h)")             # Table 3 row 'Clearance (L/h) (theta 1)'
-    lvc <- log(2.05); label("Central volume of distribution (V, L)")            # Table 3 row 'Volume of distribution (L) (theta 2)'
+    lcl <- log(5.29); label("Clearance intercept theta1 (L/h)")             # Table 3 row 'Clearance (L/h) (theta 1)'
+    lvc <- log(2.05); label("Central volume of distribution (L)")            # Table 3 row 'Volume of distribution (L) (theta 2)'
 
     # =========================================================================
     # Covariate effects on clearance, Table 3. Two of the five are estimated at

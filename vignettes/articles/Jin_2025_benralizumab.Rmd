@@ -1,0 +1,1040 @@
+---
+title: "Benralizumab (Jin 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Benralizumab (Jin 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+```
+
+```{r libraries, message = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(ggplot2)
+```
+
+Jin 2025 updated the global benralizumab population pharmacokinetic (popPK) and
+exposure-response (ER) models with data from three additional clinical studies,
+two of them conducted in China or Asia, in order to characterise benralizumab
+exposure and effectiveness in Chinese participants and to support extrapolation
+to Chinese adolescents and children.
+
+The paper contains **three separately fitted models**, and this package carries
+one file for each:
+
+| Model file | Endpoint | Structure |
+|---|---|---|
+| `Jin_2025_benralizumab` | Serum benralizumab | Two-compartment, first-order SC absorption |
+| `Jin_2025_benralizumab_aaer` | Asthma exacerbation count | popPK layer + Poisson count with a concentration-driven Emax |
+| `Jin_2025_benralizumab_fev1` | Pre-bronchodilator FEV1 | Baseline + exponential-onset placebo + **time**-driven Emax |
+
+The FEV1 model carries no PK layer. Because the FEV1 exposure-response
+relationship was flat across the studied dose range, the authors re-expressed
+the treatment effect as a function of time rather than of concentration, so
+that model is exposure-independent and valid only for the 30 mg subcutaneous
+regimens studied.
+
+```{r load-models}
+mod_pk   <- rxode2::rxode(nlmixr2lib::readModelDb("Jin_2025_benralizumab"))
+mod_aaer <- rxode2::rxode(nlmixr2lib::readModelDb("Jin_2025_benralizumab_aaer"))
+mod_fev1 <- rxode2::rxode(nlmixr2lib::readModelDb("Jin_2025_benralizumab_fev1"))
+```
+
+# Population
+
+```{r population}
+pop <- mod_pk$population
+str(pop, max.level = 1, give.attr = FALSE)
+```
+
+The popPK analysis pooled 17,465 serum or plasma benralizumab concentrations
+from 2855 participants across 12 phase I-III studies: five phase I/II trials in
+adults with asthma, four phase III trials in adults and adolescents with severe
+asthma, and three additional studies added by this analysis (the phase I AMES
+device-comparison trial in 180 healthy volunteers, a phase I trial in 36 healthy
+Han Chinese volunteers, and the phase III MIRACLE trial in 695 Asian patients).
+
+Jin 2025 Table 2 gives the baseline characteristics. The features that matter
+most for the simulations below:
+
+* Chinese participants were 281 of 2855 (10.0%) and Asian participants 590
+  (20.7%). All Chinese participants are Asian by definition, so the two
+  covariates are strongly correlated (Phi = 64.2%).
+* Mean body weight was 14.5 kg lower in Chinese (64.1 kg) than in non-Chinese
+  (78.6 kg) participants; Resource 6 gives 64.6 kg for Asian versus 80.4 kg for
+  non-Asian participants.
+* Only 58 participants were adolescents, of whom **2 were Asian and none were
+  Chinese**, and **no participant was younger than 12 years**. Every Chinese
+  adolescent and paediatric conclusion in the paper therefore rests on
+  simulation rather than on observed data, which is the main reason the authors
+  ran the external-validation step first.
+
+# Source trace
+
+Every value in the three model files comes from the electronic supplementary
+material (ESM), whose sections the paper labels "Resource 1" to "Resource 19".
+
+| Model quantity | Source location |
+|---|---|
+| popPK structure (2-compartment, first-order SC absorption) | Jin 2025 Methods 2.4; parameter names in Resource 10 |
+| Covariate functional forms (power for continuous, `exp(beta)` for categorical) | Resource 2, "Covariate modeling approach" |
+| CL 0.269 L/day, V2 3.02 L, Q2 1.05 L/day, V3 2.67 L | Resource 10, "Typical parameters" |
+| Absorption half-life KAThalf 3.02 day (`lka = log(log(2)/3.02)`) | Resource 10 |
+| Fa1 0.539; Fa1S220 0.457; Fa1S30 0.688 | Resource 10 |
+| Rfa1Dose -0.554 (-42.5%); RCLADA 0.762 (+114%) | Resource 10, footnote a |
+| Beta_CL BWGT 0.849; Beta_V2 BWGT 0.799; Beta_V3 BWGT 0.639; centered at 70 kg | Resource 10 and its footnote |
+| Beta_CL ASIAN_1 0.0952 (+9.99%) | Resource 10 |
+| All popPK omegas (reported as **standard deviations**) | Resource 10, footnote c |
+| Residual errors ADD1 0.175, ADD2 0.549, ADD3 0.367 log(ng/mL) | Resource 10 and its footnote |
+| Terminal half-life 15.5 day | Results 3.2 |
+| AAER model equation (integral of an exponential rate with an Emax term) | Resource 3, "Longitudinal asthma exacerbation rate model" |
+| AAER Base -6.64, Emax -0.51, EC50 1.76 ng/mL, omega(Base) 1.04 | Resource 17 |
+| AAER beta_Base PE 0.17, OCS 0.345, EE -0.329; beta_Emax CHINESE 1.27 | Resource 17 |
+| FEV1 model equation | Resource 4 |
+| FEV1 Emax 104 mL, T50 9.21 day, PmaxB 172 mL, FEVB 1710 mL, KPBL 0.0356 /day | Resource 4, "base/final model" column |
+| FEV1 betas (SEXF -0.09, CTHEO -0.089, BEOSL 0.699 at 380 cells/uL) | Resource 4 and its footnote |
+| FEV1 residual error 137 mL additive + 0.0883 proportional | Resource 4 |
+| Simulated steady-state exposures used as validation targets | Resource 12 (post-hoc) and Resource 14 (IIV-sampled) |
+| Steady-state AAER ratios | Results 3.4.2 and Figure 6 |
+
+# Closed-form structural gates
+
+Two checks depend on no simulation at all and go red on any mis-transcribed
+disposition parameter. They are the cheapest protection against a transcription
+error and are run before anything stochastic.
+
+## Terminal half-life
+
+The paper reports a model-predicted terminal half-life of 15.5 days. For a
+two-compartment model the terminal rate constant is the smaller eigenvalue of
+the micro-constant system, so this is computable in closed form from CL, V2, Q2
+and V3 alone. Evaluated at the reference covariates (70 kg, non-Asian):
+
+```{r half-life}
+cl_ref <- 0.269; vc_ref <- 3.02; q_ref <- 1.05; vp_ref <- 2.67
+
+k10 <- cl_ref / vc_ref
+k12 <- q_ref / vc_ref
+k21 <- q_ref / vp_ref
+
+# Smaller root of lambda^2 - (k10 + k12 + k21) lambda + k10 k21 = 0
+ksum  <- k10 + k12 + k21
+kprod <- k10 * k21
+beta_rate <- (ksum - sqrt(ksum^2 - 4 * kprod)) / 2
+thalf_terminal <- log(2) / beta_rate
+
+c(published_day = 15.5, computed_day = round(thalf_terminal, 2))
+
+# Deterministic quantity, so a tight bound is correct here: any of the four
+# disposition parameters being wrong moves this by well over 0.2 day.
+stopifnot(abs(thalf_terminal - 15.5) < 0.2)
+```
+
+## Average steady-state concentration is fixed by mass balance
+
+At steady state on a fixed interval, the average concentration must satisfy
+`Cavg = Dose * F / (CL * tau)` exactly, independent of the distribution
+parameters. For a typical Chinese adult at the published mean body weight of
+64.1 kg on 30 mg every 8 weeks:
+
+```{r cavg-identity}
+wt_chinese_adult <- 64.1
+cl_chinese <- cl_ref * (wt_chinese_adult / 70)^0.849 * exp(0.0952)
+tau <- 56  # days; every 8 weeks
+fa1 <- 0.539
+
+cavg_closed_form <- 30 * fa1 / (cl_chinese * tau) * 1000  # ng/mL
+
+c(published_median_ngml = 1067,
+  closed_form_ngml = round(cavg_closed_form, 1))
+
+# Resource 14 reports the median of the simulated Chinese adult Cavg; the
+# median of a cohort whose IIV is lognormal on CL sits close to, but not
+# exactly at, the typical-value prediction.
+stopifnot(abs(cavg_closed_form - 1067) / 1067 < 0.05)
+```
+
+## Weight bands implied by the published paediatric exposures
+
+Resource 14 reports simulated steady-state exposures for Chinese adults,
+adolescents, children weighing less than 35 kg (on 10 mg every 8 weeks) and
+children weighing at least 35 kg (on 30 mg every 8 weeks). The adolescent and
+paediatric body weights were sampled from the Chinese growth references of Zong
+and Li (2013) via the R package `childsds`, which is not a dependency of this
+package, so those weight distributions cannot be reproduced here directly.
+
+The mass-balance identity above can be inverted instead: given a published
+median Cavg and the dose actually used in that band, the implied median body
+weight follows from the weight-on-clearance relationship. This validates the
+weight-clearance chain **and** the paper's weight-based dose-selection rule
+without needing the growth chart, and it is a stronger check than it looks,
+because the four bands must come out monotone and physiologically plausible.
+
+```{r implied-weights}
+implied_weight <- function(cavg_ngml, dose_mg) {
+  cl_needed <- dose_mg * fa1 / (cavg_ngml / 1000 * tau)
+  70 * (cl_needed / (cl_ref * exp(0.0952)))^(1 / 0.849)
+}
+
+bands <- tibble::tibble(
+  Band = c("Children < 35 kg", "Children >= 35 kg", "Adolescents", "Adults"),
+  `Dose (mg Q8W)` = c(10, 30, 30, 30),
+  `Published median Cavg (ng/mL)` = c(757.3, 1525, 1279, 1067)
+) |>
+  mutate(`Implied median weight (kg)` =
+           round(implied_weight(`Published median Cavg (ng/mL)`, `Dose (mg Q8W)`), 1))
+
+knitr::kable(bands, align = c("l", "r", "r", "r"),
+             caption = "Median body weight implied by each band's published steady-state Cavg (Jin 2025 Resource 14).")
+```
+
+The implied weights are ordered as the bands are, and each is plausible for its
+age range: roughly 26 kg for children under 35 kg (aged 6 to under 12), 41 kg
+for children at or above 35 kg, 51 kg for adolescents aged 12 to under 18, and
+64 kg for adults -- the last of which reproduces the observed Chinese adult mean
+of 64.1 kg in Jin 2025 Table 2 almost exactly.
+
+```{r implied-weight-gates}
+iw <- setNames(bands$`Implied median weight (kg)`, bands$Band)
+
+stopifnot(
+  # Ordering across bands is a structural consequence of the dose rule plus the
+  # weight-on-CL exponent, not a noisy simulated comparison.
+  iw[["Children < 35 kg"]] < 35,
+  iw[["Children >= 35 kg"]] >= 35,
+  iw[["Children >= 35 kg"]] < iw[["Adolescents"]],
+  iw[["Adolescents"]] < iw[["Adults"]],
+  # The adult band has an independently published weight to hit.
+  abs(iw[["Adults"]] - 64.1) < 3
+)
+```
+
+Note that the two paediatric bands straddle 35 kg in the right direction: the
+sub-35 kg band implies a weight below 35 kg and the other implies a weight above
+it. That is the arithmetic signature of the paper's dosing rule (10 mg below
+35 kg, 30 mg at or above it) being transcribed correctly; swapping the two doses
+would invert it.
+
+# Virtual cohort
+
+Two adult arms are simulated, one Chinese and one non-Asian, using the body
+weight distributions the paper reports. Chinese adolescents and children are
+covered by the closed-form band check above rather than by simulation, because
+their published weight distributions are not reproducible without `childsds`.
+
+```{r cohort}
+n_per_arm <- 150L  # 150 per arm; well inside the 200-per-arm cap
+
+# Truncated-normal weight sampling from the published mean, SD and range.
+sample_weight <- function(n, mean_wt, sd_wt, lo, hi) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    draw <- rnorm(2 * n, mean_wt, sd_wt)
+    out <- c(out, draw[draw >= lo & draw <= hi])
+  }
+  out[seq_len(n)]
+}
+
+set.seed(20250623)  # seeds the covariate draws only (see note below)
+
+cohort <- bind_rows(
+  tibble::tibble(
+    arm = "Chinese adults",
+    # Jin 2025 Table 2, Chinese column: 64.1 +/- 11.7 kg (40.3-112).
+    WT = sample_weight(n_per_arm, 64.1, 11.7, 40.3, 112),
+    RACE_ASIAN = 1
+  ),
+  tibble::tibble(
+    arm = "Non-Asian adults",
+    # Resource 6 gives a non-Asian mean of 80.4 kg; Table 2's non-Chinese SD
+    # (19.2 kg) and range (40-204 kg) are used, as no non-Asian SD is printed.
+    WT = sample_weight(n_per_arm, 80.4, 19.2, 40, 204),
+    RACE_ASIAN = 0
+  )
+) |>
+  mutate(
+    id = row_number(),
+    ADA_POS = 0,        # reference subject is ADA-negative
+    STUDY_MICP220 = 0,  # neither study stratum applies to a nominal regimen
+    STUDY_AMES = 0,
+    DOSE_HIGH = 0       # 30 mg is not the 200 mg high-dose cohort
+  )
+
+cohort |>
+  group_by(arm) |>
+  summarise(n = n(), `Mean WT (kg)` = round(mean(WT), 1),
+            `Median WT (kg)` = round(median(WT), 1), .groups = "drop") |>
+  knitr::kable(caption = "Simulated adult cohorts.")
+```
+
+Each stochastic block below calls `rxode2::rxSetSeed()` immediately before it
+so that the block is reproducible on its own rather than depending on where an
+earlier block left the stream.
+
+# Steady-state simulation
+
+The paper's exposure simulations use a nominal regimen of benralizumab 30 mg
+subcutaneously every 8 weeks, summarised at steady state (Resource 14 uses
+cycle 20). Twenty Q8W doses are given and only the final dosing interval is
+observed.
+
+Observation rows carry `cmt = "central"` -- the ODE state -- together with
+`dvid = 1L`, which selects the `Cc` endpoint. This model has three endpoints
+(`Cc`, `Cc_early`, `Cc_micp220`) that share one prediction and differ only in
+which study stratum's residual error applies, so the `dvid` is what disambiguates
+them. `useLinCmt = FALSE` is required: rxode2's automatic ODE-to-`linCmt()`
+conversion corrupts the `dvid`-to-`cmt` mapping for multi-endpoint models.
+
+```{r simulate-pk}
+n_cycles <- 20L
+dose_times <- seq(0, by = tau, length.out = n_cycles)
+last_dose <- max(dose_times)
+# The absorption-rate IIV is large (omega 0.707 on the log scale), so a fast
+# absorber can peak within 2-3 days with sharp curvature. A uniform 1-day grid
+# under-resolves that peak and understates AUC by enough to break the mass
+# balance check below, so the first three weeks are sampled every 6 h.
+obs_times <- last_dose + sort(unique(c(seq(0, 21, by = 0.25), seq(21, tau, by = 1))))
+
+doses <- cohort |>
+  tidyr::expand_grid(time = dose_times) |>
+  mutate(amt = 30, evid = 1L, cmt = "depot", dvid = NA_integer_)
+
+obs <- cohort |>
+  tidyr::expand_grid(time = obs_times) |>
+  mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
+
+events <- bind_rows(doses, obs) |> arrange(id, time, desc(evid))
+
+rxode2::rxSetSeed(20250623)
+sim_pk <- rxode2::rxSolve(
+  mod_pk, events,
+  keep = c("arm", "WT", "RACE_ASIAN"),
+  useLinCmt = FALSE,
+  returnType = "data.frame"
+)
+
+# rxSolve returns one row per OBSERVATION record and no `evid` column, so the
+# dose rows are already absent and no filtering is needed here.
+sim_pk <- sim_pk |>
+  mutate(Cc_ngml = Cc * 1000)  # model carries mg/L; the paper reports ng/mL
+
+stopifnot(nrow(sim_pk) > 0, all(sim_pk$Cc_ngml >= 0))
+range(sim_pk$time)
+```
+
+```{r plot-profiles}
+sim_pk |>
+  mutate(day_in_interval = time - last_dose) |>
+  group_by(arm, day_in_interval) |>
+  summarise(
+    median = median(Cc_ngml),
+    p05 = quantile(Cc_ngml, 0.05),
+    p95 = quantile(Cc_ngml, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(day_in_interval, median, colour = arm, fill = arm)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.18, colour = NA) +
+  geom_line(linewidth = 0.9) +
+  labs(
+    x = "Day within the steady-state dosing interval",
+    y = "Serum benralizumab (ng/mL)",
+    colour = NULL, fill = NULL,
+    title = "Simulated steady-state benralizumab, 30 mg SC Q8W",
+    subtitle = "Median with 5th-95th percentile band; replicates the exposure basis of Jin 2025 Figure 4"
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# PKNCA validation
+
+Non-compartmental analysis over the final dosing interval gives Cmax, Tmax,
+Cavg and the trough.
+
+The trough is taken as PKNCA's `cmin`, the minimum concentration within the
+interval. Two points make that the right choice here. First, the interval runs
+from one dose to the next, so the profile goes trough, peak, trough and its
+minimum is the trough by construction; at steady state the concentrations at
+the two ends are equal, which the typical-value section below verifies
+numerically. Second, PKNCA's `ctrough` is defined relative to a dose at the
+interval end, and **no dose is given at the interval end here**, so `ctrough`
+returns `NA` for every subject.
+
+```{r pknca}
+sim_nca <- sim_pk |>
+  filter(!is.na(Cc_ngml)) |>
+  select(id, time, Cc = Cc_ngml, arm)
+
+# Defensive: guarantee a record at the interval start so PKNCA never
+# back-extrapolates. The dose sits in the depot, so the concentration at the
+# dose time is the pre-dose trough and is already in the grid; this keeps the
+# guarantee explicit.
+stopifnot(all(table(sim_nca$id[sim_nca$time == last_dose]) == 1))
+
+dose_nca <- doses |> select(id, time, amt, arm)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id,
+                             concu = "ng/mL", timeu = "day")
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | arm + id, doseu = "mg")
+
+intervals <- data.frame(
+  start = last_dose,
+  end = last_dose + tau,
+  cmax = TRUE,
+  tmax = TRUE,
+  cav = TRUE,
+  cmin = TRUE,
+  auclast = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+)
+```
+
+## Mass balance of the NCA result
+
+`AUC(0,tau)` at steady state times clearance must equal the absorbed dose.
+This is an exact identity for the solved model, so it checks the numerical
+accuracy of the observation grid rather than any published number, and a tight
+bound is appropriate.
+
+```{r mass-balance}
+auc_by_id <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, auclast = PPORRES)
+
+mb <- sim_pk |>
+  group_by(id, arm) |>
+  summarise(cl = first(cl), fdepot = first(fdepot), .groups = "drop") |>
+  mutate(id = as.character(id)) |>
+  inner_join(auc_by_id |> mutate(id = as.character(id)), by = "id") |>
+  mutate(
+    absorbed_mg = 30 * fdepot,
+    auc_x_cl_mg = auclast / 1000 * cl,  # ng/mL -> mg/L, times L/day
+    pct_diff = 100 * (auc_x_cl_mg - absorbed_mg) / absorbed_mg
+  )
+
+stopifnot(nrow(mb) == 2 * n_per_arm)
+summary(mb$pct_diff)
+
+# Pure numerical (trapezoidal) error on a 1-day grid; not a cohort-noise
+# quantity, so the bound can be tight.
+stopifnot(max(abs(mb$pct_diff)) < 2)
+```
+
+## Typical-value steady-state exposure
+
+Jin 2025 reports simulated steady-state exposure metrics twice. Resource 14
+summarises a Chinese cohort drawn from the final model's inter-individual
+variability distribution; Resource 12 summarises the *studied* adults using
+post-hoc (empirical Bayes) individual parameters, so its rows reflect that
+population's actual covariates rather than a resampled cohort.
+
+Both report **medians**, and the published median is compared here against the
+**typical-value** prediction rather than against the cohort median above. The
+reason is reproducibility rather than convenience: a cohort median is one draw,
+and `rxSetSeed()` fixes rxode2's stream only for a given solver-thread count, so
+a cohort-median bound tight enough to be meaningful would pass here and fail on
+a machine with a different thread count. The typical-value prediction is
+deterministic. It is also the right comparator in principle, because each of
+this model's random effects is lognormal and centred, so the population median
+of a monotone one-eta quantity such as Cavg is the typical value.
+
+```{r typical-value}
+typical <- tibble::tibble(
+  arm = c("Chinese adults", "Non-Asian adults"),
+  # Jin 2025 Table 2 (Chinese mean 64.1 kg) and Resource 6 (non-Asian mean
+  # 80.4 kg).
+  WT = c(64.1, 80.4),
+  RACE_ASIAN = c(1, 0)
+) |>
+  mutate(id = row_number(), ADA_POS = 0, STUDY_MICP220 = 0,
+         STUDY_AMES = 0, DOSE_HIGH = 0)
+
+ev_typ <- bind_rows(
+  typical |> tidyr::expand_grid(time = dose_times) |>
+    mutate(amt = 30, evid = 1L, cmt = "depot", dvid = NA_integer_),
+  typical |> tidyr::expand_grid(time = obs_times) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
+) |>
+  arrange(id, time, desc(evid))
+
+sim_typ <- rxode2::rxSolve(mod_pk, ev_typ, omega = NA,
+                           keep = c("arm", "WT"), useLinCmt = FALSE,
+                           returnType = "data.frame") |>
+  mutate(Cc_ngml = Cc * 1000)
+
+# Steady state is exact when the concentration at the two ends of a
+# dose-to-dose interval agree. This also confirms that `cmin` over the interval
+# is the trough rather than an interior minimum.
+ss_check <- sim_typ |>
+  group_by(arm) |>
+  summarise(start_ngml = Cc_ngml[which.min(time)],
+            end_ngml = Cc_ngml[which.max(time)], .groups = "drop") |>
+  mutate(pct_diff = 100 * (end_ngml - start_ngml) / start_ngml)
+
+knitr::kable(ss_check |> mutate(across(where(is.numeric), \(x) round(x, 3))),
+             align = c("l", "r", "r", "r"),
+             caption = "Steady state is exact: the interval's two endpoint concentrations agree.")
+
+stopifnot(max(abs(ss_check$pct_diff)) < 0.01)
+```
+
+```{r typical-nca}
+nca_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(sim_typ |> select(id, time, Cc = Cc_ngml, arm),
+                   Cc ~ time | arm + id, concu = "ng/mL", timeu = "day"),
+  PKNCA::PKNCAdose(
+    typical |> tidyr::expand_grid(time = dose_times) |>
+      mutate(amt = 30) |> select(id, time, amt, arm),
+    amt ~ time | arm + id, doseu = "mg"),
+  intervals = intervals
+))
+
+published <- tibble::tribble(
+  ~arm,                ~cmax,  ~cav,   ~cmin,
+  "Chinese adults",    2214,   1067,   276.7,   # Resource 14, median column
+  "Non-Asian adults",  1951,   1006,   279.8    # Resource 12, median column
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_typ,
+  reference = published,
+  by = "arm",
+  units = c(cmax = "ng/mL", cav = "ng/mL", cmin = "ng/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Typical-value versus published steady-state benralizumab exposure (30 mg SC Q8W). * differs from the reference by more than 20%.",
+  align = c("l", "l", "r", "r", "r")
+)
+```
+
+```{r comparison-gates}
+# `arm` is a grouping variable of the PKNCA formula, so it is already a column
+# of the result table -- no join back to the cohort is needed (and a join on
+# `id` would risk the type mismatch and fan-out that pknca-recipes.md warns of).
+tv_val <- as.data.frame(nca_typ$result) |>
+  filter(PPTESTCD %in% c("cmax", "cav", "cmin")) |>
+  select(arm, PPTESTCD, PPORRES)
+
+coh_med <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "cav", "cmin")) |>
+  group_by(arm, PPTESTCD) |>
+  summarise(cohort_median = median(PPORRES), .groups = "drop")
+
+stopifnot(nrow(tv_val) == 6L, nrow(coh_med) == 6L)
+
+dev_tab <- published |>
+  tidyr::pivot_longer(-arm, names_to = "PPTESTCD", values_to = "reference") |>
+  inner_join(tv_val, by = c("arm", "PPTESTCD")) |>
+  inner_join(coh_med, by = c("arm", "PPTESTCD")) |>
+  mutate(
+    typical = PPORRES,
+    pct_diff_typical = 100 * (typical - reference) / reference,
+    pct_diff_cohort = 100 * (cohort_median - reference) / reference
+  ) |>
+  select(arm, PPTESTCD, reference, typical, cohort_median,
+         pct_diff_typical, pct_diff_cohort)
+
+stopifnot(nrow(dev_tab) == 6L)
+
+knitr::kable(
+  dev_tab |>
+    mutate(across(where(is.numeric), \(x) round(x, 1))) |>
+    dplyr::rename("Arm" = arm, "Metric" = PPTESTCD,
+                  "Published (ng/mL)" = reference,
+                  "Typical value (ng/mL)" = typical,
+                  "Cohort median (ng/mL)" = cohort_median,
+                  "% diff (typical)" = pct_diff_typical,
+                  "% diff (cohort)" = pct_diff_cohort),
+  align = c("l", "l", "r", "r", "r", "r", "r"),
+  caption = "Published medians against both the deterministic typical value and the 150-per-arm cohort median."
+)
+
+# The typical-value column is deterministic, so these bounds do not depend on
+# the thread count or the draw. Realised deviations: Cmax -3.1% / -2.5%,
+# Cavg -1.4% / -5.2%, Cmin -12.8% / -13.0%. A mis-transcribed clearance,
+# volume, bioavailability or dose moves these by tens of percent, so the bounds
+# below still go red on any transcription error.
+stopifnot(
+  # Cmax and Cavg are governed by CL, F and dose and are the tightest.
+  max(abs(dev_tab$pct_diff_typical[dev_tab$PPTESTCD %in% c("cmax", "cav")])) < 12,
+  # The trough sits on the terminal tail and depends jointly on six random
+  # effects, so its published COHORT median exceeds the typical value even
+  # though each individual eta is centred; see the note below.
+  max(abs(dev_tab$pct_diff_typical[dev_tab$PPTESTCD == "cmin"])) < 20,
+  # The cohort medians are one draw, so they are reported but bounded loosely.
+  max(abs(dev_tab$pct_diff_cohort)) < 30
+)
+```
+
+Cmax and Cavg reproduce to within about 5%. The trough comes out roughly 13%
+below the published median in **both** arms, and the sign and near-equality of
+that offset are informative: the trough lies on the terminal tail and is a
+jointly non-linear function of six random effects (on CL, V2, V3, Q2, ka and
+Fa1), so the cohort median is displaced upward from the typical value even
+though every individual eta is centred. The 150-per-arm cohort median in the
+table above bears this out, landing within about 1% of the published trough for
+the Chinese arm. The offset is a property of comparing a multivariate cohort
+median against a typical value, not a transcription discrepancy.
+
+The paper's own summary of the racial difference is that Chinese adults show a
+slightly higher Cmax (less than 14%) and Cavg (less than 9%) than non-Asian
+adults, with no difference in trough. The typical-value predictions reproduce
+that comparison:
+
+```{r race-difference}
+race_delta <- dev_tab |>
+  select(arm, PPTESTCD, typical) |>
+  tidyr::pivot_wider(names_from = arm, values_from = typical) |>
+  mutate(
+    `Typical % higher in Chinese` =
+      round(100 * (`Chinese adults` - `Non-Asian adults`) / `Non-Asian adults`, 1),
+    # From the Resource 12 medians: 2211 vs 1951, 1088 vs 1006, 259.1 vs 279.8.
+    `Published % higher in Chinese` = c(13.3, 8.2, -7.4)
+  )
+
+knitr::kable(
+  race_delta |>
+    mutate(across(c(`Chinese adults`, `Non-Asian adults`), \(x) round(x, 1))) |>
+    dplyr::rename("Metric" = PPTESTCD),
+  align = c("l", "r", "r", "r", "r"),
+  caption = "Chinese versus non-Asian typical-value steady-state exposure."
+)
+
+# The claim under test is that the racial difference is SMALL. Assert on
+# magnitude, not on sign: the trough difference is near zero, so its sign is
+# not a meaningful quantity (failure pattern 12).
+stopifnot(
+  all(abs(race_delta$`Typical % higher in Chinese`) < 25),
+  # Cmax and Cavg must both be higher in Chinese participants, which IS a
+  # robust ordering here: it follows deterministically from the lower Chinese
+  # body weight plus the +9.99% Asian effect on clearance.
+  race_delta$`Typical % higher in Chinese`[race_delta$PPTESTCD == "cmax"] > 0,
+  race_delta$`Typical % higher in Chinese`[race_delta$PPTESTCD == "cav"] > 0
+)
+```
+
+# Exposure-response: asthma exacerbation rate
+
+Resource 3 writes the expected number of exacerbations in an interval as the
+time integral of an instantaneous rate,
+
+```
+lambda_j(a, b) = integral_a^b exp(Base + beta * X_j + Emax_j * C(t) / (C(t) + EC50) + eta_j) dt
+```
+
+so `Jin_2025_benralizumab_aaer` carries that integral as the state
+`cumhaz_exac` and reads interval counts off its increments.
+
+## The Chinese Emax covariate form
+
+The Chinese covariate scales Emax **fractionally**, `Emax * (1 + 1.27)`, not on
+a log scale. This is settled by the paper's own headline number: the main text
+says the maximal treatment effect "significantly increased (+127%)" in Chinese
+participants, and 1.27 is exactly +127% under the fractional form. The two
+alternatives are excluded arithmetically.
+
+```{r emax-form}
+emax_base <- -0.51
+beta_chinese <- 1.27
+
+# Emax is negative (it reduces the log rate), so "the maximal treatment effect
+# increased by 127%" is a statement about its MAGNITUDE.
+pct_magnitude <- function(e) 100 * (abs(e) - abs(emax_base)) / abs(emax_base)
+
+forms <- tibble::tibble(
+  Form = c("Fractional: Emax * (1 + beta)",
+           "Log-scale: Emax * exp(beta)",
+           "Additive: Emax + beta"),
+  `Chinese Emax` = c(emax_base * (1 + beta_chinese),
+                     emax_base * exp(beta_chinese),
+                     emax_base + beta_chinese)
+) |>
+  mutate(`% larger in magnitude` = round(pct_magnitude(`Chinese Emax`), 0),
+         `Plateau rate ratio` = round(exp(`Chinese Emax`), 3),
+         `Chinese Emax` = round(`Chinese Emax`, 3))
+
+knitr::kable(forms, align = c("l", "r", "r", "r"),
+             caption = "Only the fractional form reproduces the published 127% increase in the magnitude of Emax.")
+
+stopifnot(
+  # The fractional form reproduces the published +127% exactly: the coefficient
+  # 1.27 IS the fractional increase.
+  abs(pct_magnitude(emax_base * (1 + beta_chinese)) - 127) < 0.5,
+  # The log-scale form would be about +256%, nowhere near the published value.
+  pct_magnitude(emax_base * exp(beta_chinese)) > 250,
+  # The additive form flips the sign of the treatment effect, giving a plateau
+  # rate ratio ABOVE 1, i.e. benralizumab increasing exacerbations. Decisive.
+  exp(emax_base + beta_chinese) > 1
+)
+```
+
+## Simulated annualised rate ratios
+
+The rate ratio versus placebo is simulated by solving the same cohort twice,
+once with 30 mg Q8W dosing and once with no dosing, and taking the ratio of the
+expected exacerbations accumulated over the final year. The seed is reset before
+each arm so the two arms share random numbers and the ratio is not contaminated
+by different eta draws.
+
+```{r aaer-sim}
+aaer_cohort <- bind_rows(
+  tibble::tibble(arm = "Chinese", WT = 64.1, RACE_CHINESE = 1, RACE_ASIAN = 1),
+  tibble::tibble(arm = "Non-Chinese", WT = 78.6, RACE_CHINESE = 0, RACE_ASIAN = 0)
+) |>
+  tidyr::expand_grid(rep = seq_len(100L)) |>
+  mutate(
+    id = row_number(),
+    ADA_POS = 0,
+    # SIROCCO / CALIMA / MIRACLE required at least two exacerbations in the
+    # prior year; 3 is used as a representative value. Base is the log rate at
+    # NEXAC12M = 0, which is outside the enrolled range, so this covariate must
+    # be supplied for the baseline rate to be meaningful.
+    NEXAC12M = 3,
+    CONMED_STEROID = 0,
+    REGION_EASTEUROPE = 0
+  )
+
+# One year of observation after 20 Q8W cycles, i.e. at steady state.
+year_start <- last_dose - 364
+aaer_obs_times <- c(year_start, last_dose)
+
+solve_aaer <- function(with_drug) {
+  ev_obs <- aaer_cohort |>
+    tidyr::expand_grid(time = aaer_obs_times) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
+  ev <- if (with_drug) {
+    ev_dose <- aaer_cohort |>
+      tidyr::expand_grid(time = dose_times) |>
+      mutate(amt = 30, evid = 1L, cmt = "depot", dvid = NA_integer_)
+    bind_rows(ev_dose, ev_obs)
+  } else {
+    ev_obs
+  }
+  ev <- ev |> arrange(id, time, desc(evid))
+  rxode2::rxSetSeed(11223344)  # same stream for both arms
+  rxode2::rxSolve(mod_aaer, ev, keep = c("arm", "RACE_CHINESE"),
+                  useLinCmt = FALSE, returnType = "data.frame")
+}
+
+annual_exac <- function(df, label) {
+  df |>
+    group_by(id, arm) |>
+    arrange(time, .by_group = TRUE) |>
+    summarise(events = last(cumhaz_exac) - first(cumhaz_exac), .groups = "drop") |>
+    mutate(regimen = label)
+}
+
+aaer_drug <- annual_exac(solve_aaer(TRUE), "Benralizumab 30 mg Q8W")
+aaer_pbo  <- annual_exac(solve_aaer(FALSE), "Placebo")
+
+aaer_ratio <- bind_rows(aaer_drug, aaer_pbo) |>
+  tidyr::pivot_wider(names_from = regimen, values_from = events) |>
+  group_by(arm) |>
+  summarise(
+    `Placebo AAER` = mean(Placebo),
+    `Benralizumab AAER` = mean(`Benralizumab 30 mg Q8W`),
+    `Simulated rate ratio` = mean(`Benralizumab 30 mg Q8W`) / mean(Placebo),
+    .groups = "drop"
+  ) |>
+  mutate(
+    `Published rate ratio` = c(0.38, 0.64),
+    `Published 95% CI` = c("0.32-0.45", "0.60-0.71")
+  )
+
+knitr::kable(
+  aaer_ratio |> mutate(across(where(is.numeric), \(x) round(x, 3))),
+  align = c("l", "r", "r", "r", "r", "l"),
+  caption = "Simulated versus published steady-state annual asthma exacerbation rate ratios (Jin 2025 Figure 6, adult population)."
+)
+```
+
+```{r aaer-gates}
+rr <- setNames(aaer_ratio$`Simulated rate ratio`, aaer_ratio$arm)
+
+# At the exposures this model is declared valid over, EC50 (1.76 ng/mL) is
+# ~150-fold below the trough, so C/(C + EC50) is essentially 1 and the rate
+# ratio collapses to exp(Emax). That analytic limit is the primary gate.
+plateau_nonchinese <- exp(emax_base)
+plateau_chinese <- exp(emax_base * (1 + beta_chinese))
+
+c(simulated_nonchinese = round(rr[["Non-Chinese"]], 3),
+  plateau_nonchinese = round(plateau_nonchinese, 3),
+  simulated_chinese = round(rr[["Chinese"]], 3),
+  plateau_chinese = round(plateau_chinese, 3))
+
+stopifnot(
+  # The simulation must land on the analytic plateau, which it does to within a
+  # fraction of a percent; this is a deterministic property of the model.
+  abs(rr[["Non-Chinese"]] - plateau_nonchinese) / plateau_nonchinese < 0.02,
+  abs(rr[["Chinese"]] - plateau_chinese) / plateau_chinese < 0.02,
+  # The Chinese arm must show the substantially larger effect.
+  rr[["Chinese"]] < rr[["Non-Chinese"]],
+  # Both must sit in the neighbourhood of the published ratios. The Chinese arm
+  # is a documented deviation (see Assumptions and deviations) and is bounded
+  # more loosely; 0.30 still goes red on a mis-signed or mis-scaled Emax.
+  abs(rr[["Non-Chinese"]] - 0.64) < 0.10,
+  abs(rr[["Chinese"]] - 0.38) < 0.12
+)
+```
+
+The non-Chinese ratio reproduces the published 0.64 well and falls inside the
+published 95% CI of 0.60 to 0.71. The Chinese ratio comes out lower than the
+published 0.38; see the deviations section below.
+
+# Exposure-response: pre-bronchodilator FEV1
+
+The FEV1 model is algebraic and exposure-independent. Its three terms separate
+cleanly, so each can be checked against the published parameter it comes from.
+
+```{r fev1-typical}
+fev1_grid <- tibble::tibble(time = seq(0, 365, by = 1))
+
+fev1_arms <- bind_rows(
+  tibble::tibble(arm = "Placebo", TRT_BENRALIZUMAB = 0),
+  tibble::tibble(arm = "Benralizumab", TRT_BENRALIZUMAB = 1)
+) |>
+  mutate(
+    id = row_number(),
+    SEXF = 0,                 # male reference
+    CONMED_THEOPHYLLINE = 0,  # non-user reference
+    EOS = 380                 # the reference eosinophil count of the covariate
+  )
+
+ev_fev1 <- fev1_arms |>
+  tidyr::expand_grid(fev1_grid) |>
+  mutate(amt = NA_real_, evid = 0L)
+
+sim_fev1 <- rxode2::rxSolve(mod_fev1, ev_fev1, omega = NA,
+                            keep = c("arm", "TRT_BENRALIZUMAB"),
+                            returnType = "data.frame")
+
+sim_fev1 |>
+  ggplot(aes(time, FEV1, colour = arm)) +
+  geom_line(linewidth = 0.9) +
+  labs(x = "Time (day)", y = "Pre-bronchodilator FEV1 (mL)", colour = NULL,
+       title = "Typical-value longitudinal FEV1, reference subject",
+       subtitle = "Male, no theophylline, baseline eosinophils 380 cells/uL (Jin 2025 Resource 4)") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r fev1-decomposition}
+fev1_at <- function(a, tt) {
+  v <- sim_fev1$FEV1[sim_fev1$arm == a & sim_fev1$time == tt]
+  if (length(v) != 1L) stop("no unique FEV1 for ", a, " at t = ", tt)
+  v
+}
+
+decomp <- tibble::tibble(
+  Quantity = c("Baseline FEV1 at t = 0",
+               "Placebo plateau minus baseline at 1 year",
+               "Benralizumab minus placebo at 1 year",
+               "Time to half the benralizumab effect"),
+  Published = c(1710, 172, 104, 9.21),
+  Realised = c(
+    fev1_at("Placebo", 0),
+    fev1_at("Placebo", 365) - 1710,
+    fev1_at("Benralizumab", 365) - fev1_at("Placebo", 365),
+    # T50 recovered from the Emax term: the day the drug increment reaches half
+    # of Emax. Solve emax * t / (T50 + t) = emax / 2  =>  t = T50.
+    {
+      drug <- sim_fev1$FEV1[sim_fev1$arm == "Benralizumab"] -
+        sim_fev1$FEV1[sim_fev1$arm == "Placebo"]
+      tt <- sim_fev1$time[sim_fev1$arm == "Benralizumab"]
+      approx(drug, tt, xout = 104 / 2)$y
+    }
+  )
+) |>
+  mutate(`% difference` = round(100 * (Realised - Published) / Published, 2),
+         Realised = round(Realised, 2))
+
+knitr::kable(decomp, align = c("l", "r", "r", "r"),
+             caption = "The FEV1 model's terms recovered from the solved typical-value profile.")
+
+# Deterministic (typical-value, no IIV) quantities, so tight bounds are
+# correct. The drug increment at 1 year is 97.5% of Emax, not 100%, because
+# t / (T50 + t) = 365 / 374.21.
+stopifnot(
+  abs(fev1_at("Placebo", 0) - 1710) < 1,
+  abs((fev1_at("Placebo", 365) - 1710) - 172) < 1,
+  abs((fev1_at("Benralizumab", 365) - fev1_at("Placebo", 365)) - 104 * 365 / (9.21 + 365)) < 1,
+  abs(decomp$Realised[4] - 9.21) < 0.5
+)
+```
+
+The eosinophil covariate on Emax is the one covariate the FEV1 model retains on
+the treatment effect, and it is the mechanistically expected one for an
+anti-IL-5-receptor antibody: patients with higher baseline eosinophil counts
+gain more lung function.
+
+```{r fev1-eos}
+eos_levels <- c(150, 380, 800, 1500)
+
+eos_cohort <- tibble::tibble(EOS = eos_levels) |>
+  mutate(id = row_number(), SEXF = 0, CONMED_THEOPHYLLINE = 0,
+         TRT_BENRALIZUMAB = 1)
+
+sim_eos <- rxode2::rxSolve(
+  mod_fev1,
+  eos_cohort |> tidyr::expand_grid(time = c(0, 365)) |>
+    mutate(amt = NA_real_, evid = 0L),
+  omega = NA, keep = "EOS", returnType = "data.frame"
+)
+
+eos_tab <- sim_eos |>
+  group_by(EOS) |>
+  summarise(fev1_365 = FEV1[time == 365], .groups = "drop") |>
+  mutate(
+    `Emax (mL)` = round(104 * (EOS / 380)^0.699, 1),
+    `FEV1 at 1 year (mL)` = round(fev1_365, 1)
+  ) |>
+  select(-fev1_365) |>
+  dplyr::rename("Baseline eosinophils (cells/uL)" = EOS)
+
+knitr::kable(eos_tab, align = c("r", "r", "r"),
+             caption = "Baseline eosinophil count scales the benralizumab FEV1 Emax as (EOS/380)^0.699 (Jin 2025 Resource 4).")
+
+stopifnot(
+  # Monotone increasing in eosinophils, and the reference level reproduces the
+  # published Emax exactly.
+  all(diff(eos_tab$`Emax (mL)`) > 0),
+  abs(eos_tab$`Emax (mL)`[eos_tab$`Baseline eosinophils (cells/uL)` == 380] - 104) < 0.5
+)
+```
+
+# Assumptions and deviations
+
+## Two retained FEV1 covariate effects are omitted
+
+Jin 2025 Resource 4 states that the FEV1 model "included covariate effects of
+age and height on Pmax, age, height, sex, theophylline comedication on
+FEV1baseline and eosinophil count on the Emax", and tabulates three
+coefficients for the age and height effects: `RHGHT` = 2.4 ("effect of height on
+PMAX and FEV1"), `RPAGE` = -5.92 ("effect of age on PMAX") and `RFAGE` = -14.6
+("effect of age on FEV1").
+
+**The height and age effects are deliberately not encoded.** Neither their
+functional form nor a reference value is stated anywhere, and height is not
+reported in any demographics table in Jin 2025 or its supplement, so there is no
+median to centre on. The upstream legacy publication was obtained and checked
+(Chia YL et al., Clin Pharmacol Ther. 2019;106:383-90, doi:10.1002/cpt.1371):
+it prints the same base equation and names height and age as significant on both
+Pmax and baseline FEV1, but likewise gives no functional form, no reference
+value and no parameter table. Its Figures S2 and S3 are individual-prediction
+diagnostic scatter plots with LOESS trends by age band, which cannot identify a
+covariate form because they carry the model's (large) inter-individual
+variability; Chia 2019's text further indicates the age effect on the placebo
+response is not a simple linear slope, reporting that "adolescents had the
+strongest placebo effect compared with other age groups (with the same standing
+height)" and that "no placebo effect was observed for patients aged > 65 years".
+
+Guessing a form and a reference height would move baseline FEV1 by hundreds of
+mL, so the effects are omitted rather than invented. Both are documented in
+`covariatesDataExcluded` in `Jin_2025_benralizumab_fev1`. The tabulated FEVB
+(1710 mL) and PmaxB (172 mL) are consistent with being the typical values *at*
+the reference covariates -- 1710 mL matches the observed mean pre-bronchodilator
+FEV1 in the pivotal trials -- so omitting the centred terms leaves a coherent
+typical-subject model, which is what the FEV1 section above validates.
+
+This is a reporting gap in the literature rather than a missing file: the
+relevant table is on disk, and the upstream source was acquired and does not
+resolve it.
+
+## The Chinese AAER ratio is lower than published
+
+The simulated Chinese rate ratio (about 0.32) is below the published 0.38 and
+just below its 95% CI lower bound of 0.32, while the non-Chinese ratio (about
+0.60) sits inside its published CI of 0.60 to 0.71. Both simulated values land
+on the analytic plateau `exp(Emax)` to within a fraction of a percent, so the
+model as encoded is internally consistent; the residual gap is in how the
+published ratio was computed. Jin 2025 obtained it from 200 replicates of 500
+simulated participants that resample body weight, covariates and parameter
+uncertainty and then form the ratio of predicted annual rates, whereas the
+simulation here is a single fixed-covariate cohort with no parameter-uncertainty
+resampling. The ratio of the two published logs, `log(0.38)/log(0.6419) = 2.18`,
+is close to the fractional-form prediction of `1 + 1.27 = 2.27`, which is the
+strongest available confirmation that the Emax covariate form is right: the
+log-scale alternative predicts 3.56 and the additive alternative predicts a
+rate ratio above 1. The deviation is recorded rather than tuned away.
+
+## Discrepant omega for RCLADA between supplement tables
+
+Resource 10 (the final-model table) prints `Omega, RCLADA` as 0.029 (fixed),
+which is the same value as the `Omega, Rfa1Dose` row immediately above it.
+Resource 8 and Resource 11 both print 0.036 (fixed) for RCLADA, unchanged across
+every model column, and Resource 11's middle column *is* the final model --
+every one of its other twenty-plus values matches Resource 10 exactly. The
+0.036 value is therefore used and the 0.029 in Resource 10 is treated as a
+transcription slip duplicating the row above. The parameter is a nearly
+degenerate placeholder (99.3% shrinkage) so the choice has no practical effect
+on any prediction, but it is recorded rather than silently resolved.
+
+## Other assumptions
+
+* **Absorption is reparameterised from a half-life to a rate.** Jin 2025
+  estimates `KAThalf` = 3.02 days with a lognormal omega of 0.707, whereas the
+  canonical parameter is `lka`. A lognormal random effect on a half-life is
+  exactly a lognormal random effect of the same magnitude on the corresponding
+  rate constant, with the sign of eta mirrored, which leaves the distribution
+  unchanged; the omega therefore transfers unaltered.
+* **The three residual errors are encoded as three endpoints.** Jin 2025 fits
+  one log-scale additive residual error per study stratum. nlmixr2 selects a
+  residual error by endpoint rather than by a covariate value, so the popPK
+  model carries `Cc`, `Cc_early` and `Cc_micp220` over one shared prediction;
+  assign each concentration record to the endpoint matching its study.
+* **Steady state is simulated as a pure Q8W regimen.** The pivotal regimen gives
+  the first three doses every 4 weeks and then every 8 weeks, but the paper's
+  exposure simulations use a "nominal dosing regimen of 30 mg Q8W", and by
+  cycle 20 (about 65 terminal half-lives) the loading detail is irrelevant.
+* **The non-Asian weight SD is borrowed.** Resource 6 gives a non-Asian mean
+  body weight of 80.4 kg but no SD; Table 2's non-Chinese SD of 19.2 kg and
+  range of 40-204 kg are used instead.
+* **Resource 12 is a post-hoc summary.** Its non-Asian row summarises the
+  studied participants using empirical Bayes individual parameters, so it
+  reflects that population's actual covariates rather than a resampled cohort;
+  the Chinese target is taken from Resource 14, which is IIV-sampled and so is
+  the like-for-like comparator for the simulation here.
+* **The exposure-response N is an upper bound, not an analysis-set size.** The
+  paper does not print an analysis-set N for either exposure-response dataset,
+  stating only that the SIROCCO, CALIMA and MIRACLE data were used. Both ER model
+  files therefore set `population$n_subjects` to the combined *randomised* total
+  of those three studies (1204 + 1306 + 695 = 3205) and say so explicitly. The
+  only exposure-response counts the paper enumerates are the per-quartile Q8W
+  benralizumab recipients in Resource 15 (1023 in total), to which the placebo
+  and 30 mg Q4W arms must be added but are not tabulated. For the FEV1 model no
+  single N describes the whole fit in any case, since only benralizumab-treated
+  patients contributed to estimating the treatment Emax while all arms
+  contributed to the baseline and placebo terms.
+* **Model validity range.** Jin 2025 states that the exacerbation-rate model
+  "is valid for doses leading to mean average concentrations above 500 ng/mL and
+  mean Ctrough above 50 ng/mL". EC50 (1.76 ng/mL) is below the assay LLOQ of
+  3.86 ng/mL and carries a 180% RSE, so the exposure-response curve is flat and
+  at its plateau across the studied dose range. Do not use either ER model to
+  extrapolate to lower exposures.
+* **No paediatric simulation is run.** The adolescent and paediatric weight
+  distributions come from the Chinese growth references of Zong and Li (2013)
+  via the `childsds` package, which is not a dependency here. The closed-form
+  implied-weight check above validates the same chain without it.
+
+# Session information
+
+```{r session-info}
+sessionInfo()
+```

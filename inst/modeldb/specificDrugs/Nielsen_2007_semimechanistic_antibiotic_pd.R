@@ -79,11 +79,11 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
   ini({
     # --- Shared bacterial-system parameters (Table 2, typical values with RSE %) ---
     lkgrowth <- log(1.35)
-    label("Log growth rate constant of susceptible bacteria (kgrowth, 1/h)")  # Table 2: kgrowth = 1.35 (RSE 5.4%)
+    label("Log growth rate constant of susceptible bacteria (1/h)")  # Table 2: kgrowth = 1.35 (RSE 5.4%)
     lkdeath <- log(0.179)
-    label("Log natural death rate constant, both bacterial states (kdeath, 1/h)")  # Table 2: kdeath = 0.179 (RSE 6.5%)
+    label("Log natural death rate constant, both bacterial states (1/h)")  # Table 2: kdeath = 0.179 (RSE 6.5%)
     lbmax <- log(4.15e8)
-    label("Log maximum bacterial concentration at stationary phase (Bmax, CFU/mL)")  # Table 2: Bmax = 4.15e8 (RSE 9.2%)
+    label("Log maximum bacterial concentration at stationary phase (CFU/mL)")  # Table 2: Bmax = 4.15e8 (RSE 9.2%)
 
     # Mixture-model parameters describing starting-inoculum heterogeneity.
     # These are fixed documentation of the paper's mixture module: mix1 (log
@@ -102,65 +102,65 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
 
     # Benzylpenicillin (Emax = 2.44 1/h, EC50 = 0.00438 mg/L, gamma = 1.29, ke = 1.00 1/h)
     lemax_pen <- log(2.44)
-    label("Log benzylpenicillin maximum killing rate constant (Emax_pen, 1/h)")  # Table 3: Emax = 2.44 (RSE 8.6%)
+    label("Log benzylpenicillin maximum killing rate constant (1/h)")  # Table 3: Emax = 2.44 (RSE 8.6%)
     lec50_pen <- log(0.00438)
-    label("Log benzylpenicillin half-maximum-effect biophase concentration (EC50_pen, mg/L)")  # Table 3: EC50 = 0.00438 (RSE 7.7%)
+    label("Log benzylpenicillin half-maximum-effect biophase concentration (mg/L)")  # Table 3: EC50 = 0.00438 (RSE 7.7%)
     lhill_pen <- log(1.29)
-    label("Log benzylpenicillin Hill sigmoidicity exponent (gamma_pen, unitless)")  # Table 3: gamma = 1.29 (RSE 10%)
+    label("Log benzylpenicillin Hill sigmoidicity exponent (unitless)")  # Table 3: gamma = 1.29 (RSE 10%)
     lke0_pen <- log(1.00)
-    label("Log benzylpenicillin biophase equilibration rate constant (ke_pen, 1/h)")  # Table 3: ke = 1.00 (RSE 9.6%)
+    label("Log benzylpenicillin biophase equilibration rate constant (1/h)")  # Table 3: ke = 1.00 (RSE 9.6%)
     lkdeg_pen <- fixed(log(0.020))
-    label("Log benzylpenicillin first-order degradation rate constant in broth (kdeg_pen, 1/h; from stability study)")  # Results p 132: kdeg = 0.020 h-1 (FIXED)
+    label("Log benzylpenicillin first-order degradation rate constant in broth (1/h; from stability study)")  # Results p 132: kdeg = 0.020 h-1 (FIXED)
 
     # Cefuroxime (Emax = 3.30 1/h, EC50 = 0.00829 mg/L, gamma = 1.69, ke = 0.861 1/h)
     lemax_cxm <- log(3.30)
-    label("Log cefuroxime maximum killing rate constant (Emax_cxm, 1/h)")  # Table 3: Emax = 3.30 (RSE 6.1%)
+    label("Log cefuroxime maximum killing rate constant (1/h)")  # Table 3: Emax = 3.30 (RSE 6.1%)
     lec50_cxm <- log(0.00829)
-    label("Log cefuroxime half-maximum-effect biophase concentration (EC50_cxm, mg/L)")  # Table 3: EC50 = 0.00829 (RSE 6.6%)
+    label("Log cefuroxime half-maximum-effect biophase concentration (mg/L)")  # Table 3: EC50 = 0.00829 (RSE 6.6%)
     lhill_cxm <- log(1.69)
-    label("Log cefuroxime Hill sigmoidicity exponent (gamma_cxm, unitless)")  # Table 3: gamma = 1.69 (RSE 8.5%)
+    label("Log cefuroxime Hill sigmoidicity exponent (unitless)")  # Table 3: gamma = 1.69 (RSE 8.5%)
     lke0_cxm <- log(0.861)
-    label("Log cefuroxime biophase equilibration rate constant (ke_cxm, 1/h)")  # Table 3: ke = 0.861 (RSE 17%)
+    label("Log cefuroxime biophase equilibration rate constant (1/h)")  # Table 3: ke = 0.861 (RSE 17%)
     lkdeg_cxm <- fixed(log(0.026))
-    label("Log cefuroxime first-order degradation rate constant in broth (kdeg_cxm, 1/h; from stability study)")  # Results p 132: kdeg = 0.026 h-1 (FIXED)
+    label("Log cefuroxime first-order degradation rate constant in broth (1/h; from stability study)")  # Results p 132: kdeg = 0.026 h-1 (FIXED)
 
     # Erythromycin (Emax = 2.03 1/h, EC50 = 0.0276 mg/L, gamma = 0.769, ke fixed at 100 1/h,
     # kdeg = 0 because no significant degradation over 24 h per the stability study)
     lemax_ery <- log(2.03)
-    label("Log erythromycin maximum killing rate constant (Emax_ery, 1/h)")  # Table 3: Emax = 2.03 (RSE 6.4%)
+    label("Log erythromycin maximum killing rate constant (1/h)")  # Table 3: Emax = 2.03 (RSE 6.4%)
     lec50_ery <- log(0.0276)
-    label("Log erythromycin half-maximum-effect biophase concentration (EC50_ery, mg/L)")  # Table 3: EC50 = 0.0276 (RSE 15%)
+    label("Log erythromycin half-maximum-effect biophase concentration (mg/L)")  # Table 3: EC50 = 0.0276 (RSE 15%)
     lhill_ery <- log(0.769)
-    label("Log erythromycin Hill sigmoidicity exponent (gamma_ery, unitless)")  # Table 3: gamma = 0.769 (RSE 19%)
+    label("Log erythromycin Hill sigmoidicity exponent (unitless)")  # Table 3: gamma = 0.769 (RSE 19%)
     lke0_ery <- fixed(log(100))
-    label("Log erythromycin biophase equilibration rate constant (ke_ery, 1/h; -- data did not support estimation)")  # Table 3: ke = 100 (FIXED); Results p 132
+    label("Log erythromycin biophase equilibration rate constant (1/h; -- data did not support estimation)")  # Table 3: ke = 100 (FIXED); Results p 132
     lkdeg_ery <- fixed(log(1e-6))
-    label("Log erythromycin first-order degradation rate constant in broth (kdeg_ery, 1/h; negligible)")  # Results p 132: no significant degradation over 24 h
+    label("Log erythromycin first-order degradation rate constant in broth (1/h; negligible)")  # Results p 132: no significant degradation over 24 h
 
     # Moxifloxacin (Emax = 3.20 1/h, EC50 = 0.0747 mg/L, gamma = 1.59, ke = 0.644 1/h)
     lemax_mxf <- log(3.20)
-    label("Log moxifloxacin maximum killing rate constant (Emax_mxf, 1/h)")  # Table 3: Emax = 3.20 (RSE 4.6%)
+    label("Log moxifloxacin maximum killing rate constant (1/h)")  # Table 3: Emax = 3.20 (RSE 4.6%)
     lec50_mxf <- log(0.0747)
-    label("Log moxifloxacin half-maximum-effect biophase concentration (EC50_mxf, mg/L)")  # Table 3: EC50 = 0.0747 (RSE 3.0%)
+    label("Log moxifloxacin half-maximum-effect biophase concentration (mg/L)")  # Table 3: EC50 = 0.0747 (RSE 3.0%)
     lhill_mxf <- log(1.59)
-    label("Log moxifloxacin Hill sigmoidicity exponent (gamma_mxf, unitless)")  # Table 3: gamma = 1.59 (RSE 7.2%)
+    label("Log moxifloxacin Hill sigmoidicity exponent (unitless)")  # Table 3: gamma = 1.59 (RSE 7.2%)
     lke0_mxf <- log(0.644)
-    label("Log moxifloxacin biophase equilibration rate constant (ke_mxf, 1/h)")  # Table 3: ke = 0.644 (RSE 20%)
+    label("Log moxifloxacin biophase equilibration rate constant (1/h)")  # Table 3: ke = 0.644 (RSE 20%)
     lkdeg_mxf <- fixed(log(1e-6))
-    label("Log moxifloxacin first-order degradation rate constant in broth (kdeg_mxf, 1/h; negligible)")  # Results p 132: no significant degradation over 24 h
+    label("Log moxifloxacin first-order degradation rate constant in broth (1/h; negligible)")  # Results p 132: no significant degradation over 24 h
 
     # Vancomycin (Emax = 1.36 1/h, EC50 = 0.384 mg/L, gamma = 20 FIXED, ke fixed at 100 1/h,
     # kdeg = 0 because no significant degradation over 24 h)
     lemax_van <- log(1.36)
-    label("Log vancomycin maximum killing rate constant (Emax_van, 1/h)")  # Table 3: Emax = 1.36 (RSE 5.5%)
+    label("Log vancomycin maximum killing rate constant (1/h)")  # Table 3: Emax = 1.36 (RSE 5.5%)
     lec50_van <- log(0.384)
-    label("Log vancomycin half-maximum-effect biophase concentration (EC50_van, mg/L)")  # Table 3: EC50 = 0.384 (RSE 0.9%)
+    label("Log vancomycin half-maximum-effect biophase concentration (mg/L)")  # Table 3: EC50 = 0.384 (RSE 0.9%)
     lhill_van <- fixed(log(20))
-    label("Log vancomycin Hill sigmoidicity exponent (gamma_van, unitless; -- very steep all-or-nothing effect)")  # Table 3: gamma = 20 (FIXED at lowest value that did not harm the fit)
+    label("Log vancomycin Hill sigmoidicity exponent (unitless; -- very steep all-or-nothing effect)")  # Table 3: gamma = 20 (FIXED at lowest value that did not harm the fit)
     lke0_van <- fixed(log(100))
-    label("Log vancomycin biophase equilibration rate constant (ke_van, 1/h; -- data did not support estimation)")  # Table 3: ke = 100 (FIXED); Results p 132
+    label("Log vancomycin biophase equilibration rate constant (1/h; -- data did not support estimation)")  # Table 3: ke = 100 (FIXED); Results p 132
     lkdeg_van <- fixed(log(1e-6))
-    label("Log vancomycin first-order degradation rate constant in broth (kdeg_van, 1/h; negligible)")  # Results p 132: no significant degradation over 24 h
+    label("Log vancomycin first-order degradation rate constant in broth (1/h; negligible)")  # Results p 132: no significant degradation over 24 h
 
     # --- Residual error ---
     # Nielsen 2007 used the Karlsson 1995 two-component residual model with
@@ -168,7 +168,7 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
     # (eps = 98%) components estimated on natural-log-transformed CFU/mL. For
     # single-observation simulation the combined SD on the natural-log scale is
     # sqrt(0.98^2 + 0.47^2) = 1.087; converted to the log10-CFU/mL observation
-    # scale used here (Cc = log10(bact_susceptible + bact_resting)) this is
+    # scale used here (log_cfu = log10(bact_susceptible + bact_resting)) this is
     # 1.087 / log(10) = 0.472. Held FIXED as a simulation-oriented summary of
     # the two-component fit rather than re-estimated.
     addSd <- fixed(0.472)
@@ -260,12 +260,12 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
     bact_susceptible(0) <- inoc0 * (1 - fpers_marg)
     bact_resting(0)     <- inoc0 * fpers_marg
 
-    # 8. Observation. Cc is the log10 of the total bacterial concentration
+    # 8. Observation. log_cfu is the log10 of the total bacterial concentration
     #    (susceptible + resting), matching the y-axis of Nielsen 2007 Fig 2/3.
     #    A 1e-6 floor prevents log10(0) if the ODE integrator drives the
     #    total to (numerically) zero. Additive residual on log10-CFU scale
     #    is the combined eps + eps_repl summarised above (see ini()).
-    Cc <- log10(bact_susceptible + bact_resting + 1e-6)
-    Cc ~ add(addSd)
+    log_cfu <- log10(bact_susceptible + bact_resting + 1e-6)
+    log_cfu ~ add(addSd)
   })
 }

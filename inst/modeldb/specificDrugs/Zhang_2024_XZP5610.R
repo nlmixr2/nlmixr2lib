@@ -46,13 +46,13 @@ Zhang_2024_XZP5610 <- function() {
     # first-in-human dose calculation; none was estimated from human data.
 
     lka <- fixed(log(1.46))
-    label("Absorption rate constant (ka, 1/h)")
+    label("Absorption rate constant (1/h)")
     # Section 2.4: "the estimated value of Ka was 1.46 h-1 (range: 0.589-2.34 h-1)".
     # Section 4.3.2: mean of the rat and dog one-compartment NONMEM estimates,
     # which bound human Ka; mean(0.589, 2.34) = 1.4645.
 
     lcl <- fixed(log(8.3))
-    label("Intravenous clearance (CL, L/h)")
+    label("Intravenous clearance (L/h)")
     # Section 2.4: "the average CLi.v calculated based on data from beagle dogs was
     # used as the predicted human CLi.v, which was 138 mL/min (8.3 L/h)"; also the
     # Table 5 footnote ("Human CLi.v ... which is 8.3 L/h"). Mean of the four dog
@@ -61,7 +61,7 @@ Zhang_2024_XZP5610 <- function() {
     # that reproduces the Table 5 HED column exactly (see vignette).
 
     lvc <- fixed(log(41.8))
-    label("Steady-state volume of distribution (Vss, L)")
+    label("Steady-state volume of distribution (L)")
     # Section 2.4: "the predicted average value (41.8 L) from SD rats and beagle dogs
     # was used as the predicted human Vss". Mean of the three Vss rows of Table 3 =
     # mean(17.1, 45.3, 63.0) = 41.8 L.

@@ -355,10 +355,10 @@ Nakashima_2015_valproic_acid <- function() {
     # source values and document the misquotation. See vignette Errata.
     # ==================================================================
 
-    lka   <- fixed(log(0.109))  ; label("Absorption rate constant, from Ogusu 2014 (Ka, 1/h)")                                # Ogusu 2014 Eq 5 and Table 2 (Ka 0.109 1/h)
-    lvc   <- fixed(log(21.4))   ; label("Apparent central volume at a 1000 mg/day dose, from Ogusu 2014 (Vd/F, L)")           # Ogusu 2014 Eq 6 and Table 2 (Vd/F 21.4 L)
-    lcl   <- fixed(log(0.559))  ; label("Apparent oral clearance at a 1000 mg/day dose in a male on no other AED, from Ogusu 2014 (CL/F, L/h)")  # Ogusu 2014 Eq 7 and Table 2 (CL/F 0.559 L/h)
-    ltlag <- fixed(log(3.00))   ; label("Absorption lag time, from Ogusu 2014 (ALAG, h)")                                     # Ogusu 2014 Eq 8 and Table 2 ("3.00 (Fixed)" -- fixed in the upstream fit too)
+    lka   <- fixed(log(0.109))  ; label("Absorption rate constant, from Ogusu 2014 (1/h)")                                # Ogusu 2014 Eq 5 and Table 2 (Ka 0.109 1/h)
+    lvc   <- fixed(log(21.4))   ; label("Apparent central volume at a 1000 mg/day dose, from Ogusu 2014 (L)")           # Ogusu 2014 Eq 6 and Table 2 (Vd/F 21.4 L)
+    lcl   <- fixed(log(0.559))  ; label("Apparent oral clearance at a 1000 mg/day dose in a male on no other AED, from Ogusu 2014 (L/h)")  # Ogusu 2014 Eq 7 and Table 2 (CL/F 0.559 L/h)
+    ltlag <- fixed(log(3.00))   ; label("Absorption lag time, from Ogusu 2014 (h)")                                     # Ogusu 2014 Eq 8 and Table 2 ("3.00 (Fixed)" -- fixed in the upstream fit too)
 
     e_dose_vc <- fixed(1.52)    ; label("Power exponent on (DOSE_VPA_MGD/1000) for apparent volume, from Ogusu 2014 (unitless)")    # Ogusu 2014 Eq 6 and Table 2 "Dose on Vd/F"
     e_dose_cl <- fixed(0.596)   ; label("Power exponent on (DOSE_VPA_MGD/1000) for apparent clearance, from Ogusu 2014 (unitless)") # Ogusu 2014 Eq 7 and Table 2 "Dose on CL/F"

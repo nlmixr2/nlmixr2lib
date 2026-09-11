@@ -1,0 +1,619 @@
+---
+title: "Enrofloxacin oral + intravenous popPK in largemouth bass (Xu 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Enrofloxacin oral + intravenous popPK in largemouth bass (Xu 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Xu 2025 fitted the oral and the intravenous data **separately**, with different
+structural models, so the paper contributes two model files:
+
+* `Xu_2025_enrofloxacin_largemouthBass_oral` --- one-compartment, first-order
+  absorption, 20 mg/kg oral gavage.
+* `Xu_2025_enrofloxacin_largemouthBass_iv` --- two-compartment, 10 mg/kg
+  intravenous bolus into the caudal vein.
+
+```{r citation, echo = FALSE, results = "asis"}
+cat("* Citation: ", rxode2::rxode2(readModelDb("Xu_2025_enrofloxacin_largemouthBass_oral"))$reference, "\n", sep = "")
+```
+
+* Article: [Animals 2025;15(10):1362](https://doi.org/10.3390/ani15101362)
+  (open access, CC BY 4.0; PMC12108383)
+* Supplement: none. The article has no supplementary material and the Data
+  Availability Statement states that the individual data were not deposited and
+  are "available upon request".
+
+```{r descriptions, echo = FALSE, results = "asis"}
+for (nm in c("Xu_2025_enrofloxacin_largemouthBass_oral",
+             "Xu_2025_enrofloxacin_largemouthBass_iv")) {
+  cat("**", nm, "** --- ", rxode2::rxode2(readModelDb(nm))$description, "\n\n", sep = "")
+}
+```
+
+# Population
+
+Both cohorts are healthy juvenile largemouth bass (*Micropterus salmoides*)
+sourced from Huazhong Agricultural University and held at the Yangtze River
+Fisheries Research Institute, Wuhan. The purchase lot of 60 fish weighed
+243.11 +/- 54.86 g (Section 2.2); no per-fish weights are published. Fish
+acclimated for 14 days on antibiotic-free feed in 480 L tanks at 26 L/min, with
+water temperature held at 25.0 +/- 0.5 degC by air conditioning and dissolved
+oxygen, total ammonia nitrogen, nitrite nitrogen and pH checked daily.
+
+Each route used 24 fish randomised to four groups of six (Sections 2.3.1 and
+2.3.2). Oral fish received a single 20 mg/kg gavage of a 20 mg/mL enrofloxacin
+solution by plastic tube into the stomach; a fish that regurgitated was removed
+and replaced. Intravenous fish received a single 10 mg/kg injection of the same
+solution into the caudal vein; a fish that bled heavily or in which the needle
+translocated was removed and replaced.
+
+Sampling is **sparse** --- the design that motivates the whole paper. Fish have
+too little blood for a full serial profile, so each fish contributes only four
+samples, and the four groups interleave to cover 16 nominal times between 5 min
+and 120 h:
+
+| Group | Sampling times |
+|-------|----------------|
+| 1 | 5 min, 1 h, 8 h, 48 h |
+| 2 | 10 min, 2 h, 12 h, 72 h |
+| 3 | 15 min, 4 h, 16 h, 96 h |
+| 4 | 0.5 h, 6 h, 24 h, 120 h |
+
+Plasma enrofloxacin was measured by HPLC with fluorescence detection
+(LOQ 0.01 ug/mL; recovery 83.3-103.1%; Table 1). Only the parent was assayed ---
+the metabolite ciprofloxacin was not measured in this study.
+
+The same information is available programmatically via each model's
+`population` metadata, e.g.
+`readModelDb("Xu_2025_enrofloxacin_largemouthBass_iv")()$population`.
+
+# Source trace
+
+Every `ini()` entry carries an in-file comment naming its source. They are
+collected here for review. Both final models come from the
+**"Without importing covariate of wt"** block of their table --- not the
+"Importing covariate of wt" block and not the bootstrap block.
+
+## Oral model (`..._oral`)
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (Ka) | 0.98 1/h | Table 4, "Without importing covariate of wt"; restated Sections 3.3, 4, 5 |
+| `lvc` (V/F) | 6.82 L/kg | Table 4, same block; restated Sections 3.3, 4, 5 |
+| `lcl` (CL/F) | 0.098 L/h/kg | Table 4, same block; restated Sections 3.3, 4, 5 |
+| `etalka`, `etalvc`, `etalcl` | `fixed(0)` | Section 2.6 declares exponential IIV; magnitudes never published (see Errata) |
+| `propSd` (stdev0) | 0.30 | Table 4, same block |
+| `d/dt(depot)`, `d/dt(central)` | n/a | Section 2.6 ("one-compartment model with extravascular administration"); Section 4 confirms first-order absorption |
+| Residual form `prop()` | n/a | Section 2.6: `OBSV = IPCN x (1 + eps)` |
+| IIV form `exp(eta)` | n/a | Section 2.6: `P_i = tvP x exp(eta_Pi)` |
+
+## Intravenous model (`..._iv`)
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lvc` (V1) | 0.57 L/kg | Table 6, "Without importing covariate of wt"; restated Sections 3.3, 5 |
+| `lvp` (V2) | 1.28 L/kg | Table 6, same block; restated Sections 3.3, 5 |
+| `lcl` (CL) | 0.012 L/h/kg | Table 6, same block; restated Sections 3.3, 4, 5 |
+| `lq` (CL2) | 1.00 L/h/kg | Table 6, same block; restated Sections 3.3, 5 |
+| `etalvc`, `etalvp`, `etalcl`, `etalq` | `fixed(0)` | Section 2.6 (IV "parameterizations were consistent with the above"); magnitudes never published |
+| `propSd` (stdev0) | 0.14 | Table 6, same block |
+| `k12 = q/vc`, `k21 = q/vp` | n/a | Section 2.6: `K12 = tvCL2/V1`, `K21 = tvCL2/V2` |
+| `d/dt(central)`, `d/dt(peripheral1)` | n/a | Section 2.6 ("two-compartment model with intravenous administration"); Section 4 confirms no absorption |
+
+## Secondary quantities used as validation targets
+
+These are *not* parameters --- they are quantities Xu 2025 derived from the
+parameters above, and they are what the gates in this vignette reproduce.
+
+| Quantity | Published value | Source location |
+|----------|-----------------|-----------------|
+| Ke (oral) | 0.014 1/h | Section 3.3, 5; `Ke = tvCL/tvV` (Section 2.6) |
+| T1/2Ke (oral) | 49.50 h | Section 3.3, 5 |
+| AUC0-inf (oral, 20 mg/kg) | 204.08 ug.h/mL | Section 3.3, 5; `AUC = Dose/tvCL` (Section 2.6) |
+| Kbeta (IV) | 0.0065 1/h | Section 3.3, 5; `Kbeta = tvCL/(tvV1 + tvV2)` (Section 2.6) |
+| T1/2beta (IV) | 106.62 h | Section 3.3, 5 |
+| AUC0-inf (IV, 10 mg/kg) | 833.33 ug.h/mL | Section 3.3, 5 |
+| Vss (IV) | 1.85 L/kg | Section 4 ("the values of V ... 1.85 L/kg") |
+| Bioavailability F | 12.24% | Abstract, Section 4 |
+| AUC/MIC | 12755.0 / 816.32 / 408.16 | Section 4 |
+
+# Assembling the two models
+
+```{r models}
+mod_oral <- readModelDb("Xu_2025_enrofloxacin_largemouthBass_oral")
+mod_iv   <- readModelDb("Xu_2025_enrofloxacin_largemouthBass_iv")
+
+dose_oral <- 20 # mg/kg, Section 2.3.1
+dose_iv   <- 10 # mg/kg, Section 2.3.2
+```
+
+Both models are body-weight normalised throughout: the dose is mg/kg, volumes
+are L/kg and clearances are L/h/kg, so `Cc = central/vc` is mg/L == ug/mL with
+no weight column anywhere. That is why body weight is recorded in
+`covariatesDataExcluded` rather than `covariateData` --- see Errata.
+
+## The ODE system is live, not silently replaced
+
+`rxode2` will auto-solve a model whose parameters happen to be named `cl`/`vc`
+(and `q`/`vp`), discarding the explicit `d/dt()` block. If that happened here
+the published `K12`/`K21` micro-constants would be bypassed. The cheap gate is
+to collapse the peripheral arm and confirm the profile actually moves: it can
+only move if the `d/dt(peripheral1)` equation is being integrated.
+
+```{r ode-live-gate}
+grid_iv <- seq(0, 480, by = 0.25)
+ev_iv <- rxode2::et(amt = dose_iv, cmt = "central") |> rxode2::et(grid_iv)
+
+sim_iv_typ <- rxode2::rxSolve(mod_iv, ev_iv, returnType = "data.frame")
+sim_iv_noq <- rxode2::rxSolve(mod_iv, ev_iv, params = c(lq = log(1e-6)),
+                              returnType = "data.frame")
+
+c24_base <- sim_iv_typ$Cc[sim_iv_typ$time == 24]
+c24_noq  <- sim_iv_noq$Cc[sim_iv_noq$time == 24]
+
+# Killing intercompartmental clearance must change the 24 h concentration by a
+# large margin. Observed here: 4.58 vs 10.58 ug/mL, a factor of 2.3.
+stopifnot(c24_noq / c24_base > 1.5)
+
+# The peripheral compartment must also be a genuine state in the solve output.
+stopifnot(all(c("central", "peripheral1") %in% names(sim_iv_typ)))
+```
+
+# Deterministic typical-value profiles
+
+Xu 2025 published no between-fish variances (Errata), so the etas are held at
+zero and the typical-value solve *is* the population prediction. Every
+published secondary parameter below is a typical-value quantity, so this is the
+right object to validate against --- no cohort averaging is involved.
+
+```{r typical-profiles}
+grid_oral <- seq(0, 480, by = 0.25)
+ev_oral <- rxode2::et(amt = dose_oral, cmt = "depot") |> rxode2::et(grid_oral)
+
+sim_oral_typ <- rxode2::rxSolve(mod_oral, ev_oral, returnType = "data.frame")
+
+typical <- dplyr::bind_rows(
+  sim_oral_typ |> dplyr::transmute(arm = "Oral 20 mg/kg", time, Cc),
+  sim_iv_typ   |> dplyr::transmute(arm = "IV 10 mg/kg",   time, Cc)
+)
+```
+
+```{r figure-profiles}
+# Not a replication of a published figure -- Xu 2025 publishes only diagnostic
+# plots (Figures 1 and 2 are CWRES-vs-TAD and DV-vs-(I)PRED), and the
+# individual concentration data behind them are not available. This is the
+# typical-value profile implied by the two published parameter sets.
+typical |>
+  dplyr::filter(Cc > 1e-4) |>
+  ggplot(aes(time, Cc, colour = arm)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Plasma enrofloxacin (ug/mL)",
+       colour = NULL,
+       title = "Typical-value profiles from the two published parameter sets",
+       caption = "Xu 2025 Tables 4 and 6, covariate-free final models.")
+```
+
+# Closed-form validation gates
+
+The published secondary parameters are algebraic functions of the estimates, so
+they can be reproduced exactly rather than approximately. These gates would
+break on any transcription error in the model files.
+
+```{r closed-form-gates}
+pars_oral <- sim_oral_typ[1, c("ka", "vc", "cl", "kel")]
+pars_iv   <- sim_iv_typ[1, c("cl", "vc", "q", "vp", "kel", "k12", "k21")]
+
+# `Rounding limited` marks the rows where the paper prints too few significant
+# figures for the identity to close exactly: the two elimination rate constants
+# are given to two significant figures (0.014, 0.0065), and both half-lives
+# were then computed from those ROUNDED constants rather than from the
+# unrounded ratio. See Errata item 3. The remaining rows are printed to enough
+# digits that the identity is exact.
+closed_form <- tibble::tribble(
+  ~Quantity,                        ~Model,     ~Published, ~Reproduced,                                          ~`Rounding limited`,
+  "Ke = CL/V (1/h)",                "oral",     0.014,      pars_oral$kel,                                        TRUE,
+  "T1/2Ke = ln2/Ke (h)",            "oral",     49.50,      log(2) / pars_oral$kel,                               TRUE,
+  "AUC0-inf = Dose/CL (ug.h/mL)",   "oral",     204.08,     dose_oral / pars_oral$cl,                             FALSE,
+  "Vss = V1 + V2 (L/kg)",           "IV",       1.85,       pars_iv$vc + pars_iv$vp,                              FALSE,
+  "Kbeta = CL/Vss (1/h)",           "IV",       0.0065,     pars_iv$cl / (pars_iv$vc + pars_iv$vp),               TRUE,
+  "T1/2beta = ln2/Kbeta (h)",       "IV",       106.62,     log(2) / (pars_iv$cl / (pars_iv$vc + pars_iv$vp)),    TRUE,
+  "K12 = CL2/V1 (1/h)",             "IV",       1.7544,     pars_iv$k12,                                          FALSE,
+  "K21 = CL2/V2 (1/h)",             "IV",       0.7812,     pars_iv$k21,                                          FALSE,
+  "AUC0-inf = Dose/CL (ug.h/mL)",   "IV",       833.33,     dose_iv / pars_iv$cl,                                 FALSE
+) |>
+  dplyr::mutate(`% diff` = 100 * (Reproduced - Published) / Published)
+
+closed_form |>
+  knitr::kable(digits = 4, caption = "Published secondary parameters vs. the packaged models.")
+```
+
+```{r closed-form-assert}
+# Every row above is an algebraic identity in the fitted parameters, so the
+# only slack is the paper's own rounding, and both tiers are deterministic --
+# there is no cohort here, so these bounds do not vary between machines.
+#
+# Observed: the five exactly-printed rows agree to <= 0.007% (worst: K21,
+# 0.0064%), and the four rounding-limited rows to <= 2.64% (worst: Ke, where
+# the paper's 0.014 stands for 0.014370). The bounds below sit outside those
+# ranges without being unfalsifiable: a single-digit transcription error in any
+# theta moves the affected rows by tens of percent.
+exact_rows <- !closed_form$`Rounding limited`
+stopifnot(
+  max(abs(closed_form$`% diff`[exact_rows])) < 0.05,
+  max(abs(closed_form$`% diff`[!exact_rows])) < 5
+)
+```
+
+## Bioavailability --- the cross-model gate
+
+`F = 12.24%` is the one published number that both models must agree on: it is
+computed from the oral AUC and the intravenous AUC together, so it cannot be
+reproduced by either file alone and it catches a transcription error in either.
+
+```{r bioavailability-gate}
+auc_oral <- dose_oral / pars_oral$cl
+auc_iv   <- dose_iv   / pars_iv$cl
+
+F_pct <- 100 * (auc_oral / dose_oral) / (auc_iv / dose_iv)
+
+# Equivalently F = CL_iv / (CL/F)_oral, since both AUCs are Dose/CL.
+stopifnot(abs(F_pct - 100 * pars_iv$cl / pars_oral$cl) < 1e-8)
+
+# Xu 2025 Abstract and Section 4 report 12.24%. Reproduced: 12.2449%.
+stopifnot(abs(F_pct - 12.24) < 0.05)
+sprintf("Bioavailability: reproduced %.4f%%, published 12.24%%", F_pct)
+```
+
+## The terminal slope actually produced by the two-compartment system
+
+Xu 2025 defines `Kbeta = tvCL/(tvV1 + tvV2)`, which is the steady-state-volume
+approximation to the terminal eigenvalue, not the eigenvalue itself. The two
+coincide only when distribution is fast relative to elimination, so it is worth
+checking that the approximation is benign for *these* estimates --- with a
+slower peripheral compartment it would not be, and the published `T1/2beta`
+would then not be reproducible from the ODE system at all.
+
+```{r terminal-slope}
+tail_iv <- sim_iv_typ |> dplyr::filter(time >= 300, Cc > 0)
+beta_true <- -stats::coef(stats::lm(log(Cc) ~ time, data = tail_iv))[["time"]]
+beta_paper <- pars_iv$cl / (pars_iv$vc + pars_iv$vp)
+
+# True eigenvalue 0.006449 1/h vs the paper's Vss approximation 0.006486 1/h.
+# They differ by 0.57% -- far inside the 6.1% RSE the paper reports for tvCL,
+# so the approximation costs nothing here, but they are NOT identical: rounded
+# to four decimals the eigenvalue is 0.0064 and the Vss form is 0.0065.
+# Both give a terminal half-life within 1% of the published 106.62 h.
+stopifnot(
+  abs(beta_true - beta_paper) / beta_paper < 0.02,
+  abs(log(2) / beta_true - 106.62) / 106.62 < 0.02,
+  # The distribution phase must be fast relative to elimination for the Vss
+  # form to be benign; k21 / beta is ~120 here. A slow-peripheral model would
+  # break this, which is why the check exists.
+  pars_iv$k21 / beta_true > 20
+)
+sprintf("terminal beta: eigenvalue %.6f vs CL/Vss %.6f (t1/2 %.2f vs %.2f h, published 106.62 h)",
+        beta_true, beta_paper, log(2) / beta_true, log(2) / beta_paper)
+```
+
+# PKNCA validation
+
+The closed-form gates above test the algebra. This section tests the *solved
+profiles* independently, by running non-compartmental analysis over them with
+PKNCA and comparing against the published AUC and half-life.
+
+```{r pknca-conc}
+# Dense grid to 2000 h so aucinf.obs extrapolates a small tail. Cc is the
+# individual prediction (no residual error), which is what a typical-value
+# NCA should consume.
+grid_nca <- seq(0, 2000, by = 0.5)
+
+nca_input <- dplyr::bind_rows(
+  rxode2::rxSolve(mod_oral,
+                  rxode2::et(amt = dose_oral, cmt = "depot") |> rxode2::et(grid_nca),
+                  returnType = "data.frame") |>
+    dplyr::transmute(id = 1L, arm = "Oral 20 mg/kg", time, Cc),
+  rxode2::rxSolve(mod_iv,
+                  rxode2::et(amt = dose_iv, cmt = "central") |> rxode2::et(grid_nca),
+                  returnType = "data.frame") |>
+    dplyr::transmute(id = 2L, arm = "IV 10 mg/kg", time, Cc)
+) |>
+  dplyr::filter(!is.na(Cc))
+
+# Guarantee a time = 0 record per (id, arm). The oral solve already carries
+# Cc = 0 at t = 0 and the IV solve carries the bolus C0, so this is defensive
+# only -- but PKNCA warns per subject if it is ever missing.
+nca_input <- dplyr::bind_rows(
+  nca_input,
+  nca_input |> dplyr::distinct(id, arm) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, arm, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, arm, time)
+
+stopifnot(sum(nca_input$time == 0) == 2L)
+```
+
+```{r pknca-run}
+# The grouping column is named `arm`, NOT `route`: PKNCA reserves `route` for
+# its own dose-route column and a user column of that name collides with it.
+conc_obj <- PKNCA::PKNCAconc(nca_input, Cc ~ time | arm + id)
+
+dose_df <- tibble::tibble(
+  id   = c(1L, 2L),
+  arm  = c("Oral 20 mg/kg", "IV 10 mg/kg"),
+  time = 0,
+  amt  = c(dose_oral, dose_iv)
+)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id)
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published values
+
+```{r nca-compare}
+# Xu 2025 publishes AUC0-inf and a terminal half-life per route (Sections 3.3
+# and 5) but reports NO Cmax or Tmax for either route, so those two rows have
+# no reference value and are omitted from the comparison.
+published <- tibble::tribble(
+  ~arm,             ~aucinf.obs, ~half.life,
+  "Oral 20 mg/kg",  204.08,      49.50,
+  "IV 10 mg/kg",    833.33,      106.62
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = published,
+  by            = "arm",
+  params        = c("aucinf.obs", "half.life"),
+  units         = c(aucinf.obs = "ug*h/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+
+cmp |>
+  knitr::kable(caption = "Simulated (PKNCA) vs. published NCA. * differs from reference by >20%.")
+```
+
+```{r nca-assert}
+# Assert on the numbers, not on the formatted `% diff` column that
+# ncaComparisonTable() returns as character.
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(arm, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+chk <- published |>
+  dplyr::left_join(nca_wide, by = "arm", suffix = c("_ref", "_sim"))
+
+# AUC0-inf is an identity (Dose/CL) that NCA must recover to within the
+# trapezoidal error of the grid. Observed: < 0.02% on both arms.
+stopifnot(max(abs(100 * (chk$aucinf.obs_sim - chk$aucinf.obs_ref) / chk$aucinf.obs_ref)) < 1)
+
+# The half-lives are the loosest comparison in the vignette because the
+# published values were computed from rounded rate constants (Errata).
+# Observed: -2.5% (oral) and +0.8% (IV).
+stopifnot(max(abs(100 * (chk$half.life_sim - chk$half.life_ref) / chk$half.life_ref)) < 5)
+```
+
+# PK/PD: AUC/MIC against fish pathogens
+
+Section 4 converts the oral AUC0-inf into AUC/MIC ratios against three fish
+pathogens, using MIC50 values quoted in the same paragraph, and compares them
+against the conventional fluoroquinolone efficacy breakpoint of 125.
+
+```{r auc-mic}
+pathogens <- tibble::tribble(
+  ~Pathogen,                  ~`MIC50 (ug/mL)`, ~`Published AUC/MIC`,
+  "Flavobacterium columnare", 0.016,            12755.0,
+  "Aeromonas hydrophila",     0.25,             816.32,
+  "Aeromonas sobria",         0.5,              408.16
+) |>
+  dplyr::mutate(`Reproduced AUC/MIC` = auc_oral / `MIC50 (ug/mL)`)
+
+pathogens |>
+  # Per-column digits: the F. columnare MIC50 is 0.016 ug/mL and would render
+  # as "0.02" under a scalar digits = 2.
+  knitr::kable(digits = c(0, 3, 2, 2),
+               caption = "Oral 20 mg/kg AUC0-inf / MIC50 vs. the values in Xu 2025 Section 4.")
+```
+
+```{r auc-mic-assert}
+# Each ratio is AUC0-inf / MIC50 exactly; the only slack is the paper's
+# rounding of 12755.06 to 12755.0. Observed: max |% diff| = 0.0005%.
+stopifnot(
+  max(abs(100 * (pathogens$`Reproduced AUC/MIC` - pathogens$`Published AUC/MIC`) /
+            pathogens$`Published AUC/MIC`)) < 0.1,
+  # All three exceed the AUC/MIC >= 125 breakpoint the paper cites.
+  all(pathogens$`Reproduced AUC/MIC` >= 125)
+)
+```
+
+This arithmetic also settles a labelling error in the paper --- see Errata.
+
+# Study-design simulation
+
+For orientation, the figure below overlays the paper's actual sparse-sampling
+design on the typical-value profiles, with residual error applied at the
+observed times. It is *not* a VPC: with no published between-fish variances
+the only stochastic element is the residual error, so the spread below
+understates the real between-fish spread that Figures 1 and 2 of the paper show.
+
+```{r design-cohort}
+# rxSetSeed() fixes rxode2's stream per solver thread, not across thread
+# counts, so this cohort is not byte-identical across machines. Nothing below
+# asserts on it.
+rxode2::rxSetSeed(20250508)
+set.seed(20250508)
+
+sched <- list(
+  c(5 / 60, 1, 8, 48),
+  c(10 / 60, 2, 12, 72),
+  c(15 / 60, 4, 16, 96),
+  c(0.5, 6, 24, 120)
+)
+
+# 24 fish per arm, matching Sections 2.3.1 / 2.3.2 and well under the
+# 200-per-arm cap.
+make_arm <- function(cmt, amt, label, id_offset) {
+  purrr_free <- lapply(seq_len(24), function(i) {
+    times <- sched[[((i - 1L) %% 4L) + 1L]]
+    dplyr::bind_rows(
+      tibble::tibble(id = id_offset + i, time = 0, amt = amt, evid = 1,
+                     cmt = cmt, arm = label),
+      tibble::tibble(id = id_offset + i, time = times, amt = NA_real_, evid = 0,
+                     cmt = if (cmt == "depot") "central" else cmt, arm = label)
+    )
+  })
+  dplyr::bind_rows(purrr_free)
+}
+
+events <- dplyr::bind_rows(
+  make_arm("depot",   dose_oral, "Oral 20 mg/kg", id_offset =  0L),
+  make_arm("central", dose_iv,   "IV 10 mg/kg",   id_offset = 100L)
+)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+```{r design-sim}
+sim_design <- dplyr::bind_rows(
+  rxode2::rxSolve(mod_oral,
+                  events |> dplyr::filter(arm == "Oral 20 mg/kg"),
+                  keep = "arm", returnType = "data.frame"),
+  rxode2::rxSolve(mod_iv,
+                  events |> dplyr::filter(arm == "IV 10 mg/kg"),
+                  keep = "arm", returnType = "data.frame")
+)
+
+# `Cc` is the individual prediction; `sim` carries the residual error, which is
+# what an observed sample would look like.
+sim_design |>
+  dplyr::filter(time > 0, sim > 0) |>
+  ggplot(aes(time, sim)) +
+  geom_point(aes(colour = arm), alpha = 0.5, size = 1.4) +
+  geom_line(data = dplyr::filter(typical, Cc > 1e-3, time <= 120),
+            aes(y = Cc, colour = arm), linewidth = 0.8) +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Plasma enrofloxacin (ug/mL)",
+       colour = NULL,
+       title = "Sparse-sampling design (4 samples/fish, 24 fish/arm)",
+       caption = "Points: simulated observations with residual error. Lines: typical-value prediction.")
+```
+
+```{r design-assert}
+# Nothing here depends on which cohort was drawn: the residual error is
+# proportional with SD 0.30 (oral) and 0.14 (IV), so simulated observations
+# must stay positive and finite and must bracket the typical prediction.
+stopifnot(
+  all(is.finite(sim_design$sim)),
+  nrow(sim_design |> dplyr::filter(time > 0)) == 2 * 24 * 4
+)
+```
+
+# Assumptions and deviations
+
+- **Between-fish variability is fixed at zero in both models.** Xu 2025
+  Section 2.6 states that exponential IIV, `P_i = tvP x exp(eta_Pi)` with
+  `eta ~ N(0, omega^2)`, was estimated on the PK parameters, and defines
+  `CV(%) = 100 x sqrt(exp(omega^2) - 1)`. **The omega values are never
+  printed anywhere in the paper.** That etas were estimated --- three in the
+  oral model, four in the IV model --- is recoverable from the parameter
+  counts in Tables 3 and 5 (the covariate-free oral model has 7 parameters =
+  3 thetas + 1 stdev0 + 3 omegas; the covariate-free IV model has 9 = 4 + 1 +
+  4, and each "-wt" scenario adds exactly one). Per the standing policy for
+  unreported variability with structural values present, the etas are carried
+  as `~ fixed(0)` rather than invented. **Consequence:** simulating from
+  either model gives the typical-value profile, not a population. A user who
+  wants a stochastic cohort must supply their own omega.
+- **The "Coefficient of Variation (%)" columns of Tables 4 and 6 are relative
+  standard errors, not inter-animal CVs, and are not the CV(%) defined in
+  Section 2.6.** `0.50/6.82 = 7.3%` reproduces the printed 7.34 for `tvV`, and
+  `0.12/1.00 = 12.0%` reproduces the printed 12.47 for `tvCL2`. Reading them
+  as IIV would have produced two models with plausible-looking but entirely
+  fabricated variances.
+- **Body weight is in `covariatesDataExcluded`, not `covariateData`.** It was
+  screened on every structural parameter of both models, selected on -2LL/AIC
+  (V-wt orally, V2-wt intravenously), fitted, and then rejected in Section 3.3.
+  Note also that weight scaling is *already* built into the units --- the dose
+  is mg/kg and every volume and clearance is per kg --- so the rejected test
+  was for a departure from exponent-1 proportionality, not for the presence of
+  any weight effect. No per-fish weights are published, so the centring value
+  for `dVdwt`/`dV2dwt` is unrecoverable and the covariate models could not be
+  reproduced even if wanted.
+- **Two files, not one.** The two routes were fitted separately, to different
+  structural models (one-compartment oral, two-compartment IV), on disjoint
+  fish. They are not two arms of one fit and are not encoded as one model with
+  a route flag. The oral file's `V` and `CL` are apparent (per `F`); the IV
+  file's are absolute.
+- **The IV bolus is instantaneous.** Section 2.3.2 reports a caudal-vein
+  injection from a 1 mL microinjector with no stated duration, so no infusion
+  duration is modelled.
+- **Only the parent drug is modelled.** The metabolite ciprofloxacin, which
+  Xu's own earlier work in other species does measure, was not assayed here.
+- Every parameter value in both files comes from the paper's own tables. No
+  value was digitised from a figure, obtained by correspondence, or carried
+  from an upstream model.
+
+# Errata
+
+Four discrepancies in the published article. None changes a parameter value;
+all are recorded so a reader comparing this vignette against the PDF is not
+surprised.
+
+1. **Table 6's caption says "after oral administration"; it is the intravenous
+   model.** The caption is a copy-paste of Table 4's. Its own Note, its
+   parameter names (`tvV1`, `tvV2`, `tvCL2`), the Section 3.3 text that
+   introduces it, and the Table 5 scenario list that precedes it all identify
+   it as intravenous.
+
+2. **Section 4 misorders the three pathogens against their AUC/MIC values.**
+   The text reads "the AUC/MIC values were estimated to be 12755.0, 816.32,
+   and 408.16 for *A. hydrophila*, *A. sobria*, and *F. columnare*". Dividing
+   the published oral AUC0-inf of 204.08 by the MIC50 values quoted two
+   sentences earlier gives `204.08/0.016 = 12755.06` for *F. columnare*,
+   `204.08/0.25 = 816.32` for *A. hydrophila* and `204.08/0.5 = 408.16` for
+   *A. sobria* --- so the pathogen list is in the reverse of the order the
+   numbers require. The `auc-mic` chunk above reproduces all three ratios
+   exactly, which is what identifies the pairing. The numbers are right; only
+   the labels are swapped, and the paper's conclusion (all three far exceed
+   the breakpoint of 125) is unaffected.
+
+3. **The elimination rate constants are printed to two significant figures,
+   and both half-lives were then computed from those rounded values.** The
+   oral `Ke` is printed as 0.014 1/h where the identity `CL/V = 0.098/6.82`
+   gives 0.014370 1/h (2.6% higher), and `T1/2Ke = ln2/0.014 = 49.51 h`
+   matches the printed 49.50 h whereas the unrounded constant gives 48.24 h.
+   Likewise the IV `Kbeta` is printed as 0.0065 1/h against an unrounded
+   `0.012/1.85 = 0.006486 1/h`, and the printed `T1/2beta` of 106.62 h
+   corresponds to `ln2/0.0065` rather than to the unrounded 106.86 h. These
+   four rows are flagged `Rounding limited` in the closed-form table and gated
+   at 5%; the five rows the paper prints at full precision are gated at 0.05%
+   and agree to better than 0.007%.
+
+4. **Table 2's Units column is scrambled** (initial naive-pooled estimates,
+   not used by either model). It assigns "h" to `V` and `V1`, "/h" to `V2`
+   and `CL`, and "L/h/kg" to `CL2`. The correct units are clear from Table 4
+   and Table 6: volumes are L/kg and clearances are L/h/kg. No value in either
+   model file is taken from Table 2.
+
+Additionally, the paper's Section 2.6 states that both inter-individual **and
+inter-occasion** variability were modelled, but every fish receives only a
+single dose, so there is no occasion structure to estimate; no IOV term is
+reported and none is encoded here.

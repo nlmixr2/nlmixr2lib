@@ -45,12 +45,12 @@ Caldes_2009_ganciclovir <- function() {
     # Structural parameters at the reference covariate set (CRCL = 57 mL/min).
     # All structural PK parameters in linear units (L, L/h, 1/h, h); concentrations
     # in ug/mL = mg/L given mg-doses and L-volumes.
-    lcl    <- log(7.49);  label("Clearance at reference CRCL = 57 mL/min (CL, L/h)")    # Caldes 2009 Table 3 final CL
-    lvc    <- log(31.90); label("Central volume of distribution (V1, L)")               # Caldes 2009 Table 3 final V1
-    lq     <- log(10.20); label("Inter-compartmental clearance (CL_D, L/h)")            # Caldes 2009 Table 3 final CL_D
-    lvp    <- log(32.0);  label("Peripheral volume of distribution (V2, L)")            # Caldes 2009 Table 3 final V2
-    lka    <- log(0.895); label("First-order oral absorption rate constant (Ka, 1/h)")  # Caldes 2009 Table 3 final Ka
-    ltlag  <- log(0.382); label("Absorption lag time (Tlag, h)")                        # Caldes 2009 Table 3 final Lag time
+    lcl    <- log(7.49);  label("Clearance at reference CRCL = 57 mL/min (L/h)")    # Caldes 2009 Table 3 final CL
+    lvc    <- log(31.90); label("Central volume of distribution (L)")               # Caldes 2009 Table 3 final V1
+    lq     <- log(10.20); label("Inter-compartmental clearance (L/h)")            # Caldes 2009 Table 3 final CL_D
+    lvp    <- log(32.0);  label("Peripheral volume of distribution (L)")            # Caldes 2009 Table 3 final V2
+    lka    <- log(0.895); label("First-order oral absorption rate constant (1/h)")  # Caldes 2009 Table 3 final Ka
+    ltlag  <- log(0.382); label("Absorption lag time (h)")                        # Caldes 2009 Table 3 final Lag time
 
     # Bioavailability is logit-transformed in NONMEM to keep F in [0,1].
     # logit(0.825) = log(0.825 / (1 - 0.825)) = 1.5505978...

@@ -72,20 +72,20 @@ Ma_2020_sarilumab_anc <- function() {
     # they live in the companion Xu_2019_sarilumab.R file. This file
     # simulates ANC for the typical PK patient.
     # ---------------------------------------------------------------------
-    lvmax <- log(8.06);   label("Sarilumab Michaelis-Menten maximum elimination rate (Vm, mg/day)")      # Xu 2019 Table 3
-    lkm   <- log(0.939);  label("Sarilumab Michaelis-Menten constant (Km, mg/L)")                        # Xu 2019 Table 3
-    lvc   <- log(2.08);   label("Apparent central volume of distribution (Vc/F, L)")                     # Xu 2019 Table 3
-    lcl   <- log(0.260);  label("Apparent linear clearance (CLO/F, L/day)")                              # Xu 2019 Table 3
-    lka   <- log(0.136);  label("Absorption rate constant (Ka, 1/day)")                                  # Xu 2019 Table 3
-    lq    <- log(0.156);  label("Apparent intercompartmental clearance (Q/F, L/day)")                    # Xu 2019 Table 3
-    lvp   <- log(5.23);   label("Apparent peripheral volume of distribution (Vp/F, L)")                  # Xu 2019 Table 3
+    lvmax <- log(8.06);   label("Sarilumab Michaelis-Menten maximum elimination rate (mg/day)")      # Xu 2019 Table 3
+    lkm   <- log(0.939);  label("Sarilumab Michaelis-Menten constant (mg/L)")                        # Xu 2019 Table 3
+    lvc   <- log(2.08);   label("Apparent central volume of distribution (L)")                     # Xu 2019 Table 3
+    lcl   <- log(0.260);  label("Apparent linear clearance (L/day)")                              # Xu 2019 Table 3
+    lka   <- log(0.136);  label("Absorption rate constant (1/day)")                                  # Xu 2019 Table 3
+    lq    <- log(0.156);  label("Apparent intercompartmental clearance (L/day)")                    # Xu 2019 Table 3
+    lvp   <- log(5.23);   label("Apparent peripheral volume of distribution (L)")                  # Xu 2019 Table 3
 
     # ---------------------------------------------------------------------
     # PD parameters (Ma 2020 Table 4 ANC PopPK/PD)
     # ---------------------------------------------------------------------
     lrbase  <- log(5.38); label("Typical baseline ANC (10^9/L)")                            # Ma 2020 Table 4
-    lemax  <- log(1.50); label("Maximum drug-induced stimulation of ANC elimination (Emax, unitless)")  # Ma 2020 Table 4
-    lec50  <- log(10.3); label("Sarilumab concentration at 50% of Emax (EC50, mg/L)")      # Ma 2020 Table 4
+    lemax  <- log(1.50); label("Maximum drug-induced stimulation of ANC elimination (unitless)")  # Ma 2020 Table 4
+    lec50  <- log(10.3); label("Sarilumab concentration at 50% of Emax (mg/L)")      # Ma 2020 Table 4
 
     # NOTE: Ma 2020 Table 4 prints this parameter as
     #       "211 (1.67-2.88)"
@@ -95,14 +95,14 @@ Ma_2020_sarilumab_anc <- function() {
     # consistent; 211/day is not. We implement Kout=2.11 as the point
     # estimate; the CI from Table 4 is preserved as published.
     # See vignette Assumptions and deviations for full discussion.
-    lkout <- log(2.11);   label("First-order ANC elimination rate constant (Kout, 1/day)")  # Ma 2020 Table 4 (corrected decimal typo; published bootstrap median "211" -> 2.11)
+    lkout <- log(2.11);   label("First-order ANC elimination rate constant (1/day)")  # Ma 2020 Table 4 (corrected decimal typo; published bootstrap median "211" -> 2.11)
 
     lhill <- log(0.862); label("Hill coefficient for sigmoidicity of ANC effect (unitless)")  # Ma 2020 Table 4
 
     # Covariate effect parameters (power-form exponents)
     e_wt_kout       <- 0.875; label("Weight exponent on Kout (ref 71 kg, unitless)")                           # Ma 2020 Table 4
-    e_smoke_rbase    <- 1.15;  label("Smoking multiplier on baseline ANC (power-form: BASE * 1.15^SMOKE)")      # Ma 2020 Table 4
-    e_pricort_emax  <- 0.819; label("Prior corticosteroid multiplier on Emax (power-form: Emax * 0.819^PRICORT)")  # Ma 2020 Table 4
+    e_smoke_rbase    <- 1.15;  label("Smoking multiplier on baseline ANC, power form on SMOKE (unitless)")      # Ma 2020 Table 4
+    e_pricort_emax  <- 0.819; label("Prior corticosteroid multiplier on Emax, power form on PRICORT (unitless)")  # Ma 2020 Table 4
 
     # ---------------------------------------------------------------------
     # Inter-individual variability (omega^2 = log(CV^2 + 1))

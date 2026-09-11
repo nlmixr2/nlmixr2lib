@@ -257,7 +257,7 @@ sims$arm <- factor(sims$arm,
                    levels = c("Control (untreated)",
                               sprintf("%s mg/kg", names(arm_auc))))
 
-ggplot(sims, aes(time, Cc, colour = arm)) +
+ggplot(sims, aes(time, log_cfu, colour = arm)) +
   geom_vline(xintercept = c(0, 24, 48), linetype = "dotted", colour = "grey65") +
   geom_hline(yintercept = 4, linetype = "dashed", colour = "grey40") +
   geom_line(linewidth = 0.8) +
@@ -299,7 +299,7 @@ reduction_tbl <- do.call(rbind, lapply(names(arm_auc), function(d) {
   s <- simulate_arm(arm_auc[[d]], d)
   data.frame(
     dose      = as.integer(d),
-    simulated = s$Cc[s$time == 0] - s$Cc[s$time == 96],
+    simulated = s$log_cfu[s$time == 0] - s$log_cfu[s$time == 96],
     reported  = reported_total[[d]],
     rep_sd    = reported_sd[[d]],
     stringsAsFactors = FALSE
@@ -393,7 +393,7 @@ model.
 # exactly the algebraic E over each 24 h interval.
 check1 <- do.call(rbind, lapply(names(arm_auc), function(d) {
   s   <- simulate_arm(arm_auc[[d]], d)
-  b   <- s$Cc[s$time %in% c(0, 24, 48, 72, 96)]
+  b   <- s$log_cfu[s$time %in% c(0, 24, 48, 72, 96)]
   data.frame(dose = as.integer(d), interval = 1:4,
              ode_drop = -diff(b),
              algebraic = effect_of_index(arm_auc[[d]] / MIC))
@@ -403,14 +403,14 @@ check1 <- do.call(rbind, lapply(names(arm_auc), function(d) {
 # Check 2 -- untreated control. AUC_TILM = 0 must give a per-interval change
 # of exactly E0 and leave the count essentially at the 10^7 CFU/mL baseline.
 ctl <- simulate_arm(rep(0, 4), "control")
-check2 <- c(per_interval_change = -diff(ctl$Cc[ctl$time %in% c(0, 24)]),
+check2 <- c(per_interval_change = -diff(ctl$log_cfu[ctl$time %in% c(0, 24)]),
             e0_parameter = e0,
-            log10_cfu_at_96h = ctl$Cc[ctl$time == 96])
+            log10_cfu_at_96h = ctl$log_cfu[ctl$time == 96])
 
 # Check 3 -- saturation. As AUC_TILM grows without bound the per-interval
 # reduction must approach Emax.
 check3 <- c(reduction_at_huge_exposure =
-              -diff(simulate_arm(rep(1e6, 4), "sat")$Cc[c(1, 49)]),
+              -diff(simulate_arm(rep(1e6, 4), "sat")$log_cfu[c(1, 49)]),
             emax_parameter = emax)
 
 cat(sprintf("Check 1  max |ODE drop - algebraic E| over 16 intervals: %.3e\n",

@@ -68,8 +68,8 @@ Dowling_2008_naloxone <- function() {
     lvp2     <- log(33.6) ; label("Second peripheral volume of distribution V4 (L)")           # Table 1: V4 = 33.6 L
     lq       <- log(5.66) ; label("Inter-compartmental clearance Q3 (L/h)")                    # Table 1: Q3 = 5.66 L/h
     lq2      <- log(29.8) ; label("Inter-compartmental clearance Q4 (L/h)")                    # Table 1: Q4 = 29.8 L/h
-    lfdepot  <- log(0.36) ; label("Relative bioavailability of intramuscular naloxone (F_im, unitless)")  # Table 1: F_tot[im] = 0.36 (IV F fixed to 1 as structural anchor)
-    lfdepot2 <- log(0.038); label("Relative bioavailability of intranasal naloxone (F_in, unitless)")    # Table 1: F_tot[in] = 0.038 (IV F fixed to 1 as structural anchor)
+    lfdepot  <- log(0.36) ; label("Relative bioavailability of intramuscular naloxone (unitless)")  # Table 1: F_tot[im] = 0.36 (IV F fixed to 1 as structural anchor)
+    lfdepot2 <- log(0.038); label("Relative bioavailability of intranasal naloxone (unitless)")    # Table 1: F_tot[in] = 0.038 (IV F fixed to 1 as structural anchor)
 
     # Covariate effects -------------------------------------------------------
     # Both exponents are hard-coded in the printed final-model equations

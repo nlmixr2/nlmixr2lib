@@ -47,14 +47,14 @@ Dunn_2025_tranexamicAcid <- function() {
   ini({
     # Structural parameters from Dunn 2025 Table 2 Final PK Model. All clearances
     # and volumes are reported for a typical participant of 80 kg actual body weight.
-    lcl          <- log(8.59);  label("Clearance for the reference 80 kg subject (CL, L/h)")            # Dunn 2025 Table 2
-    lvc          <- log(10.7);  label("Central volume of distribution for the reference 80 kg subject (Vc, L)")  # Dunn 2025 Table 2
-    lq           <- log(28.9);  label("Inter-compartmental clearance for the reference 80 kg subject (Q, L/h)")  # Dunn 2025 Table 2
-    lvp          <- log(15.0);  label("Peripheral volume of distribution for the reference 80 kg subject (Vp, L)") # Dunn 2025 Table 2
-    lka_oral     <- log(0.18);  label("First-order oral absorption rate constant (Ka_oral, 1/h)")       # Dunn 2025 Table 2
-    lka_im       <- log(2.31);  label("First-order intramuscular absorption rate constant (Ka_IM, 1/h)") # Dunn 2025 Table 2
-    lfdepot_oral <- log(0.56);  label("Oral bioavailability (F_oral, fraction)")                        # Dunn 2025 Table 2
-    llag_oral    <- log(0.16);  label("Oral absorption lag time (Tlag_oral, h)")                        # Dunn 2025 Table 2
+    lcl          <- log(8.59);  label("Clearance for the reference 80 kg subject (L/h)")            # Dunn 2025 Table 2
+    lvc          <- log(10.7);  label("Central volume of distribution for the reference 80 kg subject (L)")  # Dunn 2025 Table 2
+    lq           <- log(28.9);  label("Inter-compartmental clearance for the reference 80 kg subject (L/h)")  # Dunn 2025 Table 2
+    lvp          <- log(15.0);  label("Peripheral volume of distribution for the reference 80 kg subject (L)") # Dunn 2025 Table 2
+    lka_oral     <- log(0.18);  label("First-order oral absorption rate constant (1/h)")       # Dunn 2025 Table 2
+    lka_im       <- log(2.31);  label("First-order intramuscular absorption rate constant (1/h)") # Dunn 2025 Table 2
+    lfdepot_oral <- log(0.56);  label("Oral bioavailability (fraction)")                        # Dunn 2025 Table 2
+    llag_oral    <- log(0.16);  label("Oral absorption lag time (h)")                        # Dunn 2025 Table 2
 
     # Allometric body-weight scaling. Exponents were estimated (not fixed); pooled
     # across the clearance and volume categories per Dunn 2025 Results: "an exponent

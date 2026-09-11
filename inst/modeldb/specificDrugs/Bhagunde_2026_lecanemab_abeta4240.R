@@ -206,10 +206,10 @@ Bhagunde_2026_lecanemab_abeta4240 <- function() {
     # these was re-estimated in the present paper. Source of every      #
     # value: Majid 2024 Table 1 and the equations printed beneath it.   #
     # ---------------------------------------------------------------- #
-    lcl <- fixed(log(0.0154)); label("Lecanemab clearance at the reference subject (CL, L/h)")           # Majid 2024 Table 1: CL = 0.0154 L/h (RSE 1.60%)
-    lvc <- fixed(log(3.24));   label("Lecanemab central volume at the reference subject (V1, L)")        # Majid 2024 Table 1: V1 = 3.24 L (RSE 0.799%)
-    lvp <- fixed(log(2.00));   label("Lecanemab peripheral volume at the reference subject (V2, L)")     # Majid 2024 Table 1: V2 = 2.00 L (RSE 4.09%)
-    lq  <- fixed(log(0.00718)); label("Lecanemab intercompartmental clearance (Q, L/h)")                 # Majid 2024 Table 1: Q = 0.00718 L/h (RSE 4.23%)
+    lcl <- fixed(log(0.0154)); label("Lecanemab clearance at the reference subject (L/h)")           # Majid 2024 Table 1: CL = 0.0154 L/h (RSE 1.60%)
+    lvc <- fixed(log(3.24));   label("Lecanemab central volume at the reference subject (L)")        # Majid 2024 Table 1: V1 = 3.24 L (RSE 0.799%)
+    lvp <- fixed(log(2.00));   label("Lecanemab peripheral volume at the reference subject (L)")     # Majid 2024 Table 1: V2 = 2.00 L (RSE 4.09%)
+    lq  <- fixed(log(0.00718)); label("Lecanemab intercompartmental clearance (L/h)")                 # Majid 2024 Table 1: Q = 0.00718 L/h (RSE 4.23%)
 
     e_wt_cl            <- fixed(0.353);  label("Power exponent for body weight on CL, (WT/72)^e (unitless)")            # Majid 2024 Table 1: Weight ~ CL exponent 0.353
     e_alb_cl           <- fixed(-0.374); label("Power exponent for serum albumin on CL, (ALB/43)^e (unitless)")         # Majid 2024 Table 1: Albumin ~ CL exponent -0.374
@@ -225,8 +225,8 @@ Bhagunde_2026_lecanemab_abeta4240 <- function() {
     # (Bhagunde 2026 Section 2.2.2 equation and Table 1)                #
     # ---------------------------------------------------------------- #
     lrbase <- log(0.0864);    label("Baseline plasma Abeta42/40 ratio at the reference subject (unitless ratio)")   # Bhagunde 2026 Table 1: Baseline plasma Abeta42/40 ratio = 0.0864 (RSE 0.272%)
-    lkout  <- log(1.51);      label("First-order degradation rate constant of the plasma Abeta42/40 pool (Kout, 1/year)")  # Bhagunde 2026 Table 1: Kout = 1.51 /year (RSE 9.63%), t1/2 = ln(2)/1.51 = 0.46 year, matching the paper approximately 0.5 years
-    lslope <- log(0.000704);  label("Linear slope of the lecanemab-concentration effect on Abeta42/40 production (SLOPE, per ug/mL)")  # Bhagunde 2026 Table 1: Slope for lecanemab exposure effect = 0.000704 per ug/mL (RSE 3.89%)
+    lkout  <- log(1.51);      label("First-order degradation rate constant of the plasma Abeta42/40 pool (1/year)")  # Bhagunde 2026 Table 1: Kout = 1.51 /year (RSE 9.63%), t1/2 = ln(2)/1.51 = 0.46 year, matching the paper approximately 0.5 years
+    lslope <- log(0.000704);  label("Linear slope of the lecanemab-concentration effect on Abeta42/40 production (per ug/mL)")  # Bhagunde 2026 Table 1: Slope for lecanemab exposure effect = 0.000704 per ug/mL (RSE 3.89%)
 
     e_age_rbase            <- -0.00181; label("Log-linear coefficient for age on baseline Abeta42/40, exp(e * (AGE - 72)) (per year)")            # Bhagunde 2026 Table 1: Age on baseline (exponential) = -0.00181 (RSE 15.4%)
     e_apoe4_carrier_rbase  <- 0.0138;   label("Log-linear coefficient for APOE4-carrier status on baseline Abeta42/40, exp(e * APOE4_CARRIER) (unitless)")  # Bhagunde 2026 Table 1: APOE4 carrier on baseline = 0.0138 (RSE 26.9%)

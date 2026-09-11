@@ -87,7 +87,8 @@ test_that("checkNamingRegisters does not flag legitimate register patterns", {
   dir.create(file.path(tmp, "inst", "references"), recursive = TRUE)
   dir.create(file.path(tmp, "inst", "modeldb"), recursive = TRUE)
   writeLines(c("d/dt(central_dox) <- -k * central_dox",
-               "d/dt(igg) <- -kel * igg"),
+               "d/dt(igg) <- -kel * igg",
+               "kmet <- exp(lkmet_ntp_peripheral1)"),
              file.path(tmp, "inst", "modeldb", "Real_2020_drug.R"))
 
   writeLines(c(
@@ -108,6 +109,13 @@ test_that("checkNamingRegisters does not flag legitimate register patterns", {
     "# A suffix appears in source only inside a compound token (`central_dox`),",
     "# never bare, so the usage check has to match that form.",
     "### dox (**suffix used only as _dox**)",
+    "- **Type:** metabolite-suffix",
+    "- **Example models:** `Real_2020_drug.R`.",
+    "",
+    "# ...and a suffix naming a conversion rate constant lands in the MIDDLE of",
+    "# the compound (`lkmet_ntp_peripheral1`), matching neither end. Reported as",
+    "# registered-but-unused until the check looked there too.",
+    "### ntp (**suffix used only as _ntp_**)",
     "- **Type:** metabolite-suffix",
     "- **Example models:** `Real_2020_drug.R`.",
     "",

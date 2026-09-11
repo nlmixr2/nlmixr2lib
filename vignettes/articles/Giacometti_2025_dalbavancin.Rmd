@@ -1,0 +1,789 @@
+---
+title: "Dalbavancin (Giacometti 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dalbavancin (Giacometti 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Article: [Entropy 2025;27(6):602](https://doi.org/10.3390/e27060602)
+* Analysis code (weights not distributed): <https://github.com/TommyGiak/pharmacoNODE>
+
+Two model files come from this paper, both fitted to the same 218-patient
+cohort and differing only in how they were estimated:
+
+```{r models}
+mod_nlme <- readModelDb("Giacometti_2025_dalbavancin_nlme")
+mod_nlls <- readModelDb("Giacometti_2025_dalbavancin_nlls")
+
+ui_nlme <- rxode2::rxode(mod_nlme)
+ui_nlls <- rxode2::rxode(mod_nlls)
+
+ui_nlme$reference
+```
+
+* `Giacometti_2025_dalbavancin_nlme` -- the nonlinear mixed-effects (Monolix,
+  maximum likelihood) fit.
+* `Giacometti_2025_dalbavancin_nlls` -- the naive-pooled nonlinear
+  least-squares fit, packaged as the paper's **negative comparator**.
+
+```{r descriptions}
+ui_nlme$description
+ui_nlls$description
+```
+
+# What this paper is, and what is extractable from it
+
+Giacometti 2025 is a three-way methodological comparison. It asks whether a
+**Neural ODE** (NODE) -- an ODE whose right-hand side is replaced by a
+feed-forward neural network -- can predict dalbavancin concentrations as well
+as, or better than, the two conventional approaches. All three arms were
+trained and evaluated on one real therapeutic-drug-monitoring cohort under
+6-fold cross-validation.
+
+| Arm | Paper's Table 4 column | Extractable? |
+|---|---|---|
+| Naive-pooled nonlinear least squares, 2-compartment | "Two-Compartment" | Yes -> `Giacometti_2025_dalbavancin_nlls` |
+| Nonlinear mixed effects (Monolix), 2-compartment | "NLME Model" | Yes -> `Giacometti_2025_dalbavancin_nlme` |
+| Neural ODE (with and without covariates) | none | **No** -- see below |
+| Prior literature values | "Literature [15]" | Already in the library as `Cojutti_2024_dalbavancin` |
+
+**The Neural ODE itself is not extractable, and that is a reporting limit
+rather than a choice made here.** Its right-hand side is a feed-forward network
+with two (no-covariate) or three (covariate) hidden layers of 20 softplus units
+over four or nine inputs, plus a separate volume network; that is several
+hundred trained weights, and the paper publishes none of them. The only NODE
+quantities given numerically are the learned distribution volumes,
+`V_NODE = 5.7 +/- 0.1 L` (Equation 5) and `V_NODE,cov = 5.2 +/- 0.8 L`
+(Equation 6). The analysis code is public but the trained weights and the
+patient data are not, and nlmixr2 / rxode2 has no construct for a layered
+network inside `model()` in any case. No weight is invented here; the two
+conventional arms are extracted in full and the NODE volume is used below only
+as an independent cross-check on `V1`.
+
+# Population
+
+The cohort is 218 adults who received dalbavancin under therapeutic drug
+monitoring at the IRCCS Azienda Ospedaliero-Universitaria di Bologna between
+April 2021 and December 2024 (Methods 2.1). Dalbavancin was given for skin and
+soft tissue infection and, as a second-line agent, for staphylococcal bone and
+joint infection, vascular prosthetic joint infection and endocarditis. There
+were 703 recorded intravenous administrations spanning 350 to 1500 mg, and 669
+plasma concentration measurements. Sampling is explicitly sparse and irregular:
+patients frequently received several doses before any concentration was drawn.
+
+Baseline covariates (Table 1) were age 18 to 92 years (mean 64, SD 16), height
+145 to 190 cm (mean 171, SD 9), weight 40 to 140 kg (mean 77, SD 16) and serum
+creatinine 19 to 411 umol/L (mean 94, SD 48). Sex was 145 male and 73 female
+(33.5% female). Race and ethnicity are not reported.
+
+```{r population}
+str(ui_nlme$population, max.level = 1)
+```
+
+**No covariate is carried by either model, deliberately.** Methods 2.2 states
+that "the covariates were not included in the NLME and two-compartment models
+because, when tested, their inclusion did not improve the results", and
+Appendix B reports the supporting test: the residual distribution of the
+Monolix fit with per-fold best covariates was indistinguishable from the
+covariate-free fit (Kolmogorov-Smirnov p = 0.45), so the authors kept the
+simpler model as "a robust and scalable version" that "does not rely on the
+specific choices of the covariates to include for each parameter, which vary a
+lot depending on the specific iterations of the cross-validation." All five
+screened covariates are recorded in each model's `covariatesDataExcluded`
+metadata so the provenance of the screen is preserved.
+
+# Source trace
+
+Every value below is a plus-or-minus MEAN over the six cross-validation folds,
+and the quoted spread is the standard deviation **across folds** (Table 4
+caption). It is not a standard error, not an RSE, and not a between-subject
+variance -- a point that matters for the inter-individual-variability gap
+discussed under Assumptions and deviations.
+
+| Equation / parameter | NLME value | NLLS value | Source location |
+|---|---|---|---|
+| `d/dt(central)`, `d/dt(peripheral1)` | n/a | n/a | Equation 2a; schematic Figure 2; Monolix configuration in Methods 2.2 |
+| `Cc <- central / vc` | n/a | n/a | Equation 2a (the state divided by `V1`); units from Table 4 row labels |
+| `lcl` (CL, L/h) | 0.0367 (SD 0.0006) | 0.054 (SD 0.002) | Table 4, row "Cl (L/h)" |
+| `lvc` (V1, L) | 6.32 (SD 0.15) | 5.3 (SD 0.4) | Table 4, row "V 1 (L)" |
+| `lq` (Q, L/h) | 0.028 (SD 0.003) | 0.42 (SD 0.14) | Table 4, row "Q (L/h)" |
+| `lvp` (V2, L) | 13.9 (SD 0.6) | 8.8 (SD 1.5) | Table 4, row "V 2 (L)" |
+| `propSd` | 0 (fixed) | 0 (fixed) | Not reported anywhere in the article |
+| `addSd` | 0 (fixed) | 0 (fixed) | Not reported anywhere in the article |
+| inter-individual variability | not declared | structurally absent | Table 4 prints no omega block; Methods 2.2 for the NLLS arm |
+| efficacy threshold 8.04 mg/L | n/a | n/a | Methods 2.1 and Figure 3 caption |
+| `V_NODE = 5.7 L` (cross-check only) | n/a | n/a | Equation 5 |
+
+## Reading Equation 2a
+
+Equation 2a is printed as
+
+```
+dCc/dt = -Cc*Cl/V1 - Cc*Q/V1 + Cp*Q/V2
+dCp/dt =  Cc*Q/V1  - Cp*Q/V2
+```
+
+with the surrounding prose naming `Cc` and `Cp` "the concentrations of the two
+compartments". Read literally on concentrations this system does **not**
+conserve mass, because the peripheral compartment's influx and efflux would be
+divided by different volumes. Substituting amounts (`Cc -> A1`, `Cp -> A2`)
+makes it the canonical mass-conserving two-compartment system, with
+`d(A1 + A2)/dt = -(CL/V1) * A1`. The equation is therefore read on **amounts**
+and the prose labelling is the slip. Two independent facts confirm this
+reading: the NLME arm was fitted in Monolix configured as "two-compartment
+distribution, infusion, no delay and linear elimination" (Methods 2.2), which
+is the standard mass-conserving form; and Figure 2 describes the central
+compartment as "the only compartment that can eliminate the antibiotic at rate
+Cl". The mass-balance check below is the mechanical version of this argument.
+
+# Virtual cohort
+
+**These models are fully deterministic.** Neither declares an `eta`, and both
+residual-error terms are `fixed(0)` because the paper reports no variance
+component of any kind. There is therefore no simulated cohort, no RNG, and no
+between-subject spread to summarise -- so the assertions in this vignette are
+exact numerical identities rather than tolerance bands on a random draw, and
+they are written tight on purpose. (The usual caution about assertions on
+cohort-derived quantities being irreproducible across solver thread counts does
+not apply to anything below; there is nothing random to draw.)
+
+The "cohort" is instead one subject per dose level, spanning the dose range
+the paper reports (350 to 1500 mg, Methods 2.1), simulated under both models.
+
+```{r cohort}
+DOSES <- c(350, 500, 1000, 1500)
+
+# The paper states "infusion, no delay" (Methods 2.2) but never gives the
+# infusion duration; 30 min is the dalbavancin label duration. See Assumptions.
+T_INF <- 0.5
+
+# Dense early, coarse late: the distribution phase is resolved finely so NCA
+# recovers Cmax and AUC exactly, and the record runs to 5000 h (about 7.5
+# NLME terminal half-lives) so the AUC extrapolation is negligible.
+grid <- sort(unique(c(
+  seq(0,    2,    by =  0.05),
+  seq(2,    48,   by =  0.5),
+  seq(48,   720,  by =  4),
+  seq(720,  5000, by = 20)
+)))
+
+make_arm <- function(dose, id) {
+  as.data.frame(
+    rxode2::et(amt = dose, dur = T_INF, cmt = "central", id = id) |>
+      rxode2::et(grid, cmt = "central", id = id)
+  ) |>
+    dplyr::mutate(dose_mg = dose)
+}
+
+events <- dplyr::bind_rows(
+  lapply(seq_along(DOSES), function(i) make_arm(DOSES[i], i))
+)
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+c(rows = nrow(events), subjects = length(unique(events$id)))
+```
+
+Observation rows carry `cmt = "central"` -- the ODE state, never the
+observable name `Cc`. rxode2 returns `Cc` as an output column at those rows.
+
+# Simulation
+
+```{r simulate}
+solve_one <- function(mod, label) {
+  s <- rxode2::rxSolve(
+    mod, events,
+    keep       = c("dose_mg"),
+    returnType = "data.frame",
+    atol = 1e-14, rtol = 1e-12
+  )
+  if (is.null(s$id)) s$id <- 1L
+  s$model <- label
+  s
+}
+
+sim <- dplyr::bind_rows(
+  solve_one(mod_nlme, "NLME"),
+  solve_one(mod_nlls, "NLLS")
+) |>
+  dplyr::mutate(
+    arm = paste0(model, " ", dose_mg, " mg"),
+    # Disjoint ids across the two models so PKNCA never merges subjects.
+    nca_id = id + ifelse(model == "NLLS", length(DOSES), 0L)
+  )
+
+stopifnot(all(sim$Cc >= 0), !anyNA(sim$Cc))
+```
+
+# Replicate published figures
+
+## Figure 3 -- the two conventional arms against the efficacy threshold
+
+Figure 3 of Giacometti 2025 overlays the NODE, NLME and two-compartment
+predictions for one test patient, with the 8.04 mg/L efficacy threshold drawn
+as a red dashed line. The NODE curve cannot be reproduced (no weights), so the
+panel below shows the two conventional arms after a single 1500 mg infusion.
+The qualitative feature the paper reports is visible directly: the two curves
+agree through the first days and then diverge, with the least-squares fit
+falling away faster.
+
+```{r figure-3}
+sim |>
+  dplyr::filter(dose_mg == 1500, time > 0, time <= 1344) |>
+  ggplot(aes(time / 24, Cc, colour = model)) +
+  geom_hline(yintercept = 8.04, linetype = "dashed", colour = "red") +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(
+    x = "Time since dose (days)", y = "Total plasma dalbavancin (mg/L)",
+    colour = "Estimation",
+    title = "Single 1500 mg infusion, typical-value prediction",
+    caption = paste(
+      "Structure of Figure 3 of Giacometti 2025 (NODE arm omitted: weights not published).",
+      "Red dashed line is the 8.04 mg/L efficacy threshold."
+    )
+  )
+```
+
+## Figure 4 -- the long-time bias of the least-squares fit
+
+Figure 4 plots residuals against time since the most recent dose and reports
+"a bias in long time predictions for the two-compartment model"; the Discussion
+states that "the two-compartment model systematically underestimates long-term
+drug concentrations". Observed data are not available, so the panel below shows
+the model-versus-model relative difference, which is the deterministic core of
+that claim: the least-squares fit sits above the NLME fit early (it absorbs
+drug into the peripheral compartment much faster) and below it in the far tail.
+
+```{r figure-4}
+rel <- sim |>
+  dplyr::filter(dose_mg == 1500, time > T_INF) |>
+  dplyr::select(time, model, Cc) |>
+  tidyr::pivot_wider(names_from = model, values_from = Cc) |>
+  dplyr::mutate(rel_pct = 100 * (NLLS - NLME) / NLME)
+
+ggplot(rel, aes(time / 24, rel_pct)) +
+  geom_hline(yintercept = 0, colour = "grey50") +
+  geom_line(linewidth = 0.8) +
+  labs(
+    x = "Time since dose (days)",
+    y = "NLLS relative to NLME (%)",
+    title = "Relative difference between the two conventional arms",
+    caption = "Deterministic analogue of Figure 4 of Giacometti 2025."
+  )
+```
+
+# Transcription gate: `ini()` against Table 4
+
+Table 4 is restated here as literals and compared against what the two model
+files actually carry. This is the only check in this vignette that can catch a
+mistranscribed parameter -- every closed-form check further down reads the same
+`ini()` values on both sides of the comparison, so it validates structure, not
+transcription.
+
+```{r transcription-gate}
+# Giacometti 2025 Table 4, typed from the article. Columns are the paper's
+# own: "Two-Compartment" (naive-pooled NLLS) and "NLME Model".
+table4 <- tibble::tribble(
+  ~param, ~nlls,  ~nlme,
+  "lcl",   0.054,  0.0367,   # Cl (L/h)
+  "lvc",   5.3,    6.32,     # V 1 (L)
+  "lq",    0.42,   0.028,    # Q (L/h)
+  "lvp",   8.8,    13.9      # V 2 (L)
+)
+
+packaged <- data.frame(
+  param = table4$param,
+  nlls  = exp(ui_nlls$theta[table4$param]),
+  nlme  = exp(ui_nlme$theta[table4$param])
+)
+
+# Exact equality up to the double-precision round trip through log()/exp().
+stopifnot(
+  isTRUE(all.equal(packaged$nlls, table4$nlls, tolerance = 1e-12)),
+  isTRUE(all.equal(packaged$nlme, table4$nlme, tolerance = 1e-12))
+)
+
+# Both residual terms and every variance component must be absent / zero: the
+# article reports none, and inventing one is the failure mode this guards.
+# `neta1` is asserted PRESENT first -- if the column ever disappears,
+# `all(is.na(NULL))` is `all(logical(0))` is TRUE, i.e. a gate that cannot go
+# red.
+stopifnot(
+  "neta1" %in% names(ui_nlme$iniDf), "neta1" %in% names(ui_nlls$iniDf),
+  nrow(ui_nlme$iniDf) > 0L, nrow(ui_nlls$iniDf) > 0L
+)
+stopifnot(
+  ui_nlme$theta[["propSd"]] == 0, ui_nlme$theta[["addSd"]] == 0,
+  ui_nlls$theta[["propSd"]] == 0, ui_nlls$theta[["addSd"]] == 0,
+  all(is.na(ui_nlme$iniDf$neta1)), all(is.na(ui_nlls$iniDf$neta1))
+)
+
+data.frame(
+  Parameter        = c("CL (L/h)", "V1 (L)", "Q (L/h)", "V2 (L)"),
+  `Table 4 NLLS`   = table4$nlls,  `Packaged NLLS` = packaged$nlls,
+  `Table 4 NLME`   = table4$nlme,  `Packaged NLME` = packaged$nlme,
+  check.names      = FALSE
+) |>
+  knitr::kable(caption = "Table 4 of Giacometti 2025 vs the packaged `ini()` values.")
+```
+
+# Closed-form verification
+
+Three structural checks. Each goes red on a mis-signed or misrouted ODE term, a
+wrong volume in `Cc`, or a wrong micro-constant. All are exact identities, not
+tolerance bands.
+
+## 1. The solved ODE against the analytical two-compartment infusion solution
+
+```{r verify-analytic}
+micro <- function(ui) {
+  th  <- ui$theta
+  cl  <- exp(th[["lcl"]]); vc <- exp(th[["lvc"]])
+  q   <- exp(th[["lq"]]);  vp <- exp(th[["lvp"]])
+  k10 <- cl / vc; k12 <- q / vc; k21 <- q / vp
+  s   <- k10 + k12 + k21
+  d   <- sqrt(s^2 - 4 * k10 * k21)
+  list(cl = cl, vc = vc, q = q, vp = vp, k21 = k21,
+       alpha = (s + d) / 2, beta = (s - d) / 2,
+       vss = vc + vp, t_half_beta = log(2) / ((s - d) / 2))
+}
+
+# Analytical Cc(t) for a single zero-order infusion into a 2-compartment
+# system (dose in mg, volumes in L, so Cc is mg/L).
+conc_analytic <- function(p, dose, t_inf, t) {
+  k0 <- dose / t_inf
+  A  <- (k0 / p$vc) * (p$k21 - p$alpha) / ((p$beta  - p$alpha) * p$alpha)
+  B  <- (k0 / p$vc) * (p$k21 - p$beta)  / ((p$alpha - p$beta)  * p$beta)
+  ifelse(
+    t <= t_inf,
+    A * (1 - exp(-p$alpha * t)) + B * (1 - exp(-p$beta * t)),
+    A * (1 - exp(-p$alpha * t_inf)) * exp(-p$alpha * (t - t_inf)) +
+      B * (1 - exp(-p$beta  * t_inf)) * exp(-p$beta  * (t - t_inf))
+  )
+}
+
+pars <- list(NLME = micro(ui_nlme), NLLS = micro(ui_nlls))
+
+analytic_chk <- sim |>
+  dplyr::filter(time > 0) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(Cc_ref = conc_analytic(pars[[model]], dose_mg, T_INF, time)) |>
+  dplyr::ungroup() |>
+  dplyr::filter(Cc_ref > 1e-8) |>
+  dplyr::mutate(pct = 100 * (Cc - Cc_ref) / Cc_ref)
+
+max_analytic_pct <- max(abs(analytic_chk$pct))
+
+# Realised 1.2e-9 %. The solver is run at atol 1e-14 / rtol 1e-12, so this is
+# machine-level agreement and 0.01% leaves five orders of magnitude of headroom.
+#
+# SCOPE OF THIS GATE. Both sides read CL, V1, Q and V2 from the model's own
+# ini(), so it is a STRUCTURAL check: it goes red on a mis-signed or misrouted
+# ODE term, on `Cc` divided by the wrong volume, and on a wrong micro-constant.
+# It CANNOT go red on a mistranscribed Table 4 value, because a wrong theta
+# moves both sides together. The same caveat applies to the mass-balance,
+# half-life and PKNCA checks below. Transcription is guarded separately, by the
+# executable Table 4 comparison in the next section.
+stopifnot(max_analytic_pct < 0.01)
+signif(max_analytic_pct, 3)
+```
+
+## 2. Mass balance -- `AUC[0,T] * CL == dose in - amount remaining`
+
+This identity holds at **any** T, with no steady-state or terminal-phase
+assumption, and it fails if `Cc` is divided by the wrong volume or if either
+inter-compartmental term is mis-signed.
+
+```{r verify-mass-balance}
+mass_balance <- sim |>
+  dplyr::filter(time > 0) |>
+  dplyr::group_by(model, dose_mg) |>
+  dplyr::arrange(time, .by_group = TRUE) |>
+  dplyr::group_modify(function(d, key) {
+    cl <- pars[[key$model]]$cl
+    purrr_rows <- lapply(c(168, 720, 5000), function(Tend) {
+      x   <- d[d$time <= Tend, ]
+      auc <- sum(diff(x$time) * (utils::head(x$Cc, -1) + utils::tail(x$Cc, -1)) / 2)
+      rem <- utils::tail(x$central, 1) + utils::tail(x$peripheral1, 1)
+      data.frame(
+        Tend      = Tend,
+        eliminated = auc * cl,
+        expected   = key$dose_mg - rem
+      )
+    })
+    dplyr::bind_rows(purrr_rows)
+  }) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(pct = 100 * (eliminated - expected) / expected)
+
+max_mb_pct <- max(abs(mass_balance$pct))
+
+# Realised 0.0043%: pure trapezoidal error of the observation grid, not model
+# error. 0.05% admits that and still goes red on a structural mistake.
+stopifnot(max_mb_pct < 0.05)
+signif(max_mb_pct, 3)
+```
+
+## 3. Terminal half-life recovered from the simulated tail
+
+```{r verify-half-life}
+half_life_chk <- sim |>
+  dplyr::filter(dose_mg == 1500, time >= 3000, time <= 5000, Cc > 0) |>
+  dplyr::group_by(model) |>
+  dplyr::summarise(
+    t_half_sim = log(2) / -stats::coef(stats::lm(log(Cc) ~ time))[2],
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    t_half_closed = vapply(model, function(m) pars[[m]]$t_half_beta, numeric(1)),
+    pct           = 100 * (t_half_sim - t_half_closed) / t_half_closed
+  )
+
+# Fitted well past washout of the alpha phase (>= 3000 h is 48 NLLS and 4.5
+# NLME alpha half-lives), so this recovers log(2)/beta to machine precision.
+stopifnot(max(abs(half_life_chk$pct)) < 0.1)
+
+half_life_chk |>
+  dplyr::mutate(dplyr::across(where(is.numeric), \(x) signif(x, 5))) |>
+  dplyr::rename(
+    "Estimation"                 = model,
+    "t1/2 from simulated tail (h)" = t_half_sim,
+    "t1/2 closed form (h)"         = t_half_closed,
+    "Difference (%)"               = pct
+  ) |>
+  knitr::kable(caption = "Terminal half-life: simulated tail slope vs log(2)/beta.")
+```
+
+# PKNCA validation
+
+The paper reports no NCA parameters, so the reference column is the closed-form
+value each parameter must take for a single intravenous dose:
+`AUC(0-inf) = Dose / CL` exactly, and `t1/2 = log(2) / beta`. That makes this a
+real gate rather than a restatement of the model.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(nca_id, time, Cc, arm)
+
+# Guarantee a time-zero record per (arm, id). For an intravenous dose the
+# pre-dose concentration is 0. Filter above is !is.na() only -- adding
+# `time > 0` or `Cc > 0` would drop this anchor and trigger PKNCA's
+# "AUC range starting (0) before the first measurement" warning.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(nca_id, arm) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(nca_id, arm, time, .keep_all = TRUE) |>
+  dplyr::arrange(nca_id, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + nca_id)
+
+# Dose records come from `events`, NOT from `sim`: the rxSolve output frame
+# carries no `evid` / `amt` columns. The same event table drove both solves, so
+# it is replicated per model with the matching disjoint `nca_id` offset.
+dose_df <- dplyr::bind_rows(
+  events |> dplyr::mutate(model = "NLME", nca_id = id),
+  events |> dplyr::mutate(model = "NLLS", nca_id = id + length(DOSES))
+) |>
+  dplyr::filter(evid != 0, !is.na(amt)) |>
+  dplyr::mutate(arm = paste0(model, " ", dose_mg, " mg")) |>
+  dplyr::select(nca_id, time, amt, arm) |>
+  dplyr::distinct()
+
+stopifnot(nrow(dose_df) == 2L * length(DOSES),
+          setequal(dose_df$arm, unique(sim_nca$arm)))
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + nca_id)
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+
+nca_res <- suppressWarnings(
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals),
+                verbose = FALSE)
+)
+```
+
+## Comparison against closed-form reference values
+
+```{r nca-compare}
+reference <- sim |>
+  dplyr::distinct(arm, model, dose_mg) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    cmax       = conc_analytic(pars[[model]], dose_mg, T_INF, T_INF),
+    tmax       = T_INF,
+    aucinf.obs = dose_mg / pars[[model]]$cl,
+    half.life  = pars[[model]]$t_half_beta
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::select(arm, cmax, tmax, aucinf.obs, half.life)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = reference,
+  by            = "arm",
+  units         = c(cmax = "mg/L", tmax = "h",
+                    aucinf.obs = "mg*h/L", half.life = "h"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated NCA vs closed-form reference (Dose/CL for AUC(0-inf),",
+    "log(2)/beta for t1/2, analytical solution for Cmax).",
+    "* marks a >20% difference; none is expected or observed."
+  ),
+  align = c("l", rep("r", ncol(cmp) - 1))
+)
+```
+
+```{r nca-gate}
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(arm, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::left_join(
+    reference |> dplyr::rename(cmax_ref = cmax, auc_ref = aucinf.obs,
+                              thalf_ref = half.life, tmax_ref = tmax),
+    by = "arm"
+  )
+
+auc_pct   <- 100 * (nca_wide$aucinf.obs - nca_wide$auc_ref)   / nca_wide$auc_ref
+cmax_pct  <- 100 * (nca_wide$cmax       - nca_wide$cmax_ref)  / nca_wide$cmax_ref
+thalf_pct <- 100 * (nca_wide$half.life  - nca_wide$thalf_ref) / nca_wide$thalf_ref
+
+# Realised: AUC 0.001%, Cmax 0.000%, t1/2 -0.62% (NLME) / -0.26% (NLLS).
+# AUC and Cmax are exact identities, so they are held to 0.05%. The t1/2 bound
+# is looser because PKNCA selects its own lambda-z window (from 10.5 h here),
+# which still carries a trace of the alpha phase; 2% admits that and still
+# goes red on a mis-transcribed Q or V2, either of which moves beta by tens of
+# percent.
+stopifnot(
+  max(abs(auc_pct))   < 0.05,
+  max(abs(cmax_pct))  < 0.05,
+  max(abs(thalf_pct)) < 2
+)
+c(auc = signif(max(abs(auc_pct)), 3),
+  cmax = signif(max(abs(cmax_pct)), 3),
+  half_life = signif(max(abs(thalf_pct)), 3))
+```
+
+`AUC(0-inf)` also has to be exactly proportional to dose, since neither model
+has any nonlinearity:
+
+```{r nca-linearity}
+lin <- nca_wide |>
+  dplyr::mutate(dose_mg = as.numeric(sub("^\\w+ (\\d+) mg$", "\\1", arm)),
+                model   = sub("^(\\w+) .*$", "\\1", arm),
+                auc_per_mg = aucinf.obs / dose_mg) |>
+  dplyr::group_by(model) |>
+  dplyr::summarise(spread_pct = 100 * (max(auc_per_mg) - min(auc_per_mg)) /
+                     mean(auc_per_mg), .groups = "drop")
+stopifnot(all(lin$spread_pct < 0.01))
+lin
+```
+
+# Reproducing the paper's central quantitative claims
+
+Each row below restates a claim the paper makes in prose and checks it against
+the packaged models. Every quantity is deterministic.
+
+```{r claims}
+p_nlme <- pars$NLME
+p_nlls <- pars$NLLS
+
+# Paper's "Literature [15]" column of Table 4, transcribed. Independently
+# available in this library as Cojutti_2024_dalbavancin.
+ui_coj  <- rxode2::rxode(readModelDb("Cojutti_2024_dalbavancin"))
+coj_th  <- exp(ui_coj$theta[c("lcl", "lvc", "lq", "lvp")])
+lit_col <- c(lcl = 0.031, lvc = 5.9, lq = 0.038, lvp = 9.6)
+lit_pct <- 100 * (coj_th - lit_col) / lit_col
+
+# Time above the 8.04 mg/L efficacy threshold after one 1500 mg infusion.
+t_above <- sim |>
+  dplyr::filter(dose_mg == 1500, time > T_INF, Cc >= 8.04) |>
+  dplyr::group_by(model) |>
+  dplyr::summarise(t_last = max(time), .groups = "drop")
+t_above_nlme <- t_above$t_last[t_above$model == "NLME"]
+t_above_nlls <- t_above$t_last[t_above$model == "NLLS"]
+
+# V_NODE, Equation 5, as an independent check on V1.
+v_node     <- 5.7
+v_node_pct <- 100 * (p_nlme$vc - v_node) / v_node
+
+claim <- function(text, source, achieved, pass) {
+  data.frame(Claim = text, Source = source, Achieved = achieved, Pass = pass)
+}
+
+claims <- dplyr::bind_rows(
+  claim(
+    "The two-compartment (NLLS) fit fails to estimate Q accurately",
+    "Discussion",
+    sprintf("Q = %.3f L/h, %.1fx the NLME estimate and %.1fx the literature value",
+            p_nlls$q, p_nlls$q / p_nlme$q, p_nlls$q / 0.038),
+    p_nlls$q / p_nlme$q > 5
+  ),
+  claim(
+    "The two-compartment fit systematically underestimates long-term concentrations",
+    "Figure 4, Discussion",
+    sprintf("Cc at 28 d after 1500 mg: %.2f mg/L (NLLS) vs %.2f mg/L (NLME), %.0f%% lower",
+            sim$Cc[sim$model == "NLLS" & sim$dose_mg == 1500 & sim$time == 672],
+            sim$Cc[sim$model == "NLME" & sim$dose_mg == 1500 & sim$time == 672],
+            100 * (1 - sim$Cc[sim$model == "NLLS" & sim$dose_mg == 1500 & sim$time == 672] /
+                     sim$Cc[sim$model == "NLME" & sim$dose_mg == 1500 & sim$time == 672])),
+    sim$Cc[sim$model == "NLLS" & sim$dose_mg == 1500 & sim$time == 672] <
+      sim$Cc[sim$model == "NLME" & sim$dose_mg == 1500 & sim$time == 672]
+  ),
+  claim(
+    "... with a materially shorter terminal half-life",
+    "derived from Table 4",
+    sprintf("t1/2 beta = %.0f h (%.1f d) NLLS vs %.0f h (%.1f d) NLME",
+            p_nlls$t_half_beta, p_nlls$t_half_beta / 24,
+            p_nlme$t_half_beta, p_nlme$t_half_beta / 24),
+    p_nlls$t_half_beta < 0.5 * p_nlme$t_half_beta
+  ),
+  claim(
+    "... which changes the predicted duration above the 8.04 mg/L target",
+    "Methods 2.1 threshold; Figure 3",
+    sprintf("%.0f d (NLLS) vs %.0f d (NLME) after a single 1500 mg dose",
+            t_above_nlls / 24, t_above_nlme / 24),
+    t_above_nlls < t_above_nlme
+  ),
+  claim(
+    "The NLME estimates are consistent with previous literature estimates",
+    "Discussion; Table 4 Literature column",
+    sprintf("Vss %.1f L vs %.1f L (%+.0f%%); CL %.4f vs %.4f L/h (%+.0f%%)",
+            p_nlme$vss, 5.9 + 9.6, 100 * (p_nlme$vss / (5.9 + 9.6) - 1),
+            p_nlme$cl, 0.031, 100 * (p_nlme$cl / 0.031 - 1)),
+    abs(100 * (p_nlme$vss / (5.9 + 9.6) - 1)) < 50
+  ),
+  claim(
+    "The NODE volume V_NODE assumes values similar to V1",
+    "Equation 5; Discussion",
+    sprintf("V1 = %.2f L vs V_NODE = %.1f L (%+.1f%%)", p_nlme$vc, v_node, v_node_pct),
+    abs(v_node_pct) < 20
+  ),
+  claim(
+    "This library's Cojutti 2024 extraction matches the paper's Literature column",
+    "Table 4 Literature column vs Cojutti_2024_dalbavancin",
+    sprintf("max deviation %.2f%% across CL, V1, Q, V2", max(abs(lit_pct))),
+    max(abs(lit_pct)) < 1
+  )
+)
+
+stopifnot(all(claims$Pass))
+
+knitr::kable(claims, caption = "Published claims checked against the packaged models.")
+```
+
+The last row is a cross-extraction consistency check rather than a claim of
+this paper: Giacometti 2025 transcribes Cojutti 2024's estimates into Table 4's
+"Literature" column, and this library already carries Cojutti 2024 as an
+independent extraction. The two agree to rounding, which validates both
+transcriptions.
+
+## Derived disposition summary
+
+```{r summary-table}
+tibble::tibble(
+  Estimation = c("NLLS (naive pooled)", "NLME (Monolix)", "Cojutti 2024 (library)"),
+  `CL (L/h)` = c(p_nlls$cl, p_nlme$cl, coj_th[["lcl"]]),
+  `Q (L/h)`  = c(p_nlls$q,  p_nlme$q,  coj_th[["lq"]]),
+  `V1 (L)`   = c(p_nlls$vc, p_nlme$vc, coj_th[["lvc"]]),
+  `V2 (L)`   = c(p_nlls$vp, p_nlme$vp, coj_th[["lvp"]]),
+  `Vss (L)`  = c(p_nlls$vss, p_nlme$vss, coj_th[["lvc"]] + coj_th[["lvp"]]),
+  `t1/2 alpha (h)` = c(log(2) / p_nlls$alpha, log(2) / p_nlme$alpha, NA),
+  `t1/2 beta (d)`  = c(p_nlls$t_half_beta / 24, p_nlme$t_half_beta / 24, NA)
+) |>
+  dplyr::mutate(dplyr::across(where(is.numeric), \(x) signif(x, 4))) |>
+  knitr::kable(caption = "Disposition parameters implied by each fit.")
+```
+
+# Assumptions and deviations
+
+* **Inter-individual variability is not reported for the NLME arm, and is
+  encoded as absent.** This is a genuine mixed-effects fit -- Methods 2.2
+  describes the random-effects framework and states that Monolix estimated the
+  model by maximum likelihood -- so omegas were certainly estimated. But
+  Table 4 is the paper's only parameter table and it prints four rows (CL, Q,
+  V1, V2) with no omega block, no shrinkage and no CV%. **The plus-or-minus
+  figures in Table 4 are the standard deviation across the six
+  cross-validation folds (Table 4 caption), not variance components**, and
+  using them as omegas would be a category error: the NLME CL spread of
+  0.0006 L/h on 0.0367 L/h is a 1.6% across-fold stability figure, which is
+  implausibly small for between-subject variability in a TDM cohort spanning
+  serum creatinine 19 to 411 umol/L. No variance is invented. No `eta` is
+  declared at all -- rather than `etalcl ~ fixed(0)` -- because a zero-variance
+  diagonal makes OMEGA singular and breaks the Cholesky sampler in `rxSolve`.
+  Simulations from both files are typical-value only.
+* **For the NLLS arm the absence is structural, not a reporting gap.** A
+  naive-pooled least-squares fit has no random-effects layer: one curve is
+  fitted through the pooled observations of all 218 patients.
+* **Residual error is not reported for either arm.** Methods 2.2 gives the
+  objective as a plain squared loss on observed minus predicted concentration,
+  but no residual SD, %CV or sigma appears anywhere in the article. `propSd`
+  and `addSd` are therefore both `fixed(0)`. Both a proportional and an
+  additive term are carried so a user with an external estimate can supply
+  either through `ini()` without editing `model()`.
+* **The Neural ODE arm is not packaged.** Its several hundred trained network
+  weights are not published, and a layered network cannot be expressed inside
+  an rxode2 `model()` block. Only `V_NODE = 5.7 +/- 0.1 L` (Equation 5) and
+  `V_NODE,cov = 5.2 +/- 0.8 L` (Equation 6) are reported numerically, and
+  `V_NODE` is used above only as an independent cross-check on `V1`. This is
+  the paper's headline model, so users should read the two packaged files as
+  the paper's comparators rather than as its conclusion.
+* **Infusion duration is assumed to be 30 minutes.** Methods 2.2 specifies
+  "infusion, no delay" but the article never gives a duration, and the
+  sibling dalbavancin extractions note the same gap. 30 min is the
+  dalbavancin label duration. The assumption affects only `Cmax` and the first
+  minutes of the profile; every check in this vignette other than `Cmax` is
+  invariant to it, and `Cmax` is compared against the analytical solution at
+  the same assumed duration rather than against a published value.
+* **The dose levels simulated here (350, 500, 1000, 1500 mg) span the range
+  the paper reports (Methods 2.1) but are not its actual regimens.** The
+  article gives neither the dosing intervals nor the per-patient schedules,
+  so single-dose profiles are used throughout.
+* **Equation 2a is read on amounts, not concentrations.** As printed and read
+  literally on concentrations it does not conserve mass; on amounts it is the
+  canonical two-compartment system, which is also what Monolix was configured
+  with and what Figure 2 depicts. See "Reading Equation 2a" above; the
+  mass-balance check is the mechanical confirmation.
+* **Serum creatinine is reported as "creatine" throughout the source.**
+  Table 1's row label is "Creatine conc. (umol/L)" and Methods 2.1 says
+  "serum creatine concentration", but the reported values (mean 94, range 19
+  to 411 umol/L; 94 umol/L is 1.06 mg/dL) are a normal serum creatinine and
+  far outside any plausible plasma creatine concentration. Recorded as
+  canonical `CREAT` in `covariatesDataExcluded`. The covariate is not used by
+  either model, so nothing downstream depends on the reading.
+* **No covariate is carried, by the authors' design.** Age, height, weight,
+  sex and serum creatinine were all collected and screened; Appendix B
+  reports the covariate-free model was kept (Kolmogorov-Smirnov p = 0.45
+  against the per-fold best covariate model). This contrasts with the two
+  sibling dalbavancin models in this library, which do carry covariates:
+  `Cojutti_2024_dalbavancin` retains CKD-EPI eGFR on CL, and
+  `Baiardi_2025_dalbavancin` applies fixed-exponent allometric weight
+  scaling. All five screened covariates are preserved in
+  `covariatesDataExcluded`.
+* **Race and ethnicity are not reported** by the source; the cohort is
+  single-centre Italian.
+* **All values come from the article's text and tables.** No supplement
+  accompanies this paper; the linked GitHub repository holds analysis code
+  only, and no value in either model file is taken from it.

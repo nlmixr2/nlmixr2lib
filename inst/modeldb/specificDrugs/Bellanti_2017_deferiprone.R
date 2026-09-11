@@ -72,7 +72,7 @@ Bellanti_2017_deferiprone <- function() {
 
     # Fixed allometric exponents on body weight (both marked FIX in Bellanti 2017 Table 2).
     e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless)")  # Bellanti 2017 Table 2 (WT on CL/F, 0.75 FIX)
-    allo_v  <- fixed(1);    label("Allometric exponent on V/F (unitless)")   # Bellanti 2017 Table 2 (WT on V/F, 1 FIX)
+    e_wt_vc  <- fixed(1);    label("Allometric exponent on V/F (unitless)")   # Bellanti 2017 Table 2 (WT on V/F, 1 FIX)
 
     # IIV - block correlation between etalcl and etalvc; no IIV on Ka in the final model.
     # Variances (omega^2) and covariance reported in Bellanti 2017 Table 2. The BSV block
@@ -98,7 +98,7 @@ Bellanti_2017_deferiprone <- function() {
     # Individual PK parameters with fixed allometric scaling on body weight
     # (reference weight 16 kg = paediatric cohort mean).
     cl <- exp(lcl + etalcl) * (WT / 16)^e_wt_cl
-    vc <- exp(lvc + etalvc) * (WT / 16)^allo_v
+    vc <- exp(lvc + etalvc) * (WT / 16)^e_wt_vc
     ka <- exp(lka)
 
     kel <- cl / vc

@@ -115,15 +115,15 @@ Karakitsios_2024_gevokizumab <- function() {
     # posterior means). Physiologic restrictions (S5)-(S6) require both
     # reflection coefficients to lie in (0, 1); a beta(1, 1) prior enforced
     # these bounds during estimation (Section 2.2).
-    sigma_tight <- 0.9584; label("Vascular reflection coefficient for tight tissues (rc1, unitless)")  # Karakitsios 2024 Table 3: rc1_mean = 0.9584 (95% CrI 0.877-0.999)
-    sigma_leaky <- 0.7645; label("Vascular reflection coefficient for leaky tissues (rc2, unitless)")  # Karakitsios 2024 Table 3: rc2_mean = 0.7645 (95% CrI 0.709-0.830)
-    lcl         <- log(0.0065); label("Plasma clearance (CLp, L/h)")                                   # Karakitsios 2024 Table 3: CLp_mean = 0.0065 L/h (95% CrI 0.006-0.007)
+    sigma_tight <- 0.9584; label("Vascular reflection coefficient for tight tissues (unitless)")  # Karakitsios 2024 Table 3: rc1_mean = 0.9584 (95% CrI 0.877-0.999)
+    sigma_leaky <- 0.7645; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Karakitsios 2024 Table 3: rc2_mean = 0.7645 (95% CrI 0.709-0.830)
+    lcl         <- log(0.0065); label("Plasma clearance (L/h)")                                   # Karakitsios 2024 Table 3: CLp_mean = 0.0065 L/h (95% CrI 0.006-0.007)
 
     # Plasma volume is a fixed physiologic constant for a 70 kg person, not
     # an estimated parameter. It is carried in ini() rather than as a
     # model() local because it is the anchor for the shared volume random
     # effect etalvc below.
-    lvc <- fixed(log(2.6)); label("Plasma volume (Vplasma, L; physiologic constant for a 70 kg person)")   # Supplementary Material, text following equation (S8): Vplasma = 2.6 L (Cao et al. 2013)
+    lvc <- fixed(log(2.6)); label("Plasma volume (L; physiologic constant for a 70 kg person)")   # Supplementary Material, text following equation (S8): Vplasma = 2.6 L (Cao et al. 2013)
 
     # IIV. Both terms are the SD of a lognormal distribution (Section 2.2),
     # so omega = SD on the log scale and the variance entered here is that
@@ -138,7 +138,7 @@ Karakitsios_2024_gevokizumab <- function() {
     # residual), which is why it is mapped onto a lognormal observation
     # error here. See the population$notes and vignette Assumptions and
     # deviations for why this is not an individual-level RUV estimate.
-    expSd <- 0.0758; label("Exponential residual error on the aggregate mean concentrations (sigma_1, fraction)")  # Karakitsios 2024 Table 3: sigma_1 = 0.0758 (95% CrI 0.049-0.123)
+    expSd <- 0.0758; label("Exponential residual error on the aggregate mean concentrations (fraction)")  # Karakitsios 2024 Table 3: sigma_1 = 0.0758 (95% CrI 0.049-0.123)
   })
 
   model({

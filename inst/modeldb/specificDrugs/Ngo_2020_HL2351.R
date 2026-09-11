@@ -38,21 +38,21 @@ Ngo_2020_HL2351 <- function() {
     # Structural parameters - typical adult, healthy Korean men. All values
     # are the observed-data medians from Ngo 2020 Table 1; bootstrap medians
     # are reported for context but are not implemented as a separate model.
-    lka1      <- log(1.21);     label("Absorption rate from injection-site depot to distribution space (Ka1, 1/h)")  # Ngo 2020 Table 1: Ka1 = 1.21 1/h
-    lka2      <- log(0.0171);   label("Direct rate of free drug from distribution space to central (Ka2, 1/h)")     # Ngo 2020 Table 1: Ka2 = 0.0171 1/h
-    lkrec     <- log(0.0338);   label("FcRn-mediated recycling rate of FcRn-drug complex into central (Krec, 1/h)") # Ngo 2020 Table 1: Krec = 0.0338 1/h
-    lkdeg1    <- log(0.0264);   label("Degradation rate of free drug at the distribution space (Kdeg1, 1/h)")       # Ngo 2020 Table 1: Kdeg1 = 0.0264 1/h
-    lkdeg2    <- fixed(log(0.206));  label("Degradation rate of IL1R-drug complex at the central compartment (Kdeg2, 1/h)") # Ngo 2020 Table 1: Kdeg2 = 0.206 1/h (FIX)
-    lkup      <- fixed(log(0.00952)); label("Uptake rate of free drug from central back to distribution space (Kup, 1/h)") # Ngo 2020 Table 1: Kup = 0.00952 1/h (FIX)
-    lcl       <- log(0.208);    label("Apparent clearance of free drug from central (CL/F, L/h)")                   # Ngo 2020 Table 1: CL/F = 0.208 L/h
-    lvc       <- log(11.3);     label("Apparent central volume of distribution (Vc/F, L)")                          # Ngo 2020 Table 1: Vc/F = 11.3 L
-    lq        <- log(0.0288);   label("Apparent inter-compartmental clearance (Q/F, L/h)")                          # Ngo 2020 Table 1: Q/F = 0.0288 L/h
-    lvp       <- fixed(log(5.06));  label("Apparent peripheral volume of distribution (Vp/F, L)")            # Ngo 2020 Table 1: Vp/F = 5.06 L (FIX)
-    la_kss1   <- log(237);      label("Drug-FcRn QSS dissociation constant in distribution space (AKSS1, nmol)")    # Ngo 2020 Table 1: AKSS1 = 237 nmol
-    la_fcrn_t <- log(749);      label("Total active amount of FcRn in distribution space (AFcRn_t, nmol)")          # Ngo 2020 Table 1: AFcRn_t = 749 nmol
-    lkss2     <- log(14.5);     label("Drug-IL1R QSS dissociation constant in central (KSS2, nmol/L)")              # Ngo 2020 Table 1: KSS2 = 14.5 nmol/L
-    lc_il1r_t <- log(2.23);     label("Total active concentration of IL1R in central (CIL1R_t, nmol/L)")            # Ngo 2020 Table 1: CIL1R_t = 2.23 nmol/L
-    ltlag     <- log(0.312);    label("Subcutaneous absorption lag time (Alag, h)")                                 # Ngo 2020 Table 1: Alag = 0.312 h
+    lka1      <- log(1.21);     label("Absorption rate from injection-site depot to distribution space (1/h)")  # Ngo 2020 Table 1: Ka1 = 1.21 1/h
+    lka2      <- log(0.0171);   label("Direct rate of free drug from distribution space to central (1/h)")     # Ngo 2020 Table 1: Ka2 = 0.0171 1/h
+    lkrec     <- log(0.0338);   label("FcRn-mediated recycling rate of FcRn-drug complex into central (1/h)") # Ngo 2020 Table 1: Krec = 0.0338 1/h
+    lkdeg1    <- log(0.0264);   label("Degradation rate of free drug at the distribution space (1/h)")       # Ngo 2020 Table 1: Kdeg1 = 0.0264 1/h
+    lkdeg2    <- fixed(log(0.206));  label("Degradation rate of IL1R-drug complex at the central compartment (1/h)") # Ngo 2020 Table 1: Kdeg2 = 0.206 1/h (FIX)
+    lkup      <- fixed(log(0.00952)); label("Uptake rate of free drug from central back to distribution space (1/h)") # Ngo 2020 Table 1: Kup = 0.00952 1/h (FIX)
+    lcl       <- log(0.208);    label("Apparent clearance of free drug from central (L/h)")                   # Ngo 2020 Table 1: CL/F = 0.208 L/h
+    lvc       <- log(11.3);     label("Apparent central volume of distribution (L)")                          # Ngo 2020 Table 1: Vc/F = 11.3 L
+    lq        <- log(0.0288);   label("Apparent inter-compartmental clearance (L/h)")                          # Ngo 2020 Table 1: Q/F = 0.0288 L/h
+    lvp       <- fixed(log(5.06));  label("Apparent peripheral volume of distribution (L)")            # Ngo 2020 Table 1: Vp/F = 5.06 L (FIX)
+    la_kss1   <- log(237);      label("Drug-FcRn QSS dissociation constant in distribution space (nmol)")    # Ngo 2020 Table 1: AKSS1 = 237 nmol
+    la_fcrn_t <- log(749);      label("Total active amount of FcRn in distribution space (nmol)")          # Ngo 2020 Table 1: AFcRn_t = 749 nmol
+    lkss2     <- log(14.5);     label("Drug-IL1R QSS dissociation constant in central (nmol/L)")              # Ngo 2020 Table 1: KSS2 = 14.5 nmol/L
+    lc_il1r_t <- log(2.23);     label("Total active concentration of IL1R in central (nmol/L)")            # Ngo 2020 Table 1: CIL1R_t = 2.23 nmol/L
+    ltlag     <- log(0.312);    label("Subcutaneous absorption lag time (h)")                                 # Ngo 2020 Table 1: Alag = 0.312 h
 
     # IIV - Ngo 2020 Table 1 IIV section reports CV%; omega^2 = log(CV^2 + 1)
     etalka1   ~ 0.6672   # 97.4% CV  -> log(1 + 0.974^2)  = 0.6672

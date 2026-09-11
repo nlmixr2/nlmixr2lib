@@ -176,10 +176,10 @@ Ly_2023_cabozantinib <- function() {
     # receiving 60 mg cabozantinib QD" as the reference patient). Apparent
     # (oral) parameters CL/F, Vc/F, Q/F and V3/F are reported in L/h and L,
     # Ka in 1/h, ALAG4 in h.
-    lcl <- log(2.05)  ; label("Apparent oral clearance at the reference covariate set (CL/F, L/h)")                             # Ly 2023 Table 2 CL/F = 2.05 (ASE 0.0323, RSE 1.6%, 95% CI 1.98-2.11)
-    lvc <- log(98.8)  ; label("Apparent central volume of distribution at the reference covariate set (Vc/F, L)")               # Ly 2023 Table 2 Vc/F = 98.8 (ASE 7.69, RSE 7.8%, 95% CI 83.8-114)
-    lq  <- log(15.5)  ; label("Apparent inter-compartmental clearance (Q/F, L/h)")                                              # Ly 2023 Table 2 Q/F = 15.5 (ASE 0.976, RSE 6.3%, 95% CI 13.6-17.4)
-    lvp <- log(178)   ; label("Apparent peripheral volume of distribution (V3/F, L)")                                           # Ly 2023 Table 2 V3/F = 178 (ASE 4.32, RSE 2.4%, 95% CI 170-187)
+    lcl <- log(2.05)  ; label("Apparent oral clearance at the reference covariate set (L/h)")                             # Ly 2023 Table 2 CL/F = 2.05 (ASE 0.0323, RSE 1.6%, 95% CI 1.98-2.11)
+    lvc <- log(98.8)  ; label("Apparent central volume of distribution at the reference covariate set (L)")               # Ly 2023 Table 2 Vc/F = 98.8 (ASE 7.69, RSE 7.8%, 95% CI 83.8-114)
+    lq  <- log(15.5)  ; label("Apparent inter-compartmental clearance (L/h)")                                              # Ly 2023 Table 2 Q/F = 15.5 (ASE 0.976, RSE 6.3%, 95% CI 13.6-17.4)
+    lvp <- log(178)   ; label("Apparent peripheral volume of distribution (L)")                                           # Ly 2023 Table 2 V3/F = 178 (ASE 4.32, RSE 2.4%, 95% CI 170-187)
 
     # Single absorption rate constant. Ly 2023 reports exactly one absorption
     # rate (Table 2 "Ka"), and it serves BOTH parallel absorption processes:
@@ -187,12 +187,12 @@ Ly_2023_cabozantinib <- function() {
     # the first-order rate of the delayed depot2 process. The base model
     # (Supplementary Material Eq. 3) writes Ka = 3.38 * exp(eta_Ka); the final
     # (full) model value in Table 2 is 3.39.
-    lka <- log(3.39)  ; label("First-order absorption rate constant, shared by the transit chain and the delayed depot (Ka, 1/h)")  # Ly 2023 Table 2 Ka = 3.39 (ASE 0.175, RSE 5.2%, 95% CI 3.04-3.73)
+    lka <- log(3.39)  ; label("First-order absorption rate constant, shared by the transit chain and the delayed depot (1/h)")  # Ly 2023 Table 2 Ka = 3.39 (ASE 0.175, RSE 5.2%, 95% CI 3.04-3.73)
 
     # Absorption lag on the delayed (second) process only. NONMEM name ALAG4
     # -- the lag is on compartment 4, the depot of the delayed process, which
     # is also the compartment carrying F4 (Supplementary Material Eq. 4).
-    ltlag <- log(19.1) ; label("Absorption lag time of the delayed depot2 process (ALAG4, h)")                                  # Ly 2023 Table 2 ALAG4 = 19.1 (ASE 0.0404, RSE 0.2%, 95% CI 19.1-19.2)
+    ltlag <- log(19.1) ; label("Absorption lag time of the delayed depot2 process (h)")                                  # Ly 2023 Table 2 ALAG4 = 19.1 (ASE 0.0404, RSE 0.2%, 95% CI 19.1-19.2)
 
     # Split of the bioavailable dose between the two parallel absorption
     # processes. F1 = 0.735 is the fraction absorbed via the transit-compartment

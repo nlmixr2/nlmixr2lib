@@ -10,7 +10,7 @@ Wolowich_2025_thc_gedm <- function() {
     "companion files, fitted to the first 5 h of data: THC is",
     "three-compartment with IV bolus input, all THC elimination is metabolic",
     "conversion to 11-OH-THC delayed by one transit compartment, and",
-    "11-OH-THC is two-compartment. The pharmacodynamic endpoint is fHR, the",
+    "11-OH-THC is two-compartment. The pharmacodynamic endpoint is f_hr, the",
     "increase in heart rate at time t expressed as a fraction of that",
     "individual's own maximal increase. Effect-site THC is the agonist and",
     "plasma 11-OH-THC is the interacting species; the four dimensionless",
@@ -74,7 +74,7 @@ Wolowich_2025_thc_gedm <- function() {
         "result: 'The CYP2C9 phenotype did not contribute to the HR effects",
         "observed as the polymorphism effect is seen in the PK of the",
         "terminal metabolite (THC-COOH) only', and THC-COOH was removed from",
-        "the PK model because it had no relationship to fHR."
+        "the PK model because it had no relationship to f_hr."
       )
     ),
     WT = list(
@@ -221,7 +221,7 @@ Wolowich_2025_thc_gedm <- function() {
     # PD LAYER -- Wolowich 2025 Table 5, 'Model 3A: THC and THC-OH GEDM:
     # general empirical dynamic model', 'Value' column (the model fit).
     # Structure from Table 2 row 3GEDM:
-    #   fHR = Emax,thc * (u1 + alpha*u2 + beta*u1*u2) /
+    #   f_hr = Emax,thc * (u1 + alpha*u2 + beta*u1*u2) /
     #                    (1  + u1 + delta*u2 + gamma*u1*u2)
     # with u1 = Ce,thc / EC50,thc and u2 = C,thc-oh / EC50,thc-oh.
     # Results 3.2.3: 'Effect site THC was the agonist and THC-OH was the
@@ -233,13 +233,13 @@ Wolowich_2025_thc_gedm <- function() {
     label("Effect-compartment equilibration rate constant for THC, Ke0 (1/h)")     # Table 5: Ke0 0.26 (Value column; bootstrap 0.37, boot CV 60%, boot 95% CI 0.24-0.95). Table's '(l/h)' unit label is a slip -- Results 3.2.1 establishes that this row is a first-order rate constant by converting the model 1B1 value to a half-life.
 
     lec50 <- log(1.24)
-    label("Effect-site THC concentration giving half-maximal fHR, EC50 (uM)")      # Table 5: EC50 THC 1.24 (Value; bootstrap 1.44, boot CV 18%, boot 95% CI 1.0-2.0)
+    label("Effect-site THC concentration giving half-maximal f_hr, EC50 (uM)")      # Table 5: EC50 THC 1.24 (Value; bootstrap 1.44, boot CV 18%, boot 95% CI 1.0-2.0)
 
     lec50_11oh <- log(0.12)
     label("Plasma 11-OH-THC concentration term of the interaction, EC50 (uM)")     # Table 5: EC50 THC-OH 0.12 (Value; bootstrap 0.13, boot CV 10%, boot 95% CI 0.1-0.15). Results 3.2.3 calls this 'EA50' in the prose describing the hyperparameters.
 
     lemax <- fixed(log(1))
-    label("Maximum fractional heart-rate increase, Emax (unitless fraction)")      # Table 5: Emax (fHR) '1 (fixed)' in both the Value and the Boot value column
+    label("Maximum fractional heart-rate increase, Emax (unitless fraction)")      # Table 5: Emax (f_hr) '1 (fixed)' in both the Value and the Boot value column
 
     # --- GEDM interaction hyperparameters --------------------------
     # Kept on the bare linear scale, not log-transformed: the paper's
@@ -308,8 +308,8 @@ Wolowich_2025_thc_gedm <- function() {
     propSd_11oh <- 0.21
     label("Proportional residual error for 11-OH-THC (fraction)")                  # Table 5: epsilon (SD) THC-OH 0.21 (Value and Boot value both 0.21; boot CV 6.3%, boot 95% CI 0.18-0.23)
 
-    addSd_fHR <- 0.22
-    label("Additive residual error for fHR (unitless fraction)")                   # Table 5: epsilon (SD) fHR -- the 'Value' cell is BLANK in the published table; 0.22 is the 'Boot value' (boot CV 6.6%, boot 95% CI 0.20-0.26), the only number the paper gives for this row. See the vignette Errata.
+    addSd_f_hr <- 0.22
+    label("Additive residual error for f_hr (unitless fraction)")                   # Table 5: epsilon (SD) f_hr -- the 'Value' cell is BLANK in the published table; 0.22 is the 'Boot value' (boot CV 6.6%, boot 95% CI 0.20-0.26), the only number the paper gives for this row. See the vignette Errata.
   })
 
   model({
@@ -389,11 +389,11 @@ Wolowich_2025_thc_gedm <- function() {
     u1 <- effect  / ec50
     u2 <- Cc_11oh / ec50_11oh
 
-    fHR <- emax * (u1 + galpha * u2 + gbeta  * u1 * u2) /
+    f_hr <- emax * (u1 + galpha * u2 + gbeta  * u1 * u2) /
                   (1  + u1 + gdelta * u2 + ggamma * u1 * u2)
 
     Cc      ~ prop(propSd)
     Cc_11oh ~ prop(propSd_11oh)
-    fHR     ~ add(addSd_fHR)
+    f_hr     ~ add(addSd_f_hr)
   })
 }

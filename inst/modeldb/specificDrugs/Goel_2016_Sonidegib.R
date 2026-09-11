@@ -160,12 +160,12 @@ Goel_2016_Sonidegib <- function() {
     #   ALT = 0.42 (ULN-normalized), TBILI = 0.38 (ULN-normalized), RACE_JAPANESE = 0
     #   (Western), DIS_HEALTHY = 0 (cancer patient), CONMED_PPI = CONMED_H2RA = FED_HIGHFAT = 0, FED = 1,
     #   MULTI_DOSE_PT = 0 (single-dose / first-dose), DOSE = 100 mg.
-    lka  <- log(0.219); label("Absorption rate at the reference covariate set (Ka, 1/h)")                     # Goel 2016 Table 2 full-model theta17
-    lcl  <- log(10.2);  label("Apparent oral clearance at the reference covariate set (CL/F, L/h)")           # Goel 2016 Table 2 full-model theta1
-    lvc  <- log(145);   label("Apparent central volume of distribution at the reference covariate set (Vc/F, L)") # Goel 2016 Table 2 full-model theta11
-    lq   <- log(215);   label("Apparent inter-compartmental clearance at the reference covariate set (Q/F, L/h)") # Goel 2016 Table 2 full-model theta14
-    lvp  <- log(8414);  label("Apparent peripheral volume of distribution at the reference covariate set (Vp/F, L)") # Goel 2016 Table 2 full-model theta15
-    ltlag <- log(0.474); label("Absorption lag time (Tlag, h)")                                              # Goel 2016 Table 2 full-model theta19
+    lka  <- log(0.219); label("Absorption rate at the reference covariate set (1/h)")                     # Goel 2016 Table 2 full-model theta17
+    lcl  <- log(10.2);  label("Apparent oral clearance at the reference covariate set (L/h)")           # Goel 2016 Table 2 full-model theta1
+    lvc  <- log(145);   label("Apparent central volume of distribution at the reference covariate set (L)") # Goel 2016 Table 2 full-model theta11
+    lq   <- log(215);   label("Apparent inter-compartmental clearance at the reference covariate set (L/h)") # Goel 2016 Table 2 full-model theta14
+    lvp  <- log(8414);  label("Apparent peripheral volume of distribution at the reference covariate set (L)") # Goel 2016 Table 2 full-model theta15
+    ltlag <- log(0.474); label("Absorption lag time (h)")                                              # Goel 2016 Table 2 full-model theta19
 
     # Covariate effects on CL/F (Goel 2016 Table 2 full model thetas 2-10)
     e_age_cl       <- -0.375; label("Power exponent of AGE on CL/F (unitless; reference 58 y)")              # Goel 2016 Table 2 theta2

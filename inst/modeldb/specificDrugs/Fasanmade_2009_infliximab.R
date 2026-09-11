@@ -65,10 +65,10 @@ Fasanmade_2009_infliximab <- function() {
   ini({
     # Structural parameters (typical values for 77-kg male, albumin 4.1 g/dL,
     # ADA-negative) from Fasanmade 2009 Table 3 (final population PK model).
-    lcl <- log(0.407); label("Clearance (CL, L/day)")               # Fasanmade 2009 Table 3
-    lvc <- log(3.29);  label("Central volume of distribution (Vc, L)")   # Fasanmade 2009 Table 3
-    lvp <- log(4.13);  label("Peripheral volume of distribution (Vp, L)")# Fasanmade 2009 Table 3
-    lq  <- log(7.14);  label("Intercompartmental clearance (Q, L/day)")  # Fasanmade 2009 Table 3
+    lcl <- log(0.407); label("Clearance (L/day)")               # Fasanmade 2009 Table 3
+    lvc <- log(3.29);  label("Central volume of distribution (L)")   # Fasanmade 2009 Table 3
+    lvp <- log(4.13);  label("Peripheral volume of distribution (L)")# Fasanmade 2009 Table 3
+    lq  <- log(7.14);  label("Intercompartmental clearance (L/day)")  # Fasanmade 2009 Table 3
 
     # Covariate effects from Fasanmade 2009 Table 3.
     e_alb_cl <- -1.54;  label("Power exponent of albumin on CL (unitless)")              # Fasanmade 2009 Table 3

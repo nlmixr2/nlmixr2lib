@@ -198,7 +198,7 @@ state_names
 
 Build the control-mouse event table directly: no doses, observations
 at every 0.5 days from t = 0 to t = 30. With no paclitaxel exposure,
-`Cc_pacl` must remain at zero, the drug central / peripheral
+`Cc` must remain at zero, the drug central / peripheral
 compartments must remain at zero, and the tumor must follow its
 untreated DEB-TGI growth trajectory. Body weight starts at
 `W_initial = 21.2 g` and declines as the tumor grows under the
@@ -216,7 +216,7 @@ sim_control <- rxode2::rxSolve(mod_typical, ev_control) |>
 stopifnot(
   max(abs(sim_control$central),     na.rm = TRUE) < 1e-8,
   max(abs(sim_control$peripheral1), na.rm = TRUE) < 1e-8,
-  max(abs(sim_control$Cc_pacl),     na.rm = TRUE) < 1e-8,
+  max(abs(sim_control$Cc),     na.rm = TRUE) < 1e-8,
   abs(sim_control$bodyWeight[sim_control$time == 0] - 21.2) < 1e-6,
   abs(sim_control$tumorWeight[sim_control$time == 0] - 0.0023) < 1e-6
 )
@@ -400,11 +400,11 @@ control-arm tumor grows faster than the treated arm.
 ```{r treated-vs-control-table}
 direction_summary <- sim_both |>
   dplyr::filter(time %in% c(8, 12, 16, 20, 24, 28, 30)) |>
-  dplyr::select(cohort, time, bodyWeight, tumorWeight, Cc_pacl) |>
+  dplyr::select(cohort, time, bodyWeight, tumorWeight, Cc) |>
   tidyr::pivot_wider(
     id_cols     = time,
     names_from  = cohort,
-    values_from = c(bodyWeight, tumorWeight, Cc_pacl)
+    values_from = c(bodyWeight, tumorWeight, Cc)
   )
 
 knitr::kable(
@@ -417,7 +417,7 @@ knitr::kable(
 ```{r drug-pk-figure}
 sim_treated |>
   dplyr::filter(time <= 25) |>
-  ggplot(aes(time, Cc_pacl)) +
+  ggplot(aes(time, Cc)) +
   geom_line() +
   geom_vline(xintercept = c(8, 12, 16),
              linetype = "dotted", colour = "grey60") +

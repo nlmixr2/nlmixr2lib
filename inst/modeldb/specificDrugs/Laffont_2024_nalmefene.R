@@ -39,15 +39,15 @@ Laffont_2024_nalmefene <- function() {
 
   ini({
     # Structural parameters -- Laffont 2024 Table 1 (IN nalmefene, reference WT = 74.7 kg)
-    lcl     <- log(63.7);   label("Apparent clearance (CL/F, L/h)")                                  # Table 1: CL/F = 63.7 L/h
+    lcl     <- log(63.7);   label("Apparent clearance (L/h)")                                  # Table 1: CL/F = 63.7 L/h
     e_wt_cl <- 0.572;       label("Allometric exponent of (WT/74.7) on CL/F (unitless)")             # Table 1: Exponent of (WT/74.7) for CL/F = 0.572
-    lvc     <- log(15.2);   label("Apparent central volume of distribution (Vc/F, L)")               # Table 1: Vc/F = 15.2 L
-    lq      <- log(81.3);   label("Apparent intercompartmental clearance (Q/F, L/h)")                # Table 1: Q/F = 81.3 L/h
-    lvp     <- log(522);    label("Apparent peripheral volume of distribution (Vp/F, L)")            # Table 1: Vp/F = 522 L
-    linka   <- log(0.497);  label("Intranasal first-order absorption rate constant (INKA, 1/h)")     # Table 1: INKA = 0.497 1/h
-    ld2     <- log(0.302);  label("Zero-order absorption duration (D2, h)")                          # Table 1: D2 = 0.302 h
+    lvc     <- log(15.2);   label("Apparent central volume of distribution (L)")               # Table 1: Vc/F = 15.2 L
+    lq      <- log(81.3);   label("Apparent intercompartmental clearance (L/h)")                # Table 1: Q/F = 81.3 L/h
+    lvp     <- log(522);    label("Apparent peripheral volume of distribution (L)")            # Table 1: Vp/F = 522 L
+    linka   <- log(0.497);  label("Intranasal first-order absorption rate constant (1/h)")     # Table 1: INKA = 0.497 1/h
+    ld2     <- log(0.302);  label("Zero-order absorption duration (h)")                          # Table 1: D2 = 0.302 h
     linfk0  <- log(0.0485); label("Fraction of intranasal dose absorbed via zero-order route (INFK0)")# Table 1: INFK0 = 0.0485
-    lalag1  <- log(0.0615); label("Lag time of first-order absorption (ALAG1, h)")                   # Table 1: ALAG1 = 0.0615 h
+    lalag1  <- log(0.0615); label("Lag time of first-order absorption (h)")                   # Table 1: ALAG1 = 0.0615 h
 
     # IIV -- Table 1 reports CV%; log-normal variance = log(1 + CV^2)
     etalcl   ~ log(1 + 0.154^2)                                                                     # Table 1: IIV CL/F = 15.4 %CV

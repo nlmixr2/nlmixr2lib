@@ -79,7 +79,7 @@ EudyByrne_2021_buprenorphine <- function() {
     # positively-constrained parameter with the standard log-normal IIV
     # (Table S3 %CV column back-transforms as CV = sqrt(exp(omega^2)-1)).
     lnowsmax <- log(1.92)
-    label("NOWSMAX: maximum baseline NAS-natural-history term at PNA = 0 (score, unitless)")  # Eudy-Byrne 2021 Table S3: NOWSMAX = 1.92 (95% CI 1.76-2.08)
+    label("NOWSMAX: maximum baseline NAS-natural-history term at PNA = 0 (unitless)")  # Eudy-Byrne 2021 Table S3: NOWSMAX = 1.92 (95% CI 1.76-2.08)
 
     # First-order natural decay rate of the withdrawal-history term with
     # postnatal age. Units 1/day.

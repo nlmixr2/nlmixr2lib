@@ -138,9 +138,9 @@ Bulitta_2010_colistin_PAO1 <- function() {
     t12_kdeg <- 0.970
     label("Signal-molecule degradation half-life (h; t1/2(kdeg))")  # Bulitta 2010 Table 1, NONMEM column
     imax_rep <- 0.422
-    label("Maximal fractional inhibition of bacterial replication by signal molecules (ImaxRep, unitless)")  # Bulitta 2010 Table 1, NONMEM column
+    label("Maximal fractional inhibition of bacterial replication by signal molecules (unitless)")  # Bulitta 2010 Table 1, NONMEM column
     imax_kill <- 0.992
-    label("Maximal fractional inhibition of bacterial killing by signal molecules (ImaxKill, unitless)")  # Bulitta 2010 Table 1, NONMEM column
+    label("Maximal fractional inhibition of bacterial killing by signal molecules (unitless)")  # Bulitta 2010 Table 1, NONMEM column
 
     # =============================================================
     # Receptor occupancy and bacterial killing
@@ -149,7 +149,7 @@ Bulitta_2010_colistin_PAO1 <- function() {
     # or Ca2+ at which the effective colistin concentration reaches
     # 50% of the broth concentration.
     ec50_rec <- 0.537
-    label("Fraction of receptors not occupied by Mg2+/Ca2+ giving 50% effective colistin (EC50, unitless)")  # Bulitta 2010 Table 1, NONMEM column
+    label("Fraction of receptors not occupied by Mg2+/Ca2+ giving 50% effective colistin (unitless)")  # Bulitta 2010 Table 1, NONMEM column
     # Hill coefficient: initially estimated 10-20 then fixed to 10
     # for model stability (footnote e).
     hill_rec <- fixed(10)
@@ -177,7 +177,7 @@ Bulitta_2010_colistin_PAO1 <- function() {
     # Residual error
     # =============================================================
     # Additive on log10 CFU/mL per Bulitta 2010 Table 1 footnote (h).
-    # The observation Cc is the log10 of total viable count plus a 1-
+    # The observation log_cfu is the log10 of total viable count plus a 1-
     # CFU/mL floor (matches the Wicha 2017 / Landersdorfer 2018
     # in-vitro PD convention); the additive residual SD applies on
     # the log10 scale directly.
@@ -295,7 +295,7 @@ Bulitta_2010_colistin_PAO1 <- function() {
     # driven below 1 CFU/mL. Additive residual error on the log10
     # scale per Bulitta 2010 Table 1 footnote (h).
     cfu_obs <- cfu_all + 1
-    Cc      <- log10(cfu_obs)
-    Cc      ~ add(addSd)
+    log_cfu      <- log10(cfu_obs)
+    log_cfu      ~ add(addSd)
   })
 }

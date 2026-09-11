@@ -98,13 +98,13 @@ Mukker_2026_tuvusertib_hematology <- function() {
     # tuvusertib plasma concentration predicted by the POPPK model"), so these
     # are not re-estimated here.
     # ---------------------------------------------------------------------
-    lka   <- fixed(log(0.441));  label("Absorption rate constant (KA, 1/h)")                        # Table 1: KA = 0.441 1/h
-    lcl   <- fixed(log(55.7));   label("Apparent clearance at the drug-free baseline (CL/F, L/h)")  # Table 1: CL/F = 55.7 L/h
-    lvc   <- fixed(log(30.0));   label("Apparent central volume of distribution (VC/F, L)")         # Table 1: VC/F = 30.0 L
-    lq    <- fixed(log(3.59));   label("Apparent intercompartmental clearance (Q/F, L/h)")          # Table 1: Q/F = 3.59 L/h
-    lvp   <- fixed(log(136));    label("Apparent peripheral volume of distribution (VP/F, L)")      # Table 1: VP/F = 136 L
-    ltlag <- fixed(log(0.369));  label("Absorption lag time (ALAG1, h)")                            # Table 1: ALAG1 = 0.369 h
-    lkcl  <- fixed(log(0.0878)); label("Clearance-compartment turnover rate constant (KCL, 1/h)")   # Table 1: KCL = 0.0878 1/h
+    lka   <- fixed(log(0.441));  label("Absorption rate constant (1/h)")                        # Table 1: KA = 0.441 1/h
+    lcl   <- fixed(log(55.7));   label("Apparent clearance at the drug-free baseline (L/h)")  # Table 1: CL/F = 55.7 L/h
+    lvc   <- fixed(log(30.0));   label("Apparent central volume of distribution (L)")         # Table 1: VC/F = 30.0 L
+    lq    <- fixed(log(3.59));   label("Apparent intercompartmental clearance (L/h)")          # Table 1: Q/F = 3.59 L/h
+    lvp   <- fixed(log(136));    label("Apparent peripheral volume of distribution (L)")      # Table 1: VP/F = 136 L
+    ltlag <- fixed(log(0.369));  label("Absorption lag time (h)")                            # Table 1: ALAG1 = 0.369 h
+    lkcl  <- fixed(log(0.0878)); label("Clearance-compartment turnover rate constant (1/h)")   # Table 1: KCL = 0.0878 1/h
     slp   <- fixed(0.303);       label("Tuvusertib effect on clearance-compartment loss (SLP, %/(ng/mL))") # Table 1: SLP = 0.303 %/(ng/mL)
 
     # ---------------------------------------------------------------------
@@ -113,10 +113,10 @@ Mukker_2026_tuvusertib_hematology <- function() {
     # model() divides each by 24. ini() keeps the published per-day value so
     # the source trace is a direct read of Table 2.
     # ---------------------------------------------------------------------
-    lretbl <- log(0.0645); label("Baseline TOTAL reticulocyte count (RETBL, 10^9/mL)")           # Table 2: RETBL = 0.0645 10^9/mL (0.0583, 0.0718)
-    lktr1  <- log(3.85);   label("Progenitor transit / proliferation rate constant (KTR1, 1/day)") # Table 2: KTR1 = 3.85 1/day (1.51, 67.6)
-    lktr2  <- log(3.33);   label("Reticulocyte transit rate constant (KTR2, 1/day)")             # Table 2: KTR2 = 3.33 1/day (2.58, 4.17)
-    lkcir  <- log(0.0557); label("Red-blood-cell circulation rate constant (KCIR, 1/day)")       # Table 2: KCIR = 0.0557 1/day (0.0463, 0.0670)
+    lretbl <- log(0.0645); label("Baseline TOTAL reticulocyte count (10^9/mL)")           # Table 2: RETBL = 0.0645 10^9/mL (0.0583, 0.0718)
+    lktr1  <- log(3.85);   label("Progenitor transit / proliferation rate constant (1/day)") # Table 2: KTR1 = 3.85 1/day (1.51, 67.6)
+    lktr2  <- log(3.33);   label("Reticulocyte transit rate constant (1/day)")             # Table 2: KTR2 = 3.33 1/day (2.58, 4.17)
+    lkcir  <- log(0.0557); label("Red-blood-cell circulation rate constant (1/day)")       # Table 2: KCIR = 0.0557 1/day (0.0463, 0.0670)
     lshb   <- log(29.4);   label("Hemoglobin proportionality factor (SHB, (g/L)/(10^9/mL))")     # Table 2: SHB = 29.4 (g/L)/(10^9/mL) (28.9, 30.0)
 
     # Feedback exponents. Table 2 reports GAM1 / GAM2 not as the exponent but
@@ -129,11 +129,11 @@ Mukker_2026_tuvusertib_hematology <- function() {
     # The published bootstrap CIs are printed in reversed order
     # (-0.0533, -2.67) because the transform is monotone decreasing in GAM,
     # which independently confirms the exponent reading.
-    lgam1 <- log(0.09306); label("Reticulocyte negative-feedback exponent (GAM1, unitless)")  # Table 2: GAM1 = -0.883% per 10% rise in RET (-0.0533, -2.67) -> exponent 0.09306
-    lgam2 <- log(0.20447); label("Red-blood-cell negative-feedback exponent (GAM2, unitless)") # Table 2: GAM2 = -1.93% per 10% rise in RBC (-0.129, -3.46) -> exponent 0.20447
+    lgam1 <- log(0.09306); label("Reticulocyte negative-feedback exponent (unitless)")  # Table 2: GAM1 = -0.883% per 10% rise in RET (-0.0533, -2.67) -> exponent 0.09306
+    lgam2 <- log(0.20447); label("Red-blood-cell negative-feedback exponent (unitless)") # Table 2: GAM2 = -1.93% per 10% rise in RBC (-0.129, -3.46) -> exponent 0.20447
 
-    lemaxpd <- log(59.8); label("Maximum fractional inhibition of progenitor production (EMAXPD, %)") # Table 2: EMAXPD = 59.8% (10.9, 1040)
-    lec50pd <- log(736);  label("Tuvusertib concentration at half-maximal effect (EC50PD, ng/mL)")    # Table 2: EC50PD = 736 ng/mL (69.7, 68,700)
+    lemaxpd <- log(59.8); label("Maximum fractional inhibition of progenitor production (%)") # Table 2: EMAXPD = 59.8% (10.9, 1040)
+    lec50pd <- log(736);  label("Tuvusertib concentration at half-maximal effect (ng/mL)")    # Table 2: EC50PD = 736 ng/mL (69.7, 68,700)
 
     # ---------------------------------------------------------------------
     # Interindividual variability. Table 2 reports %CV; omega^2 = log(CV^2 + 1).

@@ -119,10 +119,10 @@ Nie_2025_sufentanil <- function() {
     # Pharmacokinetic Model": A1 and A2 are the amounts in the central and
     # umbilical cord compartments, V1 and V2 their volumes, K12 = CL2/V1,
     # K21 = CL2/V2 and K10 = CL/V1.
-    lcl    <- log(176)    ; label("Maternal central clearance (CL, L/h)")                                # Table 1: CL = 176 (RSE 9.25 percent)
-    lvc    <- log(519)    ; label("Maternal central volume of distribution (V1, L)")                     # Table 1: V1 = 519 (RSE 6.45 percent)
-    lqcord <- log(0.0134) ; label("Central-to-umbilical-cord inter-compartmental clearance (CL2, L/h)")  # Table 1: CL2 = 0.0134 (RSE 43.2 percent)
-    lvcord <- log(0.187)  ; label("Umbilical cord volume of distribution (V2, L)")                       # Table 1: V2 = 0.187 (RSE 39.9 percent)
+    lcl    <- log(176)    ; label("Maternal central clearance (L/h)")                                # Table 1: CL = 176 (RSE 9.25 percent)
+    lvc    <- log(519)    ; label("Maternal central volume of distribution (L)")                     # Table 1: V1 = 519 (RSE 6.45 percent)
+    lqcord <- log(0.0134) ; label("Central-to-umbilical-cord inter-compartmental clearance (L/h)")  # Table 1: CL2 = 0.0134 (RSE 43.2 percent)
+    lvcord <- log(0.187)  ; label("Umbilical cord volume of distribution (L)")                       # Table 1: V2 = 0.187 (RSE 39.9 percent)
 
     # Inter-individual variability. Methods, "Population PK Model Development":
     # IIV was assumed log-normal and modelled with the exponential relationship

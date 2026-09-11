@@ -145,40 +145,40 @@ Boulanger_2025_trimethoprim_sulfonamides_pig <- function() {
     # ------------------------------------------------------------------
 
     # --- Trimethoprim (unsuffixed parent) ---
-    lka          <- log(0.66)  ; label("Oral absorption rate constant, trimethoprim (ka, 1/h)")                 # Table 2, ka_TMP
-    lka2         <- log(1.14)  ; label("Intramuscular absorption rate constant, trimethoprim (ka, 1/h)")        # Table 2, ka_TMP_IM
-    lfdepot      <- log(0.58)  ; label("Oral bioavailability, trimethoprim (F, fraction)")                      # Table 2, F_TMP_oral = 58%
-    lfdepot2     <- log(0.99)  ; label("Intramuscular bioavailability, trimethoprim (F, fraction)")             # Table 2, F_TMP_IM = 99%
-    lcl          <- log(0.48)  ; label("Clearance, trimethoprim (CL, L/h/kg)")                                  # Table 2, Cl_TMP
-    lvc          <- log(0.92)  ; label("Central volume, trimethoprim (V1, L/kg)")                               # Table 2, V1_TMP
-    lq           <- log(1.26)  ; label("Intercompartmental clearance, trimethoprim (Q, L/h/kg)")                # Table 2, Q_TMP
-    lvp          <- log(0.86)  ; label("Peripheral volume, trimethoprim (V2, L/kg)")                            # Table 2, V2_TMP
+    lka          <- log(0.66)  ; label("Oral absorption rate constant, trimethoprim (1/h)")                 # Table 2, ka_TMP
+    lka2         <- log(1.14)  ; label("Intramuscular absorption rate constant, trimethoprim (1/h)")        # Table 2, ka_TMP_IM
+    lfdepot      <- log(0.58)  ; label("Oral bioavailability, trimethoprim (fraction)")                      # Table 2, F_TMP_oral = 58%
+    lfdepot2     <- log(0.99)  ; label("Intramuscular bioavailability, trimethoprim (fraction)")             # Table 2, F_TMP_IM = 99%
+    lcl          <- log(0.48)  ; label("Clearance, trimethoprim (L/h/kg)")                                  # Table 2, Cl_TMP
+    lvc          <- log(0.92)  ; label("Central volume, trimethoprim (L/kg)")                               # Table 2, V1_TMP
+    lq           <- log(1.26)  ; label("Intercompartmental clearance, trimethoprim (L/h/kg)")                # Table 2, Q_TMP
+    lvp          <- log(0.86)  ; label("Peripheral volume, trimethoprim (L/kg)")                            # Table 2, V2_TMP
 
     # --- Sulfadiazine ---
-    lka_sdz      <- log(0.50)  ; label("Oral absorption rate constant, sulfadiazine (ka, 1/h)")                 # Table 2, ka_SDZ
-    lka2_sdz     <- log(1.3)   ; label("Intramuscular absorption rate constant, sulfadiazine (ka, 1/h)")        # Table 2, ka_SDZ_IM
-    lfdepot_sdz  <- log(0.93)  ; label("Oral bioavailability, sulfadiazine (F, fraction)")                      # Table 2, F_SDZ_oral = 93%
-    lfdepot2_sdz <- log(0.99)  ; label("Intramuscular bioavailability, sulfadiazine (F, fraction)")             # Table 2, F_SDZ_IM = 99%
-    lcl_sdz      <- log(0.12)  ; label("Clearance, sulfadiazine (CL, L/h/kg)")                                  # Table 2, Cl_SDZ
-    lvc_sdz      <- log(0.3)   ; label("Central volume, sulfadiazine (V1, L/kg)")                               # Table 2, V1_SDZ
-    lq_sdz       <- log(0.32)  ; label("Intercompartmental clearance, sulfadiazine (Q, L/h/kg)")                # Table 2, Q_SDZ
-    lvp_sdz      <- log(0.29)  ; label("Peripheral volume, sulfadiazine (V2, L/kg)")                            # Table 2, V2_SDZ
+    lka_sdz      <- log(0.50)  ; label("Oral absorption rate constant, sulfadiazine (1/h)")                 # Table 2, ka_SDZ
+    lka2_sdz     <- log(1.3)   ; label("Intramuscular absorption rate constant, sulfadiazine (1/h)")        # Table 2, ka_SDZ_IM
+    lfdepot_sdz  <- log(0.93)  ; label("Oral bioavailability, sulfadiazine (fraction)")                      # Table 2, F_SDZ_oral = 93%
+    lfdepot2_sdz <- log(0.99)  ; label("Intramuscular bioavailability, sulfadiazine (fraction)")             # Table 2, F_SDZ_IM = 99%
+    lcl_sdz      <- log(0.12)  ; label("Clearance, sulfadiazine (L/h/kg)")                                  # Table 2, Cl_SDZ
+    lvc_sdz      <- log(0.3)   ; label("Central volume, sulfadiazine (L/kg)")                               # Table 2, V1_SDZ
+    lq_sdz       <- log(0.32)  ; label("Intercompartmental clearance, sulfadiazine (L/h/kg)")                # Table 2, Q_SDZ
+    lvp_sdz      <- log(0.29)  ; label("Peripheral volume, sulfadiazine (L/kg)")                            # Table 2, V2_SDZ
 
     # --- Sulfadimethoxine ---
-    lka_sdmx     <- log(0.60)  ; label("Oral absorption rate constant, sulfadimethoxine (ka, 1/h)")             # Table 2, ka_SDMX
-    lfdepot_sdmx <- log(0.68)  ; label("Oral bioavailability, sulfadimethoxine (F, fraction)")                  # Table 2, F_SDMX_oral = 68%
-    lcl_sdmx     <- log(0.015) ; label("Clearance, sulfadimethoxine (CL, L/h/kg)")                              # Table 2, Cl_SDMX
-    lvc_sdmx     <- log(0.13)  ; label("Central volume, sulfadimethoxine (V1, L/kg)")                           # Table 2, V1_SDMX
-    lq_sdmx      <- log(0.20)  ; label("Intercompartmental clearance, sulfadimethoxine (Q, L/h/kg)")            # Table 2, Q_SDMX
-    lvp_sdmx     <- log(0.16)  ; label("Peripheral volume, sulfadimethoxine (V2, L/kg)")                        # Table 2, V2_SDMX
+    lka_sdmx     <- log(0.60)  ; label("Oral absorption rate constant, sulfadimethoxine (1/h)")             # Table 2, ka_SDMX
+    lfdepot_sdmx <- log(0.68)  ; label("Oral bioavailability, sulfadimethoxine (fraction)")                  # Table 2, F_SDMX_oral = 68%
+    lcl_sdmx     <- log(0.015) ; label("Clearance, sulfadimethoxine (L/h/kg)")                              # Table 2, Cl_SDMX
+    lvc_sdmx     <- log(0.13)  ; label("Central volume, sulfadimethoxine (L/kg)")                           # Table 2, V1_SDMX
+    lq_sdmx      <- log(0.20)  ; label("Intercompartmental clearance, sulfadimethoxine (L/h/kg)")            # Table 2, Q_SDMX
+    lvp_sdmx     <- log(0.16)  ; label("Peripheral volume, sulfadimethoxine (L/kg)")                        # Table 2, V2_SDMX
 
     # --- Sulfamethoxazole ---
-    lka_smx      <- log(1.82)  ; label("Oral absorption rate constant, sulfamethoxazole (ka, 1/h)")             # Table 2, ka_SMX
-    lfdepot_smx  <- log(0.64)  ; label("Oral bioavailability, sulfamethoxazole (F, fraction)")                  # Table 2, F_SMX_oral = 64%
-    lcl_smx      <- log(0.21)  ; label("Clearance, sulfamethoxazole (CL, L/h/kg)")                              # Table 2, Cl_SMX
-    lvc_smx      <- log(0.48)  ; label("Central volume, sulfamethoxazole (V1, L/kg)")                           # Table 2, V1_SMX
-    lq_smx       <- log(0.83)  ; label("Intercompartmental clearance, sulfamethoxazole (Q, L/h/kg)")            # Table 2, Q_SMX
-    lvp_smx      <- log(0.17)  ; label("Peripheral volume, sulfamethoxazole (V2, L/kg)")                        # Table 2, V2_SMX
+    lka_smx      <- log(1.82)  ; label("Oral absorption rate constant, sulfamethoxazole (1/h)")             # Table 2, ka_SMX
+    lfdepot_smx  <- log(0.64)  ; label("Oral bioavailability, sulfamethoxazole (fraction)")                  # Table 2, F_SMX_oral = 64%
+    lcl_smx      <- log(0.21)  ; label("Clearance, sulfamethoxazole (L/h/kg)")                              # Table 2, Cl_SMX
+    lvc_smx      <- log(0.48)  ; label("Central volume, sulfamethoxazole (L/kg)")                           # Table 2, V1_SMX
+    lq_smx       <- log(0.83)  ; label("Intercompartmental clearance, sulfamethoxazole (L/h/kg)")            # Table 2, Q_SMX
+    lvp_smx      <- log(0.17)  ; label("Peripheral volume, sulfamethoxazole (L/kg)")                        # Table 2, V2_SMX
 
     # ------------------------------------------------------------------
     # Covariate effects - Methods Equation 3, power model on body weight

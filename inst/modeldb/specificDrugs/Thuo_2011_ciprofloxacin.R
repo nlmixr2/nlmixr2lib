@@ -58,10 +58,10 @@ Thuo_2011_ciprofloxacin <- function() {
   ini({
     # Structural parameters - typical values for a 70 kg adult (allometric reference);
     # Na effects and high-risk effect are centered / multiplicative on the 70 kg typical value.
-    lka                <- log(2.97);  label("Absorption rate constant (Ka, 1/h)")                                              # Thuo 2011 Table 2 theta6 = 2.97 /h
-    lcl                <- log(42.7);  label("Apparent oral clearance for a 70 kg adult at SOD=136 in low/intermediate-risk children (CL/F, L/h)")  # Thuo 2011 Table 2 theta1 = 42.7 L/h/70 kg
-    lvc                <- log(372);   label("Apparent central volume of distribution for a 70 kg adult at SOD=136 (Vc/F, L)")  # Thuo 2011 Table 2 theta4 = 372 L/70 kg
-    ltlag              <- log(0.742); label("Absorption lag time (Alag, h)")                                                   # Thuo 2011 Table 2 theta7 = 0.742 h
+    lka                <- log(2.97);  label("Absorption rate constant (1/h)")                                              # Thuo 2011 Table 2 theta6 = 2.97 /h
+    lcl                <- log(42.7);  label("Apparent oral clearance for a 70 kg adult at SOD=136 in low/intermediate-risk children (L/h)")  # Thuo 2011 Table 2 theta1 = 42.7 L/h/70 kg
+    lvc                <- log(372);   label("Apparent central volume of distribution for a 70 kg adult at SOD=136 (L)")  # Thuo 2011 Table 2 theta4 = 372 L/70 kg
+    ltlag              <- log(0.742); label("Absorption lag time (h)")                                                   # Thuo 2011 Table 2 theta7 = 0.742 h
 
     # Allometric exponents - fixed at standard adult-to-paediatric values per the source paper
     # (Methods 'Pharmacokinetic analysis': CL allometric exponent 0.75; V allometric exponent 1).

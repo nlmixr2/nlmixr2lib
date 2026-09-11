@@ -150,9 +150,9 @@ Chen_2024_nirmatrelvir <- function() {
     # Abstract reports these same estimates as "Mean (SD) ... 0.42 (0.10) h-1,
     # 36.5 (8.5) L, 3.6 (0.26) L/h", i.e. the estimate multiplied by the "CV, %"
     # value (0.42 * 24.9% = 0.105; 36.5 * 23.3% = 8.5; 3.6 * 7.1% = 0.256).
-    lka <- log(0.42); label("Apparent first-order absorption rate constant (ka, 1/h)")  # Table 3: tvKa = 0.42 1/h (RSE 24.9%; bootstrap median 0.61, 95% CI 0.09-0.85)
-    lvc <- log(36.5); label("Apparent central volume of distribution (V/F, L)")         # Table 3: tvV = 36.5 L (RSE 23.3%; bootstrap median 34.0, 95% CI 5.5-60.5)
-    lcl <- log(3.6);  label("Apparent oral clearance at CRCL = 80 mL/min/1.73 m^2 and CONMED_RTV_AUC_12H = 12.2 mg*h/L (CL/F, L/h)")  # Table 3: tvCL = 3.6 L/h (RSE 7.1%; bootstrap median 3.2, 95% CI 2.6-3.7)
+    lka <- log(0.42); label("Apparent first-order absorption rate constant (1/h)")  # Table 3: tvKa = 0.42 1/h (RSE 24.9%; bootstrap median 0.61, 95% CI 0.09-0.85)
+    lvc <- log(36.5); label("Apparent central volume of distribution (L)")         # Table 3: tvV = 36.5 L (RSE 23.3%; bootstrap median 34.0, 95% CI 5.5-60.5)
+    lcl <- log(3.6);  label("Apparent oral clearance at CRCL = 80 mL/min/1.73 m^2 and CONMED_RTV_AUC_12H = 12.2 mg*h/L (L/h)")  # Table 3: tvCL = 3.6 L/h (RSE 7.1%; bootstrap median 3.2, 95% CI 2.6-3.7)
 
     # Covariate effects on CL/F. Chen 2024 Equation 1 (reproduced verbatim from
     # the publisher's equation image IDR-17-4055-e0001):

@@ -87,10 +87,10 @@ Jones_2011_PF04878691_viralLoad <- function() {
     lcl_exp_inf       <- fixed(log(1.7));    label("Steady-state apparent clearance per kg body weight (CL_SS = paper CLF, L/h/kg)")              # Table 1 (CLF = 1.7 L/h/kg)
     lcl_exp_component  <- fixed(log(1.8));    label("Initial offset of the time-varying clearance component per kg (CL_TIME0 = CL0 - CLF, L/h/kg)") # Derived from Table 1 (CL0 = 3.5, CLF = 1.7)
     lcl_exp_kdes     <- fixed(log(0.24));   label("Exponential decay rate of the time-varying clearance component (paper DEG, 1/h)")              # Table 1 (DEG = 0.24 1/h)
-    lvc       <- fixed(log(3.3));    label("Apparent central volume of distribution per kg body weight (Vc, L/kg)")                        # Table 1 (Vc = 3.3 L/kg)
-    lq        <- fixed(log(0.74));   label("Apparent intercompartmental clearance per kg body weight (Q, L/h/kg)")                         # Table 1 (Q = 0.74 L/h/kg)
-    lvp       <- fixed(log(21));     label("Apparent peripheral volume of distribution per kg body weight (Vp, L/kg)")                     # Table 1 (Vp = 21 L/kg)
-    lka       <- fixed(log(0.078));  label("First-order absorption rate constant (ka, 1/h)")                                               # Table 1 (ka = 0.078 1/h)
+    lvc       <- fixed(log(3.3));    label("Apparent central volume of distribution per kg body weight (L/kg)")                        # Table 1 (Vc = 3.3 L/kg)
+    lq        <- fixed(log(0.74));   label("Apparent intercompartmental clearance per kg body weight (L/h/kg)")                         # Table 1 (Q = 0.74 L/h/kg)
+    lvp       <- fixed(log(21));     label("Apparent peripheral volume of distribution per kg body weight (L/kg)")                     # Table 1 (Vp = 21 L/kg)
+    lka       <- fixed(log(0.078));  label("First-order absorption rate constant (1/h)")                                               # Table 1 (ka = 0.078 1/h)
 
     etalcl_exp_inf ~ fixed(0.067)                                                                                                                  # Table 1 (IIV CLF = 0.067)
     etalka ~ fixed(0.19)                                                                                                                   # Table 1 (IIV ka  = 0.19)
@@ -103,7 +103,7 @@ Jones_2011_PF04878691_viralLoad <- function() {
     lkout_oas   <- log(0.034); label("OAS first-order elimination rate constant kout (1/h)")                                                # Table 2 (kout = 0.034 1/h)
     lslope_oas  <- log(3.5);   label("Slope of the drug stimulation of OAS production per (ng/mL)^gamma (paper SLP)")                       # Table 2 (SLP = 3.5)
     lrbase_oas  <- log(0.96);  label("OAS baseline fold change (rbase = kin/kout, unitless fold change)")                                   # Table 2 (BASE = 0.96)
-    lgamma_oas  <- log(1.6);   label("Sigmoidicity exponent on Cc in the OAS stimulation power function (gamma, unitless)")                 # Table 2 (gamma = 1.6)
+    lgamma_oas  <- log(1.6);   label("Sigmoidicity exponent on Cc in the OAS stimulation power function (unitless)")                 # Table 2 (gamma = 1.6)
 
     etalkout_oas  ~ 1.7                                                                                                                    # Table 2 (IIV kout = 1.7)
     etalrbase_oas ~ 0.18                                                                                                                   # Table 2 (IIV BASE = 0.18)
@@ -126,8 +126,8 @@ Jones_2011_PF04878691_viralLoad <- function() {
     # ----------------------------------------------------------------------
     lbase_vl <- log(7.3);     label("Baseline HCV viral RNA at OAS fold change above baseline = 0 (log10 copies/mL)")                       # Table 4 (BASE = 7.3 log10 copies/mL, %CV 1.4)
     limax_vl <- log(2.7);     label("Magnitude of the maximum HCV viral RNA reduction (|Imax|, log10 copies/mL; applied as -Imax_abs inside model())") # Table 4 (Imax = -2.7 log10 copies/mL, %CV 15)
-    lvo50_vl <- log(3.6);     label("OAS fold change above baseline producing 50 percent of |Imax| (VO50, unitless fold change)")           # Table 4 (VO50 = 3.6, %CV 11)
-    lgamma_vl <- log(0.68);   label("Sigmoidicity exponent on the OAS fold change in the viral-load inhibition function (gamma, unitless)") # Table 4 (gamma = 0.68, %CV 25)
+    lvo50_vl <- log(3.6);     label("OAS fold change above baseline producing 50 percent of |Imax| (unitless fold change)")           # Table 4 (VO50 = 3.6, %CV 11)
+    lgamma_vl <- log(0.68);   label("Sigmoidicity exponent on the OAS fold change in the viral-load inhibition function (unitless)") # Table 4 (gamma = 0.68, %CV 25)
 
     # Viral-load IIVs (Table 4). The Jones 2011 Results text describes the
     # IIV block as "variance covariance matrix for Imax and gamma" and

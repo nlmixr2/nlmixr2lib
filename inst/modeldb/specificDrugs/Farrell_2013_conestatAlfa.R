@@ -71,9 +71,9 @@ Farrell_2013_conestatAlfa <- function() {
     # the dose unit U divided by vc gives concentration directly in U/mL,
     # matching the units used throughout the paper and consistent with the
     # Cc ~ prop(propSd) + add(addSd) error model.
-    lvc        <- log(2.86 * 1000); label("Central volume of distribution at 70 kg (V, mL)")               # Farrell 2013 Table 2: V = 2.86 L, 95% CI 2.68-3.03; converted to mL
-    lvmax      <- log(1.63);        label("Maximal Michaelis-Menten elimination rate (Vmax, U/mL/h)")       # Farrell 2013 Table 2: Vmax = 1.63 U/mL/h in healthy volunteers and symptomatic HAE patients
-    lkm        <- log(1.60);        label("Michaelis-Menten concentration for half-Vmax elimination (Km, U/mL)")  # Farrell 2013 Table 2: Km = 1.60 U/mL, 95% CI 1.14-2.24
+    lvc        <- log(2.86 * 1000); label("Central volume of distribution at 70 kg (mL)")               # Farrell 2013 Table 2: V = 2.86 L, 95% CI 2.68-3.03; converted to mL
+    lvmax      <- log(1.63);        label("Maximal Michaelis-Menten elimination rate (U/mL/h)")       # Farrell 2013 Table 2: Vmax = 1.63 U/mL/h in healthy volunteers and symptomatic HAE patients
+    lkm        <- log(1.60);        label("Michaelis-Menten concentration for half-Vmax elimination (U/mL)")  # Farrell 2013 Table 2: Km = 1.60 U/mL, 95% CI 1.14-2.24
     lrbase_hv  <- log(0.901);       label("Endogenous baseline functional C1INH in healthy volunteers (U/mL)")     # Farrell 2013 Table 2: baseline HV = 0.901 U/mL, 95% CI 0.839-0.968
     lrbase_hae <- log(0.176);       label("Endogenous baseline functional C1INH in HAE patients (U/mL)")           # Farrell 2013 Table 2: baseline HAE = 0.176 U/mL, 95% CI 0.154-0.200
 

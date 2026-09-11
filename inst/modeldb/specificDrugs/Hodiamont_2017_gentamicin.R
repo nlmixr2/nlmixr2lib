@@ -69,10 +69,10 @@ Hodiamont_2017_gentamicin <- function() {
     # Structural population PK parameters (Hodiamont 2017 Table 2, Final
     # Model column). All four typical values are reported on the linear
     # scale; nlmixr2lib log-transforms positive-constrained parameters.
-    lcl <- log(2.3);   label("Clearance (CL, L/h)")                                  # Table 2: CL = 2.3 L/h
-    lvc <- log(21.6);  label("Central volume of distribution (V1, L)")               # Table 2: V1 = 21.6 L
-    lq  <- log(1.3);   label("Intercompartmental clearance (Q, L/h)")                # Table 2: Q  = 1.3 L/h
-    lvp <- log(10.2);  label("Peripheral volume of distribution (V2, L)")            # Table 2: V2 = 10.2 L
+    lcl <- log(2.3);   label("Clearance (L/h)")                                  # Table 2: CL = 2.3 L/h
+    lvc <- log(21.6);  label("Central volume of distribution (L)")               # Table 2: V1 = 21.6 L
+    lq  <- log(1.3);   label("Intercompartmental clearance (L/h)")                # Table 2: Q  = 1.3 L/h
+    lvp <- log(10.2);  label("Peripheral volume of distribution (L)")            # Table 2: V2 = 10.2 L
 
     # Inter-individual variability (Hodiamont 2017 Table 2 IIV block).
     # The Table 2 caption defines CV% = sqrt(exp(omega^2) - 1) * 100, so

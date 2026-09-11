@@ -261,11 +261,11 @@ Jang_2023_zaltoprofen <- function() {
     # standing rule that printed values have authority over figures.
     # ------------------------------------------------------------------
 
-    lka <- log(1.73);  label("Absorption rate constant (Ka, 1/h)")                       # Table S3, tv Ka (SE 0.15, RSE 8.56%)
-    lvc <- log(4.88);  label("Apparent central volume of distribution (V/F, L)")         # Table S3, tv V/F (SE 1.28, RSE 26.32%)
+    lka <- log(1.73);  label("Absorption rate constant (1/h)")                       # Table S3, tv Ka (SE 0.15, RSE 8.56%)
+    lvc <- log(4.88);  label("Apparent central volume of distribution (L)")         # Table S3, tv V/F (SE 1.28, RSE 26.32%)
     lcl <- log(43.70); label("Apparent clearance (CL/F, L/h) at CrCL 104.38 mL/min and albumin 4.90 g/dL")  # Table S3, tv CL/F (SE 2.12, RSE 4.85%)
-    lvp <- log(40.56); label("Apparent peripheral volume of distribution (V2/F, L)")     # Table S3, tv V2/F (SE 7.02, RSE 17.32%)
-    lq  <- log(5.61);  label("Apparent intercompartmental clearance (CL2/F, L/h)")       # Table S3, tv CL2/F (SE 0.63, RSE 11.16%)
+    lvp <- log(40.56); label("Apparent peripheral volume of distribution (L)")     # Table S3, tv V2/F (SE 7.02, RSE 17.32%)
+    lq  <- log(5.61);  label("Apparent intercompartmental clearance (L/h)")       # Table S3, tv CL2/F (SE 0.63, RSE 11.16%)
 
     # Covariate effects on CL/F. Both are power exponents on a
     # median-normalised ratio (main-text Eq. (2)).

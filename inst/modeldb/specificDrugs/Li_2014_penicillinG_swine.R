@@ -44,20 +44,20 @@ Li_2014_penicillinG_swine <- function() {
 
   ini({
     # Structural parameters from Li 2014 Table 3 (swine, final PK model).
-    lvc       <- log(3.05);  label("Central volume of distribution (Vc, L)")                                   # Li 2014 Table 3 V1
-    lvp       <- log(1.65);  label("First peripheral volume of distribution (Vp, L)")                          # Li 2014 Table 3 V2
-    lvp2      <- log(4.65);  label("Second peripheral volume of distribution (Vp2, L)")                        # Li 2014 Table 3 V3
-    lv_kidney <- log(4.38);  label("Kidney compartment volume of distribution (V_kidney, L)")                  # Li 2014 Table 3 VK
-    lv_muscle <- log(1.10);  label("Muscle compartment volume of distribution (V_muscle, L)")                  # Li 2014 Table 3 VM
-    lcl       <- log(16.9);  label("Central clearance (CL, L/h)")                                              # Li 2014 Table 3 CL1
-    lq        <- log(13.7);  label("Inter-compartmental clearance central <-> peripheral1 (Q, L/h)")           # Li 2014 Table 3 CL2
-    lq2       <- log(0.52);  label("Inter-compartmental clearance central <-> peripheral2 (Q2, L/h)")          # Li 2014 Table 3 CL3
-    lq_kidney <- log(12.1);  label("Inter-compartmental clearance central <-> kidney (Q_kidney, L/h)")         # Li 2014 Table 3 CLK
-    lq_muscle <- log(14.8);  label("Inter-compartmental clearance central <-> muscle (Q_muscle, L/h)")         # Li 2014 Table 3 CLM
-    lka_im_k   <- log(3.03); label("First-order absorption rate constant after IM penicillin potassium (Ka, 1/h)")  # Li 2014 Table 3 Kim1
-    lka_im_pro <- log(0.48); label("First-order absorption rate constant after IM procaine penicillin (Ka, 1/h)")   # Li 2014 Table 3 Kim2
-    lfdepot_im_k   <- log(0.733); label("Bioavailability of IM penicillin potassium (F, fraction)")    # Li 2014 Table 3 Fim1 (73.3%)
-    lfdepot_im_pro <- log(0.642); label("Bioavailability of IM procaine penicillin (F, fraction)")     # Li 2014 Table 3 Fim2 (64.2%)
+    lvc       <- log(3.05);  label("Central volume of distribution (L)")                                   # Li 2014 Table 3 V1
+    lvp       <- log(1.65);  label("First peripheral volume of distribution (L)")                          # Li 2014 Table 3 V2
+    lvp2      <- log(4.65);  label("Second peripheral volume of distribution (L)")                        # Li 2014 Table 3 V3
+    lv_kidney <- log(4.38);  label("Kidney compartment volume of distribution (L)")                  # Li 2014 Table 3 VK
+    lv_muscle <- log(1.10);  label("Muscle compartment volume of distribution (L)")                  # Li 2014 Table 3 VM
+    lcl       <- log(16.9);  label("Central clearance (L/h)")                                              # Li 2014 Table 3 CL1
+    lq        <- log(13.7);  label("Inter-compartmental clearance central <-> peripheral1 (L/h)")           # Li 2014 Table 3 CL2
+    lq2       <- log(0.52);  label("Inter-compartmental clearance central <-> peripheral2 (L/h)")          # Li 2014 Table 3 CL3
+    lq_kidney <- log(12.1);  label("Inter-compartmental clearance central <-> kidney (L/h)")         # Li 2014 Table 3 CLK
+    lq_muscle <- log(14.8);  label("Inter-compartmental clearance central <-> muscle (L/h)")         # Li 2014 Table 3 CLM
+    lka_im_k   <- log(3.03); label("First-order absorption rate constant after IM penicillin potassium (1/h)")  # Li 2014 Table 3 Kim1
+    lka_im_pro <- log(0.48); label("First-order absorption rate constant after IM procaine penicillin (1/h)")   # Li 2014 Table 3 Kim2
+    lfdepot_im_k   <- log(0.733); label("Bioavailability of IM penicillin potassium (fraction)")    # Li 2014 Table 3 Fim1 (73.3%)
+    lfdepot_im_pro <- log(0.642); label("Bioavailability of IM procaine penicillin (fraction)")     # Li 2014 Table 3 Fim2 (64.2%)
 
     # Covariate effect (Li 2014 Table 3). Power model:
     # Vp_i = Vp_pop * (WT/50)^0.132 * exp(eta).

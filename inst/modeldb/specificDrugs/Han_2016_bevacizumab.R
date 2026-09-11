@@ -79,10 +79,10 @@ Han_2016_bevacizumab <- function() {
     # Han 2016 Table 3 final-model estimates. Units in the paper are mL/h and mL;
     # converted here to L/day for consistency with antibody dosing once every 1-3 weeks
     # (CL_mL_h * 24/1000 -> L/day; V_mL / 1000 -> L).
-    lcl <- log(8.6 * 24 / 1000);  label("Clearance (CL, L/day)")                                # Table 3 row CL = 8.6 mL/h
-    lvc <- log(2678 / 1000);      label("Central volume of distribution (V1, L)")               # Table 3 row V1 = 2678 mL
-    lq  <- log(18.6 * 24 / 1000); label("Inter-compartmental clearance (Q, L/day)")             # Table 3 row Q  = 18.6 mL/h
-    lvp <- log(2423 / 1000);      label("Peripheral volume of distribution (V2, L)")            # Table 3 row V2 = 2423 mL
+    lcl <- log(8.6 * 24 / 1000);  label("Clearance (L/day)")                                # Table 3 row CL = 8.6 mL/h
+    lvc <- log(2678 / 1000);      label("Central volume of distribution (L)")               # Table 3 row V1 = 2678 mL
+    lq  <- log(18.6 * 24 / 1000); label("Inter-compartmental clearance (L/day)")             # Table 3 row Q  = 18.6 mL/h
+    lvp <- log(2423 / 1000);      label("Peripheral volume of distribution (L)")            # Table 3 row V2 = 2423 mL
 
     # ---- Allometric exponents (estimated, shared between CL+Q and V1+V2) ----
     e_wt_cl_q  <- 0.589; label("Shared allometric exponent on log(WT/70) for CL and Q (unitless)")  # Table 3 row 'BWT on CL and Q'

@@ -46,9 +46,9 @@ Damnjanovic_2023_levetiracetam <- function() {
     # and rate of absorption processes, the absorption rate (Ka) was fixed at 2.6 h-1
     # according to the values in the existing literature." (Results, LEV paragraph 1).
     # Table 2(a) accordingly prints no SE / RSE for Ka.
-    lka <- fixed(log(2.6));   label("Absorption rate constant (Ka, 1/h)")                  # Table 2(a): Ka = 2.6 1/h, no SE/RSE reported
-    lvc <- log(25.01);        label("Apparent central volume of distribution (V/F, L)")    # Table 2(a): V = 25.01 L (SE 5.65, RSE 22.6%)
-    lcl <- log(1.51);         label("Apparent oral clearance (CL/F, L/h)")                 # Table 2(a): Cl = 1.51 L/h (SE 0.27, RSE 18.1%)
+    lka <- fixed(log(2.6));   label("Absorption rate constant (1/h)")                  # Table 2(a): Ka = 2.6 1/h, no SE/RSE reported
+    lvc <- log(25.01);        label("Apparent central volume of distribution (L)")    # Table 2(a): V = 25.01 L (SE 5.65, RSE 22.6%)
+    lcl <- log(1.51);         label("Apparent oral clearance (L/h)")                 # Table 2(a): Cl = 1.51 L/h (SE 0.27, RSE 18.1%)
 
     # Allometric exponents on body weight, both FIXED (Table 2(a) prints "-" for
     # SE and RSE on both rows; Methods states the exponents were fixed at 1 for V

@@ -123,10 +123,10 @@ Liang_2024_rituximab <- function() {
 
   ini({
     # Rituximab disposition (Liang 2024 Table 2).
-    lcl   <- log(0.0482);         label("Nonspecific clearance (CL, L/h)")                                        # Liang 2024 Table 2: CL = 0.0482 L/h (95% CI 0.0336, 0.0681)
-    lvc   <- log(2.48);           label("Central volume of distribution (V, L)")                                   # Liang 2024 Table 2: V = 2.48 L (1.77, 2.96)
-    lq    <- log(0.0073);         label("Intercompartmental clearance (Q, L/h)")                                   # Liang 2024 Table 2: Q = 0.0073 L/h (0.000679, 0.0372)
-    lvp   <- log(4.68);           label("Peripheral volume of distribution (V2, L)")                               # Liang 2024 Table 2: V2 = 4.68 L (1.86, 21.9)
+    lcl   <- log(0.0482);         label("Nonspecific clearance (L/h)")                                        # Liang 2024 Table 2: CL = 0.0482 L/h (95% CI 0.0336, 0.0681)
+    lvc   <- log(2.48);           label("Central volume of distribution (L)")                                   # Liang 2024 Table 2: V = 2.48 L (1.77, 2.96)
+    lq    <- log(0.0073);         label("Intercompartmental clearance (L/h)")                                   # Liang 2024 Table 2: Q = 0.0073 L/h (0.000679, 0.0372)
+    lvp   <- log(4.68);           label("Peripheral volume of distribution (L)")                               # Liang 2024 Table 2: V2 = 4.68 L (1.86, 21.9)
 
     # Target binding and turnover (Liang 2024 Table 2, Section 2.3).
     # The paper's ktmd is the rituximab-CD20 complex elimination rate constant.
@@ -136,9 +136,9 @@ Liang_2024_rituximab <- function() {
     # cleared by ADCC / CDC, so ktmd occupies the kint slot of the Gibiansky
     # 2008 QSS equations and is named with the library canonical kint here.
     lkint <- fixed(log(0.217));   label("Rituximab-CD20 complex elimination rate constant (paper's ktmd, 1/h)")    # Liang 2024 Table 2: ktmd = 0.217 hr-1, held constant at the maximal mAb elimination rate of Glassman and Balthasar 2017 (Section 2.3)
-    lkss  <- log(6.21e-3);        label("Quasi-steady-state constant (kss, umol/L)")                               # Liang 2024 Table 2: kss = 6.21 (3.09, 15.5); see the units note below -- 6.21 nmol/L = 6.21e-3 umol/L
-    lksyn <- fixed(log(5.06e-8)); label("CD20 synthesis rate (ksyn, umol/L/h)")                                    # Liang 2024 Table 2: ksyn = 5.06e-8, held constant
-    lkdeg <- fixed(log(1.63e-3)); label("CD20 degradation rate constant (kdeg, 1/h)")                              # Liang 2024 Table 2: kdeg = 1.63e-3 hr-1, held constant at the ~3.9%/day B cell disappearance rate of Macallan 2005 (Section 2.3)
+    lkss  <- log(6.21e-3);        label("Quasi-steady-state constant (umol/L)")                               # Liang 2024 Table 2: kss = 6.21 (3.09, 15.5); see the units note below -- 6.21 nmol/L = 6.21e-3 umol/L
+    lksyn <- fixed(log(5.06e-8)); label("CD20 synthesis rate (umol/L/h)")                                    # Liang 2024 Table 2: ksyn = 5.06e-8, held constant
+    lkdeg <- fixed(log(1.63e-3)); label("CD20 degradation rate constant (1/h)")                              # Liang 2024 Table 2: kdeg = 1.63e-3 hr-1, held constant at the ~3.9%/day B cell disappearance rate of Macallan 2005 (Section 2.3)
 
     # Between-subject variability, exponential (Liang 2024 Eq. 1); the Omega
     # column of Table 2 reports variances. Every other parameter is "0 (Fixed)".

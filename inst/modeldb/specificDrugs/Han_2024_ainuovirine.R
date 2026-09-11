@@ -261,10 +261,10 @@ Han_2024_ainuovirine <- function() {
     # ==================================================================
 
     # ----- Structural disposition -----
-    lcl <- log(6.46);   label("Apparent clearance after the FIRST dose (CL/F, L/h)")     # Han 2024 Table 3, CL/F = 6.46 (RSE 15.00%), 95% CI 4.56-8.36; bootstrap median 6.35 (4.17-8.36). Steady-state CL/F is this value x 2.47 -- see e_md_cl
-    lvc <- log(11.5);   label("Apparent central volume of distribution (Vc/F, L)")       # Han 2024 Table 3, Vc/F = 11.5 (RSE 13.7%), 95% CI 8.4-14.6; bootstrap median 11.4 (8.86-15.90)
-    lvp <- log(293.0);  label("Apparent peripheral volume of distribution (Vp/F, L)")    # Han 2024 Table 3, Vp/F = 293.0 (RSE 10.5%), 95% CI 233.0-353.0; bootstrap median 297.0 (240.0-377.0)
-    lq  <- log(17.6);   label("Apparent intercompartmental clearance (Q/F, L/h)")        # Han 2024 Table 3, Q/F = 17.6 (RSE 11.0%), 95% CI 13.8-21.4; bootstrap median 17.7 (14.5-22.8)
+    lcl <- log(6.46);   label("Apparent clearance after the FIRST dose (L/h)")     # Han 2024 Table 3, CL/F = 6.46 (RSE 15.00%), 95% CI 4.56-8.36; bootstrap median 6.35 (4.17-8.36). Steady-state CL/F is this value x 2.47 -- see e_md_cl
+    lvc <- log(11.5);   label("Apparent central volume of distribution (L)")       # Han 2024 Table 3, Vc/F = 11.5 (RSE 13.7%), 95% CI 8.4-14.6; bootstrap median 11.4 (8.86-15.90)
+    lvp <- log(293.0);  label("Apparent peripheral volume of distribution (L)")    # Han 2024 Table 3, Vp/F = 293.0 (RSE 10.5%), 95% CI 233.0-353.0; bootstrap median 297.0 (240.0-377.0)
+    lq  <- log(17.6);   label("Apparent intercompartmental clearance (L/h)")        # Han 2024 Table 3, Q/F = 17.6 (RSE 11.0%), 95% CI 13.8-21.4; bootstrap median 17.7 (14.5-22.8)
 
     # ----- Absorption -----
     # KA is the one structural parameter Han 2024 did NOT estimate in the
@@ -282,8 +282,8 @@ Han_2024_ainuovirine <- function() {
     # Table 3's unit for this row reads "L/h", which is a typographical
     # error -- KA is a first-order rate constant. The Results text gives
     # it correctly as "0.0985 h -1".
-    lka   <- fixed(log(0.0985)); label("First-order absorption rate constant (KA, 1/h)")  # Han 2024 Table 3, KA = 0.0985, carried over from the ADYY-ACC007-103-only model
-    ltlag <- log(0.208);         label("Absorption lag time (ALAG, h)")                   # Han 2024 Table 3, ALAG = 0.208 (RSE 26.700%), 95% CI 0.099-0.317; bootstrap median 0.216 (0.083-0.309)
+    lka   <- fixed(log(0.0985)); label("First-order absorption rate constant (1/h)")  # Han 2024 Table 3, KA = 0.0985, carried over from the ADYY-ACC007-103-only model
+    ltlag <- log(0.208);         label("Absorption lag time (h)")                   # Han 2024 Table 3, ALAG = 0.208 (RSE 26.700%), 95% CI 0.099-0.317; bootstrap median 0.216 (0.083-0.309)
 
     # ----- Relative bioavailability by dose level -----
     # The 75 mg group is the reference: Table 3's footnote defines both
@@ -291,9 +291,9 @@ Han_2024_ainuovirine <- function() {
     # 150 mg relative to 75 mg; F 300 mg is the bioavailability of 300 mg
     # relative to 75 mg"), so F(75 mg) is a structural anchor of 1 rather
     # than an estimate.
-    lfdepot           <- fixed(log(1)); label("Relative bioavailability at the 75 mg reference dose level (F, unitless)")  # Han 2024 Table 3 footnote: the 150 mg and 300 mg rows are expressed relative to 75 mg, so 75 mg anchors F at 1
-    e_dose150_fdepot  <- 0.716;         label("Relative bioavailability at 150 mg versus the 75 mg reference (F, unitless)")  # Han 2024 Table 3, F 150 mg = 0.716 (RSE 10.600%), 95% CI 0.567-0.865; bootstrap median 0.715 (0.570-0.900)
-    e_dose300_fdepot  <- 0.410;         label("Relative bioavailability at 300 mg versus the 75 mg reference (F, unitless)")  # Han 2024 Table 3, F 300 mg = 0.410 (RSE 12.900%), 95% CI 0.306-0.514; bootstrap median 0.411 (0.311-0.549)
+    lfdepot           <- fixed(log(1)); label("Relative bioavailability at the 75 mg reference dose level (unitless)")  # Han 2024 Table 3 footnote: the 150 mg and 300 mg rows are expressed relative to 75 mg, so 75 mg anchors F at 1
+    e_dose150_fdepot  <- 0.716;         label("Relative bioavailability at 150 mg versus the 75 mg reference (unitless)")  # Han 2024 Table 3, F 150 mg = 0.716 (RSE 10.600%), 95% CI 0.567-0.865; bootstrap median 0.715 (0.570-0.900)
+    e_dose300_fdepot  <- 0.410;         label("Relative bioavailability at 300 mg versus the 75 mg reference (unitless)")  # Han 2024 Table 3, F 300 mg = 0.410 (RSE 12.900%), 95% CI 0.306-0.514; bootstrap median 0.411 (0.311-0.549)
 
     # ----- First-dose versus steady-state clearance -----
     e_md_cl <- 1.47; label("Multiplicative effect of MULTI_DOSE_PT on apparent clearance (unitless; CL ~ cl * (1 + e_md_cl * MULTI_DOSE_PT))")  # Han 2024 Table 3, "Drugno on CL" = 1.47 (RSE 21.40%), 95% CI 0.85-2.09; bootstrap median 1.51 (1.02-2.83). Table 3 footnote: "CL (steady-state) pop = CL typical x 2.47", i.e. 1 + 1.47

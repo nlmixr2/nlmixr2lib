@@ -57,19 +57,19 @@ Othman_2014_daclizumab <- function() {
     # Structural PK parameters — reference values for a 70 kg adult.
     # Paper reports values in L/h and /h; converted to /day by x 24 so this
     # model matches the nlmixr2lib convention (`units$time = "day"`).
-    lka      <- log(0.009 * 24); label("Absorption rate constant (Ka, 1/day; 0.009 /h SC)")         # Table 2 (ka = 0.009 /h)
-    lcl      <- log(0.010 * 24); label("Clearance for a 70 kg adult (CL, L/day; 10 mL/h)")          # Table 2 (CL = 0.010 L/h)
-    lvc      <- log(3.89);       label("Central volume of distribution for a 70 kg adult (Vc, L)")  # Table 2 (Vc = 3.89 L)
-    lvp      <- log(2.52);       label("Peripheral volume of distribution for a 70 kg adult (Vp, L)")  # Table 2 (Vp = 2.52 L)
-    lq       <- log(0.044 * 24); label("Inter-compartmental clearance for a 70 kg adult (Q, L/day; 44 mL/h)")  # Table 2 (Q = 0.044 L/h)
-    lfdepot  <- log(0.84);       label("Subcutaneous bioavailability for 100-300 mg doses (F, fraction)")  # Table 2 (F_100-300mg = 84%)
-    ltlag    <- log(2 / 24);     label("Absorption lag time for SC doses (Tlag, day; 2 h)")         # Table 2 (Lag time = 2.0 h)
+    lka      <- log(0.009 * 24); label("Absorption rate constant (1/day; 0.009 /h SC)")         # Table 2 (ka = 0.009 /h)
+    lcl      <- log(0.010 * 24); label("Clearance for a 70 kg adult (L/day; 10 mL/h)")          # Table 2 (CL = 0.010 L/h)
+    lvc      <- log(3.89);       label("Central volume of distribution for a 70 kg adult (L)")  # Table 2 (Vc = 3.89 L)
+    lvp      <- log(2.52);       label("Peripheral volume of distribution for a 70 kg adult (L)")  # Table 2 (Vp = 2.52 L)
+    lq       <- log(0.044 * 24); label("Inter-compartmental clearance for a 70 kg adult (L/day; 44 mL/h)")  # Table 2 (Q = 0.044 L/h)
+    lfdepot  <- log(0.84);       label("Subcutaneous bioavailability for 100-300 mg doses (fraction)")  # Table 2 (F_100-300mg = 84%)
+    ltlag    <- log(2 / 24);     label("Absorption lag time for SC doses (day; 2 h)")         # Table 2 (Lag time = 2.0 h)
 
     # Allometric exponents — estimated, not fixed (Othman 2014 reported that
     # fixing to the classical 0.75 / 1.0 was statistically less favorable than
     # the estimated values).
-    e_wt_cl_q <- 0.54; label("Allometric exponent on CL and Q (SFCL, unitless)")    # Table 2 (SFCL = 0.54)
-    e_wt_vc_vp <- 0.64; label("Allometric exponent on Vc and Vp (SFV, unitless)")   # Table 2 (SFV = 0.64)
+    e_wt_cl_q <- 0.54; label("Allometric exponent on CL and Q (unitless)")    # Table 2 (SFCL = 0.54)
+    e_wt_vc_vp <- 0.64; label("Allometric exponent on Vc and Vp (unitless)")   # Table 2 (SFV = 0.64)
 
     # Relative bioavailability effect for the 50 mg SC cohort (multiplicative
     # fractional change on F). Derived as F_50mg / F_100-300mg - 1 = 0.57/0.84 - 1.

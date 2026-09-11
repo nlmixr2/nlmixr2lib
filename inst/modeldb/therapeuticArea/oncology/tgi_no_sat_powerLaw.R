@@ -14,7 +14,7 @@ tgi_no_sat_powerLaw <- function() {
 
   ini({
     lrbase <- 0.8; label("Initial tumor size (TS0)")
-    lka <- 0.45 ; label("Absorption rate (Ka, 1/time_unit)")
+    lka <- 0.45 ; label("Absorption rate (1/time_unit)")
     lcl <- 1 ; label("Clearance (CL)")
     lvc  <- 3.45 ; label("Central volume of distribution (V)")
     lgamma <- 0.95; label("proliferative cells as a fraction of the full tumor volume (gamma)")

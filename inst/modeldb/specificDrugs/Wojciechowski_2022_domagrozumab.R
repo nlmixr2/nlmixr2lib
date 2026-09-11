@@ -85,8 +85,8 @@ Wojciechowski_2022_domagrozumab <- function() {
     # Eq. 7: COVSPOP = 1 (HV) or 1 + theta (DMD pediatric); Eq. 8 applies
     # COVSPOP multiplicatively to the typical value, so theta_SPOP_X is added
     # to 1 (not exponentiated) when DIS_DMD == 1.
-    e_dmd_rbase     <- -0.641; label("Effect of DMD pediatric population on BASE: COVSPOP = 1 + theta when DIS_DMD = 1") # Wojciechowski 2022 Table 2: theta_SPOP_BASE = -0.641
-    e_dmd_kdegkint <- -0.900; label("Effect of DMD pediatric population on kdeg and kint (shared): COVSPOP = 1 + theta when DIS_DMD = 1") # Wojciechowski 2022 Table 2: theta_SPOP_(kdeg,kint) = -0.900
+    e_dmd_rbase     <- -0.641; label("Fractional effect of the DMD pediatric population on BASE, applied as 1 + theta when DIS_DMD = 1 (fraction)") # Wojciechowski 2022 Table 2: theta_SPOP_BASE = -0.641
+    e_dmd_kdegkint <- -0.900; label("Fractional effect of the DMD pediatric population on kdeg and kint, shared, applied as 1 + theta when DIS_DMD = 1 (fraction)") # Wojciechowski 2022 Table 2: theta_SPOP_(kdeg,kint) = -0.900
 
     # Ratio of SD for eta_kint relative to eta_kdeg (Wojciechowski 2022 Table 2,
     # "Ratio of SD for eta_kint relative to eta_kdeg" row). The paper places a

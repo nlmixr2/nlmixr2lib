@@ -149,11 +149,11 @@ Ding_2024_amodiaquine <- function() {
     # amodiaquine the literature source is Tarning 2012 (AAC
     # 56:5764-5773), reference 9 of the paper.
     lka <- fixed(log(0.589))
-    label("Absorption rate constant from the last transit compartment into amodiaquine central, literature value (ka, 1/h)")
+    label("Absorption rate constant from the last transit compartment into amodiaquine central, literature value (1/h)")
     # Ding 2024 Table 2: Ka = 0.589 1/h fixed
 
     lmtt <- fixed(log(0.236))
-    label("Mean transit time of the 2-transit-compartment absorption chain, literature value (MTT, h)")
+    label("Mean transit time of the 2-transit-compartment absorption chain, literature value (h)")
     # Ding 2024 Table 2: MTT = 0.236 h fixed; number of transit
     # compartments = 2 fixed. Because MTT (0.236 h) is SHORTER than the
     # mean time of the single ka step (1/0.589 = 1.70 h), MTT provably

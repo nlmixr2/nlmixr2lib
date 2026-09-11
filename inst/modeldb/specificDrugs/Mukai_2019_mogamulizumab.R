@@ -86,12 +86,12 @@ Mukai_2019_mogamulizumab <- function() {
 
     # Covariate effects on CL
     e_alb_cl  <- -1.81; label("ALB effect on CL (power exponent, reference 4.0 g/dL)") # Table 5
-    e_ast_cl  <-  0.282; label("AST effect on CL (power exponent, reference 24 U/L)") # Table 5
-    e_hepimp  <-  1.14; label("Hepatic impairment effect on CL (multiplicative factor for mild/moderate vs normal)") # Table 5, HI on CL
-    e_sexf    <-  0.768; label("Female sex effect on CL (multiplicative factor vs male reference)") # Table 5, SEX on CL
+    e_ast_cl  <-  0.282; label("AST power exponent on CL, reference 24 U/L (unitless)") # Table 5
+    e_hepimp  <-  1.14; label("Hepatic impairment multiplicative factor on CL for mild or moderate vs normal (unitless)") # Table 5, HI on CL
+    e_sexf    <-  0.768; label("Female sex multiplicative factor on CL vs the male reference (unitless)") # Table 5, SEX on CL
 
     # Covariate effect on V1 (central volume)
-    e_bsa_vc  <-  0.884; label("BSA effect on V1 (power exponent, reference 1.82 m^2)") # Table 5, BSA on V1
+    e_bsa_vc  <-  0.884; label("BSA power exponent on V1, reference 1.82 m^2 (unitless)") # Table 5, BSA on V1
 
     # Covariate effect on V2 (peripheral volume)
     e_alb_vp  <- -1.47; label("ALB effect on V2 (power exponent, reference 4.0 g/dL)") # Table 5, ALB on V2
@@ -104,7 +104,7 @@ Mukai_2019_mogamulizumab <- function() {
     etalvp ~ 0.424  # 72.7% CV
 
     # Residual error (log-additive, equivalent to proportional on back-transform)
-    propSd <- 0.261; label("Proportional residual error (CV)") # Table 5, residual error
+    propSd <- 0.261; label("Proportional residual error SD, CV (fraction)") # Table 5, residual error
   })
 
   model({

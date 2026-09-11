@@ -48,12 +48,12 @@ Diao_2014_rFIXFc <- function() {
     # in dL. Compartment 1 (central) holds V1 with clearance CL; compartments
     # 2 and 3 are the peripheral compartments, mapped to nlmixr2lib's
     # peripheral1 / peripheral2.
-    lcl  <- log(2.39); label("Clearance for the reference 73 kg patient (CL, dL/h)")             # Diao 2014 Table 3: CL = 2.39 dL/h
-    lvc  <- log(71.4); label("Central volume of distribution for the reference 73 kg patient (V1, dL)") # Diao 2014 Table 3: V1 = 71.4 dL
-    lq   <- log(1.67); label("Intercompartmental clearance to peripheral 1 (Q2, dL/h)")          # Diao 2014 Table 3: Q2 = 1.67 dL/h
-    lvp  <- log(87.0); label("Peripheral volume of distribution 1 (V2, dL)")                     # Diao 2014 Table 3: V2 = 87.0 dL
-    lq2  <- log(39.3); label("Intercompartmental clearance to peripheral 2 (Q3, dL/h)")          # Diao 2014 Table 3: Q3 = 39.3 dL/h
-    lvp2 <- log(39.9); label("Peripheral volume of distribution 2 (V3, dL)")                     # Diao 2014 Table 3: V3 = 39.9 dL
+    lcl  <- log(2.39); label("Clearance for the reference 73 kg patient (dL/h)")             # Diao 2014 Table 3: CL = 2.39 dL/h
+    lvc  <- log(71.4); label("Central volume of distribution for the reference 73 kg patient (dL)") # Diao 2014 Table 3: V1 = 71.4 dL
+    lq   <- log(1.67); label("Intercompartmental clearance to peripheral 1 (dL/h)")          # Diao 2014 Table 3: Q2 = 1.67 dL/h
+    lvp  <- log(87.0); label("Peripheral volume of distribution 1 (dL)")                     # Diao 2014 Table 3: V2 = 87.0 dL
+    lq2  <- log(39.3); label("Intercompartmental clearance to peripheral 2 (dL/h)")          # Diao 2014 Table 3: Q3 = 39.3 dL/h
+    lvp2 <- log(39.9); label("Peripheral volume of distribution 2 (dL)")                     # Diao 2014 Table 3: V3 = 39.9 dL
 
     # Body-weight power exponents - estimated by the paper rather than fixed to
     # the canonical 0.75 / 1 (Diao 2014 Discussion p. 475: "the exponents of BW

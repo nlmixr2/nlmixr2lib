@@ -29,19 +29,19 @@ PK_1cmt_tmdd_full <- function() {
 
   ini({
     # Drug disposition
-    lka     <- log(0.3);  label("Absorption rate (Ka, 1/day)")                                # Mager & Jusko 2001 Fig 2 (generic mAb-scale default; cf. Davda 2014 Table 3 Ka = 0.282)
-    lfdepot <- log(0.7);  label("Extravascular bioavailability (F, fraction)")                # Generic mAb-scale default (cf. Davda 2014 Table 3 F = 0.744)
-    lcl     <- log(0.2);  label("Linear (non-specific) clearance (CL, L/day)")                # Mager & Jusko 2001 Eq 1 (k_el * V); generic mAb-scale default
-    lvc     <- log(3);    label("Central volume of distribution (Vc, L)")                     # Mager & Jusko 2001 Eq 1 (V); generic mAb-scale default
+    lka     <- log(0.3);  label("Absorption rate (1/day)")                                # Mager & Jusko 2001 Fig 2 (generic mAb-scale default; cf. Davda 2014 Table 3 Ka = 0.282)
+    lfdepot <- log(0.7);  label("Extravascular bioavailability (fraction)")                # Generic mAb-scale default (cf. Davda 2014 Table 3 F = 0.744)
+    lcl     <- log(0.2);  label("Linear (non-specific) clearance (L/day)")                # Mager & Jusko 2001 Eq 1 (k_el * V); generic mAb-scale default
+    lvc     <- log(3);    label("Central volume of distribution (L)")                     # Mager & Jusko 2001 Eq 1 (V); generic mAb-scale default
 
     # Target turnover
-    lT0     <- log(0.1);  label("Baseline free target concentration (T0, mg/L)")              # Mager & Jusko 2001 Eq 2 (R0 = ksyn/kdeg); generic TMDD default
-    lkdeg   <- log(0.1);  label("Free target first-order degradation rate (kdeg, 1/day)")     # Mager & Jusko 2001 Eq 2 (k_deg)
-    lkint   <- log(1);    label("Drug-target complex internalization rate (kint, 1/day)")     # Mager & Jusko 2001 Eq 3 (k_int)
+    lT0     <- log(0.1);  label("Baseline free target concentration (mg/L)")              # Mager & Jusko 2001 Eq 2 (R0 = ksyn/kdeg); generic TMDD default
+    lkdeg   <- log(0.1);  label("Free target first-order degradation rate (1/day)")     # Mager & Jusko 2001 Eq 2 (k_deg)
+    lkint   <- log(1);    label("Drug-target complex internalization rate (1/day)")     # Mager & Jusko 2001 Eq 3 (k_int)
 
     # Binding
     lkon    <- log(1);    label("Association rate constant (kon, L/(mg*day))")                # Mager & Jusko 2001 Eq 1 (k_on)
-    lkoff   <- log(0.1);  label("Dissociation rate constant (koff, 1/day)")                   # Mager & Jusko 2001 Eq 1 (k_off)
+    lkoff   <- log(0.1);  label("Dissociation rate constant (1/day)")                   # Mager & Jusko 2001 Eq 1 (k_off)
 
     # IIV (generic archetype; single eta on each of CL, Vc, Ka)
     etalcl ~ 0.09

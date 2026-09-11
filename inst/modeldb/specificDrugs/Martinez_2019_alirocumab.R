@@ -96,8 +96,8 @@ Martinez_2019_alirocumab <- function() {
     etalogitfdepot         ~ 1.060                                # Martinez 2019 Table 2 (logit-space IIV, 103%)
 
     # Residual error - Martinez 2019 Table 2 reports proportional SD = 0.259 (25.9%) and additive SD = 0.0465 mg/L.
-    propSd <- 0.259;  label("Proportional residual error (SD, fraction)")   # Martinez 2019 Table 2 (theta8, 25.9%)
-    addSd  <- 0.0465; label("Additive residual error (SD, mg/L)")            # Martinez 2019 Table 2 (theta9)
+    propSd <- 0.259;  label("Proportional residual error (fraction)")   # Martinez 2019 Table 2 (theta8, 25.9%)
+    addSd  <- 0.0465; label("Additive residual error (mg/L)")            # Martinez 2019 Table 2 (theta9)
   })
   model({
     # Individual PK parameters. Martinez 2019 parameterizes the covariate effects on the

@@ -73,7 +73,7 @@ Bienczak_2025_ligelizumab <- function() {
   ini({
     # Structural parameters - typical values for a 70 kg, ADA-negative, CSU patient
     # with IgE = 90 IU/mL, not enrolled in study C2201 (Table S6 of Supplementary Information S1)
-    lka  <- log(0.218);   label("Absorption rate constant (ka, 1/day)")                                # Table S6, structural ka
+    lka  <- log(0.218);   label("Absorption rate constant (1/day)")                                # Table S6, structural ka
     lcl  <- log(0.602);   label("Apparent clearance (CL/F, L/day) for a 70 kg CSU patient")            # Table S6, structural CL/F
     lvc  <- log(5.47);    label("Apparent central volume of distribution (Vc/F, L) for a 70 kg CSU patient")  # Table S6, structural Vc/F
     lq   <- log(0.969);   label("Apparent inter-compartmental clearance (Q/F, L/day) for a 70 kg CSU patient")  # Table S6, structural Q/F
@@ -89,10 +89,10 @@ Bienczak_2025_ligelizumab <- function() {
     e_ige_vp <- -0.0816;  label("Power exponent of baseline IgE on Vp/F (unitless)")  # Table S6 IgE on Vp/F
 
     # Categorical / binary covariate effects (log-additive on the structural parameter)
-    e_ada_pos_cl     <-  0.243;  label("Effect of ever-positive ADA on CL/F (log-additive)")          # Table S6 ADA-positive on CL/F
-    e_ada_pos_vp     <- -0.526;  label("Effect of ever-positive ADA on Vp/F (log-additive)")          # Table S6 ADA-positive on Vp/F
-    e_dis_healthy_cl <- -0.087;  label("Effect of healthy-volunteer status on CL/F (log-additive)")   # Table S6 healthy-volunteer status on CL/F
-    e_study_c2201_cl <-  0.176;  label("Effect of study C2201 enrollment on CL/F (log-additive)")     # Table S6 study C2201 on CL/F
+    e_ada_pos_cl     <-  0.243;  label("Effect of ever-positive ADA on CL/F, log-additive (unitless)")          # Table S6 ADA-positive on CL/F
+    e_ada_pos_vp     <- -0.526;  label("Effect of ever-positive ADA on Vp/F, log-additive (unitless)")          # Table S6 ADA-positive on Vp/F
+    e_dis_healthy_cl <- -0.087;  label("Effect of healthy-volunteer status on CL/F, log-additive (unitless)")   # Table S6 healthy-volunteer status on CL/F
+    e_study_c2201_cl <-  0.176;  label("Effect of study C2201 enrollment on CL/F, log-additive (unitless)")     # Table S6 study C2201 on CL/F
 
     # IIV: variances on the log-scale eta of each structural parameter
     # CL/F and Vp/F are correlated (r = 0.484) per Table S6

@@ -86,12 +86,12 @@ Wu_2024_inotuzumab <- function() {
     # exp(-cl_exp_kdes * time). Mapping to nlmixr2lib conventions: CL1 -> CL_SS
     # (the steady-state, non-decaying arm) and CL2 -> CL_TIME (the
     # time-varying decay arm).
-    lcl_exp_inf <- log(0.130);  label("Linear (steady-state) clearance for an NHL adult (CL_SS, L/h)")               # Wu 2024 Table 3 (CL1)
-    lvc    <- log(6.49);   label("Central volume of distribution for an NHL adult (Vc, L)")                     # Wu 2024 Table 3 (V1)
-    lcl_exp_component <- log(0.569); label("Initial value of time-dependent clearance for an NHL adult (CL_TIME, L/h)")  # Wu 2024 Table 3 (CL2)
-    lcl_exp_kdes  <- log(0.0577); label("Decay coefficient of time-dependent clearance for an NHL adult (cl_exp_kdes, 1/h)")  # Wu 2024 Table 3
-    lq     <- log(0.0437); label("Intercompartmental clearance (Q, L/h)")                                       # Wu 2024 Table 3
-    lvp    <- log(4.74);   label("Peripheral volume of distribution (Vp, L)")                                   # Wu 2024 Table 3 (V2)
+    lcl_exp_inf <- log(0.130);  label("Linear (steady-state) clearance for an NHL adult (L/h)")               # Wu 2024 Table 3 (CL1)
+    lvc    <- log(6.49);   label("Central volume of distribution for an NHL adult (L)")                     # Wu 2024 Table 3 (V1)
+    lcl_exp_component <- log(0.569); label("Initial value of time-dependent clearance for an NHL adult (L/h)")  # Wu 2024 Table 3 (CL2)
+    lcl_exp_kdes  <- log(0.0577); label("Decay coefficient of time-dependent clearance for an NHL adult (1/h)")  # Wu 2024 Table 3
+    lq     <- log(0.0437); label("Intercompartmental clearance (L/h)")                                       # Wu 2024 Table 3
+    lvp    <- log(4.74);   label("Peripheral volume of distribution (L)")                                   # Wu 2024 Table 3 (V2)
 
     # Covariate-effect parameters (Wu 2024 Table 3). Continuous covariates enter
     # as power models centered on the reference value; categorical effects enter

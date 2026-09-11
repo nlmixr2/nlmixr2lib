@@ -63,12 +63,12 @@ Zhang_2025_nedosiran <- function() {
     # Structural disposition (Zhang 2025 Table 2), reference subject:
     # BW 70 kg, eGFR 90 mL/min/1.73 m^2, PH type other than PH1.
     # ---------------------------------------------------------------
-    lcl   <- log(6.10);   label("Apparent clearance (CL/F, L/h)")                                  # Table 2: CL/F = 6.10 L/h (RSE 11.4%, 95% CI 4.74-7.47)
-    lvc   <- log(148);    label("Apparent central volume of distribution (Vc/F, L)")               # Table 2: Vc/F = 148 L (RSE 6.07%, 95% CI 130-165)
-    lq    <- log(2.79);   label("Apparent inter-compartmental clearance (Q/F, L/h)")               # Table 2: Q/F = 2.79 L/h (RSE 13.0%, 95% CI 2.08-3.51)
-    lvp   <- log(6560);   label("Apparent peripheral volume of distribution (Vp/F, L)")            # Table 2: Vp/F = 6560 L (RSE 22.4%, 95% CI 3690-9440)
-    lvmax <- log(3.37);   label("Maximum rate of saturable elimination (Vmax, mg/h)")              # Table 2: Vmax = 3.37 mg/h (RSE 20.9%, 95% CI 1.99-4.75)
-    lkm   <- log(248);    label("Michaelis-Menten constant for saturable elimination (KM, ng/mL)") # Table 2: KM = 248 ng/mL (RSE 26.7%, 95% CI 118-378)
+    lcl   <- log(6.10);   label("Apparent clearance (L/h)")                                  # Table 2: CL/F = 6.10 L/h (RSE 11.4%, 95% CI 4.74-7.47)
+    lvc   <- log(148);    label("Apparent central volume of distribution (L)")               # Table 2: Vc/F = 148 L (RSE 6.07%, 95% CI 130-165)
+    lq    <- log(2.79);   label("Apparent inter-compartmental clearance (L/h)")               # Table 2: Q/F = 2.79 L/h (RSE 13.0%, 95% CI 2.08-3.51)
+    lvp   <- log(6560);   label("Apparent peripheral volume of distribution (L)")            # Table 2: Vp/F = 6560 L (RSE 22.4%, 95% CI 3690-9440)
+    lvmax <- log(3.37);   label("Maximum rate of saturable elimination (mg/h)")              # Table 2: Vmax = 3.37 mg/h (RSE 20.9%, 95% CI 1.99-4.75)
+    lkm   <- log(248);    label("Michaelis-Menten constant for saturable elimination (ng/mL)") # Table 2: KM = 248 ng/mL (RSE 26.7%, 95% CI 118-378)
 
     # ---------------------------------------------------------------
     # Dual parallel transit absorption (Zhang 2025 Fig. 1 schematic).
@@ -76,9 +76,9 @@ Zhang_2025_nedosiran <- function() {
     # fast pathway (three transit compartments); FR1 is the fraction of
     # the dose entering the slow pathway.
     # ---------------------------------------------------------------
-    lka1     <- log(0.212);   label("First-order absorption/transit rate constant, slow pathway (ka1, 1/h)") # Table 2: ka1 = 0.212 1/h (RSE 6.78%, 95% CI 0.184-0.240)
-    lka2     <- log(14.9);    label("First-order absorption/transit rate constant, fast pathway (ka2, 1/h)") # Table 2: ka2 = 14.9 1/h (RSE 4.48%, 95% CI 13.6-16.2)
-    logitffo <- 0.8094862;    label("Logit of the fraction of the dose absorbed via the slow pathway (FR1, logit units)") # Table 2: FR1 = 0.692 (RSE 2.20%, 95% CI 0.662-0.721); qlogis(0.692) = 0.8094862
+    lka1     <- log(0.212);   label("First-order absorption/transit rate constant, slow pathway (1/h)") # Table 2: ka1 = 0.212 1/h (RSE 6.78%, 95% CI 0.184-0.240)
+    lka2     <- log(14.9);    label("First-order absorption/transit rate constant, fast pathway (1/h)") # Table 2: ka2 = 14.9 1/h (RSE 4.48%, 95% CI 13.6-16.2)
+    logitffo <- 0.8094862;    label("Logit of the fraction of the dose absorbed via the slow pathway (logit units)") # Table 2: FR1 = 0.692 (RSE 2.20%, 95% CI 0.662-0.721); qlogis(0.692) = 0.8094862
 
     # ---------------------------------------------------------------
     # Covariate effects (Zhang 2025 Table 2 and its covariate-formula

@@ -43,9 +43,9 @@ Wang_2012_levetiracetam <- function() {
 
   ini({
     # Structural parameters - final-model estimates from Wang 2012 Table 4.
-    lka <- log(1.56);  label("Absorption rate constant (Ka, 1/h)")               # Wang 2012 Table 4: Ka = 1.56 /h (RSE 14.3%, 95% CI 1.230-1.997)
-    lvc <- log(12.1);  label("Apparent central volume of distribution (V/F, L)") # Wang 2012 Table 4: V/F = 12.1 L (RSE 5.6%, 95% CI 10.767-13.433)
-    lcl <- log(1.04);  label("Apparent oral clearance (CL/F, L/h)")              # Wang 2012 Table 4: CL/F = 1.04 L/h (RSE 1.4%, 95% CI 1.011-1.069)
+    lka <- log(1.56);  label("Absorption rate constant (1/h)")               # Wang 2012 Table 4: Ka = 1.56 /h (RSE 14.3%, 95% CI 1.230-1.997)
+    lvc <- log(12.1);  label("Apparent central volume of distribution (L)") # Wang 2012 Table 4: V/F = 12.1 L (RSE 5.6%, 95% CI 10.767-13.433)
+    lcl <- log(1.04);  label("Apparent oral clearance (L/h)")              # Wang 2012 Table 4: CL/F = 1.04 L/h (RSE 1.4%, 95% CI 1.011-1.069)
 
     # Covariate effect: body weight on CL/F, power form
     # CL/F = 1.04 * (WT/25)^e_wt_cl  (Wang 2012 final-model equation, page 848)

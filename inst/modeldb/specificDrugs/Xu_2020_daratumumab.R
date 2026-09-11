@@ -86,7 +86,7 @@ Xu_2020_daratumumab <- function() {
     e_alb_cl <- -1.149; label("Power exponent of ALB/37.0 on linear CL (unitless)")             # Xu 2020 Online Resource 6: serum albumin on CL, RSE 27.2%
     e_igg_cl <- 0.806;  label("Additive shift on CL for IgG MM (vs non-IgG MM reference)")       # Xu 2020 Online Resource 6: Type of MM (IgG vs non-IgG) on CL, RSE 29.8%
     e_wt_vc  <- 0.375;  label("Power exponent of WT/78.6 on V1 (unitless)")                     # Xu 2020 Online Resource 6: WT on V1, RSE 38.1%
-    e_sexf_vc <- -0.205; label("Additive shift on V1 for female sex (vs male reference)")       # Xu 2020 Online Resource 6: Sex on V1, RSE 22.2%
+    e_sexf_vc <- -0.205; label("Additive fractional shift on V1 for female sex vs the male reference, applied as 1 + e_sexf_vc * SEXF (fraction)")       # Xu 2020 Online Resource 6: Sex on V1, RSE 22.2%
 
     # Inter-individual variability. Xu 2020 Online Resource 6 reports IIV
     # as % CV; convert to log-normal variance via omega^2 = log(CV^2 + 1).

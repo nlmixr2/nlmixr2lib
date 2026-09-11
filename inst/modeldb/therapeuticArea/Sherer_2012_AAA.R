@@ -12,7 +12,7 @@ Sherer_2012_AAA <- function() {
   units <- list(
     time          = "year",
     dosing        = "n/a (disease-progression model with no drug dosing)",
-    concentration = "mm (abdominal aortic aneurysm diameter, observation aaaSize)"
+    concentration = "mm (abdominal aortic aneurysm diameter, observation aaa_size)"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -183,7 +183,7 @@ Sherer_2012_AAA <- function() {
     d/dt(aaa) <- beta1 + beta2 * (aaa - beta0)
     aaa(0)    <- beta0
 
-    aaaSize <- aaa
-    aaaSize ~ add(addSd)
+    aaa_size <- aaa
+    aaa_size ~ add(addSd)
   })
 }

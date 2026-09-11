@@ -41,13 +41,13 @@ Khwarg_2024_donepezil_oral <- function() {
 
   ini({
     # Structural parameters -- Khwarg 2024 Table 2, 'Oral' block, 'Final model' estimate column.
-    lka <- log(0.203); label("Absorption rate constant from depot (KA, 1/h)") # Table 2 oral: KA = 0.203 1/h (RSE 11.4%; bootstrap 0.21, 95% CI 0.165-0.257)
-    lcl <- log(14.3); label("Clearance (CL, L/h)") # Table 2 oral: CL = 14.3 L/h (RSE 6.5%; bootstrap 14.35, 95% CI 12.602-16.282)
-    lvc <- log(39.5); label("Central volume of distribution (V2, L)") # Table 2 oral: V2 = 39.5 L (RSE 36.5%; bootstrap 40.737, 95% CI 19.526-73.488)
-    lq <- log(84.9); label("Inter-compartmental clearance (Q, L/h)") # Table 2 oral: Q = 84.9 L/h (RSE 9.6%; bootstrap 86.514, 95% CI 70.362-103.327)
-    lvp <- log(1080); label("Peripheral volume of distribution (V3, L)") # Table 2 oral: V3 = 1080 L (RSE 5.9%; bootstrap 1073.55, 95% CI 957.33-1202.795)
-    ltlag <- log(0.931); label("Absorption lag time (ALAG1, h)") # Table 2 oral: ALAG1 = 0.931 h (RSE 1.7%; bootstrap 0.93, 95% CI 0.887-0.956)
-    lfdepot <- fixed(log(1)); label("Oral bioavailability (F1, fraction)") # Table 2 oral: F1 = 1 (fixed), anchored to the high oral bioavailability of Aricept (Khwarg 2024 ref [14])
+    lka <- log(0.203); label("Absorption rate constant from depot (1/h)") # Table 2 oral: KA = 0.203 1/h (RSE 11.4%; bootstrap 0.21, 95% CI 0.165-0.257)
+    lcl <- log(14.3); label("Clearance (L/h)") # Table 2 oral: CL = 14.3 L/h (RSE 6.5%; bootstrap 14.35, 95% CI 12.602-16.282)
+    lvc <- log(39.5); label("Central volume of distribution (L)") # Table 2 oral: V2 = 39.5 L (RSE 36.5%; bootstrap 40.737, 95% CI 19.526-73.488)
+    lq <- log(84.9); label("Inter-compartmental clearance (L/h)") # Table 2 oral: Q = 84.9 L/h (RSE 9.6%; bootstrap 86.514, 95% CI 70.362-103.327)
+    lvp <- log(1080); label("Peripheral volume of distribution (L)") # Table 2 oral: V3 = 1080 L (RSE 5.9%; bootstrap 1073.55, 95% CI 957.33-1202.795)
+    ltlag <- log(0.931); label("Absorption lag time (h)") # Table 2 oral: ALAG1 = 0.931 h (RSE 1.7%; bootstrap 0.93, 95% CI 0.887-0.956)
+    lfdepot <- fixed(log(1)); label("Oral bioavailability (fraction)") # Table 2 oral: F1 = 1 (fixed), anchored to the high oral bioavailability of Aricept (Khwarg 2024 ref [14])
 
     # IIV -- Khwarg 2024 Table 2 reports the log-scale variance directly; the
     # parenthesised percentage is the derived CV via footnote b,

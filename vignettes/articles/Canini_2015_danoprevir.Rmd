@@ -169,13 +169,13 @@ make_cohort <- function(cohort_id, dose_mg, interval_h, n_subj, id_offset,
 
   dose_times <- seq(0, dur_h - 0.1, by = interval_h)
   # Two observation grids: dense on the PK observable Cc during the first
-  # dosing interval to capture Cmax; sparser on the VK observable Vlog10
+  # dosing interval to capture Cmax; sparser on the VK observable log10_viral_load
   # across the 14-day treatment window. rxode2 requires cmt = <observable
-  # name> for multi-output models (Cc from the `central` state, Vlog10 from
+  # name> for multi-output models (Cc from the `central` state, log10_viral_load from
   # the `virus` state); this is the pattern that the pattern-2 warning in
   # known-vignette-failure-patterns.md permits when the algebraic
   # observables are declared AFTER all ODE states in the model body (as
-  # they are here  -  the auto-injected cmt(Cc), cmt(Vlog10) slots sit at
+  # they are here  -  the auto-injected cmt(Cc), cmt(log10_viral_load) slots sit at
   # positions 5, 6 with no downstream ODE state to renumber).
   obs_times_pk <- sort(unique(c(
     seq(0,   interval_h,     by = 0.25),
@@ -213,7 +213,7 @@ make_cohort <- function(cohort_id, dose_mg, interval_h, n_subj, id_offset,
     dplyr::mutate(
       evid = 0L,
       amt  = 0,
-      cmt  = "Vlog10",
+      cmt  = "log10_viral_load",
       rate = 0,
       cohort = cohort_id,
       patient_type = patient_type,
@@ -270,9 +270,9 @@ trajectories.
 sim_vpc <- sim |>
   dplyr::group_by(cohort, dose_mg_per_dose, interval_h, time) |>
   dplyr::summarise(
-    Vlog10_Q05 = quantile(Vlog10, 0.05, na.rm = TRUE),
-    Vlog10_Q50 = quantile(Vlog10, 0.50, na.rm = TRUE),
-    Vlog10_Q95 = quantile(Vlog10, 0.95, na.rm = TRUE),
+    log10_viral_load_Q05 = quantile(log10_viral_load, 0.05, na.rm = TRUE),
+    log10_viral_load_Q50 = quantile(log10_viral_load, 0.50, na.rm = TRUE),
+    log10_viral_load_Q95 = quantile(log10_viral_load, 0.95, na.rm = TRUE),
     .groups = "drop"
   ) |>
   dplyr::mutate(
@@ -283,8 +283,8 @@ sim_vpc <- sim |>
     )
   )
 
-ggplot(sim_vpc, aes(day, Vlog10_Q50)) +
-  geom_ribbon(aes(ymin = Vlog10_Q05, ymax = Vlog10_Q95), alpha = 0.25) +
+ggplot(sim_vpc, aes(day, log10_viral_load_Q50)) +
+  geom_ribbon(aes(ymin = log10_viral_load_Q05, ymax = log10_viral_load_Q95), alpha = 0.25) +
   geom_line(linewidth = 0.7) +
   facet_wrap(~cohort_label, ncol = 3) +
   labs(
@@ -305,15 +305,15 @@ ggplot(sim_vpc, aes(day, Vlog10_Q50)) +
 baseline_median <- sim |>
   dplyr::filter(time == 0) |>
   dplyr::group_by(cohort) |>
-  dplyr::summarise(Vlog10_baseline = median(Vlog10, na.rm = TRUE),
+  dplyr::summarise(log10_viral_load_baseline = median(log10_viral_load, na.rm = TRUE),
                    .groups = "drop")
 
 nadir_median <- sim |>
   dplyr::filter(time >= 24) |>
   dplyr::group_by(id, cohort) |>
-  dplyr::summarise(Vlog10_end = Vlog10[which.max(time)], .groups = "drop") |>
+  dplyr::summarise(log10_viral_load_end = log10_viral_load[which.max(time)], .groups = "drop") |>
   dplyr::group_by(cohort) |>
-  dplyr::summarise(Vlog10_end_median = median(Vlog10_end, na.rm = TRUE),
+  dplyr::summarise(log10_viral_load_end_median = median(log10_viral_load_end, na.rm = TRUE),
                    .groups = "drop")
 
 published_decline <- tibble::tribble(
@@ -329,16 +329,16 @@ decline_tbl <- baseline_median |>
   dplyr::left_join(nadir_median, by = "cohort") |>
   dplyr::left_join(published_decline, by = "cohort") |>
   dplyr::mutate(
-    simulated_decline_log10 = Vlog10_baseline - Vlog10_end_median,
+    simulated_decline_log10 = log10_viral_load_baseline - log10_viral_load_end_median,
     pct_diff = 100 * (simulated_decline_log10 - published_decline_log10) /
       published_decline_log10
   ) |>
-  dplyr::select(cohort, Vlog10_baseline, Vlog10_end_median,
+  dplyr::select(cohort, log10_viral_load_baseline, log10_viral_load_end_median,
                 simulated_decline_log10, published_decline_log10, pct_diff) |>
   dplyr::rename(
     "Cohort"                                = cohort,
-    "Sim baseline (log10 IU/mL)"            = Vlog10_baseline,
-    "Sim day-14 median (log10 IU/mL)"       = Vlog10_end_median,
+    "Sim baseline (log10 IU/mL)"            = log10_viral_load_baseline,
+    "Sim day-14 median (log10 IU/mL)"       = log10_viral_load_end_median,
     "Sim 14-day decline (log10 IU/mL)"      = simulated_decline_log10,
     "Published 14-day decline (log10 IU/mL)" = published_decline_log10,
     "Percent difference"                    = pct_diff
@@ -561,7 +561,7 @@ knitr::kable(cmin_by_cohort, digits = 4,
   percent IIV on V0. This choice keeps the packaged model portable to
   simulation contexts outside the original 5-cohort study design; a user
   who wants to reproduce Canini 2015 cohort-specific baseline VLs can
-  either post-scale the simulated baseline (multiply `Vlog10` at t = 0 by
+  either post-scale the simulated baseline (multiply `log10_viral_load` at t = 0 by
   the cohort-specific ratio in log10 space) or bias the `etalrbase`
   distribution.
 
@@ -579,7 +579,7 @@ knitr::kable(cmin_by_cohort, digits = 4,
   p * beta_T = d * c and are individually unidentifiable. The packaged
   model fixes p = 1 as a mathematical scaling and derives
   beta_T = d * c, I(0) = c * V0. This does NOT change the observable
-  behaviour (Vlog10 trajectories) but shifts the interpretation of the
+  behaviour (log10_viral_load trajectories) but shifts the interpretation of the
   `infected` state away from a biological hepatocyte-count scale. Users
   who want a biological-scale `infected` interpretation can rescale
   `infected` and `beta_t` by their preferred p (e.g. from Neumann 1998).

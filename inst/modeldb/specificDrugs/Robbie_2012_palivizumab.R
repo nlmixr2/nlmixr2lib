@@ -102,12 +102,12 @@ Robbie_2012_palivizumab <- function() {
     # Structural parameters for a 70 kg adult (white, 40-week PAGE, ADA titer = 0);
     # Robbie 2012 Table 2. Paper reports CL and Q in mL/day and Vc/Vp in mL;
     # converted to L/day and L here by dividing by 1000.
-    lka      <- log(1.01);     label("Absorption rate constant (ka, 1/day)")     # Robbie 2012 Table 2
-    lcl      <- log(0.198);    label("Clearance for a 70 kg adult (CL, L/day)")  # Robbie 2012 Table 2 (198 mL/day)
-    lvc      <- log(4.09);     label("Central volume for a 70 kg adult (Vc, L)") # Robbie 2012 Table 2 (4,090 mL)
-    lvp      <- log(2.23);     label("Peripheral volume for a 70 kg adult (Vp, L)")        # Robbie 2012 Table 2 (2,230 mL)
-    lq       <- log(0.879);    label("Intercompartmental clearance for a 70 kg adult (Q, L/day)") # Robbie 2012 Table 2 (879 mL/day)
-    lfdepot  <- log(0.694);    label("Intramuscular bioavailability (F, fraction)")        # Robbie 2012 Table 2
+    lka      <- log(1.01);     label("Absorption rate constant (1/day)")     # Robbie 2012 Table 2
+    lcl      <- log(0.198);    label("Clearance for a 70 kg adult (L/day)")  # Robbie 2012 Table 2 (198 mL/day)
+    lvc      <- log(4.09);     label("Central volume for a 70 kg adult (L)") # Robbie 2012 Table 2 (4,090 mL)
+    lvp      <- log(2.23);     label("Peripheral volume for a 70 kg adult (L)")        # Robbie 2012 Table 2 (2,230 mL)
+    lq       <- log(0.879);    label("Intercompartmental clearance for a 70 kg adult (L/day)") # Robbie 2012 Table 2 (879 mL/day)
+    lfdepot  <- log(0.694);    label("Intramuscular bioavailability (fraction)")        # Robbie 2012 Table 2
 
     # Allometric exponents (Robbie 2012 eq. 3 and Table 2)
     e_wt_cl_q <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")            # Robbie 2012 Methods: "a fixed allometric exponent (theta_allo) which is assigned a value of 0.75 for clearance processes and 1.0 for anatomical volumes"
@@ -122,7 +122,7 @@ Robbie_2012_palivizumab <- function() {
     # i.e. the Anderson/Allegaert/Holford 2006 parameterization added as reference 1a by
     # the 2012 erratum (PMC3457364).
     beta_cl <- 0.411; label("Fraction of mature CL at 40-week PAGE (term) (unitless)") # Robbie 2012 Table 2
-    t50_cl  <- 62.3;  label("Maturation half-life for CL (TCL, months)")               # Robbie 2012 Table 2
+    t50_cl  <- 62.3;  label("Maturation half-life for CL (months)")               # Robbie 2012 Table 2
 
     # Race effects on CL (multiplicative; white = reference). All 95% CIs include unity
     # in the source analysis (Robbie 2012 Table 2) but the estimates are reported as

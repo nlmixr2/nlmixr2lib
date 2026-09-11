@@ -250,21 +250,21 @@ from the simulated CAR T-cell trajectories using PKNCA. This gives a
 summary of the CK model's key kinetic descriptors.
 
 ```{r pknca}
-# Concentration frame -- rename CAR_perUL to Cc (nlmixr2lib convention).
+# Concentration frame -- rename CAR_perUL to log_car (nlmixr2lib convention).
 sim_nca <- sim |>
   dplyr::filter(!is.na(CAR_perUL)) |>
-  dplyr::select(id, id_str, time, Cc = CAR_perUL)
+  dplyr::select(id, id_str, time, log_car = CAR_perUL)
 
-# Ensure a time=0 row per subject with Cc=0 (extravascular pre-dose).
+# Ensure a time=0 row per subject with log_car=0 (extravascular pre-dose).
 sim_nca <- dplyr::bind_rows(
   sim_nca,
   sim_nca |> dplyr::distinct(id, id_str) |>
-    dplyr::mutate(time = 0, Cc = 0)
+    dplyr::mutate(time = 0, log_car = 0)
 ) |>
   dplyr::distinct(id, id_str, time, .keep_all = TRUE) |>
   dplyr::arrange(id, id_str, time)
 
-conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | id_str + id)
+conc_obj <- PKNCA::PKNCAconc(sim_nca, log_car ~ time | id_str + id)
 
 # Dose frame -- one total-CAR-dose event per subject.
 dose_df <- patients_dose |>

@@ -76,11 +76,11 @@ Kotani_2022_astegolimab <- function() {
   ini({
     # Structural parameters - reference subject: 79 kg, CRCL 87.9 mL/min/1.73 m^2 (MDRD eGFR),
     # blood eosinophil 180 cells/uL, 210 or 490 mg Q4W dose (reference dose group).
-    lka <- log(0.0437); label("Absorption rate constant (ka, 1/day)")                                 # Table 2 (ka = 0.0437 day^-1)
-    lcl <- log(0.244);  label("Apparent clearance for reference subject (CL/F, L/day)")              # Table 2 (CL/F = 0.244 L/day)
-    lvc <- log(0.614);  label("Apparent central volume of distribution for reference subject (Vc/F, L)")   # Table 2 (Vc/F = 0.614 L)
-    lvp <- log(2.74);   label("Apparent peripheral volume of distribution for reference subject (Vp/F, L)") # Table 2 (Vp/F = 2.74 L)
-    lq  <- log(0.171);  label("Apparent intercompartmental clearance for reference subject (Q/F, L/day)")   # Table 2 (Q/F = 0.171 L/day)
+    lka <- log(0.0437); label("Absorption rate constant (1/day)")                                 # Table 2 (ka = 0.0437 day^-1)
+    lcl <- log(0.244);  label("Apparent clearance for reference subject (L/day)")              # Table 2 (CL/F = 0.244 L/day)
+    lvc <- log(0.614);  label("Apparent central volume of distribution for reference subject (L)")   # Table 2 (Vc/F = 0.614 L)
+    lvp <- log(2.74);   label("Apparent peripheral volume of distribution for reference subject (L)") # Table 2 (Vp/F = 2.74 L)
+    lq  <- log(0.171);  label("Apparent intercompartmental clearance for reference subject (L/day)")   # Table 2 (Q/F = 0.171 L/day)
 
     # Shared body-weight allometric exponents (Kotani 2022 constrained one coefficient
     # on both CL and Q, and another on both Vc and Vp; Table 2 footnote b).

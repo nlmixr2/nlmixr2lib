@@ -232,25 +232,25 @@ Milosheska_2016_lamotrigine <- function() {
     # Table 4. The two indicator groups written with a minus sign in
     # the Table 4 formula (Inh, UGT2B7 -161 CT / TT) carry negative
     # e_ coefficients.
-    e_conmed_ugt_inh_cl <- -0.579   ; label("Effect of pooled UGT inhibitor (VPA or sertraline) on parent CL/F (multiplicative, unitless)")  # Milosheska 2016 Table 4 row 'Co-treatment with inhibitors*': -0.579 (95% CI -0.674, -0.483)
+    e_conmed_ugt_inh_cl <- -0.579   ; label("Effect of pooled UGT inhibitor (VPA or sertraline) on parent CL/F, applied multiplicatively (unitless)")  # Milosheska 2016 Table 4 row 'Co-treatment with inhibitors*': -0.579 (95% CI -0.674, -0.483)
     e_wt_cl             <-  0.938   ; label("Allometric power exponent on parent CL/F (unitless)")                                            # Milosheska 2016 Table 4 row 'Body weight' on CL: 0.938 (95% CI 0.558, 1.32) -- the 95% CI includes the theoretical value 0.75
-    e_smoke_cl          <-  0.340   ; label("Effect of current smoking on parent CL/F (multiplicative, unitless)")                            # Milosheska 2016 Table 4 row 'Cigarette smoking': 0.340 (95% CI 0.147, 0.590)
-    e_conmed_eiaed_cl   <-  0.546   ; label("Effect of concomitant enzyme-inducing AED (CBZ / PB / PHT) on parent CL/F (multiplicative, unitless)")  # Milosheska 2016 Table 4 row 'Co-treatment with inducers': 0.546 (95% CI 0.114, 1.21)
-    e_ugt2b7_m161ct_cl  <- -0.0358  ; label("Effect of UGT2B7 -161 CT vs CC on parent CL/F (multiplicative, unitless)")                       # Milosheska 2016 Table 4 row 'UGT2B7 - 161C>T genotype CT vs CC': -0.0358 (95% CI -0.161, 0.098)
-    e_ugt2b7_m161tt_cl  <- -0.204   ; label("Effect of UGT2B7 -161 TT vs CC on parent CL/F (multiplicative, unitless)")                       # Milosheska 2016 Table 4 row 'UGT2B7 - 161C>T genotype TT vs CC': -0.204 (95% CI -0.336, -0.0364)
-    e_ugt2b7_372ag_cl   <-  0.194   ; label("Effect of UGT2B7 372 AG vs AA on parent CL/F (multiplicative, unitless)")                        # Milosheska 2016 Table 4 row 'UGT2B7 372 A > G genotype AG vs AA': 0.194 (95% CI 0.0331, 0.392)
-    e_ugt2b7_372gg_cl   <-  1.17    ; label("Effect of UGT2B7 372 GG vs AA on parent CL/F (multiplicative, unitless)")                        # Milosheska 2016 Table 4 row 'UGT2B7 372 A > G genotype GG vs AA': 1.17 (95% CI 0.448, 2.47)
-    e_crcl_cl           <-  0.00328 ; label("Linear effect of CRCL - 110 on parent CL/F (multiplicative, per mL/min)")                        # Milosheska 2016 Table 4 row 'CL cr': 0.00328 (95% CI 0.000550, 0.00640)
+    e_smoke_cl          <-  0.340   ; label("Effect of current smoking on parent CL/F, applied multiplicatively (unitless)")                            # Milosheska 2016 Table 4 row 'Cigarette smoking': 0.340 (95% CI 0.147, 0.590)
+    e_conmed_eiaed_cl   <-  0.546   ; label("Effect of concomitant enzyme-inducing AED (CBZ / PB / PHT) on parent CL/F, applied multiplicatively (unitless)")  # Milosheska 2016 Table 4 row 'Co-treatment with inducers': 0.546 (95% CI 0.114, 1.21)
+    e_ugt2b7_m161ct_cl  <- -0.0358  ; label("Effect of UGT2B7 -161 CT vs CC on parent CL/F, applied multiplicatively (unitless)")                       # Milosheska 2016 Table 4 row 'UGT2B7 - 161C>T genotype CT vs CC': -0.0358 (95% CI -0.161, 0.098)
+    e_ugt2b7_m161tt_cl  <- -0.204   ; label("Effect of UGT2B7 -161 TT vs CC on parent CL/F, applied multiplicatively (unitless)")                       # Milosheska 2016 Table 4 row 'UGT2B7 - 161C>T genotype TT vs CC': -0.204 (95% CI -0.336, -0.0364)
+    e_ugt2b7_372ag_cl   <-  0.194   ; label("Effect of UGT2B7 372 AG vs AA on parent CL/F, applied multiplicatively (unitless)")                        # Milosheska 2016 Table 4 row 'UGT2B7 372 A > G genotype AG vs AA': 0.194 (95% CI 0.0331, 0.392)
+    e_ugt2b7_372gg_cl   <-  1.17    ; label("Effect of UGT2B7 372 GG vs AA on parent CL/F, applied multiplicatively (unitless)")                        # Milosheska 2016 Table 4 row 'UGT2B7 372 A > G genotype GG vs AA': 1.17 (95% CI 0.448, 2.47)
+    e_crcl_cl           <-  0.00328 ; label("Linear effect of CRCL - 110 on parent CL/F, applied multiplicatively (per mL/min)")                        # Milosheska 2016 Table 4 row 'CL cr': 0.00328 (95% CI 0.000550, 0.00640)
 
     # ----- Covariate effects on parent V -----
-    e_wt_vc <- 0.0181 ; label("Linear effect of WT - 70 on parent V/F (multiplicative, per kg)")   # Milosheska 2016 Table 4 row 'Body weight' on V: 0.0181 (95% CI 0.0102, 0.0239)
+    e_wt_vc <- 0.0181 ; label("Linear effect of WT - 70 on parent V/F, applied multiplicatively (per kg)")   # Milosheska 2016 Table 4 row 'Body weight' on V: 0.0181 (95% CI 0.0102, 0.0239)
 
     # ----- Covariate effects on metabolite CL_gluc -----
     # The metabolite arm carries a power weight and linear CLcr effect
     # per the Results narrative in the 'Population pharmacokinetic
     # analysis of the lamotrigine-N-2-glucuronide' section.
     e_wt_cl_gluc   <- 1.01    ; label("Allometric power exponent on metabolite CL_LTG-glu / F_metab (unitless)")                # Milosheska 2016 Results paragraph 1: 'patient weight (power model, exponent 1.01)'
-    e_crcl_cl_gluc <- 0.00759 ; label("Linear effect of CRCL - 110 on metabolite CL_LTG-glu / F_metab (multiplicative, per mL/min)")  # Milosheska 2016 Results paragraph 1: 'linear model, a decrease of 0.759% per 1 ml min-1 decrease in CLcr'
+    e_crcl_cl_gluc <- 0.00759 ; label("Linear effect of CRCL - 110 on metabolite CL_LTG-glu / F_metab, applied multiplicatively (per mL/min)")  # Milosheska 2016 Results paragraph 1: 'linear model, a decrease of 0.759% per 1 ml min-1 decrease in CLcr'
 
     # ----- Interindividual variability -----
     # Milosheska 2016 Table 4 reports IIV as CV%; the internal

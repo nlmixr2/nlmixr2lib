@@ -159,11 +159,11 @@ Patel_2025_eteplirsen <- function() {
 
     lcl_agegt4 <- log(6.98)  ; label("Typical clearance for age > 4 years at WT = 37 kg, CRCL = 145 mL/min/1.73 m^2 (L/h)")   # Patel 2025 Table 2: theta1 = 6.98 L/h (95% CI 6.68-7.31); Eq. 1
     lcl_agele4 <- log(4.97)  ; label("Typical clearance for age <= 4 years at WT = 37 kg, CRCL = 145 mL/min/1.73 m^2 (L/h)")  # Patel 2025 Table 2: theta2 = 4.97 L/h (95% CI 4.48-5.47); Eq. 1
-    lvc        <- log(2.21)  ; label("Central volume of distribution at WT = 37 kg (V1, L)")                                  # Patel 2025 Table 2: theta3 = 2.21 L (95% CI 1.93-2.55); Eq. 2
-    lvp        <- log(2.23)  ; label("First peripheral volume of distribution at WT = 37 kg (V2, L)")                         # Patel 2025 Table 2: theta4 = 2.23 L (95% CI 1.90-2.64); Eq. 3
-    lq         <- log(0.334) ; label("Inter-compartmental clearance to peripheral1 at WT = 37 kg (Q2, L/h)")                  # Patel 2025 Table 2: theta5 = 0.334 L/h (95% CI 0.262-0.422); Eq. 4
-    lvp2       <- log(4.12)  ; label("Second peripheral volume of distribution at WT = 37 kg (V3, L)")                        # Patel 2025 Table 2: theta6 = 4.12 L (95% CI 3.81-4.43); Eq. 5
-    lq2        <- log(3.49)  ; label("Inter-compartmental clearance to peripheral2 at WT = 37 kg (Q3, L/h)")                  # Patel 2025 Table 2: theta7 = 3.49 L/h (95% CI 3.29-3.70); Eq. 6
+    lvc        <- log(2.21)  ; label("Central volume of distribution at WT = 37 kg (L)")                                  # Patel 2025 Table 2: theta3 = 2.21 L (95% CI 1.93-2.55); Eq. 2
+    lvp        <- log(2.23)  ; label("First peripheral volume of distribution at WT = 37 kg (L)")                         # Patel 2025 Table 2: theta4 = 2.23 L (95% CI 1.90-2.64); Eq. 3
+    lq         <- log(0.334) ; label("Inter-compartmental clearance to peripheral1 at WT = 37 kg (L/h)")                  # Patel 2025 Table 2: theta5 = 0.334 L/h (95% CI 0.262-0.422); Eq. 4
+    lvp2       <- log(4.12)  ; label("Second peripheral volume of distribution at WT = 37 kg (L)")                        # Patel 2025 Table 2: theta6 = 4.12 L (95% CI 3.81-4.43); Eq. 5
+    lq2        <- log(3.49)  ; label("Inter-compartmental clearance to peripheral2 at WT = 37 kg (L/h)")                  # Patel 2025 Table 2: theta7 = 3.49 L/h (95% CI 3.29-3.70); Eq. 6
 
     # -----------------------------------------------------------------
     # Covariate effects.

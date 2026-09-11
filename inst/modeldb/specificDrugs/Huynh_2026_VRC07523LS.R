@@ -79,9 +79,9 @@ Huynh_2026_VRC07523LS <- function() {
     # the effects are applied with (1 - CHILD) so the contrast multiplies the
     # adult cohort (CHILD = 0) by 1 + coefficient. The repeat-dose effect on
     # the volumes is applied with (CYCLE > 1).
-    e_child_cl      <- 0.69; label("Adult-vs-infant fractional effect on CL (adult CL is 1.69x infant)")                              # Huynh 2026 Table 2: theta9 (adult factor CL) = 1.69
-    e_child_dur     <- 1.79; label("Adult-vs-infant fractional effect on D1 (adult D1 is 2.79x infant)")                              # Huynh 2026 Table 2: theta10 (adult factor D1) = 2.79
-    e_repdose_vc_vp <- 0.49; label("Repeat-dose fractional effect on Vc and Vp (Vss is 1.49x for second and later doses)")            # Huynh 2026 Table 2: theta8 (repeat dose factor Vc + Vp) = 1.49
+    e_child_cl      <- 0.69; label("Adult-vs-infant fractional effect on CL, adult CL is 1.69x infant (fraction)")                              # Huynh 2026 Table 2: theta9 (adult factor CL) = 1.69
+    e_child_dur     <- 1.79; label("Adult-vs-infant fractional effect on D1, adult D1 is 2.79x infant (fraction)")                              # Huynh 2026 Table 2: theta10 (adult factor D1) = 2.79
+    e_repdose_vc_vp <- 0.49; label("Repeat-dose fractional effect on Vc and Vp, Vss is 1.49x for second and later doses (fraction)")            # Huynh 2026 Table 2: theta8 (repeat dose factor Vc + Vp) = 1.49
 
     # Inter-individual variability (Huynh 2026 Table 2 BSV section).
     # Paper reports IIV as percent CV; convert to internal log-scale variance

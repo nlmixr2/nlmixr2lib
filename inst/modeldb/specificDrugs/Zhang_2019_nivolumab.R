@@ -126,7 +126,7 @@ Zhang_2019_nivolumab <- function() {
     #   CL(t) = CL0 * exp(cl_time_max * t^HILL / (T50^HILL + t^HILL))
     # T50 reported in hours; converted to days. HILL is unitless. cl_time_max is on
     # the linear scale (negative = CL decreases over time).
-    cl_time_max     <-      -0.240;            label("Reference cl_time_max of time-varying CL (Zhang 2019 'cl_time_max REF'; unitless, negative = CL decreases at full saturation)") # Zhang 2019 Table 2: cl_time_max REF = -0.240
+    cl_time_max     <-      -0.240;            label("Reference cl_time_max of time-varying CL, Zhang 2019 cl_time_max REF; negative means CL decreases at full saturation (unitless)") # Zhang 2019 Table 2: cl_time_max REF = -0.240
     lcl_t50     <- log(2200 / 24);         label("log T50 - time at which half of cl_time_max is reached (log days)") # Zhang 2019 Table 2: T50 = 2200 hour
     lcl_time_hill    <- log(2.77);              label("log HILL - sigmoidicity of the time-on-CL function (log unitless)") # Zhang 2019 Table 2: HILL = 2.77
 

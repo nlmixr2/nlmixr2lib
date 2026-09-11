@@ -106,11 +106,11 @@ Singh_2025_donidalorsen <- function() {
     # Section 2.2, page 3: 'the model without IIV on EC50 was used for a formal
     # stepwise covariate evaluation').
     lemax <- log(4.50)
-    label("Log per-4-week normalized HAE attack rate at infinite PKK for the reference patient (Emax, attacks/4 weeks)")
+    label("Log per-4-week normalized HAE attack rate at infinite PKK for the reference patient (attacks/4 weeks)")
     # Singh 2025 Table 1 Emax = 4.50 attacks/4W (RSE 9.6%)
 
     lec50 <- log(110)
-    label("Log 4-week-averaged plasma PKK at half-maximum attack rate for the reference patient (EC50, mg/L)")
+    label("Log 4-week-averaged plasma PKK at half-maximum attack rate for the reference patient (mg/L)")
     # Singh 2025 Table 1 EC50 = 110 mg/L (RSE 0.8%)
 
     lhill <- log(2.60)

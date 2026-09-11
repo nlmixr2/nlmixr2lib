@@ -131,19 +131,19 @@ Zhang_2023_brazikumab <- function() {
     # Structural parameters (Zhang 2023 Table 2, final population PK model).
     # Reference subject: patient with Crohn's disease (DIS_HEALTHY = 0), female
     # (SEXF = 1), baseline albumin 39 g/L.
-    lcl     <- log(0.26);    label("Clearance (CL, L/day)")                                # Table 2: CL in female patients with CD = 0.26 L/d (RSE 5%)
-    lvc     <- log(3.27);    label("Central volume of distribution (Vc, L)")               # Table 2: Vc in female subjects = 3.27 L (RSE 5%)
-    lvp     <- log(2.64);    label("Peripheral volume of distribution (Vp, L)")            # Table 2: Vp = 2.64 L (RSE 8%)
-    lq      <- log(0.412);   label("Intercompartmental clearance (Q, L/day)")              # Table 2: Q = 0.412 L/d (RSE 19%)
-    lka     <- log(0.286);   label("First-order SC absorption rate constant (ka, 1/day)")  # Table 2: ka = 0.286 1/d (RSE 11%)
-    ltlag   <- log(0.0296);  label("SC absorption lag time (Tlag, day)")                   # Table 2: Tlag = 0.0296 d (RSE 14%)
-    lfdepot <- log(0.88);    label("SC bioavailability (F, fraction)")                     # Table 2: F = 0.88 (RSE 5%)
+    lcl     <- log(0.26);    label("Clearance (L/day)")                                # Table 2: CL in female patients with CD = 0.26 L/d (RSE 5%)
+    lvc     <- log(3.27);    label("Central volume of distribution (L)")               # Table 2: Vc in female subjects = 3.27 L (RSE 5%)
+    lvp     <- log(2.64);    label("Peripheral volume of distribution (L)")            # Table 2: Vp = 2.64 L (RSE 8%)
+    lq      <- log(0.412);   label("Intercompartmental clearance (L/day)")              # Table 2: Q = 0.412 L/d (RSE 19%)
+    lka     <- log(0.286);   label("First-order SC absorption rate constant (1/day)")  # Table 2: ka = 0.286 1/d (RSE 11%)
+    ltlag   <- log(0.0296);  label("SC absorption lag time (day)")                   # Table 2: Tlag = 0.0296 d (RSE 14%)
+    lfdepot <- log(0.88);    label("SC bioavailability (fraction)")                     # Table 2: F = 0.88 (RSE 5%)
 
     # Covariate effects (Zhang 2023 Table 2 with the parameterisation given in
     # footnotes a and b).
     e_alb_cl         <- -1.32;  label("Power exponent of baseline albumin on CL (centred at 39 g/L)")  # Table 2: effect of baseline albumin on CL = -1.32 (RSE 40%)
-    e_dis_healthy_cl <- -0.362; label("Healthy-participant fractional change in CL")                   # Table 2: effect of health status on CL = -0.362 (RSE 10%)
-    e_male_vc        <-  0.214; label("Male fractional change in Vc vs. the female reference")         # Table 2: effect of male gender on Vc = 0.214 (RSE 37%)
+    e_dis_healthy_cl <- -0.362; label("Healthy-participant fractional change in CL (fraction)")                   # Table 2: effect of health status on CL = -0.362 (RSE 10%)
+    e_male_vc        <-  0.214; label("Male fractional change in Vc vs. the female reference (fraction)")         # Table 2: effect of male gender on Vc = 0.214 (RSE 37%)
 
     # Inter-individual variability. Zhang 2023 Methods state the PK IIVs are
     # log-normal (theta_ij = theta_TVj * exp(eta_ij)), so the Table 2 IIV column

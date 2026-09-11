@@ -163,7 +163,7 @@ Hien_2017_cipargamin <- function() {
     lmtt    <- log(0.867);  label("Mean transit time MTT through the NN = 3 transit compartments (h)")        # Hien 2017 Table 3 row 'MTT (h) = 0.867 (95% CI 0.682-1.11; %RSE 12.6)'
     lka     <- log(1.65);   label("First-order absorption rate constant Ka from the last transit to central (1/h)")   # Hien 2017 Table 3 row 'Ka (1/h) = 1.65 (95% CI 1.04-2.81; %RSE 25.2)'
     lfdepot <- fixed(log(1));  label("Reference relative oral bioavailability F (fraction; 100%)")   # Hien 2017 Table 3 row 'F (%) = 100 fix' (paper fixes typical F to 100% and estimates only its IIV)
-    nn_fix  <- fixed(3);    label("Number of Savic-style transit compartments (integer, unitless)")           # Hien 2017 Table 3 row 'No. trans comp = 3 fix' (paper fixed the number of transit compartments at 3 during estimation)
+    nn_fix  <- fixed(3);    label("Number of Savic-style transit compartments, integer-valued (unitless)")           # Hien 2017 Table 3 row 'No. trans comp = 3 fix' (paper fixed the number of transit compartments at 3 during estimation)
 
     # Fixed allometric exponents (Methods 'Pharmacokinetic modeling'
     # paragraph: 'Body weight was incorporated as a fixed allometric function

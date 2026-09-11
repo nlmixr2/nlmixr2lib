@@ -45,10 +45,10 @@ Brillac_2025_isatuximab <- function() {
     # because this model keeps time in days. Brillac 2025 Results section
     # also reports the converted values directly: "typical CL was 0.00556
     # L/h (0.133 L/day) and typical Q was 0.0358 L/h (0.859 L/day)".
-    lcl <- log(0.00556 * 24); label("Linear clearance from central compartment at 38 kg reference (CL, L/day)") # Brillac 2025 Table 1: CL = 0.00556 L/h
-    lvc <- log(1.98);         label("Central volume of distribution at 38 kg reference (V1, L)")                # Brillac 2025 Table 1: V1 = 1.98 L
-    lq  <- log(0.0358 * 24);  label("Intercompartmental clearance at 38 kg reference (Q, L/day)")               # Brillac 2025 Table 1: Q  = 0.0358 L/h
-    lvp <- log(2.20);         label("Peripheral volume of distribution at 38 kg reference (V2, L)")             # Brillac 2025 Table 1: V2 = 2.20 L
+    lcl <- log(0.00556 * 24); label("Linear clearance from central compartment at 38 kg reference (L/day)") # Brillac 2025 Table 1: CL = 0.00556 L/h
+    lvc <- log(1.98);         label("Central volume of distribution at 38 kg reference (L)")                # Brillac 2025 Table 1: V1 = 1.98 L
+    lq  <- log(0.0358 * 24);  label("Intercompartmental clearance at 38 kg reference (L/day)")               # Brillac 2025 Table 1: Q  = 0.0358 L/h
+    lvp <- log(2.20);         label("Peripheral volume of distribution at 38 kg reference (L)")             # Brillac 2025 Table 1: V2 = 2.20 L
 
     # Body-weight allometric exponents on each PK parameter (Brillac 2025
     # Table 1 and Results: "CL = 0.00556 * (WT/38)^0.833; V1 = 1.98 *

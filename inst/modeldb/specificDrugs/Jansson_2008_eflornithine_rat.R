@@ -61,7 +61,7 @@ Jansson_2008_eflornithine_rat <- function() {
     # then * 0.290 kg for a 290 g rat. Kt (umol/kg) -> mg is value * MW / 1000;
     # then * 0.290 kg for a 290 g rat.
     lmtt  <- log(1.467);  label("Shared mean transit time MTT (h)")                        # Jansson 2008 Table 3: MTT = 88 min = 88/60 = 1.467 h
-    lnn   <- log(1.424);  label("Shared transit-compartment count n (continuous, dimensionless)")  # Jansson 2008 Table 3: n = 1.424 (Stirling-approximation Savic 2007 chain)
+    lnn   <- log(1.424);  label("Shared transit-compartment count n, estimated on a continuous scale (dimensionless)")  # Jansson 2008 Table 3: n = 1.424 (Stirling-approximation Savic 2007 chain)
 
     ltmax_abs_l <- log(35.18); label("L-eflornithine saturable-absorption Vmax Tmax_L at 290 g rat (mg/h)")  # Jansson 2008 Table 3: Tmax_L = 11.1 umol/min/kg; 11.1 * 182.17e-3 * 60 * 0.290 = 35.18 mg/h
     ltmax_abs_d <- log(45.95); label("D-eflornithine saturable-absorption Vmax Tmax_D at 290 g rat (mg/h)")  # Jansson 2008 Table 3: Tmax_D = 14.5 umol/min/kg; 14.5 * 182.17e-3 * 60 * 0.290 = 45.95 mg/h

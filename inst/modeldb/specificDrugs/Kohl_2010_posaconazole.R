@@ -50,9 +50,9 @@ Kohl_2010_posaconazole <- function() {
   ini({
     # Structural parameters -- log-transformed where positive.
     # Reference subject: 49 years old (cohort median), no diarrhea.
-    lka       <- fixed(log(0.4));   label("Absorption rate constant (ka, 1/h)")            # Kohl 2010 Methods assumption (iii): fixed at 0.4 /h from reference 5
-    lcl       <- log(67.0);          label("Apparent clearance at reference (CL/F, L/h)")  # Kohl 2010 Table 4 final model, no diarrhea
-    lvc       <- log(2250);          label("Apparent volume of distribution at reference age 49 yr (V/F, L)")  # Kohl 2010 Table 4 final model, no diarrhea, age 49
+    lka       <- fixed(log(0.4));   label("Absorption rate constant (1/h)")            # Kohl 2010 Methods assumption (iii): fixed at 0.4 /h from reference 5
+    lcl       <- log(67.0);          label("Apparent clearance at reference (L/h)")  # Kohl 2010 Table 4 final model, no diarrhea
+    lvc       <- log(2250);          label("Apparent volume of distribution at reference age 49 yr (L)")  # Kohl 2010 Table 4 final model, no diarrhea, age 49
     e_age_vc          <- -123;       label("Linear-additive age effect on V/F (L per year above 49)")          # Kohl 2010 Table 4 final model: V/F decreases 123 L per year of age above the cohort median 49 yr
     e_diarrhea_cl_vc  <- 1.69;       label("Shared diarrhea multiplier on CL/F and V/F (theta_Di)")            # Kohl 2010 Table 4 final model: 113.2/67.0 = 3802.5/2250 = 1.69 for both apparent parameters (Discussion calls this a 1.7-fold reduction in oral bioavailability F; equivalently F_with/F_without ~= 1/1.69 ~= 0.59); applied as theta_Di^Diarrhea per Kohl 2010 Table 3 model 2
 

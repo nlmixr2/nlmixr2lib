@@ -62,9 +62,9 @@ Proctor_2026_durvalumab_poppk <- function() {
     # log-transformed here. This form is confirmed numerically: at t = 420 days
     # it gives exp(-0.185 * 0.8336) - 1 = -14.3%, matching the paper's statement
     # that the popPK model predicts a 14% decline in CL after 60 weeks.
-    cl_time_max    <- fixed(-0.185)     ; label("Log of the maximal fold-change in linear clearance over time (Imax)")  # Table S3 Imax -0.185
+    cl_time_max    <- fixed(-0.185)     ; label("Log of the maximal fold-change in linear clearance over time, Imax (unitless)")  # Table S3 Imax -0.185
     lcl_t50   <- fixed(log(173.1)) ; label("Time of half-maximal change in clearance TI50 (day)")                  # Table S3 TI50 173.1 day
-    lcl_time_hill <- fixed(log(1.817)) ; label("Hill slope of the time-dependent clearance function (gamma)")           # Table S3 gamma 1.817
+    lcl_time_hill <- fixed(log(1.817)) ; label("Hill slope of the time-dependent clearance function, gamma, on the log scale (unitless)")           # Table S3 gamma 1.817
 
     # Table S3 reports no residual error; fixed at zero per the standing policy
     # for unreported RUV (documented in the vignette Errata).

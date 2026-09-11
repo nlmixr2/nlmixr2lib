@@ -173,10 +173,10 @@ Barras_2009_enoxaparin <- function() {
     # 'Covariate model (95% CI)' column; final model values match
     # the equations on page 705 (Eq. 2 for CL, Eq. 3 for Vc).
     # ------------------------------------------------------------
-    lka <- log(0.26); label("Absorption rate constant (Ka, 1/h)")              # Barras 2009 Table 4: Ka = 0.26 (95% CI 0.17, 0.35)
-    lvc <- log(3.43); label("Apparent central volume at LBM = 55 kg (Vc/F, L)") # Barras 2009 Table 4 / Eq. 3: Vc = 3.43 (95% CI 2.20, 4.66)
-    lvp <- log(5.77); label("Apparent peripheral volume (Vp/F, L)")            # Barras 2009 Table 4: Vp = 5.77 (95% CI 0.75, 10.8)
-    lq  <- log(0.31); label("Apparent inter-compartmental clearance (Q/F, L/h)") # Barras 2009 Table 4: Q = 0.31 (95% CI 0.15, 0.47)
+    lka <- log(0.26); label("Absorption rate constant (1/h)")              # Barras 2009 Table 4: Ka = 0.26 (95% CI 0.17, 0.35)
+    lvc <- log(3.43); label("Apparent central volume at LBM = 55 kg (L)") # Barras 2009 Table 4 / Eq. 3: Vc = 3.43 (95% CI 2.20, 4.66)
+    lvp <- log(5.77); label("Apparent peripheral volume (L)")            # Barras 2009 Table 4: Vp = 5.77 (95% CI 0.75, 10.8)
+    lq  <- log(0.31); label("Apparent inter-compartmental clearance (L/h)") # Barras 2009 Table 4: Q = 0.31 (95% CI 0.15, 0.47)
 
     # ------------------------------------------------------------
     # Composite renal + non-renal CL (Barras 2009 Eq. 2). The

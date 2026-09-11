@@ -137,7 +137,7 @@ Bienczak_2016_efavirenz <- function() {
     # Bienczak 2016 Table 2 row 'Ka CHAPAS-3 = 0.79 (0.37-0.95)'
 
     nn_fix <- fixed(25)
-    label("Number of Savic-style transit compartments NN (integer, unitless)")
+    label("Number of Savic-style transit compartments NN, integer-valued (unitless)")
     # Bienczak 2016 Table 2 row 'NN = 25.0 (17.7-35.1)' -- bootstrap median used as the fixed value; rxode2 transit() supports continuous NN but the integer-rounded median preserves the published structural model with negligible numerical impact at this NN
 
     lfdepot <- fixed(log(1))

@@ -168,26 +168,26 @@ Lee_2023_patritumab <- function() {
     # and HEPIMP each multiply by exp(theta) when the indicator is 1.
     # Continuous-covariate effects are power-of-ratio with reference values
     # 60 kg / 60 mm / 40 g/L / 90 mL/min/1.73 m^2 (Lee 2023 Figure 6 caption).
-    e_bc_cl_time      <- log(0.896); label("log ratio of CL_t for BC vs NSCLC (TUMTP_BREAST)")                       # Lee 2023 Table 6 exp(theta24) = 0.896
+    e_bc_cl_time      <- log(0.896); label("log ratio of CL_t for BC vs NSCLC; TUMTP_BREAST (unitless)")                       # Lee 2023 Table 6 exp(theta24) = 0.896
     e_sld_cl_time     <- -0.0758;    label("Power exponent of TUMSZ on CL_t (unitless)")                              # Lee 2023 Table 6 theta25 = -0.0758
-    e_male_vc         <- log(1.18);  label("log ratio of V1 for male vs female (applied via (1 - SEXF))")             # Lee 2023 Table 6 exp(theta26) = 1.18
-    e_asian_vc        <- log(0.927); label("log ratio of V1 for Asian vs non-Asian (RACE_ASIAN)")                     # Lee 2023 Table 6 exp(theta27) = 0.927
-    e_male_cl_ss      <- log(1.30);  label("log ratio of CL_ss for male vs female (applied via (1 - SEXF))")          # Lee 2023 Table 6 exp(theta28) = 1.30
-    e_asian_cl_ss     <- log(1.02);  label("log ratio of CL_ss for Asian vs non-Asian (RACE_ASIAN)")                  # Lee 2023 Table 6 exp(theta29) = 1.02
-    e_ecog_cl_ss      <- log(1.04);  label("log ratio of CL_ss for ECOG >= 1 vs ECOG = 0 (ECOG_GE1)")                 # Lee 2023 Table 6 exp(theta30) = 1.04
-    e_bc_cl_ss        <- log(0.937); label("log ratio of CL_ss for BC vs NSCLC (TUMTP_BREAST)")                       # Lee 2023 Table 6 exp(theta31) = 0.937
-    e_hep_cl_ss       <- log(0.906); label("log ratio of CL_ss for hepatic impairment (mild or moderate) vs normal (HEPIMP)") # Lee 2023 Table 6 exp(theta33) = 0.906
+    e_male_vc         <- log(1.18);  label("log ratio of V1 for male vs female, applied via 1 - SEXF (unitless)")             # Lee 2023 Table 6 exp(theta26) = 1.18
+    e_asian_vc        <- log(0.927); label("log ratio of V1 for Asian vs non-Asian; RACE_ASIAN (unitless)")                     # Lee 2023 Table 6 exp(theta27) = 0.927
+    e_male_cl_ss      <- log(1.30);  label("log ratio of CL_ss for male vs female, applied via 1 - SEXF (unitless)")          # Lee 2023 Table 6 exp(theta28) = 1.30
+    e_asian_cl_ss     <- log(1.02);  label("log ratio of CL_ss for Asian vs non-Asian; RACE_ASIAN (unitless)")                  # Lee 2023 Table 6 exp(theta29) = 1.02
+    e_ecog_cl_ss      <- log(1.04);  label("log ratio of CL_ss for ECOG >= 1 vs ECOG = 0; ECOG_GE1 (unitless)")                 # Lee 2023 Table 6 exp(theta30) = 1.04
+    e_bc_cl_ss        <- log(0.937); label("log ratio of CL_ss for BC vs NSCLC; TUMTP_BREAST (unitless)")                       # Lee 2023 Table 6 exp(theta31) = 0.937
+    e_hep_cl_ss       <- log(0.906); label("log ratio of CL_ss for mild or moderate hepatic impairment vs normal; HEPIMP (unitless)") # Lee 2023 Table 6 exp(theta33) = 0.906
     e_egfr_cl_ss      <- -0.302;     label("Power exponent of CRCL on CL_ss (unitless)")                              # Lee 2023 Table 6 theta34 = -0.302
     e_alb_cl_ss       <- -0.490;     label("Power exponent of ALB on CL_ss (unitless)")                               # Lee 2023 Table 6 theta35 = -0.490
     e_sld_kdes        <- -0.139;     label("Power exponent of TUMSZ on Kdes (unitless)")                              # Lee 2023 Table 6 theta36 = -0.139
 
     # Covariate effects on Frac_ns (DXd identifiability anchor)
     e_wt_fracns       <-  0.139;     label("Power exponent of WT on Frac_ns (unitless)")                              # Lee 2023 Table 6 theta37 = 0.139
-    e_male_fracns     <- log(0.848); label("log ratio of Frac_ns for male vs female (applied via (1 - SEXF))")         # Lee 2023 Table 6 exp(theta38) = 0.848
-    e_asian_fracns    <- log(1.06);  label("log ratio of Frac_ns for Asian vs non-Asian (RACE_ASIAN)")                # Lee 2023 Table 6 exp(theta39) = 1.06
-    e_ecog_fracns     <- log(1.05);  label("log ratio of Frac_ns for ECOG >= 1 vs ECOG = 0 (ECOG_GE1)")               # Lee 2023 Table 6 exp(theta40) = 1.05
-    e_bc_fracns       <- log(1.04);  label("log ratio of Frac_ns for BC vs NSCLC (TUMTP_BREAST)")                     # Lee 2023 Table 6 exp(theta41) = 1.04
-    e_hep_fracns      <- log(1.09);  label("log ratio of Frac_ns for hepatic impairment vs normal (HEPIMP)")           # Lee 2023 Table 6 exp(theta43) = 1.09
+    e_male_fracns     <- log(0.848); label("log ratio of Frac_ns for male vs female, applied via 1 - SEXF (unitless)")         # Lee 2023 Table 6 exp(theta38) = 0.848
+    e_asian_fracns    <- log(1.06);  label("log ratio of Frac_ns for Asian vs non-Asian; RACE_ASIAN (unitless)")                # Lee 2023 Table 6 exp(theta39) = 1.06
+    e_ecog_fracns     <- log(1.05);  label("log ratio of Frac_ns for ECOG >= 1 vs ECOG = 0; ECOG_GE1 (unitless)")               # Lee 2023 Table 6 exp(theta40) = 1.05
+    e_bc_fracns       <- log(1.04);  label("log ratio of Frac_ns for BC vs NSCLC; TUMTP_BREAST (unitless)")                     # Lee 2023 Table 6 exp(theta41) = 1.04
+    e_hep_fracns      <- log(1.09);  label("log ratio of Frac_ns for hepatic impairment vs normal; HEPIMP (unitless)")           # Lee 2023 Table 6 exp(theta43) = 1.09
     e_egfr_fracns     <-  0.0350;    label("Power exponent of CRCL on Frac_ns (unitless)")                            # Lee 2023 Table 6 theta44 = 0.0350
     e_alb_fracns      <- -0.271;     label("Power exponent of ALB on Frac_ns (unitless)")                              # Lee 2023 Table 6 theta45 = -0.271
 

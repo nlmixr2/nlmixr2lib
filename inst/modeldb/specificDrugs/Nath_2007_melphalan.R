@@ -203,16 +203,16 @@ Nath_2007_melphalan <- function() {
     #   k21 = theta4
 
     # Body-weight coefficient on CL (Table 4 theta5).
-    lcl <- log(0.34);   label("Body-weight coefficient on CL (theta5, L/h per kg)")  # Table 4 theta5 = 0.34 (95% CI 0.26, 0.42)
+    lcl <- log(0.34);   label("Body-weight coefficient on CL (L/h per kg)")  # Table 4 theta5 = 0.34 (95% CI 0.26, 0.42)
 
     # Intercept (constant term) on Vc (Table 4 theta2).
-    lvc <- log(1.12);   label("Constant term in Vc (theta2, L)")                      # Table 4 theta2 = 1.12 (95% CI 0.11, 2.13)
+    lvc <- log(1.12);   label("Constant term in Vc (L)")                      # Table 4 theta2 = 1.12 (95% CI 0.11, 2.13)
 
     # Body-weight coefficient on Vc (Table 4 theta8).
-    e_wt_vc <- 0.178;   label("Body-weight coefficient on Vc (theta8, L per kg)")     # Table 4 theta8 = 0.178 (95% CI 0.120, 0.236)
+    e_wt_vc <- 0.178;   label("Body-weight coefficient on Vc (L per kg)")     # Table 4 theta8 = 0.178 (95% CI 0.120, 0.236)
 
     # Prior-carboplatin additive effect on CL (Table 4 theta6).
-    e_prior_carboplatin_cl <- -3.17; label("Prior-carboplatin effect on CL (theta6, L/h)")  # Table 4 theta6 = -3.17 (95% CI -4.62, -1.72)
+    e_prior_carboplatin_cl <- -3.17; label("Prior-carboplatin effect on CL (L/h)")  # Table 4 theta6 = -3.17 (95% CI -4.62, -1.72)
 
     # Tracer-measured GFR additive linear effect on CL (Table 4 theta7).
     e_crcl_cl <- 0.0377;             label("GFR effect on CL (theta7, L/h per (mL/min/1.73 m^2))")  # Table 4 theta7 = 0.0377 (95% CI 0.021, 0.054)
@@ -221,8 +221,8 @@ Nath_2007_melphalan <- function() {
     # The paper estimates k12 and k21 directly as rate constants (1/h) rather
     # than via Q / Vc and Q / Vp. theta1 (constant in CL model) is reported in
     # Table 4 as "Fixed to zero" and is not encoded as a separate parameter.
-    lk12 <- log(1.70);  label("Intercompartmental rate constant k12 (theta3, 1/h)")  # Table 4 theta3 = 1.70 (95% CI 1.16, 2.24)
-    lk21 <- log(1.84);  label("Intercompartmental rate constant k21 (theta4, 1/h)")  # Table 4 theta4 = 1.84 (95% CI 1.39, 2.29)
+    lk12 <- log(1.70);  label("Intercompartmental rate constant k12 (1/h)")  # Table 4 theta3 = 1.70 (95% CI 1.16, 2.24)
+    lk21 <- log(1.84);  label("Intercompartmental rate constant k21 (1/h)")  # Table 4 theta4 = 1.84 (95% CI 1.39, 2.29)
 
     # Inter-individual variability (Nath 2007 Table 4 IIV column). The paper
     # explicitly defines %CV as sqrt(eta variance) * 100 -- i.e. omega is

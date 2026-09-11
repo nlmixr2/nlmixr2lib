@@ -72,7 +72,7 @@ control stream (`$MODEL`, `$PK`, `$ERROR` blocks).
 
 | Equation / parameter                       | Value      | Source location                                                |
 |--------------------------------------------|------------|----------------------------------------------------------------|
-| `lvc` (V1 morphine, L per kg^allo_v)       | log(1.99)  | `Output_real_run4.lst` FINAL THETA TH 2 = 1.99E+00             |
+| `lvc` (V1 morphine, L per kg^e_wt_vc)       | log(1.99)  | `Output_real_run4.lst` FINAL THETA TH 2 = 1.99E+00             |
 | `lq` (Q morphine, L/min, no WT)            | log(0.0289)| `Output_real_run4.lst` FINAL THETA TH 3 = 2.89E-02             |
 | `lfvm` (V_metab / V1, unitless)            | log(0.119) | `Output_real_run4.lst` FINAL THETA TH 8 = 1.19E-01             |
 | `lcl_form_m3g_le10` (CL2, PNA <= 10 d)     | log(0.00309)| `Output_real_run4.lst` FINAL THETA TH 1 = 3.09E-03            |
@@ -82,7 +82,7 @@ control stream (`$MODEL`, `$PK`, `$ERROR` blocks).
 | `lcl_m3g` (M3G excretion CL4)              | log(0.00219)| `Output_real_run4.lst` FINAL THETA TH 7 = 2.19E-03            |
 | `lcl_m6g` (M6G excretion CL5)              | log(0.00111)| `Output_real_run4.lst` FINAL THETA TH 9 = 1.11E-03            |
 | `allo_cl` (BW exponent on CL)              | 1.44       | `Output_real_run4.lst` FINAL THETA TH 4 = 1.44E+00             |
-| `allo_v` (BW exponent on V, FIXED)         | 1.00       | `Output_real_run4.lst` FINAL THETA TH 5 = 1.00E+00 (`1 FIX`)   |
+| `e_wt_vc` (BW exponent on V, FIXED)         | 1.00       | `Output_real_run4.lst` FINAL THETA TH 5 = 1.00E+00 (`1 FIX`)   |
 | `etalcl_form_m3g`                          | 0.104      | `Output_real_run4.lst` FINAL OMEGA ETA1\|ETA1 = 1.04E-01       |
 | `etalvc`                                   | 0.230      | `Output_real_run4.lst` FINAL OMEGA ETA2\|ETA2 = 2.30E-01       |
 | `etalcl_m6g + etalcl_m3g ~ c(0.185, 0.178, 0.258)` | block | `Output_real_run4.lst` FINAL OMEGA BLOCK(2): ETA3\|ETA3, ETA4\|ETA3, ETA4\|ETA4 |

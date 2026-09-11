@@ -267,10 +267,10 @@ NassarSheikhRashid_2024_adalimumab <- function() {
     # scale, so each categorical multiplier below is stored as its natural
     # log and the continuous exponent as-is.
     # ------------------------------------------------------------------
-    e_ada_pos_cl     <- fixed(log(2.08)) ; label("Effect of anti-drug-antibody positivity on log CL/F (log-scale)")  # Table 2: (theta_ADA)^ADA* = 2.08, fixed (Section 3.3: fixed because of limited power to identify it; derived from Kang 2020 model 3 by doubling the fractional increase implied by the 0.654 ADA-negative factor: 1/0.65 = 1.53, and 2 x 53% = 106%, i.e. the "108% increase" quoted in Section 3.3)
-    e_conmed_mtx_cl  <- log(0.720)       ; label("Effect of concomitant methotrexate on log CL/F (log-scale)")       # Table 2: (theta_MTX)^MTX = 0.720 (RSE 10.8%; bootstrap median 0.723, 95% CI 0.472-0.903) = 28% lower CL
+    e_ada_pos_cl     <- fixed(log(2.08)) ; label("Effect of anti-drug-antibody positivity on log CL/F, log-scale (unitless)")  # Table 2: (theta_ADA)^ADA* = 2.08, fixed (Section 3.3: fixed because of limited power to identify it; derived from Kang 2020 model 3 by doubling the fractional increase implied by the 0.654 ADA-negative factor: 1/0.65 = 1.53, and 2 x 53% = 106%, i.e. the "108% increase" quoted in Section 3.3)
+    e_conmed_mtx_cl  <- log(0.720)       ; label("Effect of concomitant methotrexate on log CL/F, log-scale (unitless)")       # Table 2: (theta_MTX)^MTX = 0.720 (RSE 10.8%; bootstrap median 0.723, 95% CI 0.472-0.903) = 28% lower CL
     e_crp_cl         <- 0.165            ; label("Power exponent on (CRP/0.6) for CL/F (unitless)")                  # Table 2: (CRP/0.6)^theta_CRP = 0.165 (RSE 31.6%; bootstrap median 0.175, 95% CI 0.0421-0.323); Section 3.3 worked example: (10/0.6)^0.165 = 1.59, a 59% increase at CRP 10 mg/L
-    e_dis_uveitis_cl <- log(1.44)        ; label("Effect of active uveitis during treatment on log CL/F (log-scale)") # Table 2: (theta_UV)^UVEITIS = 1.44 (RSE 16.4%; bootstrap median 1.48, 95% CI 0.987-2.94) = 44% higher CL
+    e_dis_uveitis_cl <- log(1.44)        ; label("Effect of active uveitis during treatment on log CL/F, log-scale (unitless)") # Table 2: (theta_UV)^UVEITIS = 1.44 (RSE 16.4%; bootstrap median 1.48, 95% CI 0.987-2.94) = 44% higher CL
 
     # ------------------------------------------------------------------
     # Inter-individual variability. Table 2 reports %CV, so the internal
