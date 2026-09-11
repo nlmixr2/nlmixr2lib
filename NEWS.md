@@ -156,6 +156,8 @@
 
 - Add Sun 2025 maribavir ([doi:10.1002/psp4.70054](https://doi.org/10.1002/psp4.70054)) -- healthy volunteers and hematopoietic cell or solid organ transplant recipients with cytomegalovirus infection.
 
+- Add Sun 2025 maribavir exposure-response, 16 logistic regressions ([doi:10.1002/psp4.70054](https://doi.org/10.1002/psp4.70054)) -- hematopoietic cell transplant recipients with first asymptomatic cytomegalovirus infection, the phase 3 AURORA maribavir arm.
+
 - Add Jeong 2025 IMC-002 ([doi:10.1111/cts.70321](https://doi.org/10.1111/cts.70321)) -- adults with advanced solid tumours.
 
 - Add Mouton 2025 cefuroxime ([doi:10.1002/bcp.70144](https://doi.org/10.1002/bcp.70144)) -- critically ill adults in the intensive care unit.
