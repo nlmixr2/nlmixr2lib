@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Schlachter 2026 atogepant ([doi:10.1007/s40262-025-01566-5](https://doi.org/10.1007/s40262-025-01566-5)) -- healthy participants and adults with episodic or chronic migraine.
+
 - Add Kumta 2025 piperacillin and tazobactam ([doi:10.1128/aac.00601-24](https://doi.org/10.1128/aac.00601-24)) -- critically ill neurosurgical adults with an external ventricular drain.
 
 - Add Huang 2025 colistin sulfate ([doi:10.1177/00368504251325334](https://doi.org/10.1177/00368504251325334)) -- critically ill adults on continuous veno-venous hemodiafiltration.

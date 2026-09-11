@@ -408,6 +408,8 @@ navbar:
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
       - text: "Atezolizumab sae (Chan 2025)"
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
+      - text: "Atogepant (Schlachter 2026)"
+        href: articles/Schlachter_2026_atogepant.html
       - text: "Atorvastatin (Kakara 2014)"
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Atorvastatin (Knebel 2013)"
@@ -6505,6 +6507,7 @@ articles:
   - articles/Schipani_2012_lopinavir
   - articles/Schipani_2013_atazanavir_ritonavir
   - articles/Schipani_2016_rifampicin
+  - articles/Schlachter_2026_atogepant
   - articles/Schmid_2017_nintedanib
   - articles/Schmidt_2009_oxazolidinones
   - articles/Schmitt_2018_vinflunine
