@@ -40,28 +40,33 @@ Nemolizumab is a humanized monoclonal antibody against interleukin-31 receptor
 A (IL-31RA). IL-31 signalling on sensory neurons and immune cells is a
 principal driver of itch, and nemolizumab is approved for prurigo nodularis
 (PN) and atopic dermatitis (AD). Takechi 2025 is a three-part pharmacometric
-analysis and this vignette validates all three parts:
+analysis -- and the meta-analysis part fits two endpoints -- so the paper yields
+four models, all validated here:
 
 | Part | nlmixr2lib model | What it describes |
 | --- | --- | --- |
 | PopPK | `Takechi_2025_nemolizumab` | Serum nemolizumab concentration, one compartment, first-order SC absorption |
 | PopPD | `Takechi_2025_nemolizumab_ppnrs` | Weekly average Peak Pruritus NRS (PP-NRS, 0-10) under placebo and nemolizumab |
 | MBMA | `Takechi_2025_nemolizumab_mbma_iga` | Study-arm IGA success rate, nemolizumab vs dupilumab, 6 RCTs |
+| MBMA | `Takechi_2025_nemolizumab_mbma_ppnrs` | Study-arm PP-NRS success rate over the same 6 RCTs, with an arm-severity covariate |
 
-The three are **independent models fitted to different data**, exactly as the
-authors built them, so they are three model files sharing this one vignette.
+The four are **independent models fitted to different data**, exactly as the
+authors built them, so they are four model files sharing this one vignette.
 The PopPD model has no PK layer: the authors looked for an exposure-response
 relationship and did not find one, because the 30 mg and 60 mg arms of the
 pivotal study responded alike.
 
-A fourth model in the paper -- the MBMA of *PP-NRS* success rates, the sibling
-of the IGA meta-analysis -- is **not yet included**; see
-[Not yet extracted](#not-yet-extracted).
+The two meta-analysis models share a structure but not a covariate model: the
+PP-NRS endpoint retains the arm's moderate-IGA proportion on the nemolizumab
+maximum effect, and the IGA endpoint does not (Table 4 prints a dash in that
+row of the IGA column). Part 4 sets out how that covariate's functional form was
+recovered, since the paper does not print it.
 
 ```{r load-models}
-pk   <- rxode2::rxode(readModelDb("Takechi_2025_nemolizumab"))
-pd   <- rxode2::rxode(readModelDb("Takechi_2025_nemolizumab_ppnrs"))
-mbma <- rxode2::rxode(readModelDb("Takechi_2025_nemolizumab_mbma_iga"))
+pk         <- rxode2::rxode(readModelDb("Takechi_2025_nemolizumab"))
+pd         <- rxode2::rxode(readModelDb("Takechi_2025_nemolizumab_ppnrs"))
+mbma       <- rxode2::rxode(readModelDb("Takechi_2025_nemolizumab_mbma_iga"))
+mbma_ppnrs <- rxode2::rxode(readModelDb("Takechi_2025_nemolizumab_mbma_ppnrs"))
 ```
 
 # Population
@@ -99,7 +104,7 @@ Arm-mean age 46.7-59.7 years, arm-mean weight 60.4-87.1 kg, baseline PP-NRS
 
 # Source trace
 
-Every value in the three `ini()` blocks, with the source location. Values are
+Every value in the four `ini()` blocks, with the source location. Values are
 transcribed from the "Original data / Estimate" columns; the bootstrap medians
 and 95% CIs in the adjacent columns were used only as a transcription check.
 
@@ -121,24 +126,39 @@ trace <- tibble::tribble(
   "PopPD", "lkdrug",               "log(28.7e-3)",  "Table 2, Kd (x 10^-3/day)",
   "PopPD", "etalpmax / etalkp / etalemax / etalkdrug", "1.55 / 10.4 / 1.19 / 2.10", "Table 2, IIV Pmax / Kp / Edrug / Kd",
   "PopPD", "addSd",                "sqrt(0.582)",   "Table 2, Additive error (variance; see Assumptions)",
-  "MBMA",  "e0",                   "-4.92",         "Table 4, IGA column, row A",
-  "MBMA",  "pmax_placebo",         "2.99",          "Table 4, IGA column, row Pmax",
-  "MBMA",  "lkp",                  "log(0.123)",    "Table 4, IGA column, row Kp (/week)",
-  "MBMA",  "edrug_nemolizumab",    "1.71",          "Table 4, IGA column, row Edrug,nemolizumab",
-  "MBMA",  "lkdrug_nemolizumab",   "log(0.416)",    "Table 4, IGA column, row Kd,nemolizumab (/week)",
-  "MBMA",  "edrug_dupilumab",      "1.49",          "Table 4, IGA column, row Edrug,dupilumab",
-  "MBMA",  "lkdrug_dupilumab",     "log(0.134)",    "Table 4, IGA column, row Kd,dupilumab (/week)",
-  "MBMA",  "eta_study_eff",        "0.226",         "Table 4, IGA column, row ISV on EFF (variance)",
-  "MBMA",  "addSd",                "sqrt(0.619)",   "Table 4, IGA column, row Additive error (variance)"
+  "MBMA IGA",  "e0",                 "-4.92",         "Table 4, IGA column, row A",
+  "MBMA IGA",  "pmax_placebo",       "2.99",          "Table 4, IGA column, row Pmax",
+  "MBMA IGA",  "lkp",                "log(0.123)",    "Table 4, IGA column, row Kp (/week)",
+  "MBMA IGA",  "edrug_nemolizumab",  "1.71",          "Table 4, IGA column, row Edrug,nemolizumab",
+  "MBMA IGA",  "lkdrug_nemolizumab", "log(0.416)",    "Table 4, IGA column, row Kd,nemolizumab (/week)",
+  "MBMA IGA",  "edrug_dupilumab",    "1.49",          "Table 4, IGA column, row Edrug,dupilumab",
+  "MBMA IGA",  "lkdrug_dupilumab",   "log(0.134)",    "Table 4, IGA column, row Kd,dupilumab (/week)",
+  "MBMA IGA",  "eta_study_eff",      "0.226",         "Table 4, IGA column, row ISV on EFF (variance)",
+  "MBMA IGA",  "addSd",              "sqrt(0.619)",   "Table 4, IGA column, row Additive error (variance)",
+  "MBMA PP-NRS", "e0",                         "-4.38",        "Table 4, PP-NRS column, row A",
+  "MBMA PP-NRS", "pmax_placebo",               "2.64",         "Table 4, PP-NRS column, row Pmax",
+  "MBMA PP-NRS", "lkp",                        "log(0.277)",   "Table 4, PP-NRS column, row Kp (/week)",
+  "MBMA PP-NRS", "edrug_nemolizumab",          "1.63",         "Table 4, PP-NRS column, row Edrug,nemolizumab",
+  "MBMA PP-NRS", "e_igamod_edrug_nemolizumab", "-1.84",        "Table 4, PP-NRS column, row PPM effect on Edrug,nemolizumab (coefficient printed; FORM reconstructed from Fig. 4 -- see Part 4)",
+  "MBMA PP-NRS", "edrug_dupilumab",            "1.93",         "Table 4, PP-NRS column, row Edrug,dupilumab",
+  "MBMA PP-NRS", "lkdrug_nemolizumab",         "log(1.93)",    "Table 4, PP-NRS column, row Kd,nemolizumab (/week)",
+  "MBMA PP-NRS", "lkdrug_dupilumab",           "log(0.119)",   "Table 4, PP-NRS column, row Kd,dupilumab (/week)",
+  "MBMA PP-NRS", "eta_study_eff",              "0.105",        "Table 4, PP-NRS column, row ISV on EFF (variance)",
+  "MBMA PP-NRS", "addSd",                      "sqrt(0.738)",  "Table 4, PP-NRS column, row Additive error (variance)",
+  "MBMA PP-NRS", "IGA_MOD_PCT centring 59.0",  "59.0",         "Table 3, median over the 13 arms of (100 - 'IGA4 at baseline (%)')"
 )
-knitr::kable(trace, caption = "Source trace for all three model files.")
+knitr::kable(trace, caption = "Source trace for all four model files.")
 ```
 
 Structural equations: the PopPK model structure is Results "PopPK Analysis"
 paragraph 1 plus the two displayed fixed-effect equations; the PopPD equations
 are the two displayed equations in Methods "Pharmacodynamic Model"; the MBMA
 equations are the displayed logit / EFF / f0 / fdrug group and the displayed
-residual equation in Methods "Model-Based Meta-analysis".
+residual equation in Methods "Model-Based Meta-analysis", shared by both
+endpoints. The one structural element with **no** printed source is the
+functional form attaching `PPM` to `Edrug,nemolizumab` in the PP-NRS
+meta-analysis; Part 4 derives it from the paper's own Fig. 4 and shows that the
+two competing readings are falsified.
 
 ## Reading the omega scale from the covariance row
 
@@ -663,6 +683,232 @@ stopifnot(abs(sd_shipped - sd_expected) / sd_expected < 0.20)
 stopifnot(sd_for_arm > 0.005, sd_for_arm < 0.05)
 ```
 
+# Part 4 -- Model-based meta-analysis of PP-NRS success rates
+
+The same six trials, the same logistic structure, the second endpoint: the
+proportion of an arm achieving at least a **4-point improvement in the weekly
+average PP-NRS**. Two things differ from Part 3. The onset rate constants are
+far more separated (nemolizumab 1.93/week against dupilumab 0.119/week, a
+factor of sixteen, versus a factor of three for IGA), and this endpoint retains
+a covariate.
+
+## The covariate and its functional form
+
+Table 4's PP-NRS column carries a row absent from the IGA column:
+`PPM effect on Edrug,nemolizumab = -1.84`, where `PPM` is the paper's
+abbreviation for the *proportion of patients classified as moderate by IGA* in
+a study arm. It is registered here as `IGA_MOD_PCT`, an arm-level percentage,
+and is the complement of Table 3's `IGA4 at baseline (%)` column.
+
+```{r ppnrs-ppm-arms}
+arm_ppm <- tibble::tibble(
+  iga4_pct = c(46.1, 54.5, 52.6, 39.0, 53.0, 35.4, 43.7, 47.3, 41.0,
+               29.3, 28.0, 39.5, 37.2)
+) |>
+  dplyr::mutate(IGA_MOD_PCT = 100 - iga4_pct)
+
+ppm_median <- median(arm_ppm$IGA_MOD_PCT)
+cat("13 arms; IGA_MOD_PCT range",
+    sprintf("%.1f-%.1f%%", min(arm_ppm$IGA_MOD_PCT), max(arm_ppm$IGA_MOD_PCT)),
+    "median", sprintf("%.1f%%", ppm_median), "\n")
+
+# The centring constant hardcoded in model() must be the Table 3 median.
+stopifnot(nrow(arm_ppm) == 13L, ppm_median == 59.0)
+```
+
+**The paper never prints the covariate equation.** Only the coefficient is
+given. The form encoded in the model file is a fractional deviation centred on
+that median arm,
+
+$$E_{drug,nemo} = 1.63 \times \left(1 - 1.84 \left(\frac{\mathtt{IGA\_MOD\_PCT}}{100} - 0.590\right)\right)$$
+
+and it was chosen because it is the only one of three candidate readings that
+reproduces the paper's own Fig. 4. Fig. 4's caption states the simulation used
+*"the recommended dose of each drug in Japan"*, i.e. the Yokozeki 30 mg Q4W
+arm, whose `IGA_MOD_PCT` is `100 - 54.5 = 45.5`. That fixes the covariate value
+and makes the three readings testable against three plotted numbers.
+
+```{r ppnrs-form-selection}
+# Closed-form logistic prediction, independent of the shipped model, so this
+# genuinely discriminates between the candidate forms.
+pr_ppnrs <- function(week, edrug_nemo) {
+  f0 <- -4.38 + 2.64 * (1 - exp(-0.277 * week))
+  100 * plogis(f0 + edrug_nemo * (1 - exp(-1.93 * week)))
+}
+ppm_ref  <- 0.455          # Yokozeki nemolizumab 30 mg Q4W arm
+ppm_cent <- 0.590          # Table 3 median
+
+candidates <- tibble::tibble(
+  Form = c("fractional deviation (shipped)", "normalised power",
+           "additive logit shift", "no covariate"),
+  Edrug = c(1.63 * (1 - 1.84 * (ppm_ref - ppm_cent)),
+            1.63 * (ppm_ref / ppm_cent)^(-1.84),
+            1.63 - 1.84 * (ppm_ref - ppm_cent),
+            1.63)
+) |>
+  dplyr::mutate(
+    `Week 4 (%)`  = pr_ppnrs(4,  Edrug),
+    `Week 16 (%)` = pr_ppnrs(16, Edrug),
+    `Week 24 (%)` = pr_ppnrs(24, Edrug)
+  )
+
+knitr::kable(candidates, digits = 2,
+             caption = paste("Candidate covariate forms for the nemolizumab arm of Fig. 4.",
+                             "Fig. 4C reads ~36% at week 4 and ~56% at week 16;",
+                             "the Fig. 4A plateau is ~57%."))
+
+shipped <- candidates[candidates$Form == "fractional deviation (shipped)", ]
+# Deterministic arithmetic on transcribed thetas -- exact, not cohort-derived.
+stopifnot(
+  abs(shipped$`Week 4 (%)`  - 36) < 2,
+  abs(shipped$`Week 16 (%)` - 56) < 2,
+  abs(shipped$`Week 24 (%)` - 57) < 2
+)
+# ... and every alternative must MISS at week 24, or the test proves nothing.
+others <- candidates[candidates$Form != "fractional deviation (shipped)", ]
+stopifnot(all(abs(others$`Week 24 (%)` - 57) > 3))
+```
+
+The power function -- the form the paper's Methods states for the *PopPD*
+analysis -- overshoots by 14 percentage points, the additive shift undershoots
+by 4, and dropping the covariate undershoots by 10. Only the fractional
+deviation lands. This is a **reconstruction**, and it is recorded as one in the
+model file and in the Assumptions below.
+
+## Reproducing Figure 4A and 4C
+
+With the covariate form settled, the placebo and dupilumab arms are an
+independent check: neither carries the covariate, so if the rest of the column
+were mis-transcribed they would miss too.
+
+```{r ppnrs-fig4}
+mbma_p0 <- rxode2::zeroRe(mbma_ppnrs)
+
+arms_p <- tibble::tribble(
+  ~arm,          ~DOSE_NEMOLIZUMAB_MG, ~DOSE_DUPILUMAB_MG, ~IGA_MOD_PCT,
+  "placebo",     0,                    0,                  45.5,
+  "dupilumab",   0,                    300,                45.5,
+  "nemolizumab", 30,                   0,                  45.5
+)
+
+d_p <- arms_p |>
+  dplyr::mutate(id = dplyr::row_number()) |>
+  tidyr::crossing(time = c(4, 16, 24)) |>
+  dplyr::mutate(evid = 0L, amt = 0) |>
+  dplyr::arrange(id, time)
+
+sim_p <- as.data.frame(rxode2::rxSolve(mbma_p0, as.data.frame(d_p)))
+sim_p$arm <- arms_p$arm[sim_p$id]
+
+fig4a <- sim_p |>
+  dplyr::transmute(Arm = arm, Week = time, `Model (%)` = 100 * pResp) |>
+  dplyr::left_join(
+    tibble::tribble(
+      ~Arm,          ~Week, ~`Read from Fig. 4 (%)`,
+      "placebo",     4,     7,
+      "placebo",     16,    14,
+      "placebo",     24,    15,
+      "dupilumab",   4,     13,
+      "dupilumab",   16,    46,
+      "dupilumab",   24,    52,
+      "nemolizumab", 4,     36,
+      "nemolizumab", 16,    56,
+      "nemolizumab", 24,    57
+    ), by = c("Arm", "Week")
+  ) |>
+  dplyr::mutate(`Difference (points)` = `Model (%)` - `Read from Fig. 4 (%)`)
+
+knitr::kable(fig4a, digits = 1,
+             caption = "PP-NRS success rate: model vs values read from Takechi 2025 Figs. 4A and 4C.")
+
+# Deterministic (zeroRe), so the only error is figure read-off. The week-4 and
+# week-16 targets are the open and closed circles of the Fig. 4C forest plot;
+# the week-24 targets are the right-hand end of the Fig. 4A curves. These were
+# read off a 150 dpi render of the publisher's page and are good to roughly a
+# point, so the gate is set at 2 -- still far tighter than the many-point shift
+# a mis-transcribed theta produces.
+stopifnot(nrow(fig4a) == 9L, max(abs(fig4a$`Difference (points)`)) < 2)
+```
+
+```{r ppnrs-curves, fig.cap = "Typical PP-NRS success-rate time courses for the Yokozeki 30 mg Q4W arm severity. Replicates Figure 4A of Takechi 2025."}
+d_pc <- arms_p |>
+  dplyr::mutate(id = dplyr::row_number()) |>
+  tidyr::crossing(time = seq(0, 24, by = 0.5)) |>
+  dplyr::mutate(evid = 0L, amt = 0) |>
+  dplyr::arrange(id, time)
+curve_p <- as.data.frame(rxode2::rxSolve(mbma_p0, as.data.frame(d_pc)))
+curve_p$arm <- arms_p$arm[curve_p$id]
+
+ggplot(curve_p, aes(time, 100 * pResp, colour = arm)) +
+  geom_line(linewidth = 0.8) +
+  ylim(0, 80) +
+  labs(x = "Time (week)", y = "PP-NRS success rate (%)", colour = NULL)
+```
+
+The nemolizumab curve is essentially at its plateau by week 4 while dupilumab
+is still climbing at week 24 -- the clearest quantitative statement in the paper
+of the rapid-itch-relief claim, and a much starker separation than the IGA
+endpoint of Part 3 shows.
+
+## Covariate direction across the observed arm range
+
+A lower `IGA_MOD_PCT` means a more severe arm, and the negative coefficient
+makes such an arm respond more. The effect is not small over the range the
+meta-analysis actually spans.
+
+```{r ppnrs-covariate-range}
+d_cov <- tibble::tibble(IGA_MOD_PCT = sort(arm_ppm$IGA_MOD_PCT)) |>
+  dplyr::mutate(id = dplyr::row_number(),
+                DOSE_NEMOLIZUMAB_MG = 30, DOSE_DUPILUMAB_MG = 0,
+                time = 24, evid = 0L, amt = 0)
+
+cov_sim <- as.data.frame(rxode2::rxSolve(mbma_p0, as.data.frame(d_cov)))
+cov_sim$IGA_MOD_PCT <- d_cov$IGA_MOD_PCT[cov_sim$id]
+
+cov_tab <- cov_sim |>
+  dplyr::transmute(`Arm moderate-IGA (%)` = IGA_MOD_PCT,
+                   `Week-24 success (%)`  = 100 * pResp)
+knitr::kable(cov_tab, digits = 1,
+             caption = "Week-24 nemolizumab PP-NRS success rate across the 13 arms' observed severity range.")
+
+# Monotone decreasing in IGA_MOD_PCT: a negative coefficient, exactly.
+stopifnot(all(diff(cov_tab$`Week-24 success (%)`) < 0))
+# The spread across the observed range is material, not cosmetic.
+stopifnot(diff(range(cov_tab$`Week-24 success (%)`)) > 10)
+```
+
+## Arm-size weighting of the residual
+
+Identical convention to Part 3: the model ships the `N = 1` residual and the
+`1 / sqrt(N_arm)` factor is applied downstream.
+
+```{r ppnrs-residual}
+set.seed(11)
+n_rep_p <- 400L
+N_arm_p <- 77L   # Yokozeki nemolizumab 30 mg Q4W arm (Table 3)
+
+d_rep_p <- data.frame(id = seq_len(n_rep_p), time = 24,
+                      DOSE_NEMOLIZUMAB_MG = 30, DOSE_DUPILUMAB_MG = 0,
+                      IGA_MOD_PCT = 45.5, evid = 0L, amt = 0)
+rep_p <- as.data.frame(rxode2::rxSolve(mbma_p0, d_rep_p, nSub = n_rep_p))
+
+sd_shipped_p  <- sd(rep_p$sim)
+sd_expected_p <- sqrt(0.738) * sqrt(mean(rep_p$pResp) * (1 - mean(rep_p$pResp)))
+sd_for_arm_p  <- sd_shipped_p / sqrt(N_arm_p)
+
+tibble::tibble(
+  quantity = c("simulated residual SD (N = 1)",
+               "expected addSd * sqrt(Pr(1-Pr))",
+               paste0("rescaled for an arm of N = ", N_arm_p)),
+  value    = c(sd_shipped_p, sd_expected_p, sd_for_arm_p)
+) |>
+  knitr::kable(digits = 4, caption = "Residual SD of the shipped PP-NRS model and its per-arm rescaling.")
+
+# Cohort-derived SD from 400 draws: allow generous sampling noise.
+stopifnot(abs(sd_shipped_p - sd_expected_p) / sd_expected_p < 0.20)
+stopifnot(sd_for_arm_p > 0.005, sd_for_arm_p < 0.10)
+```
+
 # Assumptions and deviations
 
 **1. `Pmax` and `Edrug` of the PopPD model are read as log-scale thetas.**
@@ -727,22 +973,30 @@ clamping, and clamping would change the residual distribution near zero.
 Simulated values below 0 occur for strong responders and are visible in the
 paper's own Fig. 2, whose lower prediction band sits against the axis.
 
-**10. Simulation scope.** `Takechi_2025_nemolizumab_mbma_iga` predicts
-study-arm success rates and must not be used to simulate individual patients;
-its only random effect is between-study. `Takechi_2025_nemolizumab_ppnrs` does
-describe individual subjects.
+**10. Simulation scope.** Both `Takechi_2025_nemolizumab_mbma_iga` and
+`Takechi_2025_nemolizumab_mbma_ppnrs` predict study-arm success rates and must
+not be used to simulate individual patients; their only random effect is
+between-study. `Takechi_2025_nemolizumab_ppnrs` does describe individual
+subjects.
 
-## Not yet extracted {#not-yet-extracted}
+**11. The PP-NRS covariate's functional form is reconstructed, not quoted.**
+Table 4 prints the coefficient `-1.84` but the paper contains no equation
+attaching `PPM` to `Edrug,nemolizumab` anywhere -- not in Methods, not in the
+supplement, and there is no NONMEM control stream on disk. The fractional
+deviation `1.63 * (1 + (-1.84) * (IGA_MOD_PCT/100 - 0.590))` used here is the
+reading that reproduces three independent plotted values of Fig. 4, where the
+two obvious alternatives miss by 14 and 4 percentage points respectively; Part 4
+runs that discrimination as a test. The centring constant `0.590` is likewise
+not printed -- it is the median of Table 3's 13 arms, which the vignette
+recomputes and asserts. A reader who has access to the authors' control stream
+should check this term before relying on the model outside the 45.5-72.0%
+severity range the meta-analysis spans.
 
-Takechi 2025 fits the same longitudinal logistic meta-analysis to a second
-endpoint, the **PP-NRS success rate** (at least a 4-point improvement); its
-parameters are the "PP-NRS" column of Table 4. That model is not in this
-release for one reason: unlike the IGA model, it retains a covariate -- the
-proportion of patients in the arm classified as moderate by IGA -- on the
-nemolizumab maximum effect, and that concept has no entry in the package's
-canonical covariate register yet. Adding it requires a new canonical name,
-which is an operator decision rather than an extraction one. The IGA model
-shipped here is complete and independent of that question.
+**12. `IGA_MOD_PCT` scale.** The covariate register stores this column as a
+**percent** (0-100), matching its arm-level siblings `TUMTP_SQUAM_PCT`,
+`PS_ECOG_0_PCT` and `RACE_ASIAN_PCT`; the model converts to a fraction inline.
+The paper's `PPM` is a fraction, so a user transcribing directly from Table 4's
+notation must multiply by 100 before supplying the column.
 
 # Session info
 
