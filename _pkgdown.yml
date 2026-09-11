@@ -902,6 +902,8 @@ navbar:
         href: articles/Ni_2013_ciclosporin.html
       - text: "Ciclosporin (Press 2010)"
         href: articles/Press_2010_ciclosporin.html
+      - text: "Ciclosporin (Roganovic 2026)"
+        href: articles/Roganovic_2026_ciclosporin.html
       - text: "Ciclosporin (Wilhelm 2012)"
         href: articles/Wilhelm_2012_ciclosporin.html
       - text: "Ciclosporin (Willemze 2008)"
@@ -6447,6 +6449,7 @@ articles:
   - articles/Roelofsen_2023_cefotaxime
   - articles/Roepcke_2018_tak_079
   - articles/Roepcke_2023_rezafungin
+  - articles/Roganovic_2026_ciclosporin
   - articles/Rognas_2025_bitopertin
   - articles/Rohatagi_2008_apricoxib
   - articles/Roiko_2012_ghb_brain_uptake
