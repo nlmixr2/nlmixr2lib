@@ -716,6 +716,10 @@ navbar:
         href: articles/Ekhart_2008_carboplatin.html
       - text: "Carboplatin (Zandvliet 2008)"
         href: articles/Zandvliet_2008_carboplatin.html
+      - text: "Carboplatin dog (Beguin 2024)"
+        href: articles/Beguin_2024_carboplatin_dog.html
+      - text: "Carboplatin thrombocytopenia dog (Beguin 2024)"
+        href: articles/Beguin_2024_carboplatin_dog.html
       - text: "Carboxyprimaquine (Chotsiri 2024)"
         href: articles/Chotsiri_2024_primaquine_metabolites.html
       - text: "Carfentanil iv (Mann 2022)"
@@ -5188,6 +5192,7 @@ articles:
   - articles/Baverel_2015_tralokinumab
   - articles/Bayoumy_2025_thioguanine
   - articles/Beal_2001_iv1cmt_bql
+  - articles/Beguin_2024_carboplatin_dog
   - articles/Bellanti_2014_deferiprone
   - articles/Bellanti_2015_deferoxamine
   - articles/Bellanti_2017_deferiprone
