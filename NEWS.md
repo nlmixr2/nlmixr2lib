@@ -2,6 +2,14 @@
 
 # development version
 
+- Rename the procalcitonin covariate column from `PCT` to `PROCALCITONIN`. A
+  bare `PCT` collided with the established `_PCT` percent suffix
+  (`BODYFAT_PCT`, `RACE_ASIAN_PCT`, `CUM_FLUID_BAL_PCT` and others) and with
+  `PCT` = proximal convoluted tubule in `Lu_2014_sglt_qsp.R`, which is
+  unaffected. Affects `Liu_2025_voriconazole` (whose effect parameter
+  `e_pct_cl` becomes `e_procalcitonin_cl`) and the documentation-only entry in
+  `Peng_2025_meropenem`; `PCT` is retained as a source alias.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`
