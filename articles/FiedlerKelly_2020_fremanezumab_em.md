@@ -48,7 +48,7 @@ The EM model relates monthly migraine days to fremanezumab Cav and
 time-on-treatment via three additive components:
 
 ``` math
-\text{migraineDays}(t, C_{av}) = \text{BL}_i - e^{\theta_{P,i}\,t} - \text{BL}_i \cdot E_{\max,i}\,\frac{C_{av}}{EC_{50} + C_{av}}
+\text{migraine_days}(t, C_{av}) = \text{BL}_i - e^{\theta_{P,i}\,t} - \text{BL}_i \cdot E_{\max,i}\,\frac{C_{av}}{EC_{50} + C_{av}}
 ```
 
 with the individual baseline a piecewise-linear function of baseline
@@ -117,7 +117,7 @@ review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
-| Composite endpoint equation `migraineDays = BL - exp(exp_PLC * t) - BL * Emax * Cav/(EC50+Cav)` | n/a | Figure 2A; Methods — E-R Analysis Methodology |
+| Composite endpoint equation `migraine_days = BL - exp(exp_PLC * t) - BL * Emax * Cav/(EC50+Cav)` | n/a | Figure 2A; Methods — E-R Analysis Methodology |
 | Piecewise-linear baseline `BL = bl_em + slope_AM * max(0, ACUTE_MED_DAYS - 5)` | n/a | Results — Monthly Migraine Days in Patients With EM |
 | `bl_em` (typical baseline at AM ≤ 5 d/mo) | 8.35 d/mo | Table S3 |
 | `slope_AM` (slope on AM days \> 5) | 0.438 d/d | Table S3 |
@@ -144,12 +144,12 @@ ev_check <- data.frame(
 sim_check <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = ev_check, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ omega/sigma items treated as zero: 'etabl_em', 'etaexp_PLC', 'etalogitEmax'
-sim_check[, c("time", "migraineDays")]
-#>   time migraineDays
-#> 1    0     7.350000
-#> 2    1     6.916671
-#> 3    2     6.295567
-#> 4    3     5.405320
+sim_check[, c("time", "migraine_days")]
+#>   time migraine_days
+#> 1    0      7.350000
+#> 2    1      6.916671
+#> 3    2      6.295567
+#> 4    3      5.405320
 ```
 
 The month-3 placebo migraine-day count is 5.41, a reduction of 2.94 days
@@ -249,8 +249,8 @@ migraine days and percent of responders over the three-month follow-up.
 sim_iiv |>
   group_by(regimen, time) |>
   summarise(
-    mean_md = mean(migraineDays),
-    sd_md   = sd(migraineDays),
+    mean_md = mean(migraine_days),
+    sd_md   = sd(migraine_days),
     .groups = "drop"
   ) |>
   ggplot(aes(time, mean_md, colour = regimen, fill = regimen)) +
@@ -278,7 +278,7 @@ baseline_per_id <- events |>
 
 responders <- sim_iiv |>
   left_join(baseline_per_id, by = c("id", "regimen")) |>
-  mutate(reduction_pct = 100 * (BL - migraineDays) / BL,
+  mutate(reduction_pct = 100 * (BL - migraine_days) / BL,
          responder     = reduction_pct >= 50)
 
 responder_summary <- responders |>
@@ -310,8 +310,8 @@ narrative_compare <- sim_typ |>
   filter(time == 3) |>
   group_by(regimen) |>
   summarise(
-    typical_md_month3 = round(mean(migraineDays), 2),
-    typical_reduction = round(8.35 - mean(migraineDays), 2),
+    typical_md_month3 = round(mean(migraine_days), 2),
+    typical_reduction = round(8.35 - mean(migraine_days), 2),
     .groups = "drop"
   )
 
@@ -378,7 +378,7 @@ the Results section.
   S1 mean and SD across the pooled EM cohort). The actual data have a
   heavily right-skewed distribution with median 0.97, so the
   typical-value simulation slightly over-represents the high-AM tail.
-- **Observation variable is `migraineDays`, not `Cc`.** The
+- **Observation variable is `migraine_days`, not `Cc`.** The
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   warning recommending rename to `Cc` is not appropriate for a
   count-of-days endpoint that is not a concentration. Following the same

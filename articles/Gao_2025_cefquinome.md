@@ -560,12 +560,12 @@ pd_sim <- rxode2::rxSolve(pd_mod, events = pd_events, keep = c("AUC_CEFQ", "ce_l
 ode_chk <- pd_sim |>
   dplyr::group_by(ce_level) |>
   dplyr::summarise(
-    # Measure the STATE, not the observable: Cc is log10(bact + 1), and that
+    # Measure the STATE, not the observable: log_cfu is log10(bact + 1), and
     # 1-CFU/mL floor deliberately shifts the reading once bact is driven into
     # the tens of CFU/mL. The floor is a guard on the observation, not part of
     # the kinetics, so the ODE must be scored on bact itself.
     `Delta log10 (state)` = log10(bact[time == 24]) - log10(bact[time == 0]),
-    `Delta log10 (Cc, floored)` = Cc[time == 24] - Cc[time == 0],
+    `Delta log10 (log_cfu, floored)` = log_cfu[time == 24] - log_cfu[time == 0],
     .groups = "drop"
   ) |>
   dplyr::mutate(`Sigmoid E` = effect_of(ce_level),
@@ -577,18 +577,18 @@ knitr::kable(ode_chk, digits = 5,
                              "where bact falls to tens of CFU/mL."))
 ```
 
-| ce_level | Delta log10 (state) | Delta log10 (Cc, floored) | Sigmoid E | abs diff |
-|---------:|--------------------:|--------------------------:|----------:|---------:|
-|     0.00 |             2.88000 |                   2.88000 |   2.88000 |        0 |
-|     1.00 |             2.75086 |                   2.75086 |   2.75086 |        0 |
-|     2.34 |            -0.03254 |                  -0.03254 |  -0.03254 |        0 |
-|     3.53 |            -3.00443 |                  -3.00399 |  -3.00442 |        0 |
-|     4.86 |            -4.14067 |                  -4.13471 |  -4.14067 |        0 |
-|     8.00 |            -4.58391 |                  -4.56756 |  -4.58391 |        0 |
+| ce_level | Delta log10 (state) | Delta log10 (log_cfu, floored) | Sigmoid E | abs diff |
+|---:|---:|---:|---:|---:|
+| 0.00 | 2.88000 | 2.88000 | 2.88000 | 0 |
+| 1.00 | 2.75086 | 2.75086 | 2.75086 | 0 |
+| 2.34 | -0.03254 | -0.03254 | -0.03254 | 0 |
+| 3.53 | -3.00443 | -3.00399 | -3.00442 | 0 |
+| 4.86 | -4.14067 | -4.13471 | -4.14067 | 0 |
+| 8.00 | -4.58391 | -4.56756 | -4.58391 | 0 |
 
 The ODE moves log10(bact) by exactly the sigmoid’s E over each 24 h
 interval. The floored observable diverges only at maximal kill, where
-bact falls to tens of CFU/mL. {.table style="width:100%;"}
+bact falls to tens of CFU/mL. {.table}
 
 ``` r
 
@@ -634,7 +634,7 @@ exvivo <- rxode2::rxSolve(pd_mod, events = exvivo_events, keep = c("AUC_CEFQ", "
 # against E. coli in serum drawn at each sampling time after IM administration.
 exvivo |>
   dplyr::mutate(draw = factor(draw)) |>
-  ggplot(aes(time, Cc, colour = draw)) +
+  ggplot(aes(time, log_cfu, colour = draw)) +
   geom_line(linewidth = 0.7) +
   geom_hline(yintercept = log10(200), linetype = "dotted") +
   labs(x = "Incubation time (h)", y = "log10 CFU/mL", colour = "Serum draw (h)",

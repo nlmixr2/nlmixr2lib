@@ -201,13 +201,13 @@ ev_gc <- as.data.frame(rxode2::et(time = seq(0, 96, by = 0.5)))
 gc <- do.call(rxode2::rxSolve, c(list(object = mod, events = ev_gc,
                                       returnType = "data.frame"), solver_opts))
 
-cat(sprintf("Inoculum log10CFU(0)  = %.3f  (Table 3 Log10CFU0 = 6.97)\n", gc$Cc[1]))
+cat(sprintf("Inoculum log10CFU(0)  = %.3f  (Table 3 Log10CFU0 = 6.97)\n", gc$log_cfu[1]))
 #> Inoculum log10CFU(0)  = 6.970  (Table 3 Log10CFU0 = 6.97)
 cat(sprintf("Plateau  log10CFU(96) = %.3f  (expected 0.5*CFUmax = %.3f)\n",
-            tail(gc$Cc, 1), log10(0.5) + 9.98))
+            tail(gc$log_cfu, 1), log10(0.5) + 9.98))
 #> Plateau  log10CFU(96) = NaN  (expected 0.5*CFUmax = 9.679)
 
-ggplot(gc, aes(time, Cc)) +
+ggplot(gc, aes(time, log_cfu)) +
   geom_line(linewidth = 1) +
   geom_hline(yintercept = log10(0.5) + 9.98, linetype = 2, colour = "grey50") +
   labs(x = "Time (h)", y = expression(log[10] ~ CFU/mL),
@@ -530,7 +530,7 @@ half-life. {.table}
       state (`cmem`) are mechanism-specific;
   2.  `lk21` is a fixed mechanistic rate constant that is
       log-transformed for parameterisation consistency; (c) the single
-      observation `Cc` carries a non-PK output (log10 viable count, not
-      a drug concentration); (d) the dosing/concentration units are
+      observation `log_cfu` carries a non-PK output (log10 viable count,
+      not a drug concentration); (d) the dosing/concentration units are
       `mg/L` because the antibiotic input is a concentration in the
       in-vitro system.

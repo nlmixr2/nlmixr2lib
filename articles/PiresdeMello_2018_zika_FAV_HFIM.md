@@ -34,7 +34,7 @@ the user-supplied PK profile (Fig 4 of the paper for the clinical
 regimens, or a constant for the static dose-ranging experiments). The
 twelve-compartment ODE system describes virus-host infection,
 intracellular maturation, viral egress, and host-cell carrying capacity;
-the observation output is `Cc = log10(vextra)` in PFU/mL.
+the observation output is `log10_viral_load = log10(vextra)` in PFU/mL.
 
 The drug-effect parameters (`Imax_FAV`, `IC50_FAV`) and the additive
 residual SD are shared estimates between the plate assay and the HFIM in
@@ -627,10 +627,10 @@ cat(sprintf("  net rate (should be ~0 at peak)    = %.2g PFU/mL/h\n",
       `log10I0`, `log10hostmax`, `lvirusload`, `ltdelay`, `lmstvirus`,
       `ltrepl` are paper-specific log10/log-scale parameters following
       the precedent set by the Vero-cell companion file and Rees 2018;
-  2.  the single observation `Cc` carries a non-PK output (log10 viral
-      burden, not a drug concentration); (d) the dosing/concentration
-      units are not standard popPK units because the FAV input is a
-      concentration covariate in the in-vitro system.
+  2.  the single observation `log10_viral_load` carries a non-PK output
+      (log10 viral burden, not a drug concentration); (d) the
+      dosing/concentration units are not standard popPK units because
+      the FAV input is a concentration covariate in the in-vitro system.
 
 ## References
 

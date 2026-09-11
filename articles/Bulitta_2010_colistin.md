@@ -149,7 +149,7 @@ Compartment and observation conventions:
 | `bact_i` | CFU/mL | intermediate-susceptibility cells |
 | `bact_r` | CFU/mL | least-susceptible (resistant) cells |
 | `signal` | unitless | hypothetical quorum-style signal molecules tracking CFUALL |
-| `Cc` | log10 CFU/mL | observation: log10(CFUALL + 1) |
+| `log_cfu` | log10 CFU/mL | observation: log10(CFUALL + 1) |
 
 ### Growth-function reparameterisation
 
@@ -250,12 +250,12 @@ panels_pao1 <- panels_pao1 |>
   mutate(inoc_label = factor(inoc_label, levels = names(inocula)),
          mult_label = factor(mult_label, levels = names(mults)))
 
-ggplot(panels_pao1, aes(time, Cc, color = mult_label)) +
+ggplot(panels_pao1, aes(time, log_cfu, color = mult_label)) +
   geom_line(linewidth = 0.7) +
   facet_wrap(~ inoc_label, ncol = 3) +
   scale_y_continuous(limits = c(0, 11), breaks = seq(0, 10, 2)) +
   scale_color_brewer(palette = "Dark2") +
-  labs(x = "Time (h)", y = "log10 CFU/mL (Cc)", color = "Colistin (LB MIC = 4 mg/L)",
+  labs(x = "Time (h)", y = "log10 CFU/mL (log_cfu)", color = "Colistin (LB MIC = 4 mg/L)",
        caption = "Replicates the PAO1 row of Bulitta 2010 Figure 2 (typical-value).")
 ```
 
@@ -297,12 +297,12 @@ panels_urmc <- panels_urmc |>
          mult_label = factor(mult_label, levels = names(mults)),
          strain     = factor(strain, levels = c("URMC1", "URMC2")))
 
-ggplot(panels_urmc, aes(time, Cc, color = mult_label)) +
+ggplot(panels_urmc, aes(time, log_cfu, color = mult_label)) +
   geom_line(linewidth = 0.7) +
   facet_grid(strain ~ inoc_label) +
   scale_y_continuous(limits = c(0, 11), breaks = seq(0, 10, 2)) +
   scale_color_brewer(palette = "Dark2") +
-  labs(x = "Time (h)", y = "log10 CFU/mL (Cc)", color = "Colistin (LB MIC = 1 mg/L)",
+  labs(x = "Time (h)", y = "log10 CFU/mL (log_cfu)", color = "Colistin (LB MIC = 1 mg/L)",
        caption = "Replicates URMC1 and URMC2 panels of Bulitta 2010 Figure 2 (typical-value).")
 ```
 
@@ -337,7 +337,7 @@ apparent_kill <- sims |>
   group_by(cfu0_label) |>
   summarise(
     n = n(),
-    slope_log10_per_h = coef(lm(Cc ~ time))[["time"]],
+    slope_log10_per_h = coef(lm(log_cfu ~ time))[["time"]],
     .groups = "drop"
   ) |>
   mutate(kill_rate_h = -slope_log10_per_h * log(10),
@@ -371,9 +371,9 @@ from `10^cfu0` and approach `POPmax * (1 - ImaxRep)` (Bulitta 2010 Table
 ``` r
 
 gc <- panels_pao1 |> filter(inoc_label == "10^6 CFU/mL", mult_label == "GC (0xMIC)")
-sprintf("PAO1 GC at  0 h: log10 CFU/mL = %.2f", gc$Cc[gc$time == 0])
+sprintf("PAO1 GC at  0 h: log10 CFU/mL = %.2f", gc$log_cfu[gc$time == 0])
 #> [1] "PAO1 GC at  0 h: log10 CFU/mL = 6.17"
-sprintf("PAO1 GC at 24 h: log10 CFU/mL = %.2f", gc$Cc[gc$time == 24])
+sprintf("PAO1 GC at 24 h: log10 CFU/mL = %.2f", gc$log_cfu[gc$time == 24])
 #> [1] "PAO1 GC at 24 h: log10 CFU/mL = 9.27"
 sprintf("Expected asymptote = log10(10^9.59 * (1 - 0.422)) = %.2f", log10(10^9.59 * (1 - 0.422)))
 #> [1] "Expected asymptote = log10(10^9.59 * (1 - 0.422)) = 9.35"
@@ -382,7 +382,7 @@ sprintf("Expected asymptote = log10(10^9.59 * (1 - 0.422)) = %.2f", log10(10^9.5
 **Rapid killing at low inoculum and high colistin.** Bulitta 2010
 Results: “concentrations of \>= 16x the MIC resulted in bacterial
 reductions to undetectable concentrations within 30 min” (for the 10^6
-CFUo). The model should drive `Cc` toward zero on that schedule.
+CFUo). The model should drive `log_cfu` toward zero on that schedule.
 
 ``` r
 
@@ -390,16 +390,16 @@ rapid <- panels_pao1 |>
   filter(inoc_label == "10^6 CFU/mL", mult_label == "16xMIC", time <= 0.6) |>
   arrange(time)
 rapid |>
-  select(time, Cc) |>
+  select(time, log_cfu) |>
   knitr::kable(digits = 3,
                caption = "PAO1 at 10^6 CFU/mL inoculum, 16x MIC colistin (64 mg/L) -- early kinetics.")
 ```
 
-| time |    Cc |
-|-----:|------:|
-| 0.00 | 6.170 |
-| 0.25 | 0.518 |
-| 0.50 | 0.048 |
+| time | log_cfu |
+|-----:|--------:|
+| 0.00 |   6.170 |
+| 0.25 |   0.518 |
+| 0.50 |   0.048 |
 
 PAO1 at 10^6 CFU/mL inoculum, 16x MIC colistin (64 mg/L) – early
 kinetics. {.table}
@@ -411,27 +411,27 @@ concentrations produce markedly less log10 CFU reduction.
 
 attn <- panels_pao1 |>
   filter(mult_label == "16xMIC", time %in% c(0, 1, 4, 24)) |>
-  select(inoc_label, time, Cc) |>
+  select(inoc_label, time, log_cfu) |>
   arrange(inoc_label, time)
 attn |>
   knitr::kable(digits = 3,
                caption = "PAO1 at 16x MIC colistin: log10 CFU/mL by inoculum and time.")
 ```
 
-| inoc_label  | time |    Cc |
-|:------------|-----:|------:|
-| 10^6 CFU/mL |    0 | 6.170 |
-| 10^6 CFU/mL |    1 | 0.049 |
-| 10^6 CFU/mL |    4 | 0.094 |
-| 10^6 CFU/mL |   24 | 1.418 |
-| 10^8 CFU/mL |    0 | 8.330 |
-| 10^8 CFU/mL |    1 | 1.809 |
-| 10^8 CFU/mL |    4 | 1.452 |
-| 10^8 CFU/mL |   24 | 3.442 |
-| 10^9 CFU/mL |    0 | 8.960 |
-| 10^9 CFU/mL |    1 | 5.115 |
-| 10^9 CFU/mL |    4 | 1.960 |
-| 10^9 CFU/mL |   24 | 3.890 |
+| inoc_label  | time | log_cfu |
+|:------------|-----:|--------:|
+| 10^6 CFU/mL |    0 |   6.170 |
+| 10^6 CFU/mL |    1 |   0.049 |
+| 10^6 CFU/mL |    4 |   0.094 |
+| 10^6 CFU/mL |   24 |   1.418 |
+| 10^8 CFU/mL |    0 |   8.330 |
+| 10^8 CFU/mL |    1 |   1.809 |
+| 10^8 CFU/mL |    4 |   1.452 |
+| 10^8 CFU/mL |   24 |   3.442 |
+| 10^9 CFU/mL |    0 |   8.960 |
+| 10^9 CFU/mL |    1 |   5.115 |
+| 10^9 CFU/mL |    4 |   1.960 |
+| 10^9 CFU/mL |   24 |   3.890 |
 
 PAO1 at 16x MIC colistin: log10 CFU/mL by inoculum and time. {.table}
 
@@ -462,10 +462,10 @@ panels_cat <- bind_rows(lapply(names(cation_set), function(lbl) {
                  ccations   = cation_set[[lbl]])
 })) |> mutate(scenario = factor(scenario, levels = names(cation_set)))
 
-ggplot(panels_cat, aes(time, Cc, color = scenario)) +
+ggplot(panels_cat, aes(time, log_cfu, color = scenario)) +
   geom_line(linewidth = 0.7) +
   scale_y_continuous(limits = c(0, 11), breaks = seq(0, 10, 2)) +
-  labs(x = "Time (h)", y = "log10 CFU/mL (Cc)", color = "Broth cations",
+  labs(x = "Time (h)", y = "log10 CFU/mL (log_cfu)", color = "Broth cations",
        caption = "Qualitative replication of Bulitta 2010 Figure 7 (PAO1, 16 mg/L colistin, 10^6 CFUo).")
 ```
 

@@ -239,9 +239,9 @@ growthCheck <- lapply(
     ini <- as.data.frame(m$iniDf)
     r <- simTk(m, conc = 0, mucin = 0, tmax = 48)
     data.frame(
-      t0_model = round(r$Cc[1], 3),
+      t0_model = round(r$log_cfu[1], 3),
       t0_INOC = thetaOf(ini, "log10_inoc"),
-      plateau_model = round(max(r$Cc), 3),
+      plateau_model = round(max(r$log_cfu), 3),
       plateau_BMAX = thetaOf(ini, "log10_cfumax")
     )
   }
@@ -346,7 +346,7 @@ tkProfiles <- lapply(names(concGrid), function(s) {
 
 ggplot2::ggplot(
   tkProfiles,
-  ggplot2::aes(time, Cc, colour = factor(conc), group = factor(conc))
+  ggplot2::aes(time, log_cfu, colour = factor(conc), group = factor(conc))
 ) +
   ggplot2::geom_line(linewidth = 0.8) +
   ggplot2::geom_hline(yintercept = 2.6, linetype = "dashed", colour = "grey40") +
@@ -376,7 +376,7 @@ log10 above the nadir.
 
 regrew <- function(model, conc) {
   r <- simTk(model, conc = conc, mucin = 0)
-  utils::tail(r$Cc, 1) > min(r$Cc) + 1
+  utils::tail(r$log_cfu, 1) > min(r$log_cfu) + 1
 }
 
 thresholdCheck <-
@@ -445,8 +445,8 @@ matchedPair <- function(model, totalWithMucin) {
   data.frame(
     total_mucin_mgL = totalWithMucin,
     unbound_mgL = signif(cu, 3),
-    with_mucin = round(utils::tail(simTk(model, totalWithMucin, 1)$Cc, 1), 2),
-    without_mucin = round(utils::tail(simTk(model, cu, 0)$Cc, 1), 2)
+    with_mucin = round(utils::tail(simTk(model, totalWithMucin, 1)$log_cfu, 1), 2),
+    without_mucin = round(utils::tail(simTk(model, cu, 0)$log_cfu, 1), 2)
   )
 }
 
@@ -541,13 +541,13 @@ stochastic <- lapply(mucinConc, function(cc) {
 # rxSolve silently drops subjects on failure; assert the count survived.
 stopifnot(
   dplyr::n_distinct(stochastic$id) == nExp,
-  all(is.finite(stochastic$Cc))
+  all(is.finite(stochastic$log_cfu))
 )
 
 stochastic |>
   dplyr::group_by(conc, time) |>
   dplyr::summarise(
-    lo = quantile(Cc, 0.05), md = median(Cc), hi = quantile(Cc, 0.95),
+    lo = quantile(log_cfu, 0.05), md = median(log_cfu), hi = quantile(log_cfu, 0.95),
     .groups = "drop"
   ) |>
   ggplot2::ggplot(ggplot2::aes(time, md)) +
@@ -589,7 +589,7 @@ Between-experiment variability from the fixed-variance fu etas
   `fu = 1` when `MUCIN_PRESENT` is 0. Eq 1 is applied only in the mucin
   arm; it was estimated from mucin-containing broth and has no meaning
   without mucin.
-- **Observation floor.** `Cc` is computed as
+- **Observation floor.** `log_cfu` is computed as
   `log10(bact_s + bact_r + 1)`. The 1 CFU/mL floor keeps the observation
   finite when PMB sterilises the tube; it is 2.6 log10 below the 400
   CFU/mL limit of quantification and so cannot affect any comparison
@@ -609,7 +609,7 @@ Between-experiment variability from the fixed-variance fu etas
   though rare. This is a faithful transcription of the published
   parameterisation rather than a modelling choice; use `zeroRe()` for
   deterministic work, as the typical-value sections above do.
-- **Residual error is not applied in the figures.** `Cc` is the
+- **Residual error is not applied in the figures.** `log_cfu` is the
   individual prediction; the additive `sigma` from Table 3 (0.35 and
   0.33 log10 CFU/mL) is declared in the model but the plotted profiles
   use `sigma = NA` so that the structural behaviour is visible.

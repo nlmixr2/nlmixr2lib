@@ -409,7 +409,7 @@ scenarios <- do.call(rbind, lapply(seq_len(nrow(chk)), function(i) {
   }))
 }))
 
-ggplot(scenarios, aes(time, Cc, colour = scenario)) +
+ggplot(scenarios, aes(time, log_cfu, colour = scenario)) +
   geom_line(linewidth = 0.7) +
   facet_wrap(~panel, ncol = 2) +
   labs(x = "Ex vivo incubation time (h)", y = "log10 CFU/mL",
@@ -429,12 +429,12 @@ ODE rather than from the algebra.
 
 ## Validation 3: encoding checks
 
-These checks read the ODE state `bact` rather than the observation `Cc`,
-because `Cc <- log10(bact + 1)` carries a deliberate 1-CFU/mL floor that
-displaces the log10 by up to ~0.01 once the density falls into the tens
-of CFU/mL. The floor is a numerical guard on the observation, not part
-of the paper’s model, so the state is what the encoding must be exact
-against.
+These checks read the ODE state `bact` rather than the observation
+`log_cfu`, because `log_cfu <- log10(bact + 1)` carries a deliberate
+1-CFU/mL floor that displaces the log10 by up to ~0.01 once the density
+falls into the tens of CFU/mL. The floor is a numerical guard on the
+observation, not part of the paper’s model, so the state is what the
+encoding must be exact against.
 
 ``` r
 
@@ -546,7 +546,7 @@ outside the packaged models’ scope, which is the sigmoid Emax layer.
   inoculum as 1 x 10^6 CFU/mL. This is an experimental design input, not
   an estimated parameter.
 - **A 1-CFU/mL floor is applied to the observation.**
-  `Cc <- log10(bact + 1)` keeps the log10 finite if the density is
+  `log_cfu <- log10(bact + 1)` keeps the log10 finite if the density is
   driven below 1 CFU/mL, matching the `Wen_2016_enrofloxacin_*` and
   `Chen_2023_tilmicosin` convention. At the exposures Lee 2023 studied
   the floor is never approached.

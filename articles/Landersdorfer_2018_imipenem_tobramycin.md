@@ -132,7 +132,7 @@ Compartment and observation conventions:
 | `bact_resistant_intermediate2` | CFU/mL | IPM-R/TOB-I subpop, S2 state |
 | `bact_intermediate_resistant1` | CFU/mL | IPM-I/TOB-R subpop, S1 state |
 | `bact_intermediate_resistant2` | CFU/mL | IPM-I/TOB-R subpop, S2 state |
-| `Cc` | log10 CFU/mL | observation: log10 of total bacterial concentration (+ 1 CFU floor) |
+| `log_cfu` | log10 CFU/mL | observation: log10 of total bacterial concentration (+ 1 CFU floor) |
 
 ## Helper: build an HFIM scenario
 
@@ -225,10 +225,10 @@ mono_panels$scenario <- factor(mono_panels$scenario, levels = c(
 
 mono_sim <- simulate(mono_panels)
 
-ggplot(mono_sim, aes(time, Cc, color = scenario)) +
+ggplot(mono_sim, aes(time, log_cfu, color = scenario)) +
   geom_line(linewidth = 0.7) +
   scale_y_continuous(limits = c(0, 11), breaks = seq(0, 10, 2)) +
-  labs(x = "Time (h)", y = "log10 CFU/mL (Cc)", color = NULL,
+  labs(x = "Time (h)", y = "log10 CFU/mL (log_cfu)", color = NULL,
        title = "Landersdorfer 2018 Figure 1A reproduction",
        caption = "Monotherapy arms vs growth control over 7 days, typical-value simulation.")
 ```
@@ -248,10 +248,10 @@ combo_panels$scenario <- factor(combo_panels$scenario, levels = c(
 
 combo_sim <- simulate(combo_panels)
 
-ggplot(combo_sim, aes(time, Cc, color = scenario)) +
+ggplot(combo_sim, aes(time, log_cfu, color = scenario)) +
   geom_line(linewidth = 0.7) +
   scale_y_continuous(limits = c(0, 11), breaks = seq(0, 10, 2)) +
-  labs(x = "Time (h)", y = "log10 CFU/mL (Cc)", color = NULL,
+  labs(x = "Time (h)", y = "log10 CFU/mL (log_cfu)", color = NULL,
        title = "Landersdorfer 2018 Figure 1B reproduction",
        caption = "Combination arms vs growth control over 7 days, typical-value simulation.")
 ```
@@ -286,10 +286,10 @@ sweep_sim <- as.data.frame(rxode2::rxSolve(mod,
               keep = c("Ctob")))
 #> Warning: multi-subject simulation without without 'omega'
 
-ggplot(sweep_sim, aes(time, Cc, color = factor(round(Ctob, 2)))) +
+ggplot(sweep_sim, aes(time, log_cfu, color = factor(round(Ctob, 2)))) +
   geom_line(linewidth = 0.7) +
   scale_y_continuous(limits = c(0, 11), breaks = seq(0, 10, 2)) +
-  labs(x = "Time (h)", y = "log10 CFU/mL (Cc)",
+  labs(x = "Time (h)", y = "log10 CFU/mL (log_cfu)",
        color = "TOB (mg/L)",
        title = "Mechanistic synergy switch at Ctob = 1.15 mg/L",
        caption = "Cipm fixed at median 13.4 mg/L; small steps across the threshold show the discrete KC50,IR,IPM drop.")
@@ -308,19 +308,19 @@ ggplot(sweep_sim, aes(time, Cc, color = factor(round(Ctob, 2)))) +
 gc <- mono_sim |>
   filter(scenario == "Control") |>
   filter(time %in% c(0, 4, 12, 24, 48, 168)) |>
-  select(time, Cc)
+  select(time, log_cfu)
 knitr::kable(gc, digits = 3,
              caption = "Growth control trajectory; expect approach to 10.1.")
 ```
 
-| time |     Cc |
-|-----:|-------:|
-|    0 |  7.290 |
-|    4 |  5.011 |
-|   12 |  7.118 |
-|   24 | 10.048 |
-|   48 | 10.048 |
-|  168 | 10.048 |
+| time | log_cfu |
+|-----:|--------:|
+|    0 |   7.290 |
+|    4 |   5.011 |
+|   12 |   7.118 |
+|   24 |  10.048 |
+|   48 |  10.048 |
+|  168 |  10.048 |
 
 Growth control trajectory; expect approach to 10.1. {.table}
 
@@ -336,7 +336,7 @@ Replicated values at t = 168 h:
 end_state <- combo_sim |>
   filter(scenario != "Control") |>
   group_by(scenario) |>
-  summarise(t168_log10cfu = Cc[which.min(abs(time - 168))],
+  summarise(t168_log10cfu = log_cfu[which.min(abs(time - 168))],
             .groups = "drop")
 knitr::kable(end_state, digits = 3,
              caption = "Combination arms at 168 h; expect all to remain < 2 log10 CFU/mL.")
@@ -351,25 +351,25 @@ knitr::kable(end_state, digits = 3,
 Combination arms at 168 h; expect all to remain \< 2 log10 CFU/mL.
 {.table}
 
-**Synergy switch lands at 1.15 mg/L tobramycin.** Compare 24 h Cc at TOB
-= 1.10 vs TOB = 1.20 in the synergy-sweep simulation:
+**Synergy switch lands at 1.15 mg/L tobramycin.** Compare 24 h log_cfu
+at TOB = 1.10 vs TOB = 1.20 in the synergy-sweep simulation:
 
 ``` r
 
 step <- sweep_sim |>
   filter(time == 24, Ctob %in% c(0.5, 1.10, 1.20, 2.0)) |>
-  select(Ctob, Cc) |>
+  select(Ctob, log_cfu) |>
   arrange(Ctob)
 knitr::kable(step, digits = 3,
              caption = "Sub-threshold (1.10) vs super-threshold (1.20) tobramycin at fixed IPM 13.4 mg/L.")
 ```
 
-| Ctob |     Cc |
-|-----:|-------:|
-|  0.5 | 10.078 |
-|  1.1 | 10.053 |
-|  1.2 |  3.063 |
-|  2.0 |  2.315 |
+| Ctob | log_cfu |
+|-----:|--------:|
+|  0.5 |  10.078 |
+|  1.1 |  10.053 |
+|  1.2 |   3.063 |
+|  2.0 |   2.315 |
 
 Sub-threshold (1.10) vs super-threshold (1.20) tobramycin at fixed IPM
 13.4 mg/L. {.table}
@@ -457,9 +457,9 @@ Sub-threshold (1.10) vs super-threshold (1.20) tobramycin at fixed IPM
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   emits warnings for the covariates; they are expected and documented
   here.
-- **Single observation `Cc` carries log10 CFU/mL, not a drug
+- **Single observation `log_cfu` carries log10 CFU/mL, not a drug
   concentration.** nlmixr2lib’s single-output convention names the
-  observation `Cc`; the underlying quantity here is log10 of total
+  observation `log_cfu`; the underlying quantity here is log10 of total
   bacterial CFU/mL with a 1 CFU/mL floor (paper Fig. 1 legend: counts
   below 1.0 log10 CFU/mL were plotted as zero). The
   `units$concentration` metadata makes this explicit. The conventions

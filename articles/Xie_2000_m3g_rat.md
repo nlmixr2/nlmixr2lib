@@ -219,7 +219,7 @@ ggplot(vpc_sum, aes(time, Q50, colour = arm, fill = arm)) +
 # p1787 confirms blood CL and t_1/2 unchanged by probenecid).
 sim_typical |>
   filter(time > 0) |>
-  ggplot(aes(time, cu_pl, colour = arm)) +
+  ggplot(aes(time, Cc, colour = arm)) +
   geom_line(linewidth = 0.8) +
   labs(x = "Time (min)", y = "Unbound M3G in arterial plasma (uM)",
        title = "Plasma M3G typical-value trace (Model A reduction)",
@@ -245,9 +245,9 @@ probenecid and `0.17 / 1.15 = 0.1478` with probenecid – equal to Table
 end_inf <- sim_typical |>
   filter(time == 240) |>
   transmute(arm,
-            cu_pl,
+            Cc,
             cu_br_csf,
-            ratio = cu_br_csf / cu_pl)
+            ratio = cu_br_csf / Cc)
 
 knitr::kable(
   end_inf |> distinct(),
@@ -256,7 +256,7 @@ knitr::kable(
 )
 ```
 
-| arm                |   cu_pl | cu_br_csf |  ratio |
+| arm                |      Cc | cu_br_csf |  ratio |
 |:-------------------|--------:|----------:|-------:|
 | control            | 64.9662 |    6.2141 | 0.0957 |
 | probenecid (day 2) | 64.9662 |    9.6037 | 0.1478 |
@@ -276,7 +276,7 @@ effect: brain ECF half-life of 81 min is \>\> blood half-life of 22 min
 
 late <- sim_typical |>
   filter(time == 360) |>
-  transmute(arm, cu_pl, cu_br_csf, ratio = cu_br_csf / cu_pl)
+  transmute(arm, Cc, cu_br_csf, ratio = cu_br_csf / Cc)
 knitr::kable(
   late |> distinct(),
   digits = 4,
@@ -284,7 +284,7 @@ knitr::kable(
 )
 ```
 
-| arm                |  cu_pl | cu_br_csf |  ratio |
+| arm                |     Cc | cu_br_csf |  ratio |
 |:-------------------|-------:|----------:|-------:|
 | control            | 1.4811 |    0.1426 | 0.0963 |
 | probenecid (day 2) | 1.4811 |    0.2204 | 0.1488 |
@@ -336,10 +336,10 @@ Model A into a 1-compartment plasma surrogate (documented below).
   `sigma = 0.14`); the residual error attached to the arterial-venous
   Model A fit is not tabulated in the published paper. The packaged
   model therefore declares a residual-error model only on the brain ECF
-  observation. The plasma concentration `cu_pl` is computed for
-  diagnostic and simulation use but is not declared as an observation;
-  users who need an explicit plasma error model can add one but should
-  not treat the choice as paper-derived.
+  observation. The plasma concentration `Cc` is computed for diagnostic
+  and simulation use but is not declared as an observation; users who
+  need an explicit plasma error model can add one but should not treat
+  the choice as paper-derived.
 - **Single IIV magnitude on CL_u,in across treatment arms.** Table 3 of
   the paper reports two different inter-animal variabilities for
   CL_u,in: 49% in the without-probenecid pool (RSE 25%) and 20% in the

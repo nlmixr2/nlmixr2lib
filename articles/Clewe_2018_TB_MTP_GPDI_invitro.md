@@ -188,7 +188,7 @@ make_regimen <- function(id, regimen,
     time = times,
     amt  = 0,
     evid = 0L,
-    cmt  = "Cc",
+    cmt  = "log_cfu",
     CONC_RIF_MGL = conc_rif,
     CONC_INH_MGL = conc_inh,
     CONC_EMB_MGL = conc_emb,
@@ -568,7 +568,7 @@ Clinical-Cmax trio (RIF 2 + INH 10 + EMB 8 mg/L) over the 6-day window.
   `CONC_INH_MGL`, and `CONC_EMB_MGL` are not in
   `inst/references/covariate-columns.md` because the canonical
   concentration concept in nlmixr2lib is a state-derived plasma
-  concentration (`Cc`), not a static exogenous-drug-concentration
+  concentration (`log_cfu`), not a static exogenous-drug-concentration
   covariate used to drive an in vitro PD model. These covariates are
   scoped to this specific model.
 

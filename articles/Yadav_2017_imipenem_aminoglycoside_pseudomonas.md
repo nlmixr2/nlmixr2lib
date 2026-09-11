@@ -191,15 +191,15 @@ gc_one <- function(mname) {
   s <- rxode2::rxSolve(m, ev, method = "lsoda",
                        atol = 1e-10, rtol = 1e-10, maxsteps = 1e6,
                        returnType = "data.frame")
-  data.frame(model = mname, time = s$time, Cc = s$Cc, CFUall = s$CFUall)
+  data.frame(model = mname, time = s$time, log_cfu = s$log_cfu, CFUall = s$CFUall)
 }
 gc <- do.call(rbind, lapply(yadav_models, gc_one))
 
 gc_tab <- gc |>
   group_by(model) |>
   summarise(
-    log10cfu0_sim     = round(first(Cc), 2),
-    log10cfumax_sim   = round(max(Cc), 2),
+    log10cfu0_sim     = round(first(log_cfu), 2),
+    log10cfumax_sim   = round(max(log_cfu), 2),
     .groups = "drop"
   )
 knitr::kable(gc_tab,
@@ -220,7 +220,7 @@ log10cfumax by 48 h. {.table}
 ``` r
 
 
-ggplot(gc, aes(time, Cc, colour = model)) +
+ggplot(gc, aes(time, log_cfu, colour = model)) +
   geom_line(linewidth = 0.8) +
   labs(x = "Time (h)", y = expression(log[10]~CFU/mL),
        title = "Antibiotic-free growth from inoculum to carrying capacity",

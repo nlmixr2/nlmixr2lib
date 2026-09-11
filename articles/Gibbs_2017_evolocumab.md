@@ -395,7 +395,7 @@ mod
 #>     ldl       ~ add(addSd_ldl) + prop(propSd_ldl)
 #>   })
 #> }
-#> <environment: 0x55a0bff2b260>
+#> <environment: 0x55fbe16fe0c8>
 ```
 
 Equation 5 is the positive root of the one-to-one QSS binding quadratic.

@@ -393,7 +393,7 @@ First-order degradation of PEN and CXM matches the paper’s kdeg values.
   variability is encoded here.
 
 - **Observation floor**: the observation
-  `Cc = log10(bact_susceptible + bact_resting + 1e-6)` includes a small
-  floor to avoid log10(0) if the ODE integrator drives the total to
-  numerical zero at high antibiotic exposure. This does not affect any
-  simulation above the paper’s 10 CFU/mL limit of detection.
+  `log_cfu = log10(bact_susceptible + bact_resting + 1e-6)` includes a
+  small floor to avoid log10(0) if the ODE integrator drives the total
+  to numerical zero at high antibiotic exposure. This does not affect
+  any simulation above the paper’s 10 CFU/mL limit of detection.

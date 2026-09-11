@@ -854,7 +854,7 @@ exercise and is **not** carried by any model file. The accounting:
   (`Cc` is expected for drug-concentration outputs). The endpoint here
   is a dimensionless fold-induction ratio, not a concentration; naming
   it `Cc` would misstate what the model observes. This follows the
-  precedent set by `Mukker_2026_tuvusertib_hERG.R`, whose `hergInh`
+  precedent set by `Mukker_2026_tuvusertib_hERG.R`, whose `herg_inh`
   output carries the same accepted warning.
 - **`CP_RIF_UM` is reused for three distinct senses of “rifampicin
   concentration”.** The register entry was founded on an instantaneous

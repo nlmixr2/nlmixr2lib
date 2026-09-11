@@ -278,12 +278,20 @@ Venisse 2008 Table 2 typical values vs. packaged-file values. {.table}
 
 ## Assumptions and deviations
 
-- **Single-output observation on `Cc`**. The nlmixr2lib convention names
-  the model’s primary observation `Cc`. For both Venisse models `Cc` is
-  the natural log of the Candida CFU/mL count (with a +1 floor to avoid
-  log(0) under saturating caspofungin), not a drug concentration. The
-  drug concentration is the derived quantity `cc <- central / vc` and is
-  not observed.
+- **The single observation is a fungal burden, not a concentration.**
+  For both Venisse models the observed output is the natural log of the
+  Candida CFU/mL count (with a +1 floor to avoid log(0) under saturating
+  caspofungin), and it is named `log_cfu`, the registered canonical for
+  a log CFU PD output. The drug concentration is `Cc <- central / vc`,
+  the registered canonical for a central-compartment concentration, and
+  is not observed.
+
+  These two names were previously swapped: `Cc` held the fungal burden
+  and the drug concentration was the near-homographic `cc`. That
+  mis-stated the convention – `Cc` denotes the central drug
+  concentration whether or not it is the observed output – and left the
+  two quantities distinguishable only by letter case.
+
 - **NONMEM exponential residual mapped to additive on log scale**. The
   paper reports the residual as “exponential” with the variance
   summarised as a percent CV on the linear CFU/mL scale (Table 2: 197%
@@ -291,21 +299,25 @@ Venisse 2008 Table 2 typical values vs. packaged-file values. {.table}
   additive residual on the natural-log-transformed observation; the SD
   is `sqrt(log(CV^2 + 1))`. Both files document the conversion inline
   next to `addSd`.
+
 - **Eta on Emax in caspofungin only**. The paper’s joint fit gave
   `eta(Nmax) = 225% CV` (shared between drugs) and `eta(Emax) = 65% CV`
   (caspofungin-specific). The fluconazole file therefore carries only
   `etalnmax`; the caspofungin file carries `etalnmax` + `etalemax`. No
   IIV was estimated on Imax, IC50, EC50, Kg, or Kd, so none is added
   here.
+
 - **Initial inoculum 5e3 CFU/mL at t = 0**. The paper’s experimental
   timeline starts at inoculation, with drug introduced 4 h later. The
   model files anchor `candida(0) = 5000` at simulation time 0; the
   vignette dosing schedule introduces the drug at t = 4 h to reproduce
   the experimental timing.
+
 - **No covariates**. Both files declare `covariateData <- list()`. The
   Venisse experiments are typical-value in vitro with replicate
   experimental variability captured by the etas; no subject-level
   covariates are reported or relevant.
+
 - **`Imax < 1` is a paper-specific structural finding**. The paper’s
   Discussion paragraph 4 notes that even at fluconazole concentrations
   exceeding the MIC by \> 200-fold, Candida growth was not fully

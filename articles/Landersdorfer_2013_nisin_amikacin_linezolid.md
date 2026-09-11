@@ -121,7 +121,7 @@ crossings.
 | `kc50`, `ic50_prot`, `ic50_k12` | half-effect concentrations | mg/L |
 | `REP`, `Fami`, `inh_k12`, `inh_rep`, `prot_pool` | dimensionless |  |
 | `cfumax`, `total0` | population scale / inoculum | CFU/mL |
-| `Cc` | observation | log10 CFU/mL |
+| `log_cfu` | observation | log10 CFU/mL |
 
 Every bacterial-state ODE term has units
 `(1/h) * (CFU/mL) = (CFU/mL)/h`, matching `d/dt(state)`. The nisin
@@ -220,18 +220,18 @@ ev_nl <- et(time = times) |>
   mutate(Cnis = 0, Clin = 0)
 gc_nl <- rxode2::rxSolve(mod_nl, ev_nl, returnType = "data.frame", maxsteps = 1e5)
 
-cat(sprintf("nisin+amikacin: Cc(0) = %.3f log10 CFU/mL (Table 1: 7.89); Cc(48) = %.3f (target ~= log10CFUmax = 9.23)\n",
-            gc_na$Cc[1], tail(gc_na$Cc, 1)))
-#> nisin+amikacin: Cc(0) = 7.890 log10 CFU/mL (Table 1: 7.89); Cc(48) = 9.230 (target ~= log10CFUmax = 9.23)
-cat(sprintf("nisin+linezolid: Cc(0) = %.3f log10 CFU/mL (Table 1: 7.88); Cc(48) = %.3f (target ~= log10CFUmax = 9.38)\n",
-            gc_nl$Cc[1], tail(gc_nl$Cc, 1)))
-#> nisin+linezolid: Cc(0) = 7.880 log10 CFU/mL (Table 1: 7.88); Cc(48) = 9.380 (target ~= log10CFUmax = 9.38)
+cat(sprintf("nisin+amikacin: log_cfu(0) = %.3f log10 CFU/mL (Table 1: 7.89); log_cfu(48) = %.3f (target ~= log10CFUmax = 9.23)\n",
+            gc_na$log_cfu[1], tail(gc_na$log_cfu, 1)))
+#> nisin+amikacin: log_cfu(0) = 7.890 log10 CFU/mL (Table 1: 7.89); log_cfu(48) = 9.230 (target ~= log10CFUmax = 9.23)
+cat(sprintf("nisin+linezolid: log_cfu(0) = %.3f log10 CFU/mL (Table 1: 7.88); log_cfu(48) = %.3f (target ~= log10CFUmax = 9.38)\n",
+            gc_nl$log_cfu[1], tail(gc_nl$log_cfu, 1)))
+#> nisin+linezolid: log_cfu(0) = 7.880 log10 CFU/mL (Table 1: 7.88); log_cfu(48) = 9.380 (target ~= log10CFUmax = 9.38)
 
 bind_rows(
   mutate(gc_na, model = "Nisin + amikacin"),
   mutate(gc_nl, model = "Nisin + linezolid")
 ) |>
-  ggplot(aes(time, Cc, colour = model)) +
+  ggplot(aes(time, log_cfu, colour = model)) +
   geom_line(linewidth = 1) +
   geom_hline(data = data.frame(model = c("Nisin + amikacin", "Nisin + linezolid"),
                                 cap = c(9.23, 9.38)),
@@ -319,7 +319,7 @@ sims_na <- bind_rows(
   sim_static_na(32, 16, "Nisin 32 + Amikacin 16")
 )
 
-ggplot(sims_na, aes(time, Cc, colour = regimen)) +
+ggplot(sims_na, aes(time, log_cfu, colour = regimen)) +
   geom_line(linewidth = 0.8) +
   facet_wrap(~regimen) +
   scale_x_continuous(breaks = seq(0, 48, by = 12)) +
@@ -362,7 +362,7 @@ seq_na <- bind_rows(
   sim_seq_na(32, 16, "Nisin 32 -> Amikacin 16")
 )
 
-ggplot(seq_na, aes(time, Cc, colour = regimen)) +
+ggplot(seq_na, aes(time, log_cfu, colour = regimen)) +
   geom_line(linewidth = 0.8) +
   geom_vline(xintercept = 1.75, linetype = 3, colour = "grey60") +
   labs(x = "Time (h)", y = expression(log[10]~CFU/mL),
@@ -401,7 +401,7 @@ sims_nl <- bind_rows(
   sim_static_nl(32, 32, "Nisin 32 + Linezolid 32")
 )
 
-ggplot(sims_nl, aes(time, Cc, colour = regimen)) +
+ggplot(sims_nl, aes(time, log_cfu, colour = regimen)) +
   geom_line(linewidth = 0.8) +
   facet_wrap(~regimen) +
   scale_x_continuous(breaks = seq(0, 48, by = 12)) +
@@ -436,10 +436,10 @@ cfumax_na <- 10^9.23
 cfumax_nl <- 10^9.38
 
 cat(sprintf("Nisin + amikacin: end-of-run CFUall = %.3g, log10 = %.3f (target log10CFUmax = 9.23)\n",
-            10^tail(gc_na$Cc, 1) - 1, log10(10^tail(gc_na$Cc, 1) - 1)))
+            10^tail(gc_na$log_cfu, 1) - 1, log10(10^tail(gc_na$log_cfu, 1) - 1)))
 #> Nisin + amikacin: end-of-run CFUall = 1.7e+09, log10 = 9.230 (target log10CFUmax = 9.23)
 cat(sprintf("Nisin + linezolid: end-of-run CFUall = %.3g, log10 = %.3f (target log10CFUmax = 9.38)\n",
-            10^tail(gc_nl$Cc, 1) - 1, log10(10^tail(gc_nl$Cc, 1) - 1)))
+            10^tail(gc_nl$log_cfu, 1) - 1, log10(10^tail(gc_nl$log_cfu, 1) - 1)))
 #> Nisin + linezolid: end-of-run CFUall = 2.4e+09, log10 = 9.380 (target log10CFUmax = 9.38)
 ```
 
@@ -505,9 +505,9 @@ cat(sprintf("Nisin + linezolid: end-of-run CFUall = %.3g, log10 = %.3f (target l
   simultaneous combinations are constant covariates throughout. Both
   implementations match the experimental design exactly.
 - **Below limit of counting.** Displayed counts are floored at 1 CFU/mL
-  (i.e. 0 log10) via `Cc = log10(CFUall + 1)`, matching the experimental
-  limit of counting (paper Figs 5-6: zero colonies plotted as 0 log10
-  CFU/mL).
+  (i.e. 0 log10) via `log_cfu = log10(CFUall + 1)`, matching the
+  experimental limit of counting (paper Figs 5-6: zero colonies plotted
+  as 0 log10 CFU/mL).
 - **Convention deviations**
   ([`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   info-only, no errors or warnings). The bacterial-state compartments
@@ -517,7 +517,7 @@ cat(sprintf("Nisin + linezolid: end-of-run CFUall = %.3g, log10 = %.3f (target l
   `Clin`) are declared via the `depends` field (in-vitro experimental
   inputs, not human pop-PK covariates); the `prot_pool` compartment
   (linezolid model only) is declared via `paper_specific_compartments`;
-  the single observation `Cc` carries log10 viable count and the
+  the single observation `log_cfu` carries log10 viable count and the
   dosing/concentration units in `units` are both `mg/L` because the
   antibiotic input is a fixed broth concentration in the in-vitro static
   time-kill system.

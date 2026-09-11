@@ -131,7 +131,7 @@ deviations section for justification of the non-canonical names):
 | `van` | mg/L | vancomycin bath concentration (first-order decay) |
 | `aroff_mer`, `aron_mer` | fraction | MER adaption-resistance flip-flop (Eq. 5-6 analog) |
 | `aroff_van`, `aron_van` | fraction | VAN adaption-resistance flip-flop (Eq. 12-13) |
-| `Cc` | log10 CFU/mL | observation: log10 of total bacterial concentration |
+| `log_cfu` | log10 CFU/mL | observation: log10 of total bacterial concentration |
 
 ## Helper: build a time-kill scenario
 
@@ -194,11 +194,11 @@ panels <- panels |>
     levels = c("GC", "L4", "L16", "M0.5", "M4", "M64",
                "V0.5", "V4", "L4M4", "V0.5M1", "V4M4")))
 
-ggplot(panels, aes(time, Cc)) +
+ggplot(panels, aes(time, log_cfu)) +
   geom_line(color = "firebrick", linewidth = 0.6) +
   facet_wrap(~ scenario, ncol = 6) +
   scale_y_continuous(limits = c(0, 11), breaks = seq(0, 10, 2)) +
-  labs(x = "Time (h)", y = "log10 CFU/mL (Cc)",
+  labs(x = "Time (h)", y = "log10 CFU/mL (log_cfu)",
        caption = "Replicates the typical-value (median) overlay shown in red in Wicha 2017 Figure 2.")
 ```
 
@@ -211,11 +211,11 @@ ggplot(panels, aes(time, Cc)) +
 
 ``` r
 
-gc <- panels |> filter(scenario == "GC") |> select(time, Cc)
-sprintf("GC at 0 h: log10 CFU/mL = %.2f", gc$Cc[gc$time == 0])
+gc <- panels |> filter(scenario == "GC") |> select(time, log_cfu)
+sprintf("GC at 0 h: log10 CFU/mL = %.2f", gc$log_cfu[gc$time == 0])
 #> [1] "GC at 0 h: log10 CFU/mL = 6.06"
 sprintf("GC at 24 h: log10 CFU/mL = %.2f (paper CFUmax = 9.43)",
-        gc$Cc[gc$time == 24])
+        gc$log_cfu[gc$time == 24])
 #> [1] "GC at 24 h: log10 CFU/mL = 9.43 (paper CFUmax = 9.43)"
 ```
 
@@ -250,8 +250,8 @@ reflect the weaker kill at M64 relative to M4.
 
 panels |>
   filter(scenario %in% c("M0.5", "M4", "M64"), time == 24) |>
-  select(scenario, Cc)
-#>   scenario        Cc
+  select(scenario, log_cfu)
+#>   scenario   log_cfu
 #> 1     M0.5 9.4296716
 #> 2       M4 0.8571723
 #> 3      M64 1.5790694
@@ -267,8 +267,8 @@ than like M4 (rapid bactericidal kill).
 
 panels |>
   filter(scenario %in% c("L4", "M4", "L4M4"), time == 24) |>
-  select(scenario, Cc)
-#>   scenario        Cc
+  select(scenario, log_cfu)
+#>   scenario   log_cfu
 #> 1       L4 5.3723389
 #> 2       M4 0.8571723
 #> 3     L4M4 4.7932809
@@ -284,8 +284,8 @@ the success-fraction collapses to the VAN-only factor.
 
 panels |>
   filter(scenario %in% c("M4", "V4", "V4M4"), time == 24) |>
-  select(scenario, Cc)
-#>   scenario        Cc
+  select(scenario, log_cfu)
+#>   scenario   log_cfu
 #> 1       M4 0.8571723
 #> 2       V4 0.4626403
 #> 3     V4M4 1.3295384
@@ -302,10 +302,10 @@ ari <- bind_rows(
   build_scenario("M1",     cmer = 1 * MIC[["MER"]]),
   build_scenario("V0.5M1", cvan = 0.5 * MIC[["VAN"]], cmer = 1 * MIC[["MER"]]))
 
-ggplot(ari, aes(time, Cc, color = scenario)) +
+ggplot(ari, aes(time, log_cfu, color = scenario)) +
   geom_line(linewidth = 0.7) +
   scale_y_continuous(limits = c(0, 11), breaks = seq(0, 10, 2)) +
-  labs(x = "Time (h)", y = "log10 CFU/mL (Cc)", color = NULL,
+  labs(x = "Time (h)", y = "log10 CFU/mL (log_cfu)", color = NULL,
        caption = "Wicha 2017 Figure 2 M1 vs V0.5M1: sub-MIC VAN suppresses MER adaption regrowth.")
 ```
 
@@ -324,9 +324,9 @@ ggplot(ari, aes(time, Cc, color = scenario)) +
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   emits compartment-name warnings; they are expected and documented
   here.
-- **Single observation `Cc` carries log10 CFU/mL, not a drug
+- **Single observation `log_cfu` carries log10 CFU/mL, not a drug
   concentration.** nlmixr2lib’s single-output convention names the
-  observation `Cc`; the underlying quantity here is log10 of total
+  observation `log_cfu`; the underlying quantity here is log10 of total
   bacterial CFU/mL. The `units$concentration` metadata makes this
   explicit (“log10 CFU/mL (observation)”). The conventions linter warns
   that `units$dosing` (mg/L) and the observation numerator (log10 CFU)

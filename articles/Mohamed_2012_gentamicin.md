@@ -216,13 +216,13 @@ ev_gc <- rxode2::et(seq(0, 24, by = 0.25))
 gc <- rxode2::rxSolve(mod, ev_gc, returnType = "data.frame", maxsteps = 1e5)
 
 cat(sprintf("Inoculum  ln(CFU/mL)   = %.3f  (S(0) = %.2e)\n",
-            gc$Cc[1], 4.83e5))
+            gc$log_cfu[1], 4.83e5))
 #> Inoculum  ln(CFU/mL)   = 13.088  (S(0) = 4.83e+05)
 cat(sprintf("Plateau   ln(CFU/mL)   = %.3f  (B_max = 8.26e8, ln = %.3f)\n",
-            tail(gc$Cc, 1), log(8.26e8)))
+            tail(gc$log_cfu, 1), log(8.26e8)))
 #> Plateau   ln(CFU/mL)   = 20.409  (B_max = 8.26e8, ln = 20.532)
 
-ggplot(gc, aes(time, Cc / log(10))) +
+ggplot(gc, aes(time, log_cfu / log(10))) +
   geom_line(linewidth = 1) +
   geom_hline(yintercept = log10(8.26e8), linetype = 2, colour = "grey50") +
   labs(x = "Time (h)", y = expression(log[10]~CFU/mL),
@@ -484,7 +484,7 @@ ggplot(ar_run, aes(time)) +
   adaptive-resistance (`ar_off`, `ar_on`), and gentamicin-concentration
   (`cgent`) compartments are paper-mechanistic, declared via
   `paper_specific_compartment_pattern`;
-  2.  the single observation `Cc` carries a non-PK output (natural log
-      of total viable count, not a drug concentration); (c) the
+  2.  the single observation `log_cfu` carries a non-PK output (natural
+      log of total viable count, not a drug concentration); (c) the
       dosing/concentration units are both `mg/L` because the antibiotic
       input is a concentration in the in-vitro system.

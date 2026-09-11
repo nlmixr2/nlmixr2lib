@@ -267,7 +267,7 @@ events_cohort <- fig5 |>
 # Join on `id`, not on AUC_ANDRO: joining on a floating-point covariate that
 # has round-tripped through the solver is a needless footgun.
 sim_cohort <- solve_er(ui, events_cohort) |>
-  select(id, predicted = viralLoadReduction) |>
+  select(id, predicted = viral_loadReduction) |>
   left_join(mutate(fig5, id = row_number()), by = "id")
 
 stopifnot(nrow(sim_cohort) == 12L, !anyNA(sim_cohort$predicted))
@@ -285,7 +285,7 @@ curve <- solve_er(
   ui,
   data.frame(id = seq_along(grid_auc), time = 0, evid = 0L, AUC_ANDRO = grid_auc)
 ) |>
-  select(AUC_ANDRO, predicted = viralLoadReduction)
+  select(AUC_ANDRO, predicted = viral_loadReduction)
 ```
 
 ## Validation
@@ -331,7 +331,7 @@ anchors <- solve_er(
 ) |>
   transmute(
     anchor = c("lower asymptote (AUC = 0)", "at EAUC50", "plateau (saturating)"),
-    predicted = viralLoadReduction,
+    predicted = viral_loadReduction,
     figure5 = c(1.81, 2.93, 4.05)
   )
 
@@ -456,7 +456,7 @@ rep_events <- tidyr::expand_grid(replicate = 1:50, fig5) |>
   select(id, time, evid, AUC_ANDRO)
 
 rep_sim <- solve_er(ui, rep_events)
-sd_sim <- sd(rep_sim$sim - rep_sim$viralLoadReduction)
+sd_sim <- sd(rep_sim$sim - rep_sim$viral_loadReduction)
 c(addSd_encoded = addSd_encoded, sd_of_simulated_residuals = sd_sim)
 #>             addSd_encoded sd_of_simulated_residuals 
 #>                  1.245000                  1.208808
@@ -720,10 +720,10 @@ this package, which contains no PK model. {.table}
   file and this vignette use the Table 3 convention
   (`-log10 copies/uL`).
 - **Convention-lint deviation: the observation variable is
-  `viralLoadReduction`.**
+  `viral_loadReduction`.**
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   warns that this is not a registered single-output canonical. The
-  registered `viralLoad` name is not appropriate – the endpoint is a
+  registered `viral_load` name is not appropriate – the endpoint is a
   *change from baseline* between two days, not a viral load, and the
   model has no baseline load from which one could be reconstructed
   (per-subject baselines in Table 3 span 541 to 4.4e6 copies/uL). The
@@ -731,7 +731,7 @@ this package, which contains no PK model. {.table}
   as other change-from-baseline single-output models already in the
   library (`Morganroth_2015_moxifloxacin.R` with `DDQTcF`,
   `Gong_2023_pemigatinib_creatinine.R` with `creatPctChange`). Promoting
-  a `viralLoadReduction` canonical is left to the operator.
+  a `viral_loadReduction` canonical is left to the operator.
 - **No PK layer, and therefore no PKNCA validation.** See “What this
   paper contributes, and what it does not”. Downstream users must supply
   `AUC_ANDRO` from observed concentrations or from an external

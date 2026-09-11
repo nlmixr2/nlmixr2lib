@@ -168,7 +168,7 @@ the static and dynamic systems and reached ~10^9 CFU/mL by ~10-12 h.
 mod <- mods[["benzylpenicillin"]]
 ev_gc <- rxode2::et(seq(0, 24, by = 0.5))
 gc <- rxode2::rxSolve(mod, ev_gc, returnType = "data.frame", maxsteps = 1e5)
-gc$btot <- exp(gc$Cc) - 1   # natural-log Cc -> CFU/mL
+gc$btot <- exp(gc$log_cfu) - 1   # natural-log log_cfu -> CFU/mL
 
 cat(sprintf("Inoculum  CFU(0)  = %.3e  (target 1.0e+06)\n", gc$btot[1]))
 #> Inoculum  CFU(0)  = 1.000e+06  (target 1.0e+06)
@@ -212,7 +212,7 @@ run_static <- function(drug, mult_mic) {
   sim$drug <- drug
   sim$abbrev <- abbrev[match(drug, drugs)]
   sim$mult_mic <- mult_mic
-  sim$btot <- exp(sim$Cc) - 1
+  sim$btot <- exp(sim$log_cfu) - 1
   sim
 }
 
@@ -267,7 +267,7 @@ run_dynamic <- function(drug, mult_mic, kinetic_mode) {
   sim$abbrev <- abbrev[match(drug, drugs)]
   sim$mode <- kinetic_mode
   sim$mult_mic <- mult_mic
-  sim$btot <- exp(sim$Cc) - 1
+  sim$btot <- exp(sim$log_cfu) - 1
   sim
 }
 

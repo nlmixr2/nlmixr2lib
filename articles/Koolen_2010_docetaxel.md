@@ -241,12 +241,12 @@ sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = arms |>
 #> ℹ omega/sigma items treated as zero: 'etalcli0', 'etalvc_iv', 'etalvc_po', 'etalmat', 'etalfdepot', 'etalki'
 #> Warning: multi-subject simulation without without 'omega'
 
-# Median CL and median crtv across subjects at each time.
+# Median CL and median Cc_rtv across subjects at each time.
 cl_curve <- sim_typ |>
   dplyr::filter(time >= 0) |>
   dplyr::group_by(time) |>
   dplyr::summarise(cl_median  = median(cl,   na.rm = TRUE),
-                   rtv_median = median(crtv, na.rm = TRUE),
+                   rtv_median = median(Cc_rtv, na.rm = TRUE),
                    .groups    = "drop")
 
 cl_max_unboost <- 80 * 113 / (80 + 113)  # CL when [RTV] = 0

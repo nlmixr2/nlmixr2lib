@@ -8,12 +8,12 @@
 - Article: <https://doi.org/10.1208/s12248-011-9293-6>
 
 This is a **disease-progression model** for the change from baseline in
-total Unified Parkinson’s Disease Rating Scale (UPDRS) score
-(`deltaUPDRS`) over study time in early Parkinson’s disease, fit by Lee
-and Gobburu (2011) as the worked example of a Bayesian
-disease-drug-trial methodology paper. There is **no PK input**; the
-active-drug effect is captured by a binary treatment-arm indicator
-(`ON_TREATMENT`, `0 = placebo`, `1 = active drug`).
+total Unified Parkinson’s Disease Rating Scale (UPDRS) score (`d_updrs`)
+over study time in early Parkinson’s disease, fit by Lee and Gobburu
+(2011) as the worked example of a Bayesian disease-drug-trial
+methodology paper. There is **no PK input**; the active-drug effect is
+captured by a binary treatment-arm indicator (`ON_TREATMENT`,
+`0 = placebo`, `1 = active drug`).
 
 The structural model (Lee 2011 equation 1) is
 
@@ -169,7 +169,7 @@ sim_typical <- sim_typical |>
     arm = ifelse(ON_TREATMENT == 1, "Rasagiline (active)", "Placebo")
   )
 
-ggplot(sim_typical, aes(time, deltaUPDRS, colour = arm)) +
+ggplot(sim_typical, aes(time, d_updrs, colour = arm)) +
   geom_line(linewidth = 0.9) +
   geom_hline(yintercept = 0, linetype = "dotted", colour = "grey50") +
   labs(x = "Study time (4-week months)",
@@ -199,13 +199,13 @@ We can quote the paper’s numerical anchor directly:
 
 end_of_study <- sim_typical |>
   dplyr::filter(abs(time - 6.5) < 1e-9) |>
-  dplyr::select(arm, deltaUPDRS) |>
-  dplyr::mutate(deltaUPDRS = round(deltaUPDRS, 3))
+  dplyr::select(arm, d_updrs) |>
+  dplyr::mutate(d_updrs = round(d_updrs, 3))
 
 end_of_study |>
   dplyr::rename(
     "Arm"                                                       = arm,
-    "Predicted change from baseline UPDRS at week 26 (= 6.5 mo)" = deltaUPDRS
+    "Predicted change from baseline UPDRS at week 26 (= 6.5 mo)" = d_updrs
   ) |>
   knitr::kable(
   caption = "Reproduction of Lee 2011 Results section anchor (placebo published as 3.62)."
@@ -325,16 +325,16 @@ week26_distribution <- sim_vpc |>
   dplyr::filter(abs(time - 6.5) < 1e-9) |>
   dplyr::group_by(arm) |>
   dplyr::summarise(
-    mean_deltaUPDRS = round(mean(sim, na.rm = TRUE), 2),
-    sd_deltaUPDRS   = round(sd(sim, na.rm = TRUE),   2),
+    mean_d_updrs = round(mean(sim, na.rm = TRUE), 2),
+    sd_d_updrs   = round(sd(sim, na.rm = TRUE),   2),
     n_subjects      = dplyr::n(),
     .groups = "drop"
   )
 week26_distribution |>
   dplyr::rename(
     "Arm"                         = arm,
-    "Mean delta-UPDRS at week 26" = mean_deltaUPDRS,
-    "SD"                          = sd_deltaUPDRS,
+    "Mean delta-UPDRS at week 26" = mean_d_updrs,
+    "SD"                          = sd_d_updrs,
     "N subjects"                  = n_subjects
   ) |>
   knitr::kable(
@@ -455,7 +455,7 @@ sim_sets <- dplyr::bind_rows(
 #> ℹ omega/sigma items treated as zero: 'etaslope', 'etasymeff'
 #> Warning: multi-subject simulation without without 'omega'
 
-ggplot(sim_sets, aes(time, deltaUPDRS, colour = parameter_set, linetype = arm)) +
+ggplot(sim_sets, aes(time, d_updrs, colour = parameter_set, linetype = arm)) +
   geom_line(linewidth = 0.8) +
   geom_hline(yintercept = 0, linetype = "dotted", colour = "grey50") +
   labs(x = "Study time (4-week months)",

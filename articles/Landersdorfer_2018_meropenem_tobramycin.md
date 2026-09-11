@@ -211,10 +211,10 @@ ev_gc <- as.data.frame(et(seq(0, 96, by = 1)))
 gc <- bind_rows(
   rxode2::rxSolve(pao1,   ev_gc, returnType = "data.frame",
                   maxsteps = 1e6, method = "dop853") |>
-    transmute(time, log10CFU = Cc, strain = "PAO1"),
+    transmute(time, log10CFU = log_cfu, strain = "PAO1"),
   rxode2::rxSolve(paomut, ev_gc, returnType = "data.frame",
                   maxsteps = 1e6, method = "dop853") |>
-    transmute(time, log10CFU = Cc, strain = "PAOdelta-mutS")
+    transmute(time, log10CFU = log_cfu, strain = "PAOdelta-mutS")
 )
 
 cat(sprintf("PAO1   log10CFU(0)=%.3f  log10CFU(96)=%.3f  (expected approach CFUmax=9.57)\n",
@@ -352,7 +352,7 @@ sim_sctk <- function(mod, mem_nom, tob_nom, obs_times = c(0,1,3,6,24,29,48,72,96
   rxode2::rxSolve(mod, events, returnType = "data.frame",
                   maxsteps = 1e6, method = "dop853") |>
     filter(time %in% obs_times) |>
-    select(time, Cc, cmem, ctob)
+    select(time, log_cfu, cmem, ctob)
 }
 
 regimens <- list(
@@ -378,7 +378,7 @@ sctk_all <- bind_rows(lapply(names(regimens), function(rg) {
 }))
 sctk_all$regimen <- factor(sctk_all$regimen, levels = names(regimens))
 
-ggplot(sctk_all, aes(time, Cc, colour = strain)) +
+ggplot(sctk_all, aes(time, log_cfu, colour = strain)) +
   geom_line(linewidth = 0.7) +
   geom_hline(yintercept = log10(100), linetype = 3, colour = "grey60") +
   facet_wrap(~ regimen, ncol = 3) +

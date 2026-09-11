@@ -203,7 +203,7 @@ pk_long <- do.call(rbind, lapply(seq_len(nrow(pk_runs)), function(i) {
     regimen = regimen,
     time    = sim$time,
     c_poly  = sim$central / v,
-    cfu_log = sim$Cc,
+    cfu_log = sim$log_cfu,
     stringsAsFactors = FALSE
   )
 }))
@@ -398,8 +398,8 @@ approximations (also recorded in each model file’s `ini()` comments).
   standing text-vs-equation policy).
 - **Equation 12 (drug-containing agar)** is NOT encoded as a separate
   observed output. The packaged model emits the drug-free agar viable
-  count Cc = log10(CFU_S + CFU_R + 1) per Eq 11. Reviewers who want to
-  reproduce the per-strain population-analysis-profile (PAP)
+  count `log_cfu` = log10(CFU_S + CFU_R + 1) per Eq 11. Reviewers who
+  want to reproduce the per-strain population-analysis-profile (PAP)
   observations on 6.6 mg/L polymyxin B agar can compute Eq 12 post-hoc
   from rxSolve output: `CFU_S * exp(-24 * Kill) + CFU_R`, with Kill held
   at its value at the time of sampling.

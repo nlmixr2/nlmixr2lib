@@ -208,7 +208,7 @@ fig1_df$mic_label <- factor(fig1_df$mic_label, levels = isolate_meta$mic_label)
 fig1_df$mult_label <- factor(sprintf("%g x MIC", fig1_df$mic_mult),
                              levels = sprintf("%g x MIC", mult_levels))
 
-ggplot(fig1_df, aes(time, Cc, colour = mult_label)) +
+ggplot(fig1_df, aes(time, log_cfu, colour = mult_label)) +
   geom_line(linewidth = 0.6) +
   facet_wrap(~mic_label, ncol = 1) +
   scale_x_continuous(breaks = seq(0, 24, by = 4)) +

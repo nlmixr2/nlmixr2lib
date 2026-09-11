@@ -98,7 +98,7 @@ parameter group.
 | Time-varying IC50 / resistance (`ic50_dcv`, `ic50_asv`) | Wang 2018 Eq 11; Table 4 Kr coefficients (genotype-specific for DCV). |
 | Genotype scaling (`scl_ic50_dcv`, `scl_ic50_asv`) | Wang 2018 Table 4 (SCL_IC50 = GT1B / GT1A ratio, both FIXED to preclinical-replicon values). |
 | Combination efficacy (`e_total`) | Wang 2018 Eq 13 (Bliss-additive form on E / (1 - E)). |
-| Viral-load residual error (Eq 12; `addSd_Vlog10`) | Wang 2018 Eq 12 (additive on log10 viral load); Table 4 sigma^2_DCV and sigma^2_ASV averaged. |
+| Viral-load residual error (Eq 12; `addSd_log10_viral_load`) | Wang 2018 Eq 12 (additive on log10 viral load); Table 4 sigma^2_DCV and sigma^2_ASV averaged. |
 | Fixed VD constants (Tmax, d, R0, delta) | Wang 2018 Table 4 (rows marked FIX), with the underlying values from Neumann et al 1998 Science 282(5386):103-107 (Wang 2018 reference \[15\]). |
 | Derived VD constants (s = d x Tmax; beta = R0 x delta x c / (p x Tmax)) | Wang 2018 steady-state derivation; s from dT/dt = 0 at pre-infection steady state, beta from definition of R0. |
 
@@ -190,7 +190,7 @@ make_dose_table <- function(days = 14L,
   bind_rows(dcv_rows, asv_first_order, asv_zero_order)
 }
 
-make_obs_grid <- function(days_total, outputs = c("Cc", "Cc_asv", "Vlog10")) {
+make_obs_grid <- function(days_total, outputs = c("Cc", "Cc_asv", "log10_viral_load")) {
   # Dense PK grid early; daily for viral-load follow-up.
   obs_times <- sort(unique(c(
     seq(0, 1, by = 0.05),         # 0-24h, every ~1.2 h (PK Cmax)
@@ -219,7 +219,7 @@ glimpse(events)
 #> Rows: 190
 #> Columns: 8
 #> $ time            <dbl> 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.05, 0.05, 0.05, …
-#> $ cmt             <chr> "Cc", "Cc_asv", "Vlog10", "central_asv", "depot", "dep…
+#> $ cmt             <chr> "Cc", "Cc_asv", "log10_viral_load", "central_asv", "de…
 #> $ amt             <dbl> 0, 0, 0, 100, 60, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 #> $ rate            <dbl> 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
 #> $ evid            <int> 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
@@ -240,7 +240,7 @@ sim_primary <- rxode2::rxSolve(mod_typ, events = events) |>
 
 # Tidy: pick canonical observation rows (cmt == name of output variable)
 sim_long <- sim_primary |>
-  select(time, Cc, Cc_asv, Vlog10, target, infected, virus) |>
+  select(time, Cc, Cc_asv, log10_viral_load, target, infected, virus) |>
   distinct()
 
 knitr::kable(head(sim_long, 8),
@@ -248,16 +248,16 @@ knitr::kable(head(sim_long, 8),
              digits = c(2, 2, 3, 3, 0, 0, 0))
 ```
 
-| time |     Cc | Cc_asv | Vlog10 |  target | infected |   virus |
-|-----:|-------:|-------:|-------:|--------:|---------:|--------:|
-| 0.00 |   0.00 |  0.000 |  6.396 | 2587413 |   343437 | 2491603 |
-| 0.05 | 925.59 |  5.931 |  6.212 | 2587658 |   343192 | 1629866 |
-| 0.10 | 978.21 | 10.260 |  5.798 | 2589032 |   341824 |  627918 |
-| 0.15 | 855.79 |  9.714 |  5.372 | 2591035 |   339839 |  235630 |
-| 0.20 | 720.35 |  8.688 |  4.951 | 2593276 |   337629 |   89347 |
-| 0.25 | 604.57 |  7.865 |  4.544 | 2595607 |   335346 |   35008 |
-| 0.30 | 511.07 |  7.195 |  4.167 | 2597970 |   333046 |   14690 |
-| 0.35 | 436.42 |  6.642 |  3.843 | 2600345 |   330749 |    6970 |
+| time |     Cc | Cc_asv | log10_viral_load |  target | infected |   virus |
+|-----:|-------:|-------:|-----------------:|--------:|---------:|--------:|
+| 0.00 |   0.00 |  0.000 |            6.396 | 2587413 |   343437 | 2491603 |
+| 0.05 | 925.59 |  5.931 |            6.212 | 2587658 |   343192 | 1629866 |
+| 0.10 | 978.21 | 10.260 |            5.798 | 2589032 |   341824 |  627918 |
+| 0.15 | 855.79 |  9.714 |            5.372 | 2591035 |   339839 |  235630 |
+| 0.20 | 720.35 |  8.688 |            4.951 | 2593276 |   337629 |   89347 |
+| 0.25 | 604.57 |  7.865 |            4.544 | 2595607 |   335346 |   35008 |
+| 0.30 | 511.07 |  7.195 |            4.167 | 2597970 |   333046 |   14690 |
+| 0.35 | 436.42 |  6.642 |            3.843 | 2600345 |   330749 |    6970 |
 
 First 8 unique time points of the primary (FK = zero-order) simulation.
 {.table}
@@ -316,7 +316,7 @@ below shows the combination-therapy viral-load trajectory.
 
 sim_long |>
   filter(time <= 14) |>
-  ggplot(aes(time, Vlog10)) +
+  ggplot(aes(time, log10_viral_load)) +
   geom_line(colour = "seagreen", linewidth = 0.7) +
   geom_hline(yintercept = log10(10), linetype = "dashed", colour = "grey50") +
   annotate("text", x = 14, y = log10(10) + 0.2, label = "LLOD = 10 IU/mL",
@@ -540,11 +540,13 @@ pending that confirmation.
 - **VD residual error.** Wang 2018 Table 4 reports separate sigma^2
   values for the DCV monotherapy fit (0.27) and the ASV monotherapy fit
   (0.29). The packaged model uses a single additive residual error for
-  the viral- load output, with `addSd_Vlog10 = sqrt((0.27 + 0.29) / 2)`
-  (the arithmetic-mean variance). The SD difference between the two
-  source values is ~4 percent and the choice does not materially affect
-  VPC shapes; downstream simulation that needs DCV-monotherapy- or ASV-
-  monotherapy-only residual error can reset `addSd_Vlog10` per drug.
+  the viral- load output, with
+  `addSd_log10_viral_load = sqrt((0.27 + 0.29) / 2)` (the
+  arithmetic-mean variance). The SD difference between the two source
+  values is ~4 percent and the choice does not materially affect VPC
+  shapes; downstream simulation that needs DCV-monotherapy- or ASV-
+  monotherapy-only residual error can reset `addSd_log10_viral_load` per
+  drug.
 - **ASV FK IAV variance.** Wang 2018 Table 3 reports the inter-arm
   variability of FK_Cap/Tab and FK_Sus/Sol as 65.0 percent on the linear
   FK scale. There is no closed-form CV to omega^2 conversion because FK

@@ -211,7 +211,7 @@ one place.
 | `lec50` (EC50) | 0.0766 ug/mL | Table 1 |
 | `lhill` (gamma) | 4.12 | Table 1 |
 | `log10_cfu0` | 5 (FIXED) | Methods, “In vitro susceptibility testing and time-kill curve experiment”: initial inoculum approximately 10^5 CFU/mL |
-| `Cc = e0 - imax*Ce^hill/(ec50^hill + Ce^hill)` | n/a | Methods, second printed equation, in the `IC50^gamma` reading adjudicated below |
+| `log_cfu = e0 - imax*Ce^hill/(ec50^hill + Ce^hill)` | n/a | Methods, second printed equation, in the `IC50^gamma` reading adjudicated below |
 | `e0` (E0), AUC model | 0.179 log10 CFU/mL | Table 3, AUC 0-24h/MIC column |
 | `limax` (Imax), AUC model | 3.986 log10 CFU/mL | Table 3, AUC 0-24h/MIC column |
 | `lec50` (IC50), AUC model | 490.449 h | Table 3, AUC 0-24h/MIC column |
@@ -234,11 +234,11 @@ one place.
 | `d/dt(bact)` | CFU/mL/h | consistent |
 
 The sigmoid is dimensionless because `aptm` and `ec50` carry the same
-units, so `hill` needs no unit. `Cc = log10(bact + 1)` is log10 CFU/mL.
-For the two in vivo models the index `AUC_APTM / mic` has units of
-`(ug*h/mL)/(ug/mL) = h` (hence the `h` on IC50 = 490.449) while
-`CMAX_APTM / mic` is dimensionless, and `e0`, `imax` and `Cc` are all
-log10 CFU/mL.
+units, so `hill` needs no unit. `log_cfu = log10(bact + 1)` is log10
+CFU/mL. For the two in vivo models the index `AUC_APTM / mic` has units
+of `(ug*h/mL)/(ug/mL) = h` (hence the `h` on IC50 = 490.449) while
+`CMAX_APTM / mic` is dimensionless, and `e0`, `imax` and `log_cfu` are
+all log10 CFU/mL.
 
 ### Adjudicating the printed inhibitory sigmoid Emax equation
 
@@ -349,7 +349,7 @@ stopifnot(!anyDuplicated(unique(tk_events[, c("id", "time", "evid")])))
 # filtering on evid.
 tk_sim <- rxode2::rxSolve(tk, tk_events, keep = "mult", returnType = "data.frame")
 #> Warning: multi-subject simulation without without 'omega'
-stopifnot(nrow(tk_sim) == length(mults) * length(grid), !anyNA(tk_sim$Cc))
+stopifnot(nrow(tk_sim) == length(mults) * length(grid), !anyNA(tk_sim$log_cfu))
 ```
 
 ``` r
@@ -357,7 +357,7 @@ stopifnot(nrow(tk_sim) == length(mults) * length(grid), !anyNA(tk_sim$Cc))
 tk_sim |>
   mutate(arm = factor(mult, levels = mults,
                       labels = c("growth control", paste0(mults[-1], "x MIC")))) |>
-  ggplot(aes(time, Cc, colour = arm)) +
+  ggplot(aes(time, log_cfu, colour = arm)) +
   geom_line(linewidth = 0.7) +
   geom_hline(yintercept = 1, linetype = "dashed", colour = "grey40") +
   scale_x_continuous(breaks = obs_times) +
@@ -388,7 +388,7 @@ cfu0  <- pv(ini_tk, "log10_cfu0")
 # GATE 2: drug-free growth over 48 h. Yang 2026 Results states the control
 # "grew by approximately 1 log10CFU/mL over 48 hours"; the closed form of the
 # packaged kgrowth gives 1.20, so the fit is consistent with the description.
-ctrl48 <- tk_sim$Cc[tk_sim$mult == 0 & tk_sim$time == 48] - cfu0
+ctrl48 <- tk_sim$log_cfu[tk_sim$mult == 0 & tk_sim$time == 48] - cfu0
 cat("Drug-free growth over 48 h:", round(ctrl48, 3), "log10 CFU/mL\n")
 #> Drug-free growth over 48 h: 1.205 log10 CFU/mL
 stopifnot(abs(ctrl48 - kgrow * 48 / log(10)) < 1e-4)
@@ -402,7 +402,7 @@ closed <- function(mult, t) {
   kkill <- emax * conc^hill / (ec50^hill + conc^hill)
   log10(10^cfu0 * exp((kgrow - kkill) * t) + 1)
 }
-chk <- tk_sim |> mutate(cf = closed(mult, time), err = abs(Cc - cf))
+chk <- tk_sim |> mutate(cf = closed(mult, time), err = abs(log_cfu - cf))
 cat("Max |solve - closed form|:", signif(max(chk$err), 3), "log10 CFU/mL\n")
 #> Max |solve - closed form|: 5.3e-07 log10 CFU/mL
 stopifnot(max(chk$err) < 1e-5)
@@ -849,7 +849,8 @@ stricter use of Table 2 than an NCA round-trip would be.
 - **Table 3’s “Log10CFU/mL drop” rows are the inhibitory term, not the
   net change.** At the AUC 1-log target the models predict a net change
   of -0.821 log10 CFU/mL, because E0 = +0.179 is added back. Anyone
-  comparing the models against Table 3 must compare the term, not `Cc`.
+  comparing the models against Table 3 must compare the term, not
+  `log_cfu`.
 - **“AUC0-24h” is the AUCINF column of Table 2.** The paper refers to
   AUC0-24h throughout the PK/PD integration but never tabulates a 0-24 h
   exposure. Regressing the Table 2 AUCINF values on dose returns R^2 =

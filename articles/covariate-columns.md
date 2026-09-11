@@ -2111,8 +2111,9 @@ against.
   hepatic-extraction-ratio elimination), `Mukker_2026_tuvusertib_HR.R`
   (per-subject **baseline** HR entering a centered linear-deviation term
   `e_hr_bl_e0 * (HR - hr_bl_ref)` on the concentration-DeltaHR
-  intercept; note that the model’s observable is named `dHR`, the change
-  from baseline, so that it does not shadow this covariate column).
+  intercept; note that the model’s observable is named `d_hr`, the
+  change from baseline, so that it does not shadow this covariate
+  column).
 - **Notes:** General scope because heart rate is a universally
   applicable vital sign suitable for any model where hemodynamic state
   modulates clearance. Future models can use a different reference HR
@@ -3855,8 +3856,8 @@ value, use `_BL` unless it is explicitly pre-intervention.
   RAAS-inhibitor programmes, where hyperkalaemia is the dose-limiting
   toxicity and drives titration and discontinuation rules; KDIGO and ESC
   hyperkalaemia thresholds are 5.5 and 6.0 mmol/L. Direct sibling of
-  `SOD` (serum sodium). Distinct from the `serumK` COMPARTMENT, which is
-  the modelled potassium time course when potassium is the PD output
+  `SOD` (serum sodium). Distinct from the `serum_k` COMPARTMENT, which
+  is the modelled potassium time course when potassium is the PD output
   rather than an explanatory covariate.
 - **Units:** mmol/L (equivalent to mEq/L for potassium).
 - **Type:** continuous
@@ -8354,8 +8355,8 @@ CSVs continue to work for one release cycle.
   sibling canonical (`SCORE_UPDRS_TOTAL`, `SCORE_UPDRS_III`,…) rather
   than overload this name. Note the distinct case of
   `Lee_2011_parkinson_progression.R`, where the UPDRS total score is the
-  model’s *endpoint* (`deltaUPDRS`, change from baseline) and therefore
-  not a covariate at all.
+  model’s *endpoint* (`d_updrs`, change from baseline) and therefore not
+  a covariate at all.
 
 ### OFFTIME_BL (**canonical for baseline daily OFF time in Parkinson disease**)
 
@@ -12656,7 +12657,7 @@ CSVs continue to work for one release cycle.
 - **Example models:** `Koloskoff_2025_ganciclovir.R` (Koloskoff 2025
   indirect viral turnover model for CMV viral load in pediatric SOT /
   HSCT recipients; AUC_GCV enters the ODE via
-  `kout * (1 + Emax * AUC_GCV / (EC50 + AUC_GCV)) * viralLoad`).
+  `kout * (1 + Emax * AUC_GCV / (EC50 + AUC_GCV)) * viral_load`).
 - **Notes:** Specific scope – the column meaning is tied to ganciclovir
   as the drug and to a q12h interval-averaging convention. Sibling
   drug-specific AUC canonicals (`AUC_CARBO`, `AUC_GEM`, `AUC_BAST_FW`,
@@ -19781,8 +19782,8 @@ CSVs continue to work for one release cycle.
 - **Scope:** specific
 - **Reference category:** n/a – enters as the argument of a
   concentration-response expression: the hyperbolic saturation term
-  `pappBa = emax * (1 - C / (km + C))` in the BCRP model, and the Hill
-  term `vblAccum = e0 + (emax - e0) * C^hill / (ic50^hill + C^hill)` in
+  `papp_ba = emax * (1 - C / (km + C))` in the BCRP model, and the Hill
+  term `vbl_accum = e0 + (emax - e0) * C^hill / (ic50^hill + C^hill)` in
   the P-gp model. At C = 0 the BCRP model returns its
   tracer-concentration maximum `emax` and the P-gp model returns its
   baseline `e0`. Reference values observed (Agarwal 2011): BCRP assay

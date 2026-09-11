@@ -331,7 +331,7 @@ mod
 #>     Cunbound ~ add(addSd_Cunbound) + prop(propSd_Cunbound)
 #>   })
 #> }
-#> <environment: 0x564681bd18b0>
+#> <environment: 0x559de3adcd90>
 ```
 
 ## Virtual cohort

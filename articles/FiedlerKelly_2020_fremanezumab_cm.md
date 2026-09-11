@@ -47,7 +47,7 @@ fremanezumab Cav and time-on-treatment via a Hill-in-time placebo and a
 power-of-Cav drug effect, both centered on individual baseline:
 
 ``` math
-\text{msHeadacheDays}(t, C_{av}) = \text{BL}_i + \text{Max}_{P,i}\,\frac{t^{H_i}}{T_{50}^{H_i} + t^{H_i}} - \text{BL}_i \cdot \theta_{D,i}\,\left(\frac{C_{av}}{\text{Cav}_{\text{med}}}\right)^{\theta_{E,i}}
+\text{ms_headache_days}(t, C_{av}) = \text{BL}_i + \text{Max}_{P,i}\,\frac{t^{H_i}}{T_{50}^{H_i} + t^{H_i}} - \text{BL}_i \cdot \theta_{D,i}\,\left(\frac{C_{av}}{\text{Cav}_{\text{med}}}\right)^{\theta_{E,i}}
 ```
 
 with the individual baseline a piecewise-linear function of baseline
@@ -110,7 +110,7 @@ review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
-| Composite endpoint equation `msHeadacheDays = BL + maxPLC*t^H/(T50^H+t^H) - BL * drugInt * (Cav/CavMedian)^drugExp` | n/a | Figure 2B; Methods — E-R Analysis Methodology |
+| Composite endpoint equation `ms_headache_days = BL + maxPLC*t^H/(T50^H+t^H) - BL * drugInt * (Cav/CavMedian)^drugExp` | n/a | Figure 2B; Methods — E-R Analysis Methodology |
 | Piecewise-linear baseline `BL = bl_cm + slope_AM * max(0, ACUTE_MED_DAYS - 5)` | n/a | Results — Monthly Headache Days of at Least Moderate Severity in Patients With CM |
 | `bl_cm` (typical baseline at AM ≤ 5 d/mo) | 10.2 d/mo | Table S4 |
 | `slope_AM` (slope on AM days \> 5) | 0.460 d/d | Table S4 |
@@ -142,12 +142,12 @@ ev_check <- data.frame(
 sim_check <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = ev_check, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ omega/sigma items treated as zero: 'etabl_cm', 'etamaxPLC_cm', 'etalhill_PLC', 'etalogitDrugInt', 'etaldrugExp'
-sim_check[, c("time", "msHeadacheDays")]
-#>   time msHeadacheDays
-#> 1    0      10.200000
-#> 2    1       7.505923
-#> 3    2       6.983113
-#> 4    3       6.677923
+sim_check[, c("time", "ms_headache_days")]
+#>   time ms_headache_days
+#> 1    0        10.200000
+#> 2    1         7.505923
+#> 3    2         6.983113
+#> 4    3         6.677923
 ```
 
 The month-3 placebo M/S-headache-day count is 6.68, a reduction of 3.52
@@ -237,8 +237,8 @@ monthly M/S headache days and percent of CM responders.
 sim_iiv |>
   group_by(regimen, time) |>
   summarise(
-    mean_md = mean(msHeadacheDays),
-    sd_md   = sd(msHeadacheDays),
+    mean_md = mean(ms_headache_days),
+    sd_md   = sd(ms_headache_days),
     .groups = "drop"
   ) |>
   ggplot(aes(time, mean_md, colour = regimen, fill = regimen)) +
@@ -265,7 +265,7 @@ baseline_per_id <- events |>
 
 responders <- sim_iiv |>
   left_join(baseline_per_id, by = c("id", "regimen")) |>
-  mutate(reduction_pct = 100 * (BL - msHeadacheDays) / BL,
+  mutate(reduction_pct = 100 * (BL - ms_headache_days) / BL,
          responder     = reduction_pct >= 50)
 
 responder_summary <- responders |>
@@ -297,8 +297,8 @@ narrative_compare <- sim_typ |>
   filter(time == 3) |>
   group_by(regimen) |>
   summarise(
-    typical_md_month3 = round(mean(msHeadacheDays), 2),
-    typical_reduction = round(10.2 - mean(msHeadacheDays), 2),
+    typical_md_month3 = round(mean(ms_headache_days), 2),
+    typical_reduction = round(10.2 - mean(ms_headache_days), 2),
     .groups = "drop"
   )
 
@@ -363,7 +363,7 @@ mirroring the operator-confirmed Figure 2B interpretation.
   N(5.73, 7.01) truncated at 0 (Supplementary Table S2 mean and SD
   across the pooled CM cohort). The actual data is right-skewed with
   median 1.75 d/mo.
-- **Observation variable is `msHeadacheDays`, not `Cc`.** Convention
+- **Observation variable is `ms_headache_days`, not `Cc`.** Convention
   waiver as in the EM vignette.
 - **`units$dosing` carries an explanatory string** to satisfy the
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)

@@ -145,7 +145,7 @@ deviations section for justification of the non-canonical names):
 | `bact_intermediate2` | CFU/mL | intermediate subpopulation, state 2 (replicating) |
 | `bact_resistant1` | CFU/mL | resistant subpopulation, state 1 (vegetative) |
 | `bact_resistant2` | CFU/mL | resistant subpopulation, state 2 (replicating) |
-| `Cc` | log10 CFU/mL | observation: log10 of total bacterial concentration |
+| `log_cfu` | log10 CFU/mL | observation: log10 of total bacterial concentration |
 
 ## Helper: build a time-kill scenario
 
@@ -197,12 +197,12 @@ panels <- panels |>
                        levels = sprintf("%.3g mg/L", dap_levels))
   )
 
-ggplot(panels, aes(time, Cc, group = dap_init, color = dap_label)) +
+ggplot(panels, aes(time, log_cfu, group = dap_init, color = dap_label)) +
   geom_line(linewidth = 0.45) +
   facet_wrap(~ hs_label, ncol = 3) +
   scale_y_continuous(limits = c(0, 10), breaks = seq(0, 10, 2)) +
   scale_x_continuous(breaks = c(0, 4, 8, 16, 24)) +
-  labs(x = "Time (h)", y = "log10 CFU/mL (Cc)",
+  labs(x = "Time (h)", y = "log10 CFU/mL (log_cfu)",
        color = "Daptomycin",
        caption = "Replicates Garonzik 2016 Figure 4 (model-fitted predictions for USA300 across five human-serum levels).") +
   theme(legend.position = "right")
@@ -258,10 +258,10 @@ modeling).
 
 gc <- panels |>
   filter(dap_init == 0, time %in% c(0, 4, 8, 24)) |>
-  select(hs_label, time, Cc)
+  select(hs_label, time, log_cfu)
 
 gc |>
-  pivot_wider(names_from = time, values_from = Cc,
+  pivot_wider(names_from = time, values_from = log_cfu,
               names_prefix = "Cc_t") |>
   knitr::kable(digits = 3,
                caption = "Growth-control (no daptomycin) log10 CFU/mL at four times across the five HS levels.")
@@ -332,7 +332,7 @@ residual is essentially the resistant subpopulation; susceptible and
 intermediate are below the limit of detection. {.table}
 
 **Bactericidal threshold.** Garonzik 2016 reports that bactericidal
-activity (\>=3.0 log10 CFU/mL reduction from inoculum, i.e., Cc \<=
+activity (\>=3.0 log10 CFU/mL reduction from inoculum, i.e., log_cfu \<=
 3.22) is reached by 24 h for all DAP \>= 2 mg/L irrespective of HS
 (Results, Time-kill experiments). Check the 24-hour values across the
 grid:
@@ -341,8 +341,8 @@ grid:
 
 panels |>
   filter(dap_init %in% c(0.25, 0.5, 1, 2, 4, 8), time == 24) |>
-  select(hs_label, dap_label, Cc) |>
-  pivot_wider(names_from = dap_label, values_from = Cc) |>
+  select(hs_label, dap_label, log_cfu) |>
+  pivot_wider(names_from = dap_label, values_from = log_cfu) |>
   knitr::kable(digits = 2,
     caption = "log10 CFU/mL at 24 h across a daptomycin x HS grid. Compare against Figure 4 right-edge endpoints; entries <= 3.22 satisfy the 99.9% bactericidal threshold.")
 ```
@@ -408,9 +408,9 @@ reference:
   than a silent interpolation. The paper plots an apparent continuous
   curve in Figure 5 but only estimates four points; interpolation is the
   user’s choice and is left out of the packaged model.
-- **Single observation `Cc` carries log10 CFU/mL, not a drug
+- **Single observation `log_cfu` carries log10 CFU/mL, not a drug
   concentration.** nlmixr2lib’s single-output convention names the
-  observation `Cc`; the underlying quantity here is log10 of total
+  observation `log_cfu`; the underlying quantity here is log10 of total
   bacterial CFU/mL. The `units$concentration` metadata makes this
   explicit.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)

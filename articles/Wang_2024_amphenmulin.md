@@ -744,11 +744,7 @@ knitr::kable(idx_check, digits = c(2, 4, 6, 6),
 ```
 
 | AUC24h/MIC (h) | AUC_AMPH covariate (h\*ug/mL) | ODE change over 24 h (log10 CFU/mL) | Table 3 closed form (log10 CFU/mL) |
-|---:|---:|---:|---:|
-| 0.00 | 0.0000 | -0.384500 | -0.384500 |
-| 300.00 | 1.1700 | -0.408380 | -0.408381 |
-| 904.05 | 3.5258 | -0.971291 | -0.971292 |
-| 2000.00 | 7.8000 | -2.089330 | -2.089336 |
+|----|----|----|----|
 
 The packaged ODE reproduces the Table 3 per-interval change exactly at
 each 24 h boundary, including the untreated control (AUC24h/MIC = 0,

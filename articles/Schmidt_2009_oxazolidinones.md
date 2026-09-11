@@ -81,8 +81,8 @@ N_s(0) &= F\,N_0 \qquad N_p(0) = (1-F)\,N_0
 \end{aligned}
 ```
 
-The observation is `Cc = log10(Ns + Np)`. The residual model is additive
-on log10 CFU/mL (see Assumptions and deviations for the
+The observation is `log_cfu = log10(Ns + Np)`. The residual model is
+additive on log10 CFU/mL (see Assumptions and deviations for the
 natural-log-vs-log10 conversion that produced `addSd = 0.234`).
 
 ## Source trace
@@ -126,7 +126,7 @@ the residual SIGMA.
 
 # Run a static (constant-concentration) time-kill simulation: dose the
 # initial antibiotic concentration into `central` at t = 0, then read out
-# bacterial Cc on a dense grid for 24 h. zeroRe() removes between-
+# bacterial log_cfu on a dense grid for 24 h. zeroRe() removes between-
 # experiment IIV so we plot typical-value (population mean) curves that
 # can be compared directly against Schmidt 2009 Fig. 2 fits.
 sim_one <- function(mod_name, dose_ug_per_ml, kdeg_override = NULL,
@@ -163,7 +163,7 @@ kdeg_dynamic_lzd <- 0.137                   # dilution only
 In the absence of drug the model must approach the published carrying
 capacity Nmax = 3.39e9 (log10 9.53). This is the equivalent of the
 ‘steady-state hold’ validation pattern for endogenous models – the final
-plateau Cc is a structural target.
+plateau log_cfu is a structural target.
 
 ``` r
 
@@ -171,12 +171,12 @@ gc <- sim_one("Schmidt_2009_rwj416457", dose_ug_per_ml = 0)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ omega/sigma items treated as zero: 'etalks', 'etalnmax', 'etaldgs', 'etaldks'
 plateau_target <- log10(3.39e9)
-plateau_sim    <- tail(gc$Cc, 1L)
-cat(sprintf("Growth-control plateau Cc at 24 h: simulated = %.3f, target = %.3f\n",
+plateau_sim    <- tail(gc$log_cfu, 1L)
+cat(sprintf("Growth-control plateau log_cfu at 24 h: simulated = %.3f, target = %.3f\n",
             plateau_sim, plateau_target))
-#> Growth-control plateau Cc at 24 h: simulated = 9.524, target = 9.530
+#> Growth-control plateau log_cfu at 24 h: simulated = 9.524, target = 9.530
 
-ggplot(gc, aes(time, Cc)) +
+ggplot(gc, aes(time, log_cfu)) +
   geom_line(linewidth = 1) +
   geom_hline(yintercept = plateau_target, linetype = 2, colour = "red") +
   labs(x = "Time (h)", y = "log10 CFU/mL",
@@ -215,7 +215,7 @@ panel_A <- bind_rows(lapply(mic_multipliers, function(m) {
 panel_A_gc <- gc |> mutate(mic_multiple = 0, drug = "RWJ-416457")
 panel_A_all <- bind_rows(panel_A, panel_A_gc)
 
-ggplot(panel_A_all, aes(time, Cc, colour = factor(mic_multiple), group = mic_multiple)) +
+ggplot(panel_A_all, aes(time, log_cfu, colour = factor(mic_multiple), group = mic_multiple)) +
   geom_line(linewidth = 0.9) +
   scale_colour_viridis_d(name = "x MIC") +
   labs(x = "Time (h)", y = "log10 CFU/mL",
@@ -251,7 +251,7 @@ panel_C_gc <- sim_one("Schmidt_2009_linezolid", dose_ug_per_ml = 0) |>
 #> ℹ omega/sigma items treated as zero: 'etalks', 'etalnmax', 'etaldgs', 'etaldks'
 panel_C_all <- bind_rows(panel_C, panel_C_gc)
 
-ggplot(panel_C_all, aes(time, Cc, colour = factor(mic_multiple), group = mic_multiple)) +
+ggplot(panel_C_all, aes(time, log_cfu, colour = factor(mic_multiple), group = mic_multiple)) +
   geom_line(linewidth = 0.9) +
   scale_colour_viridis_d(name = "x MIC") +
   labs(x = "Time (h)", y = "log10 CFU/mL",
@@ -292,7 +292,7 @@ panel_B <- bind_rows(lapply(mic_multipliers, function(m) {
 panel_B_all <- bind_rows(panel_B,
                          panel_A_gc |> mutate(drug = "RWJ-416457 (dynamic)"))
 
-ggplot(panel_B_all, aes(time, Cc, colour = factor(mic_multiple), group = mic_multiple)) +
+ggplot(panel_B_all, aes(time, log_cfu, colour = factor(mic_multiple), group = mic_multiple)) +
   geom_line(linewidth = 0.9) +
   scale_colour_viridis_d(name = "x MIC") +
   labs(x = "Time (h)", y = "log10 CFU/mL",
@@ -326,7 +326,7 @@ panel_D <- bind_rows(lapply(mic_multipliers, function(m) {
 panel_D_all <- bind_rows(panel_D,
                          panel_C_gc |> mutate(drug = "linezolid (dynamic)"))
 
-ggplot(panel_D_all, aes(time, Cc, colour = factor(mic_multiple), group = mic_multiple)) +
+ggplot(panel_D_all, aes(time, log_cfu, colour = factor(mic_multiple), group = mic_multiple)) +
   geom_line(linewidth = 0.9) +
   scale_colour_viridis_d(name = "x MIC") +
   labs(x = "Time (h)", y = "log10 CFU/mL",
@@ -393,7 +393,7 @@ cat(sprintf("Linezolid  dynamic t1/2: %.1f h (paper: ~5 h)\n", t12_lzd))
   `bact_persister(0) = (1 - F) * N0`. With F = 0.83 (Table 1) and
   `kps = 0` (Table 1, fixed), the persister pool can only deplete by the
   slow natural-death rate `kd = 0.015 1/h`, giving a structural lower
-  bound on total Cc at 24 h of roughly log10(85000 \* exp(-0.36)) =
+  bound on total log_cfu at 24 h of roughly log10(85000 \* exp(-0.36)) =
   log10(59300) = 4.77. The Results paragraph ‘Static time-kill curves’
   describes “an ~2- to 2.5-log reduction in bacterial counts … at
   concentrations greater than 8x MIC” – consistent with the
@@ -408,12 +408,12 @@ cat(sprintf("Linezolid  dynamic t1/2: %.1f h (paper: ~5 h)\n", t12_lzd))
   log-transformed bacterial counts but does not name the log base.
   NONMEM’s `LOG()` is natural log, so SIGMA = 0.29 (Table 1) is
   interpreted as a variance on the natural-log scale
-  (`sqrt(0.29) = 0.539` natural-log SD). The packaged model reports `Cc`
-  in log10 CFU/mL for microbiology readability; the natural-log SD is
-  rescaled by `1/log(10)` to give the encoded `addSd = 0.234` (log10
-  CFU/mL SD). If the published value is instead a variance on the log10
-  scale, the corresponding addSd would be sqrt(0.29) = 0.539 log10 – a
-  factor of 2.3 larger.
+  (`sqrt(0.29) = 0.539` natural-log SD). The packaged model reports
+  `log_cfu` in log10 CFU/mL for microbiology readability; the
+  natural-log SD is rescaled by `1/log(10)` to give the encoded
+  `addSd = 0.234` (log10 CFU/mL SD). If the published value is instead a
+  variance on the log10 scale, the corresponding addSd would be
+  sqrt(0.29) = 0.539 log10 – a factor of 2.3 larger.
 
 - **kdeg is on the linear (non-log-transformed) scale.** Standard
   nlmixr2lib convention is `lkdeg` (log-transformed), but linezolid’s

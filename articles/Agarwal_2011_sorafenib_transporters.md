@@ -109,7 +109,7 @@ for the figure replications.
 # values themselves and they are excluded from the quantitative comparison.
 fig5_obs <- tibble::tibble(
   conc_ngml = c(1.91, 4.14, 6.13, 7.85, 9.65, 17.37, 23.35, 39.26, 71.28, 166.27, 325.65),
-  pappBa_obs  = c(3.446, 2.338, 1.658, 1.669, 1.233, 0.784, 0.893, 0.567, 0.365, 0.182, 0.131)
+  papp_ba_obs  = c(3.446, 2.338, 1.658, 1.669, 1.233, 0.784, 0.893, 0.567, 0.365, 0.182, 0.131)
 )
 
 # Figure 6A -- fold increase in vinblastine accumulation in MDCKII-MDR1 cells.
@@ -162,11 +162,11 @@ pred5 <- solveStatic(bcrp, grid5)
 ggplot2::ggplot() +
   ggplot2::geom_line(
     data = pred5,
-    ggplot2::aes(CP_SORAFENIB_NGML, pappBa), linewidth = 0.8
+    ggplot2::aes(CP_SORAFENIB_NGML, papp_ba), linewidth = 0.8
   ) +
   ggplot2::geom_point(
     data = fig5_obs,
-    ggplot2::aes(conc_ngml, pappBa_obs), size = 2.2
+    ggplot2::aes(conc_ngml, papp_ba_obs), size = 2.2
   ) +
   ggplot2::scale_x_log10(
     breaks = c(1, 10, 100, 1000, 10000, 100000),
@@ -204,31 +204,31 @@ emax5 <- exp(bcrp$theta[["lemax"]])
 chk5 <- solveStatic(bcrp, c(0, km, 1e9))
 #> Warning: multi-subject simulation without without 'omega'
 
-halfMax <- chk5$pappBa[2]
+halfMax <- chk5$papp_ba[2]
 tibble::tibble(
-  Check = c("pappBa at C = 0", "pappBa at C = km", "emax / 2", "pappBa at C = 1e9"),
-  Value = c(chk5$pappBa[1], halfMax, emax5 / 2, chk5$pappBa[3])
+  Check = c("papp_ba at C = 0", "papp_ba at C = km", "emax / 2", "papp_ba at C = 1e9"),
+  Value = c(chk5$papp_ba[1], halfMax, emax5 / 2, chk5$papp_ba[3])
 ) |>
   knitr::kable(digits = 6)
 ```
 
-| Check             | Value |
-|:------------------|------:|
-| pappBa at C = 0   | 5.070 |
-| pappBa at C = km  | 2.535 |
-| emax / 2          | 2.535 |
-| pappBa at C = 1e9 | 0.000 |
+| Check              | Value |
+|:-------------------|------:|
+| papp_ba at C = 0   | 5.070 |
+| papp_ba at C = km  | 2.535 |
+| emax / 2           | 2.535 |
+| papp_ba at C = 1e9 | 0.000 |
 
 ``` r
 
 
 stopifnot(
   # Deterministic identities -- exact to machine precision, no RNG involved.
-  abs(chk5$pappBa[1] - emax5) < 1e-10,
+  abs(chk5$papp_ba[1] - emax5) < 1e-10,
   abs(halfMax - emax5 / 2) < 1e-10,
-  chk5$pappBa[3] < 1e-5,
+  chk5$papp_ba[3] < 1e-5,
   # Strictly monotone decreasing across five decades.
-  all(diff(pred5$pappBa) < 0)
+  all(diff(pred5$papp_ba) < 0)
 )
 ```
 
@@ -238,35 +238,35 @@ stopifnot(
 
 cmp5 <- fig5_obs |>
   dplyr::mutate(
-    pappBa_pred = solveStatic(bcrp, conc_ngml)$pappBa,
-    abs_dev = pappBa_pred - pappBa_obs,
-    pct_diff = 100 * abs_dev / pappBa_obs
+    papp_ba_pred = solveStatic(bcrp, conc_ngml)$papp_ba,
+    abs_dev = papp_ba_pred - papp_ba_obs,
+    pct_diff = 100 * abs_dev / papp_ba_obs
   )
 #> Warning: There was 1 warning in `dplyr::mutate()`.
-#> ℹ In argument: `pappBa_pred = solveStatic(bcrp, conc_ngml)$pappBa`.
+#> ℹ In argument: `papp_ba_pred = solveStatic(bcrp, conc_ngml)$papp_ba`.
 #> Caused by warning:
 #> ! multi-subject simulation without without 'omega'
 knitr::kable(cmp5, digits = 3)
 ```
 
-| conc_ngml | pappBa_obs | pappBa_pred | abs_dev | pct_diff |
-|----------:|-----------:|------------:|--------:|---------:|
-|      1.91 |      3.446 |       3.313 |  -0.133 |   -3.873 |
-|      4.14 |      2.338 |       2.358 |   0.020 |    0.861 |
-|      6.13 |      1.658 |       1.876 |   0.218 |   13.139 |
-|      7.85 |      1.669 |       1.594 |  -0.075 |   -4.490 |
-|      9.65 |      1.233 |       1.378 |   0.145 |   11.720 |
-|     17.37 |      0.784 |       0.870 |   0.086 |   11.019 |
-|     23.35 |      0.893 |       0.677 |  -0.216 |  -24.160 |
-|     39.26 |      0.567 |       0.426 |  -0.141 |  -24.894 |
-|     71.28 |      0.365 |       0.244 |  -0.121 |  -33.219 |
-|    166.27 |      0.182 |       0.107 |  -0.075 |  -40.963 |
-|    325.65 |      0.131 |       0.055 |  -0.076 |  -57.683 |
+| conc_ngml | papp_ba_obs | papp_ba_pred | abs_dev | pct_diff |
+|----------:|------------:|-------------:|--------:|---------:|
+|      1.91 |       3.446 |        3.313 |  -0.133 |   -3.873 |
+|      4.14 |       2.338 |        2.358 |   0.020 |    0.861 |
+|      6.13 |       1.658 |        1.876 |   0.218 |   13.139 |
+|      7.85 |       1.669 |        1.594 |  -0.075 |   -4.490 |
+|      9.65 |       1.233 |        1.378 |   0.145 |   11.720 |
+|     17.37 |       0.784 |        0.870 |   0.086 |   11.019 |
+|     23.35 |       0.893 |        0.677 |  -0.216 |  -24.160 |
+|     39.26 |       0.567 |        0.426 |  -0.141 |  -24.894 |
+|     71.28 |       0.365 |        0.244 |  -0.121 |  -33.219 |
+|    166.27 |       0.182 |        0.107 |  -0.075 |  -40.963 |
+|    325.65 |       0.131 |        0.055 |  -0.076 |  -57.683 |
 
 ``` r
 
 
-r2_5 <- 1 - sum(cmp5$abs_dev^2) / sum((cmp5$pappBa_obs - mean(cmp5$pappBa_obs))^2)
+r2_5 <- 1 - sum(cmp5$abs_dev^2) / sum((cmp5$papp_ba_obs - mean(cmp5$papp_ba_obs))^2)
 cat("R-squared:", round(r2_5, 4), "\n")
 #> R-squared: 0.9814
 ```
@@ -308,7 +308,7 @@ pred6 <- solveStatic(pgp, grid6)
 ggplot2::ggplot() +
   ggplot2::geom_line(
     data = pred6,
-    ggplot2::aes(CP_SORAFENIB_NGML / 1000, vblAccum), linewidth = 0.8
+    ggplot2::aes(CP_SORAFENIB_NGML / 1000, vbl_accum), linewidth = 0.8
   ) +
   ggplot2::geom_point(
     data = fig6_obs,
@@ -351,31 +351,31 @@ chk6 <- solveStatic(pgp, c(0, ic50, 1e12))
 #> Warning: multi-subject simulation without without 'omega'
 
 tibble::tibble(
-  Check = c("vblAccum at C = 0", "e0", "vblAccum at C = ic50", "(e0 + emax) / 2",
-            "vblAccum at C = 1e12", "emax"),
-  Value = c(chk6$vblAccum[1], e0, chk6$vblAccum[2], (e0 + emax6) / 2,
-            chk6$vblAccum[3], emax6)
+  Check = c("vbl_accum at C = 0", "e0", "vbl_accum at C = ic50", "(e0 + emax) / 2",
+            "vbl_accum at C = 1e12", "emax"),
+  Value = c(chk6$vbl_accum[1], e0, chk6$vbl_accum[2], (e0 + emax6) / 2,
+            chk6$vbl_accum[3], emax6)
 ) |>
   knitr::kable(digits = 6)
 ```
 
-| Check                |   Value |
-|:---------------------|--------:|
-| vblAccum at C = 0    |  1.1300 |
-| e0                   |  1.1300 |
-| vblAccum at C = ic50 |  5.6805 |
-| (e0 + emax) / 2      |  5.6805 |
-| vblAccum at C = 1e12 | 10.2310 |
-| emax                 | 10.2310 |
+| Check                 |   Value |
+|:----------------------|--------:|
+| vbl_accum at C = 0    |  1.1300 |
+| e0                    |  1.1300 |
+| vbl_accum at C = ic50 |  5.6805 |
+| (e0 + emax) / 2       |  5.6805 |
+| vbl_accum at C = 1e12 | 10.2310 |
+| emax                  | 10.2310 |
 
 ``` r
 
 
 stopifnot(
-  abs(chk6$vblAccum[1] - e0) < 1e-10,
-  abs(chk6$vblAccum[2] - (e0 + emax6) / 2) < 1e-10,
-  abs(chk6$vblAccum[3] - emax6) < 1e-6,
-  all(diff(pred6$vblAccum) > 0),
+  abs(chk6$vbl_accum[1] - e0) < 1e-10,
+  abs(chk6$vbl_accum[2] - (e0 + emax6) / 2) < 1e-10,
+  abs(chk6$vbl_accum[3] - emax6) < 1e-6,
+  all(diff(pred6$vbl_accum) > 0),
   # The Hill exponent is well above 1, so the curve is genuinely sigmoidal
   # rather than the hyperbolic (hill = 1) special case.
   hill > 1.5
@@ -388,13 +388,13 @@ stopifnot(
 
 cmp6 <- fig6_obs |>
   dplyr::mutate(
-    fold_pred = solveStatic(pgp, conc_ngml)$vblAccum,
+    fold_pred = solveStatic(pgp, conc_ngml)$vbl_accum,
     abs_dev = fold_pred - fold_obs,
     pct_diff = 100 * abs_dev / fold_obs
   ) |>
   dplyr::select(conc_ugml, fold_obs, fold_pred, abs_dev, pct_diff)
 #> Warning: There was 1 warning in `dplyr::mutate()`.
-#> ℹ In argument: `fold_pred = solveStatic(pgp, conc_ngml)$vblAccum`.
+#> ℹ In argument: `fold_pred = solveStatic(pgp, conc_ngml)$vbl_accum`.
 #> Caused by warning:
 #> ! multi-subject simulation without without 'omega'
 knitr::kable(cmp6, digits = 3)
@@ -447,7 +447,7 @@ clinical <- solveStatic(pgp, c(1, 5, 15) * mw_tosylate)
 #> Warning: multi-subject simulation without without 'omega'
 tibble::tibble(
   `Plasma sorafenib (uM)` = c(1, 5, 15),
-  `Predicted fold increase in P-gp substrate accumulation` = clinical$vblAccum
+  `Predicted fold increase in P-gp substrate accumulation` = clinical$vbl_accum
 ) |>
   knitr::kable(digits = 2)
 ```
@@ -464,8 +464,8 @@ tibble::tibble(
 stopifnot(
   # The clinical range reaches the foot of the curve but not its plateau:
   # at 15 uM the model predicts a real but sub-maximal effect.
-  clinical$vblAccum[1] < 1.5,
-  clinical$vblAccum[3] > 2, clinical$vblAccum[3] < emax6 / 2
+  clinical$vbl_accum[1] < 1.5,
+  clinical$vbl_accum[3] > 2, clinical$vbl_accum[3] < emax6 / 2
 )
 ```
 
@@ -602,26 +602,26 @@ wells), not a fitted variance.
 ### Two new canonical observation names
 
 Neither endpoint could reuse an existing canonical: `Cc` would be wrong
-because neither is a drug concentration (`pappBa` is an apparent
-permeability in cm/sec, `vblAccum` is a dimensionless fold change in the
-accumulation of a *different* drug, vinblastine), and a search of the
-658-entry observation register for permeability / flux / efflux /
+because neither is a drug concentration (`papp_ba` is an apparent
+permeability in cm/sec, `vbl_accum` is a dimensionless fold change in
+the accumulation of a *different* drug, vinblastine), and a search of
+the 658-entry observation register for permeability / flux / efflux /
 accumulation / fold / transport / uptake turned up nothing either name
 could alias. Both names were therefore ratified by the operator before
 this model file was committed, and are registered in
 `inst/references/compartment-names.md`:
 
-- **`pappBa`** – apparent basolateral-to-apical permeability, with
-  `pappAb` reserved for the opposite direction. The direction is part of
-  the name rather than a note in the entry because directional flux is
-  the entire point of a Transwell assay: this paper reports both
+- **`papp_ba`** – apparent basolateral-to-apical permeability, with
+  `papp_ab` reserved for the opposite direction. The direction is part
+  of the name rather than a note in the entry because directional flux
+  is the entire point of a Transwell assay: this paper reports both
   directions (Figure 3), so a bare `papp` would silently conflate two
   different measured quantities the first time an A-to-B model were
   added. The qualified form also avoids a collision with `papp`, which
   already exists in the registry as an `ini()` *parameter* name for
   apparent permeability in the three `Granda_2024_*_pbpk` models.
-- **`vblAccum`** – fold increase in intracellular vinblastine
-  accumulation, named for the specific probe in the same way `hergInh`
+- **`vbl_accum`** – fold increase in intracellular vinblastine
+  accumulation, named for the specific probe in the same way `herg_inh`
   names a specific channel’s tail-current block. A generic
   `probeAccumFold` would need the probe recorded out-of-band to be
   interpretable; this paper alone uses three different probes

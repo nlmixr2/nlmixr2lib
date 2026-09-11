@@ -27,9 +27,9 @@
   upper-respiratory-tract surface area and 2e-11 to 4e-11 m^2 per
   epithelial cell), infected_cells(0) = 0, and virus(0) = 10^0.25
   TCID50/mL (the viral-titer lower limit of quantification, used as the
-  inoculation viral titer). The viral load viralLoad (TCID50/mL of nasal
-  wash, canonical PD-output name) is the single observed output with
-  proportional residual error, equivalent to the paper’s
+  inoculation viral titer). The viral load viral_load (TCID50/mL of
+  nasal wash, canonical PD-output name) is the single observed output
+  with proportional residual error, equivalent to the paper’s
   log10-transformed additive-error model. The three viral-dynamics
   compartments are declared paper-specific (see
   paper_specific_compartments).
@@ -194,25 +194,25 @@ sim_placebo <- rxode2::rxSolve(mod_typical, events = events_placebo)
 #> ℹ omega/sigma items treated as zero: 'etalp_prod', 'etalemax'
 
 placebo_df <- as.data.frame(sim_placebo) |>
-  dplyr::select(time, viralLoad)
-peak_row <- placebo_df[which.max(placebo_df$viralLoad), ]
+  dplyr::select(time, viral_load)
+peak_row <- placebo_df[which.max(placebo_df$viral_load), ]
 
-cat(sprintf("Placebo peak viralLoad = %.2f TCID50/mL at time = %.2f day\n",
-            peak_row$viralLoad, peak_row$time))
-#> Placebo peak viralLoad = 7448.94 TCID50/mL at time = 2.30 day
+cat(sprintf("Placebo peak viral_load = %.2f TCID50/mL at time = %.2f day\n",
+            peak_row$viral_load, peak_row$time))
+#> Placebo peak viral_load = 7448.94 TCID50/mL at time = 2.30 day
 
 below_lloq <- placebo_df[placebo_df$time > peak_row$time &
-                         placebo_df$viralLoad < 10^0.25, ]
+                         placebo_df$viral_load < 10^0.25, ]
 if (nrow(below_lloq) > 0) {
-  cat(sprintf("Placebo viralLoad first crosses LLOQ (10^0.25 = %.3f) at time = %.2f day\n",
+  cat(sprintf("Placebo viral_load first crosses LLOQ (10^0.25 = %.3f) at time = %.2f day\n",
               10^0.25, below_lloq$time[1]))
 }
-#> Placebo viralLoad first crosses LLOQ (10^0.25 = 1.778) at time = 6.40 day
+#> Placebo viral_load first crosses LLOQ (10^0.25 = 1.778) at time = 6.40 day
 ```
 
 ``` r
 
-ggplot(placebo_df, aes(time, viralLoad)) +
+ggplot(placebo_df, aes(time, viral_load)) +
   geom_line(color = "#1f78b4") +
   geom_hline(yintercept = 10^0.25, linetype = "dashed", color = "grey50") +
   annotate("text", x = 11, y = 10^0.25, vjust = -0.5,
@@ -249,7 +249,7 @@ sim_dr_df <- as.data.frame(sim_dr) |>
   mutate(dose_label = factor(dose_label,
                              levels = sprintf("%d mg b.i.d.", as.integer(dose_levels))))
 
-ggplot(sim_dr_df, aes(time, viralLoad, color = dose_label)) +
+ggplot(sim_dr_df, aes(time, viral_load, color = dose_label)) +
   geom_line() +
   geom_hline(yintercept = 10^0.25, linetype = "dashed", color = "grey50") +
   geom_vline(xintercept = c(2, 7), linetype = "dotted", color = "grey60") +
@@ -298,7 +298,7 @@ sim_tx_df <- as.data.frame(sim_tx) |>
     levels = c("Placebo", sprintf("Treatment start day %.1f", tx_starts))
   ))
 
-ggplot(sim_tx_df, aes(time, viralLoad, color = tx_label)) +
+ggplot(sim_tx_df, aes(time, viral_load, color = tx_label)) +
   geom_line() +
   geom_hline(yintercept = 10^0.25, linetype = "dashed", color = "grey50") +
   scale_y_log10() +
@@ -315,11 +315,11 @@ ggplot(sim_tx_df, aes(time, viralLoad, color = tx_label)) +
 ``` r
 
 # Approximate shedding-cessation time per scenario: first time after the
-# initial rise at which viralLoad falls below the LLOQ.
+# initial rise at which viral_load falls below the LLOQ.
 shedding_end <- function(df) {
   ord <- df[order(df$time), ]
-  peak_t <- ord$time[which.max(ord$viralLoad)]
-  post_peak <- ord[ord$time > peak_t & ord$viralLoad < 10^0.25, ]
+  peak_t <- ord$time[which.max(ord$viral_load)]
+  post_peak <- ord[ord$time > peak_t & ord$viral_load < 10^0.25, ]
   if (nrow(post_peak) == 0) NA_real_ else post_peak$time[1]
 }
 
@@ -381,9 +381,9 @@ sim_vpc_df <- as.data.frame(sim_vpc) |>
 vpc_quantiles <- sim_vpc_df |>
   dplyr::group_by(dose_label, time) |>
   dplyr::summarise(
-    Q05 = quantile(viralLoad, 0.05, na.rm = TRUE),
-    Q50 = quantile(viralLoad, 0.50, na.rm = TRUE),
-    Q95 = quantile(viralLoad, 0.95, na.rm = TRUE),
+    Q05 = quantile(viral_load, 0.05, na.rm = TRUE),
+    Q50 = quantile(viral_load, 0.50, na.rm = TRUE),
+    Q95 = quantile(viral_load, 0.95, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -445,9 +445,9 @@ ggplot(vpc_quantiles, aes(time, Q50)) +
   final model. The packaged model matches the published final structure.
 - **Residual error sign convention.** The paper fit log10(V) with
   additive error which corresponds to a proportional error model on the
-  untransformed viralLoad scale (Materials and Methods, last paragraph).
-  The packaged `Cc ~ prop(propSd)` form with `propSd = 0.14` matches the
-  reported 14% CV sigma_error.
+  untransformed viral_load scale (Materials and Methods, last
+  paragraph). The packaged `Cc ~ prop(propSd)` form with `propSd = 0.14`
+  matches the reported 14% CV sigma_error.
 - **No covariates retained in the final model.** Kamal 2015 also
   explored in vitro viral-growth-curve covariates (initial growth rate
   IGR, AUC of the viral growth curve, peak titer) as candidate

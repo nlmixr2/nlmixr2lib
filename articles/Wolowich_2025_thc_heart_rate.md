@@ -23,9 +23,9 @@ and the Errata section below explains why it should not be used to rank
 the three.
 
 THC-COOH was dropped: “There was no relationship between THC-COOH and
-fHR, so the THC-COOH portion of the PK model was removed” (Results 3.1).
-The models the authors rejected are tabulated in the supplement under
-the heading “Rejected models” and are deliberately not extracted.
+f_hr, so the THC-COOH portion of the PK model was removed” (Results
+3.1). The models the authors rejected are tabulated in the supplement
+under the heading “Rejected models” and are deliberately not extracted.
 
 ``` r
 
@@ -97,7 +97,7 @@ str(models$thc$population, max.level = 1, give.attr = FALSE)
 The authors did not model heart rate in bpm. They modelled
 
 ``` math
- \mathrm{fHR}_{i,t} = \frac{\Delta \mathrm{HR}_{i,t}}{\max_t \Delta \mathrm{HR}_i} 
+ \mathrm{f_hr}_{i,t} = \frac{\Delta \mathrm{HR}_{i,t}}{\max_t \Delta \mathrm{HR}_i} 
 ```
 
 the increase in heart rate at time *t* as a fraction of that
@@ -113,7 +113,7 @@ The practical consequence for a user of these models is that `Emax` is a
 fraction (0.96, 0.91, and fixed at 1 across the three models) and that
 converting a prediction back to bpm needs the individual’s baseline
 heart rate and maximal excursion, neither of which is a fitted parameter
-of these models. The observation variable is therefore named `fHR`,
+of these models. The observation variable is therefore named `f_hr`,
 distinct from the bpm-valued `HR` used elsewhere in nlmixr2lib.
 
 ## Source trace
@@ -141,13 +141,13 @@ naming its source row. The table below collects them.
 | `lke0` | 6.22 1/h | Table 3, Ke0 |
 | `lec50` | 0.53 uM | Table 3, EC50 (repeated in Abstract and Results 3.2.1) |
 | `lemax` | 0.96 | Table 3, Emax |
-| `propSd` / `propSd_11oh` / `addSd_fHR` | 0.16 / 0.23 / 0.18 | Table 3, the three epsilon (SD) rows |
+| `propSd` / `propSd_11oh` / `addSd_f_hr` | 0.16 / 0.23 / 0.18 | Table 3, the three epsilon (SD) rows |
 | **Model 2B2 – `Wolowich_2025_thc_11oh`** |  |  |
 | Sigmoid Emax form, no effect site | n/a | Table 2, row 2B2; Results 3.2.2 |
 | `lec50_11oh` | 0.02 uM | Table 4, EC50 (repeated in Abstract) |
 | `lemax` | 0.91 | Table 4, Emax |
 | `lhill` | 2.14 | Table 4, Gamma |
-| `propSd` / `propSd_11oh` / `addSd_fHR` | 0.16 / 0.23 / 0.18 | Table 4, the three epsilon (SD) rows |
+| `propSd` / `propSd_11oh` / `addSd_f_hr` | 0.16 / 0.23 / 0.18 | Table 4, the three epsilon (SD) rows |
 | **Model 3GEDM – `Wolowich_2025_thc_gedm`** |  |  |
 | GEDM response surface | n/a | Table 2, row 3GEDM (Gabrielsson and Weiner, source ref. 20) |
 | `lke0` | 0.26 1/h | Table 5, Ke0 (Value column) |
@@ -155,7 +155,7 @@ naming its source row. The table below collects them.
 | `lec50_11oh` | 0.12 uM | Table 5, EC50 THC-OH |
 | `lemax` | 1, held fixed | Table 5, Emax “1 (fixed)” |
 | `gedm_alpha` / `gedm_beta` / `gedm_delta` / `gedm_gamma` | 0.74 / 0.94 / 0.48 / 0.50 | Table 5 |
-| `propSd` / `propSd_11oh` / `addSd_fHR` | 0.22 / 0.21 / 0.22 | Table 5 (the fHR row’s Value cell is blank; 0.22 is its Boot value – see Errata) |
+| `propSd` / `propSd_11oh` / `addSd_f_hr` | 0.22 / 0.21 / 0.22 | Table 5 (the f_hr row’s Value cell is blank; 0.22 is its Boot value – see Errata) |
 | Interaction criteria | n/a | Table 6, reproduced from Gabrielsson and Weiner |
 
 Every value in the shipped `ini()` blocks can be read straight off those
@@ -217,8 +217,8 @@ c(n_subjects = n_sub,
 ```
 
 `dvid = 1L` on the observation rows is required, not decorative: these
-models declare three endpoints (`Cc`, `Cc_11oh`, `fHR`), so rxode2 needs
-to be told which one an observation row belongs to. All three
+models declare three endpoints (`Cc`, `Cc_11oh`, `f_hr`), so rxode2
+needs to be told which one an observation row belongs to. All three
 observables are returned as columns on every row regardless, so one
 `dvid` series is enough.
 
@@ -548,19 +548,19 @@ maximal at time zero, so any positive time-to-peak effect is hysteresis.
 ``` r
 
 hyst <- bind_rows(
-  sim_typ  |> transmute(time, Cc, fHR, model = "1B1 (THC, effect site)"),
-  sim_oh   |> transmute(time, Cc, fHR, model = "2B2 (11-OH-THC)"),
-  sim_gedm |> transmute(time, Cc, fHR, model = "3GEDM (both)")
+  sim_typ  |> transmute(time, Cc, f_hr, model = "1B1 (THC, effect site)"),
+  sim_oh   |> transmute(time, Cc, f_hr, model = "2B2 (11-OH-THC)"),
+  sim_gedm |> transmute(time, Cc, f_hr, model = "3GEDM (both)")
 ) |>
   filter(time <= 5, time > 0)
 
-ggplot(hyst, aes(Cc, fHR, colour = model)) +
+ggplot(hyst, aes(Cc, f_hr, colour = model)) +
   geom_path(linewidth = 0.7) +
   scale_x_log10() +
   labs(
-    x = "Plasma THC concentration (uM)", y = "fHR (fraction of maximal increase)",
+    x = "Plasma THC concentration (uM)", y = "f_hr (fraction of maximal increase)",
     colour = "Model",
-    title = "Figure 2 -- fHR vs plasma THC, showing hysteresis",
+    title = "Figure 2 -- f_hr vs plasma THC, showing hysteresis",
     caption = paste(
       "Replicates the loop shape of Figure 2 of Wolowich 2025. Time runs",
       "right to left; the effect rises while THC is already falling."
@@ -577,26 +577,26 @@ tmax_of <- function(df, col) df$time[which.max(df[[col]])]
 delay <- tibble(
   Model = c("1B1 (THC, effect site)", "2B2 (11-OH-THC)", "3GEDM (both)"),
   `Tmax of plasma THC (h)` = 0,
-  `Tmax of fHR (h)` = round(c(
-    tmax_of(filter(sim_typ,  time <= 5), "fHR"),
-    tmax_of(filter(sim_oh,   time <= 5), "fHR"),
-    tmax_of(filter(sim_gedm, time <= 5), "fHR")
+  `Tmax of f_hr (h)` = round(c(
+    tmax_of(filter(sim_typ,  time <= 5), "f_hr"),
+    tmax_of(filter(sim_oh,   time <= 5), "f_hr"),
+    tmax_of(filter(sim_gedm, time <= 5), "f_hr")
   ), 3)
 )
 
 # Hysteresis: the effect peaks strictly after the plasma concentration does.
 stopifnot(
   tmax_of(filter(sim_typ, time <= 5), "Cc") == 0,
-  all(delay$`Tmax of fHR (h)` > 0)
+  all(delay$`Tmax of f_hr (h)` > 0)
 )
 knitr::kable(delay, caption = "Effect lags concentration in all three models.")
 ```
 
-| Model                  | Tmax of plasma THC (h) | Tmax of fHR (h) |
-|:-----------------------|-----------------------:|----------------:|
-| 1B1 (THC, effect site) |                      0 |           0.083 |
-| 2B2 (11-OH-THC)        |                      0 |           0.108 |
-| 3GEDM (both)           |                      0 |           0.108 |
+| Model                  | Tmax of plasma THC (h) | Tmax of f_hr (h) |
+|:-----------------------|-----------------------:|-----------------:|
+| 1B1 (THC, effect site) |                      0 |            0.083 |
+| 2B2 (11-OH-THC)        |                      0 |            0.108 |
+| 3GEDM (both)           |                      0 |            0.108 |
 
 Effect lags concentration in all three models. {.table}
 
@@ -647,23 +647,23 @@ c(EC50_THC_uM = ec50_thc, EC50_11OH_uM = ec50_11oh,
 #>                  25.00                  53.00                  53.00
 ```
 
-### Figures 3, 4 and 5A: the fHR time course
+### Figures 3, 4 and 5A: the f_hr time course
 
 ``` r
 
 pd <- bind_rows(
-  sim_typ  |> transmute(time, fHR, model = "1B1 (THC, effect site)"),
-  sim_oh   |> transmute(time, fHR, model = "2B2 (11-OH-THC)"),
-  sim_gedm |> transmute(time, fHR, model = "3GEDM (both)")
+  sim_typ  |> transmute(time, f_hr, model = "1B1 (THC, effect site)"),
+  sim_oh   |> transmute(time, f_hr, model = "2B2 (11-OH-THC)"),
+  sim_gedm |> transmute(time, f_hr, model = "3GEDM (both)")
 ) |>
   filter(time <= 5)
 
-ggplot(pd, aes(time, fHR, colour = model)) +
+ggplot(pd, aes(time, f_hr, colour = model)) +
   geom_line(linewidth = 0.7) +
   coord_cartesian(ylim = c(0, 1)) +
   labs(
-    x = "Time (h)", y = "fHR (fraction of maximal increase)", colour = "Model",
-    title = "Figures 3A, 4A and 5A -- typical-value fHR time course",
+    x = "Time (h)", y = "f_hr (fraction of maximal increase)", colour = "Model",
+    title = "Figures 3A, 4A and 5A -- typical-value f_hr time course",
     caption = paste(
       "Replicates the predicted (black dashed) line of the visual predictive",
       "checks in Figures 3A, 4A and 5A of Wolowich 2025."
@@ -682,16 +682,16 @@ precisely because “cardiovascular effects persist for 2-3 h”.
 
 bind_rows(
   sim_typ |> filter(time <= 5) |>
-    transmute(driver = effect, fHR, panel = "1B1: effect-site THC"),
+    transmute(driver = effect, f_hr, panel = "1B1: effect-site THC"),
   sim_oh  |> filter(time <= 5) |>
-    transmute(driver = Cc_11oh, fHR, panel = "2B2: plasma 11-OH-THC")
+    transmute(driver = Cc_11oh, f_hr, panel = "2B2: plasma 11-OH-THC")
 ) |>
-  ggplot(aes(driver, fHR)) +
+  ggplot(aes(driver, f_hr)) +
   geom_path(linewidth = 0.7) +
   facet_wrap(~panel, scales = "free_x") +
   labs(
-    x = "Driving concentration (uM)", y = "fHR",
-    title = "Figures 3B and 4B -- fHR vs the driving concentration",
+    x = "Driving concentration (uM)", y = "f_hr",
+    title = "Figures 3B and 4B -- f_hr vs the driving concentration",
     caption = "Replicates the concentration-effect panels of Figures 3B and 4B."
   )
 ```
@@ -705,7 +705,7 @@ model. With the reduced concentrations `u1 = Ce,THC / EC50,THC` and
 `u2 = C,11-OH-THC / EC50,11-OH-THC`,
 
 ``` math
- \mathrm{fHR} = E_{\max}\,\frac{u_1 + \alpha u_2 + \beta u_1 u_2}{1 + u_1 + \delta u_2 + \gamma u_1 u_2} 
+ \mathrm{f_hr} = E_{\max}\,\frac{u_1 + \alpha u_2 + \beta u_1 u_2}{1 + u_1 + \delta u_2 + \gamma u_1 u_2} 
 ```
 
 Figure 5B renders this as a three-dimensional surface over the two
@@ -721,17 +721,17 @@ surface <- tidyr::crossing(
   mutate(
     u1  = ce_thc / exp(th[["lec50"]]),
     u2  = c_11oh / exp(th[["lec50_11oh"]]),
-    fHR = exp(th[["lemax"]]) *
+    f_hr = exp(th[["lemax"]]) *
       (u1 + th[["gedm_alpha"]] * u2 + th[["gedm_beta"]] * u1 * u2) /
       (1 + u1 + th[["gedm_delta"]] * u2 + th[["gedm_gamma"]] * u1 * u2)
   )
 
-ggplot(surface, aes(c_11oh, ce_thc, fill = fHR)) +
+ggplot(surface, aes(c_11oh, ce_thc, fill = f_hr)) +
   geom_raster() +
-  geom_contour(aes(z = fHR), colour = "white", linewidth = 0.25, bins = 10) +
+  geom_contour(aes(z = f_hr), colour = "white", linewidth = 0.25, bins = 10) +
   scale_fill_viridis_c(limits = c(0, 1)) +
   labs(
-    x = "Plasma 11-OH-THC (uM)", y = "Effect-site THC (uM)", fill = "fHR",
+    x = "Plasma 11-OH-THC (uM)", y = "Effect-site THC (uM)", fill = "f_hr",
     title = "Figure 5B -- GEDM response surface",
     caption = paste(
       "Replicates the three-dimensional surface of Figure 5B of",
@@ -818,7 +818,7 @@ the competitive limit of criterion 3).
 
 ``` r
 
-peak <- sim_gedm |> filter(time <= 5) |> slice_max(fHR, n = 1)
+peak <- sim_gedm |> filter(time <= 5) |> slice_max(f_hr, n = 1)
 u1p  <- peak$effect  / exp(th[["lec50"]])
 u2p  <- peak$Cc_11oh / exp(th[["lec50_11oh"]])
 
@@ -833,9 +833,9 @@ stopifnot(fitted_peak > competitive_peak)
 
 c(effect_site_THC_uM = round(peak$effect, 3),
   plasma_11OH_uM     = round(peak$Cc_11oh, 4),
-  fHR_fitted         = round(fitted_peak, 3),
-  fHR_if_beta_zero   = round(competitive_peak, 3))
-#> effect_site_THC_uM     plasma_11OH_uM         fHR_fitted   fHR_if_beta_zero 
+  f_hr_fitted         = round(fitted_peak, 3),
+  f_hr_if_beta_zero   = round(competitive_peak, 3))
+#> effect_site_THC_uM     plasma_11OH_uM        f_hr_fitted  f_hr_if_beta_zero 
 #>             0.0700             0.1587             0.6390             0.5990
 ```
 
@@ -862,7 +862,7 @@ c(effect_site_THC_uM = round(peak$effect, 3),
   0.002 uM) and would put the lower limb of the Figure 1A visual
   predictive check below zero on a log axis, which it plainly is not.
   The PD error is additive per the same section (`E,obs + E,epsilon`),
-  and since fHR is unitless that one is unambiguous.
+  and since f_hr is unitless that one is unambiguous.
 - **The fraction of THC metabolised to 11-OH-THC is not reported, so fm
   = 1.** The models route the whole of `CL,THC` through the transit
   compartment into 11-OH-THC. This is the standard identifiability
@@ -903,12 +903,12 @@ c(effect_site_THC_uM = round(peak$effect, 3),
   about model 1B1: “the VPC may be incorrect because of the large
   epsilon and eta shrinkage”. The variability is carried in the model
   files for fidelity to the publication, not as a recommendation.
-- **Model 3GEDM’s residual SD for fHR comes from the bootstrap column.**
-  In Table 5 the “Value” cell of the `epsilon (SD) fHR` row is blank;
-  only the “Boot value” of 0.22 is printed. That is the number the model
-  file uses, and the in-file comment says so. The other two residual
-  rows of that table have identical Value and Boot value entries, so the
-  substitution is well behaved.
+- **Model 3GEDM’s residual SD for f_hr comes from the bootstrap
+  column.** In Table 5 the “Value” cell of the `epsilon (SD) f_hr` row
+  is blank; only the “Boot value” of 0.22 is printed. That is the number
+  the model file uses, and the in-file comment says so. The other two
+  residual rows of that table have identical Value and Boot value
+  entries, so the substitution is well behaved.
 - **The GEDM hyperparameters carry multiplicative IIV.** `gedm_alpha`,
   `gedm_beta`, `gedm_delta` and `gedm_gamma` are kept on the linear
   scale in `ini()`, because Table 6’s criteria compare them directly

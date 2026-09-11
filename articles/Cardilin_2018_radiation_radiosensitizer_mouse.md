@@ -73,7 +73,7 @@ Per-parameter origins are recorded as in-file comments next to each
 
 ## Simulation set-up
 
-Radiation is delivered as a unit bolus (`amt = 1`) into the `radDepot`
+Radiation is delivered as a unit bolus (`amt = 1`) into the `rad_depot`
 compartment at each irradiation time; the per-fraction radiation dose
 (Gy) is the model parameter `radDose` (default 2). RS1 is dosed (mg/kg)
 into the `central` compartment. The observation `tumor_vol` is the total
@@ -82,7 +82,7 @@ tumor volume (sum of all six tumor compartments, mm^3).
 ``` r
 
 mod <- readModelDb("Cardilin_2018_radiation_radiosensitizer_mouse")
-#> ℹ Radiation is given as a unit bolus (amt=1) into the radDepot compartment at each irradiation time; the per-fraction radiation dose (Gy) is the parameter radDose (default 2). RS1 is dosed (mg/kg) into the central compartment. Observation tumor_vol is total tumor volume (mm^3).
+#> ℹ Radiation is given as a unit bolus (amt=1) into the rad_depot compartment at each irradiation time; the per-fraction radiation dose (Gy) is the parameter radDose (default 2). RS1 is dosed (mg/kg) into the central compartment. Observation tumor_vol is total tumor volume (mm^3).
 mod_typ <- rxode2::zeroRe(mod)   # typical-value (no between-subject variability)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -94,7 +94,7 @@ make_group <- function(rs_dose = 0, irradiate = FALSE, days = 3:7,
     for (d in days) ev <- rxode2::et(ev, amt = rs_dose, cmt = "central",
                                      time = d - 10/1440)  # 10 min before IR
   if (irradiate)
-    for (d in days) ev <- rxode2::et(ev, amt = 1, cmt = "radDepot", time = d)
+    for (d in days) ev <- rxode2::et(ev, amt = 1, cmt = "rad_depot", time = d)
   ev
 }
 ```
@@ -153,7 +153,7 @@ kill_one <- function(rs_dose) {
   ev <- rxode2::et(seq(0, 4, by = 0.001))
   if (rs_dose > 0) ev <- rxode2::et(ev, amt = rs_dose, cmt = "central",
                                     time = 3 - 10/1440)
-  ev <- rxode2::et(ev, amt = 1, cmt = "radDepot", time = 3)
+  ev <- rxode2::et(ev, amt = 1, cmt = "rad_depot", time = 3)
   s <- as.data.frame(rxode2::rxSolve(mod_typ, ev, maxsteps = 1e6,
                                      atol = 1e-9, rtol = 1e-9))
   pre  <- s$cycling_cells[which.min(abs(s$time - 2.99))]
@@ -246,7 +246,7 @@ treat_days <- sort(treat_days)
 ev6 <- rxode2::et(seq(0, 45, by = 0.5))
 for (d in treat_days) {
   ev6 <- rxode2::et(ev6, amt = 25, cmt = "central", time = d - 10/1440)
-  ev6 <- rxode2::et(ev6, amt = 1,  cmt = "radDepot", time = d)
+  ev6 <- rxode2::et(ev6, amt = 1,  cmt = "rad_depot", time = d)
 }
 
 sim6 <- rxode2::rxSolve(mod, ev6, nSub = 200, maxsteps = 1e6) |>
@@ -286,12 +286,12 @@ Gy radiation doses. Each ODE term is dimensionally consistent with
 | `(1 + aDeath*Cc) * kk * cycling_cells` | (-)(1/day)(mm^3) = mm^3/day | `aDeath*Cc` = (mL/ug)(ug/mL) dimensionless |
 | `killHaz * cycling_cells` | (1/day)(mm^3) = mm^3/day | see below |
 | `lethal` | (-)(1/Gy \* Gy) = dimensionless | LQ lethal lesions, `alpha*radDose + beta*radDose^2` |
-| `krad * radDepot` | (1/day)(-) integrates to 1 per fraction | numerical delta-trigger |
+| `krad * rad_depot` | (1/day)(-) integrates to 1 per fraction | numerical delta-trigger |
 | `Cc = central / vf` | (mg/kg)/(L/kg) = mg/L = ug/mL | RS1 plasma concentration |
 | `ke * central` | (1/day)(mg/kg) = (mg/kg)/day | RS1 elimination |
 
-The radiation kill hazard `killHaz = lethal * krad * radDepot`
-integrates over a fraction to `lethal` (since the unit `radDepot` bolus
+The radiation kill hazard `killHaz = lethal * krad * rad_depot`
+integrates over a fraction to `lethal` (since the unit `rad_depot` bolus
 has integral 1 under the `krad` decay), so the proliferating pool is
 multiplied by the LQ surviving fraction
 `exp(-lethal) = exp(-(1 + bRad*Cc)(alpha*D + beta*D^2))`.
@@ -323,7 +323,7 @@ multiplied by the LQ surviving fraction
   plasma concentrations (above), so 9.51 L/kg is used.
 - **Radiation as a near-instantaneous transfer.** The source models
   irradiation as Dirac-delta mass transfers. This is implemented with a
-  fast-decaying unit trigger (`radDepot`, rate `krad = 500` 1/day,
+  fast-decaying unit trigger (`rad_depot`, rate `krad = 500` 1/day,
   integral 1 per fraction) so the proliferating pool is multiplied by
   the LQ surviving fraction. `krad` is a solver convenience, not a
   fitted parameter; increasing it sharpens the approximation.
@@ -333,7 +333,7 @@ multiplied by the LQ surviving fraction
   0.0225).
 - **Convention-lint warnings (justified, not errors).** The mechanistic
   tumor compartments (`cycling_cells`, `damaged_cells1-3`, `irrad1-2`)
-  and the radiation trigger (`radDepot`) are not canonical PK
+  and the radiation trigger (`rad_depot`) are not canonical PK
   compartment names, mirroring the existing
   `oncology_xenograft_simeoni_2004` TGI model. The fitted output is
   total tumor volume (`tumor_vol`, a non-PK output), while `Cc` is

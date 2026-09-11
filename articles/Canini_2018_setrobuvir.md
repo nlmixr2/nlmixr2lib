@@ -139,7 +139,7 @@ dose_times_h <- seq(0, hours_total - 12, by = 12)
 # Cohort builder. Observation rows carry cmt = "Cc" (an observation
 # variable declared via `Cc ~ add(addSd) + prop(propSd)` in the model);
 # rxode2 auto-injects the Cc slot after the ODE-state slots and returns
-# BOTH the Cc and Vlog10 columns in the output data frame at each such
+# BOTH the Cc and log10_viral_load columns in the output data frame at each such
 # observation row, so a single set of obs rows exercises both the PK and
 # the VK observation paths in one simulation. This is the same pattern the
 # Wang_2018_daclatasvir_asunaprevir vignette uses.
@@ -217,7 +217,7 @@ sim_typ <- rxode2::rxSolve(
 # duplicates across event types at the same time.
 sim_typ_obs <- sim_typ |>
   filter(time %in% obs_times_h) |>
-  select(dose, genotype, treatment, time, Cc, Vlog10, infected, virus) |>
+  select(dose, genotype, treatment, time, Cc, log10_viral_load, infected, virus) |>
   distinct()
 ```
 
@@ -281,7 +281,7 @@ combinations.
 ``` r
 
 sim_typ_obs |>
-  ggplot(aes(time / 24, Vlog10,
+  ggplot(aes(time / 24, log10_viral_load,
              colour = factor(dose), linetype = genotype)) +
   geom_line(linewidth = 0.7) +
   scale_colour_manual(values = c("200" = "forestgreen",
@@ -305,14 +305,14 @@ below are computed from the same typical-value simulation as Figure 3C.
 
 ``` r
 
-# baseline = Vlog10 at t=0; end = Vlog10 at t=14 d
+# baseline = log10_viral_load at t=0; end = log10_viral_load at t=14 d
 baseline <- sim_typ_obs |>
   filter(time == 0) |>
-  select(dose, genotype, V0log10 = Vlog10)
+  select(dose, genotype, V0log10 = log10_viral_load)
 
 end_of_therapy <- sim_typ_obs |>
   filter(time == 14 * 24) |>
-  select(dose, genotype, V14log10 = Vlog10)
+  select(dose, genotype, V14log10 = log10_viral_load)
 
 decline <- baseline |>
   inner_join(end_of_therapy, by = c("dose", "genotype")) |>

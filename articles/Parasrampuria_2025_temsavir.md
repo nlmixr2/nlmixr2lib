@@ -139,7 +139,7 @@ pointing at the source location. The table collects them for review.
 | ER Emax | `lec50` | 64.3 ng/mL | Table 3, RSE 98.0%, bootstrap 16.6-250 |
 | ER Emax | `e_hiv_vload_emax` | 0.150 | Table 3, RSE 29.6%, bootstrap 0.113-0.197 |
 | ER Emax | `e_cd4_abs_emax` | 0.481 | Table 3, RSE 19.9%, bootstrap 0.293-0.673 |
-| ER Emax | `addSd_dviralLoad` | 0.653 log10 c/mL | Table 3, RSE 4.10%, bootstrap 0.594-0.699 |
+| ER Emax | `addSd_d_viral_load` | 0.653 log10 c/mL | Table 3, RSE 4.10%, bootstrap 0.594-0.699 |
 | ER Emax | equation | n/a | Table 3 Note |
 | ER \> 0.5 log10 | `e0` / `emax` / `lec50` | -1.07 / -2.92 / 88 ng/mL | Table 4 left column |
 | ER \> 0.5 log10 | `e_hiv_vload_logit` / `e_cd4_abs_logit` | 0.836 / -1.27 | Table 4 left column |
@@ -529,7 +529,7 @@ erEmax <- uis[["Parasrampuria_2025_temsavir_hivrna_day8"]]
 predChange <- function(ctau, vload, cd4) {
   d <- data.frame(id = seq_along(ctau), CTROUGH = ctau, HIV_VLOAD = vload,
                   CD4_ABS = cd4, time = 0, evid = 0, amt = 0)
-  rxode2::rxSolve(erEmax, d, returnType = "data.frame")$dviralLoad
+  rxode2::rxSolve(erEmax, d, returnType = "data.frame")$d_viral_load
 }
 
 # Both published percentages are expressed relative to the LARGER response.

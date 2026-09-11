@@ -74,8 +74,8 @@ below collects them in one place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
-| `d/dt(viralLoad) = kin - kout * (1 + Emax * AUC_GCV / (EC50 + AUC_GCV)) * viralLoad` | n/a | Koloskoff 2025 Methods Section 2.3 Eq. 1 (indirect viral turnover with stimulation of degradation; reproduces Cojutti 2018 model structure with AUC_0-12 replacing instantaneous concentration). |
-| `viralLoad(0) = kin / kout` | typical 3.78 log10 copies/mL | Koloskoff 2025 Methods Section 2.3 (Eq. 1: “The initial CMV viral load at time zero (R_0) equates to the ratio k_in / k_out”). |
+| `d/dt(viral_load) = kin - kout * (1 + Emax * AUC_GCV / (EC50 + AUC_GCV)) * viral_load` | n/a | Koloskoff 2025 Methods Section 2.3 Eq. 1 (indirect viral turnover with stimulation of degradation; reproduces Cojutti 2018 model structure with AUC_0-12 replacing instantaneous concentration). |
+| `viral_load(0) = kin / kout` | typical 3.78 log10 copies/mL | Koloskoff 2025 Methods Section 2.3 (Eq. 1: “The initial CMV viral load at time zero (R_0) equates to the ratio k_in / k_out”). |
 | `lkin` (zero-order viral production rate) | `log(0.00087)` | Koloskoff 2025 Table 2 final `kin = 0.00087` log10 copies/mL per hour (RSE 4.80%). |
 | `lkout` (first-order viral elimination rate) | `log(0.00023)` | Koloskoff 2025 Table 2 final `kout = 0.00023` 1/hour (RSE 5.19%). |
 | `lemax` (maximum drug-induced fold-increase in viral elimination) | `log(16.3)` | Koloskoff 2025 Table 2 final `Emax = 16.3` (RSE 18.1%). |
@@ -123,7 +123,7 @@ sim_ss <- rxode2::rxSolve(mod_typical, events = events_ss) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalkout', 'etalec50'
 
-range_ss <- range(sim_ss$viralLoad)
+range_ss <- range(sim_ss$viral_load)
 range_ss
 #> [1] 3.782609 3.782609
 
@@ -133,7 +133,7 @@ stopifnot(
 )
 ```
 
-The simulated viralLoad is constant at
+The simulated viral_load is constant at
 `kin / kout = 0.00087 / 0.00023 = 3.78` log10 copies/mL throughout the
 28-day window, confirming the steady-state baseline matches the
 typical-value `kin / kout` ratio.
@@ -154,11 +154,11 @@ init_high <- 6.0  # 6 log10 copies/mL, well above the 3.78 typical baseline
 init_low  <- 1.5  # 1.5 log10 copies/mL, well below baseline
 
 sim_high <- rxode2::rxSolve(mod_typical, events = events_ss,
-                            inits = c(viralLoad = init_high)) |>
+                            inits = c(viral_load = init_high)) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalkout', 'etalec50'
 sim_low  <- rxode2::rxSolve(mod_typical, events = events_ss,
-                            inits = c(viralLoad = init_low)) |>
+                            inits = c(viral_load = init_low)) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalkout', 'etalec50'
 
@@ -166,15 +166,15 @@ sim_low  <- rxode2::rxSolve(mod_typical, events = events_ss,
 ss_value <- 0.00087 / 0.00023
 
 ggplot() +
-  geom_line(data = sim_high, aes(time / hours_per_day, viralLoad,
+  geom_line(data = sim_high, aes(time / hours_per_day, viral_load,
                                  colour = "displaced high"), linewidth = 1) +
-  geom_line(data = sim_low, aes(time / hours_per_day, viralLoad,
+  geom_line(data = sim_low, aes(time / hours_per_day, viral_load,
                                 colour = "displaced low"), linewidth = 1) +
   geom_hline(yintercept = ss_value, linetype = "dashed", colour = "grey50") +
   annotate("text", x = 1, y = ss_value + 0.15,
            label = sprintf("kin / kout = %.2f", ss_value),
            hjust = 0, size = 3.2, colour = "grey30") +
-  labs(x = "Time (days)", y = "viralLoad (log10 copies/mL)",
+  labs(x = "Time (days)", y = "viral_load (log10 copies/mL)",
        colour = NULL,
        title = "Perturbation recovery toward the kin/kout steady-state baseline",
        caption = "AUC_GCV = 0 throughout. Both trajectories monotonically approach 3.78.") +
@@ -248,8 +248,8 @@ sim_mc <- rxode2::rxSolve(
 ``` r
 
 # rxSolve returns three trajectory columns when residual error is in the
-# model: viralLoad (the integrated state with IIV; deterministic given the
-# sampled etas), ipredSim (= viralLoad here, since the observation is the
+# model: viral_load (the integrated state with IIV; deterministic given the
+# sampled etas), ipredSim (= viral_load here, since the observation is the
 # state itself), and sim (the simulated observation with residual error
 # added per the propSd term). The paper's Monte Carlo simulations include
 # population parameter variability (IIV and residual), so the threshold
@@ -258,7 +258,7 @@ sim_mc <- rxode2::rxSolve(
 # at t = 0 (the simulated subject's `kin / kout_i`).
 mc <- sim_mc |>
   group_by(id) |>
-  mutate(baseline_state = first(viralLoad[time == 0])) |>
+  mutate(baseline_state = first(viral_load[time == 0])) |>
   ungroup()
 
 LLOQ_log10 <- log10(200)  # 2.301 log10 copies/mL
@@ -360,7 +360,7 @@ Koloskoff 2025 Table 4 (published). {.table}
 
 ## Typical-value AUC-response trajectory
 
-A typical-value (no IIV, no residual error) overlay of viralLoad
+A typical-value (no IIV, no residual error) overlay of viral_load
 trajectories at the eight AUC_0-24 levels gives a clean view of the
 mechanism: higher exposure produces faster decline, with diminishing
 incremental benefit past `AUC_0-24 ~ 60` mg\*h/L (Koloskoff 2025
@@ -378,7 +378,7 @@ sim_typical_mc <- rxode2::rxSolve(
 #> Warning: multi-subject simulation without without 'omega'
 
 ggplot(sim_typical_mc,
-       aes(time / hours_per_day, viralLoad,
+       aes(time / hours_per_day, viral_load,
            colour = factor(auc024), group = auc024)) +
   geom_line(linewidth = 1) +
   geom_hline(yintercept = LLOQ_log10, linetype = "dashed", colour = "grey60") +
@@ -387,7 +387,7 @@ ggplot(sim_typical_mc,
            hjust = 0, size = 3.2, colour = "grey40") +
   scale_colour_brewer(palette = "RdYlBu", direction = -1,
                       name = "AUC_0-24 (mg*h/L)") +
-  labs(x = "Time (days)", y = "viralLoad (log10 copies/mL)",
+  labs(x = "Time (days)", y = "viral_load (log10 copies/mL)",
        title = "Typical-value CMV viral-load trajectory by ganciclovir exposure",
        caption = "Koloskoff 2025 PD model with IIV and residual error zeroed.") +
   theme_minimal()
@@ -412,7 +412,7 @@ units. The state variable is the log10 copies/mL value (this is the
 convention in Koloskoff 2025 and the upstream Cojutti 2018
 indirect-response model). Treating R as the log10-transformed
 observation rather than the linear copies/mL count is unusual but is
-what the source paper fit; it is documented in the source `viralLoad`
+what the source paper fit; it is documented in the source `viral_load`
 units field as “log10 copies/mL”.
 
 ## Assumptions and deviations
@@ -423,13 +423,13 @@ units field as “log10 copies/mL”.
   reports three warnings (no errors), all intrinsic to a PD-only
   viral-load model and analogous to the deviations documented for
   `Zecchin_2016_tumorovarian` (also a non-PK PD model): (1) the
-  `viralLoad` compartment is not on the canonical PK compartment
+  `viral_load` compartment is not on the canonical PK compartment
   list; (2) the single-output observation variable should be `Cc` but
   `Cc` is reserved for plasma drug concentrations and does not fit a
   viral-load endpoint; (3) `units$dosing` and `units$concentration` are
   dimensionally incompatible because there is no drug-dosing event in
   this PD-only model and the “concentration” field stores the viral-load
-  output unit (`log10 copies/mL`). Renaming `viralLoad` to `Cc` would
+  output unit (`log10 copies/mL`). Renaming `viral_load` to `Cc` would
   mislead readers about what the observation actually represents. The
   deviations are intentional.
 
@@ -517,7 +517,7 @@ units field as “log10 copies/mL”.
   at TDM dose adjustments) can be encoded by inserting one record per
   change point.
 
-- **Initial condition tied to kin/kout.** `viralLoad(0) <- kin / kout`
+- **Initial condition tied to kin/kout.** `viral_load(0) <- kin / kout`
   is the steady-state baseline that the indirect-response equation
   implies at `AUC_GCV = 0`. Because IIV is on `kout` (not on `kin`),
   individual baselines vary between subjects: a subject with

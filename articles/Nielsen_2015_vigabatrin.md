@@ -877,5 +877,5 @@ and normalized-dosage equivalence) take their place.
 - **`seizure_count` observation name.** Registered as a canonical PD
   output in `inst/references/compartment-names.md`, a member of the
   existing per-interval event-count family (`hae_attacks`, `cel_count`,
-  `migraineDays`, `msHeadacheDays`, `score`). `Cc` is reserved for
+  `migraine_days`, `ms_headache_days`, `score`). `Cc` is reserved for
   drug-concentration outputs and would be wrong here.

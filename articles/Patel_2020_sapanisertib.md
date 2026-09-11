@@ -21,7 +21,7 @@ here as three model files sharing one vignette:
 |----|----|----|
 | `Patel_2020_sapanisertib_QTcI` | change from time-matched baseline in the individually rate-corrected QT interval (`QTcI`, msec) | Figure 4A |
 | `Patel_2020_sapanisertib_QTcF` | change from time-matched baseline in the Fridericia-corrected QT interval (`QTcF`, msec) | Figure 4C |
-| `Patel_2020_sapanisertib_RR` | change from time-matched baseline in the RR interval (`dRR`, msec) | Supplementary Figure S2 |
+| `Patel_2020_sapanisertib_RR` | change from time-matched baseline in the RR interval (`d_rr`, msec) | Supplementary Figure S2 |
 
 All three share the identical algebraic structure
 
@@ -379,7 +379,7 @@ events <- tibble::tibble(
 ## Simulation
 
 Each model returns its change-from-time-matched-baseline endpoint
-directly as the observation variable (`QTcI`, `QTcF`, `dRR`). No etas
+directly as the observation variable (`QTcI`, `QTcF`, `d_rr`). No etas
 are declared – the source reports no variance components – so `zeroRe()`
 is unnecessary and `omega = NA` must not be passed.
 
@@ -417,7 +417,7 @@ stopifnot(
   all(diff(sim_qtci$QTcI) < 0),
   all(diff(sim_qtcf$QTcF) < 0),
   # The RR interval lengthens with concentration (heart-rate slowing).
-  all(diff(sim_rr$dRR) > 0),
+  all(diff(sim_rr$d_rr) > 0),
   # No QTc prolongation anywhere in the observed range, let alone 10 or 20 msec.
   max(sim_qtci$QTcI) <= 0,
   max(sim_qtcf$QTcF) <= 0
@@ -480,7 +480,7 @@ ggplot(sim_qtcf, aes(conc, QTcF)) +
 zero_cross <- -readModelDb("Patel_2020_sapanisertib_RR")()$theta[["e0"]] /
   readModelDb("Patel_2020_sapanisertib_RR")()$theta[["slope"]]
 
-ggplot(sim_rr, aes(conc, dRR)) +
+ggplot(sim_rr, aes(conc, d_rr)) +
   geom_hline(yintercept = 0, linetype = "dotted", colour = "grey40") +
   geom_vline(data = cmax_anchors, aes(xintercept = cmax),
              linetype = "dashed", colour = "#D55E00") +
@@ -728,7 +728,7 @@ tc <- dplyr::bind_rows(
   as.data.frame(rxode2::rxSolve(mod_qtcf, events = tc_events)) |>
     dplyr::transmute(time, value = QTcF, endpoint = "DeltaQTcF"),
   as.data.frame(rxode2::rxSolve(mod_rr, events = tc_events)) |>
-    dplyr::transmute(time, value = dRR, endpoint = "DeltaRR")
+    dplyr::transmute(time, value = d_rr, endpoint = "DeltaRR")
 )
 
 ggplot(tc, aes(time, value)) +
@@ -795,10 +795,10 @@ rr_points <- tibble::tibble(
   conc     = c(0, 36.9, 235.0, 297.0)
 ) |>
   dplyr::mutate(
-    dRR = predict_endpoint(mod_rr, conc)$dRR
+    d_rr = predict_endpoint(mod_rr, conc)$d_rr
   )
 #> Warning: There was 1 warning in `dplyr::mutate()`.
-#> ℹ In argument: `dRR = predict_endpoint(mod_rr, conc)$dRR`.
+#> ℹ In argument: `d_rr = predict_endpoint(mod_rr, conc)$d_rr`.
 #> Caused by warning:
 #> ! multi-subject simulation without without 'omega'
 
@@ -806,7 +806,7 @@ rr_points |>
   dplyr::transmute(
     Scenario                       = scenario,
     `Sapanisertib conc (ng/mL)`    = conc,
-    `Model DeltaRR (msec)`         = round(dRR, 2)
+    `Model DeltaRR (msec)`         = round(d_rr, 2)
   ) |>
   knitr::kable(
     caption = paste(
@@ -837,8 +837,8 @@ stopifnot(
   # The intercept-only prediction is an RR shortening, and the 40 mg Cmax
   # prediction is an RR lengthening: the sign flip within the studied range is
   # the whole reconciliation, so it is asserted rather than only narrated.
-  rr_points$dRR[rr_points$scenario == "Zero concentration"] < 0,
-  rr_points$dRR[rr_points$scenario == "40 mg Cmax"] > 0
+  rr_points$d_rr[rr_points$scenario == "Zero concentration"] < 0,
+  rr_points$d_rr[rr_points$scenario == "40 mg Cmax"] > 0
 )
 ```
 
@@ -914,11 +914,11 @@ them is appropriate.
   that maps to three `.R` files and, because they come from one paper,
   this single vignette.
 
-- **The RR endpoint is named `dRR`, the two QTc endpoints are not
+- **The RR endpoint is named `d_rr`, the two QTc endpoints are not
   `d`-prefixed.** This asymmetry within the file set is deliberate and
   was an operator ruling (sidecar `oare_PMC7586797` request-001 q1,
   answered 2026-09-02). The register had no RR entry of either form.
-  `dRR` was ratified as a canonical sibling of the existing `dHR`
+  `d_rr` was ratified as a canonical sibling of the existing `d_hr`
   change-from-baseline heart-rate endpoint, on the scale-incomparability
   grounds that entry already states – an absolute RR interval is roughly
   850 msec whereas this `Delta`RR spans -25 to +18 msec – and because

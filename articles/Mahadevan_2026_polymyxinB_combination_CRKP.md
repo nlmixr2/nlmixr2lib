@@ -337,9 +337,9 @@ gc <- lapply(mahadevan_models, function(m) {
   th <- uis[[m]]$theta
   data.frame(
     isolate       = unname(isolate_label[m]),
-    inoculum_sim  = s$Cc[1],
+    inoculum_sim  = s$log_cfu[1],
     inoculum_tab  = unname(th[["log10cfu0"]]),
-    plateau_sim   = max(s$Cc),
+    plateau_sim   = max(s$log_cfu),
     plateau_tab   = unname(th[["log10cfumax"]])
   )
 }) |> do.call(rbind, args = _)
@@ -377,7 +377,7 @@ CFUmax at the plateau, for all six isolates. {.table}
 
 gc_curves <- lapply(mahadevan_models, function(m) {
   s <- solve_sctk(uis[[m]], tmax = 24, by = 0.25)
-  data.frame(isolate = unname(isolate_label[m]), time = s$time, log10cfu = s$Cc)
+  data.frame(isolate = unname(isolate_label[m]), time = s$time, log10cfu = s$log_cfu)
 }) |> do.call(rbind, args = _)
 
 ggplot(gc_curves, aes(time, log10cfu, colour = isolate)) +
@@ -494,7 +494,7 @@ Results as MEM 40 mg/L + FOF 75 mg/L.
 
 delta24 <- function(m, pmb, mem, fof) {
   s <- solve_sctk(uis[[m]], pmb = pmb, mem = mem, fof = fof, tmax = 24, by = 0.25)
-  s$Cc[nrow(s)] - unname(uis[[m]]$theta[["log10cfu0"]])
+  s$log_cfu[nrow(s)] - unname(uis[[m]]$theta[["log10cfu0"]])
 }
 
 triple <- tidyr::crossing(model = mahadevan_models, pmb = c(2, 4)) |>
@@ -587,7 +587,7 @@ fig3 <- tidyr::crossing(model = mahadevan_models, pmb = c(0.5, 2, 4), arms) |>
   mutate(sim = list({
     s <- solve_sctk(uis[[model]], pmb = if (arm == "Growth control") 0 else pmb,
                     mem = mem, fof = fof, tmax = 24, by = 0.25)
-    data.frame(time = s$time, log10cfu = s$Cc)
+    data.frame(time = s$time, log10cfu = s$log_cfu)
   })) |>
   ungroup() |>
   tidyr::unnest(sim) |>
@@ -695,7 +695,7 @@ CFU/mL.
 
 auc_cfu <- function(m, pmb, mem, fof) {
   s <- solve_sctk(uis[[m]], pmb = pmb, mem = mem, fof = fof, tmax = 24, by = 0.25)
-  y <- pmax(s$Cc, 2)
+  y <- pmax(s$log_cfu, 2)
   sum(diff(s$time) * (head(y, -1) + tail(y, -1)) / 2)
 }
 

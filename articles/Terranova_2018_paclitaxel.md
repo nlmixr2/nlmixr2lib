@@ -204,13 +204,13 @@ state_names
 ## 1. Mechanistic sanity at no-drug baseline (control mouse)
 
 Build the control-mouse event table directly: no doses, observations at
-every 0.5 days from t = 0 to t = 30. With no paclitaxel exposure,
-`Cc_pacl` must remain at zero, the drug central / peripheral
-compartments must remain at zero, and the tumor must follow its
-untreated DEB-TGI growth trajectory. Body weight starts at
-`W_initial = 21.2 g` and declines as the tumor grows under the cachexia
-mechanism, eventually hitting the catabolic-loss cap
-`-delta_Vmax = -0.185 g/day` (Branch C of the piecewise dynamics).
+every 0.5 days from t = 0 to t = 30. With no paclitaxel exposure, `Cc`
+must remain at zero, the drug central / peripheral compartments must
+remain at zero, and the tumor must follow its untreated DEB-TGI growth
+trajectory. Body weight starts at `W_initial = 21.2 g` and declines as
+the tumor grows under the cachexia mechanism, eventually hitting the
+catabolic-loss cap `-delta_Vmax = -0.185 g/day` (Branch C of the
+piecewise dynamics).
 
 ``` r
 
@@ -224,7 +224,7 @@ sim_control <- rxode2::rxSolve(mod_typical, ev_control) |>
 stopifnot(
   max(abs(sim_control$central),     na.rm = TRUE) < 1e-8,
   max(abs(sim_control$peripheral1), na.rm = TRUE) < 1e-8,
-  max(abs(sim_control$Cc_pacl),     na.rm = TRUE) < 1e-8,
+  max(abs(sim_control$Cc),     na.rm = TRUE) < 1e-8,
   abs(sim_control$bodyWeight[sim_control$time == 0] - 21.2) < 1e-6,
   abs(sim_control$tumorWeight[sim_control$time == 0] - 0.0023) < 1e-6
 )
@@ -456,14 +456,14 @@ than the treated arm.
 
 direction_summary <- sim_both |>
   dplyr::filter(time %in% c(8, 12, 16, 20, 24, 28, 30)) |>
-  dplyr::select(cohort, time, bodyWeight, tumorWeight, Cc_pacl) |>
+  dplyr::select(cohort, time, bodyWeight, tumorWeight, Cc) |>
   tidyr::pivot_wider(
     id_cols     = time,
     names_from  = cohort,
-    values_from = c(bodyWeight, tumorWeight, Cc_pacl)
+    values_from = c(bodyWeight, tumorWeight, Cc)
   )
-#> Warning: Values from `bodyWeight`, `Cc_pacl` and `tumorWeight` are not uniquely
-#> identified; output will contain list-cols.
+#> Warning: Values from `bodyWeight`, `Cc` and `tumorWeight` are not uniquely identified;
+#> output will contain list-cols.
 #> • Use `values_fn = list` to suppress this warning.
 #> • Use `values_fn = {summary_fun}` to summarise duplicates.
 #> • Use the following dplyr code to identify duplicates.
@@ -478,7 +478,7 @@ knitr::kable(
 )
 ```
 
-| time | bodyWeight_Treated (ID 1, paclitaxel days 8/12/16) | bodyWeight_Control (ID 2, no drug) | tumorWeight_Treated (ID 1, paclitaxel days 8/12/16) | tumorWeight_Control (ID 2, no drug) | Cc_pacl_Treated (ID 1, paclitaxel days 8/12/16) | Cc_pacl_Control (ID 2, no drug) |
+| time | bodyWeight_Treated (ID 1, paclitaxel days 8/12/16) | bodyWeight_Control (ID 2, no drug) | tumorWeight_Treated (ID 1, paclitaxel days 8/12/16) | tumorWeight_Control (ID 2, no drug) | Cc_Treated (ID 1, paclitaxel days 8/12/16) | Cc_Control (ID 2, no drug) |
 |---:|:---|:---|:---|:---|:---|:---|
 | 8 | 22.18863, 22.18863 | 22.18863, 22.18863 | 0.2497531, 0.2497531 | 0.2497533, 0.2497533 | 36895.83, 36895.83 | 0, 0 |
 | 12 | 20.35583, 20.35583 | 21.51524, 21.51524 | 0.5187125, 0.5187125 | 1.423036, 1.423036 | 36895.84, 36895.84 | 0, 0 |
@@ -491,13 +491,13 @@ knitr::kable(
 Treated vs control trajectories at scheduled time points. Treated tumor
 stays smaller; treated body weight stays higher than the control past
 day ~16 once the drug-induced tumor-growth attenuation has accumulated.
-{.table style="width:100%;"}
+{.table}
 
 ``` r
 
 sim_treated |>
   dplyr::filter(time <= 25) |>
-  ggplot(aes(time, Cc_pacl)) +
+  ggplot(aes(time, Cc)) +
   geom_line() +
   geom_vline(xintercept = c(8, 12, 16),
              linetype = "dotted", colour = "grey60") +

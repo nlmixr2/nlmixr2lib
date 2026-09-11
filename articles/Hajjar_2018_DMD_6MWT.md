@@ -13,7 +13,7 @@
   poster T-011) to publicly available individual-level longitudinal
   natural-history 6MWT data from 16 healthy controls and 219 DMD
   patients. The 6MWT is modelled as a one-compartment indirect-response
-  state (walkDist, meters): a zero-order production rate KIN feeds the
+  state (walk_dist, meters): a zero-order production rate KIN feeds the
   state and a first-order dissipation rate KOUT removes it. A change
   point at subject age MTIME (1.75 years) switches KIN from 0 to its
   non-zero value, encoding the developmental lag before toddlers can
@@ -66,7 +66,7 @@ loaded.
 ## Source trace
 
 The structural model is a one-compartment indirect-response ODE in which
-the 6MWT distance state `walkDist` (meters) accumulates from zero under
+the 6MWT distance state `walk_dist` (meters) accumulates from zero under
 a zero-order production rate `KIN(age)` and is removed by a first-order
 dissipation rate `KOUT` multiplied by `(1 + DIS)`, where `DIS` is a
 latent exponential disease process active only for DMD subjects (Hajjar
@@ -74,8 +74,8 @@ latent exponential disease process active only for DMD subjects (Hajjar
 extract):
 
 ``` math
-\frac{\mathrm{d}\,\mathrm{walkDist}}{\mathrm{d}\,t}
-= K_{IN}(t)\;-\;K_{OUT}\cdot\mathrm{walkDist}\cdot(1 + \mathrm{DIS}),
+\frac{\mathrm{d}\,\mathrm{walk_dist}}{\mathrm{d}\,t}
+= K_{IN}(t)\;-\;K_{OUT}\cdot\mathrm{walk_dist}\cdot(1 + \mathrm{DIS}),
 ```
 
 with
@@ -190,7 +190,7 @@ events <- subjects |>
   dplyr::mutate(
     amt  = 0,
     evid = 0L,
-    cmt  = "walkDist"
+    cmt  = "walk_dist"
   )
 stopifnot(!anyDuplicated(unique(events[, c("id", "time")])))
 
@@ -243,7 +243,7 @@ residual error switched off. The healthy population plateaus near
 `KIN / KOUT = 668.75 m` after rising from 0 over roughly 1-2 turnover
 half-lives past `MTIME = 1.75 years`; the DMD population approaches
 `KIN * KCOV / KOUT = 421.4 m` before the latent disease term `(1 + DIS)`
-accelerates the dissipation rate and drives `walkDist` toward zero in
+accelerates the dissipation rate and drives `walk_dist` toward zero in
 the early-to-mid teens.
 
 ``` r
@@ -252,7 +252,7 @@ sim_tv |>
   dplyr::mutate(label = ifelse(DIS_DMD == 1L, "DMD", "Healthy")) |>
   dplyr::filter(id %in% c(subjects$id[subjects$DIS_DMD == 0L][1L],
                           subjects$id[subjects$DIS_DMD == 1L][1L])) |>
-  ggplot(aes(time, walkDist, colour = label)) +
+  ggplot(aes(time, walk_dist, colour = label)) +
   geom_line(linewidth = 0.9) +
   geom_hline(yintercept = 668.75, linetype = "dotted", colour = "grey50") +
   geom_hline(yintercept = 421.4,  linetype = "dotted", colour = "grey50") +
@@ -285,9 +285,9 @@ against closed-form algebra at four canonical ages.
 
 The closed-form expectations:
 
-- At `age = 0`, `walkDist = 0` (initial condition `A_0(1) = 0` in the
+- At `age = 0`, `walk_dist = 0` (initial condition `A_0(1) = 0` in the
   source \$PK).
-- At `age = 1.0` (before `MTIME`), `walkDist` is still zero because
+- At `age = 1.0` (before `MTIME`), `walk_dist` is still zero because
   `KIN(t) = 0` for `t < MTIME` and the state starts at zero.
 - Long after `MTIME` and well before the latent disease takes off, the
   typical healthy 6MWT approaches `KIN / KOUT = 668.75 m`.
@@ -307,7 +307,7 @@ ss_healthy <- KIN_per_year / KOUT_per_year
 ss_dmd_pre <- KIN_per_year * KCOV / KOUT_per_year
 
 # DMD typical 6MWT trajectory closed form (typical-value, no eta):
-# walkDist'(t) = KIN_active(t) - KOUT * walkDist(t) * (1 + DIS(t))
+# walk_dist'(t) = KIN_active(t) - KOUT * walk_dist(t) * (1 + DIS(t))
 # DIS(t) = alpha * exp(beta * t)
 # We integrate analytically using R's deSolve for the closed-form
 # check below -- but the steady-state values above are already
@@ -325,12 +325,12 @@ age_long_dmd_early <- sim_pick |> dplyr::filter(group == "DMD",     time == 4)
 
 checkpoints <- tibble::tribble(
   ~scenario,                            ~expected_m,         ~actual_m,
-  "Healthy, age 0",                      0,                   age_zero$walkDist[age_zero$group == "Healthy"],
-  "DMD,     age 0",                      0,                   age_zero$walkDist[age_zero$group == "DMD"],
-  "Healthy, age 1y (< MTIME)",           0,                   age_pre_mt$walkDist[age_pre_mt$group == "Healthy"],
-  "DMD,     age 1y (< MTIME)",           0,                   age_pre_mt$walkDist[age_pre_mt$group == "DMD"],
-  "Healthy, age 10y, near plateau",      ss_healthy,          age_long_hl$walkDist,
-  "DMD,     age  4y, early DMD plateau", ss_dmd_pre,          age_long_dmd_early$walkDist
+  "Healthy, age 0",                      0,                   age_zero$walk_dist[age_zero$group == "Healthy"],
+  "DMD,     age 0",                      0,                   age_zero$walk_dist[age_zero$group == "DMD"],
+  "Healthy, age 1y (< MTIME)",           0,                   age_pre_mt$walk_dist[age_pre_mt$group == "Healthy"],
+  "DMD,     age 1y (< MTIME)",           0,                   age_pre_mt$walk_dist[age_pre_mt$group == "DMD"],
+  "Healthy, age 10y, near plateau",      ss_healthy,          age_long_hl$walk_dist,
+  "DMD,     age  4y, early DMD plateau", ss_dmd_pre,          age_long_dmd_early$walk_dist
 )
 checkpoints$diff_m <- checkpoints$actual_m - checkpoints$expected_m
 
@@ -387,9 +387,9 @@ vpc_dmd <- sim |>
   dplyr::filter(DIS_DMD == 1L) |>
   dplyr::group_by(time) |>
   dplyr::summarise(
-    Q05 = quantile(walkDist, 0.05, na.rm = TRUE),
-    Q50 = quantile(walkDist, 0.50, na.rm = TRUE),
-    Q95 = quantile(walkDist, 0.95, na.rm = TRUE),
+    Q05 = quantile(walk_dist, 0.05, na.rm = TRUE),
+    Q50 = quantile(walk_dist, 0.50, na.rm = TRUE),
+    Q95 = quantile(walk_dist, 0.95, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -445,7 +445,7 @@ oneyear_events <- tibble::tibble(
   time    = as.numeric(rbind(baseline_ages, baseline_ages + 1)),
   amt     = 0,
   evid    = 0L,
-  cmt     = "walkDist"
+  cmt     = "walk_dist"
 )
 stopifnot(!anyDuplicated(unique(oneyear_events[, c("id", "time")])))
 
@@ -457,13 +457,13 @@ sim_oneyear <- as.data.frame(rxode2::rxSolve(
   )
 
 # Per subject keep only the baseline-age row (the rxSolve output
-# returns walkDist at each event time; the baseline-age row is
+# returns walk_dist at each event time; the baseline-age row is
 # the smaller of the two times per id).
 oneyear_distribution <- sim_oneyear |>
   dplyr::group_by(id, base_age) |>
   dplyr::summarise(
-    base_walkDist  = walkDist[which.min(time)],
-    yr1_walkDist   = walkDist[which.max(time)],
+    base_walk_dist  = walk_dist[which.min(time)],
+    yr1_walk_dist   = walk_dist[which.max(time)],
     .groups = "drop"
   ) |>
   dplyr::mutate(
@@ -479,9 +479,9 @@ oneyear_quantiles <- oneyear_distribution |>
   dplyr::group_by(age_bin) |>
   dplyr::summarise(
     n   = dplyr::n(),
-    Q25 = quantile(yr1_walkDist, 0.25, na.rm = TRUE),
-    Q50 = quantile(yr1_walkDist, 0.50, na.rm = TRUE),
-    Q75 = quantile(yr1_walkDist, 0.75, na.rm = TRUE),
+    Q25 = quantile(yr1_walk_dist, 0.25, na.rm = TRUE),
+    Q50 = quantile(yr1_walk_dist, 0.50, na.rm = TRUE),
+    Q75 = quantile(yr1_walk_dist, 0.75, na.rm = TRUE),
     .groups = "drop"
   )
 knitr::kable(oneyear_quantiles, digits = 1,
@@ -499,7 +499,7 @@ by baseline-age bin in DMD subjects. {.table}
 
 ``` r
 
-ggplot(oneyear_distribution, aes(x = yr1_walkDist)) +
+ggplot(oneyear_distribution, aes(x = yr1_walk_dist)) +
   geom_density(fill = "orange", alpha = 0.5, colour = "orange") +
   facet_wrap(~ age_bin, scales = "free_y") +
   labs(
@@ -520,13 +520,13 @@ left with increasing baseline-age bin).
 
 ## Assumptions and deviations
 
-- **Observation variable name.** The observation is named `walkDist`
+- **Observation variable name.** The observation is named `walk_dist`
   (six-minute walk distance in metres) rather than the canonical `Cc`.
   This is the same justified deviation taken by other non-PK models in
-  the package (`Hamuro_2017_DMD_6MWT.R` uses `walkDist`;
-  `Sherer_2012_AAA.R` uses `aaaSize`; `Harun_2019_cysticFibrosis.R` uses
-  `fev1pp`). `Cc` is PK-centric (central-compartment concentration) and
-  is not appropriate for a non-PK disease-progression endpoint.
+  the package (`Hamuro_2017_DMD_6MWT.R` uses `walk_dist`;
+  `Sherer_2012_AAA.R` uses `aaa_size`; `Harun_2019_cysticFibrosis.R`
+  uses `fev1pp`). `Cc` is PK-centric (central-compartment concentration)
+  and is not appropriate for a non-PK disease-progression endpoint.
 
 - **KOUT BSV applied to all subjects.** Source Table 2 reports two BSVs
   on KOUT (5.40% healthy, 16.7% DMD) but the source \$PK control-stream
@@ -559,11 +559,11 @@ left with increasing baseline-age bin).
 
 - **No M3 censoring.** The source poster does not describe any lower
   quantification limit on the digitised 6MWT records. The packaged model
-  permits `walkDist` values approaching zero (and in long-extrapolation
+  permits `walk_dist` values approaching zero (and in long-extrapolation
   cases below) at advanced DMD ages; this reflects the latent-disease
   structure rather than a modelling shortcut. Consumers extrapolating
   beyond the 4-15-year training range should treat far-decline
-  `walkDist` values as model extrapolation, not data.
+  `walk_dist` values as model extrapolation, not data.
 
 - **Steroid implicit in the population.** Source Results bullet 9 notes
   that conclusions about steroid administration were inconclusive

@@ -161,13 +161,13 @@ than a transcription error.
 ev_gc <- et(seq(0, 192, by = 1))
 gc <- rxode2::rxSolve(mod, ev_gc, returnType = "data.frame", maxsteps = 1e5)
 
-cat(sprintf("Inoculum log10CFU(0)  = %.3f  (Table 2 Log10CFU0 = 7.37)\n", gc$Cc[1]))
+cat(sprintf("Inoculum log10CFU(0)  = %.3f  (Table 2 Log10CFU0 = 7.37)\n", gc$log_cfu[1]))
 #> Inoculum log10CFU(0)  = 7.370  (Table 2 Log10CFU0 = 7.37)
 cat(sprintf("Plateau  log10CFU(192)= %.3f  (expected 0.5*CFUmax = %.3f)\n",
-            tail(gc$Cc, 1), log10(0.5) + 8.80))
+            tail(gc$log_cfu, 1), log10(0.5) + 8.80))
 #> Plateau  log10CFU(192)= 8.499  (expected 0.5*CFUmax = 8.499)
 
-ggplot(gc, aes(time, Cc)) +
+ggplot(gc, aes(time, log_cfu)) +
   geom_line(linewidth = 1) +
   geom_hline(yintercept = log10(0.5) + 8.80, linetype = 2, colour = "grey50") +
   labs(x = "Time (h)", y = expression(log[10]~CFU/mL),
@@ -404,7 +404,7 @@ subpopulation; combinations drive the total below the limit of counting.
   antibiotic- concentration states (`cmem`, `ccip`) are
   mechanism-specific; (b) `lk21` is a fixed mechanistic rate constant
   that is log-transformed for parameterisation consistency; (c) the
-  single observation `Cc` carries a non-PK output (log10 viable count,
-  not a drug concentration); (d) the dosing/concentration units are both
-  `mg/L` because the antibiotic input is a concentration in the in-vitro
-  system.
+  single observation `log_cfu` carries a non-PK output (log10 viable
+  count, not a drug concentration); (d) the dosing/concentration units
+  are both `mg/L` because the antibiotic input is a concentration in the
+  in-vitro system.

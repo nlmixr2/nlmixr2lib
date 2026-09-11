@@ -689,8 +689,8 @@ CFU/mL inoculum.
 
 ``` r
 
-pif_24 <- kill |> filter(matrix == "PIF (index 172.68 h)", time == 24) |> pull(Cc)
-pl_24 <- kill |> filter(matrix == "Plasma (index 55.87 h)", time == 24) |> pull(Cc)
+pif_24 <- kill |> filter(matrix == "PIF (index 172.68 h)", time == 24) |> pull(log_cfu)
+pl_24 <- kill |> filter(matrix == "Plasma (index 55.87 h)", time == 24) |> pull(log_cfu)
 
 stopifnot(
   # At the recommended regimen the PIF index (172.68 h) is far above the PIF

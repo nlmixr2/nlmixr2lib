@@ -18,12 +18,12 @@ disease and type 2 diabetes mellitus. The PD core is an
 indirect-response (turnover) model on serum potassium:
 
 ``` math
-\frac{d}{dt}\,\text{serumK} \;=\; K_{\text{in}}
-\;-\; K_{\text{out}} \cdot \bigl(1 - \text{EFF}\bigr) \cdot \bigl(1 - \text{TEFF}\bigr) \cdot \text{serumK}
+\frac{d}{dt}\,\text{serum_k} \;=\; K_{\text{in}}
+\;-\; K_{\text{out}} \cdot \bigl(1 - \text{EFF}\bigr) \cdot \bigl(1 - \text{TEFF}\bigr) \cdot \text{serum_k}
 ```
 
 with steady-state initial condition
-$`\text{serumK}(0) = K_{\text{out}}^{-1} K_{\text{in}} = \text{BSL}`$
+$`\text{serum_k}(0) = K_{\text{out}}^{-1} K_{\text{in}} = \text{BSL}`$
 and the Emax drug effect
 
 ``` math
@@ -61,7 +61,7 @@ Key features:
 
 1.  **Drug effect on K dissipation.** Finerenone increases serum K by
     slowing the indirect-response loss term
-    $`K_{\text{out}} \cdot (1 - \text{EFF}) \cdot \text{serumK}`$. At
+    $`K_{\text{out}} \cdot (1 - \text{EFF}) \cdot \text{serum_k}`$. At
     steady-state AUC, the typical fractional K increase equals EFF
     (because
     $`K_{\text{out}} \cdot (1 - \text{EFF}) \cdot \text{BSL} \cdot (1+\Delta) = K_{\text{in}}`$
@@ -180,15 +180,15 @@ s_ss <- rxode2::rxSolve(mod0, events = ev_placebo_noDose,
                         returnType = "data.frame")
 #> ℹ omega/sigma items treated as zero: 'etalbaseK', 'etalemax'
 
-ss_start <- s_ss$serumK[s_ss$time == 0]
-ss_end   <- s_ss$serumK[s_ss$time == 24 * 30]
+ss_start <- s_ss$serum_k[s_ss$time == 0]
+ss_end   <- s_ss$serum_k[s_ss$time == 24 * 30]
 ss_drift_pct <- (ss_end / ss_start - 1) * 100
 
-cat(sprintf("serumK at t = 0   : %.6f mmol/L\n", ss_start))
-#> serumK at t = 0   : 4.500000 mmol/L
-cat(sprintf("serumK at t = 30d : %.6f mmol/L  (drift %.4f%% / 30 days)\n",
+cat(sprintf("serum_k at t = 0   : %.6f mmol/L\n", ss_start))
+#> serum_k at t = 0   : 4.500000 mmol/L
+cat(sprintf("serum_k at t = 30d : %.6f mmol/L  (drift %.4f%% / 30 days)\n",
             ss_end, ss_drift_pct))
-#> serumK at t = 30d : 4.500875 mmol/L  (drift 0.0195% / 30 days)
+#> serum_k at t = 30d : 4.500875 mmol/L  (drift 0.0195% / 30 days)
 
 stopifnot(abs(ss_start - 4.50) < 1e-6)
 stopifnot(abs(ss_drift_pct) < 0.1)   # placebo TSLOPE-driven drift < 0.1% / 30d
@@ -301,7 +301,7 @@ s10_sim <- sim_doselevel(10)
 #> ℹ omega/sigma items treated as zero: 'etalbaseK', 'etalemax'
 s20_sim <- sim_doselevel(20)
 #> ℹ omega/sigma items treated as zero: 'etalbaseK', 'etalemax'
-end_k   <- function(s) tail(s$serumK, 1)
+end_k   <- function(s) tail(s$serum_k, 1)
 
 # Strip the disease-progression contribution at t = 180 days (small): with
 # baseK = 4.50, CRCL = 45, UACR = 800, ON_TREATMENT = 1, the active-arm TSLOPE
@@ -400,18 +400,18 @@ sim_fig5 <- rxode2::rxSolve(mod_intr, events = ev_all,
                             returnType = "data.frame")
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:09
 
-# Pick the day-90 (steady state) serumK per subject per cohort.
+# Pick the day-90 (steady state) serum_k per subject per cohort.
 ss_per_subj <- sim_fig5 |>
   dplyr::filter(abs(time - 24 * 90) < 1e-9) |>
-  dplyr::select(id, dose_mg, cohort, serumK)
+  dplyr::select(id, dose_mg, cohort, serum_k)
 
 # Median + 90% PI per dose level.
 ss_summary <- ss_per_subj |>
   dplyr::group_by(dose_mg) |>
   dplyr::summarise(
-    median = median(serumK),
-    Q05    = quantile(serumK, 0.05),
-    Q95    = quantile(serumK, 0.95),
+    median = median(serum_k),
+    Q05    = quantile(serum_k, 0.05),
+    Q95    = quantile(serum_k, 0.95),
     .groups = "drop"
   )
 
@@ -476,7 +476,7 @@ The baseline-K IIV uses a Box-Cox transformation of the exponential eta:
 $`\text{ETATR} = (\exp(\eta_1)^{\text{bxpar}} - 1) / \text{bxpar}`$,
 with bxpar = -1.61. To visualise the resulting per-subject baseline
 distribution, we simulate 5,000 subjects at zero dose and pull the
-predicted serumK at t = 0:
+predicted serum_k at t = 0:
 
 ``` r
 
@@ -495,12 +495,12 @@ baseline_per_subj <- sim_iiv |>
   dplyr::filter(time == 0) |>
   dplyr::summarise(
     n      = dplyr::n(),
-    mean   = round(mean(serumK), 3),
-    median = round(median(serumK), 3),
-    sd     = round(sd(serumK), 3),
-    Q05    = round(quantile(serumK, 0.05), 3),
-    Q95    = round(quantile(serumK, 0.95), 3),
-    skew   = round(mean((serumK - mean(serumK))^3) / sd(serumK)^3, 3)
+    mean   = round(mean(serum_k), 3),
+    median = round(median(serum_k), 3),
+    sd     = round(sd(serum_k), 3),
+    Q05    = round(quantile(serum_k, 0.05), 3),
+    Q95    = round(quantile(serum_k, 0.95), 3),
+    skew   = round(mean((serum_k - mean(serum_k))^3) / sd(serum_k)^3, 3)
   )
 knitr::kable(baseline_per_subj,
              caption = "Distribution of per-subject baseline K in 5,000 simulated reference-covariate subjects.")
@@ -517,7 +517,7 @@ reference-covariate subjects. {.table}
 
 
 ggplot(sim_iiv |> dplyr::filter(time == 0),
-       aes(serumK)) +
+       aes(serum_k)) +
   geom_histogram(bins = 60, fill = "steelblue", colour = "steelblue4") +
   geom_vline(xintercept = 4.50, linetype = "dashed", colour = "tomato") +
   labs(x = "Per-subject baseline serum K (mmol/L)",

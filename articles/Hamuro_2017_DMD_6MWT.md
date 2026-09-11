@@ -188,7 +188,7 @@ agemax_typ <- (270 - 1298) / (-84.9 - 19.6)
 ggplot(sim_typ, aes(x = AGE)) +
   geom_line(aes(y = walk_dev,  colour = "Developmental line"),   linewidth = 0.6, linetype = "dashed") +
   geom_line(aes(y = walk_decl, colour = "Disease-induced line"), linewidth = 0.6, linetype = "dashed") +
-  geom_line(aes(y = walkDist,  colour = "min(line1, line2)"),    linewidth = 0.9) +
+  geom_line(aes(y = walk_dist,  colour = "min(line1, line2)"),    linewidth = 0.9) +
   geom_vline(xintercept = agemax_typ, linetype = "dotted", colour = "grey50") +
   annotate("text", x = agemax_typ + 0.2, y = 100,
            label = sprintf("AGEmax (typical) = %.2f y", agemax_typ),
@@ -201,7 +201,7 @@ ggplot(sim_typ, aes(x = AGE)) +
   labs(
     x = "Age (years)", y = "6MWT (m)", colour = NULL,
     title = "Typical-value Hamuro 2017 Model 4: two linear lines and their minimum",
-    caption = "Dashed lines: walk_dev and walk_decl. Solid line: model prediction walkDist = min(walk_dev, walk_decl)."
+    caption = "Dashed lines: walk_dev and walk_decl. Solid line: model prediction walk_dist = min(walk_dev, walk_decl)."
   ) +
   theme_bw() +
   theme(legend.position = "bottom")
@@ -248,7 +248,7 @@ sim_check <- as.data.frame(rxode2::rxSolve(mod_typ, events = ev_check))
 checkpoints <- tibble::tibble(
   age      = checkpoint_ages,
   expected = closed_form(checkpoint_ages),
-  actual   = sim_check$walkDist[match(checkpoint_ages, sim_check$AGE)]
+  actual   = sim_check$walk_dist[match(checkpoint_ages, sim_check$AGE)]
 )
 checkpoints$diff_m <- checkpoints$actual - checkpoints$expected
 
@@ -323,8 +323,8 @@ simulate_cfb_1yr <- function(cohort_df) {
   sim |>
     dplyr::group_by(id, baseAGE) |>
     dplyr::summarise(
-      base_6mwt = walkDist[time == 0],
-      yr1_6mwt  = walkDist[time == 1],
+      base_6mwt = walk_dist[time == 0],
+      yr1_6mwt  = walk_dist[time == 1],
       cfb       = yr1_6mwt - base_6mwt,
       .groups   = "drop"
     )
@@ -440,9 +440,9 @@ sim_vpc <- as.data.frame(rxode2::rxSolve(mod, events = vpc_ev))
 vpc_summary <- sim_vpc |>
   dplyr::group_by(AGE) |>
   dplyr::summarise(
-    Q05 = quantile(walkDist, 0.05, na.rm = TRUE),
-    Q50 = quantile(walkDist, 0.50, na.rm = TRUE),
-    Q95 = quantile(walkDist, 0.95, na.rm = TRUE),
+    Q05 = quantile(walk_dist, 0.05, na.rm = TRUE),
+    Q50 = quantile(walk_dist, 0.50, na.rm = TRUE),
+    Q95 = quantile(walk_dist, 0.95, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -481,22 +481,22 @@ multiplicative `exp(eta)` IIV.
 
 ## Assumptions and deviations
 
-- **Observation variable name.** The observation is named `walkDist`
+- **Observation variable name.** The observation is named `walk_dist`
   (six-minute walk distance in metres) rather than the canonical `Cc`.
   This generates a warning from
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md);
   the canonical convention is PK-centric (`Cc` = central-compartment
   concentration) and is not appropriate for a non-PK disease-progression
   endpoint. The same justified deviation appears in other non-PK models
-  in the package (`Sherer_2012_AAA.R` uses `aaaSize`;
+  in the package (`Sherer_2012_AAA.R` uses `aaa_size`;
   `Harun_2019_cysticFibrosis.R` uses `fev1pp`; `Tortorici_2017_a1pi.R`
   uses `lungDens`).
 
 - **Concentration units string.**
-  `units$concentration = "m (six-minute walk test distance, observation walkDist)"`
+  `units$concentration = "m (six-minute walk test distance, observation walk_dist)"`
   does not contain the conventional mass/volume slash. The endpoint is a
   walked distance, not a concentration; the unit string declares this
-  explicitly so a future consumer understands what `walkDist`
+  explicitly so a future consumer understands what `walk_dist`
   represents.
 
 - **No ODE compartments.** The model is purely algebraic: 6MWT is a
@@ -512,7 +512,7 @@ multiplicative `exp(eta)` IIV.
   below the 50 m quantification limit (subjects who could no longer
   perform the test). The packaged nlmixr2 model does not include the M3
   censoring component because rxode2 simulation does not need it; the
-  simulation can return walkDist values below 50 m (or even below 0 m
+  simulation can return walk_dist values below 50 m (or even below 0 m
   for ages well beyond AGEmax) where the model is being extrapolated
   outside the calibrated 4 to 15 year range. Consumers applying the
   model in an estimation setting should reapply M3 (or equivalent) to

@@ -189,7 +189,7 @@ sim_typical <- rxode2::rxSolve(mod_fixed, events = ev_typical) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etae_aaadiam_b0', 'etab1_int', 'etab2_int'
 
-ggplot(sim_typical, aes(x = time, y = aaaSize)) +
+ggplot(sim_typical, aes(x = time, y = aaa_size)) +
   geom_line(linewidth = 0.8, colour = "steelblue") +
   geom_hline(yintercept = 40, linetype = "dotted", colour = "grey50") +
   geom_hline(yintercept = 50, linetype = "dashed", colour = "grey50") +
@@ -229,7 +229,7 @@ checkpoints <- tibble::tibble(
   expected = closed_form(t)
 )
 
-actual <- approx(sim_typical$time, sim_typical$aaaSize,
+actual <- approx(sim_typical$time, sim_typical$aaa_size,
                  xout = checkpoints$t, rule = 2)$y
 
 knitr::kable(
@@ -300,7 +300,7 @@ sim_scen <- rxode2::rxSolve(mod_fixed, events = scenario_df,
 #> ℹ omega/sigma items treated as zero: 'etae_aaadiam_b0', 'etab1_int', 'etab2_int'
 #> Warning: multi-subject simulation without without 'omega'
 
-ggplot(sim_scen, aes(x = time, y = aaaSize,
+ggplot(sim_scen, aes(x = time, y = aaa_size,
                      colour = label, linetype = label)) +
   geom_line(linewidth = 0.8) +
   geom_hline(yintercept = 50, linetype = "dashed", colour = "grey50") +
@@ -370,9 +370,9 @@ sim_vpc <- rxode2::rxSolve(mod, events = vpc_events,
 vpc_summary <- sim_vpc |>
   group_by(time) |>
   summarise(
-    Q05 = quantile(aaaSize, 0.05, na.rm = TRUE),
-    Q50 = quantile(aaaSize, 0.50, na.rm = TRUE),
-    Q95 = quantile(aaaSize, 0.95, na.rm = TRUE),
+    Q05 = quantile(aaa_size, 0.05, na.rm = TRUE),
+    Q50 = quantile(aaa_size, 0.50, na.rm = TRUE),
+    Q95 = quantile(aaa_size, 0.95, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -409,7 +409,7 @@ is also consistent with the paper’s reported 27 of 299 men (about 9%).
 
 crossed_50 <- sim_vpc |>
   group_by(id) |>
-  summarise(crossed = any(aaaSize >= 50, na.rm = TRUE), .groups = "drop") |>
+  summarise(crossed = any(aaa_size >= 50, na.rm = TRUE), .groups = "drop") |>
   summarise(n_cross_50 = sum(crossed), pct = mean(crossed) * 100)
 
 knitr::kable(
@@ -435,18 +435,18 @@ $`Y(t) = \beta_{0} + (\beta_{1}/\beta_{2})(\exp(\beta_{2} t) - 1)`$:
 
 ``` r
 
-# Sanity 1: initial condition.  At t = 0 the typical-value aaaSize
+# Sanity 1: initial condition.  At t = 0 the typical-value aaa_size
 # must equal beta0 = e_aaadiam_b0 * (AAA_DIAM / 32.7).
-init_check <- approx(sim_typical$time, sim_typical$aaaSize,
+init_check <- approx(sim_typical$time, sim_typical$aaa_size,
                      xout = 0, rule = 2)$y
 stopifnot(abs(init_check - 32.6) < 0.01)
-cat(sprintf("Sanity 1 (initial condition at t=0): aaaSize(0) = %.3f (expected beta0 = 32.6)\n",
+cat(sprintf("Sanity 1 (initial condition at t=0): aaa_size(0) = %.3f (expected beta0 = 32.6)\n",
             init_check))
-#> Sanity 1 (initial condition at t=0): aaaSize(0) = 32.600 (expected beta0 = 32.6)
+#> Sanity 1 (initial condition at t=0): aaa_size(0) = 32.600 (expected beta0 = 32.6)
 
 # Sanity 2: initial growth rate.  dY/dt(0) must equal beta1 = 1.32
 # mm/year at the cohort-median covariates.
-dt_check <- (approx(sim_typical$time, sim_typical$aaaSize,
+dt_check <- (approx(sim_typical$time, sim_typical$aaa_size,
                     xout = 0.01, rule = 2)$y - init_check) / 0.01
 stopifnot(abs(dt_check - 1.32) < 0.05)
 cat(sprintf("Sanity 2 (initial growth rate at t=0): dY/dt(0) = %.3f mm/year (expected beta1 = 1.32)\n",
@@ -455,11 +455,11 @@ cat(sprintf("Sanity 2 (initial growth rate at t=0): dY/dt(0) = %.3f mm/year (exp
 
 # Sanity 3: closed-form match across the full simulation horizon.
 expected <- 32.6 + (1.32 / -0.09) * expm1(-0.09 * sim_typical$time)
-max_abs_err <- max(abs(sim_typical$aaaSize - expected))
+max_abs_err <- max(abs(sim_typical$aaa_size - expected))
 stopifnot(max_abs_err < 0.05)
-cat(sprintf("Sanity 3 (closed-form match across t=0..10 years): max |aaaSize - analytic| = %.4f mm\n",
+cat(sprintf("Sanity 3 (closed-form match across t=0..10 years): max |aaa_size - analytic| = %.4f mm\n",
             max_abs_err))
-#> Sanity 3 (closed-form match across t=0..10 years): max |aaaSize - analytic| = 0.0000 mm
+#> Sanity 3 (closed-form match across t=0..10 years): max |aaa_size - analytic| = 0.0000 mm
 ```
 
 All three sanity checks pass within tolerance, confirming the model file
@@ -467,8 +467,8 @@ implements the published ODE correctly.
 
 ## Assumptions and deviations
 
-- **Observation variable name.** The observation is named `aaaSize` (AAA
-  diameter in mm) rather than the canonical `Cc`. This generates a
+- **Observation variable name.** The observation is named `aaa_size`
+  (AAA diameter in mm) rather than the canonical `Cc`. This generates a
   warning from
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md);
   the canonical convention is PK-centric (`Cc` = central-compartment
@@ -481,16 +481,16 @@ implements the published ODE correctly.
 - **Compartment name.** The ODE state is `aaa` rather than the canonical
   PK compartment names (`depot`, `central`, …). The state is the AAA
   diameter itself, not a drug compartment; renaming to a PK name would
-  obscure the model’s meaning. The observation variable `aaaSize` is the
-  same state surfaced as the user-facing endpoint. Same pattern as the
-  existing non-PK models cited above.
+  obscure the model’s meaning. The observation variable `aaa_size` is
+  the same state surfaced as the user-facing endpoint. Same pattern as
+  the existing non-PK models cited above.
 
 - **Concentration units string.**
-  `units$concentration = "mm ... observation aaaSize"` does not contain
+  `units$concentration = "mm ... observation aaa_size"` does not contain
   the conventional mass/volume slash. The endpoint is a geometric
   diameter, not a concentration; the unit string declares this
-  explicitly so a future consumer understands what `aaaSize` represents.
-  Documented here per the convention workflow.
+  explicitly so a future consumer understands what `aaa_size`
+  represents. Documented here per the convention workflow.
 
 - **Covariate names.** Three covariates are used: `AAA_DIAM` (baseline
   AAA diameter, mm; new canonical registered in
