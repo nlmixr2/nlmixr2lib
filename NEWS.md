@@ -2,6 +2,13 @@
 
 # development version
 
+- Settle the change-from-baseline naming convention: `<state>cfb` is the
+  library-wide form, and the competing `d_<state>` prefix is retired. The
+  unreleased Zhang 2025 Bietti crystalline dystrophy model's observation is
+  renamed `d_bcva` to `bcvacfb`, and `inst/references/compartment-names.md`
+  now states the rule. The four surviving prefixed names (`d_updrs`, `d_hr`,
+  `d_rr`, `d_viral_load`) convert in a follow-up.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`
