@@ -4298,6 +4298,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Hirt_2006_nelfinavir.R`, `Niu_2017_veliparib.R`.
 - **Notes:** Generalised from the nelfinavir-specific entry to the drug-context-disambiguated form alongside the Niu 2017 veliparib extraction, following the precedent set by `m3` (bedaquiline / sudapyridine). A nelfinavir `m8` and a veliparib `m8` never co-occur in one model file, so the shared token carries no ambiguity within a model.
 
+### m21 (**canonical momelotinib M21 metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** M21, the major circulating metabolite of the JAK1/JAK2/ACVR1 inhibitor momelotinib, formed by cytochrome P450 enzymes followed by aldehyde oxidase and cleared primarily renally (whereas the parent is cleared hepatically). It accounts for 64.2% of the plasma AUC of total radioactivity and retains roughly 0.4x the parent potency against JAK1/2 and ACVR1, so parent and metabolite are combined into a potency-weighted "total active moiety" exposure metric. Used in the parent + metabolite joint popPK extraction of momelotinib.
+- **Source aliases:** none.
+- **Example models:** `Rich_2026_momelotinib.R` (two-compartment M21 formed from eliminated parent in proportion to the fraction metabolised, with a power dependence of M21 clearance on the individual parent clearance and on baseline creatinine clearance).
+- **Notes:** Distinct from `m2` (N-desmethyl-bedaquiline) and from the elinzanetant `m1821` (M18/21) token -- the suffix matcher uses `endsWith(name, "_m21")` and does not collide with either. Note that the momelotinib literature writes the metabolite as "M21" while the elinzanetant literature writes a *different* compound as "M18/21"; the two are unrelated and are deliberately given distinct suffixes.
+
 ### m27 (**canonical elinzanetant M27 metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** M27, one of the two primary metabolites of the dual NK-1/NK-3 receptor antagonist elinzanetant, formed directly from the parent (fraction of parent clearance fixed at 0.3) and itself converted onward to the secondary metabolite M18/21. Present at pharmacologically relevant exposure in human plasma and reported to exert activity similar to the parent. Used in the parent + three-metabolite joint popPK extraction of elinzanetant.

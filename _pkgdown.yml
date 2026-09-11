@@ -2830,6 +2830,8 @@ navbar:
         href: articles/Mukai_2019_mogamulizumab.html
       - text: "Molnupiravir (Bihorel 2023)"
         href: articles/Bihorel_2023_molnupiravir.html
+      - text: "Momelotinib (Rich 2026)"
+        href: articles/Rich_2026_momelotinib.html
       - text: "Monalizumab (Hwang 2023)"
         href: articles/Hwang_2023_monalizumab.html
       - text: "Moroctocog (Abrantes 2017)"
@@ -6428,6 +6430,7 @@ articles:
   - articles/Ribba_2022_ctdna_tumor_size
   - articles/Riccobene_2016_ceftaroline
   - articles/Riccobene_2017_ceftaroline
+  - articles/Rich_2026_momelotinib
   - articles/Richardson_2025_automated_popPK
   - articles/Rietveld_2024_irinotecan
   - articles/Rietveld_2025_docetaxel
