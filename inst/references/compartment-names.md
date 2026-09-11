@@ -1984,6 +1984,13 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `Plan_2012_pain.R` (and its sibling `Plan_2012_bmd_fracture.R`).
 
+### logit_qol_ghs (**canonical logit-scale EORTC QLQ-C30 GHS/QoL PD output**)
+- **Type:** compartment
+- **Role:** Logit-of-fraction transform of the EORTC QLQ-C30 Global Health Status / Quality of Life (GHS/QoL) score, the modelled observation of a patient-reported quality-of-life model. The instrument's raw score runs 0-100 (higher = better); the model works on the 0-1 fraction and observes its logit, because the residual error is additive on the logit scale and it is that transform that keeps a simulated score inside 0-100. The linear-scale counterpart is derived in `model()` as `qol_ghs <- 100 * <fraction>`.
+- **Source aliases:** `TransDV` (Zou 2026 Monolix `[FILEINFO]` / `[LONGITUDINAL]` observation column), `trans(y_ijk)` (Zou 2026 Equation 2).
+- **Example models:** `Zou_2026_pembrolizumab_qol_mbma.R`.
+- **Notes:** Named for the transform-prefix output family (`log10_viral_load`, `log_car`, `log_cfu`) rather than for the instrument alone, because the logit and the 0-100 score are different quantities and a consumer that maps one onto the other misstates every value by the transform. Distinct from the covariate register's `SCORE_*` family, which holds instrument scores supplied as model INPUTS. In an MBMA the residual SD on this scale is divided by `sqrt(N_ARM)` (the arm sample size) rather than being a per-subject quantity -- the observation is an arm MEAN, so its standard error shrinks with arm size; see the `N_ARM` entry in `inst/references/covariate-columns.md`. A single-example canonical: a second QoL model that observes the 0-100 score directly (with a residual on that scale) should use a separate linear-scale name rather than reusing this one.
+
 ### vas_pred (**canonical visual-analog-scale prediction**)
 - **Type:** compartment
 - **Role:** Visual-analog-scale prediction PD output (Valitalo 2017 morphine).
