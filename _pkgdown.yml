@@ -2374,6 +2374,8 @@ navbar:
         href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
       - text: "Levonorgestrel progestinOnlyPill (Reinecke 2018)"
         href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
+      - text: "Levosimendan (Bertin 2026)"
+        href: articles/Bertin_2026_levosimendan.html
       - text: "Lidocaine (He 2025)"
         href: articles/He_2025_lidocaine.html
       - text: "Ligelizumab (Bienczak 2025)"
@@ -5209,6 +5211,7 @@ articles:
   - articles/Bergmann_2014_tacrolimus
   - articles/Berkhout_2015_osteoporosis_placebo
   - articles/Berthaud_2025_cefazolin
+  - articles/Bertin_2026_levosimendan
   - articles/Bertrand_2011_S33138
   - articles/Betts_2018_mAb_linear_PK
   - articles/Betts_2019_pf_06671008
