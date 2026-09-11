@@ -16,6 +16,20 @@
   The encoding is checked in the vignette against the 2024 paper's own printed
   result that paclitaxel raises `CL_ss/F` by 20%.
 
+- Correct a backwards sign-reasoning comment in
+  `FernandezTeruel_2024_capivasertib` and its vignette. Both stated that,
+  because `Imax < 0`, a multiplier above 1 *deepens* the auto-inhibition of
+  `CL/F`. The opposite holds: `Imax` is the log of the fractional inhibition, so
+  a multiplier above 1 drives `Imax_i` further negative, shrinks
+  `exp(Imax_i)`, and therefore shallows the inhibition and raises `CL/F`. The
+  encoded model was always correct -- no parameter value or model behaviour
+  changes -- but the sentence inverted the very reasoning a reader needs in
+  order to follow the dose and paclitaxel effects. The replacement wording
+  anchors the direction in the paper's own dose panel (the multiplier shrinks
+  as dose rises, which is what deepens the inhibition to the printed
+  18% / 22% / 54%). A library-wide sweep of every model that multiplies a log-
+  or logit-scale magnitude by a covariate factor found no other instance.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`

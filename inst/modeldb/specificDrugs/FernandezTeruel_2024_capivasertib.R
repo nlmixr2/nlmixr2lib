@@ -330,8 +330,14 @@ FernandezTeruel_2024_capivasertib <- function() {
     # Fernandez-Teruel 2024 Eq. (f): the dose and paclitaxel effects are
     # MULTIPLICATIVE on the log-scale magnitude, and so is the random effect:
     #   Imax_i = Imax * (1 + (DOSE - 480)*Imax_dose) * (1 + PACL*Imax_pacl) * exp(eta)
-    # Since Imax < 0, a multiplier > 1 deepens the inhibition and a multiplier
-    # < 1 shallows it.
+    # Imax is the LOG of the fractional inhibition and is negative, so the
+    # multiplier acts in the COUNTER-INTUITIVE direction: a multiplier > 1
+    # drives Imax_i further negative, shrinking exp(Imax_i), which SHALLOWS
+    # the inhibition and raises CL/F; a multiplier < 1 DEEPENS it. The dose
+    # panel confirms the direction -- the negative dose slope makes the
+    # multiplier SHRINK as dose rises (1.146 at 400 mg, 1 at 480 mg, 0.414 at
+    # 800 mg), which is what DEEPENS the inhibition with dose and reproduces
+    # the paper's printed 18% / 22% / 54% reductions.
     lcl_time_max_ind <- lcl_time_max *
       (1 + (DOSE_CAPIVASERTIB_MG - 480) * e_dose_cl_time_max) *
       (1 + CONMED_PACLITAXEL * e_pacl_cl_time_max) *
