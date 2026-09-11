@@ -163,6 +163,17 @@ Padavia_2024_paracetamol <- function() {
     # derived in model() as fm_gluc / fm_sulf / fm_cysmer, which ARE
     # fm_<pathway> members.
     #
+    # lclrat_<metab> is the registered canonical for this quantity and
+    # is shared with Leegwater_2025_sulfamethoxazole.R, which carries
+    # the same ratio for a single metabolite as a fixed clrat_nasmx.
+    # Note it is UNITLESS despite the cl root: the cl-rooted names that
+    # really are clearances in L/h are lcl_<metab> (parent-to-metabolite
+    # formation clearance) and lcle_<metab> (the metabolite's own
+    # elimination clearance), and this model carries the latter below.
+    # The derived per-route clearances cl_gluc / cl_sulf / cl_cysmer in
+    # model() ARE in L/h; clrat_gluc and cl_gluc are different
+    # quantities and deliberately differently named.
+    #
     # The "1" in each denominator is the unchanged-renal route's own
     # ratio against itself and is a structural constant of the
     # parameterisation, not an estimated value.

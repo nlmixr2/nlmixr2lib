@@ -89,7 +89,7 @@ source location. Collected here for review:
 | sulfamethoxazole | `lfdepot` | 1 (fixed) | Table 3 "Biological availability 1 Fixed"; control stream `$THETA(5)` |
 | sulfamethoxazole | `e_crcl_cl` | 0.27 | Table 3 "eGFR on CL"; control stream `$THETA(11)` |
 | sulfamethoxazole | `e_rrt_crrt_status_cl` | 2.2 | Table 3 "CRRT on CL"; control stream `$THETA(12)` (see Errata) |
-| sulfamethoxazole | `f_clform_nasmx` | 0.4 (fixed) | Table 3 "Conversion parent metabolite 0.4 x CL"; control stream `K23 = 0.4*CL/V2` |
+| sulfamethoxazole | `clrat_nasmx` | 0.4 (fixed) | Table 3 "Conversion parent metabolite 0.4 x CL"; control stream `K23 = 0.4*CL/V2` |
 | sulfamethoxazole | `lcl_nasmx` | 1.34 L/h | Table 3 metabolite "Apparent clearance"; control stream `$THETA(4)` |
 | sulfamethoxazole | `lvc_nasmx` | 3.98 L | Table 3 metabolite "Volume of distribution"; control stream `$THETA(7)` |
 | sulfamethoxazole | `e_crcl_cl_nasmx` | 0.797 | Table 3 metabolite "eGFR on CL"; control stream `$THETA(10)` |
@@ -728,7 +728,7 @@ disagreement is independently adjudicated by a different published number.
    the sulfamethoxazole compartment, so total elimination is `1.4 x CL` and the
    true fraction metabolised is `0.4/1.4 = 0.286`. This is not a cosmetic
    distinction: it changes sulfamethoxazole exposure by 40%. It is why the model
-   file names the parameter `f_clform_nasmx` (formation clearance as a multiple
+   file names the parameter `clrat_nasmx` (formation clearance as a multiple
    of the elimination clearance) rather than `fm_nasmx`, which by nlmixr2lib
    convention would have to be a share of total clearance.
 
