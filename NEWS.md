@@ -2,6 +2,20 @@
 
 # development version
 
+- Give `FernandezTeruel_2025_capivasertib` a usable concomitant-paclitaxel arm.
+  The 2025 paper keeps the factor `(1 + PACL * Imax_pacl)` in its printed `Imax`
+  equation and defines `Imax_pacl` in the equation legend, but reports no
+  estimate for it anywhere -- not in Table 2, the supplement, or any figure
+  panel. It was previously encoded as `fixed(0)`, which made the paclitaxel
+  covariate inert. It now carries `fixed(1.15)`, borrowed from the 2024 parent
+  model (`FernandezTeruel_2024_capivasertib`, Fernandez-Teruel 2024 Table 3).
+  This is a cross-fit borrow, not a 2025 estimate -- every other shared
+  parameter was re-estimated between the two fits -- and is labelled as such in
+  the model file, the `CONMED_PACLITAXEL` covariate notes, and the vignette
+  Errata. Patients without paclitaxel are unaffected, since `(1 + 0 * 1.15) = 1`.
+  The encoding is checked in the vignette against the 2024 paper's own printed
+  result that paclitaxel raises `CL_ss/F` by 20%.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`
