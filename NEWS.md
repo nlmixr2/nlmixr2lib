@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Hartmann 2026 nintedanib ([doi:10.1002/psp4.70135](https://doi.org/10.1002/psp4.70135)) — children and adolescents 6 to less than 18 years with fibrosing interstitial lung disease; one population PK model and two FVC exposure-response models.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`
