@@ -4470,6 +4470,8 @@ navbar:
         href: articles/Frey_2010_tocilizumab.html
       - text: "Tocilizumab (Frey 2013)"
         href: articles/Frey_2013_tocilizumab.html
+      - text: "Tofacitinib (Tsuchiwata 2026)"
+        href: articles/Tsuchiwata_2026_tofacitinib.html
       - text: "Tolcapone fluctuators (Jorga 2000)"
         href: articles/Jorga_2000_tolcapone.html
       - text: "Tolcapone nonfluctuators (Jorga 2000)"
@@ -6723,6 +6725,7 @@ articles:
   - articles/Tseng_2026_piperacillin
   - articles/Tsuchitani_2024_telmisartan_pbpk
   - articles/Tsuchitani_2026_apixaban_pbpk
+  - articles/Tsuchiwata_2026_tofacitinib
   - articles/Tsuda_2010_tamsulosin
   - articles/Tsuji_2017_linezolid
   - articles/Tsyplakova_2025_mycophenolate

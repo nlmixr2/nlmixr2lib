@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Tsuchiwata 2026 tofacitinib ([doi:10.5414/CP204781](https://doi.org/10.5414/CP204781)) — adults with active ankylosing spondylitis.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`
