@@ -147,7 +147,7 @@ typ_events <- data.frame(
     data.frame(
       id = 1L, WT = 0.8, HT_BIRTH = 33, GA = 25,
       time = c(seq(0, 6, by = 0.02), seq(6.5, 240, by = 0.5)),
-      amt = NA_real_, evid = 0L, cmt = "Cc", rate = NA_real_
+      amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L, rate = NA_real_
     )
   ) |>
   arrange(time, desc(evid))
@@ -239,7 +239,7 @@ ga_events <- data.frame(
   bind_rows(
     data.frame(
       id = seq_along(ga_grid), WT = 0.8, HT_BIRTH = 33, GA = ga_grid,
-      time = 1, amt = NA_real_, evid = 0L, cmt = "Cc", rate = NA_real_
+      time = 1, amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L, rate = NA_real_
     )
   ) |>
   arrange(id, time, desc(evid))
@@ -454,7 +454,7 @@ make_cohort <- function(n, load_mgkg, maint_mgkg, arm, id_offset = 0L) {
 
   obs <- subj |>
     tidyr::crossing(time = c(seq(0, 12, by = 0.5), seq(13, 144, by = 1))) |>
-    mutate(amt = NA_real_, evid = 0L, cmt = "Cc", rate = NA_real_)
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L, rate = NA_real_)
 
   bind_rows(doses, obs) |> arrange(id, time, desc(evid))
 }
@@ -571,7 +571,7 @@ sd_events <- sd_doses |>
     sd_doses |>
       select(id, arm, WT, HT_BIRTH, GA) |>
       tidyr::crossing(time = sd_grid) |>
-      mutate(amt = NA_real_, evid = 0L, cmt = "Cc", rate = NA_real_)
+      mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L, rate = NA_real_)
   ) |>
   arrange(id, time, desc(evid))
 
