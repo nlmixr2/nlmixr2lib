@@ -3578,6 +3578,8 @@ navbar:
         href: articles/Chirehwa_2017_pyrazinamide.html
       - text: "Pyrazinamide (Horita 2018)"
         href: articles/Horita_2018_pyrazinamide.html
+      - text: "Pyrazinamide (Jayanti 2026)"
+        href: articles/Jayanti_2026_pyrazinamide.html
       - text: "Pyrazinamide (Kim 2023)"
         href: articles/Kim_2023_pyrazinamide.html
       - text: "Pyrazinamide mpbpk (Mehta 2023)"
@@ -5814,6 +5816,7 @@ articles:
   - articles/Janssen_2023_pregnancy_cytotoxics
   - articles/Jansson_2008_eflornithine
   - articles/Jaworowicz_2006_levalbuterol
+  - articles/Jayanti_2026_pyrazinamide
   - articles/Jelliffe_2014_digoxin
   - articles/Jensen_2023_lngIus52mg
   - articles/Jeon_2012_C3G
