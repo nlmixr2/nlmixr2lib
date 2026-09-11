@@ -736,6 +736,10 @@ navbar:
         href: articles/AbdulAziz_2025_caspofungin.html
       - text: "Caspofungin (Wurthwein 2013)"
         href: articles/Wurthwein_2013_caspofungin.html
+      - text: "Caspofungin (Xu 2026)"
+        href: articles/Xu_2026_caspofungin.html
+      - text: "Caspofungin optimalDesign (Xu 2026)"
+        href: articles/Xu_2026_caspofungin.html
       - text: "Cebranopadol (Kleideiter 2017)"
         href: articles/Kleideiter_2017_cebranopadol.html
       - text: "Cebranopadol (Kleideiter 2018)"
@@ -6893,6 +6897,7 @@ articles:
   - articles/Xu_2024_linezolid
   - articles/Xu_2025_aficamten
   - articles/Xu_2025_enrofloxacin_largemouthBass
+  - articles/Xu_2026_caspofungin
   - articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas
   - articles/Yadav_2017_imipenem_tobramycin
   - articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab
