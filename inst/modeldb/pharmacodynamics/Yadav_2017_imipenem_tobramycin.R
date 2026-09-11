@@ -142,7 +142,7 @@ Yadav_2017_imipenem_tobramycin <- function() {
     # Residual error
     # =============================================================
     # Table 1: "SD of residual error on log10 scale" = 0.114. The
-    # packaged observation Cc is log10(total viable count) (per the
+    # packaged observation log_cfu is log10(total viable count) (per the
     # in-vivo PD-model convention shared with Landersdorfer 2018);
     # the additive residual SD enters in log10 units directly.
     addSd <- 0.114
@@ -247,12 +247,12 @@ Yadav_2017_imipenem_tobramycin <- function() {
     # =============================================================
     # A 1-CFU floor mirrors the experimental limit of counting and
     # avoids log10(0) if the model drives the total to zero in
-    # simulation. Variable named Cc per nlmixr2lib single-output
+    # simulation. Variable named log_cfu per nlmixr2lib single-output
     # convention; values are log10 CFU/thigh (not a drug
     # concentration), matching the Landersdorfer 2018 in-vitro
     # imipenem-tobramycin PD model in pharmacodynamics/.
     cfu_obs_floor <- cfu_total + 1
-    Cc <- log10(cfu_obs_floor)
-    Cc ~ add(addSd)
+    log_cfu <- log10(cfu_obs_floor)
+    log_cfu ~ add(addSd)
   })
 }

@@ -12,7 +12,7 @@ Cheah_2016_polymyxin_FADDIAB030 <- function() {
   units <- list(
     time          = "h",
     dosing        = "mg (polymyxin B or colistin base, IV bolus or 1-h infusion into IVM central reservoir)",
-    concentration = "log10 CFU/mL (Cc, observed viable count on drug-free agar)"
+    concentration = "log10 CFU/mL (log_cfu, observed viable count on drug-free agar)"
   )
 
   paper_specific_compartments <- c("bact_s", "bact_r", "bact_d", "r_adapt")
@@ -135,8 +135,8 @@ Cheah_2016_polymyxin_FADDIAB030 <- function() {
     cfu0_s     <- cfu0_total - cfu0_r
     kel_ivm    <- cl_ivm / v_ivm
 
-    c_polymyxin     <- central / v_ivm
-    c_polymyxin_um  <- c_polymyxin / mw_polymyxin
+    Cc     <- central / v_ivm
+    c_polymyxin_um  <- Cc / mw_polymyxin
     # Denominator split with parens to work around an rxode2 parser
     # false-positive mu-reference detection that mis-flags
     # 'pop_param + pop_param' as 'THETA + ETA' syntax.
@@ -150,13 +150,13 @@ Cheah_2016_polymyxin_FADDIAB030 <- function() {
     not_occ_h        <- not_occ ^ hill_binding
     ec50_h           <- ec50 ^ hill_binding
     f_polymyxin_eff  <- not_occ_h / ((ec50_h) + (not_occ_h))
-    c_polymyxin_eff  <- f_polymyxin_eff * c_polymyxin / (1 + r_adapt)
+    c_polymyxin_eff  <- f_polymyxin_eff * Cc / (1 + r_adapt)
 
     c_eff_hk   <- c_polymyxin_eff ^ hill_killing
     killc50_hk <- killc50 ^ hill_killing
     kill       <- kill_max * c_eff_hk / ((killc50_hk) + (c_eff_hk))
 
-    stim   <- s_max * c_polymyxin / ((sc50) + (c_polymyxin))
+    stim   <- s_max * Cc / ((sc50) + (Cc))
     f_cost <- g_inhib_max * r_adapt / s_max
 
     cfu_total <- bact_s + bact_r
@@ -182,7 +182,7 @@ Cheah_2016_polymyxin_FADDIAB030 <- function() {
     central(0) <- 0
 
     cfu_obs <- bact_s + bact_r + 1
-    Cc      <- log10(cfu_obs)
-    Cc      ~ add(addSd)
+    log_cfu      <- log10(cfu_obs)
+    log_cfu      ~ add(addSd)
   })
 }

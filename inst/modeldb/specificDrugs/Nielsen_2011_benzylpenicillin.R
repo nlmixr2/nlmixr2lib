@@ -196,13 +196,13 @@ Nielsen_2011_benzylpenicillin <- function() {
     # Observation: natural-log total CFU/mL
     # =============================================================
     # Paper modelled ln(viable count) with additive residual error
-    # on the natural-log scale; the packaged Cc carries the same
+    # on the natural-log scale; the packaged log_cfu carries the same
     # quantity. Add a +1 floor so the output is finite when the
     # bacterial population is driven below detection (e.g., dynamic
     # benzylpenicillin at 16 x MIC). LOD in the experiment was 10
     # CFU/mL.
     cfu_obs_floor <- btot + 1
-    Cc <- log(cfu_obs_floor)
-    Cc ~ add(addSd)
+    log_cfu <- log(cfu_obs_floor)
+    log_cfu ~ add(addSd)
   })
 }

@@ -477,9 +477,9 @@ Bosch_2024_glp1ra_bodyweight <- function() {
 
     # Free drug normalised concentrations (sum across both drugs;
     # only the dosed drug has non-zero state in single-drug simulations).
-    c_lira    <- central_lira / vc_lira
+    Cc_lira    <- central_lira / vc_lira
     c_sema    <- central_sema / vcsema
-    cdrugf_norm <- c_lira * fulira / ec50lira + c_sema * fusema / ec50sema
+    cdrugf_norm <- Cc_lira * fulira / ec50lira + c_sema * fusema / ec50sema
 
     # GLP-1R drug effect with time-dependent tolerance (Bosch 2024 Equations 7a-b)
     glp50     <- tvglp50 + (ssec50 * t) / (t50 + t)
@@ -765,8 +765,8 @@ Bosch_2024_glp1ra_bodyweight <- function() {
     therm(0)       <- 0
 
     # ===== Observations =====
-    Cc        <- bwkg
+    BW        <- bwkg
     wtch_pct  <- 100 * (bwkg - WT) / WT
-    Cc ~ prop(propSd)
+    BW ~ prop(propSd)
   })
 }

@@ -156,7 +156,7 @@ Canini_2018_setrobuvir <- function() {
 
     propSd       <- 0.15;      label("PK proportional residual SD (fraction)")           # Canini 2018 Table 3 footnote: b = 0.15
     addSd        <- 5.38e-3;   label("PK additive residual SD (mg/L; source 5.38 ng/mL)")# Canini 2018 Table 3 footnote: a1 = 5.38 ng/mL = 0.00538 mg/L
-    addSd_Vlog10 <- 0.20;      label("VK additive residual SD on log10 viral load (log10 IU/mL)")  # Canini 2018 Table 3 footnote: a2 = 0.20 log10 IU/mL
+    addSd_log10_viral_load <- 0.20;      label("VK additive residual SD on log10 viral load (log10 IU/mL)")  # Canini 2018 Table 3 footnote: a2 = 0.20 log10 IU/mL
   })
 
   model({
@@ -253,9 +253,9 @@ Canini_2018_setrobuvir <- function() {
     # inside log10() prevents -Inf if virus underflows to zero after full
     # effectiveness.
     # =========================================================================
-    Vlog10 <- log10(virus + 1e-30)
+    log10_viral_load <- log10(virus + 1e-30)
 
     Cc     ~ add(addSd) + prop(propSd)
-    Vlog10 ~ add(addSd_Vlog10)
+    log10_viral_load ~ add(addSd_log10_viral_load)
   })
 }

@@ -140,7 +140,7 @@ make_regimen <- function(id, regimen, doses_rif, doses_inh, doses_emb, doses_pza
     time = obs_day_grid * 24,
     amt  = 0,
     evid = 0L,
-    cmt  = "Cc"
+    cmt  = "log_cfu"
   )
   bind_rows(events, obs) %>%
     mutate(

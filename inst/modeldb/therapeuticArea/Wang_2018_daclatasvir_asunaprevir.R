@@ -252,7 +252,7 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
     # equivalent to averaging the per-fit values; the disagreement is small
     # (sqrt(0.27) = 0.520 vs sqrt(0.29) = 0.539, about 4 percent of the SD)
     # and the choice is documented in the vignette Assumptions section.
-    addSd_Vlog10  <- sqrt(0.28)
+    addSd_log10_viral_load  <- sqrt(0.28)
     label("Viral-load additive residual SD on log10 scale (averaged across DCV and ASV monotherapy fits)")  # Wang 2018 Table 4: sigma^2_DCV = 0.27, sigma^2_ASV = 0.29; averaged
   })
 
@@ -440,16 +440,16 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
     # 14. Observation outputs and residual error.
     # - Cc: DCV plasma concentration in ug/L
     # - Cc_asv: ASV plasma concentration in ug/L
-    # - Vlog10: log10 of free virus concentration (log10(IU/mL)); the
+    # - log10_viral_load: log10 of free virus concentration (log10(IU/mL)); the
     #   1e-12 floor inside log10 prevents -Inf when virus -> 0 after
     #   complete viral eradication.
     # =========================================================================
     Cc     <- cc_dcv_ugL
     Cc_asv <- cc_asv_ugL
-    Vlog10 <- log10(virus + 1e-12)
+    log10_viral_load <- log10(virus + 1e-12)
 
     Cc     ~ prop(propSd)
     Cc_asv ~ add(addSd_asv) + prop(propSd_asv)
-    Vlog10 ~ add(addSd_Vlog10)
+    log10_viral_load ~ add(addSd_log10_viral_load)
   })
 }

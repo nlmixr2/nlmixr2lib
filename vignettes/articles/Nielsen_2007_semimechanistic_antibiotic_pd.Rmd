@@ -361,7 +361,7 @@ deg_check |>
   did not improve the fit (Results p 133). No between-experiment
   variability is encoded here.
 
-- **Observation floor**: the observation `Cc = log10(bact_susceptible +
+- **Observation floor**: the observation `log_cfu = log10(bact_susceptible +
   bact_resting + 1e-6)` includes a small floor to avoid log10(0) if
   the ODE integrator drives the total to numerical zero at high
   antibiotic exposure. This does not affect any simulation above the

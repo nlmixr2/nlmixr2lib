@@ -211,7 +211,7 @@ Bulitta_2010_colistin_URMC1 <- function() {
 
     # ---- observation (Eq. 11) ----
     cfu_obs <- cfu_all + 1
-    Cc      <- log10(cfu_obs)
-    Cc      ~ add(addSd)
+    log_cfu      <- log10(cfu_obs)
+    log_cfu      ~ add(addSd)
   })
 }

@@ -34,7 +34,7 @@ Fiedler-Kelly 2020 develops two exposure-response (E-R) models for fremanezumab,
 
 The EM model relates monthly migraine days to fremanezumab Cav and time-on-treatment via three additive components:
 
-$$\text{migraineDays}(t, C_{av}) = \text{BL}_i - e^{\theta_{P,i}\,t} - \text{BL}_i \cdot E_{\max,i}\,\frac{C_{av}}{EC_{50} + C_{av}}$$
+$$\text{migraine_days}(t, C_{av}) = \text{BL}_i - e^{\theta_{P,i}\,t} - \text{BL}_i \cdot E_{\max,i}\,\frac{C_{av}}{EC_{50} + C_{av}}$$
 
 with the individual baseline a piecewise-linear function of baseline acute-medication days,
 
@@ -58,7 +58,7 @@ Per-parameter origin is recorded as an in-file comment next to each `ini()` entr
 
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|
-| Composite endpoint equation `migraineDays = BL - exp(exp_PLC * t) - BL * Emax * Cav/(EC50+Cav)` | n/a | Figure 2A; Methods — E-R Analysis Methodology |
+| Composite endpoint equation `migraine_days = BL - exp(exp_PLC * t) - BL * Emax * Cav/(EC50+Cav)` | n/a | Figure 2A; Methods — E-R Analysis Methodology |
 | Piecewise-linear baseline `BL = bl_em + slope_AM * max(0, ACUTE_MED_DAYS - 5)` | n/a | Results — Monthly Migraine Days in Patients With EM |
 | `bl_em` (typical baseline at AM ≤ 5 d/mo) | 8.35 d/mo | Table S3 |
 | `slope_AM` (slope on AM days > 5) | 0.438 d/d | Table S3 |
@@ -81,10 +81,10 @@ ev_check <- data.frame(
   ACUTE_MED_DAYS = 0
 )
 sim_check <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = ev_check, returnType = "data.frame")
-sim_check[, c("time", "migraineDays")]
+sim_check[, c("time", "migraine_days")]
 ```
 
-The month-3 placebo migraine-day count is `r round(sim_check$migraineDays[sim_check$time == 3], 2)`, a reduction of `r round(8.35 - sim_check$migraineDays[sim_check$time == 3], 2)` days from the typical baseline — matching the paper's narrative "approximately 3 days per month at 3 months" placebo reduction.
+The month-3 placebo migraine-day count is `r round(sim_check$migraine_days[sim_check$time == 3], 2)`, a reduction of `r round(8.35 - sim_check$migraine_days[sim_check$time == 3], 2)` days from the typical baseline — matching the paper's narrative "approximately 3 days per month at 3 months" placebo reduction.
 
 # Virtual cohort
 
@@ -162,8 +162,8 @@ Figures 3a-b and 4a of Fiedler-Kelly 2020 plot the mean (± 1 SD) monthly migrai
 sim_iiv |>
   group_by(regimen, time) |>
   summarise(
-    mean_md = mean(migraineDays),
-    sd_md   = sd(migraineDays),
+    mean_md = mean(migraine_days),
+    sd_md   = sd(migraine_days),
     .groups = "drop"
   ) |>
   ggplot(aes(time, mean_md, colour = regimen, fill = regimen)) +
@@ -188,7 +188,7 @@ baseline_per_id <- events |>
 
 responders <- sim_iiv |>
   left_join(baseline_per_id, by = c("id", "regimen")) |>
-  mutate(reduction_pct = 100 * (BL - migraineDays) / BL,
+  mutate(reduction_pct = 100 * (BL - migraine_days) / BL,
          responder     = reduction_pct >= 50)
 
 responder_summary <- responders |>
@@ -216,8 +216,8 @@ narrative_compare <- sim_typ |>
   filter(time == 3) |>
   group_by(regimen) |>
   summarise(
-    typical_md_month3 = round(mean(migraineDays), 2),
-    typical_reduction = round(8.35 - mean(migraineDays), 2),
+    typical_md_month3 = round(mean(migraine_days), 2),
+    typical_reduction = round(8.35 - mean(migraine_days), 2),
     .groups = "drop"
   )
 
@@ -240,6 +240,6 @@ PKNCA is the wrong validation target for this model: there is no concentration p
 - **Cav as a per-period covariate, not a model output.** This is a PD-only file. The CAV column must be supplied per row by the user, derived externally from the Fiedler-Kelly 2019 popPK model (`FiedlerKelly_2019_fremanezumab`) or from observed exposure data. CAV = 0 in placebo periods.
 - **Cav values in the virtual cohort.** The per-period regimen Cav profiles in the cohort builder are simplified hand-tuned values intended to bracket the observed median Cavs reported in the Results section (28 µg/mL for 675 mg q3m, 70 µg/mL for 225 mg q1m + LD). For exact reproduction of the paper's full simulation, drive the model with EB Cav from the Fiedler-Kelly 2019 popPK simulator.
 - **`ACUTE_MED_DAYS` distribution.** The virtual cohort draws ACUTE_MED_DAYS from N(3.50, 4.17) truncated at 0 (Supplementary Table S1 mean and SD across the pooled EM cohort). The actual data have a heavily right-skewed distribution with median 0.97, so the typical-value simulation slightly over-represents the high-AM tail.
-- **Observation variable is `migraineDays`, not `Cc`.** The `checkModelConventions()` warning recommending rename to `Cc` is not appropriate for a count-of-days endpoint that is not a concentration. Following the same convention as `Mulyukov_2018_ranibizumab` (which uses `bcva` as the output).
+- **Observation variable is `migraine_days`, not `Cc`.** The `checkModelConventions()` warning recommending rename to `Cc` is not appropriate for a count-of-days endpoint that is not a concentration. Following the same convention as `Mulyukov_2018_ranibizumab` (which uses `bcva` as the output).
 - **`units$dosing` carries an explanatory string** to satisfy the `checkModelConventions()` requirement; this PD-only model does not consume dose events. The model's input is the CAV covariate column.
 - **MU-referencing warning.** `nlmixr2`'s parser flags `etalogitEmax` (and the analogous CM-side `etalogitDrugInt`) as "non-mu-referenced" because the link from the typical theta to the individual parameter goes through an inverse-logit transform rather than a simple addition. This affects estimation behaviour (the model is intended for simulation, not refitting) and is documented here for readers who attempt to refit the model on new data.

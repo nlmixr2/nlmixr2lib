@@ -244,7 +244,7 @@ Yang_2024_naloxone_fentanyl <- function() {
 
     # ---- Outputs
     Cc <- central / vc
-    Cnal <- central_naloxone / vc_naloxone
+    Cc_naloxone <- central_naloxone / vc_naloxone
     # Fractional Emax with competitive naloxone antagonism, equation 12 /
     # control stream (C) $ERROR:
     #   NALEFF = 1 + Ce_nal/EC50_nal

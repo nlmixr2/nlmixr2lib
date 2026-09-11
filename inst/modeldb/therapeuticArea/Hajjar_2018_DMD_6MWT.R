@@ -5,7 +5,7 @@ Hajjar_2018_DMD_6MWT <- function() {
     "dystrophy (DMD), fit by Hajjar et al. (ACoP9 2018 poster T-011) to ",
     "publicly available individual-level longitudinal natural-history ",
     "6MWT data from 16 healthy controls and 219 DMD patients. The 6MWT ",
-    "is modelled as a one-compartment indirect-response state (walkDist, ",
+    "is modelled as a one-compartment indirect-response state (walk_dist, ",
     "meters): a zero-order production rate KIN feeds the state and a ",
     "first-order dissipation rate KOUT removes it. A change point at ",
     "subject age MTIME (1.75 years) switches KIN from 0 to its non-zero ",
@@ -37,7 +37,7 @@ Hajjar_2018_DMD_6MWT <- function() {
   units <- list(
     time          = "year (subject age)",
     dosing        = "n/a (disease-progression model with no drug input)",
-    concentration = "m (six-minute walk test distance, observation walkDist)"
+    concentration = "m (six-minute walk test distance, observation walk_dist)"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -45,7 +45,7 @@ Hajjar_2018_DMD_6MWT <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    walkDist = list(analyte = "6MWT distance", units = NA_character_, specimen = "administration site", verified = FALSE)
+    walk_dist = list(analyte = "6MWT distance", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(
@@ -82,7 +82,7 @@ Hajjar_2018_DMD_6MWT <- function() {
     # (poster T-011, ACoP9, October 2018). The structural model is
     # a one-compartment indirect-response ODE (source poster Results
     # bullet 3 and the $PK + $DES NONMEM control-stream extract):
-    #     d/dt(walkDist) = KIN(age) - KOUT * walkDist * (1 + DIS)
+    #     d/dt(walk_dist) = KIN(age) - KOUT * walk_dist * (1 + DIS)
     # with a change point that switches KIN from 0 to its non-zero
     # value at subject age MTIME, and a latent disease state
     #     DIS = ALPHA * exp(BETA * age)
@@ -180,10 +180,10 @@ Hajjar_2018_DMD_6MWT <- function() {
     dis <- alpha_dis * exp(time * beta_dis)
 
     # ----- Indirect-response ODE for the 6MWT distance state.
-    # walkDist (meters) is initialised at zero (A_0(1) = 0 in the
+    # walk_dist (meters) is initialised at zero (A_0(1) = 0 in the
     # source $PK) and accumulates only after age MTIME.
-    d/dt(walkDist) <- kin_active - kout * walkDist * (1 + dis)
+    d/dt(walk_dist) <- kin_active - kout * walk_dist * (1 + dis)
 
-    walkDist ~ add(addSd)
+    walk_dist ~ add(addSd)
   })
 }

@@ -136,7 +136,7 @@ Xie_2000_m3g_rat <- function() {
     # The brain compartment "concentrations" are per-g-brain ratios of
     # amount to V_u,br (the latter has units of L/g-brain), giving
     # uM = umol/L on the same scale as Cu_pl.
-    cu_pl     <- central     / vc
+    Cc     <- central     / vc
     cu_br_csf <- brain_csf   / vubr1
     cu_br_dp  <- brain_deep  / vubr2
 
@@ -146,13 +146,13 @@ Xie_2000_m3g_rat <- function() {
     # body amount at steady state, so brain efflux does not feed back
     # into the central ODE).
     d/dt(central)    <- -kel * central
-    d/dt(brain_csf)  <-  cluin  * cu_pl -
+    d/dt(brain_csf)  <-  cluin  * Cc -
                          cluout * cu_br_csf -
                          qbr    * (cu_br_csf - cu_br_dp)
     d/dt(brain_deep) <-  qbr    * (cu_br_csf - cu_br_dp)
 
     # ---- Observation: unbound M3G in brain ECF (paper-named output) ----
-    # The plasma concentration cu_pl is computed above for diagnostic /
+    # The plasma concentration Cc is computed above for diagnostic /
     # simulation use but is not declared as an observation here because
     # Xie 2000 reports a residual-error estimate only for the brain ECF
     # fit (Model B, Table 3). The plasma error model belonging to Model A

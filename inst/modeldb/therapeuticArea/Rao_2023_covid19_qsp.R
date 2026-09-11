@@ -813,7 +813,7 @@ Rao_2023_covid19_qsp <- function() {
     # 11. Reported outputs
     # =====================================================================
     # Primary clinical endpoint: nasopharyngeal viral load.
-    viralLoad <- V                                    # viral RNA copies/mL
+    viral_load <- V                                    # viral RNA copies/mL
 
     # Plasma cytokines converted from pmol/mL to pg/mL (state * MW in g/mol).
     # Type I IFN additionally carries the authors' 16/20 assay conversion

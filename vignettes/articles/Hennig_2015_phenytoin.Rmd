@@ -26,7 +26,7 @@ library(ggplot2)
 Hennig and colleagues studied 32 critically ill children admitted to the
 paediatric intensive care unit at Mater Children's Hospital, Brisbane,
 Australia, between November 2006 and October 2009. The model jointly describes
-protein-unbound (Cu) and protein-bound (Cb) phenytoin plasma concentrations
+protein-unbound (Cc) and protein-bound (Cb) phenytoin plasma concentrations
 using a one-compartment disposition for unbound drug coupled with a separate
 "plasma" compartment that, via a linear partition coefficient PUB, reproduces
 the bound concentration measured in plasma. The structural model and final
@@ -83,10 +83,10 @@ table below collects the same information in one place for review.
 | `etalka` (omega^2 IIV ka) | 3.27 | Table 2 IIV ka = 180.8 percent CV |
 | `etalpub` (omega^2 IIV PUB) | 0.0098 | Table 2 IIV PUB = 9.9 percent CV |
 | `etalogitfdepot` (omega^2 logit-F) | 3.30 | NONMEM run186 OMEGA(3,3); Table 2 effective IIV F = 87.7 percent CV via the propagation `IIV_F (CV) ~ sqrt(F * (1 - F)) * omega_F * 100` |
-| `propSd_Cu` (proportional residual SD on Cu) | 0.221 | sqrt(0.136^2 + 0.174^2): assay error PHYu 13.6 percent + common prop 17.4 percent (Table 2) |
+| `propSd_Cc` (proportional residual SD on Cc) | 0.221 | sqrt(0.136^2 + 0.174^2): assay error PHYu 13.6 percent + common prop 17.4 percent (Table 2) |
 | `propSd_Cb` (proportional residual SD on Cb) | 0.202 | sqrt(0.103^2 + 0.174^2): assay error PHYb 10.3 percent + common prop 17.4 percent (Table 2) |
 | ODE: `d/dt(depot)`, `d/dt(central)`, `d/dt(peripheral1)` | n/a | Figure 1 compartment diagram; Methods Pharmacokinetic Modeling p357 |
-| Observation: `Cu = central / vc`, `Cb = (peripheral1 / vp) * pub` | n/a | Figure 1 caption |
+| Observation: `Cc = central / vc`, `Cb = (peripheral1 / vp) * pub` | n/a | Figure 1 caption |
 | `f_u = 1 / (1 + PUB)` | n/a (derived) | p360, used to convert PUB to unbound fraction |
 
 # Virtual cohort
@@ -159,7 +159,7 @@ sample-to-sample variability.
 
 # Single-dose simulations
 
-The published study contributed paired Cu / Cb concentrations from
+The published study contributed paired Cc / Cb concentrations from
 intermittent therapeutic-drug-monitoring samples after multiple doses; raw
 single-dose profiles were not reported. To exercise the model and provide an
 NCA-amenable concentration-time grid, this vignette simulates a single dose
@@ -172,10 +172,10 @@ build_events <- function(cohort, route = c("PO", "IV"), dose_mg_per_kg) {
   obs_grid <- c(seq(0.05, 4, by = 0.25), seq(5, 24, by = 1),
                 seq(28, 72, by = 4))
   # rxode2 requires cmt on observation rows to identify which output to record;
-  # it returns Cu and Cb in the output frame regardless. Use Cu here.
+  # it returns Cc and Cb in the output frame regardless. Use Cc here.
   obs <- tibble::tibble(id = cohort$id) |>
     tidyr::crossing(time = obs_grid) |>
-    dplyr::mutate(amt = 0, evid = 0, cmt = "Cu", rate = 0)
+    dplyr::mutate(amt = 0, evid = 0, cmt = "Cc", rate = 0)
   dose <- cohort |>
     dplyr::transmute(
       id   = id,
@@ -216,21 +216,21 @@ sim_iv_typ <- rxode2::rxSolve(
 sim_typ <- dplyr::bind_rows(sim_po_typ, sim_iv_typ)
 ```
 
-## Typical-value Cu and Cb time courses by weight band
+## Typical-value Cc and Cb time courses by weight band
 
 ```{r typical-curves}
 sim_typ |>
   dplyr::filter(time <= 48) |>
   dplyr::group_by(route, band, time) |>
   dplyr::summarise(
-    Cu_med = median(Cu, na.rm = TRUE),
+    Cc_med = median(Cc, na.rm = TRUE),
     Cb_med = median(Cb, na.rm = TRUE),
     .groups = "drop"
   ) |>
-  tidyr::pivot_longer(c(Cu_med, Cb_med),
+  tidyr::pivot_longer(c(Cc_med, Cb_med),
                       names_to = "species", values_to = "conc") |>
   dplyr::mutate(species = dplyr::recode(species,
-                                        Cu_med = "Unbound (Cu)",
+                                        Cc_med = "Unbound (Cc)",
                                         Cb_med = "Bound (Cb)")) |>
   ggplot(aes(time, conc, colour = band, linetype = species)) +
   geom_line() +
@@ -238,7 +238,7 @@ sim_typ |>
   scale_y_log10() +
   labs(x = "Time after dose (h)", y = "Concentration (mg/L)",
        colour = "Weight band", linetype = "Species",
-       title = "Typical-value Cu and Cb time courses by weight band",
+       title = "Typical-value Cc and Cb time courses by weight band",
        caption = "Single oral 5 mg/kg dose or 30-min IV infusion at 10 mg/kg.")
 ```
 
@@ -259,12 +259,12 @@ sim_po <- rxode2::rxSolve(
 
 ```{r vpc-summary}
 sim_po |>
-  dplyr::filter(time <= 24, !is.na(Cu), !is.na(Cb)) |>
+  dplyr::filter(time <= 24, !is.na(Cc), !is.na(Cb)) |>
   dplyr::group_by(time) |>
   dplyr::summarise(
-    Cu_05 = quantile(Cu, 0.05, na.rm = TRUE),
-    Cu_50 = quantile(Cu, 0.50, na.rm = TRUE),
-    Cu_95 = quantile(Cu, 0.95, na.rm = TRUE),
+    Cc_05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Cc_50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Cc_95 = quantile(Cc, 0.95, na.rm = TRUE),
     Cb_05 = quantile(Cb, 0.05, na.rm = TRUE),
     Cb_50 = quantile(Cb, 0.50, na.rm = TRUE),
     Cb_95 = quantile(Cb, 0.95, na.rm = TRUE),
@@ -276,7 +276,7 @@ sim_po |>
                       values_to = "value") |>
   tidyr::pivot_wider(names_from = pct, values_from = value) |>
   dplyr::mutate(species = dplyr::recode(species,
-                                        Cu = "Unbound (Cu)",
+                                        Cc = "Unbound (Cc)",
                                         Cb = "Bound (Cb)")) |>
   ggplot(aes(time, `50`)) +
   geom_ribbon(aes(ymin = `05`, ymax = `95`), alpha = 0.25) +
@@ -284,13 +284,13 @@ sim_po |>
   facet_wrap(~ species, scales = "free_y") +
   scale_y_log10() +
   labs(x = "Time after dose (h)", y = "Concentration (mg/L)",
-       title = "Simulated 5th / 50th / 95th percentile Cu and Cb after PO 5 mg/kg",
+       title = "Simulated 5th / 50th / 95th percentile Cc and Cb after PO 5 mg/kg",
        caption = "Conceptual analogue to Figure 3 of Hennig 2015 (VPC after a single oral dose).")
 ```
 
 # PKNCA validation
 
-PKNCA is run separately on Cu and Cb from the single-dose oral simulation.
+PKNCA is run separately on Cc and Cb from the single-dose oral simulation.
 Hennig 2015 does not report dose-stratified NCA values (it is a TDM-style
 population PK paper rather than a dose-ranging study), so the table below
 reports the simulated NCA for documentation rather than for direct numerical
@@ -298,15 +298,15 @@ comparison.
 
 ```{r pknca-cu}
 nca_input <- sim_po |>
-  dplyr::filter(!is.na(Cu), !is.na(Cb)) |>
-  dplyr::select(id, time, Cu, Cb, band)
+  dplyr::filter(!is.na(Cc), !is.na(Cb)) |>
+  dplyr::select(id, time, Cc, Cb, band)
 
 dose_df <- events_po |>
   dplyr::filter(evid == 1) |>
   dplyr::select(id, time, amt, band)
 
 conc_obj_cu <- PKNCA::PKNCAconc(
-  nca_input |> dplyr::transmute(id, time, Cc = Cu, band),
+  nca_input |> dplyr::transmute(id, time, Cc = Cc, band),
   Cc ~ time | band + id,
   concu = "mg/L", timeu = "h"
 )
@@ -332,7 +332,7 @@ nca_cb <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_cb, dose_obj,
                                          intervals = intervals))
 
 knitr::kable(summary(nca_cu),
-             caption = "Simulated NCA - unbound phenytoin (Cu) after a single 5 mg/kg oral dose.")
+             caption = "Simulated NCA - unbound phenytoin (Cc) after a single 5 mg/kg oral dose.")
 knitr::kable(summary(nca_cb),
              caption = "Simulated NCA - bound phenytoin (Cb) after a single 5 mg/kg oral dose.")
 ```
@@ -341,7 +341,7 @@ knitr::kable(summary(nca_cb),
 
 Hennig 2015 reports overall study-mean concentrations (Results, p358):
 total PHY 7.56 +- 6.62 mg/L, unbound PHY 0.88 +- 0.79 mg/L, mean unbound
-fraction 0.12 +- 0.03. The simulated single-dose Cu peak above is below the
+fraction 0.12 +- 0.03. The simulated single-dose Cc peak above is below the
 reported study mean because the cohort here receives a single 5 mg/kg dose
 whereas the published cohort had been receiving repeated doses (median trough
 sampling). The unbound fraction at the typical-value albumin (35 g/L)
@@ -365,12 +365,12 @@ cat(sprintf("Typical f_u at ALB = 35 g/L: %.3f (paper-reported mean 0.12).\n",
   on top of the IIV reported on CL.
 - **Within-pair residual-error correlation collapsed.** The published model
   fits two independent EPS slots per output (an analytical-assay error and
-  a shared common-proportional error EPS3 carried across both Cu and Cb of
+  a shared common-proportional error EPS3 carried across both Cc and Cb of
   the same plasma sample). The packaged nlmixr2 model collapses these into
-  a single proportional SD per output: `propSd_Cu = sqrt(0.136^2 +
+  a single proportional SD per output: `propSd_Cc = sqrt(0.136^2 +
   0.174^2)` and `propSd_Cb = sqrt(0.103^2 + 0.174^2)`. The marginal
   proportional residual SD per output is preserved; the within-pair
-  correlation between simultaneously-sampled Cu and Cb residuals induced
+  correlation between simultaneously-sampled Cc and Cb residuals induced
   by the shared common error in NONMEM is not.
 - **Race / ethnicity not reported.** Hennig 2015 Table 1 does not report
   the racial / ethnic distribution of the cohort. The virtual cohort above

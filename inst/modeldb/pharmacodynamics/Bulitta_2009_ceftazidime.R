@@ -227,12 +227,12 @@ Bulitta_2009_ceftazidime <- function() {
     # ceftazidime concentration in mg/L as the dose amount into cb).
 
     # ---- Observation: log10 total viable count (CFU/mL) ---------------------
-    # The single observation Cc carries log10(SRALL) per the nlmixr2lib
+    # The single observation log_cfu carries log10(SRALL) per the nlmixr2lib
     # single-output convention (see units$concentration). A 1e-6 floor avoids
     # log10(0) when drug kill drives all states toward zero. Matches the
     # Wicha 2017 / Landersdorfer 2018 pharmacodynamics/ pattern. Additive
     # residual SD on log10 CFU/mL per Bulitta 2009 Table 2.
-    Cc <- log10(sr_all + 1e-6)
-    Cc ~ add(addSd)
+    log_cfu <- log10(sr_all + 1e-6)
+    log_cfu ~ add(addSd)
   })
 }

@@ -168,7 +168,7 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
     # (eps = 98%) components estimated on natural-log-transformed CFU/mL. For
     # single-observation simulation the combined SD on the natural-log scale is
     # sqrt(0.98^2 + 0.47^2) = 1.087; converted to the log10-CFU/mL observation
-    # scale used here (Cc = log10(bact_susceptible + bact_resting)) this is
+    # scale used here (log_cfu = log10(bact_susceptible + bact_resting)) this is
     # 1.087 / log(10) = 0.472. Held FIXED as a simulation-oriented summary of
     # the two-component fit rather than re-estimated.
     addSd <- fixed(0.472)
@@ -260,12 +260,12 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
     bact_susceptible(0) <- inoc0 * (1 - fpers_marg)
     bact_resting(0)     <- inoc0 * fpers_marg
 
-    # 8. Observation. Cc is the log10 of the total bacterial concentration
+    # 8. Observation. log_cfu is the log10 of the total bacterial concentration
     #    (susceptible + resting), matching the y-axis of Nielsen 2007 Fig 2/3.
     #    A 1e-6 floor prevents log10(0) if the ODE integrator drives the
     #    total to (numerically) zero. Additive residual on log10-CFU scale
     #    is the combined eps + eps_repl summarised above (see ini()).
-    Cc <- log10(bact_susceptible + bact_resting + 1e-6)
-    Cc ~ add(addSd)
+    log_cfu <- log10(bact_susceptible + bact_resting + 1e-6)
+    log_cfu ~ add(addSd)
   })
 }

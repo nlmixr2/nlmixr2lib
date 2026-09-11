@@ -295,7 +295,7 @@ Koolen_2010_docetaxel <- function() {
     # in mg and vc_rtv in L). Drives the competitive CLi inhibition
     # via Koolen 2010 Methods Equation 3.
     # ------------------------------------------------------------
-    crtv     <- central_rtv / vc_rtv
+    Cc_rtv     <- central_rtv / vc_rtv
 
     # ------------------------------------------------------------
     # Individual docetaxel structural parameters.
@@ -334,7 +334,7 @@ Koolen_2010_docetaxel <- function() {
     # well-stirred model treats hepatic extraction and elimination
     # symmetrically.
     # ------------------------------------------------------------
-    cli      <- cli0 / (1 + crtv / ki)
+    cli      <- cli0 / (1 + Cc_rtv / ki)
     fhep     <- qhep / (cli + qhep)
     cl       <- qhep * cli / (cli + qhep)
 
