@@ -91,7 +91,7 @@ Bayoumy_2025_thioguanine <- function() {
     # the elimination rate kel = CL/V -- is 270.46 * 5 = 1352.3 L, not the
     # 270.5 L printed in Table 2. The factor 5 converts nmol/L to the assay's
     # pmol per 200 microlitre (1 nmol/L = 0.2 pmol/200 uL); see Methods 2.3.
-    lvc <- log(270.46 * 5); label("Apparent 6-TGN volume of distribution V/F (L), including the x5 assay unit-conversion factor")  # ESM 1 $THETA 2: (0, 270.46) x V_FACT 5 ($PK); Table 2 prints the unscaled 270.5
+    lvc <- log(270.46 * 5); label("Apparent 6-TGN volume of distribution V/F, including the x5 assay unit-conversion factor (L)")  # ESM 1 $THETA 2: (0, 270.46) x V_FACT 5 ($PK); Table 2 prints the unscaled 270.5
 
     # Allometric exponents, both fixed at the canonical values (Results 3.3:
     # "Estimating both exponents was not better than fixing to 0.75 and 1.0,
@@ -101,7 +101,7 @@ Bayoumy_2025_thioguanine <- function() {
 
     # Concomitant aminosalicylate effect on CL/F, power form on the binary
     # indicator: CL/F * 1.58165^CONMED_AMINO (58% higher CL/F on 5-ASA).
-    e_conmed_amino_cl <- 1.58165; label("Concomitant aminosalicylate multiplier on CL/F (power form: CL/F * 1.58165^CONMED_AMINO)")  # ESM 1 $THETA 7: (0, 1.58165) "; 7 USE of 5-ASA on CL"; Results 3.3 "58% higher CL", RSE 15%
+    e_conmed_amino_cl <- 1.58165; label("Concomitant aminosalicylate multiplier on CL/F, power form CL/F * 1.58165^CONMED_AMINO (unitless)")  # ESM 1 $THETA 7: (0, 1.58165) "; 7 USE of 5-ASA on CL"; Results 3.3 "58% higher CL", RSE 15%
 
     # ---------------------------------------------------------------------
     # Between-subject variability (omega^2 on the log scale).
@@ -136,7 +136,7 @@ Bayoumy_2025_thioguanine <- function() {
     # is 0.145424 * exp(etapropSd). Results 3.2 states this log-transformed
     # error model is "equivalent to a proportional error model".
     # ---------------------------------------------------------------------
-    propSd <- 0.145424; label("Proportional residual error scale (fraction; typical 14.5% before the BSV on residual-error magnitude)")  # ESM 1 $THETA 4: (0, 0.145424) "; 4 prop error"; Table 2 "Residual error magnitude 14.5%"
+    propSd <- 0.145424; label("Proportional residual error scale, typical 14.5% before the BSV on residual-error magnitude (fraction)")  # ESM 1 $THETA 4: (0, 0.145424) "; 4 prop error"; Table 2 "Residual error magnitude 14.5%"
   })
 
   model({
