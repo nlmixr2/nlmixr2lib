@@ -956,6 +956,31 @@ form. Log form `lcl_t50`. Units are the model's time unit.
 - **Notes:** This is the one member where `hill` is the correct role token -- it names the
 shape coefficient itself. See [[cl_time_max]] for the rename rationale.
 
+### cl_pna0 (**canonical value of a maturing parameter at postnatal age zero**)
+- **Type:** bare-pk
+- **Role:** Intercept of an Anderson-Holford postnatal-age maturation curve: the value the maturing parameter takes at PNA 0, in that parameter's own units. Log form `lcl_pna0`. Used in the additive maturation form `cl <- cl_pna0 + cl_matspan * PNA^hill / (pna50^hill + PNA^hill)`. It is the INTERCEPT, not the plateau; the plateau is `cl_pna0 + cl_matspan`.
+- **Source aliases:**
+  - `theta1` -- Kata 2025 Eq. 5 and Table 2 ("theta1 is the intercept of this curve, which corresponds to the GCV clearance at PNA 0").
+- **Example models:** `Kata_2025_ganciclovir_maturation.R` (founding example; `theta1` = 8.80 mL/min/1.73m^2, 95% CI 8.26-9.34).
+- **Notes:** Ratified 2026-09-11 with the Kata 2025 ganciclovir extraction (sidecar request-001 question q1, operator answer C). Substitute the maturing parameter's own stem when the model matures something other than clearance -- the structural sibling `Wu_2024_gfr_maturation.R` matures a glomerular filtration rate and so uses `lgfrbirth` for this role. Distinct from [[cl_time_max]], whose amplitude is a LOG-scale magnitude consumed inside `exp()` and whose driver is time on study rather than the subject's postnatal age.
+
+### cl_matspan (**canonical absolute span of a postnatal-age maturation**)
+- **Type:** bare-pk
+- **Role:** Absolute amount of the maturing parameter gained between postnatal age 0 and full maturation, in that parameter's own units, in the additive Anderson-Holford form `cl <- cl_pna0 + cl_matspan * PNA^hill / (pna50^hill + PNA^hill)`. Log form `lcl_matspan`. It is the SPAN, not the plateau: the asymptote is `cl_pna0 + cl_matspan`.
+- **Source aliases:**
+  - `theta2` -- Kata 2025 Eq. 5 and Table 2, where the Table 2 footnote calls it "the scaling factor".
+- **Example models:** `Kata_2025_ganciclovir_maturation.R` (founding example; `theta2` = 222 mL/min/1.73m^2, 95% CI 169-274, giving an asymptote of 230.8).
+- **Notes:** Ratified 2026-09-11 with the Kata 2025 ganciclovir extraction (sidecar request-001 question q1, operator answer C). Named `matspan` rather than `max` precisely because it is not the maximum the parameter reaches -- naming it `cl_time_max` or `cl_max` would invite a reader to use it as a total clearance, the failure the `cl_exp_component` naming rule warns against. Substitute the maturing parameter's own stem for other parameters; `Wu_2024_gfr_maturation.R` uses `lgfrmax` for the analogous (there allometrically-scaled) plateau.
+
+### pna50 (**canonical postnatal age at half of a maturation span**)
+- **Type:** bare-pk
+- **Role:** Postnatal age at which an Anderson-Holford maturation has covered half of its span, i.e. at which the maturing parameter equals `cl_pna0 + cl_matspan / 2`. Units are days. Log form `lpna50`.
+- **Source aliases:**
+  - `theta4` -- Kata 2025 Eq. 5 and Table 2 ("theta4 describes the maturation half-time"; Results: "the age at 50% maturity of GCV CL, was 95.8 (days)").
+  - `TVPNA50`, `PNA50` -- Wu 2024 Eq. 4 and Table II.
+- **Example models:** `Kata_2025_ganciclovir_maturation.R` (founding example; `theta4` = 95.8 days, 95% CI 79.5-112), `Wu_2024_gfr_maturation.R` (`TVPNA50` = 34 days, power-scaled by gestational age).
+- **Notes:** Ratified 2026-09-11 with the Kata 2025 ganciclovir extraction (sidecar request-001 question q1, operator answer C), formalising the previously-informal usage already shipped in `Wu_2024_gfr_maturation.R`. Distinct from [[cl_t50]]: that half-time belongs to a clearance drifting with time on study or on treatment, whereas `pna50` is anchored to the subject's postnatal age, which is a property of the subject. A model may legitimately carry both. The `pna` anchor in the name is what keeps this out of the bare-`t50` namespace the `cl_time_` family forbids.
+
 ### cl_renal (**canonical bare renal clearance arm**)
 - **Type:** bare-pk
 - **Role:** Bare counterpart of `lcl_renal`. Renal component of an additive renal + non-renal clearance decomposition.
@@ -2076,10 +2101,10 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
 
 ### hill (**canonical Hill / sigmoid-shape coefficient**)
 - **Type:** paper-named-param
-- **Role:** Hill / sigmoid-shape coefficient in sigmoidal Emax / Imax functions: `Cc^hill / (ec50^hill + Cc^hill)`.
+- **Role:** Hill / sigmoid-shape coefficient in sigmoidal Emax / Imax functions: `Cc^hill / (ec50^hill + Cc^hill)`. The same canonical covers a sigmoid whose driver is an AGE rather than a concentration, as in the Anderson-Holford postnatal-age maturation form `cl_pna0 + cl_matspan * PNA^hill / (pna50^hill + PNA^hill)`; there is no separate maturation-specific spelling. Log form `lhill`.
 - **Source aliases:** none.
-- **Example models:** sigmoidal Emax / Imax PD templates.
-- **Notes:** Codified 2026-05-28 per the naming audit. Distinct from `gamma` for Friberg myelosuppression feedback / TGI power-law growth exponents, which retain `gamma` as a mechanistic-role designator.
+- **Example models:** sigmoidal Emax / Imax PD templates; `Kata_2025_ganciclovir_maturation.R` and `Wu_2024_gfr_maturation.R` (postnatal-age maturation sigmoids, `theta3` = 2.79 and `gamma` = 1.03 respectively).
+- **Notes:** Codified 2026-05-28 per the naming audit. Distinct from `gamma` for Friberg myelosuppression feedback / TGI power-law growth exponents, which retain `gamma` as a mechanistic-role designator. The maturation example models were added 2026-09-11 with the Kata 2025 extraction (sidecar request-001 question q1, operator answer C), so that the postnatal-age usage already shipped in `Wu_2024_gfr_maturation.R` stops being an informal precedent. See [[pna50]], [[cl_pna0]] and [[cl_matspan]] for the rest of that family.
 
 ### iplac (**canonical constant fractional placebo inhibition of an IDR production rate**)
 - **Type:** paper-named-param

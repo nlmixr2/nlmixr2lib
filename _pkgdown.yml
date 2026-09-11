@@ -1834,6 +1834,8 @@ navbar:
         href: articles/Yang_2023_ganciclovir_model_repository.html
       - text: "Ganciclovir (Zhou 1996)"
         href: articles/Yang_2023_ganciclovir_model_repository.html
+      - text: "Ganciclovir maturation (Kata 2025)"
+        href: articles/Kata_2025_ganciclovir.html
       - text: "Ganitumab (Zhu 2013)"
         href: articles/Zhu_2013_ganitumab.html
       - text: "Gantenerumab (Grimm 2023)"
@@ -5877,6 +5879,7 @@ articles:
   - articles/Kassir_2014_tacrolimus
   - articles/Kastrissios_2006_apricoxib
   - articles/Kastrissios_2012_managlinatDialanetil
+  - articles/Kata_2025_ganciclovir
   - articles/Kaufman_1999_phenylalanine
   - articles/Kaushal_2024_mRNA0184
   - articles/Kawamura_2018_eribulin

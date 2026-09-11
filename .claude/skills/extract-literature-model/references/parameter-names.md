@@ -711,3 +711,46 @@ course, which is meaningless in isolation but looks like a clearance value.
 
 Periodic (diurnal / circadian) variation is a different structure and keeps its
 own names; do not fold it into `cl_time_` or `cl_exp_`.
+
+## Postnatal-age maturation (Anderson-Holford form)
+
+Neonatal and paediatric papers routinely describe the maturation of an
+elimination process as a sigmoid hyperbolic (Hill) function of **postnatal
+age**, in the Anderson & Holford (Annu Rev Pharmacol Toxicol 2008;48:303-332)
+form. The distinguishing feature is that the maturation term is **additive on
+the absolute scale** and the driver is an *age* axis, not treatment time:
+
+```
+cl <- cl_pna0 + cl_matspan * PNA^hill / (pna50^hill + PNA^hill)
+```
+
+so the curve runs from `cl_pna0` at PNA 0 to the asymptote
+`cl_pna0 + cl_matspan`, reaching the midpoint at `PNA = pna50`.
+
+| Role | Name | Notes |
+|---|---|---|
+| Value of the maturing parameter at postnatal age 0 | `cl_pna0` | The intercept, not the asymptote. Prefix `l` for the log scale (`lcl_pna0`). |
+| Absolute amount gained between birth and full maturation | `cl_matspan` | The *span*, not the plateau: the plateau is `cl_pna0 + cl_matspan`. Named so it cannot be mistaken for a total clearance. |
+| Postnatal age at half of the maturation span | `pna50` | Carries the PNA anchor in the name, so it is distinct from the bare `t50` that `cl_time_` forbids and from a PD `ec50`. |
+| Sigmoidicity of the maturation | `lhill` | Already canonical -- see "Sigmoidal PD shape parameters". No separate maturation-specific spelling. |
+
+Substitute the maturing parameter's own stem for `cl_` when the model matures
+something other than clearance (`gfr_pna0` / `gfr_matspan` for a glomerular
+filtration rate, and so on).
+
+**Boundary against `cl_time_`.** This family is *not* the `cl_time_` family of
+the previous section, and the two must not be merged. `cl_time_max` is defined
+as the magnitude of a **log**-clearance change consumed inside
+`exp(cl_time_max * t^hill/(t50^hill + t^hill))`, and its driver `t` is time on
+study or on treatment. Here the amplitude is an **absolute** increment in the
+parameter's own units and the driver is the subject's postnatal age, which is a
+property of the subject rather than of the analysis. A model that matures with
+age *and* drifts with time on treatment can therefore carry both families at
+once without a name collision.
+
+Example models: `inst/modeldb/specificDrugs/Kata_2025_ganciclovir_maturation.R`
+(founding example; GCV clearance in mL/min/1.73m^2 maturing over postnatal age
+in a preterm neonate) and `inst/modeldb/endogenous/Wu_2024_gfr_maturation.R`
+(the same structure applied to GFR, using the parameter-specific stems
+`lgfrbirth` / `lgfrmax` for the birth value and the allometrically-scaled
+plateau, together with `lpna50` and `lhill`).

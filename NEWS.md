@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Kata 2025 ganciclovir clearance maturation ([doi:10.1186/s40780-025-00496-5](https://doi.org/10.1186/s40780-025-00496-5)) -- an extremely low birth weight preterm neonate with congenital cytomegalovirus infection.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`
