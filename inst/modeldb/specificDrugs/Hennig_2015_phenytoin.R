@@ -50,12 +50,12 @@ Hennig_2015_phenytoin <- function() {
   ini({
     # Structural PK parameters - Hennig 2015 Table 2 final-model column.
     # Reference body weight 70 kg; concentration in mg/L, time in hours.
-    lcl  <- log(14.0); label("Clearance for unbound phenytoin at 70 kg (CL, L/h)")        # Table 2: CL = 14.0 L/h/70 kg
-    lvc  <- log(447);  label("Volume of distribution for unbound phenytoin at 70 kg (V2, L)")  # Table 2: V2 = 447 L/70 kg
-    lvp  <- fixed(log(2.8));        label("Volume of distribution for bound phenytoin at 70 kg, plasma albumin volume (V3, L)")  # Table 2: V3 = 2.8 L/70 kg, fixed
-    lka  <- fixed(log(0.225));      label("First-order oral absorption rate constant (Ka, 1/h)")  # Methods p359 / Table 2: ka = 0.225 1/h, fixed after sensitivity analysis
-    lpub <- log(8.23); label("Unbound-bound partition coefficient at reference albumin 35 g/L (PUB, dimensionless)")  # Table 2: PUB = 8.23 at ALB = 35 g/L
-    lteq <- fixed(log(1.1e-4));     label("Half-life of unbound-bound equilibration, 0.4 s (Teq, h)")  # Methods p358: Teq fixed to 0.4 s = 1.1e-4 h
+    lcl  <- log(14.0); label("Clearance for unbound phenytoin at 70 kg (L/h)")        # Table 2: CL = 14.0 L/h/70 kg
+    lvc  <- log(447);  label("Volume of distribution for unbound phenytoin at 70 kg (L)")  # Table 2: V2 = 447 L/70 kg
+    lvp  <- fixed(log(2.8));        label("Volume of distribution for bound phenytoin at 70 kg, plasma albumin volume (L)")  # Table 2: V3 = 2.8 L/70 kg, fixed
+    lka  <- fixed(log(0.225));      label("First-order oral absorption rate constant (1/h)")  # Methods p359 / Table 2: ka = 0.225 1/h, fixed after sensitivity analysis
+    lpub <- log(8.23); label("Unbound-bound partition coefficient at reference albumin 35 g/L (dimensionless)")  # Table 2: PUB = 8.23 at ALB = 35 g/L
+    lteq <- fixed(log(1.1e-4));     label("Half-life of unbound-bound equilibration, 0.4 s (h)")  # Methods p358: Teq fixed to 0.4 s = 1.1e-4 h
     logitfdepot <- log(0.63 / (1 - 0.63));  label("Logit-transformed oral bioavailability (logit-scale; F = 0.63)")  # Table 2: F1 = 63 percent (logit-transformed in NONMEM run186 to keep F in [0,1])
 
     # Covariate effects
@@ -82,8 +82,8 @@ Hennig_2015_phenytoin <- function() {
     # The within-pair correlation between Cu and Cb residuals induced by the
     # shared EPS3 in NONMEM is not preserved; marginal proportional SD per
     # output is.
-    propSd_Cu <- 0.221; label("Proportional residual SD for unbound phenytoin (Cu, fraction)")  # Table 2: PHYu assay error 13.6 percent combined with common prop 17.4 percent
-    propSd_Cb <- 0.202; label("Proportional residual SD for bound phenytoin (Cb, fraction)")    # Table 2: PHYb assay error 10.3 percent combined with common prop 17.4 percent
+    propSd_Cc <- 0.221; label("Proportional residual SD for unbound phenytoin, the Cc output (fraction)")  # Table 2: PHYu assay error 13.6 percent combined with common prop 17.4 percent
+    propSd_Cb <- 0.202; label("Proportional residual SD for bound phenytoin (fraction)")    # Table 2: PHYb assay error 10.3 percent combined with common prop 17.4 percent
   })
 
   model({
@@ -103,7 +103,7 @@ Hennig_2015_phenytoin <- function() {
     # Split the mu-reference onto its own line so nlmixr2 recognises etalogitfdepot
     # as mu-referenced.
     phi_fdepot <- logitfdepot + etalogitfdepot
-    fdepot <- 1 / (1 + exp(-phi_fdepot))
+    fdepot <- expit(phi_fdepot)
 
     # Micro-constants
     kel <- cl / vc
@@ -122,12 +122,19 @@ Hennig_2015_phenytoin <- function() {
     f(depot) <- fdepot
 
     # Observations (Hennig 2015 Figure 1 caption):
-    #   Cu = A_central / V2
+    #   Cc = A_central / V2      (UNBOUND phenytoin -- see below)
     #   Cb = (A_peripheral1 / V3) * PUB
-    Cu <- central / vc
+    #
+    # `central` holds the UNBOUND phenytoin pool in this model, so `central/vc`
+    # is the unbound concentration; by the library convention that quantity is
+    # `Cc` whatever the pool contains, and the label records that it is unbound.
+    # `Cb` is NOT a second reading of the same space -- it comes from
+    # `peripheral1` -- so there is no total to form as `Cc <- Cu + Cb` the way
+    # `Bausch_2024_cefazolin` does.
+    Cc <- central / vc
     Cb <- (peripheral1 / vp) * pub
 
-    Cu ~ prop(propSd_Cu)
+    Cc ~ prop(propSd_Cc)
     Cb ~ prop(propSd_Cb)
   })
 }

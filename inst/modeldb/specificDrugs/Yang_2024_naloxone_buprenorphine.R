@@ -139,52 +139,52 @@ Yang_2024_naloxone_buprenorphine <- function() {
 
     # --- Naloxone PK (Yang 2024 Table S4; control stream (A) THETA 1-6)
     lktr_naloxone <- fixed(log(0.696))
-    label("Naloxone transit absorption rate constant (KTR, 1/min)")            # (A) THETA 1 = 0.696; Table S4
+    label("Naloxone transit absorption rate constant (1/min)")            # (A) THETA 1 = 0.696; Table S4
     lcl_naloxone <- fixed(log(3.26))
-    label("Naloxone apparent clearance at 70 kg (CL/F, L/min)")                # (A) THETA 2 = 3.26; Table S4
+    label("Naloxone apparent clearance at 70 kg (L/min)")                # (A) THETA 2 = 3.26; Table S4
     e_wt_cl_naloxone <- fixed(0.538)
     label("Allometric exponent of body weight on naloxone CL/F (unitless)")    # (A) THETA 3 = 0.538; Table S4
     lvc_naloxone <- fixed(log(404))
-    label("Naloxone apparent central volume (V2/F, L)")                        # (A) THETA 4 = 404; Table S4
+    label("Naloxone apparent central volume (L)")                        # (A) THETA 4 = 404; Table S4
     lq_naloxone <- fixed(log(0.0847))
-    label("Naloxone apparent intercompartmental clearance (Q/F, L/min)")       # (A) THETA 5 = 0.0847; Table S4
+    label("Naloxone apparent intercompartmental clearance (L/min)")       # (A) THETA 5 = 0.0847; Table S4
     lvp_naloxone <- fixed(log(81.8))
-    label("Naloxone apparent peripheral volume (V3/F, L)")                     # (A) THETA 6 = 81.8; Table S4
+    label("Naloxone apparent peripheral volume (L)")                     # (A) THETA 6 = 81.8; Table S4
 
     # --- Buprenorphine PK (Table S5; control stream (A) THETA 7-12).
     # NONMEM V1/V2/V3 map to the canonical vc/vp/vp2 and Q2/Q3 to q/q2.
     lcl <- fixed(log(1.43))
-    label("Buprenorphine clearance (CL, L/min)")                               # (A) THETA 7 = 1.43; Table S5
+    label("Buprenorphine clearance (L/min)")                               # (A) THETA 7 = 1.43; Table S5
     lvc <- fixed(log(5.71))
-    label("Buprenorphine central volume (V1, L)")                              # (A) THETA 8 = 5.71; Table S5
+    label("Buprenorphine central volume (L)")                              # (A) THETA 8 = 5.71; Table S5
     lq <- fixed(log(1.45))
-    label("Buprenorphine intercompartmental clearance to peripheral1 (Q2, L/min)")  # (A) THETA 9 = 1.45; Table S5
+    label("Buprenorphine intercompartmental clearance to peripheral1 (L/min)")  # (A) THETA 9 = 1.45; Table S5
     lvp <- fixed(log(22.1))
-    label("Buprenorphine first peripheral volume (V2, L)")                     # (A) THETA 10 = 22.1; Table S5
+    label("Buprenorphine first peripheral volume (L)")                     # (A) THETA 10 = 22.1; Table S5
     lq2 <- fixed(log(1.00))
-    label("Buprenorphine intercompartmental clearance to peripheral2 (Q3, L/min)")  # (A) THETA 11 = 1.00; Table S5
+    label("Buprenorphine intercompartmental clearance to peripheral2 (L/min)")  # (A) THETA 11 = 1.00; Table S5
     lvp2 <- fixed(log(135))
-    label("Buprenorphine second peripheral volume (V3, L)")                    # (A) THETA 12 = 135; Table S5
+    label("Buprenorphine second peripheral volume (L)")                    # (A) THETA 12 = 135; Table S5
 
     # --- Biophase equilibration (equation 1 of Appendix S1)
     lke0_naloxone <- fixed(log(0.106))
-    label("Naloxone biophase equilibration rate constant (ke0, 1/min)")        # (A) THETA 13 = 0.106; Table S5
+    label("Naloxone biophase equilibration rate constant (1/min)")        # (A) THETA 13 = 0.106; Table S5
     lke0 <- fixed(log(0.00404))
-    label("Buprenorphine biophase equilibration rate constant (ke0, 1/min)")   # (A) THETA 14 = 0.00404; Table S5
+    label("Buprenorphine biophase equilibration rate constant (1/min)")   # (A) THETA 14 = 0.00404; Table S5
 
     # --- MOP receptor association / dissociation (equations 4-6)
     lkon <- fixed(log(0.203))
-    label("Buprenorphine receptor association rate constant (kon, mL/ng/min)") # (A) THETA 15 = 0.203; Table S5
+    label("Buprenorphine receptor association rate constant (mL/ng/min)") # (A) THETA 15 = 0.203; Table S5
     lkoff <- fixed(log(0.0172))
-    label("Buprenorphine receptor dissociation rate constant (koff, 1/min)")   # (A) THETA 16 = 0.0172; Table S5
+    label("Buprenorphine receptor dissociation rate constant (1/min)")   # (A) THETA 16 = 0.0172; Table S5
     lec50_naloxone <- fixed(log(1.87))
     label("Naloxone equilibrium dissociation constant (KD = koff/kon, ng/mL)") # (A) THETA 17 = 1.87; Table S5
 
     # --- Linear transduction function (equation 7)
     lalpha <- fixed(log(0.67))
-    label("Buprenorphine intrinsic activity (alpha, unitless 0-1)")            # (A) THETA 18 = 0.67; Table S5
+    label("Buprenorphine intrinsic activity (unitless 0-1)")            # (A) THETA 18 = 0.67; Table S5
     le0 <- fixed(log(24.0))
-    label("Baseline minute ventilation (V0, L/min)")                           # Table S5: V0 24.0 L/min (carried as the E0 data column in control stream (A))
+    label("Baseline minute ventilation (L/min)")                           # Table S5: V0 24.0 L/min (carried as the E0 data column in control stream (A))
 
     # --- IIV. Control stream (A) $OMEGA entries 1-13, in order. Table S5
     # prints these as "IIV (%)"; each tabulated percentage is the square
@@ -290,7 +290,7 @@ Yang_2024_naloxone_buprenorphine <- function() {
 
     # ---- Outputs
     Cc <- central / vc
-    Cnal <- central_naloxone / vc_naloxone
+    Cc_naloxone <- central_naloxone / vc_naloxone
     # Linear transduction function, equation 7 / control stream (A)
     # $ERROR E = E0*(1 - ALPHA*A(12)).
     VE <- e0 * (1 - alpha * RL_op)

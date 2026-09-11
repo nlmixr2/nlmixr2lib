@@ -83,10 +83,10 @@ Bijleveld_2017_gentamicin <- function() {
     # Model column). All four typical values are reported on the linear
     # scale per 70 kg reference; nlmixr2lib log-transforms positive-
     # constrained parameters.
-    lcl <- log(1.00);  label("Clearance (CL, L/h per 70 kg)")                 # Bijleveld 2017 Table 3 Final model: 1.00 L/h/70 kg
-    lvc <- log(37.4);  label("Central volume of distribution (Vc, L per 70 kg)") # Bijleveld 2017 Table 3 Final model: 37.4 L/70 kg
-    lq  <- log(0.57);  label("Intercompartmental clearance (Q, L/h per 70 kg)")  # Bijleveld 2017 Table 3 Final model: 0.57 L/h/70 kg
-    lvp <- log(17.1);  label("Peripheral volume of distribution (Vp, L per 70 kg)") # Bijleveld 2017 Table 3 Final model: 17.1 L/70 kg
+    lcl <- log(1.00);  label("Clearance (L/h per 70 kg)")                 # Bijleveld 2017 Table 3 Final model: 1.00 L/h/70 kg
+    lvc <- log(37.4);  label("Central volume of distribution (L per 70 kg)") # Bijleveld 2017 Table 3 Final model: 37.4 L/70 kg
+    lq  <- log(0.57);  label("Intercompartmental clearance (L/h per 70 kg)")  # Bijleveld 2017 Table 3 Final model: 0.57 L/h/70 kg
+    lvp <- log(17.1);  label("Peripheral volume of distribution (L per 70 kg)") # Bijleveld 2017 Table 3 Final model: 17.1 L/70 kg
 
     # Allometric body-weight exponents (Bijleveld 2017 Table 3 footnotes
     # b-e: TVCl uses (BW/70)^0.75, TVVc uses (BW/70)^1, TVQ uses (BW/70)^0.75,

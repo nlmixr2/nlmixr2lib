@@ -112,16 +112,16 @@ Na_2025_hosu53_dog <- function() {
     # NCA half-life reported for dogs in Section 3.2.
     # ------------------------------------------------------------------
     logitfdepot <- log(0.67 / (1 - 0.67)); label("Logit of oral bioavailability F (unitless; F = 0.67)")  # Table 3 (F = 0.67, RSE 2.8%); logit scale per Section 2.5
-    lka         <- log(1.53);              label("First-order absorption rate constant (Ka, 1/h)")        # Table 3 (Ka = 1.53 /h, RSE 12.6%)
-    lcl         <- fixed(log(150));        label("Clearance (CL, mL/h)")                                  # Table 3 (CL = 150 mL/h, from the IV-only fit)
-    lvc         <- fixed(log(980));        label("Central volume of distribution (V1, mL)")               # Table 3 (V1 = 980 mL, from the IV-only fit)
+    lka         <- log(1.53);              label("First-order absorption rate constant (1/h)")        # Table 3 (Ka = 1.53 /h, RSE 12.6%)
+    lcl         <- fixed(log(150));        label("Clearance (mL/h)")                                  # Table 3 (CL = 150 mL/h, from the IV-only fit)
+    lvc         <- fixed(log(980));        label("Central volume of distribution (mL)")               # Table 3 (V1 = 980 mL, from the IV-only fit)
     # Table 3's row header reads "Q (mL/h)" but its abbreviation footnote reads
     # "Q, intercompartment clearance (L/h)". mL/h is the correct reading: it is
     # the unit consistent with CL (150 mL/h) and V1 (980 mL) in the same table,
     # 400 L/h is physiologically impossible in a dog, and only mL/h reproduces
     # the 6-8 h NCA half-life of Section 3.2.
-    lq          <- fixed(log(400));        label("Intercompartmental clearance (Q, mL/h)")                # Table 3 (Q = 400 mL/h, from the IV-only fit)
-    lvp         <- fixed(log(490));        label("Peripheral volume of distribution (V2, mL)")            # Table 3 (V2 = 490 mL, from the IV-only fit)
+    lq          <- fixed(log(400));        label("Intercompartmental clearance (mL/h)")                # Table 3 (Q = 400 mL/h, from the IV-only fit)
+    lvp         <- fixed(log(490));        label("Peripheral volume of distribution (mL)")            # Table 3 (V2 = 490 mL, from the IV-only fit)
 
     # ------------------------------------------------------------------
     # DHO indirect-response (turnover) PD parameters (Na 2025 Table 3).
@@ -134,11 +134,11 @@ Na_2025_hosu53_dog <- function() {
     # exponent of the sigmoidal Imax function, so it is the canonical
     # `lhill` rather than `lgamma`.
     # ------------------------------------------------------------------
-    lrbase <- log(0.06); label("Baseline (steady-state) plasma DHO concentration (R0, umol/L)")            # Table 3 (R0 = 0.06 umol/L, RSE 1.6%)
-    lkout  <- log(52);   label("First-order DHO degradation rate constant (Kout, 1/h)")                    # Table 3 (Kout = 52 /h, RSE 11.4%)
-    lic50  <- log(0.1);  label("HOSU-53 concentration giving half-maximal inhibition of DHO degradation (IC50, umol/L)")  # Table 3 (IC50 = 0.1 umol/L, RSE 10.3%)
-    lhill  <- log(1.9);  label("Sigmoidicity (Hill) exponent of the inhibitory function (gamma, unitless)")  # Table 3 (gamma = 1.9, RSE 1.6%)
-    limax  <- fixed(log(1)); label("Maximum fractional inhibition of DHO degradation (Imax, unitless)")      # Section 3.4 equation carries no Imax term, i.e. Imax = 1
+    lrbase <- log(0.06); label("Baseline (steady-state) plasma DHO concentration (umol/L)")            # Table 3 (R0 = 0.06 umol/L, RSE 1.6%)
+    lkout  <- log(52);   label("First-order DHO degradation rate constant (1/h)")                    # Table 3 (Kout = 52 /h, RSE 11.4%)
+    lic50  <- log(0.1);  label("HOSU-53 concentration giving half-maximal inhibition of DHO degradation (umol/L)")  # Table 3 (IC50 = 0.1 umol/L, RSE 10.3%)
+    lhill  <- log(1.9);  label("Sigmoidicity (Hill) exponent of the inhibitory function (unitless)")  # Table 3 (gamma = 1.9, RSE 1.6%)
+    limax  <- fixed(log(1)); label("Maximum fractional inhibition of DHO degradation (unitless)")      # Section 3.4 equation carries no Imax term, i.e. Imax = 1
 
     # ------------------------------------------------------------------
     # Inter-individual variability (Na 2025 Table 3).
@@ -172,7 +172,7 @@ Na_2025_hosu53_dog <- function() {
     # F is logit-normal (Section 2.5); the remaining parameters are
     # log-normal. CL carries the IIV that was fixed from the IV-only fit.
     logit_f <- logitfdepot + etalogitfdepot
-    fdepot  <- 1 / (1 + exp(-logit_f))
+    fdepot  <- expit(logit_f)
     ka     <- exp(lka + etalka)
     cl     <- exp(lcl + etalcl)
     vc     <- exp(lvc)

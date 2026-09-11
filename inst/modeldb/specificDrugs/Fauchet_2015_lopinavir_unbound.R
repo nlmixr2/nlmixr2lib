@@ -81,8 +81,8 @@ Fauchet_2015_lopinavir_unbound <- function() {
     # Source: Fauchet 2015 Table 2 ("Population pharmacokinetic parameters of lopinavir
     # from the unbound fraction model").
     lka <- log(0.408); label("Absorption rate constant (1/h)")                                  # Table 2 row 'Ka' = 0.408 /h
-    lcl <- log(316);   label("Apparent unbound clearance (CL_unbound/F, L/h)")                  # Table 2 row 'CL' = 316 L/h
-    lvc <- log(2220);  label("Apparent unbound volume of distribution (V_unbound/F, L)")        # Table 2 row 'V' = 2,220 L
+    lcl <- log(316);   label("Apparent unbound clearance (L/h)")                  # Table 2 row 'CL' = 316 L/h
+    lvc <- log(2220);  label("Apparent unbound volume of distribution (L)")        # Table 2 row 'V' = 2,220 L
 
     # Protein-binding parameters (paper-mechanistic). HSA term is linear in the protein
     # concentration; AAG term is single-site saturable. Source: Fauchet 2015 Table 2 and

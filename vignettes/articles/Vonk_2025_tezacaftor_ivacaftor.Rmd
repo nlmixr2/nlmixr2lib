@@ -1,0 +1,701 @@
+---
+title: "Tezacaftor-ivacaftor in children with cystic fibrosis (Vonk 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tezacaftor-ivacaftor in children with cystic fibrosis (Vonk 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Models and source
+
+The SYM-CF study reported **two** population PK models, fitted separately: one
+for tezacaftor together with its metabolite M1, and one for ivacaftor together
+with its metabolites M1 and M6. They are packaged as two model files that share
+this vignette.
+
+```{r models}
+tez_ui <- rxode2::rxode(readModelDb("Vonk_2025_tezacaftor"))
+iva_ui <- rxode2::rxode(readModelDb("Vonk_2025_ivacaftor"))
+```
+
+* Citation: `r tez_ui$reference`
+* Article: <https://doi.org/10.1002/bcp.70131>
+* Tezacaftor model: `Vonk_2025_tezacaftor` -- `r tez_ui$description`
+* Ivacaftor model: `Vonk_2025_ivacaftor` -- `r iva_ui$description`
+
+# Population
+
+Twenty-one children with cystic fibrosis (cwCF) taking tezacaftor-ivacaftor as
+chronic therapy were enrolled from three Dutch hospitals between May 2021 and
+August 2022 (Vonk 2025 Table 1). Median age was 12 years (range 6-17), median
+weight 43.5 kg (range 23.6-69.8) and median height 153 cm (range 122-191); 11
+(52%) were female. Sixteen (76%) were homozygous for F508del and five (24%)
+heterozygous (four with A455E, one with 3849+10kbC>T). Exocrine pancreatic
+insufficiency was present in 20 (95%) and distal intestinal obstruction syndrome
+in four (19%); none had CF-related diabetes.
+
+Dosing followed the Symkevi product information and splits the cohort into three
+groups: 6-11 years and <30 kg (n = 3, half the adult dose), 6-11 years and
+>=30 kg (n = 7, adult dose) and 12-17 years (n = 11, adult dose). The adult dose
+is tezacaftor 100 mg once daily plus ivacaftor 150 mg twice daily; the half dose
+is tezacaftor 50 mg once daily plus ivacaftor 75 mg twice daily.
+
+Ninety-seven PK samples were analysed (13 venous plasma, 84 dried blood spot;
+median 5 per patient, range 2-7). Because the data were sparse, the models were
+fitted in NONMEM 7.5.1 with the PRIOR subroutine, taking adolescent/adult prior
+information from the Symdeko registration document; clearance and its IIV were
+estimated without a prior. Patients had been on treatment for at least two weeks
+before inclusion, so every observation is at steady state.
+
+The same information is available programmatically from either model's
+`population` metadata:
+
+```{r population}
+str(tez_ui$population[c("species", "n_subjects", "age_range", "weight_range",
+                        "dosing_groups")])
+```
+
+# Source trace
+
+Every `ini()` entry carries an in-file comment naming its source location. The
+table below collects them. All parameter values come from the "Estimates Value
+(RSE)" columns of **Vonk 2025 Table 2**; the bootstrap medians in the same table
+are not encoded.
+
+| Model | Parameter | Value | Source location |
+|---|---|---|---|
+| tezacaftor | `lcl` | 1.95 L/h/70 kg | Table 2, tezacaftor CL (RSE 6%), no prior |
+| tezacaftor | `lvc` | 38.4 L/70 kg | Table 2, tezacaftor Vc (RSE 7%), vague prior |
+| tezacaftor | `lq` | 0.19 L/h/70 kg | Table 2, tezacaftor Q (RSE 29%), moderate prior |
+| tezacaftor | `lvp` | 36.4 L/70 kg | Table 2, tezacaftor Vp (RSE 29%), moderate prior |
+| tezacaftor | `lka` | 2.95 1/h | Table 2, tezacaftor Ka (RSE 10%), informative prior |
+| tezacaftor | `ld1` | 1.06 h | Table 2, tezacaftor D1 (RSE 28%), moderate prior |
+| tezacaftor | `lcl_m1` | 1.01 L/h/70 kg | Table 2, tezacaftor-M1 CL (RSE 6%), no prior |
+| tezacaftor | `lvc_m1` | 4.86 L/70 kg | Table 2, tezacaftor-M1 Vc (RSE 28%), informative prior |
+| tezacaftor | `lq_m1` | 3.70 L/h/70 kg | Table 2, tezacaftor-M1 Q (RSE 19%), moderate prior |
+| tezacaftor | `lvp_m1` | 37.5 L/70 kg | Table 2, tezacaftor-M1 Vp (RSE 10%), informative prior |
+| tezacaftor | `fm` | 1 (fixed) | Section 2.3, "the fraction parent drug metabolized into the metabolite was fixed to 1 for fm,M1" |
+| tezacaftor | `etalcl` | 26 CV% | Table 2, tezacaftor IIV CL (RSE 19%, shrinkage 6%) |
+| tezacaftor | `etalcl_m1` | 24 CV% | Table 2, tezacaftor-M1 IIV CL (RSE 19%, shrinkage 5%) |
+| tezacaftor | `propSd` | 0.26 | Table 2, tezacaftor prop. error (RSE 9%) |
+| tezacaftor | `propSd_m1` | 0.20 | Table 2, tezacaftor-M1 prop. error (RSE 9%) |
+| ivacaftor | `lcl` | 15.9 L/h/70 kg | Table 2, ivacaftor CL (RSE 9%), no prior |
+| ivacaftor | `lvc` | 178 L/70 kg | Table 2, ivacaftor Vc (RSE 20%), vague prior |
+| ivacaftor | `lq` | 13.2 L/h/70 kg | Table 2, ivacaftor Q (RSE 25%), moderate prior |
+| ivacaftor | `lvp` | 106 L/70 kg | Table 2, ivacaftor Vp (RSE 26%), moderate prior |
+| ivacaftor | `lka` | 0.506 1/h | Table 2, ivacaftor Ka (RSE 10%), informative prior |
+| ivacaftor | `ld1` | 2.59 h | Table 2, ivacaftor D1 (RSE 10%), informative prior |
+| ivacaftor | `lcl_m1` | 2.10 L/h/70 kg | Table 2, ivacaftor-M1 CL (RSE 10%), no prior |
+| ivacaftor | `lcl_m6` | 12.2 L/h/70 kg | Table 2, ivacaftor-M6 CL (RSE 16%), no prior |
+| ivacaftor | `lvc_m1`, `lvc_m6` | 0.1 x 178 = 17.8 L/70 kg (fixed) | Table 2 "0.1 * V iva"; Section 3.2.2 |
+| ivacaftor | `fm_m1` | 0.22 (fixed) | Section 2.3, "fixed to 22 and 43% for fm,M1 and fm,M6" |
+| ivacaftor | `fm_m6` | 0.43 (fixed) | Section 2.3 |
+| ivacaftor | `etalcl` | 40 CV% | Table 2, ivacaftor IIV CL (RSE 37%, shrinkage 5%) |
+| ivacaftor | `etalcl_m1` | 44 CV% | Table 2, ivacaftor-M1 IIV CL (RSE 38%, shrinkage 3%) |
+| ivacaftor | `etalcl_m6` | 76 CV% | Table 2, ivacaftor-M6 IIV CL (RSE 37%, shrinkage 3%) |
+| ivacaftor | `propSd` | 0.34 | Table 2, ivacaftor prop. error (RSE 10%) |
+| ivacaftor | `propSd_m1_plasma` / `_dbs` | 0.37 / 0.36 | Table 2, ivacaftor-M1 prop. error plasma / DBS |
+| ivacaftor | `propSd_m6_plasma` / `_dbs` | 0.98 / 0.50 | Table 2, ivacaftor-M6 prop. error plasma / DBS |
+| both | `e_wt_cl_q` = 0.75, `e_wt_vc_vp` = 1 | fixed | Table 2 footnote a: `CL = thetaCL*(weight/70)^0.75`, `Q = thetaQ*(weight/70)^0.75`, `Vc/p = thetaV*(weight/70)^1`, for parent and metabolites alike |
+| both | allometric equations | n/a | Equations 1 and 2 |
+| both | IIV model `CL = thetaCL * exp(eta_CL)` | n/a | Equation 3 |
+| both | residual model `Y = IPRED*(1 + theta_prop) + theta_add` | n/a | Equation 4 (only the proportional term retained) |
+| tezacaftor | ODE structure (2-cmt parent, 2-cmt M1, zero- then first-order absorption) | n/a | Figure 1 and Section 2.3 |
+| ivacaftor | ODE structure (2-cmt parent, 1-cmt M1 and M6 off the parent central compartment) | n/a | Figure 2 and Section 2.3 |
+
+No covariate other than body weight entered either final model: the covariates
+screened on CL (age, adherence, CF mutation) showed no relationship
+(Sections 3.2.1 and 3.2.2).
+
+# Dose groups and the weights used here
+
+Vonk 2025 reports demographics for the cohort as a whole (Table 1) but
+exposures per dose group (Tables 3 and 4), without publishing a per-group
+weight. Since weight is the model's only covariate, a representative weight per
+group has to be chosen to reproduce those tables at all. The values below are
+the ones used throughout this vignette; they respect each group's definition and
+the cohort's 23.6-69.8 kg range, and are the assumption that the comparison
+tables below then test.
+
+```{r groups}
+groups <- tibble::tribble(
+  ~grp,            ~label,                    ~wt, ~tez_dose, ~iva_dose,
+  "6-11y <30kg",   "6-11 y, <30 kg",           26,        50,        75,
+  "6-11y >=30kg",  "6-11 y, >=30 kg",          33,       100,       150,
+  "12-17y",        "12-17 y",                  50,       100,       150
+)
+knitr::kable(
+  groups |>
+    dplyr::select(-grp) |>
+    dplyr::rename(
+      "Dose group"                = label,
+      "Assumed weight (kg)"       = wt,
+      "Tezacaftor (mg once daily)" = tez_dose,
+      "Ivacaftor (mg twice daily)" = iva_dose
+    ),
+  caption = "Dose groups (Vonk 2025 Table 1 and Table 3) and the weight assumed for each."
+)
+```
+
+# Virtual cohort and simulation
+
+Original observed data are not publicly available. Every simulation below runs
+to steady state (90 tezacaftor doses, i.e. 90 days; 120 ivacaftor doses, i.e. 60
+days) so that the model's own steady state -- not a partially accumulated
+profile -- is what gets compared with the paper.
+
+Two helpers build the event tables. Both put dose records on the `depot`
+compartment with `rate = -2`, which is what tells rxode2 to use the model's
+`dur(depot) <- d1` zero-order input, and put observation records on the
+`central` ODE state (never on the algebraic observable `Cc`).
+
+```{r event-helpers}
+# Steady-state dosing history followed by a densely sampled final interval and,
+# optionally, a washout window long enough to resolve the terminal phase.
+make_events <- function(ids, wt, dose, ii, ndose, obs_step, washout = 0,
+                        washout_step = 8, capillary = 1) {
+  tlast <- (ndose - 1) * ii
+  dosing <- tidyr::expand_grid(id = ids, time = seq(0, tlast, by = ii)) |>
+    dplyr::mutate(amt = dose[match(id, ids)], evid = 1L, cmt = "depot",
+                  rate = -2, dvid = NA_integer_)
+  obs_times <- seq(0, ii, by = obs_step)
+  if (washout > 0) {
+    obs_times <- c(obs_times, seq(ii + washout_step, ii + washout, by = washout_step))
+  }
+  obs <- tidyr::expand_grid(id = ids, time = tlast + obs_times) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central",
+                  rate = 0, dvid = 1L)
+  dplyr::bind_rows(dosing, obs) |>
+    dplyr::mutate(
+      WT = wt[match(id, ids)],
+      SAMPLE_CAPILLARY = capillary,
+      tlast_dose = tlast
+    ) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+# One subject per dose group, for the typical-value (zeroRe) replication.
+typical_events <- function(dose_col, ii, ndose, obs_step, washout) {
+  ev <- make_events(
+    ids = seq_len(nrow(groups)), wt = groups$wt, dose = groups[[dose_col]],
+    ii = ii, ndose = ndose, obs_step = obs_step, washout = washout
+  )
+  dplyr::left_join(ev, groups |> dplyr::mutate(id = dplyr::row_number()) |>
+                     dplyr::select(id, grp), by = "id")
+}
+```
+
+```{r simulate-typical}
+tez_ev_typ <- typical_events("tez_dose", ii = 24, ndose = 90,
+                             obs_step = 0.25, washout = 1400)
+iva_ev_typ <- typical_events("iva_dose", ii = 12, ndose = 120,
+                             obs_step = 0.125, washout = 200)
+stopifnot(!anyDuplicated(unique(tez_ev_typ[, c("id", "time", "evid")])))
+stopifnot(!anyDuplicated(unique(iva_ev_typ[, c("id", "time", "evid")])))
+
+tez_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(readModelDb("Vonk_2025_tezacaftor")),
+  events = tez_ev_typ, keep = c("grp", "WT", "tlast_dose"),
+  useLinCmt = FALSE, returnType = "data.frame"
+)
+iva_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(readModelDb("Vonk_2025_ivacaftor")),
+  events = iva_ev_typ, keep = c("grp", "WT", "tlast_dose"),
+  useLinCmt = FALSE, returnType = "data.frame"
+)
+```
+
+`useLinCmt = FALSE` is required: rxode2's automatic ODE-to-`linCmt()` conversion
+corrupts the `dvid`-to-compartment mapping for multi-output models like these.
+
+## Steady-state profiles
+
+```{r figure-typical-tez}
+tez_typ |>
+  dplyr::filter(time <= tlast_dose + 24) |>
+  dplyr::mutate(tad = time - tlast_dose) |>
+  dplyr::select(tad, grp, Tezacaftor = Cc, `Tezacaftor-M1` = Cc_m1) |>
+  tidyr::pivot_longer(c(Tezacaftor, `Tezacaftor-M1`),
+                      names_to = "Analyte", values_to = "conc") |>
+  ggplot(aes(tad, conc, colour = grp)) +
+  geom_line() +
+  facet_wrap(~Analyte, scales = "free_y") +
+  labs(x = "Time after dose (h)", y = "Concentration (mg/L)", colour = "Dose group",
+       title = "Tezacaftor and tezacaftor-M1 at steady state",
+       caption = "Typical-value profiles from the model of Vonk 2025 Figure 1.")
+```
+
+```{r figure-typical-iva}
+iva_typ |>
+  dplyr::filter(time <= tlast_dose + 12) |>
+  dplyr::mutate(tad = time - tlast_dose) |>
+  dplyr::select(tad, grp, Ivacaftor = Cc, `Ivacaftor-M1` = Cc_m1,
+                `Ivacaftor-M6` = Cc_m6) |>
+  tidyr::pivot_longer(c(Ivacaftor, `Ivacaftor-M1`, `Ivacaftor-M6`),
+                      names_to = "Analyte", values_to = "conc") |>
+  ggplot(aes(tad, conc, colour = grp)) +
+  geom_line() +
+  facet_wrap(~Analyte, scales = "free_y") +
+  labs(x = "Time after dose (h)", y = "Concentration (mg/L)", colour = "Dose group",
+       title = "Ivacaftor and its metabolites at steady state",
+       caption = "Typical-value profiles from the model of Vonk 2025 Figure 2.")
+```
+
+# Structural gates
+
+Two identities hold exactly at steady state for these models and are worth
+asserting before any comparison with published numbers, because each one goes
+red on a mis-transcribed clearance, dose or fraction metabolised. Both compare
+quantities computed from the *same* deterministic solve, so a tight bound is the
+correct bound here.
+
+The first is the parent dose/clearance identity, `AUC(0,tau) x CL = dose`, which
+is also the check that the dosing history really did reach steady state.
+
+The second is the metabolite mass balance. In the apparent parameterisation the
+paper uses, the flux into a metabolite compartment is `fm x (CL/Vc) x central`
+and the flux out is `CL_m x C_m`, so over one steady-state interval
+
+$$\mathrm{AUC}_{m} \times \mathrm{CL}_{m} \;=\; f_{m} \times \mathrm{CL}_{p} \times \mathrm{AUC}_{p}.$$
+
+```{r structural-gates}
+trapz <- function(t, y) sum(diff(t) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+
+ss_auc <- function(sim, conc_cols, tau) {
+  sim |>
+    dplyr::filter(time >= tlast_dose, time <= tlast_dose + tau) |>
+    dplyr::group_by(id, grp, WT) |>
+    dplyr::summarise(
+      dplyr::across(dplyr::all_of(conc_cols), ~ trapz(time - tlast_dose, .x)),
+      .groups = "drop"
+    )
+}
+
+allom <- function(wt, exp_) (wt / 70)^exp_
+
+tez_auc <- ss_auc(tez_typ, c("Cc", "Cc_m1"), 24) |>
+  dplyr::left_join(groups |> dplyr::select(grp, tez_dose), by = "grp") |>
+  dplyr::mutate(
+    cl    = 1.95 * allom(WT, 0.75),
+    cl_m1 = 1.01 * allom(WT, 0.75),
+    ss_identity   = Cc * cl / tez_dose,
+    m1_identity   = (Cc_m1 * cl_m1) / (1 * cl * Cc)
+  )
+
+iva_auc <- ss_auc(iva_typ, c("Cc", "Cc_m1", "Cc_m6"), 12) |>
+  dplyr::left_join(groups |> dplyr::select(grp, iva_dose), by = "grp") |>
+  dplyr::mutate(
+    cl    = 15.9 * allom(WT, 0.75),
+    cl_m1 =  2.10 * allom(WT, 0.75),
+    cl_m6 = 12.2 * allom(WT, 0.75),
+    ss_identity = Cc * cl / iva_dose,
+    m1_identity = (Cc_m1 * cl_m1) / (0.22 * cl * Cc),
+    m6_identity = (Cc_m6 * cl_m6) / (0.43 * cl * Cc)
+  )
+
+gates <- c(
+  tez_auc$ss_identity, tez_auc$m1_identity,
+  iva_auc$ss_identity, iva_auc$m1_identity, iva_auc$m6_identity
+)
+# Deterministic (zeroRe) solve compared against closed form; the only error is
+# trapezoidal quadrature on the fine grid used above.
+stopifnot(max(abs(gates - 1)) < 0.005)
+sprintf("All %d steady-state identities hold; worst deviation %.4f%%.",
+        length(gates), 100 * max(abs(gates - 1)))
+```
+
+# PKNCA validation
+
+NCA is run once per analyte over the final steady-state dosing interval, with a
+separate half-life interval covering the washout after the last dose. The
+grouping variable combines analyte and dose group so that every published cell
+lands in one comparison table.
+
+```{r pknca-helper}
+run_nca <- function(sim, events, conc_col, analyte, tau, do_halflife) {
+  tlast <- unique(sim$tlast_dose)
+  conc <- sim |>
+    dplyr::filter(!is.na(.data[[conc_col]])) |>
+    dplyr::transmute(
+      id, time,
+      Cc = .data[[conc_col]],
+      treatment = paste(analyte, grp, sep = " | ")
+    )
+  # `events` already carries `grp` (added by typical_events()); joining it in
+  # again here would produce grp.x / grp.y and lose the bare name.
+  dose_df <- events |>
+    dplyr::filter(evid == 1) |>
+    dplyr::transmute(id, time, amt,
+                     treatment = paste(analyte, grp, sep = " | "))
+
+  conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id,
+                               concu = "mg/L", timeu = "h")
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                               doseu = "mg")
+
+  ivl <- data.frame(
+    start = tlast, end = tlast + tau,
+    cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE,
+    half.life = FALSE
+  )
+  if (do_halflife) {
+    ivl <- dplyr::bind_rows(
+      ivl,
+      data.frame(start = tlast + tau, end = max(conc$time),
+                 cmax = FALSE, tmax = FALSE, cmin = FALSE, auclast = FALSE,
+                 cav = FALSE, half.life = TRUE)
+    )
+  }
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = ivl))
+  as.data.frame(res) |>
+    dplyr::filter(!is.na(PPORRES)) |>
+    dplyr::select(treatment, id, PPTESTCD, PPORRES)
+}
+```
+
+```{r pknca-run, message = FALSE, warning = FALSE}
+nca_sim <- dplyr::bind_rows(
+  run_nca(tez_typ, tez_ev_typ, "Cc",    "Tezacaftor",    24, TRUE),
+  run_nca(tez_typ, tez_ev_typ, "Cc_m1", "Tezacaftor-M1", 24, FALSE),
+  run_nca(iva_typ, iva_ev_typ, "Cc",    "Ivacaftor",     12, TRUE),
+  run_nca(iva_typ, iva_ev_typ, "Cc_m1", "Ivacaftor-M1",  12, FALSE),
+  run_nca(iva_typ, iva_ev_typ, "Cc_m6", "Ivacaftor-M6",  12, FALSE)
+)
+stopifnot(nrow(nca_sim) > 0)
+```
+
+## Comparison against the published exposures
+
+Vonk 2025 Table 3 gives mean (SD) steady-state AUC per analyte and dose group --
+AUC(0,24 h) for tezacaftor and tezacaftor-M1, AUC(0,12 h) for ivacaftor and its
+metabolites -- and Table 4 gives mean (SD) Cmax and terminal half-life for the
+two parents. Those means are averages of the individual post-hoc Bayesian
+estimates, so they sit slightly above the typical-value prediction simulated
+here (by `exp(omega^2/2)`, i.e. about 3% for tezacaftor and 8% for ivacaftor) and
+carry the sampling noise of groups as small as n = 3.
+
+```{r published}
+published <- tibble::tribble(
+  ~treatment,                      ~PPTESTCD,   ~PPORRES,
+  # ---- Table 3: steady-state AUC (mg*h/L) -----------------------------
+  "Tezacaftor | 6-11y <30kg",      "auclast",      53.2,
+  "Tezacaftor | 6-11y >=30kg",     "auclast",      91.7,
+  "Tezacaftor | 12-17y",           "auclast",      66.2,
+  "Tezacaftor-M1 | 6-11y <30kg",   "auclast",     107,
+  "Tezacaftor-M1 | 6-11y >=30kg",  "auclast",     192,
+  "Tezacaftor-M1 | 12-17y",        "auclast",     124,
+  "Ivacaftor | 6-11y <30kg",       "auclast",       7.51,
+  "Ivacaftor | 6-11y >=30kg",      "auclast",      17.5,
+  "Ivacaftor | 12-17y",            "auclast",      13.3,
+  "Ivacaftor-M1 | 6-11y <30kg",    "auclast",      14.9,
+  "Ivacaftor-M1 | 6-11y >=30kg",   "auclast",      34.2,
+  "Ivacaftor-M1 | 12-17y",         "auclast",      21.1,
+  "Ivacaftor-M6 | 6-11y <30kg",    "auclast",       4.78,
+  "Ivacaftor-M6 | 6-11y >=30kg",   "auclast",      15.8,
+  "Ivacaftor-M6 | 12-17y",         "auclast",       7.97,
+  # ---- Table 4: Cmax (mg/L) and terminal half-life (h) ----------------
+  "Tezacaftor | 6-11y <30kg",      "cmax",          4.01,
+  "Tezacaftor | 6-11y >=30kg",     "cmax",          6.61,
+  "Tezacaftor | 12-17y",           "cmax",          4.39,
+  "Ivacaftor | 6-11y <30kg",       "cmax",          0.840,
+  "Ivacaftor | 6-11y >=30kg",      "cmax",          1.80,
+  "Ivacaftor | 12-17y",            "cmax",          1.34,
+  "Tezacaftor | 6-11y <30kg",      "half.life",   116,
+  "Tezacaftor | 6-11y >=30kg",     "half.life",   124,
+  "Tezacaftor | 12-17y",           "half.life",   136,
+  "Ivacaftor | 6-11y <30kg",       "half.life",     9.78,
+  "Ivacaftor | 6-11y >=30kg",      "half.life",    14.0,
+  "Ivacaftor | 12-17y",            "half.life",    14.9
+)
+```
+
+```{r nca-compare}
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_sim,
+  reference = published,
+  by        = "treatment",
+  params    = c("cmax", "auclast", "half.life"),
+  units     = c(cmax = "mg/L", auclast = "mg*h/L", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated typical-value steady-state NCA vs the mean values published in",
+    "Vonk 2025 Tables 3 and 4. * marks a difference greater than 20%."
+  ),
+  align = c("l", "l", "r", "r", "r")
+)
+attr(cmp, "footnote")
+```
+
+```{r nca-compare-gate}
+pct <- abs(as.numeric(gsub("[^0-9.eE+-]", "", cmp$`% diff`)))
+stopifnot(length(pct) == nrow(published), !anyNA(pct))
+
+tez_rows <- grepl("^Tezacaftor", cmp$treatment)
+# Deterministic (zeroRe) comparison against fixed published numbers, so this
+# bound does not flicker across machines. Realised worst tezacaftor deviation
+# is 9.4% (tezacaftor-M1, 6-11 y >=30 kg); 15 leaves room for PKNCA grid
+# effects while still going red on a mis-transcribed clearance, volume or dose,
+# any of which moves an exposure by tens of percent.
+stopifnot(max(pct[tez_rows]) < 15)
+
+# Across all 27 published cells, including the n = 3 ivacaftor subgroup whose
+# post-hoc means are far from typical (see below). Realised median 5.2%.
+stopifnot(stats::median(pct) < 12)
+sprintf("Median |%% difference| across %d published cells: %.1f%% (max %.1f%%).",
+        length(pct), stats::median(pct), max(pct))
+```
+
+The tezacaftor model reproduces every published cell to within 10%, and the
+Cmax and half-life rows -- which depend on the volumes and the absorption
+parameters rather than on clearance alone -- agree to within about 5% and 2%
+respectively. That is a strong independent check on the assumed group weights,
+because Cmax and half-life were not used to choose them.
+
+The starred rows are all in the ivacaftor model, and all three of the largest
+are the **6-11 years, <30 kg** group (n = 3) plus ivacaftor-M6 in the
+**6-11 years, >=30 kg** group (n = 7). The <30 kg deviations are internally
+consistent with one another: the simulation over-predicts AUC (+32%),
+over-predicts Cmax (+25%) and over-predicts half-life (+20%), which is exactly
+the signature of a three-subject group whose post-hoc ivacaftor clearances
+happened to fall about 30% above the typical value. That is sampling noise in
+the published mean, not a structural disagreement -- and note that the paper's
+own Table 3 flags the same two cells (ivacaftor at 6-11 years >=30 kg differs by
+48% from the product information, and tezacaftor at 12-17 years by 32%). No
+parameter was tuned to reduce these differences.
+
+# Variability: does the encoded IIV reproduce the published spread?
+
+Vonk 2025 reports AUC coefficients of variation between 16 and 88% across the
+analyte-by-group cells of Table 3, and describes that spread as being "in close
+agreement with the reported values in the product information". Simulating a
+cohort with the encoded IIV tests whether the omega values reproduce it.
+
+```{r cohort}
+# set.seed() seeds R's RNG, not rxode2's, and rxode2's streams are partitioned
+# per solver thread -- so this cohort differs between a 16-thread workstation
+# and a 2-core CI runner and no seed can make them agree. Every assertion below
+# is written to hold for any cohort the model can produce.
+set.seed(20250910)
+rxode2::rxSetSeed(20250910)
+
+n_per_group <- 100L
+
+one_group_events <- function(g, dose_col, ii, ndose, obs_step) {
+  # id_offset per group so the three cohorts occupy disjoint id ranges;
+  # duplicate ids across cohorts are silently merged by rxSolve.
+  ids <- (g - 1L) * n_per_group + seq_len(n_per_group)
+  make_events(
+    ids = ids,
+    wt = rep(groups$wt[g], n_per_group),
+    dose = rep(groups[[dose_col]][g], n_per_group),
+    ii = ii, ndose = ndose, obs_step = obs_step
+  ) |>
+    dplyr::mutate(grp = groups$grp[g])
+}
+
+cohort_events <- function(dose_col, ii, ndose, obs_step) {
+  dplyr::bind_rows(lapply(
+    seq_len(nrow(groups)), one_group_events,
+    dose_col = dose_col, ii = ii, ndose = ndose, obs_step = obs_step
+  ))
+}
+
+tez_ev_pop <- cohort_events("tez_dose", ii = 24, ndose = 90, obs_step = 0.5)
+iva_ev_pop <- cohort_events("iva_dose", ii = 12, ndose = 120, obs_step = 0.25)
+stopifnot(!anyDuplicated(unique(tez_ev_pop[, c("id", "time", "evid")])))
+stopifnot(!anyDuplicated(unique(iva_ev_pop[, c("id", "time", "evid")])))
+```
+
+```{r simulate-cohort}
+tez_pop <- rxode2::rxSolve(
+  readModelDb("Vonk_2025_tezacaftor"), events = tez_ev_pop,
+  keep = c("grp", "WT", "tlast_dose"), useLinCmt = FALSE,
+  returnType = "data.frame"
+)
+iva_pop <- rxode2::rxSolve(
+  readModelDb("Vonk_2025_ivacaftor"), events = iva_ev_pop,
+  keep = c("grp", "WT", "tlast_dose"), useLinCmt = FALSE,
+  returnType = "data.frame"
+)
+```
+
+```{r figure-vpc}
+dplyr::bind_rows(
+  tez_pop |> dplyr::transmute(tad = time - tlast_dose, grp,
+                              Analyte = "Tezacaftor", conc = Cc),
+  tez_pop |> dplyr::transmute(tad = time - tlast_dose, grp,
+                              Analyte = "Tezacaftor-M1", conc = Cc_m1),
+  iva_pop |> dplyr::transmute(tad = time - tlast_dose, grp,
+                              Analyte = "Ivacaftor", conc = Cc),
+  iva_pop |> dplyr::transmute(tad = time - tlast_dose, grp,
+                              Analyte = "Ivacaftor-M1", conc = Cc_m1),
+  iva_pop |> dplyr::transmute(tad = time - tlast_dose, grp,
+                              Analyte = "Ivacaftor-M6", conc = Cc_m6)
+) |>
+  dplyr::filter(!is.na(conc)) |>
+  dplyr::group_by(Analyte, grp, tad) |>
+  dplyr::summarise(Q05 = stats::quantile(conc, 0.05),
+                   Q50 = stats::median(conc),
+                   Q95 = stats::quantile(conc, 0.95), .groups = "drop") |>
+  ggplot(aes(tad, Q50, colour = grp, fill = grp)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2, colour = NA) +
+  geom_line() +
+  facet_wrap(~Analyte, scales = "free") +
+  labs(x = "Time after dose (h)", y = "Concentration (mg/L)",
+       colour = "Dose group", fill = "Dose group",
+       title = "Steady-state prediction intervals (median, 5th-95th percentile)",
+       caption = paste0(n_per_group, " simulated subjects per dose group.",
+                        " Compare with the prediction-corrected VPCs of",
+                        " Vonk 2025 Figure 3."))
+```
+
+```{r cv-table}
+cv_pct <- function(x) 100 * stats::sd(x) / mean(x)
+
+cv_sim <- dplyr::bind_rows(
+  ss_auc(tez_pop, c("Cc", "Cc_m1"), 24) |>
+    tidyr::pivot_longer(c(Cc, Cc_m1), names_to = "col", values_to = "auc") |>
+    dplyr::mutate(Analyte = ifelse(col == "Cc", "Tezacaftor", "Tezacaftor-M1")),
+  ss_auc(iva_pop, c("Cc", "Cc_m1", "Cc_m6"), 12) |>
+    tidyr::pivot_longer(c(Cc, Cc_m1, Cc_m6), names_to = "col", values_to = "auc") |>
+    dplyr::mutate(Analyte = dplyr::recode(col, Cc = "Ivacaftor",
+                                          Cc_m1 = "Ivacaftor-M1",
+                                          Cc_m6 = "Ivacaftor-M6"))
+) |>
+  dplyr::group_by(Analyte, grp) |>
+  dplyr::summarise(`Simulated AUC CV%` = cv_pct(auc), .groups = "drop")
+
+# Standard deviations of the same Table 3 cells, keyed by treatment (never
+# positionally) so a change to either tribble cannot silently mis-pair them.
+published_auc_sd <- tibble::tribble(
+  ~treatment,                      ~sd,
+  "Tezacaftor | 6-11y <30kg",      12.9,
+  "Tezacaftor | 6-11y >=30kg",     25.5,
+  "Tezacaftor | 12-17y",           11.4,
+  "Tezacaftor-M1 | 6-11y <30kg",   30.4,
+  "Tezacaftor-M1 | 6-11y >=30kg",  47.3,
+  "Tezacaftor-M1 | 12-17y",        21.8,
+  "Ivacaftor | 6-11y <30kg",        2.34,
+  "Ivacaftor | 6-11y >=30kg",       7.29,
+  "Ivacaftor | 12-17y",             3.39,
+  "Ivacaftor-M1 | 6-11y <30kg",     9.32,
+  "Ivacaftor-M1 | 6-11y >=30kg",   16.8,
+  "Ivacaftor-M1 | 12-17y",          3.46,
+  "Ivacaftor-M6 | 6-11y <30kg",     2.20,
+  "Ivacaftor-M6 | 6-11y >=30kg",   13.9,
+  "Ivacaftor-M6 | 12-17y",          4.81
+)
+
+published_cv <- published |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::inner_join(published_auc_sd, by = "treatment") |>
+  tidyr::separate_wider_delim(treatment, " | ", names = c("Analyte", "grp")) |>
+  dplyr::mutate(`Published AUC CV%` = 100 * sd / PPORRES) |>
+  dplyr::select(Analyte, grp, `Published AUC CV%`)
+# inner_join drops silently if a key is mistyped; a gate that cannot go red is
+# worse than none (known-vignette-failure-patterns.md pattern 10).
+stopifnot(nrow(published_cv) == nrow(published_auc_sd))
+
+cv_tab <- dplyr::left_join(cv_sim, published_cv, by = c("Analyte", "grp"))
+knitr::kable(
+  cv_tab |> dplyr::rename("Dose group" = grp),
+  digits = 1,
+  caption = paste(
+    "Between-subject CV% of steady-state AUC: simulated from the encoded IIV",
+    "vs the SD/mean of Vonk 2025 Table 3."
+  )
+)
+```
+
+```{r cv-gate}
+# The paper states the observed AUC CV% ran from 16 to 88 across these cells.
+# The simulated CVs are cohort draws, so assert only that they fall inside a
+# band comfortably around that stated range rather than matching cell by cell:
+# the published values are post-hoc Bayesian estimates from 3-11 subjects and
+# are shrunk toward the typical value, so they read systematically low.
+stopifnot(all(cv_tab$`Simulated AUC CV%` > 15),
+          all(cv_tab$`Simulated AUC CV%` < 110))
+# Trend, not step-by-step ordering: ivacaftor-M6 is the most variable analyte
+# in both the model (76 CV% on its clearance) and the paper (up to 88%).
+stopifnot(
+  mean(cv_tab$`Simulated AUC CV%`[cv_tab$Analyte == "Ivacaftor-M6"]) >
+    mean(cv_tab$`Simulated AUC CV%`[cv_tab$Analyte == "Tezacaftor"])
+)
+```
+
+# Assumptions and deviations
+
+- **Per-group weights are an assumption.** Vonk 2025 publishes weight for the
+  whole cohort (median 43.5 kg, range 23.6-69.8) but exposures per dose group,
+  so 26 / 33 / 50 kg were chosen as representative of the 6-11 y <30 kg,
+  6-11 y >=30 kg and 12-17 y groups. They are consistent with the group
+  definitions and the cohort range. They were selected against the Table 3
+  tezacaftor AUCs and then *independently confirmed* by the Table 4 tezacaftor
+  Cmax (within 5%) and half-life (within 2%), which depend on the volumes and
+  absorption parameters rather than on clearance and were not used in the
+  choice. A user with real weights should supply them in the `WT` column.
+
+- **The IIV CV% is read as a true coefficient of variation.** Table 2 reports
+  IIV on CL as "CL (CV%)" for the exponential model of Equation 3, so the
+  encoded variance is `omega^2 = log(CV^2 + 1)`. The alternative NONMEM
+  reporting convention, `CV% = 100 * omega`, cannot be excluded from the paper's
+  text, but it is the poorer fit to the paper's own numbers. Steady-state
+  AUC for ivacaftor-M6 is exactly `fm x dose / CL_M6`, so its between-subject
+  CV equals the CV of `CL_M6` with no other contribution: the two readings
+  predict 76% and 89% respectively, and pooling the three Table 3 M6 cells
+  (46 / 88 / 60% at n = 3 / 7 / 11) gives 69%, nearer the first. The difference
+  between the readings is under one percentage point for every other omega in
+  the paper, all of which are below 45%.
+
+- **The metabolite formation flux carries the fraction metabolised
+  explicitly.** Table 2 footnote a describes the metabolite clearances and
+  volumes as apparent values divided by `F * fm`, under which reading the
+  metabolite AUC would be `CL_p/CL_m` times the parent AUC with no `fm` term.
+  That reading over-predicts the published ivacaftor-M1 AUC roughly five-fold
+  (101 vs 21.1 mg*h/L at 12-17 years). Writing the formation flux as
+  `fm x (CL_p/Vc_p) x central` instead reproduces Table 3 for all three
+  ivacaftor analytes and all three groups, so that is what the model encodes.
+  The tezacaftor model is unaffected either way because its `fm` is fixed at 1.
+
+- **Metabolite concentrations are parent equivalents.** Section 2.3 states that
+  metabolite concentrations were converted to parent equivalents using the
+  molecular weight, so the metabolite outputs `Cc_m1` / `Cc_m6` are on the
+  parent's molar basis and the AUCs are directly comparable with the parent's.
+
+- **The prior weights are provenance, not model structure.** The PRIOR
+  subroutine's vague / moderate / informative designations (Table 2, prior-type
+  columns) governed how each parameter was estimated and are recorded as in-file
+  comments, but they are not encodable in an rxode2 simulation model and do not
+  affect any prediction here.
+
+- **Dried blood spot versus plasma residual error.** The ivacaftor model
+  estimates a separate proportional residual error per collection matrix for
+  each metabolite, switched by the record-level `SAMPLE_CAPILLARY` covariate
+  (1 = dried blood spot, 0 = venous plasma). The simulations here set it to 1
+  throughout, matching the study design in which 87% of samples were DBS. The
+  parent ivacaftor observation has a single residual error covering both
+  matrices, as published.
+
+- **Bootstrap medians and confidence intervals are not encoded.** Table 2's
+  bootstrap columns describe parameter uncertainty; only the point estimates
+  enter the model.
+
+- **Every value comes from the paper.** No parameter was digitised from a
+  figure, obtained by correspondence, or carried from an upstream model. The
+  study's supporting information (Table A1, the prior-strategy sensitivity
+  analysis, and Figures A1-A3, goodness-of-fit plots) contains no parameter
+  values used here.

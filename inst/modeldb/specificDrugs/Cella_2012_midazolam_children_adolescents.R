@@ -89,10 +89,10 @@ Cella_2012_midazolam_children_adolescents <- function() {
     # reading gives t1/2 ~ 7 min, ~25x too fast. Vp uses the published
     # 'Vp (l x months/74)' linear normalisation, with the 74 months
     # representing the population-median age in months.
-    lcl <- log(0.19);   label("Clearance (CL, L/min)")                                              # Cella 2012 Table 2 (CL = 0.19)
-    lvc <- log(1.95);   label("Central volume of distribution per kg body weight (Vc/WT, L/kg)")    # Cella 2012 Table 2 (Vc = 1.95; per-kg interpretation per sidecar response 001 Q2)
-    lq  <- log(0.105);  label("Inter-compartmental clearance (Q, L/min)")                           # Cella 2012 Table 2
-    lvp <- log(7.14);   label("Peripheral volume of distribution at AGE = 74 months reference (Vp, L)") # Cella 2012 Table 2 (Vp = 7.14 with linear age scaling)
+    lcl <- log(0.19);   label("Clearance (L/min)")                                              # Cella 2012 Table 2 (CL = 0.19)
+    lvc <- log(1.95);   label("Central volume of distribution per kg body weight (L/kg)")    # Cella 2012 Table 2 (Vc = 1.95; per-kg interpretation per sidecar response 001 Q2)
+    lq  <- log(0.105);  label("Inter-compartmental clearance (L/min)")                           # Cella 2012 Table 2
+    lvp <- log(7.14);   label("Peripheral volume of distribution at AGE = 74 months reference (L)") # Cella 2012 Table 2 (Vp = 7.14 with linear age scaling)
 
     # Inter-individual variability (Table 2 reports CV%; omega^2 = log(CV^2 + 1))
     #   CL : 32.7% CV -> log(0.327^2 + 1) = 0.10157
@@ -101,7 +101,7 @@ Cella_2012_midazolam_children_adolescents <- function() {
     etalvc ~ 0.09456                                                                                # Cella 2012 Table 2 (IIV Vc 31.5% CV)
 
     # Residual error (39.0% CV proportional, linear-scale SD = 0.39)
-    propSd <- 0.39;     label("Proportional residual error (SD, fraction)")                         # Cella 2012 Table 2 (residual 39.0% CV, proportional model)
+    propSd <- 0.39;     label("Proportional residual error (fraction)")                         # Cella 2012 Table 2 (residual 39.0% CV, proportional model)
   })
   model({
     # AGE-in-months term for the Vp linear-age scaling.

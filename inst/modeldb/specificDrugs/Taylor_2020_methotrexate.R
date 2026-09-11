@@ -67,11 +67,11 @@ Taylor_2020_methotrexate <- function() {
     # parameterized on the absolute scale per 1.73 m^2 (L/h or L); individual
     # parameters scale linearly with BSA inside model().
     lcl  <- log(11)    ; label("Clearance (L/h, normalized to 1.73 m^2)")            # Taylor 2020 Table 3: CL 11 L/h/1.73 m^2 (RSE 0.7%)
-    lvc  <- log(16.5)  ; label("Central volume (V1, L, normalized to 1.73 m^2)")     # Taylor 2020 Table 3: V1 16.5 L/1.73 m^2 (RSE 5.2%)
-    lq   <- log(0.602) ; label("Intercompartmental clearance to vascular peripheral (Q2, L/h, normalized to 1.73 m^2)")   # Taylor 2020 Table 3: Q2 0.602 L/h/1.73 m^2 (RSE 4.1%)
-    lvp  <- log(4.55)  ; label("Vascular peripheral volume (V2, L, normalized to 1.73 m^2)")                                # Taylor 2020 Table 3: V2 4.55 L/1.73 m^2 (RSE 3.4%)
-    lq2  <- log(0.111) ; label("Intercompartmental clearance to non-vascular peripheral (Q3, L/h, normalized to 1.73 m^2)") # Taylor 2020 Table 3: Q3 0.111 L/h/1.73 m^2 (RSE 2%)
-    lvp2 <- log(13.1)  ; label("Non-vascular peripheral volume (V3, L, normalized to 1.73 m^2)")                            # Taylor 2020 Table 3: V3 13.1 L/1.73 m^2 (RSE 5%)
+    lvc  <- log(16.5)  ; label("Central volume (L, normalized to 1.73 m^2)")     # Taylor 2020 Table 3: V1 16.5 L/1.73 m^2 (RSE 5.2%)
+    lq   <- log(0.602) ; label("Intercompartmental clearance to vascular peripheral (L/h, normalized to 1.73 m^2)")   # Taylor 2020 Table 3: Q2 0.602 L/h/1.73 m^2 (RSE 4.1%)
+    lvp  <- log(4.55)  ; label("Vascular peripheral volume (L, normalized to 1.73 m^2)")                                # Taylor 2020 Table 3: V2 4.55 L/1.73 m^2 (RSE 3.4%)
+    lq2  <- log(0.111) ; label("Intercompartmental clearance to non-vascular peripheral (L/h, normalized to 1.73 m^2)") # Taylor 2020 Table 3: Q3 0.111 L/h/1.73 m^2 (RSE 2%)
+    lvp2 <- log(13.1)  ; label("Non-vascular peripheral volume (L, normalized to 1.73 m^2)")                            # Taylor 2020 Table 3: V3 13.1 L/1.73 m^2 (RSE 5%)
 
     # Covariate effect: power exponent of SCr / 29 on CL only.
     e_creat_cl <- -0.247; label("Power exponent of serum creatinine (SCr / 29) on CL (unitless)")   # Taylor 2020 Table 3: SCr -0.247 (RSE 5.7%); covariate equation on page 638

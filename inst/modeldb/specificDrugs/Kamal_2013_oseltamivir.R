@@ -94,17 +94,17 @@ Kamal_2013_oseltamivir <- function() {
     # final-estimate column. All clearance / volume terms are apparent
     # (conditioned on the fraction of OP absorbed F).
 
-    lka  <- log(0.775); label("OP first-order absorption rate constant (ka, 1/h)")               # Kamal 2013 Table 2: ka = 0.775 1/h, %SEM 3.74
-    lcl  <- log(519);   label("OP apparent clearance CLp/F at 70 kg adult (CLp/F, L/h)")          # Kamal 2013 Table 2: CLp/F coefficient = 519 L/h, %SEM 3.99
-    lvc  <- log(421);   label("OP apparent central volume Vcp/F (Vcp/F, L)")                       # Kamal 2013 Table 2: Vcp/F = 421 L, %SEM 6.05
-    lq   <- log(120);   label("OP apparent inter-compartmental clearance CLd/F (CLd/F, L/h)")     # Kamal 2013 Table 2: CLd/F = 120 L/h, %SEM 4.95
-    lvp  <- log(2800);  label("OP apparent peripheral volume Vp/F (Vp/F, L)")                      # Kamal 2013 Table 2: Vp/F = 2,800 L, %SEM 7.46
+    lka  <- log(0.775); label("OP first-order absorption rate constant (1/h)")               # Kamal 2013 Table 2: ka = 0.775 1/h, %SEM 3.74
+    lcl  <- log(519);   label("OP apparent clearance CLp/F at 70 kg adult (L/h)")          # Kamal 2013 Table 2: CLp/F coefficient = 519 L/h, %SEM 3.99
+    lvc  <- log(421);   label("OP apparent central volume Vcp/F (L)")                       # Kamal 2013 Table 2: Vcp/F = 421 L, %SEM 6.05
+    lq   <- log(120);   label("OP apparent inter-compartmental clearance CLd/F (L/h)")     # Kamal 2013 Table 2: CLd/F = 120 L/h, %SEM 4.95
+    lvp  <- log(2800);  label("OP apparent peripheral volume Vp/F (L)")                      # Kamal 2013 Table 2: Vp/F = 2,800 L, %SEM 7.46
 
     # Structural fixed effects (metabolite oseltamivir carboxylate, OC) -- Kamal 2013 Table 2.
     # Apparent clearance / volume conditioned on F (parent) and fm (assumed 1).
 
-    lcl_oselcarb <- log(20.7);  label("OC apparent clearance CLm/F at 70 kg adult, CRCL 95 (CLm/F, L/h)")    # Kamal 2013 Table 2: CLm/F coefficient = 20.7 L/h, %SEM 3.36
-    lvc_oselcarb <- log(238);   label("OC apparent central volume Vcm/F at 70 kg adult, age 21 (Vcm/F, L)")  # Kamal 2013 Table 2: Vcm/F coefficient = 238 L, %SEM 5.16
+    lcl_oselcarb <- log(20.7);  label("OC apparent clearance CLm/F at 70 kg adult, CRCL 95 (L/h)")    # Kamal 2013 Table 2: CLm/F coefficient = 20.7 L/h, %SEM 3.36
+    lvc_oselcarb <- log(238);   label("OC apparent central volume Vcm/F at 70 kg adult, age 21 (L)")  # Kamal 2013 Table 2: Vcm/F coefficient = 238 L, %SEM 5.16
 
     # Covariate effects on apparent OP CLp/F.
 

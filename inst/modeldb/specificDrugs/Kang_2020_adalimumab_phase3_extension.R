@@ -150,7 +150,7 @@ Kang_2020_adalimumab_phase3_extension <- function() {
     # Full covariate model on CL/F (Equation 5). The reference is an
     # ADA-POSITIVE subject at a titre of 16 with CRP 3 mg/L, ALB 43 g/L and
     # rheumatoid factor 47 IU/mL.
-    e_ada_neg_cl   <- log(0.654) ; label("Effect of a negative ADA test on log CL/F, versus an ADA titre of 16 (log-scale)")  # Table 4: (ADA-) * exp(theta7) = 0.654 (95% CI 0.619, 0.69); Section 3.3 "clearances would be approximately ... 34.6% (the extension study) lower than that with the ADA titre value of 16"
+    e_ada_neg_cl   <- log(0.654) ; label("Effect of a negative ADA test on log CL/F versus an ADA titre of 16, log-scale (unitless)")  # Table 4: (ADA-) * exp(theta7) = 0.654 (95% CI 0.619, 0.69); Section 3.3 "clearances would be approximately ... 34.6% (the extension study) lower than that with the ADA titre value of 16"
     e_ada_titer_cl <- 0.165      ; label("Power exponent on (ADA_TITER/16) for CL/F (unitless)")                              # Table 4: (ADA/16)^theta8 = 0.165 (95% CI 0.145, 0.187)
     e_crp_cl       <- 0.0747     ; label("Power exponent on (CRP/3) for CL/F (unitless)")                                     # Table 4: (CRP/3)^theta9 = 0.0747 (95% CI 0.0538, 0.095)
     e_alb_cl       <- -0.655     ; label("Power exponent on (ALB/43) for CL/F (unitless)")                                    # Table 4: (ALB/43)^theta10 = -0.655 (95% CI -0.95, -0.372)

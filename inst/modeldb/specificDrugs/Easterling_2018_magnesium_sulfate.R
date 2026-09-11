@@ -54,9 +54,9 @@ Easterling_2018_magnesium_sulfate <- function() {
     # Conversions from Table 4 (paper reports CL in mL/min and BL in mmol/L):
     #   CL  = 56.3 mL/min  = 56.3 * 60 / 1000 = 3.378 L/h
     #   BL  = 0.925 mmol/L * 24.305 mg/mmol   = 22.48 mg/L
-    lcl <- log(3.378); label("Clearance for the reference subject (CL, L/h)")           # Easterling 2018 Table 4 (56.3 mL/min)
-    lvc <- log(65.3);  label("Volume of distribution for the reference subject (V, L)") # Easterling 2018 Table 4
-    lrbase <- log(22.48); label("Endogenous steady-state baseline magnesium (BL, mg/L)")   # Easterling 2018 Table 4 (0.925 mmol/L = 2.25 mg/dL)
+    lcl <- log(3.378); label("Clearance for the reference subject (L/h)")           # Easterling 2018 Table 4 (56.3 mL/min)
+    lvc <- log(65.3);  label("Volume of distribution for the reference subject (L)") # Easterling 2018 Table 4
+    lrbase <- log(22.48); label("Endogenous steady-state baseline magnesium (mg/L)")   # Easterling 2018 Table 4 (0.925 mmol/L = 2.25 mg/dL)
 
     # Covariate effects from Easterling 2018 Table 4. Centering references are
     # taken from Methods text (WT_REF = 90.54 kg study mean) and Table 1 (CREAT_REF
@@ -80,7 +80,7 @@ Easterling_2018_magnesium_sulfate <- function() {
     # $SIGMA variance estimate (asymptotic SE/var ~= sqrt(2/N) for N ~= 1331
     # observations gives ~3.9%, in good agreement). Treated here as a
     # proportional residual variance: SD = sqrt(0.0387) = 0.197 (~ 19.7% CV).
-    propSd <- 0.197; label("Proportional residual error (SD, fraction of Cc)") # Easterling 2018 Table 4 (variance 0.0387)
+    propSd <- 0.197; label("Proportional residual error (fraction of Cc)") # Easterling 2018 Table 4 (variance 0.0387)
   })
   model({
     # Individual PK parameters. Reference subject: WT = 90.54 kg, CREAT = 66.3 umol/L.

@@ -8,7 +8,7 @@ Wolowich_2025_thc_11oh <- function() {
     "model as the companion files, fitted to the first 5 h of data: THC is",
     "three-compartment with IV bolus input, all THC elimination is metabolic",
     "conversion to 11-OH-THC delayed by one transit compartment, and",
-    "11-OH-THC is two-compartment. The pharmacodynamic endpoint is fHR, the",
+    "11-OH-THC is two-compartment. The pharmacodynamic endpoint is f_hr, the",
     "increase in heart rate at time t expressed as a fraction of that",
     "individual's own maximal increase, and it is described by a sigmoid",
     "Emax model driven directly by the PLASMA 11-OH-THC concentration with",
@@ -67,7 +67,7 @@ Wolowich_2025_thc_11oh <- function() {
         "result: 'The CYP2C9 phenotype did not contribute to the HR effects",
         "observed as the polymorphism effect is seen in the PK of the",
         "terminal metabolite (THC-COOH) only', and THC-COOH was removed from",
-        "the PK model because it had no relationship to fHR."
+        "the PK model because it had no relationship to f_hr."
       )
     ),
     WT = list(
@@ -207,7 +207,7 @@ Wolowich_2025_thc_11oh <- function() {
     # ==================================================================
     # PD LAYER -- Wolowich 2025 Table 4, 'Model 2B2: THC-OH alone,
     # sigmoid Emax'. Structure from Table 2 row 2B2:
-    #   fHR,THC-OH = Emax,thc-oh * C,thc-oh^gamma /
+    #   f_hr,THC-OH = Emax,thc-oh * C,thc-oh^gamma /
     #                (EC50thc-oh^gamma + C,thc-oh^gamma)
     # Results 3.2.2: 'Model 2B2 was a sigmoid Emax model for THC-OH
     # WITHOUT an effect site', so the driver is the plasma metabolite
@@ -215,7 +215,7 @@ Wolowich_2025_thc_11oh <- function() {
     # ==================================================================
 
     lec50_11oh <- log(0.02)
-    label("Plasma 11-OH-THC concentration giving half-maximal fHR, EC50 (uM)")     # Table 4: EC50 0.02 (CV 12.5%, 95% CI 0.017-0.028); Results 3.2.2 and the Abstract both repeat 0.02 uM
+    label("Plasma 11-OH-THC concentration giving half-maximal f_hr, EC50 (uM)")     # Table 4: EC50 0.02 (CV 12.5%, 95% CI 0.017-0.028); Results 3.2.2 and the Abstract both repeat 0.02 uM
 
     lemax <- log(0.91)
     label("Maximum fractional heart-rate increase, Emax (unitless fraction)")      # Table 4: Emax 0.91 (CV 4.6%, 95% CI 0.82-0.99)
@@ -271,8 +271,8 @@ Wolowich_2025_thc_11oh <- function() {
     propSd_11oh <- 0.23
     label("Proportional residual error for 11-OH-THC (fraction)")                  # Table 4: epsilon (SD) THC-OH 0.23 (CV 13.0%, 95% CI 0.17-0.29)
 
-    addSd_fHR <- 0.18
-    label("Additive residual error for fHR (unitless fraction)")                   # Table 4: epsilon (SD) fHR 0.18 (CV 5.0%, 95% CI 0.16-0.20)
+    addSd_f_hr <- 0.18
+    label("Additive residual error for f_hr (unitless fraction)")                   # Table 4: epsilon (SD) f_hr 0.18 (CV 5.0%, 95% CI 0.16-0.20)
   })
 
   model({
@@ -334,10 +334,10 @@ Wolowich_2025_thc_11oh <- function() {
 
     # Sigmoid Emax on the PLASMA metabolite concentration; no effect
     # compartment in this model (Table 2 row 2B2 has no dCe/dt line).
-    fHR <- emax * Cc_11oh^hill / (ec50_11oh^hill + Cc_11oh^hill)
+    f_hr <- emax * Cc_11oh^hill / (ec50_11oh^hill + Cc_11oh^hill)
 
     Cc      ~ prop(propSd)
     Cc_11oh ~ prop(propSd_11oh)
-    fHR     ~ add(addSd_fHR)
+    f_hr     ~ add(addSd_f_hr)
   })
 }

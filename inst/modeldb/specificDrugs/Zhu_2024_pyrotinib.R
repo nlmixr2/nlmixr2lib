@@ -141,7 +141,7 @@ Zhu_2024_pyrotinib <- function() {
     #   KA (1/h)   = 0.357 FIXED
     lka <- fixed(log(0.357)); label("Absorption rate constant (Ka, 1/h), taken from the earlier pyrotinib population PK model of Wen 2021")  # Zhu 2024 Table 7 / Section 4.3.2 final-model equation; sensitivity analysis in Table 6
     lcl <- log(88.8); label("Apparent clearance scale factor theta1 (L/h); CL/F = theta1 * exp(e_tpro_cl * TPRO / 67.2)")  # Zhu 2024 Table 7 CL/F = 88.8 (RSE 15.1%)
-    lvc <- log(3940); label("Apparent central volume of distribution (V/F, L)")  # Zhu 2024 Table 7 V/F = 3,940 (RSE 25.8%)
+    lvc <- log(3940); label("Apparent central volume of distribution (L)")  # Zhu 2024 Table 7 V/F = 3,940 (RSE 25.8%)
 
     # Covariate effect -- exponential form (Zhu 2024 Equation 7,
     # theta_i = theta1 * theta2^(cov_i / cov_median), with theta2 = exp(0.376)).

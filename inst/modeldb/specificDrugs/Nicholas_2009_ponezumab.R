@@ -40,10 +40,10 @@ Nicholas_2009_ponezumab <- function() {
   ini({
     # Structural disposition parameters at the reference 70 kg subject
     # (Nicholas 2009 Table 1, fixed-effect parameters with % SE).
-    lcl <- log(0.00684); label("Clearance at WT=70 kg (CL, L/h)")                             # Nicholas 2009 Table 1 Theta_1: 0.00684 L/h (6% SE; 95% CI 0.00597-0.00771)
-    lvc <- log(3.16);    label("Central volume of distribution at WT=70 kg (V1, L)")          # Nicholas 2009 Table 1 Theta_2: 3.16 L (3% SE; 95% CI 2.95-3.37)
-    lq  <- log(0.0210);  label("Intercompartmental clearance at WT=70 kg (Q, L/h)")           # Nicholas 2009 Table 1 Theta_3: 0.0210 L/h (10% SE; 95% CI 0.0170-0.0250)
-    lvp <- log(5.34);    label("Peripheral volume of distribution at WT=70 kg (V2, L)")       # Nicholas 2009 Table 1 Theta_4: 5.34 L (8% SE; 95% CI 4.49-6.18)
+    lcl <- log(0.00684); label("Clearance at WT=70 kg (L/h)")                             # Nicholas 2009 Table 1 Theta_1: 0.00684 L/h (6% SE; 95% CI 0.00597-0.00771)
+    lvc <- log(3.16);    label("Central volume of distribution at WT=70 kg (L)")          # Nicholas 2009 Table 1 Theta_2: 3.16 L (3% SE; 95% CI 2.95-3.37)
+    lq  <- log(0.0210);  label("Intercompartmental clearance at WT=70 kg (L/h)")           # Nicholas 2009 Table 1 Theta_3: 0.0210 L/h (10% SE; 95% CI 0.0170-0.0250)
+    lvp <- log(5.34);    label("Peripheral volume of distribution at WT=70 kg (L)")       # Nicholas 2009 Table 1 Theta_4: 5.34 L (8% SE; 95% CI 4.49-6.18)
 
     # Allometric power exponents on body weight, estimated (not fixed)
     # (Nicholas 2009 Table 1, second row of each Theta pair).

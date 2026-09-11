@@ -241,7 +241,7 @@ Patel_2015_oseltamivir <- function() {
     #    from the logit scale so it is bounded in (0, 1) for every subject.
     # ------------------------------------------------------------------
     logitfm_ind <- logitfm + etalogitfm
-    fm          <- 1 / (1 + exp(-logitfm_ind))
+    fm          <- expit(logitfm_ind)
 
     # ------------------------------------------------------------------
     # 2. Individual parameters. Clearances scale as (WT/70)^0.75 and volumes

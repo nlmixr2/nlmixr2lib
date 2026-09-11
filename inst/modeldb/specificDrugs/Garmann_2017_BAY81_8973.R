@@ -51,10 +51,10 @@ Garmann_2017_BAY81_8973 <- function() {
     # Garmann 2017 Methods reports a log-normal BSV model
     # (P_j = P_pop * exp(eta_j)), so structural fixed effects are stored on the
     # log scale (lcl / lvc / lq / lvp).
-    lcl <- log(1.88); label("Clearance for the reference 51.1 kg LBW patient (CL, dL/h)") # Garmann 2017 Table 2: CL = 1.88 dL/h
-    lvc <- log(30.0); label("Central volume of distribution for the reference 51.1 kg LBW patient (Vc, dL)") # Garmann 2017 Table 2: Vc = 30.0 dL
-    lq  <- log(1.90); label("Intercompartmental clearance (CLp, dL/h)") # Garmann 2017 Table 2: CLp = 1.90 dL/h
-    lvp <- log(6.37); label("Peripheral volume of distribution (Vp, dL)") # Garmann 2017 Table 2: Vp = 6.37 dL
+    lcl <- log(1.88); label("Clearance for the reference 51.1 kg LBW patient (dL/h)") # Garmann 2017 Table 2: CL = 1.88 dL/h
+    lvc <- log(30.0); label("Central volume of distribution for the reference 51.1 kg LBW patient (dL)") # Garmann 2017 Table 2: Vc = 30.0 dL
+    lq  <- log(1.90); label("Intercompartmental clearance (dL/h)") # Garmann 2017 Table 2: CLp = 1.90 dL/h
+    lvp <- log(6.37); label("Peripheral volume of distribution (dL)") # Garmann 2017 Table 2: Vp = 6.37 dL
 
     # Covariate effects: power-form (allometric-style) effect of LBW on CL and Vc,
     # both centered at the median LBW of 51.1 kg. Form (Garmann 2017 Table 2

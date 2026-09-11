@@ -111,8 +111,8 @@ Zavrelova_2025_linezolid <- function() {
     # so these are the extrapolated age-0 intercepts of the source equations
     # Vd = 99.44 * exp(-0.013 * AGE) and CL = 46.93 * exp(-0.023 * AGE),
     # not values at a reference age.
-    lvc <- log(99.44); label("Volume of distribution, age-0 intercept of the uncentred age model (Vd, L)")  # Table 2 (Vd_pop = 99.44, RSE 23.1%)
-    lcl <- log(46.93); label("Clearance, age-0 intercept of the uncentred age model (CL, L/h)")             # Table 2 (CL_pop = 46.93, RSE 25.2%)
+    lvc <- log(99.44); label("Volume of distribution, age-0 intercept of the uncentred age model (L)")  # Table 2 (Vd_pop = 99.44, RSE 23.1%)
+    lcl <- log(46.93); label("Clearance, age-0 intercept of the uncentred age model (L/h)")             # Table 2 (CL_pop = 46.93, RSE 25.2%)
 
     # Covariate effects, all on the natural-log scale of the parameter.
     e_age_vc  <- -0.013; label("Effect of age on log Vd (1/year)")                    # Table 2 (beta_Vd_Age = -0.013, RSE 28.8%)

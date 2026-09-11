@@ -93,25 +93,25 @@ Kollo_2026_selumetinib <- function() {
     # ------------------------------------------------------------------
 
     lka <- log(22.87)
-    label("Absorption rate constant (Ka, 1/h)") # Table S14, Ka mean
+    label("Absorption rate constant (1/h)") # Table S14, Ka mean
 
     lkel <- log(0.58)
-    label("Elimination rate constant from the central compartment (Ke, 1/h)") # Table S14, Ke mean
+    label("Elimination rate constant from the central compartment (1/h)") # Table S14, Ke mean
 
     lvc <- log(0.50)
-    label("Central volume of distribution per kg of total body weight (V0, L/kg)") # Table S14, V0 mean
+    label("Central volume of distribution per kg of total body weight (L/kg)") # Table S14, V0 mean
 
     lk12 <- log(1.32)
-    label("Central-to-peripheral distribution rate constant (KCP, 1/h)") # Table S14, KCP mean
+    label("Central-to-peripheral distribution rate constant (1/h)") # Table S14, KCP mean
 
     lk21 <- log(0.78)
-    label("Peripheral-to-central distribution rate constant (KPC, 1/h)") # Table S14, KPC mean
+    label("Peripheral-to-central distribution rate constant (1/h)") # Table S14, KPC mean
 
     ltlag <- log(0.62)
-    label("Absorption lag time (Tlag1, h)") # Table S14, Tlag1 mean
+    label("Absorption lag time (h)") # Table S14, Tlag1 mean
 
     lfdepot <- log(0.81)
-    label("Relative bioavailability (FA1, unitless)") # Table S14, FA1 mean
+    label("Relative bioavailability (unitless)") # Table S14, FA1 mean
 
     # ------------------------------------------------------------------
     # Residual error.

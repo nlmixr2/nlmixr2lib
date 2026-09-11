@@ -137,20 +137,20 @@ Henin_2009_capecitabine <- function() {
     # 7. Cumulative probabilities and per-grade probabilities, exposed per Markov state
     #    (consumer simulates the categorical draw and feeds the realized grade as the
     #    next Markov state). Naming: P<grade>_s<previous>.
-    pc0_s0 <- exp(a0_s0) / (1 + exp(a0_s0))
-    pc1_s0 <- exp(a1_s0) / (1 + exp(a1_s0))
+    pc0_s0 <- expit(a0_s0)
+    pc1_s0 <- expit(a1_s0)
     P0_s0 <- pc0_s0
     P1_s0 <- pc1_s0 - pc0_s0
     P2_s0 <- 1 - pc1_s0
 
-    pc0_s1 <- exp(a0_s1) / (1 + exp(a0_s1))
-    pc1_s1 <- exp(a1_s1) / (1 + exp(a1_s1))
+    pc0_s1 <- expit(a0_s1)
+    pc1_s1 <- expit(a1_s1)
     P0_s1 <- pc0_s1
     P1_s1 <- pc1_s1 - pc0_s1
     P2_s1 <- 1 - pc1_s1
 
-    pc0_s2 <- exp(a0_s2) / (1 + exp(a0_s2))
-    pc1_s2 <- exp(a1_s2) / (1 + exp(a1_s2))
+    pc0_s2 <- expit(a0_s2)
+    pc1_s2 <- expit(a1_s2)
     P0_s2 <- pc0_s2
     P1_s2 <- pc1_s2 - pc0_s2
     P2_s2 <- 1 - pc1_s2

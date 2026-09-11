@@ -71,7 +71,7 @@ Wilkins_2008_rifampicin <- function() {
     lvc  <- log(53.2);  label("Apparent central volume of distribution V/F (L)")                # .mod $THETA(2) FINAL = 5.32E+01; matches Output_real_* summary V/F = 53.2 (RSE 1.16%)
     lka  <- log(1.15);  label("Absorption rate constant from depot to central, ka (1/h)")       # .mod $THETA(3) FINAL = 1.15E+00; matches Output_real_* summary ka = 1.15 (RSE 3.91%)
     lmtt <- log(0.424); label("Mean transit time through the absorption transit chain, MTT (h, FDC reference)") # .mod $THETA(6) FINAL = 4.24E-01; matches Output_real_* summary MTT = 0.424 (RSE 3.82%)
-    lnn  <- log(7.13);  label("Number of transit compartments NN (continuous, dimensionless)")  # .mod $THETA(7) FINAL = 7.13E+00; matches Output_real_* summary n = 7.13 (RSE 8.42%)
+    lnn  <- log(7.13);  label("Number of transit compartments NN, estimated on a continuous scale (dimensionless)")  # .mod $THETA(7) FINAL = 7.13E+00; matches Output_real_* summary n = 7.13 (RSE 8.42%)
 
     # Formulation covariate effects. NONMEM source uses multiplicative `(1 + theta * (1 - FORM_FDC))`
     # shifts on MTT (THETA(8)) and on CL (THETA(9)); both effects vanish for the FDC = 1

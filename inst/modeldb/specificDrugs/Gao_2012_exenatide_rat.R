@@ -72,14 +72,14 @@ Gao_2012_exenatide_rat <- function() {
     # Rtot in nmol/L), which is confirmed by koff/kon = 0.0153/0.0207 =
     # 0.74 nM, the KD quoted in Gao 2012 Results 'Rat PK'.
     # ------------------------------------------------------------------
-    lkel  <- log(0.0839)  ; label("Linear elimination rate constant from the central compartment (kel, 1/min)")     # Table 2: kel = 0.0839 (CV 10%)
-    lk12  <- log(0.0282)  ; label("Transfer rate constant central -> peripheral1 (kpt, 1/min)")                     # Table 2: kpt = 0.0282 (CV 15%)
-    lk21  <- log(0.0213)  ; label("Transfer rate constant peripheral1 -> central (ktp, 1/min)")                     # Table 2: ktp = 0.0213 (CV 5%)
-    lvc   <- log(0.0432)  ; label("Central volume of distribution (Vc, L)")                                         # Table 2: Vc = 43.2 mL = 0.0432 L (CV 12%); CLc = kel * Vc = 3.62 mL/min per Results 'Rat PK'
+    lkel  <- log(0.0839)  ; label("Linear elimination rate constant from the central compartment (1/min)")     # Table 2: kel = 0.0839 (CV 10%)
+    lk12  <- log(0.0282)  ; label("Transfer rate constant central -> peripheral1 (1/min)")                     # Table 2: kpt = 0.0282 (CV 15%)
+    lk21  <- log(0.0213)  ; label("Transfer rate constant peripheral1 -> central (1/min)")                     # Table 2: ktp = 0.0213 (CV 5%)
+    lvc   <- log(0.0432)  ; label("Central volume of distribution (L)")                                         # Table 2: Vc = 43.2 mL = 0.0432 L (CV 12%); CLc = kel * Vc = 3.62 mL/min per Results 'Rat PK'
     lkon  <- log(0.0207)  ; label("Second-order association rate constant of exendin-4 with GLP-1R (kon, 1/(nM*min))") # Table 2: kon = 0.0207 (CV 42%)
-    lkoff <- log(0.0153)  ; label("First-order dissociation rate constant of the drug-receptor complex (koff, 1/min)") # Table 2: koff = 0.0153 (CV 206%)
-    lkint <- log(0.0966)  ; label("Internalisation / degradation rate constant of the drug-receptor complex (kint, 1/min)") # Table 2: kint = 0.0966 (CV 38%)
-    lrtot <- log(5.21)    ; label("Total GLP-1R concentration, held constant (Rtot, nmol/L)")                       # Table 2: Rtot = 5.21 nmol/L (CV 5%)
+    lkoff <- log(0.0153)  ; label("First-order dissociation rate constant of the drug-receptor complex (1/min)") # Table 2: koff = 0.0153 (CV 206%)
+    lkint <- log(0.0966)  ; label("Internalisation / degradation rate constant of the drug-receptor complex (1/min)") # Table 2: kint = 0.0966 (CV 38%)
+    lrtot <- log(5.21)    ; label("Total GLP-1R concentration, held constant (nmol/L)")                       # Table 2: Rtot = 5.21 nmol/L (CV 5%)
 
     # ------------------------------------------------------------------
     # Subcutaneous absorption. Gao 2012 estimated a SEPARATE ka for each
@@ -93,8 +93,8 @@ Gao_2012_exenatide_rat <- function() {
     #   5  nmol   ka2 = 0.00579 1/min  (CV 11%)
     #   50 nmol   ka3 = 0.00273 1/min  (CV 11%)
     # ------------------------------------------------------------------
-    lka     <- log(0.00820)     ; label("First-order subcutaneous absorption rate constant at the 0.5 nmol dose (ka1, 1/min)") # Table 2: ka1 = 0.00820 (CV 9%)
-    lfdepot <- fixed(log(1))    ; label("Absolute subcutaneous bioavailability (F, fraction)")                      # Table 2: F = 1 (fixed); Results 'Rat PK': "Bioavailability was estimated as close to 1 and then fixed as 1 in the final model"
+    lka     <- log(0.00820)     ; label("First-order subcutaneous absorption rate constant at the 0.5 nmol dose (1/min)") # Table 2: ka1 = 0.00820 (CV 9%)
+    lfdepot <- fixed(log(1))    ; label("Absolute subcutaneous bioavailability (fraction)")                      # Table 2: F = 1 (fixed); Results 'Rat PK': "Bioavailability was estimated as close to 1 and then fixed as 1 in the final model"
 
     # ------------------------------------------------------------------
     # Residual error. Gao 2012 Methods states the variance model

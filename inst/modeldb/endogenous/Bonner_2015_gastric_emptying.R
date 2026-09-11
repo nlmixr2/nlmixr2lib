@@ -201,7 +201,7 @@ Bonner_2015_gastric_emptying <- function() {
     gamma1_i   <- exp(lgamma1 + etalgamma1)
     gamma2_i   <- exp(lgamma2 + etalgamma2)
     logit_pr_i <- llogit_pr + etallogit_pr
-    pr_frac_i  <- 1 / (1 + exp(-logit_pr_i))
+    pr_frac_i  <- expit(logit_pr_i)
     pr_pct_i   <- 100 * pr_frac_i
 
     # ---------------------------------------------------------------------

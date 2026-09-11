@@ -77,7 +77,7 @@ FiedlerKelly_2020_fremanezumab_em <- function() {
     # output-prefixed name follows the multi-output residual-error
     # convention (`addSd_<output>`).
     # ----------------------------------------------------------------------
-    addSd_migraineDays <- 2.35; label("Additive residual error on monthly migraine days")  # Fiedler-Kelly 2020 Table S3 (SD of variance 5.52)
+    addSd_migraine_days <- 2.35; label("Additive residual error on monthly migraine days")  # Fiedler-Kelly 2020 Table S3 (SD of variance 5.52)
   })
 
   model({
@@ -89,7 +89,7 @@ FiedlerKelly_2020_fremanezumab_em <- function() {
     exp_i <- exp_PLC + etaexp_PLC
 
     # Individual maximum fractional Cav response (logit-normal IIV).
-    Emax_i <- 1 / (1 + exp(-(logitEmax + etalogitEmax)))
+    Emax_i <- expit(logitEmax + etalogitEmax)
 
     # Placebo time-course (Fiedler-Kelly 2020 Figure 2A form): predicted
     # reduction from baseline = exp(exponent * month). At month 0 the
@@ -103,8 +103,8 @@ FiedlerKelly_2020_fremanezumab_em <- function() {
     drug_red <- BL_i * Emax_i * CAV / (EC50_drug + CAV)
 
     # Predicted monthly migraine days = baseline minus placebo time effect minus drug effect.
-    migraineDays <- BL_i - placebo_red - drug_red
+    migraine_days <- BL_i - placebo_red - drug_red
 
-    migraineDays ~ add(addSd_migraineDays)
+    migraine_days ~ add(addSd_migraine_days)
   })
 }

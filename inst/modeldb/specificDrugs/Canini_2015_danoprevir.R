@@ -165,7 +165,7 @@ Canini_2015_danoprevir <- function() {
     propSd   <- 0.61
     label("PK proportional residual SD on plasma danoprevir concentration (fraction)")  # Canini 2015 Results, PK/VK model: 'proportional error term (b = 0.61 +- 0.02)'
 
-    addSd_Vlog10 <- 0.29
+    addSd_log10_viral_load <- 0.29
     label("Viral-load additive residual SD on log10(HCV RNA IU/mL)")  # Canini 2015 Results, PK/VK model: 'An additive error model was found to best describe the residual error for the VK data (a = 0.29 +- 0.0094 log10 IU/ml)'.
   })
 
@@ -257,15 +257,15 @@ Canini_2015_danoprevir <- function() {
 
     # =========================================================================
     # 7. Observation outputs and residual error. Cc is the plasma danoprevir
-    # concentration in ng/mL (paper's reporting unit); Vlog10 is log10 of
+    # concentration in ng/mL (paper's reporting unit); log10_viral_load is log10 of
     # the free-virion concentration (log10(IU/mL)). The 1e-12 floor inside
     # log10() prevents -Inf when virus approaches zero after sustained
     # effective treatment.
     # =========================================================================
     Cc     <- cc_ngml
-    Vlog10 <- log10(virus + 1e-12)
+    log10_viral_load <- log10(virus + 1e-12)
 
     Cc     ~ add(addSd) + prop(propSd)
-    Vlog10 ~ add(addSd_Vlog10)
+    log10_viral_load ~ add(addSd_log10_viral_load)
   })
 }

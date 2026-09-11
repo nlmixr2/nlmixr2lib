@@ -140,52 +140,52 @@ AlfoseaCuadrado_2024_reserpine_rat <- function() {
     # Absorption is split between a first-order route (fraction F1) and a
     # zero-order route (fraction 1 - F1) delivered over a duration Tk0_2.
     lka <- fixed(log(19.14))
-    label("First-order absorption rate constant (ka1, 1/h)")  # Table 2: ka1 = 19.14, FIX
+    label("First-order absorption rate constant (1/h)")  # Table 2: ka1 = 19.14, FIX
 
     # Table 2 heads this row 'ka2 (mg/h/kg)', but both the Table 2 footnote and the
     # Figure 1 legend define it as the DURATION of zero-order absorption (Tk0_2).
     # The duration reading is the one that reproduces the Figure 2 pc-VPC tail; see
     # the vignette Errata.
     ld1 <- log(45.43)
-    label("Duration of zero-order absorption (Tk0_2, h)")  # Table 2: ka2 = 45.43 (RSE 12%)
+    label("Duration of zero-order absorption (h)")  # Table 2: ka2 = 45.43 (RSE 12%)
 
     # Logit rather than log scale so the two absorption fractions F1 and (1 - F1)
     # always split a non-negative dose; see the vignette Errata.
     logitfdepot <- log(0.95 / (1 - 0.95))
-    label("Fraction of dose absorbed by the first-order route (F1, unitless)")  # Table 2: F1 = 0.95 (RSE 3%)
+    label("Fraction of dose absorbed by the first-order route (unitless)")  # Table 2: F1 = 0.95 (RSE 3%)
 
     lvc <- log(1.3e-3)
-    label("Apparent central volume of distribution (V, L/kg)")  # Table 2: V = 1.3 mL/kg
+    label("Apparent central volume of distribution (L/kg)")  # Table 2: V = 1.3 mL/kg
 
     lcl <- log(4.5e-4)
-    label("Apparent elimination clearance (CL, L/h/kg)")  # Table 2: CL = 4.5e-1 mL/h/kg
+    label("Apparent elimination clearance (L/h/kg)")  # Table 2: CL = 4.5e-1 mL/h/kg
 
     # -- Precursor-pool pharmacodynamics (Table 2) ----------------------------
     # Region-specific typical values of the precursor production rate. Amygdala is
     # the reference level; the three rows share one inter-animal variability term.
     lkpin <- log(6.97)
-    label("Precursor production rate, amygdala (kin, mg/L/h)")  # Table 2: kin AMY = 6.97 (RSE 18%)
+    label("Precursor production rate, amygdala (mg/L/h)")  # Table 2: kin AMY = 6.97 (RSE 18%)
 
     lkpin_pfc <- log(2.10)
-    label("Precursor production rate, prefrontal cortex (kin, mg/L/h)")  # Table 2: kin PFC = 2.10 (RSE 18%)
+    label("Precursor production rate, prefrontal cortex (mg/L/h)")  # Table 2: kin PFC = 2.10 (RSE 18%)
 
     lkpin_sc <- log(1.78)
-    label("Precursor production rate, spinal cord (kin, mg/L/h)")  # Table 2: kin SC = 1.78 (RSE 19%)
+    label("Precursor production rate, spinal cord (mg/L/h)")  # Table 2: kin SC = 1.78 (RSE 19%)
 
     lkin <- log(8.6e-4)
-    label("Response production rate constant, precursor to response (kp, 1/h)")  # Table 2: kp = 8.6e-4 (RSE 14%)
+    label("Response production rate constant, precursor to response (1/h)")  # Table 2: kp = 8.6e-4 (RSE 14%)
 
     lkout <- log(2.7e-2)
-    label("Response degradation rate constant (kout, 1/h)")  # Table 2: kout = 2.7e-2 (RSE 11%)
+    label("Response degradation rate constant (1/h)")  # Table 2: kout = 2.7e-2 (RSE 11%)
 
     lktr <- log(1.9e-1)
     label("Transit-chain rate constant (k0 / ktr, 1/h)")  # Table 2: k0 = 1.9e-1 (RSE 6%)
 
     lslp1 <- log(1.1e-1)
-    label("Linear slope of reserpine on kp stimulation (SLP1, L/mg)")  # Table 2: SLP1 = 1.1e-1 (RSE 47%)
+    label("Linear slope of reserpine on kp stimulation (L/mg)")  # Table 2: SLP1 = 1.1e-1 (RSE 47%)
 
     lslp2 <- log(1.25)
-    label("Linear slope of reserpine on transit-chain production (SLP2, L/mg)")  # Table 2: SLP2 = 1.25 (RSE 20%)
+    label("Linear slope of reserpine on transit-chain production (L/mg)")  # Table 2: SLP2 = 1.25 (RSE 20%)
 
     # -- Inter-animal variability (Table 2, 'Inter-Animal Variability') -------
     # Reported as CV%; converted with omega^2 = log(1 + CV^2).
@@ -213,7 +213,7 @@ AlfoseaCuadrado_2024_reserpine_rat <- function() {
     # 1. Individual parameters
     ka     <- exp(lka + etalka)
     d1     <- exp(ld1 + etald1)
-    fdepot <- exp(logitfdepot + etalogitfdepot) / (1 + exp(logitfdepot + etalogitfdepot))
+    fdepot <- expit(logitfdepot + etalogitfdepot)
     vc     <- exp(lvc + etalvc)
     cl     <- exp(lcl + etalcl)
 

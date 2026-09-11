@@ -64,13 +64,13 @@ Yang_2025_matrine_pig_pbpk <- function() {
     # Nelder-Mead fit, so the OPTIMIZED column - not the starting value - is
     # what this file encodes throughout.
     # ---------------------------------------------------------------------
-    lkst      <- fixed(log(0.8544925));   label("First-order gastric emptying rate constant, stomach to intestinal lumen (kst, 1/h)")     # Yang 2025 Table 5 (starting 0.1 from refs 21, 22; optimized 0.8544925)
-    lka       <- fixed(log(0.8555538));   label("First-order absorption rate constant from intestinal lumen to blood (ka, 1/h)")          # Yang 2025 Table 5 (starting 0.3; optimized 0.8555538, by optimization)
-    lkfec     <- fixed(log(0.007358172)); label("First-order faecal excretion rate constant for unabsorbed drug (ke, 1/h)")               # Yang 2025 Table 5 (starting 0.01; optimized 0.007358172, by optimization)
-    lkbile    <- fixed(log(0.05834594));  label("First-order biliary excretion rate constant, liver to intestinal lumen (kbi, 1/h)")      # Yang 2025 Table 5 (starting 0.01; optimized 0.05834594, by optimization)
-    lfdepot   <- fixed(log(0.7925891));   label("Oral bioavailability (F, fraction)")                                                     # Yang 2025 Table 5 (starting 0.171 from ref 14; optimized 0.7925891)
-    lkp_liver <- fixed(log(2.936615));    label("Liver-to-blood partition coefficient (Pl, unitless)")                                    # Yang 2025 Table 5 (starting 5.5 from ref 15; optimized 2.936615)
-    lkp_other <- fixed(log(11.33514));    label("Other organs-to-blood partition coefficient (Pot, unitless)")                            # Yang 2025 Table 5 (starting 5; optimized 11.33514, by optimization)
+    lkst      <- fixed(log(0.8544925));   label("First-order gastric emptying rate constant, stomach to intestinal lumen (1/h)")     # Yang 2025 Table 5 (starting 0.1 from refs 21, 22; optimized 0.8544925)
+    lka       <- fixed(log(0.8555538));   label("First-order absorption rate constant from intestinal lumen to blood (1/h)")          # Yang 2025 Table 5 (starting 0.3; optimized 0.8555538, by optimization)
+    lkfec     <- fixed(log(0.007358172)); label("First-order faecal excretion rate constant for unabsorbed drug (1/h)")               # Yang 2025 Table 5 (starting 0.01; optimized 0.007358172, by optimization)
+    lkbile    <- fixed(log(0.05834594));  label("First-order biliary excretion rate constant, liver to intestinal lumen (1/h)")      # Yang 2025 Table 5 (starting 0.01; optimized 0.05834594, by optimization)
+    lfdepot   <- fixed(log(0.7925891));   label("Oral bioavailability (fraction)")                                                     # Yang 2025 Table 5 (starting 0.171 from ref 14; optimized 0.7925891)
+    lkp_liver <- fixed(log(2.936615));    label("Liver-to-blood partition coefficient (unitless)")                                    # Yang 2025 Table 5 (starting 5.5 from ref 15; optimized 2.936615)
+    lkp_other <- fixed(log(11.33514));    label("Other organs-to-blood partition coefficient (unitless)")                            # Yang 2025 Table 5 (starting 5; optimized 11.33514, by optimization)
     lcl_renal <- fixed(log(0.2805897));   label("Renal clearance per unit body weight (Clrenal, L/(h*kg))")                               # Yang 2025 Table 5 (starting 1.182 from ref 14; optimized 0.2805897)
 
     # Yang 2025 reports the plasma protein BINDING Pb = 0.319, i.e. the BOUND

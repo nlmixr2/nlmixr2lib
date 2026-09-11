@@ -99,11 +99,11 @@ Aguiar_2021_ustekinumab <- function() {
     # Ustekinumab two-compartment disposition with first-order SC absorption.
     # CL, Vc, Vp typical values are for the reference subject (FFM = 45 kg,
     # serum albumin = 43 g/L, previously biologic-exposed; bio-naive = 0).
-    lka  <- log(0.381); label("First-order SC absorption rate (Ka, 1/day)")              # Aguiar 2021 Table 2 final-model Ka
-    lcl  <- log(0.277); label("Linear ustekinumab clearance at reference covariates (CL, L/day)") # Aguiar 2021 Table 2 final-model CL; footnote a
-    lvc  <- log(3.57);  label("Central volume of distribution at reference FFM (Vc, L)") # Aguiar 2021 Table 2 final-model Vc; footnote b
-    lvp  <- log(3.30);  label("Peripheral volume of distribution at reference FFM (Vp, L)") # Aguiar 2021 Table 2 final-model Vp; footnote c
-    lq   <- log(1.89);  label("Drug intercompartmental clearance (Q, L/day)")            # Aguiar 2021 Table 2 final-model Q
+    lka  <- log(0.381); label("First-order SC absorption rate (1/day)")              # Aguiar 2021 Table 2 final-model Ka
+    lcl  <- log(0.277); label("Linear ustekinumab clearance at reference covariates (L/day)") # Aguiar 2021 Table 2 final-model CL; footnote a
+    lvc  <- log(3.57);  label("Central volume of distribution at reference FFM (L)") # Aguiar 2021 Table 2 final-model Vc; footnote b
+    lvp  <- log(3.30);  label("Peripheral volume of distribution at reference FFM (L)") # Aguiar 2021 Table 2 final-model Vp; footnote c
+    lq   <- log(1.89);  label("Drug intercompartmental clearance (L/day)")            # Aguiar 2021 Table 2 final-model Q
 
     # Subcutaneous bioavailability on logit scale. Reference = V/F or F/F
     # (combined non-V/V); FCGR3A_VV adds an additive shift on the logit.
@@ -122,25 +122,25 @@ Aguiar_2021_ustekinumab <- function() {
     # binding to ustekinumab in the central compartment only. Ksyn is per-volume
     # (synthesis rate constant, nmol/L per day); Kdeg is the first-order target
     # degradation rate. Initial total-target concentration = Ksyn / Kdeg = T0.
-    lksyn  <- log(9.86e-9);  label("Target synthesis rate constant at reference CRP (Ksyn, nmol/L/day)") # Aguiar 2021 Table 2 final-model Ksyn; footnote d
-    lkdeg  <- log(9.26e-10); label("First-order target degradation rate constant (Kdeg, 1/day)")        # Aguiar 2021 Table 2 final-model Kdeg
-    lvc_t  <- log(2.44);     label("Central volume of distribution for target (Vc-target, L)")          # Aguiar 2021 Table 2 final-model Vc-target
-    lq_t   <- log(0.493);    label("Target intercompartmental clearance (Qtarget, L/day)")              # Aguiar 2021 Table 2 final-model Qtarget
-    lvp_t  <- log(11.0);     label("Peripheral volume of distribution for target (Vp-target, L)")       # Aguiar 2021 Table 2 final-model Vp-target
+    lksyn  <- log(9.86e-9);  label("Target synthesis rate constant at reference CRP (nmol/L/day)") # Aguiar 2021 Table 2 final-model Ksyn; footnote d
+    lkdeg  <- log(9.26e-10); label("First-order target degradation rate constant (1/day)")        # Aguiar 2021 Table 2 final-model Kdeg
+    lvc_t  <- log(2.44);     label("Central volume of distribution for target (L)")          # Aguiar 2021 Table 2 final-model Vc-target
+    lq_t   <- log(0.493);    label("Target intercompartmental clearance (L/day)")              # Aguiar 2021 Table 2 final-model Qtarget
+    lvp_t  <- log(11.0);     label("Peripheral volume of distribution for target (L)")       # Aguiar 2021 Table 2 final-model Vp-target
 
     e_crp_ksyn <- 0.0846; label("Linear-deviation coefficient of baseline CRP on Ksyn (per mg/L, relative)") # Aguiar 2021 Table 2 footnote d; (1 + 0.0846 * (CRP - 3))
 
     # ----- Binding (quasi-equilibrium TMDD) -----
-    lkint <- log(2.83e-6); label("Internalization rate constant of drug-target complex (Kint, 1/day)") # Aguiar 2021 Table 2 final-model Kint
-    lkd   <- log(0.168);   label("Equilibrium dissociation constant for ustekinumab-target binding (Kd, nmol/L)") # Aguiar 2021 Table 2 final-model Kd
+    lkint <- log(2.83e-6); label("Internalization rate constant of drug-target complex (1/day)") # Aguiar 2021 Table 2 final-model Kint
+    lkd   <- log(0.168);   label("Equilibrium dissociation constant for ustekinumab-target binding (nmol/L)") # Aguiar 2021 Table 2 final-model Kd
 
     # ----- PD: indirect-response model on fecal calprotectin -----
     # FC0 reference = patients without baseline ulcers (102 mg/kg).
-    lkout       <- log(0.0581);     label("First-order FC degradation rate (Kout, 1/day)")             # Aguiar 2021 Table 3 final-model Kout
-    lfc0        <- log(102);        label("Baseline fecal calprotectin in patients without baseline ulcers (FC0, mg/kg)") # Aguiar 2021 Table 3 final-model FC0 without ulcers
+    lkout       <- log(0.0581);     label("First-order FC degradation rate (1/day)")             # Aguiar 2021 Table 3 final-model Kout
+    lfc0        <- log(102);        label("Baseline fecal calprotectin in patients without baseline ulcers (mg/kg)") # Aguiar 2021 Table 3 final-model FC0 without ulcers
     e_endo_ulcer_fc0 <- log(213 / 102); label("Multiplicative log effect of baseline endoscopic ulcers on FC0 (unitless)") # Aguiar 2021 Table 3 final-model FC0 with ulcers (213 mg/kg) vs without (102 mg/kg)
-    lemax_pd    <- log(2.19);       label("Maximum stimulation factor of unbound target on FC production (Emax, unitless)") # Aguiar 2021 Table 3 final-model Emax = 219%
-    lc50_pd     <- log(2.46);       label("Unbound-target concentration at half-maximum FC stimulation (C50, nmol/L)") # Aguiar 2021 Table 3 final-model C50
+    lemax_pd    <- log(2.19);       label("Maximum stimulation factor of unbound target on FC production (unitless)") # Aguiar 2021 Table 3 final-model Emax = 219%
+    lc50_pd     <- log(2.46);       label("Unbound-target concentration at half-maximum FC stimulation (nmol/L)") # Aguiar 2021 Table 3 final-model C50
 
     # ----- IIV (Aguiar 2021 Tables 2 and 3) -----
     # Log-normal (exponential model) for CL, Vc, Vp, Ksyn, FC0:
@@ -189,7 +189,7 @@ Aguiar_2021_ustekinumab <- function() {
     # Subcutaneous bioavailability on the logit scale; FCGR3A_VV adds a fixed
     # shift relative to the V/F + F/F reference group.
     logit_f <- logitfdepot + etalogitfdepot + e_fcgr3a_vv_fdepot * FCGR3A_VV
-    fdepot  <- 1 / (1 + exp(-logit_f))
+    fdepot  <- expit(logit_f)
 
     # ----- Individual target turnover and binding -----
     # Ksyn carries the CRP linear-deviation effect (footnote d) and a

@@ -18,7 +18,7 @@ Lacroix_2025_polymyxinB_AB122D12 <- function() {
   units <- list(
     time          = "h",
     dosing        = "none (PMB is held at a static total concentration supplied by the CONC_PMB_MGL covariate; the TK tubes receive no dosing events)",
-    concentration = "log10 CFU/mL (Cc, total viable count of bact_s + bact_r)"
+    concentration = "log10 CFU/mL (log_cfu, total viable count of bact_s + bact_r)"
   )
 
   # Bacterial subpopulations of the hetero-resistance (S/R) model. Matches the
@@ -183,7 +183,7 @@ Lacroix_2025_polymyxinB_AB122D12 <- function() {
     # +1 CFU/mL floors the count so log10 stays finite when PMB sterilises the
     # tube; 1 CFU/mL is 2.6 log10 below the 400 CFU/mL limit of quantification.
     cfu_obs <- bact_s + bact_r + 1
-    Cc <- log10(cfu_obs)
-    Cc ~ add(addSd)
+    log_cfu <- log10(cfu_obs)
+    log_cfu ~ add(addSd)
   })
 }

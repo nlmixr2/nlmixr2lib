@@ -95,11 +95,11 @@ Hornik_2025_furosemide <- function() {
   ini({
     # Structural parameters. Typical values refer to a 70 kg adult with
     # CRCL 86 mL/min/1.73 m^2 (Sect. 2.6 definition of Kastd/CLstd/Vstd).
-    lka <- log(1.30); label("Subcutaneous first-order absorption rate constant (Ka, 1/h)")             # Table 1, Ka; Eqs. 9, 14
-    lcl <- log(6.51); label("Clearance in a 70 kg adult at the median CRCL of 86 (CL, L/h)")           # Table 1, CL; Eqs. 10, 15
-    lvc <- log(5.37); label("Central volume of distribution in a 70 kg adult (Vc, L)")                 # Table 1, Vc; Eqs. 11, 16
-    lq  <- log(3.74); label("Intercompartmental clearance in a 70 kg adult (Q, L/h)")                  # Table 1, Q; Eqs. 12, 17
-    lvp <- log(5.95); label("Peripheral volume of distribution in a 70 kg adult (Vp, L)")              # Table 1, Vp; Eqs. 13, 18
+    lka <- log(1.30); label("Subcutaneous first-order absorption rate constant (1/h)")             # Table 1, Ka; Eqs. 9, 14
+    lcl <- log(6.51); label("Clearance in a 70 kg adult at the median CRCL of 86 (L/h)")           # Table 1, CL; Eqs. 10, 15
+    lvc <- log(5.37); label("Central volume of distribution in a 70 kg adult (L)")                 # Table 1, Vc; Eqs. 11, 16
+    lq  <- log(3.74); label("Intercompartmental clearance in a 70 kg adult (L/h)")                  # Table 1, Q; Eqs. 12, 17
+    lvp <- log(5.95); label("Peripheral volume of distribution in a 70 kg adult (L)")              # Table 1, Vp; Eqs. 13, 18
 
     # Sect. 3.2: "bioavailability following subcutaneous furosemide
     # administration was estimated at 0.96". The paper estimated it on the

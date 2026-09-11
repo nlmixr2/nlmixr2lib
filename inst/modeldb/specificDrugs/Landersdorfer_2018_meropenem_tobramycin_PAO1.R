@@ -151,7 +151,7 @@ Landersdorfer_2018_meropenem_tobramycin_PAO1 <- function() {
     # 10. Outputs: total viable counts on log10 scale; fit on the log10 scale.
     CFUri <- bact_resistant_intermediate1 + bact_resistant_intermediate2    # MEM-resistant subpopulation (CFU/mL)
     CFUir <- bact_intermediate_resistant1 + bact_intermediate_resistant2    # TOB-resistant subpopulation (CFU/mL)
-    Cc <- log10(CFUall)
-    Cc ~ add(addSd)
+    log_cfu <- log10(CFUall)
+    log_cfu ~ add(addSd)
   })
 }

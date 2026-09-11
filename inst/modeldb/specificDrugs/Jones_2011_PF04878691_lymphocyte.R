@@ -82,10 +82,10 @@ Jones_2011_PF04878691_lymphocyte <- function() {
     lcl_exp_inf       <- fixed(log(1.7));    label("Steady-state apparent clearance per kg body weight (CL_SS = paper CLF, L/h/kg)")              # Table 1 (CLF = 1.7 L/h/kg)
     lcl_exp_component  <- fixed(log(1.8));    label("Initial offset of the time-varying clearance component per kg (CL_TIME0 = CL0 - CLF, L/h/kg)") # Derived from Table 1 (CL0 = 3.5, CLF = 1.7)
     lcl_exp_kdes     <- fixed(log(0.24));   label("Exponential decay rate of the time-varying clearance component (paper DEG, 1/h)")              # Table 1 (DEG = 0.24 1/h)
-    lvc       <- fixed(log(3.3));    label("Apparent central volume of distribution per kg body weight (Vc, L/kg)")                        # Table 1 (Vc = 3.3 L/kg)
-    lq        <- fixed(log(0.74));   label("Apparent intercompartmental clearance per kg body weight (Q, L/h/kg)")                         # Table 1 (Q = 0.74 L/h/kg)
-    lvp       <- fixed(log(21));     label("Apparent peripheral volume of distribution per kg body weight (Vp, L/kg)")                     # Table 1 (Vp = 21 L/kg)
-    lka       <- fixed(log(0.078));  label("First-order absorption rate constant (ka, 1/h)")                                               # Table 1 (ka = 0.078 1/h)
+    lvc       <- fixed(log(3.3));    label("Apparent central volume of distribution per kg body weight (L/kg)")                        # Table 1 (Vc = 3.3 L/kg)
+    lq        <- fixed(log(0.74));   label("Apparent intercompartmental clearance per kg body weight (L/h/kg)")                         # Table 1 (Q = 0.74 L/h/kg)
+    lvp       <- fixed(log(21));     label("Apparent peripheral volume of distribution per kg body weight (L/kg)")                     # Table 1 (Vp = 21 L/kg)
+    lka       <- fixed(log(0.078));  label("First-order absorption rate constant (1/h)")                                               # Table 1 (ka = 0.078 1/h)
 
     # PK IIVs from Table 1 -- also fixed because the lymphocyte fit used
     # EBE PK parameters from the upstream PK fit.
@@ -106,7 +106,7 @@ Jones_2011_PF04878691_lymphocyte <- function() {
     lkout    <- log(0.044);  label("Lymphocyte first-order elimination rate constant kout (1/h)")                                            # Table 3 (kout = 0.044 1/h, %CV 20)
     lslope   <- log(0.44);   label("Slope of the drug stimulation of lymphocyte loss per (ng/mL)^gamma (paper SLP, units 1 / (ng/mL)^gamma)") # Table 3 (SLP = 0.44, %CV 15)
     lrbase   <- log(1890);   label("Lymphocyte baseline absolute count (rbase = kin/kout, cells/uL; Table 3 unit label 'pg/mL' is a paper typo)") # Table 3 (BASE = 1890 cells/uL, %CV 4.7)
-    lgamma   <- log(2.2);    label("Sigmoidicity exponent on Cc in the lymphocyte stimulation power function (gamma, unitless)")             # Table 3 (gamma = 2.2, %CV 17)
+    lgamma   <- log(2.2);    label("Sigmoidicity exponent on Cc in the lymphocyte stimulation power function (unitless)")             # Table 3 (gamma = 2.2, %CV 17)
 
     # Lymphocyte IIVs from Table 3 (multiplicative exponential random
     # effects). Three IIVs: kout, slope, baseline. No IIV on gamma.

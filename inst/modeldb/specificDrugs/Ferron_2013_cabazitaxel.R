@@ -60,12 +60,12 @@ Ferron_2013_cabazitaxel <- function() {
     # estimated alongside the four intercompartmental first-order rate
     # constants K12, K21, K13, K31 (h^-1). Derived elimination rate
     # K = K10 = CL / V1. Time unit hours; concentration ng/mL.
-    lcl  <- log(48.5);   label("Clearance for non-breast-cancer at BSA 1.84 m^2 (CL, L/h)") # Ferron 2013 Table 4, theta1; Eq. 9
-    lvc  <- log(26.0);   label("Central volume of distribution (V1, L)")                    # Ferron 2013 Table 4, theta2
-    lk12 <- log(2.48);   label("Rate constant central -> peripheral1 (K12, 1/h)")           # Ferron 2013 Table 4, theta3
-    lk21 <- log(0.604);  label("Rate constant peripheral1 -> central (K21, 1/h)")           # Ferron 2013 Table 4, theta4
-    lk13 <- log(4.84);   label("Rate constant central -> peripheral2 (K13, 1/h)")           # Ferron 2013 Table 4, theta5
-    lk31 <- log(0.0266); label("Rate constant peripheral2 -> central (K31, 1/h)")           # Ferron 2013 Table 4, theta6
+    lcl  <- log(48.5);   label("Clearance for non-breast-cancer at BSA 1.84 m^2 (L/h)") # Ferron 2013 Table 4, theta1; Eq. 9
+    lvc  <- log(26.0);   label("Central volume of distribution (L)")                    # Ferron 2013 Table 4, theta2
+    lk12 <- log(2.48);   label("Rate constant central -> peripheral1 (1/h)")           # Ferron 2013 Table 4, theta3
+    lk21 <- log(0.604);  label("Rate constant peripheral1 -> central (1/h)")           # Ferron 2013 Table 4, theta4
+    lk13 <- log(4.84);   label("Rate constant central -> peripheral2 (1/h)")           # Ferron 2013 Table 4, theta5
+    lk31 <- log(0.0266); label("Rate constant peripheral2 -> central (1/h)")           # Ferron 2013 Table 4, theta6
 
     # Covariate effect on CL: CL = TVCL * BSA/1.84 * (1 - 0.543 * TUMTP_BREAST)
     # The 95% CI on the breast-cancer fractional reduction was 0.217-0.869

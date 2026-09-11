@@ -60,17 +60,17 @@ Papachristos_2020_bevacizumab_qss <- function() {
 
   ini({
     # Structural PK parameters (reference 70 kg adult, all SNPs wild-type)
-    lcl   <- log(0.344);  label("Linear clearance of free bevacizumab for a 70 kg wild-type adult (CL, L/day)")  # Table 2 row CL
-    lvc   <- log(5.83);   label("Central volume of distribution (V1, L)")                                          # Table 2 row V1pop
-    lq    <- log(0.136);  label("Inter-compartmental clearance (Q, L/day)")                                        # Table 2 row Qpop
-    lvp   <- log(3.17);   label("Peripheral volume of distribution (V2, L)")                                       # Table 2 row V2pop
+    lcl   <- log(0.344);  label("Linear clearance of free bevacizumab for a 70 kg wild-type adult (L/day)")  # Table 2 row CL
+    lvc   <- log(5.83);   label("Central volume of distribution (L)")                                          # Table 2 row V1pop
+    lq    <- log(0.136);  label("Inter-compartmental clearance (L/day)")                                        # Table 2 row Qpop
+    lvp   <- log(3.17);   label("Peripheral volume of distribution (L)")                                       # Table 2 row V2pop
 
     # Target turnover (free VEGF-A)
-    lkout <- log(0.116);  label("First-order elimination rate constant of free VEGF-A (kout, 1/day)")              # Table 2 row Koutpop
-    lbm0  <- log(0.0137); label("Baseline (pre-dose) free VEGF-A concentration for a wild-type adult (BM0, nM)")   # Table 2 row BM0pop (= 616.5 ng/L)
+    lkout <- log(0.116);  label("First-order elimination rate constant of free VEGF-A (1/day)")              # Table 2 row Koutpop
+    lbm0  <- log(0.0137); label("Baseline (pre-dose) free VEGF-A concentration for a wild-type adult (nM)")   # Table 2 row BM0pop (= 616.5 ng/L)
 
     # Binding (QSS dissociation constant; same units as ctot, ttot)
-    lkss  <- log(135);    label("Quasi-steady-state dissociation constant for bevacizumab-VEGF-A binding (Kss, nM)")  # Table 2 row KSSpop
+    lkss  <- log(135);    label("Quasi-steady-state dissociation constant for bevacizumab-VEGF-A binding (nM)")  # Table 2 row KSSpop
 
     # Allometric / SNP covariate effects on log-CL
     e_wt_cl <- 1.01;  label("Allometric exponent on CL for log(WT/70) (unitless)")                                 # Table 2 row "log(weight/70) on CL"

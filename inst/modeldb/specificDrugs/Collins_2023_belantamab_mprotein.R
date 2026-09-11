@@ -301,10 +301,10 @@ Collins_2023_belantamab_mprotein <- function() {
     # encoded here as factor^indicator so that a patient in the reference
     # category contributes a factor of exactly 1.
     # ------------------------------------------------------------------
-    e_b2m_kg     <-  0.219;  label("Power exponent of baseline beta-2-microglobulin on KGR")           # Collins 2023 Table 1: Effect of bB2M on KGR = 0.219 (95% CI 0.011, 0.427)
-    e_mcprot_kd  <-  1.41;   label("Multiplicative factor on KD when baseline M-protein < 20 g/L")     # Collins 2023 Table 1: Effect of bMPROT < 20 on KD = 1.41 (95% CI 1.08, 1.85)
-    e_emd_ke0    <-  0.108;  label("Multiplicative factor on KEO for extramedullary disease")          # Collins 2023 Table 1: Effect of MEDFL on KEO = 0.108 (95% CI 0.0617, 0.187)
-    e_sbcma_ke0  <- -0.414;  label("Power exponent of baseline soluble BCMA on KEO")                   # Collins 2023 Table 1: Effect of baseline sBCMA on KEO = -0.414 (95% CI -0.561, -0.267)
+    e_b2m_kg     <-  0.219;  label("Power exponent of baseline beta-2-microglobulin on KGR, B2M/350 scaling (unitless)")           # Collins 2023 Table 1: Effect of bB2M on KGR = 0.219 (95% CI 0.011, 0.427)
+    e_mcprot_kd  <-  1.41;   label("Multiplicative factor on KD when baseline M-protein is below 20 g/L (unitless)")     # Collins 2023 Table 1: Effect of bMPROT < 20 on KD = 1.41 (95% CI 1.08, 1.85)
+    e_emd_ke0    <-  0.108;  label("Multiplicative factor on KEO for extramedullary disease, power form on DIS_EMD (unitless)")          # Collins 2023 Table 1: Effect of MEDFL on KEO = 0.108 (95% CI 0.0617, 0.187)
+    e_sbcma_ke0  <- -0.414;  label("Power exponent of baseline soluble BCMA on KEO, SBCMA/100 scaling (unitless)")                   # Collins 2023 Table 1: Effect of baseline sBCMA on KEO = -0.414 (95% CI -0.561, -0.267)
 
     # ------------------------------------------------------------------
     # Inter-individual variability (Collins 2023 Table 1, "M-protein

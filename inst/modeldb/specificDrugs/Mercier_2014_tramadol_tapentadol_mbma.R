@@ -175,7 +175,7 @@ Mercier_2014_tramadol_tapentadol_mbma <- function() {
 
     # 5. Observed pain intensity on the 0-10 scale (paper Eq. 1).
     latent  <- base_arm + r_arm * (1 - exp(-kel * time))
-    score   <- 10 * exp(latent) / (1 + exp(latent))
+    score   <- 10 * expit(latent)
 
     # 6. Additive residual on the observed 0-10 scale. Per-arm
     # sample-size weighting (SD -> addSd / sqrt(N)) is applied

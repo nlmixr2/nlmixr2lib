@@ -243,7 +243,7 @@ Bonate_2004_apomine <- function() {
     # Absorption mixture (Group 1 = lagged dominant 97%; Group 2 = no
     # lag rare 3%; BSV common between groups per Table 3 footnote *)
     # -------------------------------------------------------------------
-    lka1  <- log(1.77)  ; label("Absorption rate constant ka for Group 1 (lagged-absorption, 1/h)")                             # Bonate 2004 Table 3: ka Group 1 = 1.77 /h (SE 0.431; BSV 145%)
+    lka1  <- log(1.77)  ; label("Absorption rate constant ka for Group 1 (1/h)")                             # Bonate 2004 Table 3: ka Group 1 = 1.77 /h (SE 0.431; BSV 145%)
     ltlag <- log(0.821) ; label("Absorption lag time for Group 1 (h; Group 2 lag is fixed at 0)")                               # Bonate 2004 Table 3: Lag time Group 1 = 0.821 h (SE 0.0386); Lag time Group 2 = 0 fixed
     lka2  <- log(0.361) ; label("Absorption rate constant ka for Group 2 (no-lag absorption, 1/h)")                             # Bonate 2004 Table 3: ka Group 2 = 0.361 /h (SE 0.0362; BSV 145%)
     # Mixing logit P1 = -3.47 -> P(Group 1) = 1/(1 + exp(P1)) = 0.970;

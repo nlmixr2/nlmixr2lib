@@ -60,21 +60,21 @@ Baverel_2015_tralokinumab <- function() {
     # WT = 73 kg). Paper reports CL and Q in mL/day and Vc/Vp in mL; converted to
     # L/day and L by dividing by 1000 so the model writes out concentrations in
     # mg/L = ug/mL when doses are in mg.
-    lcl  <- log(0.204);  label("Clearance for a 73 kg adult (CL, L/day)")                           # Table 3: CL adult 204 mL/day
-    lvc  <- log(1.867);  label("Central volume of distribution for a 73 kg adult (Vc, L)")          # Table 3: Vc 1867 mL
-    lvp  <- log(3.357);  label("Peripheral volume of distribution for a 73 kg adult (Vp, L)")       # Table 3: Vp 3357 mL
-    lq   <- log(1.582);  label("Intercompartmental clearance for a 73 kg adult (Q, L/day)")         # Table 3: Q 1582 mL/day
+    lcl  <- log(0.204);  label("Clearance for a 73 kg adult (L/day)")                           # Table 3: CL adult 204 mL/day
+    lvc  <- log(1.867);  label("Central volume of distribution for a 73 kg adult (L)")          # Table 3: Vc 1867 mL
+    lvp  <- log(3.357);  label("Peripheral volume of distribution for a 73 kg adult (L)")       # Table 3: Vp 3357 mL
+    lq   <- log(1.582);  label("Intercompartmental clearance for a 73 kg adult (L/day)")         # Table 3: Q 1582 mL/day
 
     # SC absorption parameters. Absorption is split between a first-order pathway
     # (fraction Fr; rate Ka with absorption lag Tlag) and a zero-order pathway
     # (fraction 1-Fr; duration D0). Fsc is the SC bioavailability that scales the
     # entire SC dose; IV dosing implicitly carries F = 1. Fr is logit-transformed
     # in Baverel 2015 Equations 2 and 3 to constrain it in (0, 1).
-    lka      <- log(0.34);             label("First-order absorption rate constant (Ka, 1/day)")   # Table 3: Ka 0.34 /day
-    ld0      <- log(5.7);              label("Zero-order absorption duration (D0, day)")           # Table 3: D0 5.7 days
-    ltlag    <- log(0.8);              label("First-order absorption lag time (Tlag, day)")        # Table 3: Tlag 0.8 day
-    lfdepot  <- log(0.8);              label("Subcutaneous bioavailability (Fsc, fraction)")       # Table 3: Fsc 0.8
-    logitffo  <- log(0.7 / (1 - 0.7));  label("Logit of fraction of SC dose absorbed first-order (Fr, unitless)")  # Table 3: Fr 0.7 (logit-transformed per Eqs. 2-3)
+    lka      <- log(0.34);             label("First-order absorption rate constant (1/day)")   # Table 3: Ka 0.34 /day
+    ld0      <- log(5.7);              label("Zero-order absorption duration (day)")           # Table 3: D0 5.7 days
+    ltlag    <- log(0.8);              label("First-order absorption lag time (day)")        # Table 3: Tlag 0.8 day
+    lfdepot  <- log(0.8);              label("Subcutaneous bioavailability (fraction)")       # Table 3: Fsc 0.8
+    logitffo  <- log(0.7 / (1 - 0.7));  label("Logit of fraction of SC dose absorbed first-order (unitless)")  # Table 3: Fr 0.7 (logit-transformed per Eqs. 2-3)
 
     # Allometric exponents on disposition parameters (Baverel 2015 Equation 5,
     # reference weight 73 kg). Fixed to canonical mAb values per the paper's
@@ -143,7 +143,7 @@ Baverel_2015_tralokinumab <- function() {
     d0     <- exp(ld0)
     tlag   <- exp(ltlag)
     fdepot <- exp(lfdepot)
-    fr     <- exp(logitffo + etalogitffo) / (1 + exp(logitffo + etalogitffo))
+    fr     <- expit(logitffo + etalogitffo)
 
     # Two-compartment disposition micro-constants.
     kel <- cl / vc

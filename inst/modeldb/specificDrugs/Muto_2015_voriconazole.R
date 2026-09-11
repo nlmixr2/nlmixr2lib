@@ -69,7 +69,7 @@ Muto_2015_voriconazole <- function() {
     lvmax         <- log(118);   label("Maximum elimination rate Vmax at 1 h after first dose, Vmax,1 (mg/h per 70 kg)")       # Table 3 Vmax,1 estimate 118 (RSE 14%)
     logitvmaxinh  <- 2.61;       label("Logit of maximum fractional Vmax inhibition Vmax_inh for CYP2C19 UM/EM (unitless)")    # Table 3 Vmax_inh logit estimate 2.61 (RSE 19%); expit(2.61) = 0.932
     lt50          <- log(2.45);  label("Half-time of the time-dependent Vmax decay T50 (h)")                                   # Table 3 T50 estimate 2.45 (RSE 6.3%)
-    lvmaxscale    <- log(1.25);  label("Scaling factor for the shared Km/Vmax,1 random effect on Vmax,1 (theta_Vmax,scale; unitless)") # Table 3 theta_Vmax,scale estimate 1.25 (RSE 12%)
+    lvmaxscale    <- log(1.25);  label("Scaling factor for the shared Km/Vmax,1 random effect on Vmax,1 (scale; unitless)") # Table 3 theta_Vmax,scale estimate 1.25 (RSE 12%)
 
     # Linear disposition.
     lcl <- log(6.02); label("Linear clearance CL (L/h per 70 kg)")                # Table 3 CL estimate 6.02 (RSE 11%)

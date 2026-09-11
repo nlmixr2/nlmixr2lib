@@ -41,12 +41,12 @@ Wang_2017_benralizumab <- function() {
   dosing <- c("depot", "central")
   ini({
     # Structural parameters
-    lcl <- log(0.323)    ; label("Clearance (CL, L/day)")
-    lvc <- log(3.16)     ; label("Central volume of distribution (Vc, L)")
-    lq  <- log(0.939)    ; label("Intercompartmental clearance (Q, L/day)")
-    lvp <- log(2.83)     ; label("Peripheral volume of distribution (Vp, L)")
-    lka <- log(0.252)    ; label("Absorption rate constant (ka, 1/day)")
-    lfdepot <- log(0.526) ; label("Subcutaneous bioavailability (F, fraction)")
+    lcl <- log(0.323)    ; label("Clearance (L/day)")
+    lvc <- log(3.16)     ; label("Central volume of distribution (L)")
+    lq  <- log(0.939)    ; label("Intercompartmental clearance (L/day)")
+    lvp <- log(2.83)     ; label("Peripheral volume of distribution (L)")
+    lka <- log(0.252)    ; label("Absorption rate constant (1/day)")
+    lfdepot <- log(0.526) ; label("Subcutaneous bioavailability (fraction)")
 
     # Allometric scaling: CL fixed at 0.75, volumes estimated
     # CL exponent = 0.75 (fixed, standard allometric)

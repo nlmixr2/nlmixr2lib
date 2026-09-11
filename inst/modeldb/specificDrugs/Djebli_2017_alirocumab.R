@@ -75,7 +75,7 @@ Djebli_2017_alirocumab <- function() {
     # K_SS is therefore fixed at the published in-vitro K_D; K_on is preserved as a documented constant
     # in the model body for reproducibility of the binding-rate parameterization.
     lkss  <- fixed(log(0.58)); label("Quasi-steady-state dissociation constant K_SS for alirocumab-PCSK9 (nM)") # Methods Sect. 2.3.2 (in-vitro K_D 0.58 nM) + Fig. 3 caption (K_SS = (K_off + K_int)/K_on)
-    lkon  <- fixed(log(559));  label("Binding association rate constant K_on (nM^-1 day^-1;; informational)")    # Table 4 (K_on FIXED to 559 nM^-1 day^-1 across all models)
+    lkon  <- fixed(log(559));  label("Binding association rate constant K_on on the log scale; informational (1/nM/day)")    # Table 4 (K_on FIXED to 559 nM^-1 day^-1 across all models)
 
     # Baseline total PCSK9 concentration. The paper does not estimate baseline PCSK9 as a population
     # parameter; the initial condition for the target compartment is set to the reported population
@@ -86,9 +86,9 @@ Djebli_2017_alirocumab <- function() {
     # ---- Allometric exponents (Djebli 2017 Sect. 3.6 equation; theory-based, FIXED) ----
     # P_i = TVP * (WT / WT_med)^EXP with EXP = 0.75 for CLL and Q and EXP = 1 for Vc. The paper
     # describes these as "theory-based allometric scaling" (i.e., FIXED at the canonical values).
-    e_wt_cl  <- fixed(0.75); label("Allometric exponent of (WT/85)^EXP on linear clearance CL")                    # Sect. 3.6 (theory-based allometric scaling on CLL)
-    e_wt_q   <- fixed(0.75); label("Allometric exponent of (WT/85)^EXP on Q")                      # Sect. 3.6 (theory-based allometric scaling on Q)
-    e_wt_vc  <- fixed(1.0);  label("Allometric exponent of (WT/85)^EXP on Vc")                     # Sect. 3.6 (theory-based allometric scaling on Vc)
+    e_wt_cl  <- fixed(0.75); label("Allometric exponent of WT/85 on linear clearance CL (unitless)")                    # Sect. 3.6 (theory-based allometric scaling on CLL)
+    e_wt_q   <- fixed(0.75); label("Allometric exponent of WT/85 on Q (unitless)")                      # Sect. 3.6 (theory-based allometric scaling on Q)
+    e_wt_vc  <- fixed(1.0);  label("Allometric exponent of WT/85 on Vc (unitless)")                     # Sect. 3.6 (theory-based allometric scaling on Vc)
 
     # ---- Covariate effect: statin coadministration on CLL ----
     # CLL = TVCLL * COV1^STATIN; COV1 = 1.27 with statin coadministration (Table 4 final expanded

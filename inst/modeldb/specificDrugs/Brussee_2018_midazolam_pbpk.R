@@ -139,10 +139,10 @@ Brussee_2018_midazolam_pbpk <- function() {
     # variance)). The additive components are FIX in NONMEM at sigma^2 =
     # 0.0001 ("The additive errors were fixed to very small numbers");
     # encoded with fixed() to preserve provenance.
-    propSd      <- sqrt(0.201);    label("Midazolam proportional residual error (SD, fraction)")             # Brussee 2018 Table 2 (sigma^2_prop = 0.201, RSE 26%; SD = sqrt(0.201) = 0.4483)
-    addSd       <- fixed(sqrt(0.0001));    label("Midazolam additive residual error (SD, microgram/L)")     # Brussee 2018 Table 2 (sigma^2_add = 0.0001 FIX; SD = 0.01)
-    propSd_1ohm <- sqrt(0.164);    label("1-OH-midazolam proportional residual error (SD, fraction)")        # Brussee 2018 Table 2 (sigma^2_prop = 0.164, RSE 91%; SD = sqrt(0.164) = 0.4050)
-    addSd_1ohm  <- fixed(sqrt(0.0001));    label("1-OH-midazolam additive residual error (SD, microgram/L)")# Brussee 2018 Table 2 (sigma^2_add = 0.0001 FIX; SD = 0.01)
+    propSd      <- sqrt(0.201);    label("Midazolam proportional residual error (fraction)")             # Brussee 2018 Table 2 (sigma^2_prop = 0.201, RSE 26%; SD = sqrt(0.201) = 0.4483)
+    addSd       <- fixed(sqrt(0.0001));    label("Midazolam additive residual error (microgram/L)")     # Brussee 2018 Table 2 (sigma^2_add = 0.0001 FIX; SD = 0.01)
+    propSd_1ohm <- sqrt(0.164);    label("1-OH-midazolam proportional residual error (fraction)")        # Brussee 2018 Table 2 (sigma^2_prop = 0.164, RSE 91%; SD = sqrt(0.164) = 0.4050)
+    addSd_1ohm  <- fixed(sqrt(0.0001));    label("1-OH-midazolam additive residual error (microgram/L)")# Brussee 2018 Table 2 (sigma^2_add = 0.0001 FIX; SD = 0.01)
   })
   model({
     # ===== Reference physiology (term-neonate baseline; Bjorkman 2005) =====

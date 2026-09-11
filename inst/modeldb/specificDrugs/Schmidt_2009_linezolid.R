@@ -29,7 +29,7 @@ Schmidt_2009_linezolid <- function() {
   units <- list(
     time          = "h",
     dosing        = "ug/mL (initial antibiotic concentration in MHB)",
-    concentration = "log10 CFU/mL (bacterial Cc output); ug/mL (antibiotic central state)"
+    concentration = "log10 CFU/mL (bacterial log_cfu output); ug/mL (antibiotic central state)"
   )
 
   # bact_susceptible and bact_persister are paper-mechanistic states
@@ -172,7 +172,7 @@ Schmidt_2009_linezolid <- function() {
     dks   <- exp(ldks  + etaldks)
     ksp   <- exp(lksp)
     kd    <- exp(lkd)
-    fsusc <- exp(logitf) / (1 + exp(logitf))   # back-transform logit -> initial susceptible fraction
+    fsusc <- expit(logitf)   # back-transform logit -> initial susceptible fraction
     ninit <- exp(lninit)
 
     # ---- Time-varying turn-on terms for growth and killing ----
@@ -215,7 +215,7 @@ Schmidt_2009_linezolid <- function() {
     bact_persister(0)   <- ninit * (1 - fsusc)
 
     # ---- Observation: log10 of total viable count ----
-    Cc <- log10(ntot)
-    Cc ~ add(addSd)
+    log_cfu <- log10(ntot)
+    log_cfu ~ add(addSd)
   })
 }

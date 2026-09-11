@@ -74,15 +74,15 @@ Jorga_2000_tolcapone_nonfluctuators <- function() {
     # nonfluctuator at the population-median creatinine clearance (68 mL/min)
     # and serum protein (72 g/L), under fasted conditions. From Jorga 2000
     # Table 3 (Non-fluctuator model, Final estimate column).
-    lka      <- log(0.7);  label("Absorption rate constant (ka, 1/h)")                        # Table 3 (ka = 0.7 /h)
-    lcl      <- log(4.5);  label("Apparent clearance for the reference covariates (CL/F1, L/h)")  # Table 3 (CL = 4.5 L/h)
-    lvc      <- log(3.5);  label("Central volume of distribution for the reference covariates (Vc, L)")  # Table 3 (Vc = 3.5 L)
-    lvp      <- log(24);   label("Peripheral volume of distribution (Vp, L)")                 # Table 3 (Vp = 24 L)
-    lq       <- log(7.7);  label("Inter-compartmental clearance (Q, L/h)")                    # Table 3 (Q = 7.7 L/h)
-    ltlag    <- log(0.4);  label("Absorption lag time (Tlag, h)")                             # Table 3 (Tlag = 0.4 h)
+    lka      <- log(0.7);  label("Absorption rate constant (1/h)")                        # Table 3 (ka = 0.7 /h)
+    lcl      <- log(4.5);  label("Apparent clearance for the reference covariates (L/h)")  # Table 3 (CL = 4.5 L/h)
+    lvc      <- log(3.5);  label("Central volume of distribution for the reference covariates (L)")  # Table 3 (Vc = 3.5 L)
+    lvp      <- log(24);   label("Peripheral volume of distribution (L)")                 # Table 3 (Vp = 24 L)
+    lq       <- log(7.7);  label("Inter-compartmental clearance (L/h)")                    # Table 3 (Q = 7.7 L/h)
+    ltlag    <- log(0.4);  label("Absorption lag time (h)")                             # Table 3 (Tlag = 0.4 h)
     # Fasted absolute bioavailability fixed at 0.6 from upstream IV/PO single-
     # dose study (Jorga et al. 1998, Eur J Clin Pharmacol 54:443-447; ref [22]).
-    lfdepot  <- fixed(log(0.6)); label("Fasted absolute bioavailability (F1, fraction)")     # Methods: F1 fixed to 0.6 [ref 22]
+    lfdepot  <- fixed(log(0.6)); label("Fasted absolute bioavailability (fraction)")     # Methods: F1 fixed to 0.6 [ref 22]
 
     # Covariate effects on CL: power-form (CRCL/68)^e_crcl_cl
     e_crcl_cl   <-  1.19; label("Creatinine clearance power exponent on CL")    # Table 3 (theta_CLCr(CL) = 1.19)

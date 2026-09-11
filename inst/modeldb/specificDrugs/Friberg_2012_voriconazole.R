@@ -194,7 +194,7 @@ Friberg_2012_voriconazole <- function() {
 
     # ---- 2. Vmax,inh (typical and HEM/PM-adult override) ----
     lgt_vmax_inh_i    <- lgt_vmax_inh + e_age_lt12_lgt_vmax_inh * is_child
-    vmax_inh_typical  <- 1.0 / (1.0 + exp(-lgt_vmax_inh_i))
+    vmax_inh_typical  <- expit(lgt_vmax_inh_i)
     vmax_inh          <- vmax_inh_typical * (1.0 - is_hem_or_pm_adult) + 1.0 * is_hem_or_pm_adult
 
     # ---- 3. T50 and time-dependent Vmax driver ----
@@ -232,7 +232,7 @@ Friberg_2012_voriconazole <- function() {
     eta_f1_raw <- etalgtf1_adult * is_stdy5_adult + etalgtf1_other * is_not_stdy5
     eta_f1_bc  <- (exp(bc_f1 * eta_f1_raw) - 1.0) / bc_f1
     lgt_f1_i   <- lgt_f1 + eta_f1_bc
-    f1         <- 1.0 / (1.0 + exp(-lgt_f1_i))
+    f1         <- expit(lgt_f1_i)
 
     # ka: population-specific typical value plus a non-adult log-normal IIV.
     ka_typical_ped  <- exp(lka_ped)

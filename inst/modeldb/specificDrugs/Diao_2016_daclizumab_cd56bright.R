@@ -62,13 +62,13 @@ Diao_2016_daclizumab_cd56bright <- function() {
     # ----------------------------------------------------------------------
     # PK backbone (copied verbatim from Othman_2014_daclizumab.R).
     # ----------------------------------------------------------------------
-    lka      <- log(0.009 * 24); label("Absorption rate constant (Ka, 1/day)")                  # Othman 2014 Table 2
-    lcl      <- log(0.010 * 24); label("Clearance for a 70 kg adult (CL, L/day)")               # Othman 2014 Table 2
-    lvc      <- log(3.89);       label("Central volume of distribution for a 70 kg adult (Vc, L)") # Othman 2014 Table 2
-    lvp      <- log(2.52);       label("Peripheral volume of distribution for a 70 kg adult (Vp, L)") # Othman 2014 Table 2
-    lq       <- log(0.044 * 24); label("Inter-compartmental clearance for a 70 kg adult (Q, L/day)") # Othman 2014 Table 2
-    lfdepot  <- log(0.84);       label("SC bioavailability for 100-300 mg doses (F, fraction)") # Othman 2014 Table 2
-    ltlag    <- log(2 / 24);     label("Absorption lag time for SC doses (Tlag, day; 2 h)")     # Othman 2014 Table 2
+    lka      <- log(0.009 * 24); label("Absorption rate constant (1/day)")                  # Othman 2014 Table 2
+    lcl      <- log(0.010 * 24); label("Clearance for a 70 kg adult (L/day)")               # Othman 2014 Table 2
+    lvc      <- log(3.89);       label("Central volume of distribution for a 70 kg adult (L)") # Othman 2014 Table 2
+    lvp      <- log(2.52);       label("Peripheral volume of distribution for a 70 kg adult (L)") # Othman 2014 Table 2
+    lq       <- log(0.044 * 24); label("Inter-compartmental clearance for a 70 kg adult (L/day)") # Othman 2014 Table 2
+    lfdepot  <- log(0.84);       label("SC bioavailability for 100-300 mg doses (fraction)") # Othman 2014 Table 2
+    ltlag    <- log(2 / 24);     label("Absorption lag time for SC doses (day; 2 h)")     # Othman 2014 Table 2
 
     e_wt_cl_q <- 0.54; label("Allometric exponent on CL and Q (unitless)") # Othman 2014 Table 2
     e_wt_vc_vp <- 0.64; label("Allometric exponent on Vc and Vp (unitless)") # Othman 2014 Table 2
@@ -94,9 +94,9 @@ Diao_2016_daclizumab_cd56bright <- function() {
     # from kin and the median baseline of 0.6% inside model().
     # ----------------------------------------------------------------------
     # Kin reported as 4.12e-04 %/h. Convert to %/day = 4.12e-04 * 24 = 0.009888 %/day.
-    lcd56Kin  <- log(4.12e-04 * 24); label("Zero-order CD56 bright NK production rate (Kin, %/day)") # Diao 2016 Table 4 (Kin = 4.12e-04 %/h)
-    lcd56Smax <- log(7.89);          label("Maximum stimulatory factor on Kin (Smax, unitless)")     # Diao 2016 Table 4 (Smax = 7.89)
-    lcd56EC50 <- log(18.0);          label("Daclizumab Cc giving 50% of Smax (EC50, mg/L = ug/mL)")  # Diao 2016 Table 4 (EC50 = 18.0 mg/L)
+    lcd56Kin  <- log(4.12e-04 * 24); label("Zero-order CD56 bright NK production rate (%/day)") # Diao 2016 Table 4 (Kin = 4.12e-04 %/h)
+    lcd56Smax <- log(7.89);          label("Maximum stimulatory factor on Kin (unitless)")     # Diao 2016 Table 4 (Smax = 7.89)
+    lcd56EC50 <- log(18.0);          label("Daclizumab Cc giving 50% of Smax (mg/L = ug/mL)")  # Diao 2016 Table 4 (EC50 = 18.0 mg/L)
 
     cd56baseline <- fixed(0.6); label("Median baseline CD56 bright NK (% of total lymphocytes)")  # Diao 2016 Results (NK section): "median ... baseline ... is 0.6%"
 

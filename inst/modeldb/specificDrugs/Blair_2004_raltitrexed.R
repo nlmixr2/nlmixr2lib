@@ -71,10 +71,10 @@ Blair_2004_raltitrexed <- function() {
     # (analogous to the K-rate parameterisation in Ferron_2013_cabazitaxel).
     lcl  <- log(0.54);  label("Intercept of CL regression at CRCL = 0 (L/h)") # Blair 2004 Table 3 q1 = 0.54 +/- 0.12; CL = q1 + q2 * CRCL
     lvc  <- log(6.64);  label("Intercept of Vc regression at WT = 0, ALB = 0 (L)") # Blair 2004 Table 3 q3 = 6.64 +/- 1.26; V = q3 + q4 * WT + q5 * ALB
-    lk12 <- log(0.99);  label("Rate constant central -> peripheral1 (k12, 1/h)") # Blair 2004 Table 2 covariate model
-    lk21 <- log(0.97);  label("Rate constant peripheral1 -> central (k21, 1/h)") # Blair 2004 Table 2 covariate model
-    lk13 <- log(0.96);  label("Rate constant central -> peripheral2 (k13, 1/h)") # Blair 2004 Table 2 covariate model
-    lk31 <- log(0.01);  label("Rate constant peripheral2 -> central (k31, 1/h)") # Blair 2004 Table 2 covariate model
+    lk12 <- log(0.99);  label("Rate constant central -> peripheral1 (1/h)") # Blair 2004 Table 2 covariate model
+    lk21 <- log(0.97);  label("Rate constant peripheral1 -> central (1/h)") # Blair 2004 Table 2 covariate model
+    lk13 <- log(0.96);  label("Rate constant central -> peripheral2 (1/h)") # Blair 2004 Table 2 covariate model
+    lk31 <- log(0.01);  label("Rate constant peripheral2 -> central (1/h)") # Blair 2004 Table 2 covariate model
 
     # Linear covariate effects (paper's regression-coefficient parameterisation).
     # Coefficients have units of (parameter unit) per (covariate unit), and are

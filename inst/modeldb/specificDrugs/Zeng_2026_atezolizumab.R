@@ -108,10 +108,10 @@ Zeng_2026_atezolizumab <- function() {
 
     # Structural parameters -- typical values at WT 77 kg, ALB 40 g/L,
     # TUMSZ 63 mm, male, ADA-negative.
-    lcl <- fixed(log(0.23));  label("Clearance at reference covariates (CL, L/day)")             # Zeng 2026 Supplement, NONMEM $THETA(3)
-    lvc <- fixed(log(3.25));  label("Central volume of distribution at reference (Vc, L)")       # Zeng 2026 Supplement, NONMEM $THETA(4)
-    lq  <- fixed(log(0.603)); label("Intercompartmental clearance (Q, L/day)")                   # Zeng 2026 Supplement, NONMEM $THETA(5)
-    lvp <- fixed(log(2.88));  label("Peripheral volume of distribution at reference (Vp, L)")    # Zeng 2026 Supplement, NONMEM $THETA(6)
+    lcl <- fixed(log(0.23));  label("Clearance at reference covariates (L/day)")             # Zeng 2026 Supplement, NONMEM $THETA(3)
+    lvc <- fixed(log(3.25));  label("Central volume of distribution at reference (L)")       # Zeng 2026 Supplement, NONMEM $THETA(4)
+    lq  <- fixed(log(0.603)); label("Intercompartmental clearance (L/day)")                   # Zeng 2026 Supplement, NONMEM $THETA(5)
+    lvp <- fixed(log(2.88));  label("Peripheral volume of distribution at reference (L)")    # Zeng 2026 Supplement, NONMEM $THETA(6)
 
     # Sigmoidal time-varying clearance: cl <- cl_base * exp(cl_time_max_i *
     # t^gamma / (t50^gamma + t^gamma)). cl_time_max is negative, so clearance

@@ -106,20 +106,20 @@ Frymoyer_2017_infliximab <- function() {
     #   lvc = log(52.4 * 65 / 1000) = log(3.406 L)
     #   lvp = log(19.6 * 65 / 1000) = log(1.274 L)
     #   lq  = log(2.26 * 65 / 1000) = log(0.1469 L/day)
-    lcl <- log(0.3523); label("Clearance for the reference subject (CL, L/day)")          # Frymoyer 2017 Methods (CL equation): 5.42 mL/kg/day * 65 kg / 1000
-    lvc <- log(3.406);  label("Central volume of distribution for the reference subject (Vc, L)")     # Frymoyer 2017 Methods (Vc equation): 52.4 mL/kg * 65 kg / 1000
-    lvp <- log(1.274);  label("Peripheral volume of distribution for the reference subject (Vp, L)")  # Frymoyer 2017 Methods (Vp equation): 19.6 mL/kg * 65 kg / 1000
-    lq  <- log(0.1469); label("Inter-compartmental clearance for the reference subject (Q, L/day)")   # Frymoyer 2017 Methods: 2.26 mL/kg/day * 65 kg / 1000
+    lcl <- log(0.3523); label("Clearance for the reference subject (L/day)")          # Frymoyer 2017 Methods (CL equation): 5.42 mL/kg/day * 65 kg / 1000
+    lvc <- log(3.406);  label("Central volume of distribution for the reference subject (L)")     # Frymoyer 2017 Methods (Vc equation): 52.4 mL/kg * 65 kg / 1000
+    lvp <- log(1.274);  label("Peripheral volume of distribution for the reference subject (L)")  # Frymoyer 2017 Methods (Vp equation): 19.6 mL/kg * 65 kg / 1000
+    lq  <- log(0.1469); label("Inter-compartmental clearance for the reference subject (L/day)")   # Frymoyer 2017 Methods: 2.26 mL/kg/day * 65 kg / 1000
 
     # Covariate effect parameters. Power exponents reported by Frymoyer 2017 are
     # on the per-kg form of CL / Vc / Vp; the +1 conversion to total parameters
     # is applied in model().
-    e_wt_cl  <-  0.313; label("Power exponent of body weight on per-kg CL ((WT/65)^e_wt_cl on CL/kg)")          # Frymoyer 2017 Methods (CL equation)
-    e_wt_vc  <-  0.233; label("Power exponent of body weight on per-kg Vc ((WT/65)^e_wt_vc on Vc/kg)")          # Frymoyer 2017 Methods (Vc equation)
-    e_wt_vp  <-  0.588; label("Power exponent of body weight on per-kg Vp ((WT/65)^e_wt_vp on Vp/kg)")          # Frymoyer 2017 Methods (Vp equation)
-    e_alb_cl <- -0.855; label("Power exponent of serum albumin on CL ((ALB/4.1)^e_alb_cl)")                     # Frymoyer 2017 Methods (CL equation)
-    e_imm_cl <-  0.863; label("Concomitant-immunomodulator power-of-coefficient on CL (e_imm_cl^IMM; -13.7%)")  # Frymoyer 2017 Methods (CL equation)
-    e_ada_cl <-  1.292; label("ATI power-of-coefficient on CL (e_ada_cl^ADA_POS; +29.2% when ADA-positive)")    # Frymoyer 2017 Methods (CL equation)
+    e_wt_cl  <-  0.313; label("Power exponent of body weight on per-kg CL, WT/65 scaling applied as 1 + e_wt_cl (unitless)")          # Frymoyer 2017 Methods (CL equation)
+    e_wt_vc  <-  0.233; label("Power exponent of body weight on per-kg Vc, WT/65 scaling applied as 1 + e_wt_vc (unitless)")          # Frymoyer 2017 Methods (Vc equation)
+    e_wt_vp  <-  0.588; label("Power exponent of body weight on per-kg Vp, WT/65 scaling applied as 1 + e_wt_vp (unitless)")          # Frymoyer 2017 Methods (Vp equation)
+    e_alb_cl <- -0.855; label("Power exponent of serum albumin on CL, ALB/4.1 scaling (unitless)")                     # Frymoyer 2017 Methods (CL equation)
+    e_imm_cl <-  0.863; label("Concomitant-immunomodulator power-of-coefficient on CL, e_imm_cl^IMM; -13.7% (unitless)")  # Frymoyer 2017 Methods (CL equation)
+    e_ada_cl <-  1.292; label("ATI power-of-coefficient on CL, e_ada_cl^ADA_POS; +29.2% when ADA-positive (unitless)")    # Frymoyer 2017 Methods (CL equation)
 
     # Inter-individual variability (diagonal). Frymoyer 2017 Methods reports the
     # IIV as an exponential error model with %CV; the on-log-scale variance is

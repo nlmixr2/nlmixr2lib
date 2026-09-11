@@ -72,9 +72,9 @@ He_2012_lamotrigine <- function() {
     # bioavailability was fixed at 1.0; absolute F is not separately
     # identifiable from steady-state trough data.
 
-    lka <- fixed(log(1.0)); label("First-order absorption rate constant (Ka, 1/h)")          # He 2012 Methods, page 1418: "absorption rate (Ka) was fixed at 1.0 h-1"
-    lcl <- log(1.01);       label("Apparent oral clearance at 27.87 kg reference TBW (CL/F, L/h)")  # He 2012 Table 3 final model: theta1 = 1.01 (RSE 4.48%)
-    lvc <- fixed(log(16.7)); label("Apparent central volume at 27.87 kg reference TBW (V/F, L)") # He 2012 Table 3 final model: theta6 = 16.7 (RSE "-", i.e. fixed); derived by solving 45 = theta6 * (75/27.87) so the model reproduces 45 L at a 75 kg adult (He 2012 Results, page 1420)
+    lka <- fixed(log(1.0)); label("First-order absorption rate constant (1/h)")          # He 2012 Methods, page 1418: "absorption rate (Ka) was fixed at 1.0 h-1"
+    lcl <- log(1.01);       label("Apparent oral clearance at 27.87 kg reference TBW (L/h)")  # He 2012 Table 3 final model: theta1 = 1.01 (RSE 4.48%)
+    lvc <- fixed(log(16.7)); label("Apparent central volume at 27.87 kg reference TBW (L)") # He 2012 Table 3 final model: theta6 = 16.7 (RSE "-", i.e. fixed); derived by solving 45 = theta6 * (75/27.87) so the model reproduces 45 L at a 75 kg adult (He 2012 Results, page 1420)
 
     # Allometric exponents on total body weight. CL exponent estimated;
     # Vc exponent fixed at 1.0 (linear scaling per the paper's stated

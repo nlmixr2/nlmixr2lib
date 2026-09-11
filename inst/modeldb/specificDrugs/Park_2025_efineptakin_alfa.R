@@ -312,7 +312,7 @@ Park_2025_efineptakin_alfa <- function() {
     # Both depots must be dosed with the FULL amount; the f() values do the
     # splitting. The lag applies to depot 2 only, which is what separates the
     # two absorption peaks.
-    fr1        <- exp(logitfdepot) / (1 + exp(logitfdepot))
+    fr1        <- expit(logitfdepot)
     f(depot)   <- bioa * fr1
     f(depot2)  <- bioa * (1 - fr1)
     alag(depot2) <- tlag

@@ -59,7 +59,7 @@ Sheng_2016_quinine_rat <- function() {
     lemax  <- log(21.7);    label("Log of emax of the logistic drug-effect on mixing probability (unitless)")
     # Table 2 2GP column: emax = 21.7 (RSE 2%); bootstrap CI (16.9, 35.8).
 
-    lRIC50 <- log(0.0423);  label("Log of real ic50 (RIC50, mM quinine HCl dihydrate)")
+    lRIC50 <- log(0.0423);  label("Log of real ic50 (mM quinine HCl dihydrate)")
     # Table 2 2GP column: RIC50 = 0.0423 mM (RSE 0.3%); bootstrap CI (0.0358, 0.0551).
     # Distinct from the apparent ic50 (derived from e0, emax, RIC50;
     # Sheng 2016 reports apparent ic50 = 1.18 mM for the 2GP model).
@@ -176,7 +176,7 @@ Sheng_2016_quinine_rat <- function() {
     # ------------------------------------------------------------------
     drugEmax <- emax_i * (conc^c_i) / (RIC50_i^c_i + conc^c_i)
     E        <- e0_i + drugEmax + etae
-    p_low    <- exp(E) / (1 + exp(E))
+    p_low    <- expit(E)
     p_high   <- 1 - p_low
 
     # ------------------------------------------------------------------

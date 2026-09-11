@@ -1,5 +1,5 @@
 Zhou_2016_warfarin_vk2 <- function() {
-  description <- "Two-drug population PK/PD model for warfarin and intravenous vitamin K2 (menatetrenone) in Japanese adults with atrial fibrillation undergoing catheter ablation. Warfarin and vitamin K2 each have a 1-compartment PK with fixed volumes-of-distribution (Vd1 = 0.183 L/kg for warfarin from Sato 2006; Vd3 = 0.051 L/kg for vitamin K2 from the Eisai product information) and fixed warfarin elimination rate (k10 = 0.0129 1/h); only the vitamin K2 elimination rate (k30) and the indirect-response PD parameters (ks, kd, IC50, Emax, EC50) were estimated from 579 INR observations in 100 patients. Warfarin inhibits clotting-factor synthesis (Emax = 1 - Cp1/(Cp1 + IC50)) while vitamin K2 stimulates it (1 + Emax_vk2 * Cp3/(Cp3 + EC50)); a binary renal-impairment indicator (CREAT >= 1.1 mg/dL in men or >= 0.8 mg/dL in women) reduces IC50 to 61.4% of normal. The model predicts thrombotest (TT, %); INR is recovered from TT via the Gogstad 1986 quadratic conversion (Equation 4)."
+  description <- "Two-drug population PK/PD model for warfarin and intravenous vitamin K2 (menatetrenone) in Japanese adults with atrial fibrillation undergoing catheter ablation. Warfarin and vitamin K2 each have a 1-compartment PK with fixed volumes-of-distribution (Vd1 = 0.183 L/kg for warfarin from Sato 2006; Vd3 = 0.051 L/kg for vitamin K2 from the Eisai product information) and fixed warfarin elimination rate (k10 = 0.0129 1/h); only the vitamin K2 elimination rate (k30) and the indirect-response PD parameters (ks, kd, IC50, Emax, EC50) were estimated from 579 INR observations in 100 patients. Warfarin inhibits clotting-factor synthesis (Emax = 1 - Cc/(Cc + IC50)) while vitamin K2 stimulates it (1 + Emax_vk2 * Cc_vk2/(Cc_vk2 + EC50)); a binary renal-impairment indicator (CREAT >= 1.1 mg/dL in men or >= 0.8 mg/dL in women) reduces IC50 to 61.4% of normal. The model predicts thrombotest (TT, %); INR is recovered from TT via the Gogstad 1986 quadratic conversion (Equation 4)."
   reference   <- "Zhou Z, Yano I, Odaka S, Morita Y, Shizuta S, Hayano M, Kimura T, Akaike A, Inui K-i, Matsubara K. Effect of vitamin K2 on the anticoagulant activity of warfarin during the perioperative period of catheter ablation: Population analysis of retrospective clinical data. J Pharm Health Care Sci. 2016;2:17. doi:10.1186/s40780-016-0053-8. Fixed warfarin PK from Sato 2006 Jpn J Ther Drug Monit 23:10-16; vitamin K2 Vd from Eisai product information. INR <-> TT conversion from Gogstad 1986 Thromb Haemost 56:178-182."
   vignette    <- "Zhou_2016_warfarin_vk2"
   paper_specific_compartments <- c("central_vk2")
@@ -166,12 +166,12 @@ Zhou_2016_warfarin_vk2 <- function() {
     # bolus input into the central compartment (warfarin orally,
     # vitamin K2 intravenously -- the paper treats absorption as
     # instantaneous; Methods Equations 1-2). Plasma concentrations
-    # Cp1 (warfarin) and Cp3 (vitamin K2) drive the indirect-response
+    # Cc (warfarin) and Cc_vk2 (vitamin K2) drive the indirect-response
     # clotting-factor model.
     #
     #   d/dt(central)     = -kel    * central       (warfarin)
     #   d/dt(central_vk2) = -kel_vk2 * central_vk2  (vitamin K2)
-    #   d/dt(effect)      = ksyn * (1 - Cp1/(Cp1+IC50) + Emax*Cp3/(Cp3+EC50))
+    #   d/dt(effect)      = ksyn * (1 - Cc/(Cc+IC50) + Emax*Cc_vk2/(Cc_vk2+EC50))
     #                     - kd * effect
     #
     # Zhou 2016 Methods Equation 9 (covariate-adjusted indirect-response
@@ -180,11 +180,11 @@ Zhou_2016_warfarin_vk2 <- function() {
     d/dt(central)     <- -(cl     / vc)     * central
     d/dt(central_vk2) <- -(cl_vk2 / vc_vk2) * central_vk2
 
-    Cp1 <- central     / vc
-    Cp3 <- central_vk2 / vc_vk2
+    Cc <- central     / vc
+    Cc_vk2 <- central_vk2 / vc_vk2
 
-    inhibition  <- 1 - Cp1 / (Cp1 + ic50)
-    stimulation <- emax * Cp3 / (Cp3 + ec50)
+    inhibition  <- 1 - Cc / (Cc + ic50)
+    stimulation <- emax * Cc_vk2 / (Cc_vk2 + ec50)
 
     d/dt(effect) <- ksyn * (inhibition + stimulation) - kd * effect
 

@@ -68,8 +68,8 @@ Faelens_2021_infliximab <- function() {
     # and V; nlmixr2lib's standard parameterization is CL and Vc, so:
     #   typical CL = KE_Mayo2 * V_typ = 0.0463 /d * 6.97 L = 0.32271 L/d
     #   typical Vc = V_typ              = 6.97 L
-    lcl <- log(0.32271); label("Clearance for the reference patient (CL, L/day)")            # Faelens 2021 supplement Table S1 (Adapted Model); KE_Mayo2 = 0.0463 /d, V_typ = 6.97 L; CL = KE * V
-    lvc <- log(6.97);    label("Central volume of distribution for the reference patient (Vc, L)")  # Faelens 2021 supplement Table S1 (Adapted Model); THETA(6) = TVV = 6.97 L
+    lcl <- log(0.32271); label("Clearance for the reference patient (L/day)")            # Faelens 2021 supplement Table S1 (Adapted Model); KE_Mayo2 = 0.0463 /d, V_typ = 6.97 L; CL = KE * V
+    lvc <- log(6.97);    label("Central volume of distribution for the reference patient (L)")  # Faelens 2021 supplement Table S1 (Adapted Model); THETA(6) = TVV = 6.97 L
 
     # Baseline Mayo endoscopic subscore effect on KE (and therefore on CL).
     # Source models the effect as a categorical lookup, with separate typical
@@ -79,16 +79,16 @@ Faelens_2021_infliximab <- function() {
     # KE_Mayo3 = 0.0570 (all in /day):
     #   e_mayo1_cl = log(0.0422 / 0.0463) = -0.09275
     #   e_mayo3_cl = log(0.0570 / 0.0463) =  0.20785
-    e_mayo1_cl <- -0.09275; label("Effect of baseline Mayo endoscopic subscore = 1 on CL (log fold-change vs Mayo 2; KE_Mayo1/KE_Mayo2 = 0.0422/0.0463)")  # Faelens 2021 supplement Table S1
-    e_mayo3_cl <-  0.20785; label("Effect of baseline Mayo endoscopic subscore = 3 on CL (log fold-change vs Mayo 2; KE_Mayo3/KE_Mayo2 = 0.0570/0.0463)")  # Faelens 2021 supplement Table S1
+    e_mayo1_cl <- -0.09275; label("Effect of baseline Mayo endoscopic subscore = 1 on CL, log fold-change vs Mayo 2; KE ratio 0.0422/0.0463 (unitless)")  # Faelens 2021 supplement Table S1
+    e_mayo3_cl <-  0.20785; label("Effect of baseline Mayo endoscopic subscore = 3 on CL, log fold-change vs Mayo 2; KE ratio 0.0570/0.0463 (unitless)")  # Faelens 2021 supplement Table S1
 
     # Covariate effects on V (also propagate to CL since CL = KE * V).
     # Source covariate forms per Faelens 2021 supplement NONMEM control stream:
     #   TVV = THETA(6) * THETA(5)^CONMED_STEROID * (FFM/52)^THETA(7) * THETA(8)^DISEXT_EP
     # with THETA(5) = 1.30, THETA(7) = 0.517, THETA(8) = 1.25.
-    e_conmed_steroid_vc   <- 1.30;  label("Multiplicative fold-change on Vc for baseline corticosteroid use (Vc * e_conmed_steroid_vc^CONMED_STEROID)")           # Faelens 2021 supplement Table S1; THETA(5)
-    e_ffm_vc       <- 0.517; label("Power exponent of fat-free mass on Vc with reference FFM 52 kg ((FFM/52)^e_ffm_vc)")                       # Faelens 2021 supplement Table S1; THETA(7)
-    e_disext_ep_vc <- 1.25;  label("Multiplicative fold-change on Vc for extensive colitis at baseline (Vc * e_disext_ep_vc^DISEXT_EP)")       # Faelens 2021 supplement Table S1; THETA(8)
+    e_conmed_steroid_vc   <- 1.30;  label("Multiplicative fold-change on Vc for baseline corticosteroid use, power form on CONMED_STEROID (unitless)")           # Faelens 2021 supplement Table S1; THETA(5)
+    e_ffm_vc       <- 0.517; label("Power exponent of fat-free mass on Vc with reference FFM 52 kg (unitless)")                       # Faelens 2021 supplement Table S1; THETA(7)
+    e_disext_ep_vc <- 1.25;  label("Multiplicative fold-change on Vc for extensive colitis at baseline, power form on DISEXT_EP (unitless)")       # Faelens 2021 supplement Table S1; THETA(8)
 
     # Inter-individual variability. Source has independent ETAs on KE and V
     # (no $OMEGA BLOCK between ETA(1) and ETA(2) in the NONMEM control stream).

@@ -195,7 +195,7 @@ Mitra_2026_ziftomenib <- function() {
     logitfdepot_i <- logitfdepot +
                e_fed_logitfdepot        * FED +
                e_conmed_ppi_logitfdepot * CONMED_PPI
-    fd      <- 1 / (1 + exp(-logitfdepot_i))
+    fd      <- expit(logitfdepot_i)
 
     # Metabolites (KO-739 and KO-516).
     q_ko739  <- exp(lq_ko739  + etalq_ko739)
@@ -218,7 +218,7 @@ Mitra_2026_ziftomenib <- function() {
     # relative abundance (Kura Oncology Inc., data on file per Table 1
     # footnote d); no covariate and no IIV.
     logitfm_ind   <- logitfm + e_dis_healthy_logitfm * DIS_HEALTHY + etalogitfm
-    fm            <- 1 / (1 + exp(-logitfm_ind))
+    fm            <- expit(logitfm_ind)
     fm_ko516_frac <- 0.5
 
     # ==================== Micro-rate constants ====================

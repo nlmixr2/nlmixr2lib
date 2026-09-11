@@ -87,7 +87,8 @@ test_that("checkNamingRegisters does not flag legitimate register patterns", {
   dir.create(file.path(tmp, "inst", "references"), recursive = TRUE)
   dir.create(file.path(tmp, "inst", "modeldb"), recursive = TRUE)
   writeLines(c("d/dt(central_dox) <- -k * central_dox",
-               "d/dt(igg) <- -kel * igg"),
+               "d/dt(igg) <- -kel * igg",
+               "kmet <- exp(lkmet_ntp_peripheral1)"),
              file.path(tmp, "inst", "modeldb", "Real_2020_drug.R"))
 
   writeLines(c(
@@ -111,6 +112,13 @@ test_that("checkNamingRegisters does not flag legitimate register patterns", {
     "- **Type:** metabolite-suffix",
     "- **Example models:** `Real_2020_drug.R`.",
     "",
+    "# ...and a suffix naming a conversion rate constant lands in the MIDDLE of",
+    "# the compound (`lkmet_ntp_peripheral1`), matching neither end. Reported as",
+    "# registered-but-unused until the check looked there too.",
+    "### ntp (**suffix used only as _ntp_**)",
+    "- **Type:** metabolite-suffix",
+    "- **Example models:** `Real_2020_drug.R`.",
+    "",
     "# `###` is also used for policy notes and patterns; neither is a canonical.",
     "### ROUTE_* family -- section-header policy",
     "",
@@ -121,4 +129,81 @@ test_that("checkNamingRegisters does not flag legitimate register patterns", {
   expect_equal(nrow(issues), 0L,
                info = paste0(
                  "\n", paste(utils::capture.output(print(issues)), collapse = "\n")))
+})
+
+test_that("checkNamingRegisters enforces the covariate ALL-CAPS convention", {
+  # The `## Case convention` section of covariate-columns.md used to name its
+  # exceptions in a hand-maintained sentence. It said there were two
+  # (`dilution`, `nonECZTRA`) when the file held ten, and had said so through
+  # every register audit, because nothing read it. Seven of those ten have
+  # since been renamed to ALL CAPS; the list is now machine-read and this is
+  # what reads it -- in BOTH directions, since the drift that prompted the
+  # check was a documented list falling behind the file rather than a bad name
+  # being added.
+  tmp <- withr::local_tempdir()
+  dir.create(file.path(tmp, "inst", "references"), recursive = TRUE)
+  dir.create(file.path(tmp, "inst", "modeldb"), recursive = TRUE)
+  writeLines("cl <- exp(lcl) * (1 + e_mixedCase * mixedCase + e * LEGACY_ok)",
+             file.path(tmp, "inst", "modeldb", "Real_2020_drug.R"))
+
+  register <- c(
+    "## Case convention",
+    "",
+    "Prose naming `NOT_AN_EXEMPTION` on a parent bullet must not be read as one:",
+    "",
+    "- **Legacy source-preserved**:",
+    "  - `legacy_lower`",
+    "  - `gone_missing`",
+    "",
+    "## Entries",
+    "",
+    "### LEGACY_OK (**all caps, never flagged**)",
+    "- **Type:** binary",
+    "- **Example models:** `Real_2020_drug.R`.",
+    "",
+    "### legacy_lower (**lower case, but documented above**)",
+    "- **Type:** binary",
+    "- **Example models:** `Real_2020_drug.R`.",
+    "",
+    "### mixedCase (**mixed case and NOT documented above**)",
+    "- **Type:** binary",
+    "- **Example models:** `Real_2020_drug.R`.",
+    "",
+    "### old_lower (**DEPRECATED -- superseded by `LEGACY_OK`**)",
+    "- **Notes:** a tombstone records history, so its case is not a choice."
+  )
+  writeLines(register, file.path(tmp, "inst", "references",
+                                 "covariate-columns.md"))
+  issues <- checkNamingRegisters(tmp)
+  caseIss <- issues[issues$check == "case-convention", ]
+
+  # Fires on exactly the undocumented one.
+  expect_equal(caseIss$name, "mixedCase")
+  # An exemption listed but no longer present in the file is the drift that
+  # made the old sentence wrong, so it is reported too.
+  expect_equal(issues$name[issues$check == "stale-case-exemption"],
+               "gone_missing")
+  # Parent bullets carry prose, not names; reading them would silently widen
+  # the exemption set to every backticked token in the section.
+  expect_false("NOT_AN_EXEMPTION" %in% issues$name)
+  # A DEPRECATED tombstone is exempt, as it is from the example/type checks.
+  expect_false("old_lower" %in% caseIss$name)
+})
+
+test_that("the covariate register's documented case exceptions are complete", {
+  # Pins the shipped list itself, not just the mechanism: every non-ALL-CAPS
+  # covariate canonical must be one a reader was told about. Enumerates the
+  # register rather than sampling it, so a newly-merged lower-case canonical
+  # fails here until it is either renamed or documented.
+  root <- normalizePath(testthat::test_path("..", ".."), mustWork = FALSE)
+  path <- file.path(root, "inst", "references", "covariate-columns.md")
+  skip_if(!file.exists(path), "register not present in an installed package")
+
+  exempt <- nlmixr2lib:::.caseExemptions(path)
+  expect_true(length(exempt) > 0L)
+
+  entries <- nlmixr2lib:::.parseRegister(path)
+  real <- Filter(function(e) !isTRUE(e$pseudo) && !isTRUE(e$deprecated), entries)
+  canonicals <- unlist(lapply(real, `[[`, "names"))
+  expect_setequal(canonicals[canonicals != toupper(canonicals)], exempt)
 })

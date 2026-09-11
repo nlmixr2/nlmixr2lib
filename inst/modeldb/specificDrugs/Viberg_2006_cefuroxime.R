@@ -60,10 +60,10 @@ Viberg_2006_cefuroxime <- function() {
     # Two-compartment ADVAN3 TRANS4 parameterisation: CL, V1 (= Vc),
     # Q (= intercompartmental CL), V2 (= Vp). Intravenous administration
     # (5-15 min injection) -- no absorption phase.
-    lcl <- log(6.00); label("Clearance for the 74 kg, 1/CYSC = 0.758 reference (CL, L/h)")          # Viberg 2006 Table 4 (final estimate)
-    lvc <- log(11.4); label("Central volume of distribution for the 74 kg reference (V1, L)")       # Viberg 2006 Table 4 (final estimate)
-    lvp <- log(5.11); label("Peripheral volume of distribution (V2, L)")                            # Viberg 2006 Table 4 (final estimate)
-    lq  <- log(3.65); label("Intercompartmental clearance (Q, L/h)")                                # Viberg 2006 Table 4 (final estimate)
+    lcl <- log(6.00); label("Clearance for the 74 kg, 1/CYSC = 0.758 reference (L/h)")          # Viberg 2006 Table 4 (final estimate)
+    lvc <- log(11.4); label("Central volume of distribution for the 74 kg reference (L)")       # Viberg 2006 Table 4 (final estimate)
+    lvp <- log(5.11); label("Peripheral volume of distribution (L)")                            # Viberg 2006 Table 4 (final estimate)
+    lq  <- log(3.65); label("Intercompartmental clearance (L/h)")                                # Viberg 2006 Table 4 (final estimate)
 
     # Covariate effects -- centred-linear form per Viberg 2006 Table 4 footnote:
     #   CL = 6.00 * (1 + 1.43  * (1/CYSC - 0.758)) * (1 + 0.0108 * (WT - 74))

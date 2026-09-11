@@ -131,10 +131,10 @@ Hong_2025_datopotamab <- function() {
     # subject (66 kg male, age 62, albumin 38 g/L, tumor 66 mm, non-Japan).
     # Concentrations are in mg/L (= ug/mL) so that dose in mg / V in L gives
     # ug/mL directly, which matches the bioanalytical assay scale.
-    lcl       <- log(0.386);  label("Dato-DXd linear clearance at reference covariates (CL_linDatoDXd, L/day)")  # Hong 2025 Table 1, Eq. 8
-    lvc       <- log(3.06);   label("Dato-DXd central volume at reference (V_cDatoDXd, L)")                       # Hong 2025 Table 1, Eq. 9
-    lq        <- log(0.422);  label("Dato-DXd intercompartmental clearance (Q_DatoDXd, L/day)")                   # Hong 2025 Table 1
-    lvp       <- log(2.88);   label("Dato-DXd peripheral volume at reference (V_pDatoDXd, L)")                    # Hong 2025 Table 1, Eq. 10
+    lcl       <- log(0.386);  label("Dato-DXd linear clearance at reference covariates (L/day)")  # Hong 2025 Table 1, Eq. 8
+    lvc       <- log(3.06);   label("Dato-DXd central volume at reference (L)")                       # Hong 2025 Table 1, Eq. 9
+    lq        <- log(0.422);  label("Dato-DXd intercompartmental clearance (L/day)")                   # Hong 2025 Table 1
+    lvp       <- log(2.88);   label("Dato-DXd peripheral volume at reference (L)")                    # Hong 2025 Table 1, Eq. 10
     lvmax     <- log(8.41);   label("Dato-DXd Michaelis-Menten Vmax at reference tumor size (mg/day)")           # Hong 2025 Table 1, Eq. 12: 8410 ug/day = 8.41 mg/day
     lkm       <- log(4.49);   label("Dato-DXd Michaelis-Menten Km (mg/L = ug/mL)")                                # Hong 2025 Table 1, Eq. 11: 4490 ng/mL = 4.49 ug/mL
 
@@ -142,10 +142,10 @@ Hong_2025_datopotamab <- function() {
     # (66 kg male, region US, albumin 38, AST 22 U/L, total bilirubin 0.4 mg/dL).
     # Paper reports CL_DXd in L/h (Table 2, Eq. 14); converted to L/day for
     # consistency with all other rate constants in this model.
-    lcl_dxd   <- log(2.66 * 24);  label("DXd linear clearance at reference covariates (CL_DXd, L/day)")  # Hong 2025 Table 2, Eq. 14: 2.66 L/h * 24 h/day = 63.84 L/day
-    lvc_dxd   <- log(25.1);       label("DXd central volume at reference (V_cDXd, L)")                    # Hong 2025 Table 2, Eq. 15
-    lfactor1  <- log(0.696);      label("DAR scaling factor for cycle 2 and later (Factor1, unitless)")  # Hong 2025 Table 2, Eq. 13
-    lbeta     <- log(0.259);      label("Within-cycle DAR exponential decay rate constant (beta, 1/day)") # Hong 2025 Table 2, Eq. 13
+    lcl_dxd   <- log(2.66 * 24);  label("DXd linear clearance at reference covariates (L/day)")  # Hong 2025 Table 2, Eq. 14: 2.66 L/h * 24 h/day = 63.84 L/day
+    lvc_dxd   <- log(25.1);       label("DXd central volume at reference (L)")                    # Hong 2025 Table 2, Eq. 15
+    lfactor1  <- log(0.696);      label("DAR scaling factor for cycle 2 and later (unitless)")  # Hong 2025 Table 2, Eq. 13
+    lbeta     <- log(0.259);      label("Within-cycle DAR exponential decay rate constant (1/day)") # Hong 2025 Table 2, Eq. 13
 
     # ----- Covariate effects on Dato-DXd parameters (Hong 2025 Table 1 / Eq. 8-12).
     # Continuous covariates enter as power models (CovEff = (Cov / Cov_ref)^theta;

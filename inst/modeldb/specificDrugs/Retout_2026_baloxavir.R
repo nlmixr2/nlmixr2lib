@@ -79,15 +79,15 @@ Retout_2026_baloxavir <- function() {
 
   ini({
     # Structural parameters - typical values for a 70 kg, 37-year-old, non-Asian male
-    lcl   <- log(11.02); label("Apparent clearance (CL/F, L/h)")                                   # Retout 2026 Table 1: CL/F = 11.02 L/h (RSE 1.87%)
-    lvc   <- log(735);   label("Apparent central volume of distribution (Vc/F, L)")                # Retout 2026 Table 1: Vc/F = 735 L (RSE 2.12%)
-    lq    <- log(2.12);  label("Apparent intercompartmental clearance (Q/F, L/h)")                 # Retout 2026 Table 1: Q/F = 2.12 L/h (RSE 5.2%)
-    lvp   <- log(260);   label("Apparent peripheral volume of distribution (Vp/F, L)")             # Retout 2026 Table 1: Vp/F = 260 L (RSE 6.68%)
-    lka   <- log(1.39);  label("First-order absorption rate constant (ka, 1/h)")                   # Retout 2026 Table 1: ka = 1.39 1/h (RSE 14.6%)
-    ltlag <- log(0.223); label("Absorption lag time (Tlag, h)")                                    # Retout 2026 Table 1: Tlag = 0.223 h (RSE 39.6%)
+    lcl   <- log(11.02); label("Apparent clearance (L/h)")                                   # Retout 2026 Table 1: CL/F = 11.02 L/h (RSE 1.87%)
+    lvc   <- log(735);   label("Apparent central volume of distribution (L)")                # Retout 2026 Table 1: Vc/F = 735 L (RSE 2.12%)
+    lq    <- log(2.12);  label("Apparent intercompartmental clearance (L/h)")                 # Retout 2026 Table 1: Q/F = 2.12 L/h (RSE 5.2%)
+    lvp   <- log(260);   label("Apparent peripheral volume of distribution (L)")             # Retout 2026 Table 1: Vp/F = 260 L (RSE 6.68%)
+    lka   <- log(1.39);  label("First-order absorption rate constant (1/h)")                   # Retout 2026 Table 1: ka = 1.39 1/h (RSE 14.6%)
+    ltlag <- log(0.223); label("Absorption lag time (h)")                                    # Retout 2026 Table 1: Tlag = 0.223 h (RSE 39.6%)
 
     # Relative bioavailability was set, not estimated
-    lfdepot <- fixed(log(1)); label("Relative bioavailability of the reference formulations (F_rel, unitless)")  # Retout 2026 Methods: F_rel set at 1.00 for all formulations except the T0822 10 mg tablet
+    lfdepot <- fixed(log(1)); label("Relative bioavailability of the reference formulations (unitless)")  # Retout 2026 Methods: F_rel set at 1.00 for all formulations except the T0822 10 mg tablet
     e_form_bxm_tab10_fdepot <- fixed(0.88); label("Relative bioavailability of the 10 mg baloxavir marboxil tablet used in T0822 (unitless)")  # Retout 2026 Methods: F_rel 0.88 (Roche data on file)
 
     # Covariate effects

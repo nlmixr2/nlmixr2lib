@@ -105,15 +105,15 @@ Na_2025_hosu53_mouse <- function() {
     # reported for mice in Section 3.2.
     # ------------------------------------------------------------------
     logitfdepot <- log(0.53 / (1 - 0.53)); label("Logit of oral bioavailability F (unitless; F = 0.53)")  # Table S3 (F = 0.53); logit scale per Section 2.5
-    lka         <- log(1.0);               label("First-order absorption rate constant (Ka, 1/h)")        # Table S3 (Ka = 1.0 /h)
-    lcl         <- log(0.07);              label("Clearance (CL, mL/h)")                                  # Table S3 (CL = 0.07 mL/h, RSE 5.0%)
-    lvc         <- log(1.2);               label("Central volume of distribution (V1, mL)")               # Table S3 (V1 = 1.2 mL, RSE 8.7%)
+    lka         <- log(1.0);               label("First-order absorption rate constant (1/h)")        # Table S3 (Ka = 1.0 /h)
+    lcl         <- log(0.07);              label("Clearance (mL/h)")                                  # Table S3 (CL = 0.07 mL/h, RSE 5.0%)
+    lvc         <- log(1.2);               label("Central volume of distribution (mL)")               # Table S3 (V1 = 1.2 mL, RSE 8.7%)
     # Table S3's row header reads "Q (mL/h)" but its abbreviation footnote reads
     # "Q, intercompartment clearance (L/h)". mL/h is the correct reading: it is
     # the unit consistent with CL (0.07 mL/h) and V1 (1.2 mL) in the same table,
     # and only mL/h reproduces the ~30 h NCA half-life of Section 3.2.
-    lq          <- log(1.6);               label("Intercompartmental clearance (Q, mL/h)")                # Table S3 (Q = 1.6 mL/h, RSE 1.7%)
-    lvp         <- log(1.2);               label("Peripheral volume of distribution (V2, mL)")            # Table S3 (V2 = 1.2 mL, RSE 5.3%)
+    lq          <- log(1.6);               label("Intercompartmental clearance (mL/h)")                # Table S3 (Q = 1.6 mL/h, RSE 1.7%)
+    lvp         <- log(1.2);               label("Peripheral volume of distribution (mL)")            # Table S3 (V2 = 1.2 mL, RSE 5.3%)
 
     # ------------------------------------------------------------------
     # DHO indirect-response (turnover) PD parameters (Na 2025 Table S3).
@@ -126,11 +126,11 @@ Na_2025_hosu53_mouse <- function() {
     # exponent of the sigmoidal Imax function, so it is the canonical
     # `lhill` rather than `lgamma`.
     # ------------------------------------------------------------------
-    lrbase <- log(0.01); label("Baseline (steady-state) plasma DHO concentration (R0, umol/L)")            # Table S3 (R0 = 0.01 umol/L, RSE 1.4%)
-    lkout  <- log(155);  label("First-order DHO degradation rate constant (Kout, 1/h)")                    # Table S3 (Kout = 155 /h, RSE 12.7%)
-    lic50  <- log(1.55); label("HOSU-53 concentration giving half-maximal inhibition of DHO degradation (IC50, umol/L)")  # Table S3 (IC50 = 1.55 umol/L, RSE 8.9%)
-    lhill  <- log(1.71); label("Sigmoidicity (Hill) exponent of the inhibitory function (gamma, unitless)")  # Table S3 (gamma = 1.71, RSE 0.1%)
-    limax  <- fixed(log(1)); label("Maximum fractional inhibition of DHO degradation (Imax, unitless)")      # Section 3.4 equation carries no Imax term, i.e. Imax = 1
+    lrbase <- log(0.01); label("Baseline (steady-state) plasma DHO concentration (umol/L)")            # Table S3 (R0 = 0.01 umol/L, RSE 1.4%)
+    lkout  <- log(155);  label("First-order DHO degradation rate constant (1/h)")                    # Table S3 (Kout = 155 /h, RSE 12.7%)
+    lic50  <- log(1.55); label("HOSU-53 concentration giving half-maximal inhibition of DHO degradation (umol/L)")  # Table S3 (IC50 = 1.55 umol/L, RSE 8.9%)
+    lhill  <- log(1.71); label("Sigmoidicity (Hill) exponent of the inhibitory function (unitless)")  # Table S3 (gamma = 1.71, RSE 0.1%)
+    limax  <- fixed(log(1)); label("Maximum fractional inhibition of DHO degradation (unitless)")      # Section 3.4 equation carries no Imax term, i.e. Imax = 1
 
     # ------------------------------------------------------------------
     # Inter-individual variability (Na 2025 Supplementary Table S3).
@@ -160,7 +160,7 @@ Na_2025_hosu53_mouse <- function() {
     # --- Individual PK parameters -------------------------------------
     # F is logit-normal (Section 2.5) but carries no IIV in the mouse fit;
     # the remaining parameters are log-normal.
-    fdepot <- 1 / (1 + exp(-logitfdepot))
+    fdepot <- expit(logitfdepot)
     ka     <- exp(lka)
     cl     <- exp(lcl + etalcl)
     vc     <- exp(lvc + etalvc)

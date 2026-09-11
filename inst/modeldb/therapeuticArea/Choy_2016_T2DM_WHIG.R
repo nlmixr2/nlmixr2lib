@@ -95,11 +95,11 @@ Choy_2016_T2DM_WHIG <- function() {
     lblwt      <- log(104) ; label("Typical baseline weight (kg)")               # Choy 2016 Table 1
 
     # ----- Insulin sensitivity (Choy 2016 Eq. 5-6) -----
-    is0         <- 1.1         ; label("Baseline insulin sensitivity, logit scale (unitless); IS_baseline = 1/(1+exp(is0))")  # Choy 2016 Table 1; 1.1 -> 25% of normal
+    is0         <- 1.1         ; label("Baseline insulin sensitivity, logit scale (unitless); IS_baseline = expit(-is0)")  # Choy 2016 Table 1; 1.1 -> 25% of normal
     lscaleefs   <- log(0.0514) ; label("Log scaling factor of change in weight on insulin sensitivity (1/kg)")                # Choy 2016 Table 1
 
     # ----- beta-cell function and natural disease progression (Choy 2016 Eq. 7) -----
-    b0 <- -0.446 ; label("Baseline beta-cell function, logit scale (unitless); B_baseline = 1/(1+exp(b0))")  # Choy 2016 Table 1; -0.446 -> 61% of normal
+    b0 <- -0.446 ; label("Baseline beta-cell function, logit scale (unitless); B_baseline = expit(-b0)")  # Choy 2016 Table 1; -0.446 -> 61% of normal
     rb <-  0.209 ; label("Rate of baseline beta-cell function decrease (logits per year)")                   # Choy 2016 Table 1
 
     # ----- Treatment effect on beta-cell function (Choy 2016 Eq. 8-9) -----
@@ -199,16 +199,16 @@ Choy_2016_T2DM_WHIG <- function() {
     # EFS = 1 - scaleefs * dwgt: weight loss (dwgt < 0) raises IS.
     EFS <- 1 - scaleefs_i * dwgt
     # IS_baseline uses the "inverse logit" convention of Choy 2016 (Methods,
-    # FSI-FPG homeostatic feedback model): IS = 1/(1+exp(is0)).
+    # FSI-FPG homeostatic feedback model): IS = expit(-is0).
     # At is0 = 1.1 this gives 0.25 = 25% of normal, matching paper Results.
-    IS_baseline <- 1 / (1 + exp(is0_i))
+    IS_baseline <- expit(-is0_i)
     IS          <- IS_baseline * EFS
 
     # ===== beta-cell function and disease progression (Eq. 7) =====
     # Natural logistic decline of beta-cell function: with rb > 0 the logit
     # grows over time and B decreases.
     B_logit <- b0_i + rb_i * (t / 365)
-    B       <- 1 / (1 + exp(B_logit))
+    B       <- expit(-B_logit)
 
     # ===== Treatment effect on beta-cell function (Eq. 8-9) =====
     # EFB = 1 + efbmax * EFBI(t) * EFBD(t).
@@ -216,8 +216,8 @@ Choy_2016_T2DM_WHIG <- function() {
     # t crosses tTRT; sefbi is negative so the sigmoid is increasing in t).
     # EFBD: logistic decrease centred at t = efb50 (falls from ~1 to ~0 as
     # t crosses efb50; sefbd is positive so the sigmoid is decreasing in t).
-    EFBI <- 1 / (1 + exp(sefbi * (t - tTRT)))
-    EFBD <- 1 / (1 + exp(sefbd * (t - efb50_i)))
+    EFBI <- expit(-(sefbi * (t - tTRT)))
+    EFBD <- expit(-(sefbd * (t - efb50_i)))
     EFB  <- 1 + efbmax_i * EFBI * EFBD
 
     # Combined beta-cell scaling for FSI production.
@@ -249,7 +249,7 @@ Choy_2016_T2DM_WHIG <- function() {
     # Steady-state initial conditions evaluated at t = 0 with the t = 0
     # baseline FPG and the unscaled PPG (the run-in is short relative to
     # MTT ~ 39 d, so the chain starts at its pre-study steady state).
-    B_baseline_init  <- 1 / (1 + exp(b0_i))
+    B_baseline_init  <- expit(-b0_i)
     BLFPG_K          <- IS_baseline * B_baseline_init
     BLFPG_qC         <- KinKoutFPG / (KinKoutFSI * BLFPG_K)
     BLFPG            <- (FPG_floor + sqrt(FPG_floor * FPG_floor + 4 * BLFPG_qC)) / 2

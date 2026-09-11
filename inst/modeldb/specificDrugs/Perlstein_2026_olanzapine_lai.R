@@ -145,23 +145,23 @@ Perlstein_2026_olanzapine_lai <- function() {
     # answer q1 = B).
     # ---------------------------------------------------------------------
     lra   <- log(1 / 117);  label("Weibull rate-scaling parameter of the first (rapid) release process (RA = 1/TD, 1/h)")     # Table 1: TD = 117 h (RSE 3.8%); ra = 1/117 = 0.008547 1/h
-    lgam1 <- log(1.4);      label("Weibull shape / sigmoidicity of the first (rapid) release process (GAM1, unitless)")       # Table 1: SS = 1.4 (RSE 1.9%)
+    lgam1 <- log(1.4);      label("Weibull shape / sigmoidicity of the first (rapid) release process (unitless)")       # Table 1: SS = 1.4 (RSE 1.9%)
     lra2  <- log(1 / 323);  label("Weibull rate-scaling parameter of the second (sustained) release process at zero dose (RA2 = 1/TD1_0, 1/h)")  # Table 1: TD1_0 = 323 h (RSE 5.3%); ra2 = 1/323 = 0.003096 1/h
-    lgam2 <- log(3.25);     label("Weibull shape / sigmoidicity of the second (sustained) release process (GAM2, unitless)")  # Table 1: SS1 = 3.25 (RSE 4.4%)
+    lgam2 <- log(3.25);     label("Weibull shape / sigmoidicity of the second (sustained) release process (unitless)")  # Table 1: SS1 = 3.25 (RSE 4.4%)
 
     # Fraction of the dose entering the first release process. Held on the
     # logit scale so it stays inside (0, 1) for every eta draw; a log-scale
     # encoding of a bounded fraction can leak above 1 (operator sidecar
     # oare_PMC12775547 answer q1 = B). logit(0.236) = -1.17457.
-    logitfrel <- log(0.236 / (1 - 0.236)); label("Logit of the fraction of the dose entering the first (rapid) release process (FF, unitless)")  # Table 1: FF = 0.236 (RSE 6.2%)
+    logitfrel <- log(0.236 / (1 - 0.236)); label("Logit of the fraction of the dose entering the first (rapid) release process (unitless)")  # Table 1: FF = 0.236 (RSE 6.2%)
 
     # Disposition -- Table 1. The paper parameterises distribution by the
     # micro-constants k12 and k21 rather than by Q and Vp, so they are carried
     # as primary parameters here.
     lcl  <- log(16.6);     label("Apparent clearance CL/F at the 70 kg reference weight (L/h)")                       # Table 1: CL/F = 16.6 L/h (RSE 8.2%)
     lvc  <- log(15.4);     label("Apparent central volume of distribution V/F at the 70 kg reference weight (L)")     # Table 1: V/F = 15.4 L (RSE 14.5%)
-    lk12 <- log(1.61);     label("First-order transfer rate constant central to peripheral1 (k12, 1/h)")              # Table 1: k12 = 1.61 1/h (RSE 12.9%)
-    lk21 <- log(0.00313);  label("First-order transfer rate constant peripheral1 to central (k21, 1/h)")              # Table 1: k21 = 0.00313 1/h (RSE 11.9%)
+    lk12 <- log(1.61);     label("First-order transfer rate constant central to peripheral1 (1/h)")              # Table 1: k12 = 1.61 1/h (RSE 12.9%)
+    lk21 <- log(0.00313);  label("First-order transfer rate constant peripheral1 to central (1/h)")              # Table 1: k21 = 0.00313 1/h (RSE 11.9%)
 
     # Allometric body-weight exponents. ESTIMATED in the final model, not
     # fixed at 0.75 / 1 -- Table 1 reports an RSE for each, and a fixed
@@ -178,7 +178,7 @@ Perlstein_2026_olanzapine_lai <- function() {
     # parameters are fixed. Perlstein 2026 Methods, PK/D2RO Model:
     #   D2RO = ROmax * Cp / (EC50 + Cp)
     emax  <- fixed(100);      label("Maximal attainable dopamine D2 receptor occupancy ROmax (%)")            # Methods PK/D2RO Model: ROmax fixed to 100% (Mamo 2008)
-    lec50 <- fixed(log(11));  label("Plasma olanzapine concentration giving 50% D2 receptor occupancy (EC50, ng/mL)")  # Methods PK/D2RO Model: EC50 = 11 ng/mL, estimated by Mamo 2008
+    lec50 <- fixed(log(11));  label("Plasma olanzapine concentration giving 50% D2 receptor occupancy (ng/mL)")  # Methods PK/D2RO Model: EC50 = 11 ng/mL, estimated by Mamo 2008
 
     # ---------------------------------------------------------------------
     # Inter-individual variability -- Table 1, Random effect block. The rows
@@ -225,7 +225,7 @@ Perlstein_2026_olanzapine_lai <- function() {
     # etalogitfrel defaulted to non-mu-referenced); same shape as the
     # logitfm_ind idiom registered in parameter-names.md.
     logitfrel_ind <- logitfrel + etalogitfrel
-    frel <- 1 / (1 + exp(-logitfrel_ind))
+    frel <- expit(logitfrel_ind)
 
     # 2. Individual disposition parameters, allometrically scaled to the
     #    70 kg reference weight.

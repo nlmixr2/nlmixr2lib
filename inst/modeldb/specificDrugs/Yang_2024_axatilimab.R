@@ -97,7 +97,7 @@ Yang_2024_axatilimab <- function() {
     # === Target-mediated elimination (CSF-1R-driven, Hill cooperativity) ===
     lvmax     <- log(0.37);   label("Maximum rate of CSF-1R-mediated elimination of axatilimab/CSF-1 complexes vmax (nM/h)")                                    # Yang 2024 Table 1 row 'Elimination rates of the CSF-1 and axatilimab complexes with CSF-1R (vmax)' = 0.37 nM/h
     lkd_pk    <- log(1.11);   label("Dissociation constant of axatilimab/CSF-1R complex Kd_PK (nM)")                                                            # Yang 2024 Table 1 row 'Dissociation constant of axatilimab/CSF-1R complex (KdPK)' = 1.11 nM
-    lnh       <- log(2.5);    label("Hill coefficient for axatilimab cooperativity binding to CSF-1R (Nh, unitless)")                                           # Yang 2024 Table 1 row 'Hill coefficient (Nh)' = 2.5
+    lnh       <- log(2.5);    label("Hill coefficient for axatilimab cooperativity binding to CSF-1R (unitless)")                                           # Yang 2024 Table 1 row 'Hill coefficient (Nh)' = 2.5
 
     # === CSF-1 turnover ===
     lbl_csf1  <- log(0.01);   label("Baseline CSF-1 plasma concentration BL_CSF1 (nM) for typical median-CSF-1 patient")                                        # Yang 2024 Table 1 row 'Baseline CSF-1 concentration (BLCSF1)' = 0.01 nM
@@ -115,7 +115,7 @@ Yang_2024_axatilimab <- function() {
     # a 50.6% (95% CI, 47.0-54.2) increase in CL') all give kada = 0.489 with the
     # CL * (1 + kada * ADA(t)) parameterization. The Errata section of the validation
     # vignette captures this discrepancy; the canonical value used here is 0.489.
-    e_ada_cl  <- 0.489;       label("ADA effect coefficient on linear CL (kada, applied as CL * (1 + e_ada_cl * ADA_POS(t)))")                                   # Yang 2024 Table 1 row 'ADA effect coefficient (kada)' = 0.489
+    e_ada_cl  <- 0.489;       label("ADA effect coefficient kada on linear CL, applied as CL * (1 + e_ada_cl * ADA_POS) (fraction)")                                   # Yang 2024 Table 1 row 'ADA effect coefficient (kada)' = 0.489
 
     # === AST (aspartate aminotransferase) - NCMC-driven indirect response ===
     lbl_ast            <- log(35.5);  label("Baseline AST concentration BL_AST (U/L)")                                                                          # Yang 2024 Table 1 row 'Baseline AST concentration (BLAST)' = 35.5 U/L

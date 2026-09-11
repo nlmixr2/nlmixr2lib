@@ -45,10 +45,10 @@ Abuqayyas_2012_8C2 <- function() {
 
   ini({
     # Structural PK parameters -- Abuqayyas 2012 Table 2 (all per kg body weight)
-    lvc <- log(0.057)   ; label("Central volume of distribution (Vc, L/kg)")            # Abuqayyas 2012 Table 2: Vc = 0.057 L/kg (%SEM 4.0)
-    lvp <- log(0.0996)  ; label("Peripheral (tissue) volume of distribution (Vt, L/kg)") # Abuqayyas 2012 Table 2: Vt = 0.0996 L/kg (%SEM 6.4)
-    lcl <- log(0.00543) ; label("Apparent clearance (CLc, L/day/kg)")                    # Abuqayyas 2012 Table 2: CLc = 0.00543 L/day/kg (%SEM 17.5)
-    lq  <- log(0.0598)  ; label("Distribution clearance (CLd, L/day/kg)")                # Abuqayyas 2012 Table 2: CLd = 0.0598 L/day/kg (%SEM 9.7)
+    lvc <- log(0.057)   ; label("Central volume of distribution (L/kg)")            # Abuqayyas 2012 Table 2: Vc = 0.057 L/kg (%SEM 4.0)
+    lvp <- log(0.0996)  ; label("Peripheral (tissue) volume of distribution (L/kg)") # Abuqayyas 2012 Table 2: Vt = 0.0996 L/kg (%SEM 6.4)
+    lcl <- log(0.00543) ; label("Apparent clearance (L/day/kg)")                    # Abuqayyas 2012 Table 2: CLc = 0.00543 L/day/kg (%SEM 17.5)
+    lq  <- log(0.0598)  ; label("Distribution clearance (L/day/kg)")                # Abuqayyas 2012 Table 2: CLd = 0.0598 L/day/kg (%SEM 9.7)
 
     # Inter-animal variability -- exponential model, variances directly from Table 2
     # (Abuqayyas 2012 reports CV% = sqrt(omega^2) as a small-omega approximation)

@@ -165,7 +165,7 @@ Jeon_2013_interferonAlfa2a <- function() {
     rf   <- exp(lrf   + etalrf)
     # Fz: zero-order absorbed fraction via logit transform of RF
     # (Jeon 2013 Table 4 footnote b: Fz = e^RF / (1 + e^RF)).
-    fz   <- exp(rf) / (1 + exp(rf))
+    fz   <- expit(rf)
 
     kel <- cl / vc
 

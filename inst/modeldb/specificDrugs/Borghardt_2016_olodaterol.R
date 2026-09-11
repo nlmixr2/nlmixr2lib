@@ -240,9 +240,9 @@ Borghardt_2016_olodaterol <- function() {
     logit_pbio_i <- logitpbio + etalogitpbio
     logit_ff1_i  <- logitff1  + etalogitff1
     logit_ff2_i  <- logitff2  + etalogitff2
-    pbio <- 1 / (1 + exp(-logit_pbio_i))
-    ff1  <- 1 / (1 + exp(-logit_ff1_i))
-    ff2  <- 1 / (1 + exp(-logit_ff2_i))
+    pbio <- expit(logit_pbio_i)
+    ff1  <- expit(logit_ff1_i)
+    ff2  <- expit(logit_ff2_i)
 
     # Per-depot fractions of the pulmonary bioavailable dose.
     frac_slow <- ff1

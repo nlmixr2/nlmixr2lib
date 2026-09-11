@@ -133,21 +133,21 @@ Kurup_2024_DZIF10c <- function() {
 
     # Lung (ELF) disposition
     lq_elf  <- log(3.68e-5)
-    label("Intercompartmental clearance between the lung ELF and the central compartment at WT = 70 kg (Q1, L/h)")  # Table 1 'Q1 (L/h) ... 3.68e-5 (2.58e-5-5.20e-5)'; $THETA 3
+    label("Intercompartmental clearance between the lung ELF and the central compartment at WT = 70 kg (L/h)")  # Table 1 'Q1 (L/h) ... 3.68e-5 (2.58e-5-5.20e-5)'; $THETA 3
     lv_elf  <- log(0.0364)
-    label("Volume of the lung ELF compartment at WT = 70 kg, shared by all three ELF pools (VL, L)")  # Table 1 'VL (L) ... 0.0364 (0.0255-0.0522)'; $THETA 4
+    label("Volume of the lung ELF compartment at WT = 70 kg, shared by all three ELF pools (L)")  # Table 1 'VL (L) ... 0.0364 (0.0255-0.0522)'; $THETA 4
     lcl_elf <- log(0.000412)
-    label("Clearance out of the lung ELF, e.g. mucociliary clearance, at WT = 70 kg (CL_L, L/h)")  # Table 1 'CLL (L/h) ... 0.000412 (0.000291-0.000578)'; $THETA 5
+    label("Clearance out of the lung ELF, e.g. mucociliary clearance, at WT = 70 kg (L/h)")  # Table 1 'CLL (L/h) ... 0.000412 (0.000291-0.000578)'; $THETA 5
 
     # Systemic disposition
     lcl <- log(0.0122)
-    label("Clearance from the central compartment at WT = 70 kg (CL, L/h)")  # Table 1 'CL (L/h) ... 0.0122 (0.0116-0.0128)'; $THETA 6
+    label("Clearance from the central compartment at WT = 70 kg (L/h)")  # Table 1 'CL (L/h) ... 0.0122 (0.0116-0.0128)'; $THETA 6
     lvc <- log(3.08)
-    label("Central compartment volume of distribution at WT = 70 kg (Vc, L)")  # Table 1 'Vc (L) ... 3.08 (2.84-3.33)'; $THETA 7
+    label("Central compartment volume of distribution at WT = 70 kg (L)")  # Table 1 'Vc (L) ... 3.08 (2.84-3.33)'; $THETA 7
     lq  <- log(0.0359)
-    label("Intercompartmental clearance between the central and peripheral compartments at WT = 70 kg (Q2, L/h)")  # Table 1 'Q2 (L/h) ... 0.0359 (0.0293-0.0435)'; $THETA 8
+    label("Intercompartmental clearance between the central and peripheral compartments at WT = 70 kg (L/h)")  # Table 1 'Q2 (L/h) ... 0.0359 (0.0293-0.0435)'; $THETA 8
     lvp <- log(4.36)
-    label("Peripheral compartment volume of distribution at WT = 70 kg (Vp, L)")  # Table 1 'VP (L) ... 4.36 (4.06-4.67)'; $THETA 9
+    label("Peripheral compartment volume of distribution at WT = 70 kg (L)")  # Table 1 'VP (L) ... 4.36 (4.06-4.67)'; $THETA 9
 
     # Allometric exponents. Both were held constant rather than estimated
     # ("scaled using fixed exponents of 0.85 for clearance rates and 1 for the
@@ -204,7 +204,7 @@ Kurup_2024_DZIF10c <- function() {
     phih <- logitfdepot + etalogitfdepot
     phim <- logitfdepot_macaque + etalogitfdepot_macaque
     logitfinh <- phih * (1 - SPECIES_MACAQUE) + phim * SPECIES_MACAQUE
-    finh <- exp(logitfinh) / (1 + exp(logitfinh))
+    finh <- expit(logitfinh)
 
     # Individual parameters. Every clearance carries the 0.85 exponent and
     # every volume the 1.0 exponent, both on WT/70, for humans and macaques

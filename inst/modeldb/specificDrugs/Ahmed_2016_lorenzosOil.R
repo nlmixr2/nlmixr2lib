@@ -37,9 +37,9 @@ Ahmed_2016_lorenzosOil <- function() {
   ini({
     # Structural fixed effects (Ahmed 2016 Table 2). Final estimates; bootstrap medians match the
     # point estimates within rounding (E0 1.44 vs 1.44; Emax 0.76 vs 0.761; EC50 0.734 vs 0.733).
-    le0   <- log(1.44);  label("Baseline C26:0 plasma concentration at zero erucic acid (E0, mg/L)")    # Ahmed 2016 Table 2
-    lemax <- log(0.76);  label("Fractional maximum reduction of C26:0 by erucic acid (Emax, unitless in [0,1])")  # Ahmed 2016 Table 2
-    lec50 <- log(0.734); label("Erucic acid concentration at half-maximum effect (EC50, mg/L)")          # Ahmed 2016 Table 2
+    le0   <- log(1.44);  label("Baseline C26:0 plasma concentration at zero erucic acid (mg/L)")    # Ahmed 2016 Table 2
+    lemax <- log(0.76);  label("Fractional maximum reduction of C26:0 by erucic acid (unitless in [0,1])")  # Ahmed 2016 Table 2
+    lec50 <- log(0.734); label("Erucic acid concentration at half-maximum effect (mg/L)")          # Ahmed 2016 Table 2
 
     # IIV: log-normal (exponential) model. Ahmed 2016 Table 2 reports CV% computed as
     # sqrt(exp(omega^2) - 1) (footnote *), so omega^2 = log(CV^2 + 1).

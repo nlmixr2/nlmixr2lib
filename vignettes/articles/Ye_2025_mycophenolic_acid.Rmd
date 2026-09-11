@@ -1,0 +1,735 @@
+---
+title: "Mycophenolic acid (Ye 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Mycophenolic acid (Ye 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Ye_2025_mycophenolic_acid"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Ye_2025_mycophenolic_acid"))$description`
+* Article: <https://doi.org/10.1136/lupus-2025-001535>
+* Supplement (online supplemental tables 1-5 and plot 1, open access via the
+  journal): <https://doi.org/10.1136/lupus-2025-001535>
+
+Ye 2025 is, by the authors' account, the first population PK analysis of
+mycophenolic acid (MPA) in paediatric lupus nephritis. Fifty-one children
+receiving oral mycophenolate mofetil (MMF) twice daily contributed 146
+steady-state concentration-time profiles. The final model is a two-compartment
+model with first-order absorption, an absorption lag time and linear
+elimination, fitted in Phoenix NLME. Twenty-nine SNPs across 13 candidate genes
+were screened and eight were associated with MPA exposure in the univariate
+analysis, but **no genetic covariate survived the stepwise population-PK
+covariate search**; body weight on the apparent peripheral volume was the only
+covariate retained.
+
+# Population
+
+Fifty-one children with lupus nephritis (5 male, 46 female; 90.2% female) were
+recruited prospectively at The First Affiliated Hospital of Sun Yat-sen
+University between September 2021 and January 2023 (Ye 2025 Table 1). Mean age
+was 12.22 +/- 2.33 years and mean body weight 41.13 +/- 11.31 kg. All patients
+met the 2019 ACR SLE classification criteria and the diagnostic criteria for
+lupus nephritis. MMF was given as capsules (CellCept) or dispersible tablets
+(Saikeping) at 125-750 mg every 12 hours, mean total daily dose 739.81 +/-
+247.37 mg/day. All patients received corticosteroids; 17.6% received
+tacrolimus and 35.3% hydroxychloroquine.
+
+Sampling was at steady state (MMF for at least 7 days, mean treatment duration
+48.66 days) pre-dose and at 0.5, 1.5, 2.5, 4, 6, 9 and 12 hours post-dose.
+That is eight samples per profile, which is corroborated arithmetically by the
+paper's own totals: 1170 samples across 146 profiles gives 1170/146 = 8.01.
+Plasma total MPA was measured by validated LC-MS/MS over 0.1-50 ug/mL
+(LLOQ 0.1 ug/mL). A separate nine-patient cohort was used for external
+validation (MDPE 9.09%, MAPE 24.82%, F20 52.5%, F30 72.5%).
+
+The same information is available programmatically via
+`readModelDb("Ye_2025_mycophenolic_acid")()$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Ye_2025_mycophenolic_acid.R`. The table
+below collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (ka)     | 1.54 /h | Ye 2025 Table 3, `theta_Ka` (RSE 10.25%); header unit "hours" read as a typo for 1/h |
+| `lvc` (Vc/F)   | 7.99 L | Ye 2025 Table 3, `theta_V/F` (RSE 22.76%) |
+| `lvp` (Vp/F)   | 1287.12 L | Ye 2025 Table 3, `theta_V2/F` (RSE 8.65%); value at WT = 41.13 kg |
+| `lcl` (CL/F)   | 15.23 L/h | Ye 2025 Table 3, `theta_CL/F` (RSE 1.85%) |
+| `lq` (Q/F)     | 37.65 L/h | Ye 2025 Table 3, `theta_CL2/F` (RSE 3.32%) |
+| `ltlag` (Tlag) | 0.40 h | Ye 2025 Table 3, `Tlag` (RSE 3.29%) |
+| `e_wt_vp`      | 2.05 | Ye 2025 Table 3, `theta_v2,weight` (RSE 11.99%); functional form from online supplemental table 5 |
+| `etalvc`       | 1.02 | Ye 2025 Table 3, `omega^2 V/F` (RSE 14.89%) |
+| `etalvp`       | 1.24 | Ye 2025 Table 3, `omega^2 V2/F` (RSE 13.80%) |
+| `etalq`        | 0.20 | Ye 2025 Table 3, `omega^2 CL2/F` (RSE 17.51%) |
+| `propSd`       | 0.50 | Ye 2025 Table 3, `MultStdev` (RSE 4.29%) |
+| `addSd`        | 0.38 mg/L | Ye 2025 Table 3, `stdev` (RSE 9.33%) |
+| Two-compartment structure with Tlag | n/a | Ye 2025 Results, "PPK model development" (AIC 5237.58 one-compartment vs 4659.74 two-compartment; 4659.74 with Tlag vs 4712.25 without) |
+| Combined proportional + additive residual | n/a | Ye 2025 Results, "PPK model development" (AIC 4659.74 mixed vs 4738.81 additive and 4742.22 multiplicative) |
+| `Vp/F = 1287.12 * (WT/41.13)^2.05` | n/a | Ye 2025 online supplemental table 5 (ratio form and the 41.13 kg reference) + Table 3 (the 2.05 coefficient) |
+| Reference weight 41.13 kg | n/a | Ye 2025 online supplemental table 5; equals the Table 1 model-group mean weight |
+| No IIV on ka, CL/F, Tlag | n/a | Ye 2025 Results, "the ... Ka ... CL and Tlag were fixed due to their high eta-shrinkage values" |
+
+```{r model}
+mod <- readModelDb("Ye_2025_mycophenolic_acid")
+ui  <- rxode2::rxode(mod)
+
+# Structural constants used throughout, read straight off the model so the
+# vignette cannot drift from the packaged parameter values.
+theta   <- setNames(ui$theta, names(ui$theta))
+CL_F    <- exp(theta[["lcl"]])   # 15.23 L/h
+WT_REF  <- 41.13                 # kg, Ye 2025 online supplemental table 5
+TAU     <- 12                    # h, q12h
+DOSE    <- 369.9                 # mg per dose = 739.81 mg/day / 2 (Ye 2025 Table 1)
+
+c(CL_F = CL_F, Vc_F = exp(theta[["lvc"]]), Vp_F = exp(theta[["lvp"]]),
+  Q_F = exp(theta[["lq"]]), ka = exp(theta[["lka"]]), Tlag = exp(theta[["ltlag"]]),
+  e_wt_vp = theta[["e_wt_vp"]])
+```
+
+# Structural checks
+
+These four checks are **deterministic** -- both sides use the same drawn
+parameters, or are analytic -- so they are asserted tightly. They are the ones
+that catch a mis-transcribed value, a mis-assigned compartment or a silently
+substituted solver.
+
+## 1. Steady-state AUC equals Dose / (CL/F), for every subject
+
+Ye 2025 retained **no** random effect on CL/F and **no** covariate on CL/F.
+Steady-state exposure in this model is therefore an exact deterministic
+function of dose: `AUC(0-tau),ss = Dose / (CL/F)` for every subject, whatever
+their weight, Vc, Vp or Q. This is both the strongest available check on the
+disposition parameters and a substantive property of the published model.
+
+```{r cohort}
+# set.seed() seeds R's RNG. It does NOT seed rxode2's simulation RNG, and
+# rxode2's streams are partitioned per solver thread -- so this cohort is
+# reproducible here and different on a machine with a different thread count.
+# Every assertion below is written to hold for ANY cohort the model can draw.
+set.seed(20250208)
+
+N_SUBJ <- 146L   # matches the 146 steady-state profiles in Ye 2025
+
+# Body weight: Ye 2025 Table 1 reports only mean +/- SD (41.13 +/- 11.31 kg),
+# so a truncated normal is used, clipped to a plausible paediatric range for
+# a cohort of mean age 12.2 years.
+cohort <- tibble::tibble(
+  id        = seq_len(N_SUBJ),
+  WT        = pmin(pmax(rnorm(N_SUBJ, mean = 41.13, sd = 11.31), 18), 75),
+  treatment = "MMF 370 mg q12h"
+)
+
+# Dense observation grid over one steady-state dosing interval, refined over
+# the absorption phase. The refinement is load-bearing: with IIV variance 1.02
+# on Vc/F, the low-Vc tail of the cohort has a very sharp peak, and a uniform
+# 0.05 h grid leaves ~0.5% trapezoidal error on those subjects -- enough to
+# swamp the analytic AUC check below. At 0.005 h over 0-3 h the worst-subject
+# error falls to ~0.01%. Every one of the study's eight sampling times is a
+# subset of this grid.
+grid_dense  <- sort(unique(c(seq(0, 3, by = 0.005), seq(3, TAU, by = 0.05))))
+grid_study  <- c(0, 0.5, 1.5, 2.5, 4, 6, 9, 12)   # Ye 2025 Methods
+stopifnot(all(grid_study %in% grid_dense))
+
+# ss = 1 places the subject at exact steady state on a q12h schedule. Ye 2025
+# sampled after a mean of 48.66 days of therapy (~14 terminal half-lives of
+# this model), so exact steady state is the right idealisation; the
+# convergence check in section 4 confirms it against explicit repeat dosing.
+events <- dplyr::bind_rows(
+  cohort |>
+    dplyr::mutate(time = 0, amt = DOSE, evid = 1L, ii = TAU, ss = 1L,
+                  cmt = "depot"),
+  cohort |>
+    tidyr::crossing(time = grid_dense) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, ii = 0, ss = 0L,
+                  cmt = "central")
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+```{r simulate}
+# NB: rxSolve returns a column literally named `sim` (the observation with
+# residual error) alongside `Cc` (the individual prediction, noise-free).
+# The data frame is deliberately NOT called `sim`, so the column and the
+# frame cannot shadow each other.
+simdf <- rxode2::rxSolve(
+  mod, events = events, keep = c("WT", "treatment"), addDosing = FALSE
+) |>
+  as.data.frame()
+
+trapz <- function(t, y) sum(diff(t) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+
+auc_by_subject <- simdf |>
+  dplyr::group_by(id, WT) |>
+  dplyr::summarise(auc_ss = trapz(time, Cc), .groups = "drop") |>
+  dplyr::mutate(
+    auc_closed_form = DOSE / CL_F,
+    pct_diff        = 100 * (auc_ss - auc_closed_form) / auc_closed_form
+  )
+
+summary(auc_by_subject$pct_diff)
+
+# Deterministic identity, not a cohort statistic: the only error is the
+# trapezoidal quadrature on the grid above. Realised worst-subject |pct| was
+# 0.0095 on the refined grid (against 0.51 on a uniform 0.05 h grid), so 0.25
+# carries ~25x headroom for an unluckier low-Vc draw while still failing
+# instantly on a mis-transcribed CL, dose or unit -- those move it by tens of
+# percent.
+stopifnot(max(abs(auc_by_subject$pct_diff)) < 0.25)
+```
+
+## 2. Body weight moves Vp only -- steady-state exposure is weight-independent
+
+Ye 2025's title and conclusion foreground body weight, and the model does carry
+a strong weight effect: with an exponent of 2.05, apparent peripheral volume
+changes roughly four-fold across this cohort's weight range. But weight enters
+`Vp/F` **alone**, so it changes the *shape* of the profile and not the
+steady-state exposure. This is worth stating plainly, because the paper's
+closing recommendation ("an individualised initial dose and adjustment based on
+body weight") reads naturally as a statement about exposure, whereas in the
+published model weight-based dosing changes AUC only through the dose itself.
+
+```{r covariate-effect}
+wt_probe <- c(20, 30, WT_REF, 55, 70)
+
+probe_events <- tibble::tibble(id = seq_along(wt_probe), WT = wt_probe) |>
+  (\(d) dplyr::bind_rows(
+    d |> dplyr::mutate(time = 0, amt = DOSE, evid = 1L, ii = TAU, ss = 1L,
+                       cmt = "depot"),
+    d |> tidyr::crossing(time = grid_dense) |>
+      dplyr::mutate(amt = NA_real_, evid = 0L, ii = 0, ss = 0L,
+                    cmt = "central")
+  ))() |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+probe <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), probe_events, keep = "WT", addDosing = FALSE
+) |>
+  as.data.frame()
+
+probe_summary <- probe |>
+  dplyr::group_by(id, WT) |>
+  dplyr::summarise(
+    vp     = unique(vp),
+    auc_ss = trapz(time, Cc),
+    cmax   = max(Cc),
+    cmin   = min(Cc),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    vp_expected = exp(theta[["lvp"]]) * (WT / WT_REF)^theta[["e_wt_vp"]],
+    auc_ratio   = auc_ss / (DOSE / CL_F)
+  )
+
+probe_summary |>
+  dplyr::transmute(
+    "Body weight (kg)"      = round(WT, 2),
+    "Vp/F (L)"              = round(vp, 1),
+    "Vp/F expected (L)"     = round(vp_expected, 1),
+    "AUC0-12,ss (mg*h/L)"   = round(auc_ss, 3),
+    "Cmax,ss (mg/L)"        = round(cmax, 3),
+    "Cmin,ss (mg/L)"        = round(cmin, 3)
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Typical-value steady-state profile across the cohort weight range.",
+      "Vp/F spans a 4.4-fold range while AUC0-12 is unchanged, because body",
+      "weight enters Vp/F only."
+    )
+  )
+
+# Analytic identity: the encoded covariate form must reproduce the power
+# function exactly.
+stopifnot(max(abs(probe_summary$vp / probe_summary$vp_expected - 1)) < 1e-8)
+# AUC is weight-independent by construction (no covariate, no eta on CL/F).
+stopifnot(max(abs(probe_summary$auc_ratio - 1)) < 0.005)
+# The weight effect is real and large on Vp even though AUC does not move.
+stopifnot(max(probe_summary$vp) / min(probe_summary$vp) > 4)
+```
+
+## 3. The solved and ODE forms agree
+
+The model writes an explicit three-state ODE system, but its `cl`/`vc`/`q`/`vp`
+parameterisation also matches rxode2's linear-compartment solver, which
+`rxSolve()` may substitute automatically (`useLinCmt = TRUE` is the default).
+The substitution is only safe if the hand-written ODE rates really are the
+standard two-compartment rates, so that is checked rather than assumed.
+
+The check runs on an explicit q12h schedule rather than on the `ss = 1` records
+used above, because `ss = 1` on this model *requires* the analytic solver:
+with a terminal half-life near 80 h against a 12 h dosing interval, the ODE
+path's steady-state iteration does not converge and `rxSolve()` fails with
+"could not solve the system". Establishing the equivalence on explicit dosing
+is what licenses the `ss = 1` results in the rest of this vignette.
+
+```{r repeat-dosing}
+one <- probe_events |> dplyr::filter(id == 3L)
+
+# 30 days of q12h dosing (~8.7 terminal half-lives), observed over the final
+# dosing interval on the same grid as the ss = 1 solve.
+repeat_events <- dplyr::bind_rows(
+  tibble::tibble(
+    id = 3L, WT = one$WT[1], time = seq(0, TAU * 60, by = TAU),
+    amt = DOSE, evid = 1L, cmt = "depot"
+  ),
+  tibble::tibble(
+    id = 3L, WT = one$WT[1], time = TAU * 60 + grid_dense,
+    amt = NA_real_, evid = 0L, cmt = "central"
+  )
+) |>
+  dplyr::arrange(time, dplyr::desc(evid))
+```
+
+```{r lincmt-equivalence}
+lin <- rxode2::rxSolve(mod, repeat_events, omega = NA, useLinCmt = TRUE,
+                       addDosing = FALSE) |> as.data.frame()
+ode <- rxode2::rxSolve(mod, repeat_events, omega = NA, useLinCmt = FALSE,
+                       addDosing = FALSE) |> as.data.frame()
+
+max_rel <- max(abs(lin$Cc - ode$Cc) / pmax(ode$Cc, 1e-12))
+max_rel
+
+# Same equations, two solvers: agreement is to solver tolerance, so this is
+# asserted tightly. A divergence here would mean the explicit ODE is not the
+# two-compartment system the parameter names claim.
+stopifnot(max_rel < 1e-5)
+```
+
+## 4. Exact steady state matches explicit repeat dosing
+
+```{r ss-convergence}
+ss_sim <- probe |> dplyr::filter(id == 3L)
+stopifnot(nrow(ss_sim) == nrow(lin))
+
+max_rel_ss <- max(abs(lin$Cc - ss_sim$Cc) / ss_sim$Cc)
+max_rel_ss
+
+# 30 days of q12h dosing is ~8.7 terminal half-lives of this model, so the
+# explicit schedule should sit just under exact steady state -- a small,
+# one-sided gap. Realised ~0.24%.
+stopifnot(max_rel_ss < 0.02)
+```
+
+The model's terminal half-life is far longer than anything the study's 12-hour
+sampling window can see, which matters for interpreting the NCA comparison
+below:
+
+```{r terminal-half-life}
+wash <- tibble::tibble(id = 1L, WT = WT_REF) |>
+  (\(d) dplyr::bind_rows(
+    d |> dplyr::mutate(time = 0, amt = DOSE, evid = 1L, cmt = "depot"),
+    d |> tidyr::crossing(time = seq(0, 400, by = 1)) |>
+      dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central")
+  ))() |>
+  dplyr::arrange(time, dplyr::desc(evid))
+
+wsim <- rxode2::rxSolve(rxode2::zeroRe(mod), wash, addDosing = FALSE) |>
+  as.data.frame() |>
+  dplyr::filter(time > 200, Cc > 0)
+
+t_half_terminal <- log(2) / -stats::coef(stats::lm(log(Cc) ~ time, wsim))[[2]]
+t_half_terminal
+
+# Structural consequence of Vp/F = 1287 L against Q/F = 37.65 L/h; recorded
+# rather than tuned. Loose bound because it is a fitted slope.
+stopifnot(t_half_terminal > 40, t_half_terminal < 150)
+```
+
+# Replicate published figures
+
+```{r figure-1b}
+# Replicates Figure 1B of Ye 2025: mean +/- SD MPA concentration vs time after
+# dose, on the study's eight-point sampling grid, with residual error applied
+# (the `sim` column) so it is comparable to observed data.
+obs_study <- simdf |> dplyr::filter(time %in% grid_study)
+
+obs_study |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(mean_c = mean(sim), sd_c = stats::sd(sim), .groups = "drop") |>
+  ggplot(aes(time, mean_c)) +
+  geom_errorbar(aes(ymin = mean_c - sd_c, ymax = mean_c + sd_c), width = 0.25) +
+  geom_line() +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = grid_study) +
+  labs(x = "Time after dose (h)", y = "MPA concentration (mg/L)",
+       title = "Simulated mean +/- SD steady-state profile",
+       caption = "Replicates Figure 1B of Ye 2025.")
+```
+
+```{r figure-3}
+# Replicates Figure 3 of Ye 2025: prediction-corrected VPC style summary of
+# the simulated concentrations against time after dose.
+simdf |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q05 = stats::quantile(sim, 0.05),
+    Q50 = stats::quantile(sim, 0.50),
+    Q95 = stats::quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line(linewidth = 0.8) +
+  scale_x_continuous(breaks = seq(0, 12, by = 2)) +
+  labs(x = "Time after dose (h)", y = "MPA concentration (mg/L)",
+       title = "Simulated 5th / 50th / 95th percentiles at steady state",
+       caption = "Replicates Figure 3 of Ye 2025 (VPC).")
+```
+
+```{r figure-covariate}
+probe |>
+  ggplot(aes(time, Cc, colour = factor(round(WT, 1)))) +
+  geom_line(linewidth = 0.8) +
+  scale_x_continuous(breaks = seq(0, 12, by = 2)) +
+  labs(x = "Time after dose (h)", y = "MPA concentration (mg/L)",
+       colour = "Body weight (kg)",
+       title = "Typical-value profiles across the cohort weight range",
+       caption = paste(
+         "Body weight enters Vp/F only, so heavier subjects have a lower peak",
+         "and a higher trough at identical AUC0-12."))
+```
+
+# PKNCA validation
+
+NCA is run on the study's own eight-point sampling grid, using the
+residual-error observations, so that it is subject to the same sampling-density
+limitations as Ye 2025 Table 2.
+
+Ye 2025's assay has an LLOQ of 0.1 mg/L. The combined residual error (additive
+SD 0.38 mg/L on troughs near 1.2 mg/L) puts a small fraction of simulated
+observations below that -- some of them negative, which no assay can report and
+which leaves PKNCA unable to define `clast` and therefore `auclast`. Values
+below the LLOQ are substituted with LLOQ/2, the conventional handling.
+
+```{r pknca}
+LLOQ <- 0.1   # mg/L, Ye 2025 Methods (bioanalytical)
+
+blq_fraction <- mean(obs_study$sim < LLOQ)
+round(100 * blq_fraction, 2)   # percent of simulated observations below LLOQ
+
+# Only `!is.na()` in this filter -- adding `time > 0` or `Cc > 0` would drop
+# the time-zero row PKNCA needs to anchor AUC0-tau.
+sim_nca <- obs_study |>
+  dplyr::filter(!is.na(sim)) |>
+  dplyr::transmute(id, time, Cc = pmax(sim, LLOQ / 2), treatment)
+
+stopifnot(nrow(sim_nca) == N_SUBJ * length(grid_study))
+stopifnot(all(sim_nca$Cc > 0))
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                             concu = "mg/L", timeu = "h")
+
+dose_df <- cohort |> dplyr::mutate(time = 0, amt = DOSE) |>
+  dplyr::select(id, time, amt, treatment)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                             doseu = "mg")
+
+intervals <- data.frame(
+  start     = 0,
+  end       = TAU,
+  cmax      = TRUE,
+  tmax      = TRUE,
+  cmin      = TRUE,
+  auclast   = TRUE,
+  half.life = TRUE,
+  cl.last   = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+```
+
+```{r pknca-auc612}
+# AUC6-12 is a second interval, reported separately by Ye 2025 (Table 2) as a
+# surrogate for the enterohepatic-recirculation contribution.
+nca_612 <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = data.frame(start = 6, end = TAU, auclast = TRUE)
+))
+
+auc012 <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |> dplyr::pull(PPORRES)
+auc612 <- as.data.frame(nca_612$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |> dplyr::pull(PPORRES)
+
+# Fail loudly rather than propagating NaN into the comparison below.
+stopifnot(length(auc012) == N_SUBJ, length(auc612) == N_SUBJ,
+          !anyNA(auc012), !anyNA(auc612))
+```
+
+## Comparison against published NCA
+
+```{r nca-compare}
+# Ye 2025 Table 2, "The pharmacokinetic parameters of MMF" (means).
+published <- tibble::tribble(
+  ~treatment,         ~cmax, ~tmax, ~cmin, ~auclast, ~half.life,
+  "MMF 370 mg q12h",  15.08, 0.86,  0.80,  31.05,    5.68
+)
+
+# ncaComparisonTable() summarises a per-subject PKNCAresults by MEDIAN. Ye
+# 2025 Table 2 reports means throughout, so the simulated side is
+# pre-aggregated by mean and passed in that form (the documented override).
+# On an eight-point grid this matters most for Tmax, which is quantised to
+# the sampling times: its median snaps to a single grid value while its mean
+# does not.
+sim_means <- as.data.frame(nca_res$result) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(PPORRES = mean(PPORRES, na.rm = TRUE), .groups = "drop")
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = sim_means,
+  reference     = published,
+  by            = "treatment",
+  units         = c(cmax = "mg/L", cmin = "mg/L", tmax = "h",
+                    auclast = "mg*h/L", half.life = "h"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated vs. Ye 2025 Table 2 NCA, steady state, eight-point sampling",
+    "grid. * differs from the reference by more than 20%."
+  )
+)
+```
+
+```{r nca-compare-auc612}
+tibble::tibble(
+  "NCA parameter" = c("AUC6-12 (mg*h/L)", "AUC6-12 / AUC0-12 (%)"),
+  Reference       = c(7.02, 22.61),
+  Simulated       = c(mean(auc612), 100 * mean(auc612) / mean(auc012))
+) |>
+  dplyr::mutate(
+    "% diff" = round(100 * (Simulated - Reference) / Reference, 1),
+    Reference = round(Reference, 2),
+    Simulated = round(Simulated, 2)
+  ) |>
+  knitr::kable(
+    caption = "Late-interval exposure vs. Ye 2025 Table 2 (medians of the simulated cohort)."
+  )
+```
+
+### What matches, and what does not
+
+```{r nca-assertions}
+mean_of <- function(code, res = nca_res) {
+  v <- as.data.frame(res$result) |>
+    dplyr::filter(PPTESTCD == code) |> dplyr::pull(PPORRES)
+  # Fail loudly rather than returning NaN from a zero-row filter, which would
+  # make every check below pass vacuously.
+  if (length(v) == 0L) stop("no NCA rows for '", code, "'")
+  mean(v, na.rm = TRUE)
+}
+
+stopifnot(all(c("cmax", "tmax", "auclast", "cl.last") %in%
+                as.data.frame(nca_res$result)$PPTESTCD))
+
+checks <- tibble::tibble(
+  Quantity  = c("AUC6-12 (mg*h/L)", "Tmax (h)", "AUC0-12 (mg*h/L)",
+                "Cmax (mg/L)", "Cmin (mg/L)", "CL/F (L/h)"),
+  Reference = c(7.02, 0.86, 31.05, 15.08, 0.80, 11.10),
+  Simulated = c(mean(auc612), mean_of("tmax"), mean_of("auclast"),
+                mean_of("cmax"), mean_of("cmin"), mean_of("cl.last")),
+  Deviation = c(FALSE, FALSE, TRUE, TRUE, TRUE, TRUE)
+) |>
+  dplyr::mutate(`% diff` = 100 * (Simulated - Reference) / Reference)
+
+checks |>
+  dplyr::mutate(dplyr::across(c(Simulated, `% diff`), \(x) round(x, 2))) |>
+  knitr::kable(caption = "Deviation = TRUE marks a reproducible disagreement, documented in Errata rather than tuned away.")
+
+passing <- checks |> dplyr::filter(!Deviation)
+stopifnot(nrow(passing) == 2L)
+
+# Cohort-derived, so these are magnitude bounds set well outside the
+# run-to-run spread rather than the value any single run produced.
+# Realised +7.7% here and +14.7% under an earlier explicit-dosing variant,
+# so the bound sits at roughly twice the worst value seen.
+stopifnot(abs(passing$`% diff`[passing$Quantity == "AUC6-12 (mg*h/L)"]) < 35)
+# Tmax is quantised to the eight sampling times, whose neighbours around the
+# model's ~1.1 h peak are 0.5 and 1.5 h; one grid step is already -42% / +74%
+# against the reported 0.86 h, so no tighter bound is meaningful on this
+# design. Realised about +36%. It still goes red if absorption is
+# mis-encoded: dropping Tlag or halving ka moves mean Tmax past 2 h.
+# Realised about +26%.
+stopifnot(abs(passing$`% diff`[passing$Quantity == "Tmax (h)"]) < 70)
+
+# The decisive gate on this vignette's actual claim -- that the packaged
+# model reproduces the PUBLISHED model. Steady-state exposure per gram of
+# MMF is 1000 / (CL/F) by structural check 1, so this fails proportionally
+# on any error in the clearance, the dose or the concentration units.
+auc_per_gram_sim   <- 1000 * mean_of("auclast") / DOSE
+auc_per_gram_model <- 1000 / CL_F
+c(simulated = auc_per_gram_sim, model = auc_per_gram_model,
+  `Ye 2025 Table 2` = 80.19)
+
+# Band allows for the sparse eight-point trapezoid under-reading the peak
+# and for the LLOQ substitution (realised about -6%); a 25% error in CL/F --
+# the size of the Table 2 vs Table 3 conflict -- would break it.
+stopifnot(abs(auc_per_gram_sim / auc_per_gram_model - 1) < 0.15)
+```
+
+The AUC0-12, Cmax and CL/F rows are starred, and all three are the **same
+single discrepancy** seen from three directions. Because steady-state AUC in
+this model is exactly `Dose / (CL/F)` (structural check 1), the AUC deviation
+is fully determined by the clearance value and nothing else:
+
+```{r cl-inconsistency}
+# Ye 2025 reports three mutually inconsistent clearance values.
+cl_from_model     <- CL_F                          # Table 3, theta_CL/F
+cl_from_nca_mean  <- 11.10                         # Table 2, CL/F
+cl_from_auc_dose  <- 1000 / 80.19                  # Table 2, AUC0-12/dose = 80.19 mg*h/L per g
+
+c(`Table 3 theta_CL/F` = cl_from_model,
+  `Table 2 CL/F`       = cl_from_nca_mean,
+  `implied by Table 2 AUC0-12/dose` = cl_from_auc_dose)
+
+# The simulated AUC deficit equals the clearance excess, to within the
+# sampling-grid error -- i.e. the packaged model reproduces Table 3 exactly
+# and it is Table 3 that disagrees with Table 2.
+auc_ratio_predicted <- cl_from_auc_dose / cl_from_model
+auc_ratio_observed  <- mean_of("auclast") / 31.05
+c(predicted = auc_ratio_predicted, observed = auc_ratio_observed)
+
+stopifnot(abs(auc_ratio_observed / auc_ratio_predicted - 1) < 0.35)
+```
+
+`theta_CL/F` = 15.23 L/h (Table 3) is 22% above the 12.47 L/h implied by the
+paper's own dose-normalised AUC (Table 2, AUC0-12/dose = 80.19 mg*h/L per g)
+and 37% above the mean NCA CL/F of 11.10 L/h (Table 2). Nothing in the encoding
+can reconcile them: the packaged model reproduces Table 3, and Table 3
+disagrees with Table 2. The residual Cmax shortfall on top of that is the
+absorption-phase misfit Ye 2025 itself lists first among its limitations
+("the observed discrepancies in figure 4 may stem from relatively sparse
+sampling during the absorption phase"). Tmax (0.86 h reported) and the late
+interval AUC6-12 are reproduced, so the discrepancy is confined to the peak
+and the total area, not to the shape of the elimination phase.
+
+# Assumptions and deviations
+
+**Covariate functional form.** Ye 2025 online supplemental table 5 prints the
+retained relationship as `V2,i = V2,pop * (body weight / 41.13)` with no
+exponent, while Table 3 reports a coefficient `theta_v2,weight = 2.05` (RSE
+11.99%, bootstrap 95% CI 0.39-2.60). It is encoded here as the power form
+`Vp/F = 1287.12 * (WT/41.13)^2.05`. The supplement's equations omit the
+estimated coefficient from *every* screened relationship, not just this one --
+the genotype rows print `V_i = V_pop * e^(dsDNA = 1, 2 or 3)` with no theta
+either -- so the omission is that table's notation, not a claim that the
+exponent is 1. (This was confirmed against the raw OOXML of the supplement:
+there is no dropped superscript.) A centred-linear reading
+`Vp/F = 1287.12 * (1 + 2.05 * (WT - 41.13)/41.13)` was rejected because it
+turns Vp/F negative below 21.1 kg, inside the plausible weight range of a
+cohort with mean weight 41.13 +/- 11.31 kg. A power exponent is also the only
+reading under which the printed ratio form is literally correct at its
+special case (exponent 1) and under which a bootstrap CI spanning 1.0 is
+natural.
+
+**Which parameters carry a random effect.** Ye 2025 states that "the typical
+value of absorption rate constant (Ka), typical value of clearance (CL) and
+Tlag were fixed due to their high eta-shrinkage values", explaining that high
+shrinkage "suggests that the random effect may be negligible". That reasoning
+removes a random effect, not a THETA -- and all three thetas carry non-zero
+RSEs and bootstrap medians that differ from the final estimates (1.69 vs 1.54,
+16.27 vs 15.23, 0.42 vs 0.40), which a genuinely fixed THETA cannot. The etas
+on ka, CL/F and Tlag are therefore encoded as dropped and the three thetas as
+estimated, leaving exactly the three `omega^2` rows Table 3 prints.
+
+**Table 3's shrinkage column is internally inconsistent.** The "Final model"
+column prints a shrinkage beside `theta_CL/F` (18.30) and none beside
+`theta_CL2/F`, while the "Bootstrap" column does the opposite (13.60 beside
+CL2/F, none beside CL/F). The IIV rows and the table footnote both name
+`omega^2 CL2/F`, and the text says CL's random effect was dropped, so the third
+eta is placed on Q/F and the stray "(18.30)" is treated as a mis-set cell.
+
+**Variability scale.** Table 3 labels the IIV rows `omega^2` and Phoenix NLME
+reports the Omega matrix of an exponential IIV model as variances, so 1.02,
+1.24 and 0.20 are used directly as eta variances. Reading them instead as
+standard deviations would change the Vc variance by 2% and the Vp variance by
+24%; it does not change any conclusion in this vignette, because the checks
+that pass or fail here are driven by CL/F, which carries no eta.
+
+**Absorption rate constant units.** Table 3 heads the row `theta_Ka (hours)`,
+but ka is a first-order rate constant and the Discussion compares it with
+literature values quoted "from 0.39 to 5.21 hours^-1". The header unit is read
+as a typo for 1/h and the value 1.54 is used unchanged.
+
+**Dose and molecular weight.** Doses are MMF mass in mg. Ye 2025 applies no
+MMF-to-MPA molecular-weight conversion, so CL/F, Vc/F, Vp/F and Q/F are
+apparent parameters absorbing both the molecular-weight ratio and oral
+bioavailability; no `f(depot)` term is applied. The simulations use a single
+dose level of 369.9 mg (half the reported mean total daily dose of 739.81
+mg/day) rather than the reported 125-750 mg range, so that the comparison
+against Ye 2025 Table 2 is not confounded by a dose distribution the paper
+does not tabulate.
+
+**Below-LLOQ handling.** Ye 2025 states an LLOQ of 0.1 mg/L but no BLQ rule.
+The combined residual error puts a small percentage of simulated observations
+below it, some of them negative; negative concentrations are unobservable and
+leave PKNCA unable to define `clast`, hence `auclast`. Simulated values below
+the LLOQ are replaced with LLOQ/2, the conventional substitution. This affects
+Cmin materially (it is the statistic most exposed to the additive error near
+the trough) and AUC0-12 only marginally.
+
+**Body-weight distribution.** Ye 2025 Table 1 gives only mean +/- SD
+(41.13 +/- 11.31 kg). The virtual cohort draws from a normal distribution with
+those moments, truncated to 18-75 kg; neither the shape nor the truncation is
+stated by the paper.
+
+**Sampling schedule.** The Methods list pre-dose plus 0.5, 1.5, 2.5, 4, 6, 9
+and 12 hours (eight samples), which the paper's own totals corroborate
+(1170 samples / 146 profiles = 8.01). Figure 1's x-axis additionally carries a
+1.0 h tick; the eight-point Methods schedule is used here.
+
+**Steady state.** Simulations use `ss = 1` (exact steady state). Ye 2025
+required a minimum of 7 days of therapy, which is only about two terminal
+half-lives of this model, so the earliest-sampled patients would not have been
+fully at steady state; the mean treatment duration of 48.66 days is about 14
+terminal half-lives.
+
+**Known deviations, not tuned.** Simulated AUC0-12, Cmax and CL/F differ from
+Ye 2025 Table 2 by more than 20% and are excluded from the assertion gate but
+kept visible in the comparison table above. The cause is a conflict internal to
+the paper -- `theta_CL/F` = 15.23 L/h in Table 3 against 11.10 L/h in Table 2
+and 12.47 L/h implied by Table 2's own dose-normalised AUC -- compounded by the
+absorption-phase misfit the authors list as their first limitation. No
+parameter was adjusted to close it.
+
+**Supplemental table 5 reporting errors (not used by this model).** The
+stepwise screening table reports an OFV that *increases* at every forward
+inclusion step (base 4659.74, rising to 4666.72 when body weight on V2 is
+added), which is the wrong direction for a likelihood-ratio inclusion, and it
+holds the structural-parameter count at 6 for the covariate models as well as
+the base model. Its "WBC" row also prints the albumin equation. These affect
+the audit trail of the covariate search only; the final model parameters come
+from Table 3 and are unaffected.
+
+**Pharmacogenetics is not in the model.** Eight variants in *UGT1A9*, *UGT2B7*,
+*ABCC2* and *CES1* were associated with dose-normalised MPA exposure in the
+univariate analysis (online supplemental table 4), but none survived the
+stepwise popPK covariate search, so no genetic covariate appears in the model
+file. Ye 2025 says so explicitly: "the effect size may not be sufficient to
+replace the covariate status of body weight in the population model."
+
+**Enterohepatic recirculation is absent.** Ye 2025 could not fit an EHC
+component (no samples around the second peak, few patients with a pronounced
+EHC process), so the model has no EHC pathway and will not reproduce a
+secondary peak.

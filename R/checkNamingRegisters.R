@@ -24,6 +24,27 @@
   "propSd", "addSd", "lnSd", "logitSd", "probitSd"
 )
 
+# Covariate canonicals are ALL CAPS. The exemption list is NOT kept here: it
+# lives in the `## Case convention` section of covariate-columns.md, so the
+# register documents its own exceptions and this check enforces exactly what a
+# reader is told. Keeping it in code instead would have reproduced the very
+# drift that prompted the check -- the prose claimed two non-all-caps
+# canonicals when the file held ten. Nested (indented) bullets carry the
+# names; parent bullets carry the prose, which is why only indented lines are
+# read.
+.caseExemptions <- function(path) {
+  lines <- readLines(path, warn = FALSE)
+  start <- grep("^## Case convention[[:space:]]*$", lines)
+  if (!length(start)) {
+    return(character())
+  }
+  rest <- lines[seq(start[[1]] + 1L, length(lines))]
+  nextSection <- grep("^## ", rest)
+  if (length(nextSection)) rest <- rest[seq_len(nextSection[[1]] - 1L)]
+  nested <- rest[grepl("^[[:space:]]+- ", rest)]
+  unique(unlist(lapply(nested, .allMatches, pat = "`([^`]+)`")))
+}
+
 # The `- **Type:**` vocabulary. An entry whose Type is absent drops silently out
 # of the canonical name list that checkModelConventions() builds from these
 # files, so the model-facing check stops recognising it -- that is how `depot`
@@ -125,6 +146,10 @@
 #'     the entry drops out of the canonical name list
 #'     [checkModelConventions()] builds, so the model-facing check stops
 #'     recognising the name while every other register check stays green.
+#'   \item covariate canonicals that are not ALL CAPS and are not listed under
+#'     `## Case convention` in `covariate-columns.md`, and names listed there
+#'     that no longer have an entry. Checked for that register only:
+#'     parameter canonicals are deliberately lower case (`lka`, `lcl`).
 #' }
 #'
 #' @param root Package root to check. `NULL` (default) uses the installed
@@ -190,6 +215,32 @@ checkNamingRegisters <- function(root = NULL) {
           paste("also at line", paste(lns[sel][-1], collapse = ", ")))
     }
 
+    # Case convention, covariate register only: parameter canonicals are
+    # deliberately lower case (`lka`, `lcl`) and compartment canonicals mixed.
+    # Checked in BOTH directions -- an undocumented non-all-caps canonical, and
+    # a documented exemption whose entry is gone -- because the failure that
+    # prompted this was the second kind quietly turning the first kind's
+    # documentation into a lie.
+    if (glob) {
+      exempt <- .caseExemptions(path)
+      for (e in real) {
+        # A DEPRECATED tombstone records a name that WAS used, so its case is
+        # history rather than a choice; flagging it would push authors to
+        # delete deprecation records to get the check green.
+        if (isTRUE(e$deprecated)) next
+        for (nm in e$names) {
+          if (nzchar(nm) && nm != toupper(nm) && !(nm %in% exempt)) {
+            add(f, "case-convention", nm, e$line,
+                "not ALL CAPS and not listed under `## Case convention`")
+          }
+        }
+      }
+      for (nm in setdiff(exempt, nms)) {
+        add(f, "stale-case-exemption", nm, NA_integer_,
+            "listed under `## Case convention` but has no `###` entry")
+      }
+    }
+
     for (e in real) {
       miss <- setdiff(e$examples, onDisk)
       if (length(miss)) {
@@ -198,10 +249,16 @@ checkNamingRegisters <- function(root = NULL) {
       }
       tok <- e$name
       # Suffix sections register the SUFFIX (`dox`), which appears in model
-      # source only inside a compound token (`auc_dox`), so match that too.
+      # source only inside a compound token (`auc_dox`), so match that too --
+      # at the end, the start, or the MIDDLE. The middle case is not exotic: a
+      # metabolite suffix naming a conversion rate constant lands there by
+      # construction, e.g. `gs443902` appears only as
+      # `lkmet_gs443902_peripheral1`, and matching just the ends reported it
+      # as registered-but-unused while two models were using it.
       used <- tok %in% srcTokens ||
         any(endsWith(srcTokens, paste0("_", tok))) ||
-        any(startsWith(srcTokens, paste0(tok, "_")))
+        any(startsWith(srcTokens, paste0(tok, "_"))) ||
+        any(grepl(paste0("_", tok, "_"), srcTokens, fixed = TRUE))
       if (nchar(tok) >= 3L && !used && !isTRUE(e$deprecated)) {
         add(f, "registered-but-unused", tok, e$line, "no model on disk uses it")
       }

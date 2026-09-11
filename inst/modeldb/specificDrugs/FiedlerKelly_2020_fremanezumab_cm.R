@@ -79,7 +79,7 @@ FiedlerKelly_2020_fremanezumab_cm <- function() {
     # Source reports variance 7.09 with SD column 2.66 (sqrt(7.09) = 2.663).
     # The output-prefixed name follows the multi-output residual-error
     # convention (`addSd_<output>`).
-    addSd_msHeadacheDays <- 2.66; label("Additive residual error on monthly M/S headache days")  # Fiedler-Kelly 2020 Table S4 (SD of variance 7.09)
+    addSd_ms_headache_days <- 2.66; label("Additive residual error on monthly M/S headache days")  # Fiedler-Kelly 2020 Table S4 (SD of variance 7.09)
   })
 
   model({
@@ -100,7 +100,7 @@ FiedlerKelly_2020_fremanezumab_cm <- function() {
     BL_i      <- bl_cm + slope_AM * max(0, ACUTE_MED_DAYS - 5) + etabl_cm
     maxPLC_i  <- maxPLC_cm + etamaxPLC_cm
     hill_i    <- exp(lhill_PLC + etalhill_PLC)
-    drugInt_i <- 1 / (1 + exp(-(logitDrugInt + etalogitDrugInt)))
+    drugInt_i <- expit(logitDrugInt + etalogitDrugInt)
     drugExp_i <- exp(ldrugExp + etaldrugExp)
 
     # Placebo Hill function in time (Fiedler-Kelly 2020 Figure 2B form):
@@ -113,8 +113,8 @@ FiedlerKelly_2020_fremanezumab_cm <- function() {
     drug_eff <- BL_i * drugInt_i * (CAV / CavMedian)^drugExp_i
 
     # Predicted monthly M/S headache days = baseline + placebo time effect - drug effect.
-    msHeadacheDays <- BL_i + placebo_eff - drug_eff
+    ms_headache_days <- BL_i + placebo_eff - drug_eff
 
-    msHeadacheDays ~ add(addSd_msHeadacheDays)
+    ms_headache_days ~ add(addSd_ms_headache_days)
   })
 }

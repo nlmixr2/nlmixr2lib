@@ -152,7 +152,7 @@ Lin_2020_glasdegib_treatment <- function() {
     # 0.00253 / 0.00601 = 0.421, matching the paper's HR 0.42 (95% CI
     # 0.28-0.66).
     llam_haz       <- log(0.00253); label("Exponential baseline hazard for overall survival in the glasdegib + LDAC reference arm (lambda, log(1/day))")  # Lin 2020 Results page 4: lambda = 0.00253, RSE 13.82%
-    e_ldac_alone   <- 1.376;        label("Proportional increase in hazard for LDAC alone vs glasdegib + LDAC (theta_ldac_alone, unitless multiplier on lambda)")  # Lin 2020 Results page 4: 1.376, RSE 37.74%; produces HR 0.42 glasdegib+LDAC vs LDAC alone
+    e_ldac_alone   <- 1.376;        label("Proportional increase in hazard for LDAC alone vs glasdegib + LDAC (unitless multiplier on lambda)")  # Lin 2020 Results page 4: 1.376, RSE 37.74%; produces HR 0.42 glasdegib+LDAC vs LDAC alone
 
     # No estimated IIV. The treatment-response TTE model was fit with no
     # subject-level random effects (parametric population TTE on a binary

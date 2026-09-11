@@ -129,8 +129,8 @@ Kloos_2021_pegasparaginase <- function() {
     # Kloos 2021 Table 2, 'Final model' column. Clearance and volume are
     # reported per m^2 of body surface area; BSA multiplies both inside
     # model(), so these are the values for a 1 m^2 patient.
-    lcl <- log(0.084); label("Clearance per m^2 BSA during the first 12.7 days after a dose (CL, L/day/m^2)")  # Kloos 2021 Table 2 final model (CL 0.084 L/day/m^2, RSE 4.4%; bootstrap 0.084, 95% CI 0.078-0.090)
-    lvc <- log(0.94);  label("Volume of distribution per m^2 BSA (Vd, L/m^2)")                                 # Kloos 2021 Table 2 final model (Vd 0.94 L/m^2, RSE 4.5%; bootstrap 0.94, 95% CI 0.87-1.01)
+    lcl <- log(0.084); label("Clearance per m^2 BSA during the first 12.7 days after a dose (L/day/m^2)")  # Kloos 2021 Table 2 final model (CL 0.084 L/day/m^2, RSE 4.4%; bootstrap 0.084, 95% CI 0.078-0.090)
+    lvc <- log(0.94);  label("Volume of distribution per m^2 BSA (L/m^2)")                                 # Kloos 2021 Table 2 final model (Vd 0.94 L/m^2, RSE 4.5%; bootstrap 0.94, 95% CI 0.87-1.01)
 
     # ---- Time-dependent clearance ----------------------------------------
     # PEGasparaginase clearance is constant for the first `tsplit` days after

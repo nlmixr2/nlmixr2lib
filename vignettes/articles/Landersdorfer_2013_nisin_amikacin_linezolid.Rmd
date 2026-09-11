@@ -91,7 +91,7 @@ Per-parameter origins are recorded as in-file comments next to each `ini()` entr
 | `kc50`, `ic50_prot`, `ic50_k12` | half-effect concentrations | mg/L |
 | `REP`, `Fami`, `inh_k12`, `inh_rep`, `prot_pool` | dimensionless |  |
 | `cfumax`, `total0` | population scale / inoculum | CFU/mL |
-| `Cc` | observation | log10 CFU/mL |
+| `log_cfu` | observation | log10 CFU/mL |
 
 Every bacterial-state ODE term has units `(1/h) * (CFU/mL) = (CFU/mL)/h`, matching `d/dt(state)`. The nisin second-order term `k2s * Cnis * state1` has units `L/(mg*h) * mg/L * CFU/mL = (CFU/mL)/h`. The protein-pool ODE has units of `(1/h) * (unitless) = (1/h)`. `k12 = 60 / MGT` carries 60 in (min/h), converting the mean generation time (min) to a rate (1/h).
 
@@ -124,16 +124,16 @@ ev_nl <- et(time = times) |>
   mutate(Cnis = 0, Clin = 0)
 gc_nl <- rxode2::rxSolve(mod_nl, ev_nl, returnType = "data.frame", maxsteps = 1e5)
 
-cat(sprintf("nisin+amikacin: Cc(0) = %.3f log10 CFU/mL (Table 1: 7.89); Cc(48) = %.3f (target ~= log10CFUmax = 9.23)\n",
-            gc_na$Cc[1], tail(gc_na$Cc, 1)))
-cat(sprintf("nisin+linezolid: Cc(0) = %.3f log10 CFU/mL (Table 1: 7.88); Cc(48) = %.3f (target ~= log10CFUmax = 9.38)\n",
-            gc_nl$Cc[1], tail(gc_nl$Cc, 1)))
+cat(sprintf("nisin+amikacin: log_cfu(0) = %.3f log10 CFU/mL (Table 1: 7.89); log_cfu(48) = %.3f (target ~= log10CFUmax = 9.23)\n",
+            gc_na$log_cfu[1], tail(gc_na$log_cfu, 1)))
+cat(sprintf("nisin+linezolid: log_cfu(0) = %.3f log10 CFU/mL (Table 1: 7.88); log_cfu(48) = %.3f (target ~= log10CFUmax = 9.38)\n",
+            gc_nl$log_cfu[1], tail(gc_nl$log_cfu, 1)))
 
 bind_rows(
   mutate(gc_na, model = "Nisin + amikacin"),
   mutate(gc_nl, model = "Nisin + linezolid")
 ) |>
-  ggplot(aes(time, Cc, colour = model)) +
+  ggplot(aes(time, log_cfu, colour = model)) +
   geom_line(linewidth = 1) +
   geom_hline(data = data.frame(model = c("Nisin + amikacin", "Nisin + linezolid"),
                                 cap = c(9.23, 9.38)),
@@ -197,7 +197,7 @@ sims_na <- bind_rows(
   sim_static_na(32, 16, "Nisin 32 + Amikacin 16")
 )
 
-ggplot(sims_na, aes(time, Cc, colour = regimen)) +
+ggplot(sims_na, aes(time, log_cfu, colour = regimen)) +
   geom_line(linewidth = 0.8) +
   facet_wrap(~regimen) +
   scale_x_continuous(breaks = seq(0, 48, by = 12)) +
@@ -232,7 +232,7 @@ seq_na <- bind_rows(
   sim_seq_na(32, 16, "Nisin 32 -> Amikacin 16")
 )
 
-ggplot(seq_na, aes(time, Cc, colour = regimen)) +
+ggplot(seq_na, aes(time, log_cfu, colour = regimen)) +
   geom_line(linewidth = 0.8) +
   geom_vline(xintercept = 1.75, linetype = 3, colour = "grey60") +
   labs(x = "Time (h)", y = expression(log[10]~CFU/mL),
@@ -265,7 +265,7 @@ sims_nl <- bind_rows(
   sim_static_nl(32, 32, "Nisin 32 + Linezolid 32")
 )
 
-ggplot(sims_nl, aes(time, Cc, colour = regimen)) +
+ggplot(sims_nl, aes(time, log_cfu, colour = regimen)) +
   geom_line(linewidth = 0.8) +
   facet_wrap(~regimen) +
   scale_x_continuous(breaks = seq(0, 48, by = 12)) +
@@ -293,9 +293,9 @@ cfumax_na <- 10^9.23
 cfumax_nl <- 10^9.38
 
 cat(sprintf("Nisin + amikacin: end-of-run CFUall = %.3g, log10 = %.3f (target log10CFUmax = 9.23)\n",
-            10^tail(gc_na$Cc, 1) - 1, log10(10^tail(gc_na$Cc, 1) - 1)))
+            10^tail(gc_na$log_cfu, 1) - 1, log10(10^tail(gc_na$log_cfu, 1) - 1)))
 cat(sprintf("Nisin + linezolid: end-of-run CFUall = %.3g, log10 = %.3f (target log10CFUmax = 9.38)\n",
-            10^tail(gc_nl$Cc, 1) - 1, log10(10^tail(gc_nl$Cc, 1) - 1)))
+            10^tail(gc_nl$log_cfu, 1) - 1, log10(10^tail(gc_nl$log_cfu, 1) - 1)))
 ```
 
 # Assumptions and deviations
@@ -308,5 +308,5 @@ cat(sprintf("Nisin + linezolid: end-of-run CFUall = %.3g, log10 = %.3f (target l
 * **REP formulation.** Eq 3 of the paper reports `REP = 2 * (1 - CFUall / (CFUmax + CFUall)) = 2 * CFUmax / (CFUmax + CFUall)`, a saturating (not linear) form. This is the form implemented in `model()`. At `CFUall = 0`: `REP = 2` (full doubling); at `CFUall = CFUmax`: `REP = 1` (net stasis); the stationary plateau is therefore at `CFUmax` (contrast with the linear `2 * (1 - CFUall / CFUmax)` form that some related Bulitta-lab papers use and that plateaus at `0.5 * CFUmax`).
 * **Inh_k12 reading of Eq 5.** Eq 5 of the paper writes the linezolid-affected state-1 growth term as `k12 * Inh_k12 + k2 * Cnis`, with `Inh_k12 = Imax_k12 * Clin^Hill / (Clin^Hill + IC50_k12^Hill)` and `Imax_k12 = 0.858` per Table 1. Taking `Inh_k12` at face value as the *inhibition magnitude* (0 at baseline, 0.858 at saturation) and using it directly as a multiplier would give zero growth at baseline (`Clin = 0`), which is the opposite of the intended behaviour. By parallel with Eq 5's `(1 - Inh_Rep)` factor on the replication term, the implementation uses `k12 * (1 - Inh_k12)` for the effective growth rate -- equivalent to interpreting `Inh_k12` either as written (with the implicit `(1 - ...)` complement) or as the residual fraction. Without the on-disk supplement, no value-changing alternative interpretation is available; the chosen reading is the physically consistent one.
 * **Sequential dosing implementation.** The paper's experimental removal of nisin at ~1.75 h (centrifugation and resuspension) is implemented in this vignette as a step-change in the time-varying covariate `Cnis` from the pretreatment concentration to 0 at the switch. The simultaneous combinations are constant covariates throughout. Both implementations match the experimental design exactly.
-* **Below limit of counting.** Displayed counts are floored at 1 CFU/mL (i.e. 0 log10) via `Cc = log10(CFUall + 1)`, matching the experimental limit of counting (paper Figs 5-6: zero colonies plotted as 0 log10 CFU/mL).
-* **Convention deviations** (`checkModelConventions()` info-only, no errors or warnings). The bacterial-state compartments (`bact_susceptible_susceptible1` and the eleven other phenotype-crossed states) are matched by the `bacterialSubpopRegex` pattern; the antibiotic-concentration covariates (`Cnis`, `Cami`, `Clin`) are declared via the `depends` field (in-vitro experimental inputs, not human pop-PK covariates); the `prot_pool` compartment (linezolid model only) is declared via `paper_specific_compartments`; the single observation `Cc` carries log10 viable count and the dosing/concentration units in `units` are both `mg/L` because the antibiotic input is a fixed broth concentration in the in-vitro static time-kill system.
+* **Below limit of counting.** Displayed counts are floored at 1 CFU/mL (i.e. 0 log10) via `log_cfu = log10(CFUall + 1)`, matching the experimental limit of counting (paper Figs 5-6: zero colonies plotted as 0 log10 CFU/mL).
+* **Convention deviations** (`checkModelConventions()` info-only, no errors or warnings). The bacterial-state compartments (`bact_susceptible_susceptible1` and the eleven other phenotype-crossed states) are matched by the `bacterialSubpopRegex` pattern; the antibiotic-concentration covariates (`Cnis`, `Cami`, `Clin`) are declared via the `depends` field (in-vitro experimental inputs, not human pop-PK covariates); the `prot_pool` compartment (linezolid model only) is declared via `paper_specific_compartments`; the single observation `log_cfu` carries log10 viable count and the dosing/concentration units in `units` are both `mg/L` because the antibiotic input is a fixed broth concentration in the in-vitro static time-kill system.

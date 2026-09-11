@@ -232,7 +232,7 @@ HernandezLozano_2025_apramycin_invitro <- function() {
     bact_s1(0) <- inoc
 
     # ---- 7. Observation ----------------------------------------------------
-    Cc <- log10(btot + 1e-6)
-    Cc ~ add(addSd)
+    log_cfu <- log10(btot + 1e-6)
+    log_cfu ~ add(addSd)
   })
 }

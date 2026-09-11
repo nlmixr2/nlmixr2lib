@@ -69,11 +69,11 @@ Chua_2025_mirikizumab <- function() {
     # weight, 44.57 g/L serum albumin, 7.41 mg/L CRP, 24.75 kg/m^2 BMI.
     # Paper reports rates in h^-1; converted to day^-1 for nlmixr2lib
     # convention (x 24).
-    lka     <- log(0.00693 * 24); label("First-order SC absorption rate (ka, 1/day)")     # Chua 2025 Table 2 VIVID-1 (0.00693 /h)
-    lcl     <- log(0.0197  * 24); label("Clearance at reference covariates (CL, L/day)")  # Chua 2025 Table 2 VIVID-1 (0.0197 L/h)
+    lka     <- log(0.00693 * 24); label("First-order SC absorption rate (1/day)")     # Chua 2025 Table 2 VIVID-1 (0.00693 /h)
+    lcl     <- log(0.0197  * 24); label("Clearance at reference covariates (L/day)")  # Chua 2025 Table 2 VIVID-1 (0.0197 L/h)
     lvc     <- log(2.78);         label("Central volume of distribution (V2 / Vc, L)")    # Chua 2025 Table 2 VIVID-1
     lvp     <- log(1.61);         label("Peripheral volume of distribution (V3 / Vp, L)") # Chua 2025 Table 2 VIVID-1
-    lq      <- log(0.00921 * 24); label("Intercompartmental clearance (Q, L/day)")        # Chua 2025 Table 2 VIVID-1 (0.00921 L/h)
+    lq      <- log(0.00921 * 24); label("Intercompartmental clearance (L/day)")        # Chua 2025 Table 2 VIVID-1 (0.00921 L/h)
     logitfdepot <- log(0.388 / (1 - 0.388)); label("Logit of SC bioavailability at reference BMI (unitless)")  # Chua 2025 Table 2 VIVID-1 (F_pop = 38.8%)
 
     # Allometric-style body-weight exponents (Chua 2025 VIVID-1 Table 2
@@ -132,7 +132,7 @@ Chua_2025_mirikizumab <- function() {
 
     # Bioavailability on logit scale with linear BMI effect.
     logit_f <- logitfdepot + etalogitfdepot + e_bmi_fdepot * (BMI - 24.75)
-    fdepot  <- 1 / (1 + exp(-logit_f))
+    fdepot  <- expit(logit_f)
 
     # Two-compartment model with first-order SC absorption.
     kel <- cl / vc

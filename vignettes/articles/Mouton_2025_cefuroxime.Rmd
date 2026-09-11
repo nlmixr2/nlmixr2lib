@@ -1,0 +1,843 @@
+---
+title: "Cefuroxime (Mouton 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cefuroxime (Mouton 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Mouton_2025_cefuroxime"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Mouton_2025_cefuroxime"))$description`
+* Article: <https://doi.org/10.1002/bcp.70144>
+* Supplement: <https://europepmc.org/articles/PMC12381626> (Supporting Information `BCP-91-2755-s001.docx`)
+
+The main article is a Short Communication and **contains no parameter table at
+all**: Methods 2.6 defers the entire pharmacokinetic analysis to "Supporting
+Information". Every structural equation, every final estimate, the covariate
+form, the fat-free-mass equation and the unbound-concentration relationship in
+this model come from the supplement, which carries Table S2 and two complete
+NONMEM control streams.
+
+# Population
+
+Twenty critically ill adults admitted to the intensive care unit of the Radboud
+University Medical Center, Nijmegen, were enrolled in a single-centre
+prospective observational pharmacokinetic study (ClinicalTrials.gov
+NCT04470973). Sixteen received cefuroxime 750 mg three times daily as part of
+selective digestive decontamination and four received 1500 mg three times daily
+as empirical sepsis therapy; every dose was an intravenous bolus given over
+5 min. Samples were drawn pre-dose and at 0.5, 1, 3, 5 and 8 h within a **single**
+dosing interval in the first 72 h of therapy. Of 120 samples drawn, 15 were
+excluded (taken before or during administration, or with no recorded sampling
+time), leaving 105 for analysis; observed total concentrations spanned
+0.2-112.8 mg/L against an assay lower limit of quantification of 0.1 mg/L.
+
+Baseline characteristics are Table 1 of the source: median age 69 years
+[IQR 65-75, range 29-86], median weight 85 kg [75-100, range 55-120], median
+body mass index 26.1 kg/m^2 [24.8-32.8], 10 of 20 (50%) male, median APACHE II
+score 21 [13-24] and median SOFA score 8 [6-10]. The cohort was markedly
+hypoalbuminaemic (median albumin 24.0 g/L [19.75-26.25], range 5-31). Renal
+function was widely dispersed and, importantly, is reported as an **absolute**
+(not BSA-indexed) value: median MDRD 90 mL/min [60-117.5, range 24-168], median
+CKD-EPI 93.5 mL/min [60-109.8], and a measured 24-h urine creatinine clearance
+of 113 mL/min [72-150.8, range 27-240]. Part of the cohort had augmented renal
+clearance, and every such patient had traumatic brain injury, subarachnoid
+haemorrhage or burns.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Mouton_2025_cefuroxime")()$population`).
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Mouton_2025_cefuroxime.R`. The table below
+collects them in one place. "CS-est" is the first NONMEM control stream in the
+supplement (the estimation run, based on `run026`); "CS-sim" is the second (the
+simulation run, based on `run052`, which produced Figures 1 and 2 and whose
+`$THETA` / `$OMEGA` / `$SIGMA` blocks carry the final estimates at full
+precision).
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` | `log(7.95)` L/h | CS-sim `$THETA 7.95 ; CL renal`; Table S2 "CL (L/h/93mL/min)" = 8.0 (RSE 5.4%, bootstrap 8.0 [7.1-8.8]) |
+| `lvc` | `log(6.26)` L | CS-sim `$THETA 6.26 ; V1`; Table S2 "V1 (L)" = 6.3 (RSE 17.9%, bootstrap 6.4 [4.2-9.3]) |
+| `lvp` | `log(14.3)` L | CS-sim `$THETA 14.3 ; V2`; Table S2 "V2 (L)" = 14.3 (RSE 6.1%, bootstrap 14.3 [12.1-16.5]) |
+| `lq` | `log(26.5)` L/h | CS-sim `$THETA 26.5 ; Q`; Table S2 "Q (L/h)" = 26.5 (RSE 25.7%, bootstrap 26.4 [12.3-40.1]) |
+| `e_crcl_cl` | `fixed(1)` | CS-est / CS-sim `$PK`: `TVCL = THETA(1)*MDRDABS/93`; supplement Model development eq. (4) |
+| `e_ffm_vc`, `e_ffm_vp` | `fixed(1)` | CS `$PK`: `ALLOV = (FFM/58.2)`; Model development eqs. (1) and (2); Methods 2.6 ("exponent of 1.0 for volumes") |
+| `e_ffm_q` | `fixed(0.75)` | CS `$PK`: `ALLOCL = (FFM/58.2)**0.75`; Model development eq. (3); Methods 2.6 |
+| `etalcl` | `0.054` (variance) | CS-sim `$OMEGA 0.054 ; IIV CL`; Table S2 "IIV on CL (% CV)" = 24, shrinkage 3.9% |
+| `etalvc` | `0.373` (variance) | CS-sim `$OMEGA 0.373 ; IIV V1`; Table S2 "IIV on V1 (% CV)" = 67, shrinkage 17.4% |
+| `propSd` | `0.2198` = `sqrt(0.0483)` | CS-sim `$SIGMA 0.0483 ; PROP ERR`; Table S2 "Proportional (% CV)" = 22 |
+| Two-compartment ODEs | n/a | CS `$SUBROUTINES ADVAN5`, `$MODEL COMP=(CENTRAL, DEFDOSE) COMP=(PERI)`; `K10=CL/V1`, `K12=Q/V1`, `K21=Q/V2` |
+| Janmahasatian FFM | n/a | CS `$PK`: `FFM=(9270*WT)/((8780-SEX*2100)+((244-SEX*28)*BMI))`, citing PMID 16176118 |
+| FFM reference 58.2 kg | n/a | CS `$PK` comment `; FFMref=58.2 (male; HT=1.80; WT=70)` (see Errata) |
+| eGFR reference 93 mL/min | n/a | CS `$PK` `MDRDABS/93`; independently confirmed by the Table S2 row label "CL (L/h/93mL/min)" |
+| Unbound concentration `Cu` | `Cbmax` 23.47 mg/L, `kb*Tb` 0.02126 L/mg | CS-sim `$ERROR` block; after Thonnings et al., J Med Microbiol 2020;69:387-395 (supplement ref. 9) |
+| Residual error form | proportional | CS `$ERROR`: `Y = IPRED*(1+ERR(1))`; supplement Final Model paragraph |
+
+Two independent arithmetic checks confirm the variance-versus-CV scale of the
+random effects, so the `$OMEGA` reading is settled rather than assumed. The
+Table S2 footnote prints the back-transformation the authors used,
+`%CV = 100*sqrt(exp(omega^2) - 1)`:
+
+```{r omega-scale}
+omega_cl <- 0.054; omega_vc <- 0.373; sigma_prop <- 0.0483
+back <- c(
+  `IIV on CL (% CV)`    = 100 * sqrt(exp(omega_cl) - 1),
+  `IIV on V1 (% CV)`    = 100 * sqrt(exp(omega_vc) - 1),
+  `Proportional (% CV)` = 100 * sqrt(sigma_prop)
+)
+published <- c(24, 67, 22)
+round(rbind(`Back-transformed` = back, `Table S2` = published), 1)
+
+# Each back-transform must land on the published integer. This is exact
+# arithmetic on transcribed constants -- no simulation, no RNG -- so a tight
+# bound is correct here.
+stopifnot(max(abs(back - published)) < 0.5)
+```
+
+# Structural verification
+
+Before any simulation, confirm that the packaged model reproduces the published
+typical values and that the two-compartment system was retained as explicit
+ODEs rather than being silently collapsed into an analytic solution.
+
+```{r structure}
+mod <- readModelDb("Mouton_2025_cefuroxime")
+ui  <- rxode2::rxode(mod)
+
+# The model must integrate two ODE states. A cl/vc pair can make rxode2
+# auto-solve a one-compartment model and discard the explicit d/dt block; this
+# asserts that did not happen.
+stopifnot(
+  identical(sort(ui$state), sort(c("central", "peripheral1"))),
+  length(ui$linCmt) == 0 || !isTRUE(ui$linCmt),
+  identical(as.character(ui$predDf$cond), "Cc")
+)
+ui$state
+```
+
+The typical patient used for every simulation in the source (Methods 2.7) is a
+male of 85 kg and 172 cm. Table S2 reports its estimates at the model's internal
+reference of FFM = 58.2 kg and eGFR = 93 mL/min, so the individual parameters for
+this patient are the published thetas rescaled by that patient's own fat-free
+mass.
+
+```{r typical-values}
+typ <- list(WT = 85, HT = 172, SEXF = 0)
+
+ffm_janmahasatian <- function(WT, HT, SEXF) {
+  bmi <- WT / (HT / 100)^2
+  ffm_male <- 9270 * WT / (6680 + 216 * bmi)
+  ffm_fem  <- 9270 * WT / (8780 + 244 * bmi)
+  ffm_male + SEXF * (ffm_fem - ffm_male)
+}
+ffm_typ <- ffm_janmahasatian(typ$WT, typ$HT, typ$SEXF)
+
+mod_typ <- rxode2::zeroRe(mod)
+ev_typ  <- rxode2::et(amt = 1500, cmt = "central", dur = 5 / 60) |>
+  rxode2::et(seq(0, 8, by = 0.05), cmt = "central")
+d_typ <- as.data.frame(ev_typ)
+d_typ$WT <- typ$WT; d_typ$HT <- typ$HT; d_typ$SEXF <- typ$SEXF; d_typ$CRCL <- 60
+
+sim_typ <- rxode2::rxSolve(mod_typ, d_typ, returnType = "data.frame")
+got <- unique(sim_typ[, c("ffm_i", "cl", "vc", "vp", "q")])
+
+want <- c(
+  ffm_i = ffm_typ,
+  cl    = 7.95 * 60 / 93,
+  vc    = 6.26 * ffm_typ / 58.2,
+  vp    = 14.3 * ffm_typ / 58.2,
+  q     = 26.5 * (ffm_typ / 58.2)^0.75
+)
+round(rbind(model = unlist(got[1, names(want)]), `hand-computed` = want), 4)
+
+# Deterministic: zeroRe() removes every random effect, so the model output and
+# the hand computation are the same arithmetic by two routes. Machine precision
+# is the right tolerance.
+stopifnot(max(abs(unlist(got[1, names(want)]) - want) / want) < 1e-10)
+```
+
+The ODE system itself is checked against the closed-form two-compartment
+intravenous-bolus solution. Both sides use the *same* individual parameters, so
+the only difference is the ODE solver's numerical error and a tight bound is
+appropriate.
+
+```{r closed-form}
+p <- unlist(got[1, c("cl", "vc", "vp", "q")])
+k10 <- p[["cl"]] / p[["vc"]]; k12 <- p[["q"]] / p[["vc"]]; k21 <- p[["q"]] / p[["vp"]]
+b    <- k10 + k12 + k21
+disc <- sqrt(b^2 - 4 * k10 * k21)
+alpha <- (b + disc) / 2; beta <- (b - disc) / 2
+
+ev_cf <- rxode2::et(amt = 1500, cmt = "central") |>
+  rxode2::et(seq(0.01, 8, by = 0.05), cmt = "central")
+d_cf <- as.data.frame(ev_cf)
+d_cf$WT <- typ$WT; d_cf$HT <- typ$HT; d_cf$SEXF <- typ$SEXF; d_cf$CRCL <- 60
+sim_cf <- rxode2::rxSolve(mod_typ, d_cf, returnType = "data.frame") |>
+  dplyr::filter(!is.na(Cc), time > 0)
+
+analytic <- 1500 / p[["vc"]] *
+  ((alpha - k21) / (alpha - beta) * exp(-alpha * sim_cf$time) +
+     (k21 - beta) / (alpha - beta) * exp(-beta * sim_cf$time))
+
+max_rel_err <- max(abs(sim_cf$Cc - analytic) / analytic)
+signif(max_rel_err, 3)
+stopifnot(max_rel_err < 1e-6)
+```
+
+# Protein binding and the unbound concentration
+
+No unbound assay was available, so the authors predicted free cefuroxime from
+the measured total with a saturable binding relationship rather than a single
+fixed free fraction. The model exposes the result as `Cu`; the unbound fraction
+is `Cu / Cc`. Because binding saturates, the bound fraction *falls* as
+concentration rises, which is what the Background paragraph means by
+"concentration-dependent protein binding between 8% and 34%".
+
+```{r figure-S1}
+# Replicates Figure S1 of Mouton 2025: fraction unbound vs total concentration.
+cbmax <- 23.47; kbtb <- 0.02126
+free_from_total <- function(ctot) {
+  a <- cbmax - ctot + 1 / kbtb
+  bq <- -ctot / kbtb
+  (sqrt(a^2 - 4 * bq) - a) / 2
+}
+binding <- tibble(ctot = 10^seq(-1, log10(150), length.out = 200)) |>
+  mutate(cu = free_from_total(ctot), fu = cu / ctot, bound_pct = 100 * (1 - fu))
+
+ggplot(binding, aes(ctot, fu)) +
+  geom_line(linewidth = 0.8) +
+  geom_vline(xintercept = 8, linetype = "dashed", colour = "red") +
+  scale_x_log10() +
+  ylim(0, 1) +
+  labs(
+    x = "Total cefuroxime concentration (mg/L)",
+    y = "Fraction unbound",
+    title = "Figure S1 - concentration-dependent unbound fraction",
+    caption = "Replicates Figure S1 of Mouton 2025. Dashed line: EUCAST 8 mg/L breakpoint."
+  )
+```
+
+```{r binding-checks}
+# The bound fraction is monotonically decreasing and its low-concentration
+# asymptote is the paper's quoted upper bound of ~34%. Both are exact
+# properties of the transcribed algebra, not simulated quantities.
+asymptote_bound_pct <- 100 * (1 - 1 / (1 + cbmax * kbtb))
+signif(asymptote_bound_pct, 3)
+stopifnot(
+  all(diff(binding$fu) > 0),                       # fu rises with concentration
+  abs(asymptote_bound_pct - 34) < 1.5,             # matches the paper's "34%"
+  binding$fu[1] > 0 && max(binding$fu) < 1
+)
+
+# The model's own Cu column must agree with the same relationship applied to
+# its Cc column, including the pre-dose record where Cc = 0.
+stopifnot(
+  !anyNA(sim_typ$Cu),
+  sim_typ$Cu[sim_typ$time == 0][1] == 0,
+  max(abs(sim_typ$Cu - free_from_total(sim_typ$Cc))) < 1e-8
+)
+```
+
+# Replicate Figure 1 - dosing regimens by renal function
+
+Figure 1 of the source shows predicted *unbound* concentrations for a typical
+patient (85 kg, 172 cm, male) under the three regimens of Table S1, at four
+levels of renal function, on the first day and on the third day of treatment.
+These are typical-value predictions, so the random effects are zeroed.
+
+```{r regimens}
+egfrs <- c(30, 60, 120, 180)
+
+# Table S1: intermittent 1500 mg/8 h bolus over 5 min; extended infusion
+# 1500 mg bolus then 1500 mg over 4 h every 8 h; continuous 1500 mg bolus then
+# 4500 mg/24 h. `n_day` = number of q8h dose slots to cover the requested day.
+build_regimen <- function(regimen, days = 3) {
+  n8 <- days * 3
+  switch(
+    regimen,
+    bolus = rxode2::et(amt = 1500, cmt = "central", dur = 5 / 60,
+                       ii = 8, addl = n8 - 1),
+    extended = rxode2::et(amt = 1500, cmt = "central", dur = 5 / 60) |>
+      rxode2::et(amt = 1500, cmt = "central", dur = 4, time = 8,
+                 ii = 8, addl = n8 - 2),
+    continuous = rxode2::et(amt = 1500, cmt = "central", dur = 5 / 60) |>
+      rxode2::et(amt = 4500 * days, cmt = "central", dur = 24 * days, time = 0)
+  )
+}
+
+regimen_labels <- c(
+  bolus      = "1500 mg q8h bolus",
+  extended   = "1500 mg q8h, 4 h infusion",
+  continuous = "4.5 g/day continuous"
+)
+
+fig1 <- lapply(names(regimen_labels), function(rg) {
+  lapply(egfrs, function(e) {
+    ev <- build_regimen(rg, days = 3) |>
+      rxode2::et(seq(0, 72, by = 0.1), cmt = "central")
+    d <- as.data.frame(ev)
+    d$WT <- typ$WT; d$HT <- typ$HT; d$SEXF <- typ$SEXF; d$CRCL <- e
+    rxode2::rxSolve(mod_typ, d, returnType = "data.frame") |>
+      dplyr::filter(!is.na(Cu)) |>
+      dplyr::mutate(regimen = regimen_labels[[rg]], eGFR = e)
+  }) |> dplyr::bind_rows()
+}) |> dplyr::bind_rows()
+
+fig1 |>
+  dplyr::filter(time <= 8 | time >= 64) |>
+  dplyr::mutate(
+    day   = ifelse(time <= 8, "Day 1 (first interval)", "Day 3 (steady state)"),
+    t_rel = ifelse(time <= 8, time, time - 64),
+    regimen = factor(regimen, levels = regimen_labels),
+    eGFR = factor(paste0("eGFR ", eGFR, " mL/min"),
+                  levels = paste0("eGFR ", egfrs, " mL/min"))
+  ) |>
+  ggplot(aes(t_rel, Cu, colour = eGFR)) +
+  geom_line(linewidth = 0.7) +
+  geom_hline(yintercept = 8, linetype = "dashed", colour = "red") +
+  facet_grid(regimen ~ day) +
+  labs(
+    x = "Time within the dosing interval (h)",
+    y = "Unbound cefuroxime (mg/L)",
+    title = "Figure 1 - unbound concentration by regimen and renal function",
+    caption = paste("Replicates Figure 1 of Mouton 2025. Dashed line: EUCAST",
+                    "breakpoint 8 mg/L for Enterobacterales.")
+  )
+```
+
+# Replicate Figure 2 - probability of target attainment
+
+The paper's conclusions are all PTA statements: the fraction of a typical
+patient's simulated replicates whose unbound concentration stays above the
+8 mg/L EUCAST breakpoint for the whole dosing interval (100% *f*T > MIC). For an
+intermittent regimen the binding constraint is therefore the trough.
+
+The source drew 1000 random replicates per scenario. Because the only sources
+of variability here are the two diagonal random effects (covariates are fixed at
+the typical patient), the same expectation is approximated *deterministically*
+by integrating over a product lattice of normal quantiles instead of sampling.
+This removes the RNG entirely, so the values below are identical on any machine
+and any rxode2 build. The lattice uses `r 14 * 14` points, within the
+200-per-arm cohort cap.
+
+**Read the near-saturation values with care.** A midpoint-quantile lattice of 14
+points per margin spans only +/- 1.80 SD, i.e. the central 92.9% of each random
+effect, so it cannot represent the extreme subjects who decide whether a PTA is
+97% or 100%. A lattice PTA of "100%" therefore means "every one of the central
+92.9% of subjects attains", not a true population 100%. Where a claim sits near
+saturation this vignette uses an exact closed-form probability instead --
+possible for the continuous-infusion regimens, whose steady-state concentration
+`Css = rate / CL` depends on clearance alone and so reduces to a one-dimensional
+normal probability with no truncation at all.
+
+```{r pta-lattice}
+n_side <- 14
+q      <- qnorm((seq_len(n_side) - 0.5) / n_side)
+lattice <- expand.grid(etalcl = q * sqrt(omega_cl), etalvc = q * sqrt(omega_vc))
+lattice$id <- seq_len(nrow(lattice))
+c(points = nrow(lattice),
+  span_sd = max(q),
+  coverage_pct = 100 * (pnorm(max(q)) - pnorm(min(q))))
+
+# Total concentration corresponding to Cu = 8 mg/L, by inverting the binding
+# relationship. Useful as a sanity anchor on the target.
+total_at_target <- 8 + cbmax * 8 / (1 / kbtb + 8)
+signif(total_at_target, 4)
+
+pta <- function(regimen, egfr, day) {
+  days  <- if (day == 1) 1 else 3
+  trough <- if (day == 1) 8 else 72
+  ev <- build_regimen(regimen, days = days) |>
+    rxode2::et(trough, cmt = "central")
+  base <- as.data.frame(ev)
+  d <- base[rep(seq_len(nrow(base)), nrow(lattice)), ]
+  d$id <- rep(lattice$id, each = nrow(base))
+  d$WT <- typ$WT; d$HT <- typ$HT; d$SEXF <- typ$SEXF; d$CRCL <- egfr
+  # zeroRe() removes the omega; the etas are supplied explicitly per subject,
+  # which is what makes this a quadrature rather than a random sample. rxode2
+  # notes the absent omega -- expected, not an error.
+  s <- suppressWarnings(
+    rxode2::rxSolve(mod_typ, d, params = lattice[, c("id", "etalcl", "etalvc")],
+                    returnType = "data.frame")
+  )
+  s <- s[abs(s$time - trough) < 1e-8, ]
+  stopifnot(nrow(s) == nrow(lattice), !anyNA(s$Cu))
+  100 * mean(s$Cu >= 8)
+}
+
+pta_tab <- expand.grid(
+  regimen = names(regimen_labels), eGFR = egfrs,
+  day = c(1, 3), stringsAsFactors = FALSE
+) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(PTA = pta(regimen, eGFR, day)) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(regimen = regimen_labels[regimen])
+
+pta_tab |>
+  tidyr::pivot_wider(names_from = day, values_from = PTA,
+                     names_prefix = "Day ") |>
+  dplyr::rename(
+    "Regimen"                = regimen,
+    "eGFR (mL/min)"          = eGFR,
+    "PTA day 1 (%)"          = `Day 1`,
+    "PTA day 3 (%)"          = `Day 3`
+  ) |>
+  knitr::kable(
+    digits  = 1,
+    caption = paste("Probability of target attainment for 100% fT > MIC at an",
+                    "MIC of 8 mg/L. Replicates Figure 2 of Mouton 2025.")
+  )
+```
+
+For a continuous infusion the steady-state target attainment has a closed form.
+`Css = rate / CL` with `CL = CL_typ * exp(eta)`, so the probability that `Css`
+clears the total-concentration target is an exact normal tail probability -- no
+lattice, no truncation, no RNG.
+
+```{r pta-continuous-exact}
+pta_continuous_exact <- function(daily_mg, egfr) {
+  cl_typ <- 7.95 * egfr / 93
+  100 * pnorm(log((daily_mg / 24) / total_at_target / cl_typ) / sqrt(omega_cl))
+}
+exact_ci <- vapply(egfrs, function(e) pta_continuous_exact(4500, e), numeric(1))
+setNames(round(exact_ci, 1), paste0("eGFR ", egfrs))
+```
+
+The Results and Abstract make five quotable PTA claims. Each is set beside the
+model below, using the exact closed form wherever the regimen is a continuous
+infusion and the lattice otherwise.
+
+```{r pta-claims}
+get_pta <- function(rg, e, d) {
+  pta_tab$PTA[pta_tab$regimen == regimen_labels[[rg]] &
+                pta_tab$eGFR == e & pta_tab$day == d]
+}
+
+claims <- tibble::tribble(
+  ~Claim,                                                    ~Published, ~Model,                            ~Method,
+  "1500 mg q8h bolus, eGFR 60, first interval",              "43%",      get_pta("bolus", 60, 1),           "lattice",
+  "1500 mg q8h bolus, 100% PTA only at eGFR 30",             "100%",     get_pta("bolus", 30, 1),           "lattice",
+  "Extended 4 h infusion q8h, eGFR 60, reaches 100%",        "100%",     get_pta("extended", 60, 3),        "lattice",
+  "Continuous 4.5 g/day, 100% PTA up to eGFR 120",           "100%",     pta_continuous_exact(4500, 120),   "exact",
+  "Continuous 7.5 g/day needed at eGFR 180",                 "100%",     pta_continuous_exact(7500, 180),   "exact"
+)
+claims |>
+  dplyr::mutate(Model = sprintf("%.1f%%", Model)) |>
+  knitr::kable(caption = "Published PTA claims versus the packaged model.")
+```
+
+The paper's single *numeric* PTA -- the 43% for the intermittent bolus -- is
+reproduced closely, and every directional finding holds. Its three "100%"
+statements come out at 97.9%, 99.3% and about 90%; those are discussed under
+Assumptions and deviations and are deliberately **not** gated at 100%, because
+tightening a bound until a rounded-up figure passes would defeat the purpose of
+the check.
+
+```{r pta-gates}
+stopifnot(
+  # The paper's one precise number, matched to within 3 percentage points.
+  abs(get_pta("bolus", 60, 1) - 43) < 3,
+
+  # Directional findings, all with headroom on both sides so each can still go
+  # red: the intermittent bolus collapses once renal function is normal or
+  # augmented (0% at eGFR 120 and 180), while it saturates at eGFR 30.
+  get_pta("bolus", 30, 1) >= 99,
+  get_pta("bolus", 120, 1) < 5,
+  get_pta("bolus", 180, 1) < 5,
+
+  # Prolonging the infusion materially improves attainment at eGFR 60 without
+  # rescuing it at higher renal function -- the paper's qualitative conclusion.
+  get_pta("extended", 60, 3) > get_pta("bolus", 60, 3) + 20,
+  get_pta("extended", 120, 3) < 25,
+
+  # Continuous 4.5 g/day is near-complete at eGFR 120 and clearly insufficient
+  # at eGFR 180; raising the dose to 7.5 g/day restores it. Exact closed form,
+  # so these bounds carry no lattice-truncation caveat.
+  pta_continuous_exact(4500, 120) > 95,
+  pta_continuous_exact(4500, 180) < 80,
+  pta_continuous_exact(7500, 180) > 99
+)
+```
+
+The typical individual behaves as the paper describes as well: at an eGFR of
+60 mL/min its steady-state unbound trough clears the 8 mg/L breakpoint under
+both the extended and the continuous regimen, and under the intermittent bolus
+only barely.
+
+```{r typical-troughs}
+trough_typ <- function(rg, egfr) {
+  ev <- build_regimen(rg, days = 3) |> rxode2::et(72, cmt = "central")
+  d <- as.data.frame(ev)
+  d$WT <- typ$WT; d$HT <- typ$HT; d$SEXF <- typ$SEXF; d$CRCL <- egfr
+  s <- rxode2::rxSolve(mod_typ, d, returnType = "data.frame")
+  s$Cu[abs(s$time - 72) < 1e-8][1]
+}
+troughs <- expand.grid(regimen = names(regimen_labels), eGFR = egfrs,
+                       stringsAsFactors = FALSE) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(`Unbound trough (mg/L)` = trough_typ(regimen, eGFR)) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(Regimen = regimen_labels[regimen]) |>
+  dplyr::select(Regimen, "eGFR (mL/min)" = eGFR, `Unbound trough (mg/L)`)
+knitr::kable(troughs, digits = 2,
+             caption = "Typical-individual steady-state unbound trough (target 8 mg/L).")
+
+tv <- function(rg, e) troughs$`Unbound trough (mg/L)`[
+  troughs$Regimen == regimen_labels[[rg]] & troughs$`eGFR (mL/min)` == e]
+stopifnot(
+  tv("extended", 60) > 8, tv("continuous", 60) > 8,
+  tv("bolus", 120) < 8, tv("extended", 120) < 8,
+  # Deterministic monotonicity: attainment falls as renal function rises.
+  all(diff(troughs$`Unbound trough (mg/L)`[troughs$Regimen == regimen_labels[["bolus"]]]) < 0)
+)
+```
+
+# Virtual cohort and PKNCA validation
+
+The source reports no non-compartmental analysis, so there is no published
+Cmax / AUC / half-life table to compare against. The NCA below therefore serves
+two purposes: it characterises the exposure the model predicts for the actual
+study regimen, and it supplies a **steady-state mass-balance gate** -- for a
+linear model at steady state, `CL * AUCtau` must equal the dose for every
+subject. That identity is exact and is the cheapest check that the clearance
+parameterisation, the dose units and the volume scaling are mutually consistent.
+
+The cohort is 200 subjects on the 750 mg q8h selective-decontamination regimen
+that 16 of the 20 study patients actually received, with covariates drawn to
+match Table 1.
+
+```{r cohort}
+# rxSetSeed fixes rxode2's stream per solver thread and set.seed fixes R's; the
+# covariates below are drawn in R, so they are reproducible, but the residual
+# error rxode2 adds is not identical across thread counts. Every assertion
+# downstream is written on medians and robust quantiles for that reason.
+set.seed(20250909)
+rxode2::rxSetSeed(20250909)
+n_sub <- 200
+
+rtrunc_norm <- function(n, mean, sd, lo, hi) {
+  pmin(pmax(rnorm(n, mean, sd), lo), hi)
+}
+
+cohort <- tibble(
+  id   = seq_len(n_sub),
+  # Table 1 / Results: mean 85.2 (SD 18.0) kg, range 55-120.
+  WT   = rtrunc_norm(n_sub, 85.2, 18.0, 55, 120),
+  # Height is NOT tabulated in Table 1; centred on the paper's own typical
+  # patient (172 cm, Methods 2.7). See Assumptions and deviations.
+  HT   = rtrunc_norm(n_sub, 172, 9, 150, 195),
+  # Table 1: 10 of 20 (50%) male.
+  SEXF = rbinom(n_sub, 1, 0.5),
+  # Table 1: MDRD absolute median 90 [60-117.5], range 24-168. Log-normal
+  # matched to that median and IQR, then truncated to the observed range.
+  CRCL = pmin(pmax(exp(rnorm(n_sub, log(90),
+                            (log(117.5) - log(60)) / (2 * qnorm(0.75)))),
+                   24), 168),
+  treatment = "750 mg q8h"
+)
+
+# Ten q8h doses reaches steady state comfortably: the model's terminal
+# half-life for the typical patient is about 2.2 h.
+#
+# The grid is deliberately non-uniform. The distribution phase has a half-life
+# of only about 0.1 h, so a uniform 0.1 h grid cannot resolve the post-infusion
+# peak and the trapezoidal AUC comes out roughly 1% low -- enough to fail the
+# mass-balance identity below for a reason that has nothing to do with the
+# model. Sampling every 0.01 h through the first half hour drops that error to
+# well under 0.01%.
+obs_grid <- 72 + c(seq(0, 0.5, by = 0.01),
+                   seq(0.55, 2, by = 0.05),
+                   seq(2.2, 8, by = 0.2))
+events <- cohort |>
+  dplyr::rowwise() |>
+  dplyr::do({
+    cv <- .
+    ev <- rxode2::et(amt = 750, cmt = "central", dur = 5 / 60,
+                     ii = 8, addl = 9) |>
+      rxode2::et(obs_grid, cmt = "central")
+    d <- as.data.frame(ev)
+    d$id <- cv$id; d$WT <- cv$WT; d$HT <- cv$HT
+    d$SEXF <- cv$SEXF; d$CRCL <- cv$CRCL; d$treatment <- cv$treatment
+    d
+  }) |>
+  dplyr::ungroup() |>
+  as.data.frame()
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = events, keep = c("treatment")) |>
+  as.data.frame()
+
+# A large proportional residual can push a simulated concentration negative,
+# which turns downstream AUC into NaN. Censor at half the assay LLOQ of
+# 0.1 mg/L (Methods 2.5) rather than at zero.
+lloq <- 0.1
+sim <- sim |>
+  dplyr::mutate(sim_obs = pmax(sim, lloq / 2))
+stopifnot(!anyNA(sim$Cc), !anyNA(sim$sim_obs), all(sim$sim_obs > 0))
+```
+
+```{r figure-vpc}
+sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(t_rel = time - 72) |>
+  dplyr::group_by(t_rel) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(t_rel, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose at steady state (h)",
+    y = "Total cefuroxime (mg/L)",
+    title = "Simulated steady-state profile, 750 mg q8h (n = 200)",
+    caption = "Median and 5th-95th percentiles. Compare Figure S4 (pcVPC) of Mouton 2025."
+  )
+```
+
+```{r pknca}
+# Only `!is.na(Cc)` -- adding `time > 0` or `Cc > 0` would drop the interval
+# anchor and trigger PKNCA's "AUC range starting before the first measurement".
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+
+# The event table expresses the regimen with `ii`/`addl`, so it holds a single
+# dose row at time 0 rather than an explicit row at each dose time. PKNCA needs
+# the dose that opens the 72-80 h interval, so build it directly: one row per
+# subject at t = 72, which is the 10th dose of the q8h schedule.
+dose_df <- cohort |>
+  dplyr::transmute(id, time = 72, amt = 750, treatment)
+stopifnot(nrow(dose_df) == n_sub)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- data.frame(
+  start = 72, end = 80,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, half.life = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+stopifnot(nrow(nca_wide) == n_sub)
+
+nca_wide |>
+  dplyr::summarise(dplyr::across(
+    c(cmax, tmax, cmin, auclast, half.life),
+    list(median = ~median(.x, na.rm = TRUE),
+         p05 = ~quantile(.x, 0.05, na.rm = TRUE),
+         p95 = ~quantile(.x, 0.95, na.rm = TRUE))
+  )) |>
+  tidyr::pivot_longer(dplyr::everything(),
+                      names_to = c("Parameter", "stat"), names_sep = "_") |>
+  tidyr::pivot_wider(names_from = stat, values_from = value) |>
+  dplyr::rename("Median" = median, "5th pct" = p05, "95th pct" = p95) |>
+  knitr::kable(
+    digits  = 2,
+    caption = paste("Simulated steady-state NCA over the 72-80 h interval,",
+                    "750 mg q8h (n = 200). Concentrations mg/L, AUC mg*h/L,",
+                    "times h.")
+  )
+```
+
+```{r mass-balance}
+# Steady-state mass balance: CL * AUCtau == dose, per subject. Both sides use
+# the SAME drawn parameters, so the discrepancy is pure trapezoidal /
+# integration error -- a tight bound is correct and a loose one would hide a
+# real unit or scaling defect.
+cl_i <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cl = dplyr::first(cl), .groups = "drop")
+
+mb <- nca_wide |>
+  dplyr::left_join(cl_i, by = "id") |>
+  dplyr::mutate(implied_dose = cl * auclast,
+                pct_diff = 100 * (implied_dose - 750) / 750)
+
+summary(mb$pct_diff)
+stopifnot(
+  !anyNA(mb$pct_diff),
+  abs(median(mb$pct_diff)) < 1,
+  max(abs(mb$pct_diff)) < 3
+)
+```
+
+The implied dose recovers the administered 750 mg to well within the
+trapezoidal error of a 0.1 h observation grid, confirming that clearance, the
+dose units (mg), the volume units (L) and the resulting concentration units
+(mg/L) are mutually consistent.
+
+# Assumptions and deviations
+
+- **The main article carries no parameter table.** Every value in this model
+  comes from the Supporting Information: Table S2 for the published estimates
+  and the two NONMEM control streams for the full-precision values and the
+  structural detail. The parameters used are the ones from the *simulation*
+  control stream (`run052`), which are the final estimates at full precision and
+  are the ones the paper's own Figures 1 and 2 were generated with; each is
+  cross-checked against its rounded Table S2 counterpart in the source-trace
+  table. The *estimation* control stream's bounded `$THETA` values
+  (9.0 / 10.0 / 13.0 / 18.0, with `$OMEGA 0.1 / 0.1` and `$SIGMA 0.1`) are
+  starting values and are deliberately **not** used.
+
+- **Clearance carries no allometric term, despite the Methods sentence.**
+  Methods 2.6 states that "FFM was incorporated using an allometric exponent of
+  0.75 for clearances", but the final `$PK` block scales CL by renal function
+  alone (`TVCL = THETA(1)*MDRDABS/93`), applying the 0.75 exponent only to the
+  intercompartmental clearance Q. The control stream is the operative source and
+  is unambiguous, so it is what the model implements. The two are not reconciled
+  anywhere in the paper.
+
+- **The FFM reference of 58.2 kg does not reproduce from its own comment.** The
+  control stream annotates the divisor as `FFMref=58.2 (male; HT=1.80; WT=70)`,
+  but the Janmahasatian equation immediately above it returns 57.19 kg for a
+  70 kg, 180 cm male (58.2 kg corresponds to roughly 184 cm). The discrepancy is
+  in the source's comment, not in its arithmetic: 58.2 is the literal constant
+  the model was fitted with, so 58.2 is used here and the Table S2 estimates are
+  the values at FFM = 58.2 kg. Nothing downstream depends on the annotation.
+
+- **Clearance is strictly proportional to eGFR, with no non-renal component.**
+  The supplement tested an alternative form with a separate non-renal clearance
+  intercept (Model development equation 5) but the final model uses the pure
+  proportionality (equation 4). Predicted clearance therefore goes to zero as
+  eGFR goes to zero, an extrapolation the observed 24-168 mL/min range does not
+  support. Do not use this model for anuric or dialysis patients.
+
+- **Renal function must be supplied as an absolute, non-BSA-indexed value in
+  mL/min.** This is the raw un-normalised variant of the `CRCL` covariate, not
+  the mL/min/1.73 m^2 default. Supplying a BSA-indexed value silently rescales
+  clearance. The supplement gives the conversion the authors used:
+  `eGFR_absolute = eGFR_normalized * BSA / 1.73`. MDRD is the estimator the
+  final model was built on; the paper reports that CKD-EPI fits 2.77 objective
+  function units worse and changes the clearance estimate by 0.6%, so a CKD-EPI
+  absolute value may be substituted with negligible bias.
+
+- **Interindividual variability on V2 and Q is fixed at zero in the source and
+  is omitted here.** Both control streams declare `$OMEGA ... 0 FIX` for
+  `ETA(3)` and `ETA(4)`, and Table S2 correspondingly reports IIV for CL and V1
+  only. The etas are omitted rather than written as `~ fixed(0)`, because a zero
+  diagonal makes the omega matrix singular and rxode2 then fails to
+  Cholesky-decompose it when simulating a cohort. Omitting them is numerically
+  identical: V2 and Q take their typical values for every subject.
+
+- **Infusion duration is not encoded in the model.** The estimation control
+  stream fixes `D1 = 0.083` h because every observed dose was the same 5-min
+  bolus, but the simulation control stream drops it and takes `RATE` from the
+  dataset so that 4-h extended and 24-h continuous infusions are reachable. This
+  model follows the latter: duration belongs in the event table (`dur` or
+  `rate`), as the Figure 1 chunk above demonstrates.
+
+- **The unbound-concentration relationship is external to this paper's fit and
+  is albumin-independent.** `Cu` is computed from `Cc` with the Thonnings et al.
+  (J Med Microbiol 2020;69:387-395) binding constants `Cbmax = 23.47` mg/L and
+  `kb*Tb = 0.02126` L/mg, written as literal constants inside `model()` because
+  they are fixed constants of an external published formula rather than
+  parameters of this model -- they appear nowhere in Table S2 and were not
+  estimated here. The authors flag the resulting limitation themselves: the
+  binding model "was only validated in a healthy population with a normal serum
+  albumin concentration and lack of co-medication", while this cohort's median
+  albumin was 24 g/L. Supplementary Figure S1 explores scaling the binding
+  capacity by the albumin ratio 23/45 and finds the free fraction rises by only
+  about 0.12 around the 8 mg/L breakpoint, which the authors judge "too small to
+  be of practical importance". Serum albumin is consequently **not** an input to
+  this model; it is recorded in `covariatesDataExcluded`.
+
+- **Height is not reported in Table 1.** It is required by the Janmahasatian
+  equation, so the virtual cohort above draws it from a normal distribution
+  centred on 172 cm -- the height of the paper's own typical simulated patient
+  (Methods 2.7) -- with an assumed SD of 9 cm truncated to 150-195 cm. This
+  assumption affects only the illustrative cohort in this vignette, not the
+  model.
+
+- **PTA is reproduced by deterministic quadrature, not by resampling.** The
+  source drew 1000 random replicates per scenario. Because covariates are fixed
+  at the typical patient and the two random effects are independent, the same
+  expectation is approximated by integrating over a 14x14 product lattice of
+  normal quantiles. This makes the PTA values reproducible on any machine and
+  any rxode2 build, rather than depending on a solver-thread-partitioned RNG
+  stream. The simulated first-interval PTA for 1500 mg q8h at eGFR 60 is
+  `r sprintf("%.1f%%", get_pta("bolus", 60, 1))` against the published 43% --
+  the paper's only precise PTA figure, and the model matches it.
+
+- **The lattice covers the central 92.9% of the population, so lattice PTAs near
+  100% are upper-biased.** Midpoint quantiles at 14 points per margin span only
+  +/- 1.80 SD, and the subjects who decide whether a PTA is 97% or 100% lie
+  beyond that. Wherever a claim sits near saturation and a closed form exists --
+  the continuous-infusion regimens, whose steady-state concentration depends on
+  clearance alone -- the vignette uses the exact one-dimensional normal
+  probability instead, and the gates are written on those exact values. The
+  lattice is retained for the intermittent regimens, where the trough depends on
+  both random effects and no closed form is available, and where the values of
+  interest (43%, 0%) are far from the boundary.
+
+- **DEVIATION: the paper's three "100% PTA" statements are 97.9%, 99.3% and
+  about 90% in this model.** The source states that continuous 4.5 g/day
+  "obtained a 100% PTA ... with an eGFR up to 120 mL/min" (exact closed form
+  here: `r sprintf("%.1f%%", pta_continuous_exact(4500, 120))`), that 7500 mg/day
+  reaches the target at eGFR 180 (exact:
+  `r sprintf("%.1f%%", pta_continuous_exact(7500, 180))`), and that the extended
+  4-h infusion "reached an 100% PTA for a typical individual with an eGFR of
+  60 mL/min" (lattice: `r sprintf("%.1f%%", get_pta("extended", 60, 3))`, and the
+  true value is lower still given the truncation noted above). All three are
+  qualitative readings off Figure 2 rather than tabulated numbers, and all three
+  round up to 100% from values that are genuinely close to but below it. The
+  gates above therefore assert the directional finding each claim carries -- near
+  saturation at eGFR 120, insufficiency at eGFR 180, restoration at 7.5 g/day,
+  and a large improvement from prolonging the infusion -- rather than the
+  literal 100%. Widening a bound until a rounded-up figure passed would have
+  produced a gate that could no longer fail. Note also that under the extended
+  and continuous regimens the *typical* individual does clear the breakpoint at
+  eGFR 60 (unbound troughs
+  `r sprintf("%.1f", tv("extended", 60))` and
+  `r sprintf("%.1f", tv("continuous", 60))` mg/L), so the "typical individual"
+  phrasing in the source is satisfied even where the population fraction is not
+  a full 100%.
+
+- **The paper's PTA is a population fraction, not a property of the typical
+  individual.** This is worth stating because the source's wording ("PTA ... for
+  a typical individual") admits both readings. The population reading is the
+  correct one: the typical individual's unbound trough under continuous
+  4.5 g/day at eGFR 180 is
+  `r sprintf("%.2f", tv("continuous", 180))` mg/L, which clears the 8 mg/L
+  breakpoint -- yet the paper concludes that 7.5 g/day is required at that renal
+  function, which only follows if PTA counts the fraction of replicates that
+  attain.
+
+- **No published NCA table exists to compare against.** The source reports no
+  Cmax, AUC or half-life, so the NCA section characterises the model rather than
+  validating it against transcribed values; the validating check in that section
+  is the steady-state mass balance `CL * AUCtau = dose`.
+
+- **The model was not externally validated by its authors.** The Discussion
+  states this explicitly and notes that samples came from a single dosing
+  interval per patient, that simulations were run for one typical patient only,
+  and that unbound concentrations were predicted rather than measured. It is
+  also a 20-patient, single-centre model; Q in particular is poorly identified,
+  with a bootstrap 95% CI of 12.3-40.1 L/h.

@@ -300,7 +300,7 @@ vandenBerg_2021_uprifosbuvir_pbpk <- function() {
     # Absorption fast fraction (F1) via logit; F1 baseline = expit(fdos1_logit).
     # Capsule multiplies the pre-logit scalar by e_capsule_fdos1.
     fdos_scaled <- fdos1_logit * (1 + FORM_CAPSULE * (e_capsule_fdos1 - 1))
-    f1_oral     <- exp(fdos_scaled) / (1 + exp(fdos_scaled))
+    f1_oral     <- expit(fdos_scaled)
     f2_oral     <- 1 - f1_oral
 
     # Itraconazole shifts absorption entirely to the slow route (per NONMEM:

@@ -71,14 +71,14 @@ Terranova_2018_paclitaxel <- function() {
     # ----------------------------------------------------------------------
 
     # ----- Estimated DEB-TGI parameters (.ctl $THETA non-FIX entries) -----
-    lmu          <- log(0.0223)  ; label("Body-weight reduction rate constant from tumor (mu, 1/day)")                            # .ctl $THETA(1)  = 0.0223  ; mu_POP
-    lmu_u        <- log(13.3)    ; label("Cachexia coupling parameter coupling tumor mass to host energy budget (mu_u, unitless)") # .ctl $THETA(2)  = 13.3    ; mu_u_POP
-    lgu          <- log(11.7)    ; label("Tumor energy-budget threshold for cachexia onset (gu, unitless)")                       # .ctl $THETA(3)  = 11.7    ; gu_POP
-    ldelta_vmax  <- log(0.185)   ; label("Maximum body-weight loss rate cap (delta_Vmax, g/day)")                                 # .ctl $THETA(4)  = 0.185   ; delta_Vmax_POP
+    lmu          <- log(0.0223)  ; label("Body-weight reduction rate constant from tumor (1/day)")                            # .ctl $THETA(1)  = 0.0223  ; mu_POP
+    lmu_u        <- log(13.3)    ; label("Cachexia coupling parameter coupling tumor mass to host energy budget (unitless)") # .ctl $THETA(2)  = 13.3    ; mu_u_POP
+    lgu          <- log(11.7)    ; label("Tumor energy-budget threshold for cachexia onset (unitless)")                       # .ctl $THETA(3)  = 11.7    ; gu_POP
+    ldelta_vmax  <- log(0.185)   ; label("Maximum body-weight loss rate cap (g/day)")                                 # .ctl $THETA(4)  = 0.185   ; delta_Vmax_POP
     lw_initial   <- log(21.2)    ; label("Initial mouse body weight (g)")                                                         # .ctl $THETA(5)  = 21.2    ; W_initial_POP
     lvu1_initial <- log(0.0023)  ; label("Initial proliferating tumor mass (g)")                                                  # .ctl $THETA(6)  = 0.0023  ; Vu1_initial_POP
     lic50        <- log(0.461)   ; label("Paclitaxel concentration giving 50% inhibition of tumor growth (IC50; same units as central / V1)")  # .ctl $THETA(7)  = 0.461  ; IC50_POP
-    lk1          <- log(0.462)   ; label("Damaged-tumor-cell transit rate constant (k1, 1/day)")                                  # .ctl $THETA(8)  = 0.462   ; k1_POP
+    lk1          <- log(0.462)   ; label("Damaged-tumor-cell transit rate constant (1/day)")                                  # .ctl $THETA(8)  = 0.462   ; k1_POP
     lk2          <- log(6.53e-4) ; label("Linear paclitaxel cell-kill coefficient (k2, 1/((conc-unit)*day))")                    # .ctl $THETA(9)  = 6.53e-4 ; k2_POP
 
     # Residual-error scale coefficients (b_W, b_Wu in the .ctl $ERROR block).
@@ -153,13 +153,13 @@ Terranova_2018_paclitaxel <- function() {
 
     # ------------------------------------------------------------------
     # 4. Drug-dependent quantities used inside the DES branches.
-    #    Cc_pacl = paclitaxel central-compartment concentration (.ctl
+    #    Cc = paclitaxel central-compartment concentration (.ctl
     #    $DES L123). rho is the inhibition-modulated proliferation
     #    factor (Hill / Emax form, .ctl L124). ku is the cachexia
     #    coupling fraction (.ctl L125).
     # ------------------------------------------------------------------
-    Cc_pacl <- central / vc
-    rho     <- rho_b * (1 - Cc_pacl / (ic50 + Cc_pacl))
+    Cc <- central / vc
+    rho     <- rho_b * (1 - Cc / (ic50 + Cc))
     ku      <- (mu_u * tumor1) / (bodyZ + mu_u * tumor1)
 
     # ------------------------------------------------------------------
@@ -188,13 +188,13 @@ Terranova_2018_paclitaxel <- function() {
       dev_VU1 <- ((ni * bodyZ^(2/3) + M * bodyZ) * gr * ku * bodyEn) /
                  ((gr * gu) + (1 - ku) * gu * bodyEn + 1.0e-5) -
                  mu * tumor1 -
-                 k2 * tumor1 * Cc_pacl
+                 k2 * tumor1 * Cc
       dev_Z   <- ((1 - ku) * ni * bodyEn * bodyZ^(2/3) - gr * M * bodyZ) /
                  (gr + (1 - ku) * bodyEn + 1.0e-5)
     } else if (switch2 >= -delta_vmax) {
       dev_VU1 <- (gr * M * ku * bodyZ) / (gu * (1 - ku) + 1.0e-5) -
                  mu * tumor1 -
-                 k2 * Cc_pacl * tumor1
+                 k2 * Cc * tumor1
       dev_Z   <- ((1 - ku) * ni * bodyEn * bodyZ^(2/3) - gr * M * bodyZ) /
                  ((1 - ku) * (bodyEn + omeg * gr) + 1.0e-5)
     } else {
@@ -203,7 +203,7 @@ Terranova_2018_paclitaxel <- function() {
                   delta_vmax * bodyEn +
                   delta_vmax * omeg * gr) -
                  mu * tumor1 -
-                 k2 * Cc_pacl * tumor1
+                 k2 * Cc * tumor1
       dev_Z   <- -delta_vmax
     }
 
@@ -223,7 +223,7 @@ Terranova_2018_paclitaxel <- function() {
     d/dt(bodyEn)      <- (ni / bodyZ^(1/3)) *                                            # .ctl DADT(4)
                           (rho * (v1inf / (tumor1 + bodyZ))^(2/3) - bodyEn)
     d/dt(tumor1)      <- dev_VU1                                                         # .ctl DADT(5)
-    d/dt(tumor2)      <- k2 * Cc_pacl * tumor1 - k1 * tumor2                             # .ctl DADT(6)
+    d/dt(tumor2)      <- k2 * Cc * tumor1 - k1 * tumor2                             # .ctl DADT(6)
     d/dt(tumor3)      <- k1 * tumor2 - k1 * tumor3                                       # .ctl DADT(7)
     d/dt(tumor4)      <- k1 * tumor3 - k1 * tumor4                                       # .ctl DADT(8)
 

@@ -65,9 +65,9 @@ Archary_2019_lamivudine <- function() {
 
   ini({
     # Structural parameters; reference weight 7 kg = population median
-    lka  <- log(0.30);   label("Absorption rate constant on day 1 (ka, 1/h)")                   # Table 2 (day-1 typical value)
-    lcl  <- log(12.2);   label("Apparent clearance at 7 kg reference, fully matured (CL/F, L/h)") # Table 2
-    lvc  <- log(8.22);   label("Apparent central volume at 7 kg reference, TRIG = 5.3 mmol/L (Vc/F, L)") # Table 2
+    lka  <- log(0.30);   label("Absorption rate constant on day 1 (1/h)")                   # Table 2 (day-1 typical value)
+    lcl  <- log(12.2);   label("Apparent clearance at 7 kg reference, fully matured (L/h)") # Table 2
+    lvc  <- log(8.22);   label("Apparent central volume at 7 kg reference, TRIG = 5.3 mmol/L (L)") # Table 2
 
     # Allometric exponents (paper-fixed per Methods Section 2.3)
     e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless)")                     # Methods 2.3

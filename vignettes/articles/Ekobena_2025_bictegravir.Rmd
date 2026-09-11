@@ -1,0 +1,588 @@
+---
+title: "Bictegravir (Ekobena 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Bictegravir (Ekobena 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Ekobena_2025_bictegravir"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Ekobena_2025_bictegravir"))$description`
+* Article: <https://doi.org/10.1093/jac/dkaf297>
+* Open-access full text: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12494133/>
+
+Bictegravir is an integrase strand transfer inhibitor given only as part of the
+fixed-dose bictegravir / emtricitabine / tenofovir alafenamide combination. This
+is the first description of its population PK in a real-world, unselected
+outpatient setting; every previous analysis was the manufacturer's, which is not
+published in the scientific literature.
+
+# Population
+
+The model was built on `r readModelDb("Ekobena_2025_bictegravir")()$population$n_observations`
+steady-state plasma concentrations from
+`r readModelDb("Ekobena_2025_bictegravir")()$population$n_subjects` people with
+HIV enrolled in the Swiss HIV Cohort Study and followed by therapeutic drug
+monitoring at Lausanne University Hospital between July 2019 and July 2024
+(Ekobena 2025 Table 1). Median age was 51 years (range 19-81), median body
+weight 74 kg (range 37-135), median BMI 24.5 kg/m^2 (12.5-44.5) and 31% of
+participants were female. Reported ethnicity was 65% White, 26% Black, 4%
+Hispanic American, 4% Asian and 1% other or missing.
+
+This is a sparse therapeutic-drug-monitoring dataset, not a rich PK study, and
+that shapes what the model can and cannot do. Of 815 concentrations collected,
+107 were excluded (42 undetectable, most likely non-adherence; 40 missing time
+information; 25 with uncertainties about the reported information). A median of
+**one** sample was taken per individual (range 1-4), at 0.25-32 h after the last
+dose. Steady state was assumed for every sample on the strength of the long
+follow-up and a reference half-life of 17.3 h.
+
+The same information is available programmatically via the model's `population`
+metadata:
+
+```{r population}
+str(readModelDb("Ekobena_2025_bictegravir")()$population, max.level = 1)
+```
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Ekobena_2025_bictegravir.R`. The table
+below collects them in one place for review. Every value comes from the "Final
+model Estimate (RSE, %)" column of Ekobena 2025 Table 2; the bootstrap medians
+in the adjacent column agree with all of them to within 3%.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (fixed)  | `log(0.64)` 1/h | Table 2, row `ka (h-1)` = "0.64 FIX"; Methods explains it was fixed because of sparse early post-dose data (initial RSE 38%) and bootstrap instability |
+| `lcl`          | `log(0.46)` L/h | Table 2, row `CL (L/h)` = 0.46 (RSE 1%); bootstrap 0.46 [0.44-0.47] |
+| `lvc`          | `log(10.9)` L | Table 2, row `V (L)` = 10.9 (RSE 5%); bootstrap 11.2 [10.1-12.4] |
+| `e_wt_cl`      | 0.35 | Table 2, row `beta Bodyweight` = 0.35 (RSE 19%); bootstrap 0.36 [0.22-0.49] |
+| `e_age_cl`     | -0.20 | Table 2, row `beta Age` = -0.20 (RSE 28%); bootstrap -0.19 [-0.31 to -0.08] |
+| `etalcl`       | 0.04727 (variance) | Table 2, row `omega CL (CV%)` = 22 (RSE 6%); `log(1 + 0.22^2)` |
+| `propSd`       | 0.27 | Table 2, row `sigma prop (CV%)` = 27 (RSE 4%) |
+| Reference body weight `BWRef` | 70 kg | Results, sentence immediately below the final covariate equation |
+| Median age `AgeM` | 51 years | Results, same sentence; also Table 1 median age |
+| `d/dt(depot)`, `d/dt(central)` | n/a | Results, "A one-compartment model with linear elimination, parameterized in terms CL, V, ka fixed to 0.64 h-1"; a second compartment was rejected (dBICc = +18.6) |
+| `cl` covariate equation | n/a | Results, the displayed equation `CLi = CL * exp(beta_Bodyweight * log(BW/BWRef) + beta_Age * (Age - AgeM)/AgeM + eta_i)` |
+| IIV on CL only, none on V | n/a | Results, "Assignment of IIV on V did not improve data description (dBICc = +8.4)" |
+| Proportional residual error | n/a | Results, "The RUV was best captured by a proportional error model" |
+
+# Structural checks against closed-form solutions
+
+Before simulating a cohort, verify that the packaged model reproduces the
+analytic one-compartment first-order-absorption solution and the derived
+quantities the paper quotes. These checks compare two sides that use the *same*
+parameter values, so the only difference is numerical integration error and the
+bounds are correspondingly tight.
+
+```{r structural}
+mod <- readModelDb("Ekobena_2025_bictegravir")
+mod_typ <- rxode2::zeroRe(mod)
+
+# Parameters at the covariate reference point (70 kg, 51 years).
+CL0 <- 0.46; V <- 10.9; KA <- 0.64
+kel <- CL0 / V
+tau <- 24                      # 50 mg once daily
+n_doses <- 20L                 # ~29 half-lives; comfortably steady state
+t_last <- tau * (n_doses - 1L)
+
+# Analytic steady-state concentration for a one-compartment model with
+# first-order absorption (dose in mg, V in L -> mg/L; x1000 -> ng/mL).
+css <- function(t, cl, v = V, ka = KA, dose = 50, ii = tau) {
+  k <- cl / v
+  dose * ka / (v * (ka - k)) *
+    (exp(-k * t) / (1 - exp(-k * ii)) - exp(-ka * t) / (1 - exp(-ka * ii))) * 1000
+}
+
+structural <- tibble::tibble(
+  quantity = c("Elimination rate constant kel (1/h)",
+               "Terminal half-life (h)",
+               "Single-dose Tmax (h)",
+               "Steady-state Tmax (h)",
+               "Steady-state AUC0-tau (ng*h/mL)"),
+  value = c(kel,
+            log(2) / kel,
+            log(KA / kel) / (KA - kel),
+            log((KA / kel) * (1 - exp(-kel * tau)) / (1 - exp(-KA * tau))) / (KA - kel),
+            50 / CL0 * 1000)
+)
+knitr::kable(structural, digits = 4,
+             caption = "Derived quantities at the covariate reference point.")
+```
+
+The paper's base model reports a Tmax of 4.5 h and a terminal half-life of
+16.3 h (Results, "Base and covariate model"). The final-model parameters give
+`r sprintf("%.2f", log(KA / kel) / (KA - kel))` h and
+`r sprintf("%.1f", log(2) / kel)` h, so the packaged parameters are consistent
+with the quantities the authors quote. Note that the paper's 4.5 h is the
+*single-dose* Tmax; at steady state the accumulated trough shifts the peak
+earlier, to about `r sprintf("%.1f", log((KA / kel) * (1 - exp(-kel * tau)) / (1 - exp(-KA * tau))) / (KA - kel))` h.
+
+```{r structural-gate}
+# Solve the packaged ODE model at typical values and compare against the
+# closed form. Same parameters on both sides, so this is pure integration
+# error -- a tight bound is correct here.
+ev_typ <- rxode2::et(amt = 50, time = tau * (seq_len(n_doses) - 1L), cmt = "depot") |>
+  rxode2::et(t_last + seq(0, tau, by = 0.25), cmt = "central")
+
+sim_typ <- rxode2::rxSolve(mod_typ, ev_typ, params = c(WT = 70, AGE = 51),
+                           returnType = "data.frame")
+sim_typ <- dplyr::mutate(sim_typ, t_rel = time - t_last, Cc_ng = Cc * 1000)
+
+chk <- sim_typ |>
+  dplyr::filter(!is.na(Cc_ng)) |>
+  dplyr::mutate(analytic = css(t_rel, CL0),
+                pct_diff = 100 * (Cc_ng - analytic) / analytic)
+
+stopifnot(
+  # Numerical-integration agreement over the whole dosing interval.
+  max(abs(chk$pct_diff)) < 0.05,
+  # The full 50 mg dose enters the depot: the model has no bioavailability
+  # term, because CL and V are already apparent (CL/F, V/F) values. At steady
+  # state the depot also carries the residue of the previous dose, so the
+  # analytic peak is 50 / (1 - exp(-ka * tau)), not exactly 50.
+  isTRUE(all.equal(max(sim_typ$depot), 50 / (1 - exp(-KA * tau)),
+                   tolerance = 1e-6))
+)
+sprintf("Max |%% difference| vs closed form over the dosing interval: %.4f%%",
+        max(abs(chk$pct_diff)))
+```
+
+## Covariate-effect regression test
+
+The Results section states two exact numbers that pin the functional form of
+both covariate effects. These are algebraic identities of the packaged
+coefficients, so they are gated tightly.
+
+```{r covariate-gate}
+cl_i <- function(wt, age) {
+  CL0 * exp(0.35 * log(wt / 70) - 0.20 * (age - 51) / 51)
+}
+
+cov_chk <- tibble::tibble(
+  claim = c("BW 100 kg, age 51 y: CL increased by 13%",
+            "BW 70 kg, age 80 y: CL decreased by 11%"),
+  published_pct = c(13, -11),
+  model_pct = c(100 * (cl_i(100, 51) / CL0 - 1),
+                100 * (cl_i(70, 80) / CL0 - 1))
+)
+knitr::kable(cov_chk, digits = 2,
+             caption = "Ekobena 2025 Results: covariate effects on apparent clearance.")
+
+stopifnot(
+  # The paper rounds to whole percent, so 0.5 pp is the exact tolerance.
+  all(abs(cov_chk$model_pct - cov_chk$published_pct) < 0.5)
+)
+```
+
+This is the check that catches the single easiest transcription error in this
+model: the age term is linear in the **fractional** deviation
+`(AGE - 51) / 51`, not in the raw deviation in years. Dropping the division by
+51 would turn the second row into a 99.7% decrease.
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohort below reproduces
+the six scenarios the paper simulates in its Table 3: continuous covariates
+drawn from a uniform distribution over each clinically meaningful band, plus
+between-subject variability on apparent clearance.
+
+Two deliberate departures from the paper's simulation setup:
+
+* **200 subjects per arm rather than 1000.** This is the nlmixr2lib cap; it is
+  ample for a median and keeps the vignette inside the render time budget.
+* **A deterministic lattice instead of random draws.** Each arm's 200 subjects
+  take between-subject `eta` values on a quantile lattice
+  `qnorm((j - 0.5) / 200) * omega`, and covariates on uniform lattices permuted
+  by a fixed base-R seed. Nothing here touches rxode2's simulation RNG, whose
+  streams are partitioned per solver thread and therefore differ between a
+  2-core CI runner and a 16-thread workstation. The cohort below is
+  bit-identical everywhere, so the assertions downstream are reproducible rather
+  than merely lucky. The trade-off is that a 200-point lattice truncates the
+  extreme tails, so the minimum and maximum columns of the paper's Table 3 are
+  reported but not gated.
+
+```{r cohort}
+n_arm <- 200L
+omega <- sqrt(log(1 + 0.22^2))   # Table 2 reports omega_CL as 22 CV%
+lcl0 <- log(CL0)
+
+RNGkind(sample.kind = "Rejection")   # pin sample() across R versions
+set.seed(20250909)
+perm_age <- sample.int(n_arm)
+perm_wt <- sample.int(n_arm)
+
+lattice <- function(perm, lo, hi) lo + (perm - 0.5) / n_arm * (hi - lo)
+
+arms <- tibble::tribble(
+  ~group,                       ~age_lo, ~age_hi, ~wt_lo, ~wt_hi,
+  "Typical patient",                 51,      51,     70,     70,
+  "Age 20-65 y; BW 95-135 kg",       20,      65,     95,    135,
+  "Age 65-80 y; BW 95-135 kg",       65,      80,     95,    135,
+  "Age 20-65 y; BW 40-95 kg",        20,      65,     40,     95,
+  "Age 65-80 y; BW 40-95 kg",        65,      80,     40,     95,
+  "Age 20 y; BW 135 kg",             20,      20,    135,    135
+)
+
+make_arm <- function(k) {
+  a <- arms[k, ]
+  tibble::tibble(
+    id = (k - 1L) * n_arm + seq_len(n_arm),
+    group = a$group,
+    AGE = lattice(perm_age, a$age_lo, a$age_hi),
+    WT = lattice(perm_wt, a$wt_lo, a$wt_hi),
+    # The between-subject eta is folded into a per-subject `lcl` and solved
+    # with zeroRe(), which is algebraically identical to sampling etalcl but
+    # fully deterministic.
+    lcl = lcl0 + qnorm((seq_len(n_arm) - 0.5) / n_arm) * omega
+  )
+}
+cohort <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), make_arm))
+
+# Dosing + observation template, expanded per subject.
+template <- as.data.frame(
+  rxode2::et(amt = 50, time = tau * (seq_len(n_doses) - 1L), cmt = "depot") |>
+    rxode2::et(t_last + seq(0, tau, by = 0.25), cmt = "central")
+)
+
+events <- cohort |>
+  dplyr::rowwise() |>
+  dplyr::reframe(dplyr::bind_cols(id = id, group = group, AGE = AGE, WT = WT,
+                                  lcl = lcl, template)) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+# Disjoint IDs across arms; duplicate IDs would silently merge subjects.
+stopifnot(
+  nrow(cohort) == n_arm * nrow(arms),
+  !anyDuplicated(cohort$id),
+  !anyDuplicated(unique(events[, c("id", "time", "evid")]))
+)
+```
+
+# Simulation
+
+```{r simulate}
+sim <- as.data.frame(
+  rxode2::rxSolve(mod_typ, events = events, keep = c("group"))
+) |>
+  dplyr::mutate(t_rel = time - t_last, Cc = Cc * 1000)   # mg/L -> ng/mL
+
+# rxSolve returns observation records only -- there is no `evid` column on the
+# output, so no filtering is needed here.
+stopifnot(
+  # A large residual error can drive simulated concentrations negative and
+  # silently turn AUC into NaN; there is no residual error on Cc, but assert
+  # positivity and completeness anyway before any NCA runs on this frame.
+  !anyNA(sim$Cc),
+  all(sim$Cc > 0),
+  nrow(sim) == nrow(cohort) * length(t_last + seq(0, tau, by = 0.25))
+)
+```
+
+# Replicate published figures
+
+```{r figure-1a, fig.width = 7, fig.height = 4.5}
+# Replicates Figure 1(a) of Ekobena 2025: simulated steady-state percentiles
+# for the typical patient (51 years old, 70 kg) under 50 mg once daily.
+sim |>
+  dplyr::filter(group == "Typical patient") |>
+  dplyr::group_by(t_rel) |>
+  dplyr::summarise(Q05 = quantile(Cc, 0.05), Q25 = quantile(Cc, 0.25),
+                   Q50 = median(Cc), Q75 = quantile(Cc, 0.75),
+                   Q95 = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(t_rel, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.18) +
+  geom_ribbon(aes(ymin = Q25, ymax = Q75), alpha = 0.30) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = 760, linetype = "dotted") +
+  labs(x = "Time after dose (h)", y = "Bictegravir concentration (ng/mL)",
+       title = "Figure 1(a) - typical patient at steady state",
+       caption = paste("Replicates Figure 1(a) of Ekobena 2025.",
+                       "Dotted line: 760 ng/mL minimum concentration",
+                       "recommended for efficacy."))
+```
+
+```{r figure-1b, fig.width = 7, fig.height = 4.5}
+# Replicates Figure 1(b) of Ekobena 2025: simulated median concentrations for
+# each covariate group.
+sim |>
+  dplyr::group_by(group, t_rel) |>
+  dplyr::summarise(Q50 = median(Cc), .groups = "drop") |>
+  ggplot(aes(t_rel, Q50, colour = group)) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = 760, linetype = "dotted") +
+  labs(x = "Time after dose (h)", y = "Median concentration (ng/mL)",
+       colour = NULL,
+       title = "Figure 1(b) - median profile by covariate group",
+       caption = "Replicates Figure 1(b) of Ekobena 2025.") +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(nrow = 3))
+```
+
+# PKNCA validation
+
+NCA is run over the final steady-state dosing interval. For a once-daily
+extravascular profile at steady state, `cmin` over `[t_last, t_last + tau]` is
+the trough concentration the paper tabulates: the interval starts at a dose, so
+its two endpoints are both troughs and are equal at steady state. PKNCA's
+dedicated `ctrough` parameter is not used here because it returns `NA` for this
+interval definition.
+
+```{r pknca}
+# Only `!is.na(Cc)` in the filter -- adding `time > 0` or `Cc > 0` would drop
+# the anchor record PKNCA needs.
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, group)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1, time == t_last) |>
+  dplyr::select(id, time, amt, group)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | group + id,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | group + id, doseu = "mg")
+
+intervals <- data.frame(
+  start = t_last, end = t_last + tau,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE,
+  auclast = TRUE, cav = TRUE, half.life = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+```
+
+```{r pknca-massbalance}
+# Mass-balance gate on typical values: at steady state AUC0-tau must equal
+# Dose / CL exactly. This is the cheapest guard against a mis-parameterised
+# clearance or an accidentally auto-solved linCmt() model.
+auc_typ <- as.data.frame(nca_res$result) |>
+  dplyr::filter(group == "Typical patient", PPTESTCD == "auclast")
+
+stopifnot(
+  # Median over the arm sits at eta = 0 exactly, so this compares against the
+  # typical-value analytic result; trapezoidal error on a 0.25 h grid only.
+  abs(median(auc_typ$PPORRES) / (50 / CL0 * 1000) - 1) < 0.005,
+  # linCmt() would have discarded the explicit ODEs; assert they survived.
+  identical(rxode2::rxode(mod)$state, c("depot", "central"))
+)
+sprintf("Median steady-state AUC0-tau: %.0f ng*h/mL; Dose/CL = %.0f ng*h/mL",
+        median(auc_typ$PPORRES), 50 / CL0 * 1000)
+```
+
+## Comparison against published NCA
+
+Ekobena 2025 Table 3 reports simulated steady-state trough concentrations under
+the standard 50 mg once-daily regimen for six covariate scenarios. It is the
+paper's only tabulated exposure output, and reproducing all six rows is a
+six-point regression test on the structural parameters *and* both covariate
+coefficients simultaneously.
+
+```{r nca_compare}
+published <- tibble::tribble(
+  ~group,                       ~cmin,
+  "Typical patient",             2781,
+  "Age 20-65 y; BW 95-135 kg",   1991,
+  "Age 65-80 y; BW 95-135 kg",   2436,
+  "Age 20-65 y; BW 40-95 kg",    2760,
+  "Age 65-80 y; BW 40-95 kg",    3267,
+  "Age 20 y; BW 135 kg",         1593
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "group",
+  params = "cmin",
+  units = c(cmin = "ng/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste("Simulated vs. published steady-state trough concentration",
+                  "(Ekobena 2025 Table 3). * differs from reference by >20%."),
+  digits = 1
+)
+```
+
+```{r nca_compare_gate}
+sim_cmin <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "cmin") |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(sim = median(PPORRES), .groups = "drop") |>
+  dplyr::left_join(published, by = "group") |>
+  dplyr::mutate(pct = 100 * (sim / cmin - 1))
+
+knitr::kable(
+  sim_cmin |>
+    dplyr::rename("Group" = group, "Simulated Ctrough (ng/mL)" = sim,
+                  "Published Ctrough (ng/mL)" = cmin, "Difference (%)" = pct),
+  digits = 1,
+  caption = "Per-group deviation from Ekobena 2025 Table 3."
+)
+
+# The two fixed-covariate arms ("Typical patient", "Age 20 y; BW 135 kg") have
+# no covariate spread, so the lattice median lands exactly on the typical value
+# and the only residual is Monte Carlo noise in the PAPER's own 1000-subject
+# simulation. The four banded arms carry an additional, irreducible difference:
+# the median of a nonlinear function over a uniform covariate band depends on
+# how the covariate draws pair with the clearance draws, and the paper's random
+# pairing is not recoverable. Observed deviations at authoring were 0.7% and
+# 1.3% (fixed arms) and 1.0-5.0% (banded arms).
+fixed_arms <- c("Typical patient", "Age 20 y; BW 135 kg")
+stopifnot(
+  all(abs(sim_cmin$pct[sim_cmin$group %in% fixed_arms]) < 5),
+  all(abs(sim_cmin$pct) < 12),
+  # A gate that cannot go red is worthless: substituting an allometric 0.75 for
+  # the estimated 0.35 weight exponent moves the heaviest arm by ~25%, and
+  # dropping the /51 on the age term moves it by orders of magnitude.
+  nrow(sim_cmin) == 6L, !anyNA(sim_cmin$pct)
+)
+```
+
+## Derived claims in the Results and Discussion
+
+The paper makes four further quantitative statements about its simulations.
+These are summary claims over the same six arms, quoted to the nearest whole
+percent, so they are reported here and gated only on the directional content
+that the model must reproduce.
+
+```{r derived-claims}
+med <- setNames(sim_cmin$sim, sim_cmin$group)
+
+claims <- tibble::tibble(
+  claim = c(
+    "Age 65-80 vs 20-65, BW 95-135 kg: higher trough in older",
+    "Age 65-80 vs 20-65, BW 40-95 kg: higher trough in older",
+    "BW 95-135 vs 40-95 kg (age 20-65): lower trough in heavier",
+    "20-year-old, 135 kg vs typical patient: lower trough"
+  ),
+  published_pct = c(20, 20, -27, -43),
+  model_pct = c(
+    100 * (med[["Age 65-80 y; BW 95-135 kg"]] / med[["Age 20-65 y; BW 95-135 kg"]] - 1),
+    100 * (med[["Age 65-80 y; BW 40-95 kg"]] / med[["Age 20-65 y; BW 40-95 kg"]] - 1),
+    100 * (med[["Age 20-65 y; BW 95-135 kg"]] / med[["Age 20-65 y; BW 40-95 kg"]] - 1),
+    100 * (med[["Age 20 y; BW 135 kg"]] / med[["Typical patient"]] - 1)
+  )
+)
+knitr::kable(claims, digits = 1,
+             caption = "Simulation claims in Ekobena 2025 Results and Discussion.")
+
+stopifnot(
+  # Direction is structural and must hold: age lowers clearance (raises
+  # exposure), weight raises clearance (lowers exposure).
+  all(claims$model_pct[1:2] > 0),
+  all(claims$model_pct[3:4] < 0),
+  # Magnitudes within 8 percentage points of the paper's rounded figures.
+  all(abs(claims$model_pct - claims$published_pct) < 8)
+)
+```
+
+```{r subtherapeutic}
+# Discussion: "20-year-old individuals weighing 135 kg could have a median 43%
+# decrease in bictegravir Ctrough, relative to the typical individual, with
+# almost 5% of Ctrough expected to fall below the minimum recommended
+# concentration for efficacy (i.e. 760 ng/mL)."
+below <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "cmin") |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(pct_below_760 = 100 * mean(PPORRES < 760), .groups = "drop")
+
+knitr::kable(below, digits = 1,
+             caption = "Percentage of simulated troughs below the 760 ng/mL efficacy threshold.")
+
+stopifnot(
+  # The typical patient must stay above the threshold; the young, heavy arm
+  # must not. Both are directional claims the paper makes explicitly.
+  below$pct_below_760[below$group == "Typical patient"] == 0,
+  below$pct_below_760[below$group == "Age 20 y; BW 135 kg"] > 0
+)
+```
+
+# Assumptions and deviations
+
+* **Cohort construction.** The paper simulates 1000 individuals per scenario
+  with covariates drawn from uniform distributions; this vignette uses 200 per
+  arm (the nlmixr2lib cap) on a deterministic quantile lattice. The lattice
+  makes every number here reproducible across machines and rxode2 versions, but
+  it truncates the extreme tails, so the `Minimum` and `Maximum` columns of the
+  paper's Table 3 are not reproduced or gated. The banded arms additionally
+  depend on how covariate draws pair with clearance draws, which the paper does
+  not report; observed deviations from Table 3 were 1.0-5.0% for those arms.
+
+* **Residual error in the simulations.** The paper does not state whether its
+  Table 3 percentiles and Figure 1 prediction intervals include the
+  proportional residual error or only between-subject variability. The
+  simulations here carry between-subject variability only. Medians are
+  unaffected either way; the 5th and 95th percentiles would widen if residual
+  error were added. This is also why the "almost 5% below 760 ng/mL" claim is
+  gated only as "greater than zero" rather than on its value.
+
+* **`omega_CL` scale.** Table 2 heads the row `omega CL (CV%)` = 22, so 22 is
+  read as a coefficient of variation and converted exactly via
+  `omega^2 = log(1 + 0.22^2) = 0.04727`. If the authors instead printed `omega`
+  itself under that header -- a common Monolix table convention -- the variance
+  would be 0.0484. The difference is 1.2% in the standard deviation and moves
+  no gate in this vignette. The sigma row cannot arbitrate the question: for a
+  proportional residual error the tabulated CV% *is* the standard deviation, so
+  it carries no information about the log-normal convention.
+
+* **Absorption is not informed by the data.** `ka` is fixed at 0.64 1/h and
+  carries no between-subject variability, because the study had almost no
+  samples shortly after dosing (initial RSE 38%, bootstrap unstable). The
+  Discussion says as much. Cmax and Tmax predictions from this model should be
+  treated as structural consequences of a fixed constant, not as fitted
+  quantities; the trough predictions, which is what the paper uses the model
+  for, are robust to it. No absorption lag time was estimated, unlike the
+  manufacturer's unpublished analysis.
+
+* **No bioavailability term.** `CL` and `V` are apparent (`CL/F`, `V/F`) values.
+  The study has no intravenous reference arm and `F` is neither estimated nor
+  reported, so no `f(depot)` is applied -- adding one would double-count the
+  unknown bioavailability.
+
+* **Drug-drug interactions are out of scope.** Only 15 participants (2%) took a
+  metabolism inhibitor and 4 (<1%) an inducer, and no relationship with
+  bictegravir concentrations was detected. The authors attribute this to lack of
+  power rather than to absence of an interaction, and note that dual
+  CYP3A4/UGT1A1 inhibitors are predicted to raise exposure 2.5- to 2.9-fold and
+  strong inducers to cut it by up to 70%. This model must not be used to predict
+  exposure under those conditions.
+
+* **Covariates screened but not retained.** BMI was significant univariately
+  (dBICc = -3.2) but dropped at backward deletion in favour of body weight;
+  serum albumin was considered because bictegravir is >99% protein bound but was
+  available for only 34% of drug levels and too tightly clustered to test. Both
+  are recorded in the model file's `covariatesDataExcluded` list with the
+  paper's reasoning. No coefficient is published for either, so neither can be
+  encoded.
+
+* **Reference weight is not the cohort median.** `BWRef` is 70 kg, the rounded
+  reference the paper names below its covariate equation, while Table 1 gives a
+  cohort median body weight of 74 kg. `AgeM`, by contrast, is 51 years and *is*
+  the cohort median.
+
+* **Supplementary material.** Figures S1 (goodness-of-fit) and S2 (pcVPC) are
+  available as Supplementary data at JAC Online. They are diagnostic plots and
+  contain no parameter values, so nothing in the model file depends on them and
+  they were not retrieved.
+
+* **No external validation.** The authors state that no external validation of
+  the model could be performed, and that the data come from a moderately diverse
+  population with a substantial proportion of missing covariate values.

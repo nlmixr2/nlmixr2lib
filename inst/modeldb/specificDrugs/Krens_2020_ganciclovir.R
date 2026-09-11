@@ -78,8 +78,8 @@ Krens_2020_ganciclovir <- function() {
     # Structural PK -- Yang 2023 Table 3, Krens et al. (2020) row. Reference
     # subject: CKD-EPI eGFR = 65 mL/min/1.73 m^2. Clearance in L/h, volume in L.
     # One-compartment IV model; no absorption parameters and no weight scaling.
-    lcl <- log(2.3); label("Clearance at CKD-EPI = 65 mL/min/1.73 m^2 (CL, L/h)") # Yang 2023 Table 3 (Krens 2020): CL = 2.3 * (CKD-EPI/65)^0.71
-    lvc <- log(42) ; label("Central volume of distribution (Vc, L; no covariates)") # Yang 2023 Table 3 (Krens 2020): Vc = 42
+    lcl <- log(2.3); label("Clearance at CKD-EPI = 65 mL/min/1.73 m^2 (L/h)") # Yang 2023 Table 3 (Krens 2020): CL = 2.3 * (CKD-EPI/65)^0.71
+    lvc <- log(42) ; label("Central volume of distribution (L; no covariates)") # Yang 2023 Table 3 (Krens 2020): Vc = 42
 
     # Covariate effect. The exponent 0.71 is a non-canonical estimated value.
     e_crcl_cl <- 0.71; label("Power exponent of CKD-EPI eGFR on CL (unitless; reference 65 mL/min/1.73 m^2)") # Yang 2023 Table 3 (Krens 2020): (CKD-EPI/65)^0.71

@@ -93,21 +93,21 @@ Yoshida_2024_fazpilodemab <- function() {
     # Time-effect term applies only when PREV_AE_SCORE = 0 and is capped at
     # time = 84 days (mrgsolve uses min(TIME + TIMEinit, 84.0)).
     lslp_ae     <- log(0.0927); label("Log of drug-effect slope on GIAE transition logit (per ug/mL)")    # S2.3.1 TVSLP    = 0.0927; matches main-text "9.72% increase in odds per ug/mL" = log(1.0972); IIV is exponential per mrgsolve SLP = TVSLP * exp(ETA_SLP)
-    b1_g0_ae    <- -4.69;    label("DTMM intercept B1 conditional on PREV_AE_SCORE = 0 (logit grade >= 1)") # S2.3.1 TV0B1    = -4.69
-    b2b1_g0_ae  <- -0.799;   label("DTMM offset B2-B1 conditional on PREV_AE_SCORE = 0 (logit grade >= 2 minus logit grade >= 1)") # S2.3.1 TV0B2B1 = -0.799
-    b1_g1_ae    <-  2.4;     label("DTMM intercept B1 conditional on PREV_AE_SCORE = 1 (logit grade >= 1)") # S2.3.1 TV1B1    = 2.4
-    b2b1_g1_ae  <- -14.8;    label("DTMM offset B2-B1 conditional on PREV_AE_SCORE = 1 (logit grade >= 2 minus logit grade >= 1)") # S2.3.1 TV1B2B1 = -14.8
-    b1_g2_ae    <-  1.83;    label("DTMM intercept B1 conditional on PREV_AE_SCORE = 2 (logit grade >= 1)") # S2.3.1 TV2B1    = 1.83
-    b2b1_g2_ae  <- -0.037;   label("DTMM offset B2-B1 conditional on PREV_AE_SCORE = 2 (logit grade >= 2 minus logit grade >= 1)") # S2.3.1 TV2B2B1 = -0.037
+    b1_g0_ae    <- -4.69;    label("DTMM intercept B1 conditional on PREV_AE_SCORE = 0, logit of grade >= 1 (unitless logit)") # S2.3.1 TV0B1    = -4.69
+    b2b1_g0_ae  <- -0.799;   label("DTMM offset B2-B1 conditional on PREV_AE_SCORE = 0, logit grade >= 2 minus logit grade >= 1 (unitless logit)") # S2.3.1 TV0B2B1 = -0.799
+    b1_g1_ae    <-  2.4;     label("DTMM intercept B1 conditional on PREV_AE_SCORE = 1, logit of grade >= 1 (unitless logit)") # S2.3.1 TV1B1    = 2.4
+    b2b1_g1_ae  <- -14.8;    label("DTMM offset B2-B1 conditional on PREV_AE_SCORE = 1, logit grade >= 2 minus logit grade >= 1 (unitless logit)") # S2.3.1 TV1B2B1 = -14.8
+    b1_g2_ae    <-  1.83;    label("DTMM intercept B1 conditional on PREV_AE_SCORE = 2, logit of grade >= 1 (unitless logit)") # S2.3.1 TV2B1    = 1.83
+    b2b1_g2_ae  <- -0.037;   label("DTMM offset B2-B1 conditional on PREV_AE_SCORE = 2, logit grade >= 2 minus logit grade >= 1 (unitless logit)") # S2.3.1 TV2B2B1 = -0.037
     tef_g0_ae   <- -0.0336;  label("Linear time effect on DTMM intercept when PREV_AE_SCORE = 0, capped at 84 days (per day)") # S2.3.1 TIME_EFF = -0.0336
 
     # ---------- Treatment-discontinuation logistic model ----------
     # logit(P_discon) = b_dc with b_dc depending on PREV_AE_SCORE.
     # In mrgsolve the discontinuation is evaluated once per dosing cycle on
     # day 14, gated to PREV_AE_SCORE > 0 (no discontinuation from grade 0).
-    b_dc_g0     <- -4.31;    label("Discontinuation logit intercept conditional on PREV_AE_SCORE = 0")    # S2.3.1 B_discon_G0 = -4.31
-    b_dc_g1     <- -1.69;    label("Discontinuation logit intercept conditional on PREV_AE_SCORE = 1")    # S2.3.1 B_discon_G1 = -1.69 (= -4.31 + 2.62)
-    b_dc_g2     <- -1.33;    label("Discontinuation logit intercept conditional on PREV_AE_SCORE = 2")    # S2.3.1 B_discon_G2 = -1.33 (= -4.31 + 2.98)
+    b_dc_g0     <- -4.31;    label("Discontinuation logit intercept conditional on PREV_AE_SCORE = 0 (unitless logit)")    # S2.3.1 B_discon_G0 = -4.31
+    b_dc_g1     <- -1.69;    label("Discontinuation logit intercept conditional on PREV_AE_SCORE = 1 (unitless logit)")    # S2.3.1 B_discon_G1 = -1.69 (= -4.31 + 2.62)
+    b_dc_g2     <- -1.33;    label("Discontinuation logit intercept conditional on PREV_AE_SCORE = 2 (unitless logit)")    # S2.3.1 B_discon_G2 = -1.33 (= -4.31 + 2.98)
 
     # ---------- Inter-individual variability ----------
     # All variances on the exponential / log scale (omega^2) from the mrgsolve
@@ -195,8 +195,8 @@ Yoshida_2024_fazpilodemab <- function() {
     lgt1     <- b1_dtmm + slp_ae * Cc
     lgt2     <- b2_dtmm + slp_ae * Cc
 
-    pge1 <- exp(lgt1) / (1 + exp(lgt1))  # Pr(next grade >= 1 | PREV_AE_SCORE, Cc)
-    pge2 <- exp(lgt2) / (1 + exp(lgt2))  # Pr(next grade >= 2 | PREV_AE_SCORE, Cc)
+    pge1 <- expit(lgt1)  # Pr(next grade >= 1 | PREV_AE_SCORE, Cc)
+    pge2 <- expit(lgt2)  # Pr(next grade >= 2 | PREV_AE_SCORE, Cc)
     p_ae_g0   <- 1    - pge1             # Pr(next grade = 0)
     p_ae_g1   <- pge1 - pge2             # Pr(next grade = 1)
     p_ae_g23  <- pge2                    # Pr(next grade in {2, 3})
@@ -210,7 +210,7 @@ Yoshida_2024_fazpilodemab <- function() {
     b_dc <- (PREV_AE_SCORE == 0) * b_dc_g0 +
             (PREV_AE_SCORE == 1) * b_dc_g1 +
             (PREV_AE_SCORE == 2) * b_dc_g2
-    p_dc <- exp(b_dc) / (1 + exp(b_dc))
+    p_dc <- expit(b_dc)
 
     # ---------- Observation and residual error ----------
     # Observation is free fazpilodemab concentration in central (ug/mL).

@@ -157,15 +157,15 @@ Yang_2024_naloxone <- function() {
     # encode them as fixed(), because there they are inherited and
     # re-used without re-fitting.)
     lktr <- log(0.696)
-    label("Transit absorption rate constant (KTR, 1/min)")           # Table S4: KTR 0.696 1/min, RSE 6.0%
+    label("Transit absorption rate constant (1/min)")           # Table S4: KTR 0.696 1/min, RSE 6.0%
     lcl <- log(3.26)
-    label("Apparent clearance at 70 kg (CL/F, L/min)")               # Table S4: CL/F 3.26 L/min, RSE 2.5%
+    label("Apparent clearance at 70 kg (L/min)")               # Table S4: CL/F 3.26 L/min, RSE 2.5%
     lvc <- log(404)
-    label("Apparent central volume of distribution (V2/F, L)")       # Table S4: V2/F 404 L, RSE 4.2%
+    label("Apparent central volume of distribution (L)")       # Table S4: V2/F 404 L, RSE 4.2%
     lq <- log(0.0847)
-    label("Apparent intercompartmental clearance (Q/F, L/min)")      # Table S4: Q/F 0.0847 L/min, RSE 7.7%
+    label("Apparent intercompartmental clearance (L/min)")      # Table S4: Q/F 0.0847 L/min, RSE 7.7%
     lvp <- log(81.8)
-    label("Apparent peripheral volume of distribution (V3/F, L)")    # Table S4: V3/F 81.8 L, RSE 10.5%
+    label("Apparent peripheral volume of distribution (L)")    # Table S4: V3/F 81.8 L, RSE 10.5%
     e_wt_cl <- 0.538
     label("Allometric exponent of body weight on CL/F (unitless)")   # Table S4: Body weight on CL/F 0.538, RSE 14.4%
 

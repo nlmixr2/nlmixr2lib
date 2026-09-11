@@ -133,7 +133,7 @@ Mascarenhas_2015_pentadecanoic_triheptadecanoic <- function() {
     lrbase <- log(24.9);  label("Fasting baseline plasma pentadecanoic acid concentration (umol/L)")            # Table 2 PA C0 = 24.9 umol/L (RSE 12.1%, 95%CI 22.7-27.4)
     lmtt   <- log(0.817); label("Mean absorption transit time MTT of pentadecanoic acid (h)")                   # Table 2 PA MTT = 0.817 h (RSE 7.3%, 95%CI 0.751-2.84)
     lka    <- log(0.266); label("First-order absorption rate constant Ka of pentadecanoic acid (1/h)")          # Table 2 PA Ka = 0.266 1/h (RSE 17.6%, 95%CI 0.206-0.440)
-    lnn    <- log(6.96);  label("Number of absorption transit compartments N for pentadecanoic acid (continuous, dimensionless)") # Table 2 PA N = 6.96 (RSE 39.1%, 95%CI 0.195-18.2)
+    lnn    <- log(6.96);  label("Number of absorption transit compartments N for pentadecanoic acid, estimated on a continuous scale (dimensionless)") # Table 2 PA N = 6.96 (RSE 39.1%, 95%CI 0.195-18.2)
 
     # -----------------------------------------------------------------
     # Structural parameters -- heptadecanoic acid (HA, C17:0), the
@@ -145,7 +145,7 @@ Mascarenhas_2015_pentadecanoic_triheptadecanoic <- function() {
     lrbase_hepta <- log(27.4);  label("Fasting baseline plasma heptadecanoic acid concentration (umol/L)")            # Table 2 HA C0 = 27.4 umol/L (RSE 9.5%, 95%CI 25.3-29.7)
     lmtt_hepta   <- log(3.52);  label("Mean absorption transit time MTT of heptadecanoic acid (h)")                   # Table 2 HA MTT = 3.52 h (RSE 12.2%, 95%CI 3.21-4.33)
     lka_hepta    <- log(0.307); label("First-order absorption rate constant Ka of heptadecanoic acid (1/h)")          # Table 2 HA Ka = 0.307 1/h (RSE 17.2%, 95%CI 0.253-0.563)
-    lnn_hepta    <- log(7.08);  label("Number of absorption transit compartments N for heptadecanoic acid (continuous, dimensionless)") # Table 2 HA N = 7.08 (RSE 20.6%, 95%CI 5.79-8.49)
+    lnn_hepta    <- log(7.08);  label("Number of absorption transit compartments N for heptadecanoic acid, estimated on a continuous scale (dimensionless)") # Table 2 HA N = 7.08 (RSE 20.6%, 95%CI 5.79-8.49)
 
     # -----------------------------------------------------------------
     # Allometric exponents. Paper-fixed, no uncertainty reported.

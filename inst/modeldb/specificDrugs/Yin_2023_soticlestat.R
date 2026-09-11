@@ -204,12 +204,12 @@ Yin_2023_soticlestat <- function() {
     # carry INITIAL estimates (CL 220, Vc 60, ka 2.0) and are used here only
     # for structure and for the FIX flags.
     # ---------------------------------------------------------------------
-    lka  <- log(2.13)  ; label("First-order absorption rate constant from the depot (ka, 1/h)")           # Table 2, Absorption rate (ka), TV
-    lktr <- log(2.47)  ; label("Transit rate constant of the tablet absorption chain (ktr, 1/h)")         # Table 2, Transit rate for tablets (ktr), TV
-    lcl  <- log(204)   ; label("Apparent oral clearance at a 300 mg dose (CL/F, L/h)")                    # Table 2, Oral clearance (CL/F), TV
-    lvc  <- log(65.5)  ; label("Apparent central volume of distribution (Vc/F, L)")                       # Table 2, Volume of distribution of the central compartment (Vc/F), TV
-    lq   <- log(52.6)  ; label("Apparent intercompartmental clearance at a 300 mg dose (Q/F, L/h)")       # Table 2, Intercompartmental apparent clearance (Q/F), TV
-    lvp  <- log(356)   ; label("Apparent peripheral volume of distribution at a 300 mg dose (Vp/F, L)")   # Table 2, Apparent volume of distribution for the peripheral compartment (Vp/F), TV
+    lka  <- log(2.13)  ; label("First-order absorption rate constant from the depot (1/h)")           # Table 2, Absorption rate (ka), TV
+    lktr <- log(2.47)  ; label("Transit rate constant of the tablet absorption chain (1/h)")         # Table 2, Transit rate for tablets (ktr), TV
+    lcl  <- log(204)   ; label("Apparent oral clearance at a 300 mg dose (L/h)")                    # Table 2, Oral clearance (CL/F), TV
+    lvc  <- log(65.5)  ; label("Apparent central volume of distribution (L)")                       # Table 2, Volume of distribution of the central compartment (Vc/F), TV
+    lq   <- log(52.6)  ; label("Apparent intercompartmental clearance at a 300 mg dose (L/h)")       # Table 2, Intercompartmental apparent clearance (Q/F), TV
+    lvp  <- log(356)   ; label("Apparent peripheral volume of distribution at a 300 mg dose (L)")   # Table 2, Apparent volume of distribution for the peripheral compartment (Vp/F), TV
 
     # Empirical dose-nonlinearity exponents, all ESTIMATED (each row carries an
     # RSE and a bootstrap 95% CI). Reference dose 300 mg. Negative exponents mean
@@ -269,9 +269,9 @@ Yin_2023_soticlestat <- function() {
     # panel. A direct link between the effect-site concentration and brain
     # occupancy, with an effect compartment carrying the observed hysteresis.
     # ---------------------------------------------------------------------
-    lke0     <- log(0.255)      ; label("Plasma-to-brain effect-site equilibration rate constant (kEO, 1/h)")     # Table 2, Delay rate (kEO), TV
-    lemax    <- fixed(log(100)) ; label("Maximum brain CH24H enzyme occupancy (Emax, % occupancy)")               # Table 2, Maximum EO (Emax), TV, Fixed; Appendix S1 PK/EO $THETA 4 '(100) FIX'
-    lec50    <- log(5.86)       ; label("Effect-site concentration for 50% maximum CH24H occupancy (EC50, ng/mL)")  # Table 2, Effect-site concentration for 50% maximum effect (EC50), TV
+    lke0     <- log(0.255)      ; label("Plasma-to-brain effect-site equilibration rate constant (1/h)")     # Table 2, Delay rate (kEO), TV
+    lemax    <- fixed(log(100)) ; label("Maximum brain CH24H enzyme occupancy (% occupancy)")               # Table 2, Maximum EO (Emax), TV, Fixed; Appendix S1 PK/EO $THETA 4 '(100) FIX'
+    lec50    <- log(5.86)       ; label("Effect-site concentration for 50% maximum CH24H occupancy (ng/mL)")  # Table 2, Effect-site concentration for 50% maximum effect (EC50), TV
     lhill_eo <- log(0.769)      ; label("Sigmoidicity of the CH24H enzyme-occupancy relationship (unitless)")     # Table 2, Shape parameter (gamma), TV
 
     etalec50 ~ 0.478864  # Table 2, EO EC50 BSV 0.692 (SD) -> 0.692^2
@@ -290,10 +290,10 @@ Yin_2023_soticlestat <- function() {
     # was developed by fixing EO model parameters to estimates obtained in the
     # PK/EO modeling step'; Appendix S1 PK/24HC $THETA 3-6 all carry FIX).
     # ---------------------------------------------------------------------
-    lrbase <- log(45.9)   ; label("Typical baseline plasma 24HC concentration (BL24HC, ng/mL)")            # Table 2, Baseline 24HC (BL24HC), TV
-    lkout  <- log(0.0182) ; label("First-order 24HC degradation rate constant (kout, 1/h)")                # Table 2, 24HC degradation rate (kout), TV
-    limax  <- log(78.2)   ; label("Maximum inhibition of 24HC production (Imax, % of the production rate)")  # Table 2, Maximum 24HC inhibition (Imax), TV
-    lic50  <- log(5.21)   ; label("Effect-site concentration for 50% of maximum 24HC inhibition (IC50, ng/mL)")  # Table 2, Effect-site concentration for 50% maximum effect (IC50), TV
+    lrbase <- log(45.9)   ; label("Typical baseline plasma 24HC concentration (ng/mL)")            # Table 2, Baseline 24HC (BL24HC), TV
+    lkout  <- log(0.0182) ; label("First-order 24HC degradation rate constant (1/h)")                # Table 2, 24HC degradation rate (kout), TV
+    limax  <- log(78.2)   ; label("Maximum inhibition of 24HC production (% of the production rate)")  # Table 2, Maximum 24HC inhibition (Imax), TV
+    lic50  <- log(5.21)   ; label("Effect-site concentration for 50% of maximum 24HC inhibition (ng/mL)")  # Table 2, Effect-site concentration for 50% maximum effect (IC50), TV
 
     # The paper's printed 24HC equation carries a shape parameter on the
     # effect-site concentration, but Appendix S1 PK/24HC $THETA 11 sets it to

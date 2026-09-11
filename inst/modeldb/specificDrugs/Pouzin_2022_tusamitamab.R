@@ -110,14 +110,14 @@ Pouzin_2022_tusamitamab <- function() {
     # F_DARi = FR_i / SUM, F_DAR8 = 1/SUM. Typical values below are derived
     # from the published F_DARi (%) by dividing by F_DAR8 = 0.9%; this
     # exactly reproduces Table 4 typical fractions through the SUM transform.
-    lfrdar1   <- fixed(log(0.085 / 0.009)); label("log(FR_DAR1) ratio (typical FR_DAR1 = F_DAR1/F_DAR8)")        # Pouzin 2022 Table 4: F_DAR1 = 8.5% (fixed)
-    lfrdar2   <- fixed(log(0.175 / 0.009)); label("log(FR_DAR2) ratio (typical FR_DAR2 = F_DAR2/F_DAR8)")        # Pouzin 2022 Table 4: F_DAR2 = 17.5% (fixed)
-    lfrdar3   <- fixed(log(0.218 / 0.009)); label("log(FR_DAR3) ratio (typical FR_DAR3 = F_DAR3/F_DAR8)")        # Pouzin 2022 Table 4: F_DAR3 = 21.8% (fixed)
-    lfrdar4   <- fixed(log(0.199 / 0.009)); label("log(FR_DAR4) ratio (typical FR_DAR4 = F_DAR4/F_DAR8)")        # Pouzin 2022 Table 4: F_DAR4 = 19.9% (fixed)
-    lfrdar5   <- fixed(log(0.142 / 0.009)); label("log(FR_DAR5) ratio (typical FR_DAR5 = F_DAR5/F_DAR8)")        # Pouzin 2022 Table 4: F_DAR5 = 14.2% (fixed)
-    lfrdar6   <- fixed(log(0.071 / 0.009)); label("log(FR_DAR6) ratio (typical FR_DAR6 = F_DAR6/F_DAR8)")        # Pouzin 2022 Table 4: F_DAR6 = 7.1% (fixed)
-    lfrdar7   <- fixed(log(0.028 / 0.009)); label("log(FR_DAR7) ratio (typical FR_DAR7 = F_DAR7/F_DAR8)")        # Pouzin 2022 Table 4: F_DAR7 = 2.8% (fixed)
-    lfrnab    <- log(0.071 / 0.009);        label("log(FR_NAB) ratio (typical FR_NAB = F_NAB/F_DAR8); estimated") # Pouzin 2022 Table 4: F_NAB = 7.1% (estimated)
+    lfrdar1   <- fixed(log(0.085 / 0.009)); label("log FR_DAR1 ratio, typical FR_DAR1 = F_DAR1/F_DAR8 (unitless)")        # Pouzin 2022 Table 4: F_DAR1 = 8.5% (fixed)
+    lfrdar2   <- fixed(log(0.175 / 0.009)); label("log FR_DAR2 ratio, typical FR_DAR2 = F_DAR2/F_DAR8 (unitless)")        # Pouzin 2022 Table 4: F_DAR2 = 17.5% (fixed)
+    lfrdar3   <- fixed(log(0.218 / 0.009)); label("log FR_DAR3 ratio, typical FR_DAR3 = F_DAR3/F_DAR8 (unitless)")        # Pouzin 2022 Table 4: F_DAR3 = 21.8% (fixed)
+    lfrdar4   <- fixed(log(0.199 / 0.009)); label("log FR_DAR4 ratio, typical FR_DAR4 = F_DAR4/F_DAR8 (unitless)")        # Pouzin 2022 Table 4: F_DAR4 = 19.9% (fixed)
+    lfrdar5   <- fixed(log(0.142 / 0.009)); label("log FR_DAR5 ratio, typical FR_DAR5 = F_DAR5/F_DAR8 (unitless)")        # Pouzin 2022 Table 4: F_DAR5 = 14.2% (fixed)
+    lfrdar6   <- fixed(log(0.071 / 0.009)); label("log FR_DAR6 ratio, typical FR_DAR6 = F_DAR6/F_DAR8 (unitless)")        # Pouzin 2022 Table 4: F_DAR6 = 7.1% (fixed)
+    lfrdar7   <- fixed(log(0.028 / 0.009)); label("log FR_DAR7 ratio, typical FR_DAR7 = F_DAR7/F_DAR8 (unitless)")        # Pouzin 2022 Table 4: F_DAR7 = 2.8% (fixed)
+    lfrnab    <- log(0.071 / 0.009);        label("log FR_NAB ratio, typical FR_NAB = F_NAB/F_DAR8; estimated (unitless)") # Pouzin 2022 Table 4: F_NAB = 7.1% (estimated)
 
     # ----- Inter-individual variability (omega = SD on log scale; Pouzin 2022 Table 4) -----
     # Variance entered as omega^2; omega is the SD reported in the "standard
@@ -151,7 +151,7 @@ Pouzin_2022_tusamitamab <- function() {
     propSd_nab     <- 0.260;    label("Proportional residual error on NAB concentration (fraction)")                # Pouzin 2022 Table 4: b_NAB   = 26.0%
     propSd_dm4     <- 0.335;    label("Proportional residual error on DM4 concentration (fraction)")                # Pouzin 2022 Table 4: b_DM4   = 33.5%
     propSd_medm4   <- 0.500;    label("Proportional residual error on MeDM4 concentration (fraction)")              # Pouzin 2022 Table 4: b_MeDM4 = 50.0%
-    addSd_DARavg   <- 0.219;    label("Additive residual error on average DAR (DAR units)")                         # Pouzin 2022 Table 4: a_DARaverage = 0.219
+    addSd_DARavg   <- 0.219;    label("Additive residual error SD on average DAR, drug-to-antibody ratio (unitless)")                         # Pouzin 2022 Table 4: a_DARaverage = 0.219
   })
 
   model({

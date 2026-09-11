@@ -4,8 +4,8 @@ Agarwal_2011_sorafenib_bcrp <- function() {
     "BCRP-mediated basolateral-to-apical (B-to-A) transcellular",
     "permeability of sorafenib across polarised MDCKII monolayers stably",
     "transfected with murine Bcrp1 (ABCG2). The model is:",
-    "pappBa = emax * (1 - C / (km + C)),",
-    "which is algebraically the hyperbolic decay pappBa = emax * km / (km + C).",
+    "papp_ba = emax * (1 - C / (km + C)),",
+    "which is algebraically the hyperbolic decay papp_ba = emax * km / (km + C).",
     "As the donor (basolateral) sorafenib concentration rises the",
     "transporter saturates, so the active efflux component of the B-to-A",
     "permeability falls from its tracer-concentration maximum toward zero.",
@@ -42,7 +42,7 @@ Agarwal_2011_sorafenib_bcrp <- function() {
   units <- list(
     time          = "h",
     dosing        = "(none; static in vitro concentration-response model driven by an external sorafenib concentration covariate)",
-    concentration = "(observation pappBa is the apparent B-to-A permeability of sorafenib in units of 1e-6 cm/s; driving covariate CP_SORAFENIB_NGML is the sorafenib concentration applied to the donor/basolateral compartment in ng/mL)"
+    concentration = "(observation papp_ba is the apparent B-to-A permeability of sorafenib in units of 1e-6 cm/s; driving covariate CP_SORAFENIB_NGML is the sorafenib concentration applied to the donor/basolateral compartment in ng/mL)"
   )
 
   covariateData <- list(
@@ -171,15 +171,15 @@ Agarwal_2011_sorafenib_bcrp <- function() {
     # donor-compartment concentration CP_SORAFENIB_NGML, written in the
     # exact form printed in Methods Equation 2 and the Figure 5 panel:
     #
-    #   pappBa = emax * (1 - C / (km + C))
+    #   papp_ba = emax * (1 - C / (km + C))
     #
     # This is algebraically emax * km / (km + C), so at C = km the
     # permeability is emax / 2 -- the 'concentration at which
     # half-maximal inhibition is seen' of the paper's own definition.
     # That identity is asserted in the validation vignette.
     # ==================================================================
-    pappBa <- emax * (1 - CP_SORAFENIB_NGML / (km + CP_SORAFENIB_NGML))
+    papp_ba <- emax * (1 - CP_SORAFENIB_NGML / (km + CP_SORAFENIB_NGML))
 
-    pappBa ~ add(addSd)
+    papp_ba ~ add(addSd)
   })
 }

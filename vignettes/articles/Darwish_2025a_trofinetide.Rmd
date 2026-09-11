@@ -1,8 +1,8 @@
 ---
-title: "Trofinetide (Darwish 2025)"
+title: "Trofinetide, LAVENDER weight-banded dosing (Darwish 2025a)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Trofinetide (Darwish 2025)}
+  %\VignetteIndexEntry{Trofinetide, LAVENDER weight-banded dosing (Darwish 2025a)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,7 +20,7 @@ library(ggplot2)
 # `readModelDb()` returns the raw model *function*; calling it directly (e.g.
 # `readModelDb("X")()$population`) fails because `ini({})` / `model({})` are not
 # defined outside an rxode2 parsing context.
-mod_meta <- rxode2::rxode(readModelDb("Darwish_2025_trofinetide"))
+mod_meta <- rxode2::rxode(readModelDb("Darwish_2025a_trofinetide"))
 ```
 
 # Model and source
@@ -210,7 +210,7 @@ stopifnot(nrow(dplyr::distinct(events, id)) == n_per_band * nrow(bands))
 # Simulation
 
 ```{r simulate}
-mod <- readModelDb("Darwish_2025_trofinetide")
+mod <- readModelDb("Darwish_2025a_trofinetide")
 
 sim <- rxode2::rxSolve(
   mod,

@@ -137,13 +137,13 @@ Li_2023_ornidazole <- function() {
 
   ini({
     lvc <- log(35.75)
-    label("Volume of distribution (V, L)")
+    label("Volume of distribution (L)")
     # Table 3: V = 35.75 L (RSE 4.89%; bootstrap 31.99-39.81)
     lcl <- log(1.89)
-    label("Apparent clearance (CL, L/h)")
+    label("Apparent clearance (L/h)")
     # Table 3: CL = 1.89 L/h (RSE 2.78%; bootstrap 1.78-2.00)
     lcmpr <- log(0.58)
-    label("Milk-to-plasma concentration ratio (MPRcon, unitless)")
+    label("Milk-to-plasma concentration ratio (unitless)")
     # Table 3: MPRcon = 0.58 (RSE 8.63%; bootstrap 0.48-0.68)
 
     e_tbili_cl <- -0.17

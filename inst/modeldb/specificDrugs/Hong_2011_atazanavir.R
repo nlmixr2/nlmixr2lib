@@ -84,11 +84,11 @@ Hong_2011_atazanavir <- function() {
     # Structural parameters at the reference covariate set (age = 18 yr, body weight = 70 kg, male,
     # non-Africa study site, atazanavir capsule, no concomitant ritonavir).
     # Reported in Hong 2011 Table 4 ("Final model parameter estimates"), page 5750.
-    lka       <- log(2.04);   label("First-order absorption rate constant at reference age 18 yr (ka, 1/h)")             # Table 4: K_a = 2.04 +/- 0.31
-    lcl       <- log(34.6);   label("Apparent oral clearance at reference covariates (CL/F, L/h)")                       # Table 4: CL/F = 34.6 (paper Results page 5749 confirms reference is male, 70 kg, non-Africa, no RTV)
-    lvc       <- log(266);    label("Apparent central volume of distribution at reference body weight 70 kg (V/F, L)")    # Table 4: V/F = 266 +/- 25
-    ltlag     <- log(0.913);  label("Absorption lag time (tlag, h)")                                                      # Table 4: t_lag = 0.913 +/- 0.002
-    lfdepot   <- fixed(log(1));  label("Reference relative bioavailability for atazanavir capsule alone (Frel, unitless)") # Table 4: F_rel = 1 (structural anchor; capsule-alone reference)
+    lka       <- log(2.04);   label("First-order absorption rate constant at reference age 18 yr (1/h)")             # Table 4: K_a = 2.04 +/- 0.31
+    lcl       <- log(34.6);   label("Apparent oral clearance at reference covariates (L/h)")                       # Table 4: CL/F = 34.6 (paper Results page 5749 confirms reference is male, 70 kg, non-Africa, no RTV)
+    lvc       <- log(266);    label("Apparent central volume of distribution at reference body weight 70 kg (L)")    # Table 4: V/F = 266 +/- 25
+    ltlag     <- log(0.913);  label("Absorption lag time (h)")                                                      # Table 4: t_lag = 0.913 +/- 0.002
+    lfdepot   <- fixed(log(1));  label("Reference relative bioavailability for atazanavir capsule alone (unitless)") # Table 4: F_rel = 1 (structural anchor; capsule-alone reference)
 
     # Continuous covariate power exponents (theta_TV * (x/x_REF)^e form)
     e_age_ka            <- -0.822;  label("Age power exponent on ka (reference 18 yr)")                                   # Table 4: Age ~ K_a = -0.822 +/- 0.139

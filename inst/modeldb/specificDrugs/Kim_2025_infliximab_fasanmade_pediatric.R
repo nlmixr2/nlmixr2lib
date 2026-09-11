@@ -87,18 +87,18 @@ Kim_2025_infliximab_fasanmade_pediatric <- function() {
     #   lvc = log(54.2 * 42 / 1000) = log(2.2764 L)
     #   lvp = log(29.2 * 42 / 1000) = log(1.2264 L)
     #   lq  = log(3.52 * 42 / 1000) = log(0.14784 L/day)
-    lcl <- log(0.22806); label("Typical clearance for the reference subject (CL, L/day)")                    # Data S1 model #7 $THETA1 = 5.43 mL/kg/day * 42 kg / 1000; Table S2 "5.43"
-    lvc <- log(2.2764);  label("Typical central volume for the reference subject (Vc, L)")                   # Data S1 model #7 $THETA2 = 54.2 mL/kg * 42 kg / 1000; Table S2 "54.2"
-    lvp <- log(1.2264);  label("Typical peripheral volume for the reference subject (Vp, L)")                # Data S1 model #7 $THETA3 = 29.2 mL/kg * 42 kg / 1000; Table S2 "29.2"
-    lq  <- log(0.14784); label("Typical inter-compartmental clearance for the reference subject (Q, L/day)") # Data S1 model #7 $THETA4 = 3.52 mL/kg/day * 42 kg / 1000; Table S2 "3.52"
+    lcl <- log(0.22806); label("Typical clearance for the reference subject (L/day)")                    # Data S1 model #7 $THETA1 = 5.43 mL/kg/day * 42 kg / 1000; Table S2 "5.43"
+    lvc <- log(2.2764);  label("Typical central volume for the reference subject (L)")                   # Data S1 model #7 $THETA2 = 54.2 mL/kg * 42 kg / 1000; Table S2 "54.2"
+    lvp <- log(1.2264);  label("Typical peripheral volume for the reference subject (L)")                # Data S1 model #7 $THETA3 = 29.2 mL/kg * 42 kg / 1000; Table S2 "29.2"
+    lq  <- log(0.14784); label("Typical inter-compartmental clearance for the reference subject (L/day)") # Data S1 model #7 $THETA4 = 3.52 mL/kg/day * 42 kg / 1000; Table S2 "3.52"
 
     # Covariate effects. The three e_wt_* values are the exponents on the PER-KG
     # parameters; model() adds the +1 that converts them to total-parameter
     # exponents (0.66 on CL, 0.829 on Vc, 0.586 on Vp).
-    e_wt_cl  <- -0.34;  label("Power exponent of body weight on per-kg CL ((WT/42)^(1 + e_wt_cl) on total CL)")  # Data S1 model #7 $THETA6 = -0.34
-    e_wt_vc  <- -0.171; label("Power exponent of body weight on per-kg Vc ((WT/42)^(1 + e_wt_vc) on total Vc)")  # Data S1 model #7 $THETA7 = -0.171
-    e_wt_vp  <- -0.414; label("Power exponent of body weight on per-kg Vp ((WT/42)^(1 + e_wt_vp) on total Vp)")  # Data S1 model #7 $THETA8 = -0.414
-    e_alb_cl <- -1.22;  label("Power exponent of serum albumin on CL ((ALB/3.8)^e_alb_cl)")                      # Data S1 model #7 $THETA5 = -1.22
+    e_wt_cl  <- -0.34;  label("Power exponent of body weight on per-kg CL, WT/42 scaling applied as 1 + e_wt_cl (unitless)")  # Data S1 model #7 $THETA6 = -0.34
+    e_wt_vc  <- -0.171; label("Power exponent of body weight on per-kg Vc, WT/42 scaling applied as 1 + e_wt_vc (unitless)")  # Data S1 model #7 $THETA7 = -0.171
+    e_wt_vp  <- -0.414; label("Power exponent of body weight on per-kg Vp, WT/42 scaling applied as 1 + e_wt_vp (unitless)")  # Data S1 model #7 $THETA8 = -0.414
+    e_alb_cl <- -1.22;  label("Power exponent of serum albumin on CL, ALB/3.8 scaling in g/dL (unitless)")                      # Data S1 model #7 $THETA5 = -1.22
 
     # Inter-individual variability; OMEGA = (CV)^2 per Kim 2025's control-stream
     # annotation, with each %CV given in the stream comment and Table S2.

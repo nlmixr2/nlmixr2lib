@@ -142,7 +142,7 @@ Rees_2018_meropenem_ciprofloxacin <- function() {
     # 10. Outputs: total and resistant viable counts; fit on the log10 scale.
     CFUrmem <- bact_resistant_intermediate1 + bact_resistant_intermediate2    # meropenem-resistant subpopulation (CFU/mL)
     CFUrcip <- bact_intermediate_resistant1 + bact_intermediate_resistant2    # ciprofloxacin-resistant subpopulation (CFU/mL)
-    Cc <- log10(CFUall)
-    Cc ~ add(addSd)
+    log_cfu <- log10(CFUall)
+    log_cfu ~ add(addSd)
   })
 }

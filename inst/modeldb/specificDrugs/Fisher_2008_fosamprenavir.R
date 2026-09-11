@@ -118,10 +118,10 @@ Fisher_2008_fosamprenavir <- function() {
     # When CONMED_RTV = 1 (boosted, the more common cohort state), CL/F
     # reduces to theta_1 = 34.1 L/h via the e_conmed_rtv_cl effect below.
     lka <- log(1.13);  label("First-order absorption rate constant ka (1/h)")               # Table 3 theta_5 = 1.13 1/h (RSE 30%)
-    lcl <- log(84.4);  label("Apparent oral clearance at CONMED_RTV = 0 (CL/F, L/h)")        # Table 3 theta_6 = 84.4 L/h (RSE 11%; CL/F without RTV)
-    lvc <- log(288);   label("Apparent central volume of distribution at WT = 70 kg (V2/F, L)")  # Table 3 theta_2 = 288 L (RSE 23%)
-    lq  <- log(63.5);  label("Apparent inter-compartmental clearance at WT = 70 kg (Q, L/h)")    # Table 3 theta_3 = 63.5 L/h (RSE 15%)
-    lvp <- log(1630);  label("Apparent peripheral volume of distribution at WT = 70 kg (V3, L)") # Table 3 theta_4 = 1630 L (RSE 28%)
+    lcl <- log(84.4);  label("Apparent oral clearance at CONMED_RTV = 0 (L/h)")        # Table 3 theta_6 = 84.4 L/h (RSE 11%; CL/F without RTV)
+    lvc <- log(288);   label("Apparent central volume of distribution at WT = 70 kg (L)")  # Table 3 theta_2 = 288 L (RSE 23%)
+    lq  <- log(63.5);  label("Apparent inter-compartmental clearance at WT = 70 kg (L/h)")    # Table 3 theta_3 = 63.5 L/h (RSE 15%)
+    lvp <- log(1630);  label("Apparent peripheral volume of distribution at WT = 70 kg (L)") # Table 3 theta_4 = 1630 L (RSE 28%)
 
     # Allometric exponents fixed at theory-based values (Methods, 'Model and
     # Modeling Assumptions': "An allometric model was assumed to describe the

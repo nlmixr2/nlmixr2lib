@@ -161,11 +161,11 @@ Ahn_2023_vupanorsen <- function() {
 
   ini({
     # ---- Structural PK, reference 88 kg body weight (Table 2) --------------
-    lka <- log(0.737)     ; label("Absorption rate constant (Ka, 1/h)")                       # Table 2: Ka 0.737 /h
-    lcl <- log(34.5)      ; label("Apparent clearance (CL/F, L/h)")                           # Table 2: CL/F 34.5 L/h
-    lvc <- log(318)       ; label("Apparent central volume of distribution (Vc/F, L)")        # Table 2: Vc/F 318 L
-    lq  <- log(8.49)      ; label("Apparent intercompartmental clearance (Q/F, L/h)")         # Table 2: Q/F 8.49 L/h
-    lvp <- log(12100)     ; label("Apparent peripheral volume of distribution (Vp/F, L)")     # Table 2: Vp/F 12,100 L
+    lka <- log(0.737)     ; label("Absorption rate constant (1/h)")                       # Table 2: Ka 0.737 /h
+    lcl <- log(34.5)      ; label("Apparent clearance (L/h)")                           # Table 2: CL/F 34.5 L/h
+    lvc <- log(318)       ; label("Apparent central volume of distribution (L)")        # Table 2: Vc/F 318 L
+    lq  <- log(8.49)      ; label("Apparent intercompartmental clearance (L/h)")         # Table 2: Q/F 8.49 L/h
+    lvp <- log(12100)     ; label("Apparent peripheral volume of distribution (L)")     # Table 2: Vp/F 12,100 L
 
     # ---- Allometric exponents ---------------------------------------------
     # Methods "Base PK model": "BWT was included with fixed allometry constants

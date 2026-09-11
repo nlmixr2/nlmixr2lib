@@ -64,7 +64,7 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
     # 2006 ref 22). CL/F is ADDITIVE in CrCl and WT (Table 2 footnote a):
     #   CL/F = CL/F_0 + b_CrCl * CrCl + b_WT * WT
     # ============================================================
-    lka_febx       <- log(13.7);  label("Febuxostat absorption rate constant (Ka, 1/h)")                           # Table 2: Ka 13.7 h^-1, BSV CV% 176
+    lka_febx       <- log(13.7);  label("Febuxostat absorption rate constant (1/h)")                           # Table 2: Ka 13.7 h^-1, BSV CV% 176
     lcl_febx       <- log(49.3);  label("Febuxostat baseline apparent clearance CL/F_0 (dL/h)")                   # Table 2: CL/F_0 49.3 dL/h, BSV CV% 18.3
     lvc_febx       <- log(322);   label("Febuxostat apparent central volume Vc/F_0 (dL)")                          # Table 2: Vc/F_0 322 dL, BSV NE
     lvp_febx       <- log(222);   label("Febuxostat apparent peripheral volume Vp/F (dL)")                         # Table 2: Vp/F 222 dL, BSV NE
@@ -81,7 +81,7 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
     #   CL/F = CL/F_0 * (CrCl / 87)^b_CrCl
     #   Vc/F = Vc/F_0 * (WT  / 70)^b_WT
     # ============================================================
-    lka_lesn       <- log(0.69);  label("Lesinurad absorption rate constant (Ka, 1/h)")                            # Table 2: Ka 0.69 h^-1, BSV CV% 121.7
+    lka_lesn       <- log(0.69);  label("Lesinurad absorption rate constant (1/h)")                            # Table 2: Ka 0.69 h^-1, BSV CV% 121.7
     lcl_lesn       <- log(69.9);  label("Lesinurad apparent clearance CL/F_0 at CrCl 87 mL/min (dL/h)")           # Table 2: CL/F_0 69.9 dL/h, BSV CV% 63.4
     lvc_lesn       <- log(241);   label("Lesinurad apparent central volume Vc/F_0 at WT 70 kg (dL)")               # Table 2: Vc/F_0 241 dL, BSV CV% 12.2
     lvp_lesn       <- log(83);    label("Lesinurad apparent peripheral volume Vp/F (dL)")                          # Table 2: Vp/F 83 dL, BSV CV% 20.5
@@ -196,8 +196,8 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
     lag(depot_lesn) <- tlag_lesn_h
 
     # Drug plasma concentrations (mg/dL) feeding PD drug functions
-    cf_t <- central_febx / vc_febx
-    cl_t <- central_lesn / vc_lesn
+    Cc_febx <- central_febx / vc_febx
+    Cc_lesn <- central_lesn / vc_lesn
 
     # --- Individual PD parameters ---
     ic50_1 <- exp(lic501 + etalic501_lic502)
@@ -228,10 +228,10 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
     # when Imax = 1 (both Imax_1 and Imax_2 are Assumed = 1 in Table 1).
     # The general form is used here so the Imax_1 and Imax_2 parameter values
     # remain auditable and overridable.
-    inh1  <- 1 - imax_1 * cf_t / (ic50_1 + cf_t)
-    inh2  <- 1 - imax_2 * cf_t / (ic50_2 + cf_t)
-    stim1 <- 1 + emax_1 * cf_t / (ec50_1 + cf_t)
-    stim2 <- 1 + emax_2 * cl_t / (ec50_2 + cl_t)
+    inh1  <- 1 - imax_1 * Cc_febx / (ic50_1 + Cc_febx)
+    inh2  <- 1 - imax_2 * Cc_febx / (ic50_2 + Cc_febx)
+    stim1 <- 1 + emax_1 * Cc_febx / (ec50_1 + Cc_febx)
+    stim2 <- 1 + emax_2 * Cc_lesn / (ec50_2 + Cc_lesn)
 
     # --- PD ODEs (Figure 1 Eqs 1-4)
     # The UA production term `k1 * inh2 * xanthine` is scaled by the

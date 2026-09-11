@@ -53,10 +53,10 @@ Sassen_2017_crisantaspase <- function() {
     # Reference 70 kg subject; clearances in L/h, volumes in L. Sassen 2017
     # Table 3 final-model estimates: CL 0.44 L/h/70kg, Vc 3.2 L/70kg,
     # Q 0.15 L/h/70kg, Vp 2.9 L/70kg.
-    lcl <- log(0.44); label("Clearance for a 70 kg subject (CL, L/h)")                        # Sassen 2017 Table 3 (CL 0.44 L/h/70kg)
-    lvc <- log(3.2);  label("Central volume of distribution for a 70 kg subject (Vc, L)")     # Sassen 2017 Table 3 (Vc 3.2 L/70kg)
-    lq  <- log(0.15); label("Intercompartmental clearance for a 70 kg subject (Q, L/h)")      # Sassen 2017 Table 3 (Q 0.15 L/h/70kg)
-    lvp <- log(2.9);  label("Peripheral volume of distribution for a 70 kg subject (Vp, L)")  # Sassen 2017 Table 3 (Vp 2.9 L/70kg)
+    lcl <- log(0.44); label("Clearance for a 70 kg subject (L/h)")                        # Sassen 2017 Table 3 (CL 0.44 L/h/70kg)
+    lvc <- log(3.2);  label("Central volume of distribution for a 70 kg subject (L)")     # Sassen 2017 Table 3 (Vc 3.2 L/70kg)
+    lq  <- log(0.15); label("Intercompartmental clearance for a 70 kg subject (L/h)")      # Sassen 2017 Table 3 (Q 0.15 L/h/70kg)
+    lvp <- log(2.9);  label("Peripheral volume of distribution for a 70 kg subject (L)")  # Sassen 2017 Table 3 (Vp 2.9 L/70kg)
 
     # Allometric exponents held fixed at canonical values (Sassen 2017 Methods,
     # Pharmacokinetic analysis: "standard fixed exponent values of 0.75 for

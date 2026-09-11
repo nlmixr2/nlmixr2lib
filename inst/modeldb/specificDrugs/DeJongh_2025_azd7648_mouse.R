@@ -91,13 +91,13 @@ DeJongh_2025_azd7648_mouse <- function() {
     # file 4, 10928_2025_9962_MOESM4_ESM.txt lines 78-92), which reports
     # the same estimates to five significant figures.
     # ------------------------------------------------------------------
-    lka_scid <- log(2.7726);   label("Absorption rate constant, SCID mice (ka, 1/h)")            # Table 1 Ka* = 2.77 (RSE 7.83%); control stream THETA(1) = 2.7726
-    lka_nude <- fixed(log(9.9)); label("Absorption rate constant, nude mice (ka, 1/h)")          # Table 1: 9.90, no informative absorption-phase samples in nude mice; validated by likelihood profiling
-    lcl      <- log(0.25119);  label("Linear clearance (CL, L/kg/h)")                            # Table 1 CL = 0.251 (RSE 7.69%); control stream THETA(3) = 0.25119
-    lvmax    <- log(4.2741);   label("Maximum saturable elimination rate (Vmax, umol/kg/h)")     # Table 1 Vmax = 4.27 (RSE 13.1%); control stream THETA(4) = 4.2741
-    lkm      <- log(3.7268);   label("Concentration at half-maximal elimination (Km, uM)")       # Table 1 Km = 3.73 (RSE 8.32%); control stream THETA(5) = 3.7268
-    lvc      <- log(3.4475);   label("Central volume of distribution (Vc, L/kg)")                # Table 1 Vc = 3.45 (RSE 17.2%); control stream THETA(6) = 3.4475
-    lq       <- log(0.93210);  label("Intercompartmental clearance (Q, L/kg/h)")                 # Table 1 Q = 0.932 (RSE 23.5%); control stream THETA(7) = 0.93210
+    lka_scid <- log(2.7726);   label("Absorption rate constant, SCID mice (1/h)")            # Table 1 Ka* = 2.77 (RSE 7.83%); control stream THETA(1) = 2.7726
+    lka_nude <- fixed(log(9.9)); label("Absorption rate constant, nude mice (1/h)")          # Table 1: 9.90, no informative absorption-phase samples in nude mice; validated by likelihood profiling
+    lcl      <- log(0.25119);  label("Linear clearance (L/kg/h)")                            # Table 1 CL = 0.251 (RSE 7.69%); control stream THETA(3) = 0.25119
+    lvmax    <- log(4.2741);   label("Maximum saturable elimination rate (umol/kg/h)")     # Table 1 Vmax = 4.27 (RSE 13.1%); control stream THETA(4) = 4.2741
+    lkm      <- log(3.7268);   label("Concentration at half-maximal elimination (uM)")       # Table 1 Km = 3.73 (RSE 8.32%); control stream THETA(5) = 3.7268
+    lvc      <- log(3.4475);   label("Central volume of distribution (L/kg)")                # Table 1 Vc = 3.45 (RSE 17.2%); control stream THETA(6) = 3.4475
+    lq       <- log(0.93210);  label("Intercompartmental clearance (L/kg/h)")                 # Table 1 Q = 0.932 (RSE 23.5%); control stream THETA(7) = 0.93210
 
     # Vp is not a separate parameter: DeJongh 2025 Table 1 records
     # "Assumption: Vp = Vp" for the peripheral volume and the Results

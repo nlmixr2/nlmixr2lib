@@ -126,7 +126,7 @@ Nielsen_2011_erythromycin <- function() {
     bact_resting(0)   <- cfu0 * f_resting_t0
 
     cfu_obs_floor <- btot + 1
-    Cc <- log(cfu_obs_floor)
-    Cc ~ add(addSd)
+    log_cfu <- log(cfu_obs_floor)
+    log_cfu ~ add(addSd)
   })
 }

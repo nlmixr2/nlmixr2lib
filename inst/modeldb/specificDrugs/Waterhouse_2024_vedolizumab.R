@@ -174,14 +174,14 @@ Waterhouse_2024_vedolizumab <- function() {
     # Equation S2 ("theta_11 for Q (fixed to 0.75)"). Following the paper's own equation form
     # (Eq S2) and the standard allometric-clearance convention, Q = 0.75. The Table 2 value
     # 0.50 is treated as a typographical error and is documented in the vignette Errata.
-    e_wt_q  <- fixed(0.75); label("Allometric exponent of WT on Q")   # Section 3.2.2 + Supp Eq S2
-    e_wt_vp <- fixed(1.00); label("Allometric exponent of WT on Vp")  # Table 2 + Supp Eq S2
+    e_wt_q  <- fixed(0.75); label("Allometric exponent of WT on Q (unitless)")   # Section 3.2.2 + Supp Eq S2
+    e_wt_vp <- fixed(1.00); label("Allometric exponent of WT on Vp (unitless)")  # Table 2 + Supp Eq S2
 
     # Estimated categorical covariate multipliers (Waterhouse 2024 Table 2, power form:
     # CL *= multiplier^indicator; null effect = 1).
-    e_liver_gvhd_cl     <- 1.05; label("Liver aGvHD multiplier on CL (power form: CL * 1.05^AGVHD_LIVER)")         # Table 2
-    e_skin_gvhd_cl      <- 1.03; label("Skin aGvHD multiplier on CL (power form: CL * 1.03^AGVHD_SKIN)")           # Table 2
-    e_intestine_gvhd_cl <- 1.07; label("Intestinal aGvHD multiplier on CL (power form: CL * 1.07^AGVHD_INTESTINE)")  # Table 2
+    e_liver_gvhd_cl     <- 1.05; label("Liver aGvHD multiplier on CL, power form on AGVHD_LIVER (unitless)")         # Table 2
+    e_skin_gvhd_cl      <- 1.03; label("Skin aGvHD multiplier on CL, power form on AGVHD_SKIN (unitless)")           # Table 2
+    e_intestine_gvhd_cl <- 1.07; label("Intestinal aGvHD multiplier on CL, power form on AGVHD_INTESTINE (unitless)")  # Table 2
 
     # Interindividual variability -- Waterhouse 2024 Table 3 full block on CL, Vc, Vp.
     #   variance(etalcl) = 0.0827  (CV% = 29.4)

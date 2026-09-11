@@ -155,7 +155,7 @@ Dunlap_2025_tacrolimus <- function() {
     # (Dunlap 2025 Section 3.2: "The estimated TVKA/F, TVV1/F, TVCL/F, TVV2/F,
     # and TVQ/F for a 70 kg CYP3A5 PM subject receiving MAC chemotherapy were
     # 0.50/h, 150 L, 23 L/h, 1153 L, and 43 L/h").
-    lka <- log(0.50);   label("Absorption rate (Ka, 1/h)")  # Dunlap 2025 Table 2 RCM TVKA = 0.50 1/h [95% CI 0.38-0.66]
+    lka <- log(0.50);   label("Absorption rate (1/h)")  # Dunlap 2025 Table 2 RCM TVKA = 0.50 1/h [95% CI 0.38-0.66]
     lcl <- log(23);     label("Apparent CL/F at reference covariates (TBW=70 kg, CYP3A5 PM, MAC) (L/h)")  # Dunlap 2025 Table 2 RCM TVCL/F = 23 L/h [95% CI 17-30]
     lvc <- log(150);    label("Apparent central volume V1/F at reference TBW=70 kg (L)")  # Dunlap 2025 Table 2 RCM TVV1/F = 150 L [95% CI 104-215]
     lq  <- log(43);     label("Apparent intercompartmental clearance Q/F at reference TBW=70 kg (L/h)")  # Dunlap 2025 Table 2 RCM TVQ/F = 43 L/h [95% CI 37-50]

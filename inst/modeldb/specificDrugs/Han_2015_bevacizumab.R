@@ -76,10 +76,10 @@ Han_2015_bevacizumab <- function() {
     #   V1 = 2850 mL          / 1000 = 2.85   L
     #   Q  = 28.0  mL/h * 24 / 1000 = 0.6720 L/day
     #   V2 = 2564 mL          / 1000 = 2.564  L
-    lcl <- log(0.2376); label("Clearance for median 44 kg female paediatric sarcoma patient (CL, L/day)")  # Table 2 row CL = 9.90 mL/h (RSE 4.1%)
-    lvc <- log(2.85);   label("Central volume of distribution for median patient (V1, L)")                 # Table 2 row V1 = 2850 mL (RSE 3.0%)
-    lq  <- log(0.6720); label("Inter-compartmental clearance for median patient (Q, L/day)")               # Table 2 row Q  = 28.0 mL/h (RSE 10.4%)
-    lvp <- log(2.564);  label("Peripheral volume of distribution for median patient (V2, L)")              # Table 2 row V2 = 2564 mL (RSE 5.8%)
+    lcl <- log(0.2376); label("Clearance for median 44 kg female paediatric sarcoma patient (L/day)")  # Table 2 row CL = 9.90 mL/h (RSE 4.1%)
+    lvc <- log(2.85);   label("Central volume of distribution for median patient (L)")                 # Table 2 row V1 = 2850 mL (RSE 3.0%)
+    lq  <- log(0.6720); label("Inter-compartmental clearance for median patient (L/day)")               # Table 2 row Q  = 28.0 mL/h (RSE 10.4%)
+    lvp <- log(2.564);  label("Peripheral volume of distribution for median patient (L)")              # Table 2 row V2 = 2564 mL (RSE 5.8%)
 
     # Fixed allometric exponents on body weight (BWT, reference 44 kg = cohort
     # median). Han 2015 Table 2: BWT-on-CL and BWT-on-Q are fixed at the

@@ -186,7 +186,7 @@ Zhong_2026_abatacept <- function() {
                DIS_PJIA * e_jia_f +
                e_wt_f  * log(WT  / 67.9) +
                e_age_f * log(AGE / 49)
-    fdepot  <- 1 / (1 + exp(-logit_f))
+    fdepot  <- expit(logit_f)
 
     # Two-compartment PK; IV doses go directly to central, SC doses to depot
     # with bioavailability fdepot.

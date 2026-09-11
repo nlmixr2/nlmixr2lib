@@ -22,20 +22,20 @@ Soehoel_2022_tralokinumab <- function() {
       notes              = "Allometric-style effect on CL/Q and Vc/Vp with reference weight 75 kg.",
       source_name        = "WT"
     ),
-    nonECZTRA = list(
+    NON_ECZTRA = list(
       description        = "Indicator for non-ECZTRA trial enrollment",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (ECZTRA trial)",
-      notes              = "1 = any study other than ECZTRA; 0 = ECZTRA study. Mixed-case preserved from source per covariate-columns.md; future models should rename to NON_ECZTRA.",
+      notes              = "1 = any study other than ECZTRA; 0 = ECZTRA study. The source paper writes this column `nonECZTRA`; renamed to the ALL-CAPS canonical per covariate-columns.md, with the source spelling kept in source_name.",
       source_name        = "nonECZTRA"
     ),
-    dilution = list(
+    DILUTION = list(
       description        = "Indicator for diluted drug product (study D2213C00001)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (not diluted)",
-      notes              = "1 = drug diluted as in study D2213C00001; 0 = not diluted (typical). Lower-case preserved from source per covariate-columns.md; future models should rename to DILUTION.",
+      notes              = "1 = drug diluted as in study D2213C00001; 0 = not diluted (typical). The source paper writes this column `dilution`; renamed to the ALL-CAPS canonical per covariate-columns.md, with the source spelling kept in source_name.",
       source_name        = "dilution"
     )
   )
@@ -67,8 +67,8 @@ Soehoel_2022_tralokinumab <- function() {
 
     e_wt_vc_vp <- 0.783; label("Effect of body weight on central and peripheral volumes (unitless)")
     e_wt_cl_q <- 0.873; label("Effect of body weight on clearance and intercompartmental clearance (unitless)")
-    e_nonECZTRA_cl <- 0.344; label("Effect of non-ECZTRA trials on clearance (unitless)")
-    e_nonECZTRA_vc <- 0.258; label("Effect of non-ECZTRA trials on central volume (unitless)")
+    e_non_ecztra_cl <- 0.344; label("Effect of non-ECZTRA trials on clearance (unitless)")
+    e_non_ecztra_vc <- 0.258; label("Effect of non-ECZTRA trials on central volume (unitless)")
     e_dilution_fdepot <- 0.354; label("Effect of dilution on bioavailability (unitless)")
     e_dilution_ka <- -0.519; label("Effect of dilution trials on absorption rate (unitless)")
 
@@ -81,10 +81,10 @@ Soehoel_2022_tralokinumab <- function() {
                         0.071977, 0.093459)
   })
   model({
-    fdepot <- exp(lfdepot)*(1 + e_dilution_fdepot*dilution)
-    ka <- exp(lka)*(1 + e_dilution_ka*dilution)
-    cl <- exp(lcl + etalcl)*(WT/75)^e_wt_cl_q * (1 + e_nonECZTRA_cl*nonECZTRA)
-    vc <- exp(lvc + etalvc)*(WT/75)^e_wt_vc_vp * (1 + e_nonECZTRA_vc*nonECZTRA)
+    fdepot <- exp(lfdepot)*(1 + e_dilution_fdepot*DILUTION)
+    ka <- exp(lka)*(1 + e_dilution_ka*DILUTION)
+    cl <- exp(lcl + etalcl)*(WT/75)^e_wt_cl_q * (1 + e_non_ecztra_cl*NON_ECZTRA)
+    vc <- exp(lvc + etalvc)*(WT/75)^e_wt_vc_vp * (1 + e_non_ecztra_vc*NON_ECZTRA)
     q <- exp(lq)*(WT/75)^e_wt_cl_q
     vp <- exp(lvp)*(WT/75)^e_wt_vc_vp
 

@@ -107,20 +107,20 @@ Wallender_2021_piperaquine_qtc <- function() {
     # measurement conversion is deliberately absent: the QTc model is
     # driven by plasma concentration.
     # ==================================================================
-    lcl  <- log(867)   ; label("Apparent oral clearance at the reference weight, extrapolated to full enzyme maturation (CL/F, L/day)")     # Table 2 Clearance 867 L/d
-    lvc  <- log(592)   ; label("Apparent central volume of distribution at the reference weight (Vc/F, L)")                                 # Table 2 Volume of central compartment 592 L
-    lq   <- log(511)   ; label("Apparent intercompartmental clearance to the first peripheral compartment at the reference weight (Q1/F, L/day)")   # Table 2 Intercompartmental clearance 1 = 511 L/d
-    lvp  <- log(7240)  ; label("Apparent first peripheral volume of distribution at the reference weight (Vp1/F, L)")                       # Table 2 Volume of peripheral compartment 1 = 7240 L
-    lq2  <- log(671)   ; label("Apparent intercompartmental clearance to the second peripheral compartment at the reference weight (Q2/F, L/day)")  # Table 2 Intercompartmental clearance 2 = 671 L/d
-    lvp2 <- log(1060)  ; label("Apparent second peripheral volume of distribution at the reference weight (Vp2/F, L)")                      # Table 2 Volume of peripheral compartment 2 = 1060 L
-    lmtt <- log(0.045) ; label("Mean transit time of the absorption chain (MTT, day)")                                                      # Table 2 Absorption transit time 0.045 d; ktr = (n+1)/MTT with n = 2
+    lcl  <- log(867)   ; label("Apparent oral clearance at the reference weight, extrapolated to full enzyme maturation (L/day)")     # Table 2 Clearance 867 L/d
+    lvc  <- log(592)   ; label("Apparent central volume of distribution at the reference weight (L)")                                 # Table 2 Volume of central compartment 592 L
+    lq   <- log(511)   ; label("Apparent intercompartmental clearance to the first peripheral compartment at the reference weight (L/day)")   # Table 2 Intercompartmental clearance 1 = 511 L/d
+    lvp  <- log(7240)  ; label("Apparent first peripheral volume of distribution at the reference weight (L)")                       # Table 2 Volume of peripheral compartment 1 = 7240 L
+    lq2  <- log(671)   ; label("Apparent intercompartmental clearance to the second peripheral compartment at the reference weight (L/day)")  # Table 2 Intercompartmental clearance 2 = 671 L/d
+    lvp2 <- log(1060)  ; label("Apparent second peripheral volume of distribution at the reference weight (L)")                      # Table 2 Volume of peripheral compartment 2 = 1060 L
+    lmtt <- log(0.045) ; label("Mean transit time of the absorption chain (day)")                                                      # Table 2 Absorption transit time 0.045 d; ktr = (n+1)/MTT with n = 2
 
     e_wt_cl <- fixed(0.75) ; label("Allometric exponent of body weight on all clearance parameters, referenced to 8.6 kg (unitless)")       # Methods, "Population PK model"
     e_wt_vc <- fixed(1)    ; label("Allometric exponent of body weight on all volume parameters, referenced to 8.6 kg (unitless)")          # Methods, "Population PK model"
 
     ltm50_cl <- log(96) ; label("Postmenstrual age at which the maturation of piperaquine clearance is half-maximal (weeks)")               # Table 2 theta Post menstrual age EC50 = 96 weeks
 
-    lfdepot <- fixed(log(1)) ; label("Relative oral bioavailability at the reference covariates and on a directly observed dosing occasion (F, unitless)")  # Table 2 Relative bioavailability (F) = 1, pre-specified anchor
+    lfdepot <- fixed(log(1)) ; label("Relative oral bioavailability at the reference covariates and on a directly observed dosing occasion (unitless)")  # Table 2 Relative bioavailability (F) = 1, pre-specified anchor
 
     e_waz_fdepot       <- 0.113 ; label("Fractional change in relative oral bioavailability per unit of weight-for-age z-score above the cohort median of -0.5 (unitless)")  # Table 2 theta Weight for age z-score = 0.113
     e_selfadmin_fdepot <- 0.397 ; label("Multiplicative effect of a self-administered rather than directly observed dosing occasion on relative oral bioavailability (unitless)")  # Table 2 theta Self-administered DP = 0.397

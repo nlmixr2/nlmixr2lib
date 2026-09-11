@@ -175,7 +175,7 @@ Svensson_2016_bedaquiline <- function() {
     # Absorption derived from MAT (hours) and FR (unitless fraction in (0, 1)).
     # MAT inherits its IIV via etalmat; FR has no IIV in the source model.
     mat <- exp(lmat + etalmat)
-    fr  <- 1 / (1 + exp(-logitfmat))
+    fr  <- expit(logitfmat)
     mtt <- mat * fr
     ka  <- log(2) / (mat * (1 - fr) / 3.3)   # absorption rate (1/h); the 3.3-fold delay-to-absorption-half-life ratio is the paper's parameterization (Svensson 2016 Methods, transit description)
     ktr <- 2 / mtt                            # transit-chain rate (1/h) for two transit compartments

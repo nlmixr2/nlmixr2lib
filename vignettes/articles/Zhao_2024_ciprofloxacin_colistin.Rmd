@@ -142,10 +142,10 @@ sim_tk <- function(BACT, micCip, micCst, cipX, cstX) {
 grid_cip <- tidyr::crossing(strains, cipX = c(0, 0.5, 1, 2))
 fig2a <- do.call(rbind, Map(function(b, mc, ms, s, x) {
   sim_tk(b, mc, ms, x, 0) |>
-    dplyr::transmute(time, Cc, strain = s, regimen = paste0(x, "x MIC"))
+    dplyr::transmute(time, log_cfu, strain = s, regimen = paste0(x, "x MIC"))
 }, grid_cip$BACT, grid_cip$micCip, grid_cip$micCst, grid_cip$strain, grid_cip$cipX))
 
-ggplot(fig2a, aes(time, Cc, colour = regimen)) +
+ggplot(fig2a, aes(time, log_cfu, colour = regimen)) +
   geom_line(linewidth = 0.7) +
   geom_hline(yintercept = 1, linetype = "dashed", colour = "grey40") +
   facet_wrap(~strain) +
@@ -162,10 +162,10 @@ ggplot(fig2a, aes(time, Cc, colour = regimen)) +
 grid_cst <- tidyr::crossing(strains, cstX = c(0, 0.25, 1, 4, 16))
 fig2b <- do.call(rbind, Map(function(b, mc, ms, s, x) {
   sim_tk(b, mc, ms, 0, x) |>
-    dplyr::transmute(time, Cc, strain = s, regimen = paste0(x, "x MIC"))
+    dplyr::transmute(time, log_cfu, strain = s, regimen = paste0(x, "x MIC"))
 }, grid_cst$BACT, grid_cst$micCip, grid_cst$micCst, grid_cst$strain, grid_cst$cstX))
 
-ggplot(fig2b, aes(time, Cc, colour = regimen)) +
+ggplot(fig2b, aes(time, log_cfu, colour = regimen)) +
   geom_line(linewidth = 0.7) +
   geom_hline(yintercept = 1, linetype = "dashed", colour = "grey40") +
   facet_wrap(~strain) +
@@ -189,12 +189,12 @@ the laboratory strains, drives the late regrowth.
 grid_cmb <- tidyr::crossing(strains, cipX = c(0.125, 0.5), cstX = c(0.125, 0.375))
 fig2c <- do.call(rbind, Map(function(b, mc, ms, s, xc, xs) {
   sim_tk(b, mc, ms, xc, xs) |>
-    dplyr::transmute(time, Cc, strain = s,
+    dplyr::transmute(time, log_cfu, strain = s,
                      regimen = sprintf("CIP %gx + CST %gx", xc, xs))
 }, grid_cmb$BACT, grid_cmb$micCip, grid_cmb$micCst, grid_cmb$strain,
    grid_cmb$cipX, grid_cmb$cstX))
 
-ggplot(fig2c, aes(time, Cc, colour = regimen)) +
+ggplot(fig2c, aes(time, log_cfu, colour = regimen)) +
   geom_line(linewidth = 0.7) +
   geom_hline(yintercept = 1, linetype = "dashed", colour = "grey40") +
   facet_wrap(~strain) +
@@ -213,13 +213,13 @@ bmax_log10 <- log10(1.56e9)
 #    Take the value at the end of the experiment, not the maximum over the
 #    curve: the density-dependent S->R transfer is a delayed brake, so the
 #    total count overshoots Bmax by ~0.14 log10 around 6 h before settling.
-plateau <- gc47$Cc[gc47$time == 32]
-overshoot <- max(gc47$Cc)
+plateau <- gc47$log_cfu[gc47$time == 32]
+overshoot <- max(gc47$log_cfu)
 
 # 2. LM378 and LM421 share one colistin parameter set (Table 1), so at a common
 #    colistin exposure in mg/L their predictions must be identical.
-lm378 <- sim_tk(378, 0.38, 0.5, 0, 1)$Cc
-lm421 <- sim_tk(421, 1.00, 0.5, 0, 1)$Cc
+lm378 <- sim_tk(378, 0.38, 0.5, 0, 1)$log_cfu
+lm421 <- sim_tk(421, 1.00, 0.5, 0, 1)$log_cfu
 
 # 3. The pre-existing resting subpopulation of C47 is NOT killed by
 #    ciprofloxacin alone, but IS killed by colistin (and faster in combination).
@@ -238,7 +238,7 @@ tibble::tibble(
   ),
   Result = c(
     sprintf("%.3f vs %.3f (transient peak %.3f at %g h)", plateau, bmax_log10,
-            overshoot, gc47$time[which.max(gc47$Cc)]),
+            overshoot, gc47$time[which.max(gc47$log_cfu)]),
     sprintf("max |difference| = %.2g", max(abs(lm378 - lm421))),
     sprintf("max |difference| vs no drug = %.2g", max(abs(pr_cip - pr_none))),
     sprintf("%.3g -> %.3g CFU/mL at 32 h", pr_none[length(pr_none)], pr_cst[length(pr_cst)]),
@@ -378,15 +378,15 @@ sim_sd <- rxode2::rxSolve(mod_pl, ev_sd, keep = "arm",
                           useLinCmt = FALSE) |>
   as.data.frame()
 
-# PKNCA convention: the concentration column is named Cc. Here the analyte is
+# PKNCA convention: the concentration column is named log_cfu. Here the analyte is
 # the unbound ciprofloxacin plasma concentration, not the bacterial count.
 sim_nca <- sim_sd |>
   dplyr::filter(!is.na(cipPlasma)) |>
-  dplyr::transmute(id, time, Cc = cipPlasma, treatment = arm)
+  dplyr::transmute(id, time, log_cfu = cipPlasma, treatment = arm)
 
 sim_nca <- dplyr::bind_rows(
   sim_nca,
-  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, log_cfu = 0)
 ) |>
   dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
   dplyr::arrange(id, treatment, time)
@@ -395,7 +395,7 @@ dose_df <- ev_sd |>
   dplyr::filter(evid == 1) |>
   dplyr::transmute(id, time, amt, treatment = arm)
 
-conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+conc_obj <- PKNCA::PKNCAconc(sim_nca, log_cfu ~ time | treatment + id)
 dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
 
 intervals <- data.frame(start = 0, end = Inf,
@@ -464,8 +464,8 @@ sim_f4 <- rxode2::rxSolve(mod_pl, arms_pd, keep = "arm",
 
 sim_f4 |>
   dplyr::group_by(time, arm) |>
-  dplyr::summarise(Q10 = quantile(Cc, 0.10), Q50 = median(Cc),
-                   Q90 = quantile(Cc, 0.90), .groups = "drop") |>
+  dplyr::summarise(Q10 = quantile(log_cfu, 0.10), Q50 = median(log_cfu),
+                   Q90 = quantile(log_cfu, 0.90), .groups = "drop") |>
   ggplot(aes(time, Q50, colour = arm, fill = arm)) +
   geom_ribbon(aes(ymin = Q10, ymax = Q90), alpha = 0.2, colour = NA) +
   geom_line(linewidth = 0.8) +
@@ -502,8 +502,8 @@ sim_f5 <- rxode2::rxSolve(mod_kd, arms_kid, keep = "arm",
 
 sim_f5 |>
   dplyr::group_by(time, arm) |>
-  dplyr::summarise(Q10 = quantile(Cc, 0.10), Q50 = median(Cc),
-                   Q90 = quantile(Cc, 0.90), .groups = "drop") |>
+  dplyr::summarise(Q10 = quantile(log_cfu, 0.10), Q50 = median(log_cfu),
+                   Q90 = quantile(log_cfu, 0.90), .groups = "drop") |>
   ggplot(aes(time, Q50, colour = arm, fill = arm)) +
   geom_ribbon(aes(ymin = Q10, ymax = Q90), alpha = 0.2, colour = NA) +
   geom_line(linewidth = 0.8) +
@@ -524,8 +524,8 @@ site_check <- tibble::tibble(
   Site = c("Plasma", "Kidney interstitium"),
   "MIC_CIP (mg/L)" = c(8, 8),
   "log10 CFU/mL at 32 h, ciprofloxacin alone" = c(
-    median(sim_f4$Cc[sim_f4$arm == "CIP 400 mg q8h alone" & sim_f4$time == 32]),
-    median(sim_f5$Cc[sim_f5$arm == "CIP 400 mg q8h alone" & sim_f5$time == 32])
+    median(sim_f4$log_cfu[sim_f4$arm == "CIP 400 mg q8h alone" & sim_f4$time == 32]),
+    median(sim_f5$log_cfu[sim_f5$arm == "CIP 400 mg q8h alone" & sim_f5$time == 32])
   )
 )
 knitr::kable(site_check, digits = 2,

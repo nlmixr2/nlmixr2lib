@@ -162,22 +162,22 @@ Khwarg_2024_proguanil <- function() {
     # L, rate constants in 1/h.
 
     lka <- log(0.101)
-    label("Absorption rate constant, depot -> liver (KA, 1/h)")                      # Khwarg 2024 Table 3: K_A = 0.101 1/h (RSE 6.0%)
+    label("Absorption rate constant, depot -> liver (1/h)")                      # Khwarg 2024 Table 3: K_A = 0.101 1/h (RSE 6.0%)
 
     lcl <- log(33.5)
-    label("Apparent clearance of proguanil via the non-cycloguanil pathway (CL/F, L/h)")  # Khwarg 2024 Table 3: CL/F = 33.5 L/h (RSE 16.4%). Figure 2 draws CL/F leaving the central compartment; the table abbreviation list defines it as "apparent clearance of proguanil via non-cycloguanil metabolic pathway".
+    label("Apparent clearance of proguanil via the non-cycloguanil pathway (L/h)")  # Khwarg 2024 Table 3: CL/F = 33.5 L/h (RSE 16.4%). Figure 2 draws CL/F leaving the central compartment; the table abbreviation list defines it as "apparent clearance of proguanil via non-cycloguanil metabolic pathway".
 
     lvc <- log(58.4)
-    label("Apparent central volume of distribution of proguanil (Vc/F, L)")          # Khwarg 2024 Table 3: V_c/F = 58.4 L (RSE 24.1%). Also used as the cycloguanil central volume -- Results 'Structural model': "The central volume of distribution of cycloguanil was assumed to be the same as the central volume of distribution of proguanil, due to identifiability issues."
+    label("Apparent central volume of distribution of proguanil (L)")          # Khwarg 2024 Table 3: V_c/F = 58.4 L (RSE 24.1%). Also used as the cycloguanil central volume -- Results 'Structural model': "The central volume of distribution of cycloguanil was assumed to be the same as the central volume of distribution of proguanil, due to identifiability issues."
 
     lq <- log(41.4)
-    label("Apparent inter-compartmental clearance of proguanil (Q/F, L/h)")          # Khwarg 2024 Table 3: Q/F = 41.4 L/h (RSE 7.2%)
+    label("Apparent inter-compartmental clearance of proguanil (L/h)")          # Khwarg 2024 Table 3: Q/F = 41.4 L/h (RSE 7.2%)
 
     lvp <- log(1400)
-    label("Apparent peripheral volume of distribution of proguanil (Vp/F, L)")       # Khwarg 2024 Table 3: V_p/F = 1400 L (RSE 26.0%)
+    label("Apparent peripheral volume of distribution of proguanil (L)")       # Khwarg 2024 Table 3: V_p/F = 1400 L (RSE 26.0%)
 
     lclint <- log(78.3)
-    label("Hepatic intrinsic clearance of proguanil (CLint, L/h)")                   # Khwarg 2024 Table 3: CL_int = 78.3 L/h (RSE 18.6%). Feeds the well-stirred extraction ratio of Equation 8.
+    label("Hepatic intrinsic clearance of proguanil (L/h)")                   # Khwarg 2024 Table 3: CL_int = 78.3 L/h (RSE 18.6%). Feeds the well-stirred extraction ratio of Equation 8.
 
     # ==================================================================
     # SLC22A1 (OCT1) 1022C>T EFFECT ON OCT1-MEDIATED HEPATIC UPTAKE
@@ -193,17 +193,17 @@ Khwarg_2024_proguanil <- function() {
     # (0.416 rounds to the 0.42 quoted in the Abstract and Results.)
 
     e_snp_oct1_clint <- 0.416
-    label("Relative fraction of OCT1-mediated hepatocyte uptake, SLC22A1 1022C>T CT vs CC (FUP, unitless)")  # Khwarg 2024 Table 3: FUP = 0.416 (RSE 54.1%)
+    label("Relative fraction of OCT1-mediated hepatocyte uptake, SLC22A1 1022C>T CT vs CC (unitless)")  # Khwarg 2024 Table 3: FUP = 0.416 (RSE 54.1%)
 
     # ==================================================================
     # CYCLOGUANIL (METABOLITE) STRUCTURAL PARAMETERS
     # ==================================================================
 
     lktr_cycloguanil <- log(1.03)
-    label("Cycloguanil efflux transit rate constant (mKT, 1/h)")                     # Khwarg 2024 Table 3: mK_T = 1.03 1/h (RSE 5.8%). Shared by all three transfers of the liver -> transit1 -> transit2 -> central chain (Figure 2 labels each arrow mK_T).
+    label("Cycloguanil efflux transit rate constant (1/h)")                     # Khwarg 2024 Table 3: mK_T = 1.03 1/h (RSE 5.8%). Shared by all three transfers of the liver -> transit1 -> transit2 -> central chain (Figure 2 labels each arrow mK_T).
 
     lcl_cycloguanil <- log(97.0)
-    label("Apparent clearance of cycloguanil (CLM/F, L/h)")                          # Khwarg 2024 Table 3: CL_M/F = 97.0 L/h (RSE 13.8%)
+    label("Apparent clearance of cycloguanil (L/h)")                          # Khwarg 2024 Table 3: CL_M/F = 97.0 L/h (RSE 13.8%)
 
     # ==================================================================
     # FIXED PHYSIOLOGIC CONSTANTS OF THE WELL-STIRRED LIVER SUB-MODEL

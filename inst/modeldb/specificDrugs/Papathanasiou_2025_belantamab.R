@@ -128,20 +128,20 @@ Papathanasiou_2025_belantamab <- function() {
     # weight exponents (theta_V_WTBL on volumes, theta_CL_WTBL on
     # clearances) are each shared between two structural parameters as
     # written in the source paper.
-    e_wt_vc_vp    <-  0.929;  label("Shared power exponent of WT on Vc and Vp (theta_V_WTBL)")             # Papathanasiou 2025 Table 2: theta_V_WTBL
-    e_wt_cl_q     <-  0.542;  label("Shared power exponent of WT on CL and Q (theta_CL_WTBL)")             # Papathanasiou 2025 Table 2: theta_CL_WTBL
-    e_alb_cl      <- -0.698;  label("Power exponent of ALB on CL")                                         # Papathanasiou 2025 Table 2: theta_CL_ALBBL
-    e_alb_vc      <- -0.302;  label("Power exponent of ALB on Vc")                                         # Papathanasiou 2025 Table 2: theta_ADC_Vc_ALBBL
-    e_alb_vp      <-  0.567;  label("Power exponent of ALB on Vp")                                         # Papathanasiou 2025 Table 2: theta_ADC_Vp_ALBBL
-    e_sbcma_cl    <-  0.113;  label("Power exponent of SBCMA on CL")                                       # Papathanasiou 2025 Table 2: theta_CL_SBCMABL
-    e_sbcma_vc    <-  0.0401; label("Power exponent of SBCMA on Vc")                                       # Papathanasiou 2025 Table 2: theta_ADC_Vc_SBCMABL
-    e_igg_cl      <-  0.170;  label("Power exponent of IGG on CL")                                         # Papathanasiou 2025 Table 2: theta_CL_IGGBL
-    e_bmi_vc      <- -0.459;  label("Power exponent of BMI on Vc")                                         # Papathanasiou 2025 Table 2: theta_ADC_Vc_IBMIBL
-    e_race_asian_cl <- 0.913; label("Multiplicative factor of RACE_ASIAN on CL")                           # Papathanasiou 2025 Table 2: theta_CL_RACEA
-    e_race_black_cl <- 0.861; label("Multiplicative factor of RACE_BLACK on CL")                           # Papathanasiou 2025 Table 2: theta_CL_RACEB
-    e_combo_imax  <-  1.44;   label("Multiplicative factor of COMBO_BELAMAF on Imax")                      # Papathanasiou 2025 Table 2: theta_IMAX_COMBO
-    e_igg_imax    <-  0.192;  label("Power exponent of IGG on Imax")                                       # Papathanasiou 2025 Table 2: theta_IMAX_IGGBL
-    e_sbcma_imax  <-  0.160;  label("Power exponent of SBCMA on Imax")                                     # Papathanasiou 2025 Table 2: theta_IMAX_SBCMABL
+    e_wt_vc_vp    <-  0.929;  label("Shared power exponent of WT on Vc and Vp; theta_V_WTBL (unitless)")             # Papathanasiou 2025 Table 2: theta_V_WTBL
+    e_wt_cl_q     <-  0.542;  label("Shared power exponent of WT on CL and Q; theta_CL_WTBL (unitless)")             # Papathanasiou 2025 Table 2: theta_CL_WTBL
+    e_alb_cl      <- -0.698;  label("Power exponent of ALB on CL (unitless)")                                         # Papathanasiou 2025 Table 2: theta_CL_ALBBL
+    e_alb_vc      <- -0.302;  label("Power exponent of ALB on Vc (unitless)")                                         # Papathanasiou 2025 Table 2: theta_ADC_Vc_ALBBL
+    e_alb_vp      <-  0.567;  label("Power exponent of ALB on Vp (unitless)")                                         # Papathanasiou 2025 Table 2: theta_ADC_Vp_ALBBL
+    e_sbcma_cl    <-  0.113;  label("Power exponent of SBCMA on CL (unitless)")                                       # Papathanasiou 2025 Table 2: theta_CL_SBCMABL
+    e_sbcma_vc    <-  0.0401; label("Power exponent of SBCMA on Vc (unitless)")                                       # Papathanasiou 2025 Table 2: theta_ADC_Vc_SBCMABL
+    e_igg_cl      <-  0.170;  label("Power exponent of IGG on CL (unitless)")                                         # Papathanasiou 2025 Table 2: theta_CL_IGGBL
+    e_bmi_vc      <- -0.459;  label("Power exponent of BMI on Vc (unitless)")                                         # Papathanasiou 2025 Table 2: theta_ADC_Vc_IBMIBL
+    e_race_asian_cl <- 0.913; label("Multiplicative factor of RACE_ASIAN on CL (unitless)")                           # Papathanasiou 2025 Table 2: theta_CL_RACEA
+    e_race_black_cl <- 0.861; label("Multiplicative factor of RACE_BLACK on CL (unitless)")                           # Papathanasiou 2025 Table 2: theta_CL_RACEB
+    e_combo_imax  <-  1.44;   label("Multiplicative factor of COMBO_BELAMAF on Imax (unitless)")                      # Papathanasiou 2025 Table 2: theta_IMAX_COMBO
+    e_igg_imax    <-  0.192;  label("Power exponent of IGG on Imax (unitless)")                                       # Papathanasiou 2025 Table 2: theta_IMAX_IGGBL
+    e_sbcma_imax  <-  0.160;  label("Power exponent of SBCMA on Imax (unitless)")                                     # Papathanasiou 2025 Table 2: theta_IMAX_SBCMABL
 
     # Inter-individual variability (Papathanasiou 2025 Table 2). All etas
     # are log-normal (omega^2 = log(CV^2 + 1)) except etacl_time_max, which is
@@ -160,7 +160,7 @@ Papathanasiou_2025_belantamab <- function() {
     # with Var(eps) = 0.0633 (log(ng/mL))^2. Additive on the natural-log
     # scale is equivalent to proportional in linear space for small
     # errors, with proportional SD = sqrt(0.0633) ~ 0.2516.
-    propSd <- 0.2516; label("Proportional residual error (SD; equivalent to additive-on-log-scale SD)")    # Papathanasiou 2025 Table 2: sqrt(0.0633) = 0.2516
+    propSd <- 0.2516; label("Proportional residual error SD; equivalent to additive-on-log-scale SD (fraction)")    # Papathanasiou 2025 Table 2: sqrt(0.0633) = 0.2516
   })
 
   model({

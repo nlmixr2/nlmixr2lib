@@ -58,11 +58,11 @@ Archary_2019_abacavir <- function() {
 
   ini({
     # Structural parameters; reference weight 7 kg = population median
-    lka  <- log(0.97);   label("Absorption rate constant (ka, 1/h)")                           # Table 3
-    lcl  <- log(3.33);   label("Apparent clearance day 1 at 7 kg reference (CL/F, L/h)")        # Table 3 (day-1 typical value)
-    lvc  <- log(4.63);   label("Apparent central volume at 7 kg reference (Vc/F, L)")           # Table 3
-    lq   <- log(0.63);   label("Apparent intercompartmental clearance (Q/F, L/h)")              # Table 3
-    lvp  <- log(1.65);   label("Apparent peripheral volume (Vp/F, L)")                          # Table 3
+    lka  <- log(0.97);   label("Absorption rate constant (1/h)")                           # Table 3
+    lcl  <- log(3.33);   label("Apparent clearance day 1 at 7 kg reference (L/h)")        # Table 3 (day-1 typical value)
+    lvc  <- log(4.63);   label("Apparent central volume at 7 kg reference (L)")           # Table 3
+    lq   <- log(0.63);   label("Apparent intercompartmental clearance (L/h)")              # Table 3
+    lvp  <- log(1.65);   label("Apparent peripheral volume (L)")                          # Table 3
     lfdepot <- fix(log(1)); label("Log baseline bioavailability F for delayed-ART reference (log(1) = 0)") # Table 3 (delayed-arm typical F = 1)
 
     # Allometric exponents (paper-fixed per Methods Section 2.3)

@@ -49,10 +49,10 @@ Zhi_2018_cefathiamidine <- function() {
     # Structural parameters -- typical values for a child at the reference
     # weight of 17.75 kg. All four estimates come from Zhi 2018 Table 2
     # (full-data final estimates). The paper used NONMEM v7.2 with FOCE-I.
-    lcl <- log(3.93); label("Clearance for a 17.75 kg child (CL, L/h)")                          # Zhi 2018 Table 2 (theta_1)
-    lvc <- log(4.18); label("Central volume of distribution for a 17.75 kg child (V1, L)")       # Zhi 2018 Table 2 (theta_2)
-    lq  <- log(0.50); label("Inter-compartmental clearance for a 17.75 kg child (Q, L/h)")       # Zhi 2018 Table 2 (theta_3)
-    lvp <- log(1.30); label("Peripheral volume of distribution for a 17.75 kg child (V2, L)")    # Zhi 2018 Table 2 (theta_4)
+    lcl <- log(3.93); label("Clearance for a 17.75 kg child (L/h)")                          # Zhi 2018 Table 2 (theta_1)
+    lvc <- log(4.18); label("Central volume of distribution for a 17.75 kg child (L)")       # Zhi 2018 Table 2 (theta_2)
+    lq  <- log(0.50); label("Inter-compartmental clearance for a 17.75 kg child (L/h)")       # Zhi 2018 Table 2 (theta_3)
+    lvp <- log(1.30); label("Peripheral volume of distribution for a 17.75 kg child (L)")    # Zhi 2018 Table 2 (theta_4)
 
     # Allometric exponents on body weight, fixed a priori per Zhi 2018
     # Methods / Results paragraph 2 ("allometric coefficients of 0.75 for

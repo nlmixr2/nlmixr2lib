@@ -68,7 +68,10 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkFixedLabelAgreement(ui, conv),
     .checkTimeVaryingClearanceNames(ui, conv),
     .checkCompartmentData(ui, conv),
-    .checkFmFamily(ui, conv)
+    .checkFmFamily(ui, conv),
+    .checkLogitBackTransform(ui, conv),
+    .checkHandWrittenInverseLogit(ui, conv),
+    .checkCentralConcentrationName(ui, conv)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -1555,6 +1558,141 @@ checkModelConventions <- function(model, verbose = TRUE) {
   NA_character_
 }
 
+# `Cc` is the central drug concentration -- both directions.
+#
+# compartment-names.md states the convention in the `central` entry: "the
+# conventional output state for plasma concentration `Cc = central / vc`". It
+# drifted in both directions before anything read it. A 2026-09-10 audit of all
+# 2769 models found 130 central concentrations under another name and, worse,
+# 67 models where `Cc` named something that is not a concentration at all -- a
+# log CFU burden, a viral load, a CAR-T count, a body weight. In
+# `Venisse_2008_caspofungin` the drug concentration and the fungal burden were
+# `cc` and `Cc`, distinguishable only by letter case.
+#
+# The check is deliberately two-sided, because a one-sided version passes on
+# exactly the swap that motivated it.
+#
+# Two things legitimately differ from `Cc` and are NOT flagged:
+#   * a SECOND central quantity derived alongside it -- `Cunbound <- central/vc`
+#     beside `Cc <- (complex + central)/vc` (Duke_2024_cefazolin). Recognised by
+#     the model also defining `Cc` (or `Cc_<suffix>`).
+#   * a SCALED derivation -- `* fu`, `* bp`, `/ mw`, unit conversions. Those are
+#     different quantities, so only a BARE `central/vc` is required to be `Cc`.
+#
+# Works on `ui$lstExpr` rather than deparsed text so comments and string
+# literals cannot produce a match.
+.stripExprParens <- function(e) {
+  while (is.call(e) && length(e) == 2L && identical(as.character(e[[1]]), "(")) {
+    e <- e[[2]]
+  }
+  e
+}
+
+# Suffix (possibly "") when `e` is exactly `central<sfx> / vc<sfx>`; NULL if not.
+.plainCentralConcSuffix <- function(e) {
+  e <- .stripExprParens(e)
+  if (!is.call(e) || length(e) != 3L) return(NULL)
+  if (!identical(as.character(e[[1]]), "/")) return(NULL)
+  num <- .stripExprParens(e[[2]])
+  den <- .stripExprParens(e[[3]])
+  if (!is.name(num) || !is.name(den)) return(NULL)
+  m1 <- regmatches(as.character(num),
+                   regexec("^central(_[A-Za-z0-9]+)?$", as.character(num)))[[1]]
+  m2 <- regmatches(as.character(den),
+                   regexec("^vc(_[A-Za-z0-9]+)?$", as.character(den)))[[1]]
+  if (!length(m1) || !length(m2)) return(NULL)
+  s1 <- if (length(m1) >= 2L) m1[[2]] else ""
+  s2 <- if (length(m2) >= 2L) m2[[2]] else ""
+  if (!identical(s1, s2)) return(NULL)
+  s1
+}
+
+.symbolsIn <- function(e, acc = character(0)) {
+  if (is.name(e)) return(c(acc, as.character(e)))
+  if (is.call(e)) {
+    for (i in seq_along(e)) {
+      part <- tryCatch(e[[i]], error = function(e) NULL)
+      if (!is.null(part) && (is.call(part) || is.name(part))) {
+        acc <- .symbolsIn(part, acc)
+      }
+    }
+  }
+  acc
+}
+
+# Does `nm` reach the central drug pool -- a `central*` state or `linCmt()` --
+# through at most `depth` further definitions?
+.reachesCentralPool <- function(nm, defs, depth = 0L, seen = character(0)) {
+  if (nm %in% seen || depth > 6L) return(FALSE)
+  rhs <- defs[[nm]]
+  if (is.null(rhs)) return(FALSE)
+  syms <- .symbolsIn(rhs)
+  if (any(grepl("central", syms)) || any(syms == "linCmt")) return(TRUE)
+  any(vapply(setdiff(syms, c(nm, seen)),
+             function(s) .reachesCentralPool(s, defs, depth + 1L, c(seen, nm)),
+             logical(1)))
+}
+
+.checkCentralConcentrationName <- function(ui, conv) {
+  issues <- .emptyIssues()
+  exprs <- tryCatch(ui$lstExpr, error = function(e) NULL)
+  if (!length(exprs)) return(issues)
+  defs <- list()
+  for (e in exprs) {
+    if (is.call(e) && length(e) == 3L &&
+        as.character(e[[1]]) %in% c("<-", "=") && is.name(e[[2]])) {
+      nm <- as.character(e[[2]])
+      if (is.null(defs[[nm]])) defs[[nm]] <- e[[3]]
+    }
+  }
+  if (!length(defs)) return(issues)
+
+  # (1) a bare `central<sfx>/vc<sfx>` must be `Cc<sfx>`, unless the model also
+  #     defines `Cc<sfx>` -- then this is the second quantity and keeps its name.
+  for (nm in names(defs)) {
+    sfx <- .plainCentralConcSuffix(defs[[nm]])
+    if (is.null(sfx)) next
+    expected <- paste0("Cc", sfx)
+    if (identical(nm, expected)) next
+    # The exemption for a second central quantity requires that the defined
+    # `Cc` IS a central concentration. Merely existing is not enough: in
+    # `Venisse_2008_caspofungin` `Cc` was the fungal burden, and exempting on
+    # its presence alone reported only half of that swap -- the burden, but not
+    # the drug concentration sitting under `cc`, which is the half a reader
+    # needs in order to fix it.
+    if (!is.null(defs[[expected]]) && .reachesCentralPool(expected, defs)) next
+    issues <- rbind(issues, .issue(
+      "compartments", "error", nm,
+      sprintf(paste0("'%s' is the central drug concentration (%s) but is not ",
+                     "named '%s'."), nm, deparse(defs[[nm]])[[1]], expected),
+      sprintf(paste0("Rename '%s' to '%s'. If it is a SECOND central quantity ",
+                     "(unbound beside total, raw beside calibrated), define ",
+                     "'%s' as well and keep this name for the other one."),
+              nm, expected, expected)
+    ))
+  }
+
+  # (2) `Cc` must BE a central concentration. This is the direction that catches
+  #     `Cc <- log10(cfu)`, `Cc <- bwkg` and the rest.
+  for (nm in names(defs)) {
+    if (!grepl("^Cc(_[A-Za-z0-9]+)?$", nm)) next
+    rhs <- .stripExprParens(defs[[nm]])
+    if (!(is.call(rhs) && as.character(rhs[[1]]) %in% c("log", "log10", "log2"))) next
+    if (.reachesCentralPool(nm, defs)) next
+    issues <- rbind(issues, .issue(
+      "compartments", "error", nm,
+      sprintf(paste0("'%s' is a log-transformed quantity (%s), so it is not a ",
+                     "concentration. 'Cc' names the central drug ",
+                     "concentration, not the model's primary observation."),
+              nm, deparse(defs[[nm]])[[1]]),
+      paste0("Name this output by its own canonical -- 'log_cfu' for a log ",
+             "CFU burden, 'log10_viral_load' for a viral load, 'BW' for a ",
+             "body weight -- and leave 'Cc' for 'central / vc'.")
+    ))
+  }
+  issues
+}
+
 .checkFmFamily <- function(ui, conv) {
   issues <- .emptyIssues()
   registered <- grep(.fmFamilyPattern, conv$paperNamedParams, value = TRUE)
@@ -1651,6 +1789,244 @@ checkModelConventions <- function(model, verbose = TRUE) {
               "discarded. Repeating a name is only safe when the Types differ.")
       ))
     }
+  }
+  issues
+}
+
+# Logit-scale back-transform agreement ---------------------------------------
+#
+# The inverse of logit is expit, and the library writes it several correct ways
+# -- `expit(x)`, `1/(1+exp(-x))`, `exp(x)/(1+exp(x))`, a two-step
+# `odds <- exp(x); p <- odds/(1+odds)`, and, where the source paper does, the
+# NEGATIVE convention `1/(1+exp(x))` = `expit(-x)`. A softmax over three or more
+# categories is a further legitimate shape that is not a binary expit at all.
+#
+# That variety is why this check does not police the SYNTAX of the
+# back-transform: a rule that grepped for `expit` would fire on six models that
+# are correct today (Chan's odds-ratio identity, Ibrahim's two-step, Choy's
+# negative convention, vandenBerg's and Pejcic's softmaxes). What it checks
+# instead is ARITHMETIC, which is convention-agnostic: where a logit-scale
+# parameter's own label states the proportion it corresponds to, expit of the
+# estimate -- under one sign or the other -- must reproduce that proportion.
+#
+# This is the invariant that catches the failure that matters: a value carried
+# on the logit scale and back-transformed with the wrong function (`exp(x)`
+# alone gives odds, not a probability) or the wrong sign. Both produce a number
+# that is silently plausible, so nothing downstream goes red.
+#
+# Scope is deliberately narrow to keep the false-positive rate at zero:
+#   * only `ini()` entries whose NAME marks them as logit-scale;
+#   * only labels that state a proportion with an explicit marker (`= 0.8`
+#     or a standalone `(0.8)`), never a bare number, because labels also carry
+#     units, compartment counts and reference weights, and never a
+#     percentage, which in this library always states a threshold;
+#   * the parameter's own estimate is never treated as its documented
+#     proportion, which would make the check vacuous.
+# A logit parameter whose label documents nothing is not an error -- most do
+# not, and requiring it would be a documentation rule, not a correctness one.
+.logitScaleNamePattern <- "logit"
+
+# A proportion the label explicitly claims. Anchored on `=`, a parenthesis or a
+# percent sign so that incidental numbers in prose are not mistaken for the
+# back-transformed value.
+.labelDocumentedProportions <- function(label) {
+  if (is.na(label) || !nzchar(label)) return(numeric(0))
+  out <- numeric(0)
+  # "= 0.825", "= .825"
+  m <- regmatches(label, gregexpr("=\\s*(0?\\.[0-9]+)", label, perl = TRUE))[[1]]
+  if (length(m)) out <- c(out, as.numeric(sub("^=\\s*", "", m)))
+  # "(0.825)" as a standalone parenthetical
+  m <- regmatches(label, gregexpr("\\(\\s*(0?\\.[0-9]+)\\s*\\)", label, perl = TRUE))[[1]]
+  if (length(m)) out <- c(out, as.numeric(gsub("[()[:space:]]", "", m)))
+  # "25%" / "25 percent" / "25 pct"
+  # No percentage branch. Every percentage that appears in a logit-scale label
+  # in this library states a THRESHOLD, not the parameter's value -- five
+  # labels read "the probability of an over-50% seizure-frequency reduction",
+  # where 50% defines the endpoint and has nothing to do with the logit. A
+  # branch that produced five false positives and zero true ones is worse than
+  # no branch: the gate has to be trustworthy to be worth having. Re-add it
+  # with a negative lookbehind for threshold words if a source ever documents
+  # a back-transformed value as a percentage.
+  out <- out[is.finite(out) & out > 0 & out < 1]
+  unique(out)
+}
+
+.expit <- function(x) 1 / (1 + exp(-x))
+
+.checkLogitBackTransform <- function(ui, conv) {
+  issues <- .emptyIssues()
+  ini <- ui$iniDf
+  if (is.null(ini) || nrow(ini) == 0) return(issues)
+  if (!all(c("name", "est", "label") %in% names(ini))) return(issues)
+  # tolerance is absolute on a probability scale; 0.005 accommodates a label
+  # that rounds "0.9168" to "0.917" without admitting a genuinely wrong sign,
+  # which moves the value by far more than that except very near logit 0.
+  tol <- 0.005
+  for (i in seq_len(nrow(ini))) {
+    nm <- ini$name[[i]]
+    if (!grepl(.logitScaleNamePattern, nm, ignore.case = TRUE)) next
+    # Variance terms are on the eta scale, not the logit scale of a proportion.
+    if (grepl("^eta", nm)) next
+    est <- suppressWarnings(as.numeric(ini$est[[i]]))
+    if (!is.finite(est)) next
+    docs <- .labelDocumentedProportions(ini$label[[i]])
+    # A label that merely repeats the logit-scale estimate documents nothing.
+    docs <- docs[abs(docs - est) > 1e-9]
+    if (!length(docs)) next
+    pos <- .expit(est)
+    neg <- .expit(-est)
+    if (any(abs(pos - docs) <= tol) || any(abs(neg - docs) <= tol)) next
+    issues <- rbind(issues, .issue(
+      "logit_backtransform_disagreement", "error", nm,
+      sprintf(paste0("'%s' is on the logit scale with estimate %s, but neither ",
+                     "expit(%s) = %s nor expit(-%s) = %s reproduces the ",
+                     "proportion its label states (%s)."),
+              nm, format(est), format(est), format(round(pos, 4)),
+              format(est), format(round(neg, 4)),
+              paste(format(docs), collapse = ", ")),
+      paste("Check the back-transform in `model()`. The inverse of logit is",
+            "expit: `expit(x)`, `1/(1+exp(-x))` or `exp(x)/(1+exp(x))`.",
+            "`exp(x)` alone yields the ODDS, not a probability, and",
+            "`1/(1+exp(x))` is expit(-x). If the source really does use the",
+            "negative convention, keep it and make the label state the",
+            "proportion that convention produces.")))
+  }
+  issues
+}
+
+# Hand-written inverse logit ------------------------------------------------
+#
+# The library spells every binary inverse logit `expit(x)`. That is not a style
+# preference: `exp(x)/(1+exp(x))` returns NaN for x >= 710 because exp()
+# overflows before the division can cancel it, while expit() returns 1. The
+# whole library was normalised for that reason, and within a day four newly
+# extracted models had reintroduced the hand-written form -- a convention that
+# lives only in prose decays, so this check is what keeps it.
+#
+# The sibling check `.checkLogitBackTransform()` tests the ARITHMETIC of a
+# back-transform against the proportion its label documents. This one tests the
+# SPELLING. They are complementary: arithmetic cannot see a correct-but-
+# overflow-prone form, and spelling cannot see a wrong sign.
+#
+# Matching is done on the parsed expression, not on text, because the whole
+# difficulty is telling a binary inverse logit apart from shapes that look like
+# one and must NOT be rewritten:
+#
+#   * a softmax over 3+ categories -- `exp(x_k)/(1 + exp(x_j) + exp(x_k))` or
+#     `exp(x_k)/tsum`. Its denominator carries extra terms, or its two exp()
+#     arguments differ, so the identical-argument test below excludes it.
+#   * the odds two-step `odds <- exp(x); p <- odds/(1+odds)`, and the
+#     odds-ratio IIV identity `odds_typ*exp(eta)` then `odds/(1+odds)`. The
+#     numerator is a SYMBOL, not an `exp()` call, so neither matches.
+#   * a SCALED logistic, `k/(1 + exp(x))` with k != 1 -- `18/(1 + exp(blc - A))`
+#     in Delor 2013, `9.2/(1 + exp(-das28_logit))` in Wojciechowski 2015. These
+#     are published equations whose scale factor carries meaning; `k * expit(x)`
+#     would be equivalent but reshapes a formula quoted from the source, and
+#     they carry no overflow risk. The numerator-is-1 test excludes them.
+#   * `exp(a)/(1 + exp(b))` with DIFFERENT arguments, which is a typical value
+#     divided by a logistic factor rather than an inverse logit at all --
+#     `SchaedeliStark_2024_balovaptan` divides CL by a logistic age term
+#     exactly this way, and rewriting it would be a bug.
+#
+# Comparison is on the deparsed argument so that `a + b` and `a+b` count as the
+# same expression while `a + b` and `b + a` do not -- the latter would still be
+# an inverse logit, but writing the two halves differently is itself worth a
+# nudge toward expit().
+
+# Recursively drop `(` wrappers, which R keeps as calls in the AST. Removing
+# them does not change meaning -- the tree already encodes precedence -- and it
+# lets one template match `1/(1 + exp(x))`, `1/((1 + exp(x)))` and
+# `(exp(a))/(1 + exp(a))` alike. Applied to the templates too, so both sides are
+# in the same normal form.
+.stripParens <- function(e) {
+  while (is.call(e) && length(e) == 2L &&
+         identical(as.character(e[[1]]), "(")) {
+    e <- e[[2]]
+  }
+  if (is.call(e)) {
+    for (i in seq_along(e)) {
+      part <- tryCatch(e[[i]], error = function(e) NULL)
+      if (!is.null(part) && (is.call(part) || is.name(part))) {
+        e[[i]] <- .stripParens(part)
+      }
+    }
+  }
+  e
+}
+
+# The two `exp()` arguments of a matched `exp(.)/(... exp(.) ...)`, in the two
+# operand orders. Top-level rather than closures inside the template list so the
+# accessor is readable on its own.
+.ilArgsPlusRight <- function(e) list(e[[2]][[2]], e[[3]][[3]][[2]])
+.ilArgsPlusLeft <- function(e) list(e[[2]][[2]], e[[3]][[2]][[2]])
+
+# `rxode2::.matchesLangTemplate()` does the structural matching: `.` in a
+# template matches any sub-expression, and a numeric literal matches by VALUE,
+# so the `1` here also matches a source that writes `1.0`. That last point is
+# not incidental -- the regex sweep that first normalised the library required a
+# literal `1` and therefore missed all eleven `1.0 / (1.0 + exp(...))`
+# occurrences.
+#
+# `sameArg` marks the templates whose two wildcards must denote the SAME
+# expression. The matcher does not tie wildcards together -- `exp(a)/(1+exp(b))`
+# matches `exp(.)/(1+exp(.))` -- and that is exactly the shape that must not be
+# flagged, so the equality is checked separately.
+.inverseLogitTemplates <- list(
+  list(tmpl = .stripParens(str2lang("1/(1 + exp(.))")), args = NULL),
+  list(tmpl = .stripParens(str2lang("1/(exp(.) + 1)")), args = NULL),
+  list(tmpl = .stripParens(str2lang("exp(.)/(1 + exp(.))")),
+       args = .ilArgsPlusRight),
+  list(tmpl = .stripParens(str2lang("exp(.)/(exp(.) + 1)")),
+       args = .ilArgsPlusLeft)
+)
+
+.sameArg <- function(a, b) {
+  identical(paste(deparse(a), collapse = " "),
+            paste(deparse(b), collapse = " "))
+}
+
+# Does this expression spell a binary inverse logit by hand? Returns the
+# deparsed offending expression, or NA.
+.handWrittenInverseLogit <- function(e) {
+  e <- .stripParens(e)
+  for (spec in .inverseLogitTemplates) {
+    if (!rxode2::.matchesLangTemplate(e, spec$tmpl)) next
+    if (!is.null(spec$args)) {
+      ab <- tryCatch(spec$args(e), error = function(e) NULL)
+      if (is.null(ab) || !.sameArg(ab[[1]], ab[[2]])) next
+    }
+    return(paste(deparse(e), collapse = " "))
+  }
+  NA_character_
+}
+
+.inverseLogitOffenders <- function(e, acc = character(0)) {
+  if (!is.call(e)) return(acc)
+  hit <- .handWrittenInverseLogit(e)
+  if (!is.na(hit)) acc <- c(acc, hit)
+  for (i in seq_along(e)) {
+    part <- tryCatch(e[[i]], error = function(e) NULL)
+    if (is.call(part)) acc <- .inverseLogitOffenders(part, acc)
+  }
+  acc
+}
+
+.checkHandWrittenInverseLogit <- function(ui, conv) {
+  issues <- .emptyIssues()
+  exprs <- tryCatch(ui$lstExpr, error = function(e) NULL)
+  if (!length(exprs)) return(issues)
+  offenders <- character(0)
+  for (e in exprs) offenders <- .inverseLogitOffenders(e, offenders)
+  for (o in unique(offenders)) {
+    issues <- rbind(issues, .issue(
+      "hand_written_inverse_logit", "error", NA_character_,
+      sprintf("`%s` spells an inverse logit by hand.", substr(o, 1, 120)),
+      paste("Use `expit()`. `exp(x)/(1+exp(x))` returns NaN for x >= 710",
+            "because exp() overflows before the division cancels it, and a",
+            "logit-scale parameter with IIV can reach that on an extreme eta",
+            "draw. `expit(x)` is bit-identical to `1/(1+exp(-x))` and within",
+            "2 ulp of `exp(x)/(1+exp(x))`. For the negative convention write",
+            "`expit(-x)`.")))
   }
   issues
 }

@@ -45,10 +45,10 @@ Smuszkiewicz_2017_dexmedetomidine <- function() {
     # column (population typical values). Two-compartment IV-infusion model;
     # dexmedetomidine was administered as a continuous infusion into the
     # central compartment without a loading dose.
-    lvc <- log(27.0);  label("Volume of central compartment (Vc, L)")             # Table 2 (theta_VC = 27.0 L)
-    lcl <- log(38.5);  label("Systemic clearance (CL, L/h)")                      # Table 2 (theta_CL = 38.5 L/h)
-    lvp <- log(87.6);  label("Volume of peripheral compartment (Vp, L)")          # Table 2 (theta_VT = 87.6 L)
-    lq  <- log(46.4);  label("Inter-compartmental clearance (Q, L/h)")            # Table 2 (theta_Q  = 46.4 L/h)
+    lvc <- log(27.0);  label("Volume of central compartment (L)")             # Table 2 (theta_VC = 27.0 L)
+    lcl <- log(38.5);  label("Systemic clearance (L/h)")                      # Table 2 (theta_CL = 38.5 L/h)
+    lvp <- log(87.6);  label("Volume of peripheral compartment (L)")          # Table 2 (theta_VT = 87.6 L)
+    lq  <- log(46.4);  label("Inter-compartmental clearance (L/h)")            # Table 2 (theta_Q  = 46.4 L/h)
 
     # Inter-individual variability. Table 2 reports each omega^2 as %CV; for a
     # log-normal IIV, omega^2 = log(CV^2 + 1) where CV is the decimal fraction.

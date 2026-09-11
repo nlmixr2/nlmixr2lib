@@ -121,17 +121,17 @@ Kastrissios_2012_managlinatDialanetil_activeMoiety <- function() {
     # estimate, NOT a between-subject CV.
     # ------------------------------------------------------------------
     lka <- log(2.54)
-    label("R-125338 apparent first-order absorption rate constant (ka, 1/h)")  # Table III Single Moiety ka = 2.54 (RSE 17%); Table III prints the unit as "L/h", a typo -- see vignette Errata
+    label("R-125338 apparent first-order absorption rate constant (1/h)")  # Table III Single Moiety ka = 2.54 (RSE 17%); Table III prints the unit as "L/h", a typo -- see vignette Errata
     ltlag <- log(0.46)
-    label("R-125338 apparent absorption lag time (Tlag, h)")  # Table III Single Moiety Tlag = 0.46 h (RSE 1%)
+    label("R-125338 apparent absorption lag time (h)")  # Table III Single Moiety Tlag = 0.46 h (RSE 1%)
     lcl <- log(35.3)
-    label("R-125338 apparent clearance (CL/F, L/h)")  # Table III Single Moiety CL/F = 35.3 (RSE 4%)
+    label("R-125338 apparent clearance (L/h)")  # Table III Single Moiety CL/F = 35.3 (RSE 4%)
     lvc <- log(187)
-    label("R-125338 apparent central volume (Vc/F, L)")  # Table III Single Moiety Vc/F = 187 (RSE 6%)
+    label("R-125338 apparent central volume (L)")  # Table III Single Moiety Vc/F = 187 (RSE 6%)
     lq <- log(5.61)
-    label("R-125338 apparent intercompartmental clearance (Q/F, L/h)")  # Table III Single Moiety Q/F = 5.61 (RSE 11%)
+    label("R-125338 apparent intercompartmental clearance (L/h)")  # Table III Single Moiety Q/F = 5.61 (RSE 11%)
     lvp <- log(313)
-    label("R-125338 apparent peripheral volume (Vp/F, L)")  # Table III Single Moiety Vp/F = 313 (RSE 6%)
+    label("R-125338 apparent peripheral volume (L)")  # Table III Single Moiety Vp/F = 313 (RSE 6%)
 
     e_crcl_cl <- 0.37
     label("Power exponent on (CRCL/70) for R-125338 CL/F (unitless)")  # Table III Effect, CLCR on CL/F = 0.37 (RSE 23%)

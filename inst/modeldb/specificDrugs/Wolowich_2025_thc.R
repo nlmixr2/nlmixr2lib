@@ -8,7 +8,7 @@ Wolowich_2025_thc <- function() {
     "three-compartment with IV bolus input, all THC elimination is metabolic",
     "conversion to the active metabolite 11-hydroxy-THC (11-OH-THC, written",
     "THC-OH by the authors) delayed by one transit compartment, and 11-OH-THC",
-    "is two-compartment. The pharmacodynamic endpoint is fHR, the increase in",
+    "is two-compartment. The pharmacodynamic endpoint is f_hr, the increase in",
     "heart rate at time t expressed as a fraction of that individual's own",
     "maximal increase, and it is described by an Emax model driven by the",
     "effect-site THC concentration. Results 3.2.1 reports AIC -2415 and calls",
@@ -65,7 +65,7 @@ Wolowich_2025_thc <- function() {
         "result: 'The CYP2C9 phenotype did not contribute to the HR effects",
         "observed as the polymorphism effect is seen in the PK of the",
         "terminal metabolite (THC-COOH) only', and THC-COOH was removed from",
-        "the PK model because it had no relationship to fHR."
+        "the PK model because it had no relationship to f_hr."
       )
     ),
     WT = list(
@@ -210,14 +210,14 @@ Wolowich_2025_thc <- function() {
     # PD LAYER -- Wolowich 2025 Table 3, 'Model 1B1: THC alone, Emax
     # with effect compartment'. Structure from Table 2 row 1B1:
     #   dCe,thc/dt = Ke0,thc * (Ac,thc - Ce,thc)
-    #   fHR,THC    = Emax,thc * Ce / (EC50,thc + Ce,thc)
+    #   f_hr,THC    = Emax,thc * Ce / (EC50,thc + Ce,thc)
     # ==================================================================
 
     lke0 <- log(6.22)
     label("Effect-compartment equilibration rate constant for THC, Ke0 (1/h)")     # Table 3: Ke0 6.22 (CV 16.1%, 95% CI 4.3-8.2). Results 3.2.1 confirms the units: 'The ke0 (effect compartment rate constant) of 6.2 l/h was equivalent to an effect site equilibration half-life of 0.12 h, or 7 min' -- log(2)/6.22 = 0.111 h, so the reported '(h)' and 'l/h' labels are slips and this is 1/h.
 
     lec50 <- log(0.53)
-    label("Effect-site THC concentration giving half-maximal fHR, EC50 (uM)")      # Table 3: EC50 0.53 (CV 23.6%, 95% CI 0.28-0.79); Results 3.2.1 and the Abstract both repeat 0.53 uM
+    label("Effect-site THC concentration giving half-maximal f_hr, EC50 (uM)")      # Table 3: EC50 0.53 (CV 23.6%, 95% CI 0.28-0.79); Results 3.2.1 and the Abstract both repeat 0.53 uM
 
     lemax <- log(0.96)
     label("Maximum fractional heart-rate increase, Emax (unitless fraction)")      # Table 3: Emax 0.96 (CV 3.8%, 95% CI 0.89-1.03)
@@ -271,8 +271,8 @@ Wolowich_2025_thc <- function() {
     propSd_11oh <- 0.23
     label("Proportional residual error for 11-OH-THC (fraction)")                  # Table 3: epsilon (SD) THCOH 0.23 (CV 12.2%, 95% CI 0.17-0.28)
 
-    addSd_fHR <- 0.18
-    label("Additive residual error for fHR (unitless fraction)")                   # Table 3: epsilon (SD) fHR 0.18 (CV 6.5%, 95% CI 0.16-0.20)
+    addSd_f_hr <- 0.18
+    label("Additive residual error for f_hr (unitless fraction)")                   # Table 3: epsilon (SD) f_hr 0.18 (CV 6.5%, 95% CI 0.16-0.20)
   })
 
   model({
@@ -337,10 +337,10 @@ Wolowich_2025_thc <- function() {
     # and is directly comparable with EC50.
     d/dt(effect) <- ke0 * (Cc - effect)
 
-    fHR <- emax * effect / (ec50 + effect)
+    f_hr <- emax * effect / (ec50 + effect)
 
     Cc      ~ prop(propSd)
     Cc_11oh ~ prop(propSd_11oh)
-    fHR     ~ add(addSd_fHR)
+    f_hr     ~ add(addSd_f_hr)
   })
 }

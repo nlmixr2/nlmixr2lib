@@ -64,15 +64,15 @@ Smith_2017_clindamycin <- function() {
     # Structural parameters -- Smith 2017 Table 2 (Final model)
     # Reference subject is a 70 kg adult (CL_70kg, V_70kg) with full maturation (PMA -> infinity)
     # and reference protein binding (ALB = 3.3 g/dL, AAG = 2.4 g/L).
-    lcl <- log(13.8); label("Clearance for a 70 kg fully mature adult (CL_70kg, L/h)")  # Smith 2017 Table 2 (CL_70kg = 13.8 L/h, RSE 6.2%)
-    lvc <- log(63.6); label("Central volume of distribution for a 70 kg reference subject (V_70kg, L)")  # Smith 2017 Table 2 (V_70kg = 63.6 L, RSE 5.0%)
+    lcl <- log(13.8); label("Clearance for a 70 kg fully mature adult (L/h)")  # Smith 2017 Table 2 (CL_70kg = 13.8 L/h, RSE 6.2%)
+    lvc <- log(63.6); label("Central volume of distribution for a 70 kg reference subject (L)")  # Smith 2017 Table 2 (V_70kg = 63.6 L, RSE 5.0%)
 
     # Allometric exponents on TBW (fixed at canonical 0.75 / 1.0 per Methods Equations 4-5; no RSE reported in Table 2)
     e_wt_cl <- fixed(0.75); label("Allometric exponent on CL for TBW (unitless)")  # Smith 2017 Methods Equation 4 (fixed)
     e_wt_vc <- fixed(1);    label("Allometric exponent on V for TBW (unitless)")   # Smith 2017 Methods Equation 5 (fixed)
 
     # Sigmoidal Hill maturation function on CL with postmenstrual age (weeks)
-    pma_tm50 <- 39.5; label("Postmenstrual age at 50% mature CL (TM50, weeks)")           # Smith 2017 Table 2 (TM50 = 39.5 weeks, RSE 12.1%)
+    pma_tm50 <- 39.5; label("Postmenstrual age at 50% mature CL (weeks)")           # Smith 2017 Table 2 (TM50 = 39.5 weeks, RSE 12.1%)
     pma_hill <- 2.83; label("Hill coefficient for sigmoidal CL maturation (unitless)")    # Smith 2017 Abstract Equation (HILL = 2.83; Table 2 rounded value 2.8)
 
     # Protein-binding covariate effects on V (power form, reference ALB = 3.3 g/dL, AAG = 2.4 g/L)

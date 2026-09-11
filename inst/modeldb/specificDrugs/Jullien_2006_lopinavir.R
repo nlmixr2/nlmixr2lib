@@ -70,8 +70,8 @@ Jullien_2006_lopinavir <- function() {
     # constant k governs both absorption and elimination (k = ka = kel) per the
     # Wahlby 2002 simplified parameterisation. The estimated parameters are CL/F
     # and V/F; the rate constant is derived inside model() as kel = cl/vc.
-    lcl <- log(2.58); label("Apparent clearance at WT=27 kg (CL/F, L/h)")             # Table 3 row 'Final model, Mean': TV(CL/F) = 2.58 L/h
-    lvc <- log(24.6); label("Apparent volume of distribution at WT=27 kg (V/F, L)")   # Table 3 row 'Final model, Mean': TV(V/F) = 24.6 L
+    lcl <- log(2.58); label("Apparent clearance at WT=27 kg (L/h)")             # Table 3 row 'Final model, Mean': TV(CL/F) = 2.58 L/h
+    lvc <- log(24.6); label("Apparent volume of distribution at WT=27 kg (L)")   # Table 3 row 'Final model, Mean': TV(V/F) = 24.6 L
 
     # Allometric exponents on body weight, reference WT = 27 kg (cohort median).
     # Estimated -- reported with SEs in Table 3; NOT held fixed.

@@ -269,7 +269,7 @@ Fung_2008_butanediol_rat <- function() {
 
     ka    <- exp(lka)
     tlag  <- exp(ltlag + etaltlag)
-    fr_bd <- 1 / (1 + exp(-logitfr_bd))
+    fr_bd <- expit(logitfr_bd)
 
     # ============================================================
     # 2. Concentrations (molar; mmol/L)

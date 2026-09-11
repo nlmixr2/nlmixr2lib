@@ -269,7 +269,7 @@ vanderWalt_2013_dapagliflozin <- function() {
     lmtt <- log(0.475)
     label("Mean transit time MTT through the absorption chain (h)")  # Table 1 Final model: MTT = 0.475 h RSE 7.2%
     lnn <- log(5.45)
-    label("Number of transit compartments NN (continuous, dimensionless)")  # Table 1 Final model: NN = 5.45 RSE 16.5%
+    label("Number of transit compartments NN, estimated on a continuous scale (dimensionless)")  # Table 1 Final model: NN = 5.45 RSE 16.5%
 
     # Bioavailability: logit-transformed so the back-transformed F
     # stays in (0, 1). Typical value BIO = 0.858 (final model). The
@@ -438,7 +438,7 @@ vanderWalt_2013_dapagliflozin <- function() {
     # logit back-transform; nlmixr2 otherwise warns that the eta is
     # non-mu-referenced because the eta sits inside exp(-...).
     logit_fdepot_i <- logitfdepot + etalogitfdepot
-    fdepot <- 1 / (1 + exp(-logit_fdepot_i))
+    fdepot <- expit(logit_fdepot_i)
 
     # ka collapses the rxode2 transit() output into central without
     # introducing an extra first-order absorption phase that the

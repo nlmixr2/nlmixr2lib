@@ -345,7 +345,7 @@ test_that("canonical covariates are parsed from inst/references/covariate-column
   expect_equal(canon$ADA_TITER$scope, "general")
   expect_equal(canon$FORM_SAR_DP2$scope, "specific")
   expect_equal(canon$TUMTP_HODGKIN_CLASSICAL$scope, "specific")
-  expect_equal(canon$ooc1$scope, "specific")
+  expect_equal(canon$OOC1$scope, "specific")
   expect_equal(canon$CONMED_EOX$scope, "specific")
   expect_equal(canon$DOSE_70MG$scope, "specific")
   expect_true("Xu_2019_sarilumab" %in% canon$FORM_SAR_DP2$example_models)
@@ -1903,4 +1903,388 @@ test_that("no model in the database binds an unregistered fm_ parameter", {
     if (nrow(issues)) bad <- c(bad, paste0(nm, ": ", issues$name))
   }
   expect_equal(sort(bad), character(0))
+})
+
+# nolint start: semicolon_linter, infix_spaces_linter
+# Logit back-transform agreement --------------------------------------------
+#
+# The point of these is that the check can go RED. A rule that only ever passes
+# manufactures confidence; each of the three wrong shapes below is a real bug
+# class -- exp() alone (odds), the wrong sign, and a plain arithmetic slip.
+
+test_that(".labelDocumentedProportions tolerates a missing or empty label", {
+  expect_length(nlmixr2lib:::.labelDocumentedProportions(NA_character_), 0L)
+  expect_length(nlmixr2lib:::.labelDocumentedProportions(""), 0L)
+})
+
+test_that("a label rounding expit(2.40) = 0.9168 to 0.917 still matches", {
+  expect_equal(nlmixr2lib:::.labelDocumentedProportions("Logit max suppression = 0.917"),
+               0.917)
+  expect_lt(abs(nlmixr2lib:::.expit(2.40) - 0.917), 0.005)
+})
+
+test_that(".labelDocumentedProportions only reads explicitly marked proportions", {
+  # explicit markers are read
+  expect_equal(nlmixr2lib:::.labelDocumentedProportions("F = 0.825"), 0.825)
+  expect_equal(nlmixr2lib:::.labelDocumentedProportions("bioavailability (0.712)"), 0.712)
+  # percentages are deliberately NOT read: in this library they always state
+  # a threshold ("an over-50% reduction"), never the parameter's value.
+  expect_length(nlmixr2lib:::.labelDocumentedProportions("over-50% reduction"), 0L)
+  # bare numbers, units and counts are NOT read as proportions
+  expect_length(nlmixr2lib:::.labelDocumentedProportions("Clearance (L/h)"), 0L)
+  expect_length(nlmixr2lib:::.labelDocumentedProportions("3 transit compartments"), 0L)
+  # out-of-range values are not proportions
+  expect_length(nlmixr2lib:::.labelDocumentedProportions("reference weight = 70"), 0L)
+})
+
+test_that("expit helper is the inverse of logit", {
+  for (p in c(0.01, 0.25, 0.483, 0.5, 0.917, 0.99)) {
+    expect_equal(nlmixr2lib:::.expit(log(p / (1 - p))), p, tolerance = 1e-12)
+  }
+})
+
+test_that("a correct logit back-transform raises no issue", {
+  mod <- function() {
+    ini({
+      logitfdepot <- 1.5613; label("Oral bioavailability on the logit scale (F = 0.826)")
+      lka <- 0.1
+      lcl <- 1
+      lvc <- 3
+      addSd <- 1
+    })
+    model({
+      fdepot <- expit(logitfdepot)
+      ka <- exp(lka); cl <- exp(lcl); vc <- exp(lvc)
+      d/dt(depot) <- -ka * depot
+      d/dt(central) <- ka * depot - cl / vc * central
+      Cc <- central / vc
+      Cc ~ add(addSd)
+    })
+  }
+  ui <- nlmixr2est::nlmixr(mod)
+  iss <- nlmixr2lib:::.checkLogitBackTransform(ui, nlmixr2lib:::.nlmixr2libConventions())
+  expect_equal(nrow(iss), 0L)
+})
+
+test_that("the negative-logit convention is accepted when the label matches it", {
+  # Choy 2016 / Duong 2016 / Bonate 2004 parameterise p = 1/(1+exp(x)),
+  # i.e. expit(-x). expit(-1.1) = 0.2497.
+  mod <- function() {
+    ini({
+      is0_logit <- 1.1; label("Baseline insulin sensitivity, logit scale = 0.25")
+      lcl <- 1
+      lvc <- 3
+      addSd <- 1
+    })
+    model({
+      is0 <- 1 / (1 + exp(is0_logit))
+      cl <- exp(lcl); vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central * is0
+      Cc <- central / vc
+      Cc ~ add(addSd)
+    })
+  }
+  ui <- nlmixr2est::nlmixr(mod)
+  iss <- nlmixr2lib:::.checkLogitBackTransform(ui, nlmixr2lib:::.nlmixr2libConventions())
+  expect_equal(nrow(iss), 0L)
+})
+
+test_that("a label that disagrees with BOTH expit conventions is an error", {
+  # expit(1.5613) = 0.826 and expit(-1.5613) = 0.174; the label claims 0.30,
+  # which is the kind of number a wrong back-transform produces.
+  mod <- function() {
+    ini({
+      logitfdepot <- 1.5613; label("Oral bioavailability on the logit scale (F = 0.30)")
+      lka <- 0.1
+      lcl <- 1
+      lvc <- 3
+      addSd <- 1
+    })
+    model({
+      fdepot <- exp(logitfdepot)          # BUG: odds, not a probability
+      ka <- exp(lka); cl <- exp(lcl); vc <- exp(lvc)
+      d/dt(depot) <- -ka * depot
+      d/dt(central) <- ka * depot - cl / vc * central
+      Cc <- central / vc
+      Cc ~ add(addSd)
+    })
+  }
+  ui <- nlmixr2est::nlmixr(mod)
+  iss <- nlmixr2lib:::.checkLogitBackTransform(ui, nlmixr2lib:::.nlmixr2libConventions())
+  expect_equal(nrow(iss), 1L)
+  expect_equal(iss$category[[1]], "logit_backtransform_disagreement")
+  expect_equal(iss$severity[[1]], "error")
+  expect_true(grepl("expit", iss$suggestion[[1]], fixed = TRUE))
+})
+
+test_that("eta variance terms on a logit parameter are out of scope", {
+  mod <- function() {
+    ini({
+      logitfdepot <- 1.5613; label("Oral bioavailability on the logit scale (F = 0.826)")
+      etalogitfdepot ~ 0.09
+      lcl <- 1
+      lvc <- 3
+      addSd <- 1
+    })
+    model({
+      fdepot <- expit(logitfdepot + etalogitfdepot)
+      cl <- exp(lcl); vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central * fdepot
+      Cc <- central / vc
+      Cc ~ add(addSd)
+    })
+  }
+  ui <- nlmixr2est::nlmixr(mod)
+  iss <- nlmixr2lib:::.checkLogitBackTransform(ui, nlmixr2lib:::.nlmixr2libConventions())
+  expect_equal(nrow(iss), 0L)
+})
+
+test_that("no shipped model disagrees with its own logit back-transform", {
+  # Enumerating over the source text, like the retired-name and
+  # time-varying-clearance tests above, rather than instantiating all ~2500
+  # models: reading the files takes seconds, `nlmixr2est::nlmixr()` on each
+  # takes a quarter of an hour, and the per-model path is already exercised by
+  # `buildModelDb()`, which runs `checkModelConventions()` over the whole
+  # registry on every rebuild.
+  #
+  # Deliberately no skip_on_cran(): a check that silently skips is worse than
+  # no check, because it reports green over an unexamined library.
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  files <- list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
+  expect_gt(length(files), 100L)   # the sweep must actually have inputs
+
+  # `logitfoo <- 1.56;  label("... F = 0.826 ...")`  and the forward-transform
+  # spelling `logitfoo <- logit(0.826); label(...)`.
+  pat <- paste0("^\\s*([A-Za-z_.][A-Za-z0-9_.]*)\\s*<-\\s*",
+                "(logit\\(\\s*[-0-9.eE]+\\s*\\)|-?[0-9.]+(?:[eE][-+]?[0-9]+)?)\\s*;")
+  offenders <- character(0)
+  for (f in files) {
+    for (ln in readLines(f, warn = FALSE)) {
+      m <- regmatches(ln, regexec(pat, ln, perl = TRUE))[[1]]
+      if (!length(m)) next
+      nm <- m[[2]]
+      if (!grepl("logit", nm, ignore.case = TRUE)) next
+      if (grepl("^eta", nm)) next
+      raw <- m[[3]]
+      est <- if (grepl("^logit\\(", raw)) {
+        p <- as.numeric(gsub("[^-0-9.eE]", "", raw))
+        if (!is.finite(p) || p <= 0 || p >= 1) next
+        log(p / (1 - p))
+      } else {
+        as.numeric(raw)
+      }
+      if (!is.finite(est)) next
+      lbl <- sub("^.*?label\\(\\s*\"", "", ln)
+      lbl <- sub("\"\\s*\\).*$", "", lbl)
+      docs <- nlmixr2lib:::.labelDocumentedProportions(lbl)
+      docs <- docs[abs(docs - est) > 1e-9]
+      if (!length(docs)) next
+      pos <- nlmixr2lib:::.expit(est)
+      neg <- nlmixr2lib:::.expit(-est)
+      if (any(abs(pos - docs) <= 0.005) || any(abs(neg - docs) <= 0.005)) next
+      offenders <- c(offenders, sprintf("%s: %s = %g -> expit %.4f / %.4f, label says %s",
+                                        basename(f), nm, est, pos, neg,
+                                        paste(docs, collapse = ", ")))
+    }
+  }
+  expect_equal(offenders, character(0))
+})
+
+# Hand-written inverse logit -------------------------------------------------
+#
+# The point of this block is the NEGATIVE cases. A rule that only flags
+# `exp(x)/(1+exp(x))` is easy; one that leaves a softmax, an odds two-step and a
+# logistic divisor alone is what makes it safe to run over the whole library.
+
+test_that("the four hand-written inverse-logit spellings are detected", {
+  f <- nlmixr2lib:::.handWrittenInverseLogit
+  for (txt in c("1/(1 + exp(-x))", "1/(1 + exp(x))",
+                "exp(x)/(1 + exp(x))", "exp(x)/(exp(x) + 1)",
+                "exp(a + b)/(1 + exp(a + b))")) {
+    expect_false(is.na(f(str2lang(txt))), info = txt)
+  }
+})
+
+test_that("shapes that merely resemble an inverse logit are NOT detected", {
+  f <- nlmixr2lib:::.handWrittenInverseLogit
+  cases <- c(
+    # Ibrahim's two-step and Chan's odds-ratio IIV: numerator is a symbol
+    "odds/(1 + odds)",
+    # vandenBerg / Pejcic softmax: denominator carries extra terms
+    "exp(k)/(1 + exp(j) + exp(k))",
+    "exp(x)/tsum",
+    # a typical value over a logistic factor -- SchaedeliStark 2024 balovaptan
+    # divides CL exactly this way; the exp() arguments differ
+    "exp(a)/(1 + exp(b))",
+    "exp(lcl + etalcl)/(1 + exp(e_age_cl * (age50_cl - AGE)))",
+    # ordinary division
+    "exp(x)/vc",
+    "central/vc"
+  )
+  for (txt in cases) expect_true(is.na(f(str2lang(txt))), info = txt)
+})
+
+test_that("a model using expit() raises no issue", {
+  ok <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      logitfdepot <- 1.5613; label("Bioavailability on the logit scale")
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      fdepot <- expit(logitfdepot)
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central * fdepot
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(ok, verbose = FALSE))
+  expect_equal(nrow(res[res$category == "hand_written_inverse_logit", ]), 0L)
+})
+
+test_that("a model spelling the inverse logit by hand is an error", {
+  bad <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      logitfdepot <- 1.5613; label("Bioavailability on the logit scale")
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      fdepot <- exp(logitfdepot) / (1 + exp(logitfdepot))
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central * fdepot
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(bad, verbose = FALSE))
+  hit <- res[res$category == "hand_written_inverse_logit", ]
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$severity[[1]], "error")
+  expect_true(grepl("expit", hit$suggestion[[1]], fixed = TRUE))
+})
+
+test_that("a logistic DIVISOR is left alone even though it looks similar", {
+  # SchaedeliStark 2024 balovaptan: CL/F divided by a logistic age factor. The
+  # two exp() arguments differ, so this is not an inverse logit and rewriting
+  # it to expit() would be a bug.
+  divisor <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      e_age_cl <- 0.1; label("Logistic age slope on CL (per year)")
+      age50_cl <- 40;  label("Age at half the CL effect (year)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) / (1 + exp(e_age_cl * (age50_cl - AGE)))
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(divisor, verbose = FALSE))
+  expect_equal(nrow(res[res$category == "hand_written_inverse_logit", ]), 0L)
+})
+
+test_that("no shipped model spells an inverse logit by hand", {
+  # Enumerating over the source text, like the sibling register sweeps: parse
+  # each model({}) block and walk it, which is seconds rather than the quarter
+  # hour instantiating ~2500 models would cost. Deliberately no skip_on_cran():
+  # a check that silently skips reports green over an unexamined library.
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  files <- list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
+  expect_gt(length(files), 100L)
+  offenders <- character(0)
+  for (f in files) {
+    txt <- paste(readLines(f, warn = FALSE), collapse = "\n")
+    m <- regexpr("model\\s*\\(\\s*\\{", txt)
+    if (m < 0) next
+    open <- m + attr(m, "match.length") - 1L
+    chars <- strsplit(substring(txt, open), "")[[1]]
+    depth <- 0L
+    close <- NA_integer_
+    for (i in seq_along(chars)) {
+      if (chars[[i]] == "{") depth <- depth + 1L
+      if (chars[[i]] == "}") {
+        depth <- depth - 1L
+        if (depth == 0L) { close <- i; break }
+      }
+    }
+    if (is.na(close)) next
+    body <- substring(txt, open, open + close - 1L)
+    e <- tryCatch(str2lang(body), error = function(e) NULL)
+    if (is.null(e)) next
+    hits <- nlmixr2lib:::.inverseLogitOffenders(e)
+    if (length(hits)) {
+      offenders <- c(offenders, paste0(basename(f), ": ", unique(hits)))
+    }
+  }
+  expect_equal(offenders, character(0))
+})
+
+# nolint end
+
+test_that(".checkCentralConcentrationName fires in BOTH directions", {
+  # A one-sided check passes on exactly the swap that motivated this one:
+  # `Venisse_2008_caspofungin` had `Cc <- log(candida + 1)` (a fungal burden)
+  # and `cc <- central / vc` (the drug), distinguishable only by letter case.
+  # Checking only "is a central/vc named Cc?" misses it, because `cc` is not
+  # `Cc`; checking only "is Cc a concentration?" misses a plain rename. So both
+  # directions are asserted here, and so is each legitimate exemption.
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  run <- function(lines) {
+    ui <- list(lstExpr = lapply(lines, function(x) str2lang(x)))
+    nlmixr2lib:::.checkCentralConcentrationName(ui, conv)
+  }
+
+  # (1) plain central/vc under another name, with Cc unused -> error
+  r <- run(c("Cp <- central / vc", "Cp ~ prop(propSd)"))
+  expect_equal(nrow(r), 1L)
+  expect_equal(r$name, "Cp")
+  expect_equal(r$severity, "error")
+
+  # (2) `Cc` that is not a central concentration at all -> error
+  r <- run(c("cc <- central / vc", "Cc <- log(candida + 1)"))
+  expect_true("Cc" %in% r$name[r$severity == "error"])
+  # ...and the drug concentration is reported too: `cc` is not `Cc`.
+  expect_true("cc" %in% r$name)
+
+  # (3) the canonical arrangement -> clean
+  expect_equal(nrow(run(c("Cc <- central / vc", "Cc ~ prop(propSd)"))), 0L)
+
+  # (4) EXEMPTION: a second central quantity beside a defined `Cc` keeps its
+  #     own name (Duke_2024_cefazolin: unbound beside total).
+  expect_equal(nrow(run(c("Cunbound <- central / vc",
+                          "Cc <- (complex + central) / vc"))), 0L)
+
+  # (5) EXEMPTION: a SCALED derivation is a different quantity, not a rename.
+  expect_equal(nrow(run(c("Cc <- central / vc", "Cu <- central / vc * fu"))), 0L)
+
+  # (6) multi-analyte: the suffix follows the state.
+  expect_equal(nrow(run(c("Cc_rtv <- central_rtv / vc_rtv"))), 0L)
+  expect_true("crtv" %in% run(c("crtv <- central_rtv / vc_rtv"))$name)
+
+  # (7) `Cc` reached through an alias still counts as a concentration.
+  expect_equal(nrow(run(c("ctot <- central / vc", "Cc <- ctot"))), 0L)
+
+  # (8) a linCmt() solved model satisfies the rule.
+  expect_equal(nrow(run(c("Cc <- linCmt()"))), 0L)
 })

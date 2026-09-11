@@ -493,7 +493,7 @@ Hanan_2026_peginterferon_alfa_24wk_mbma <- function() {
                eta_study
 
     # -------- Study-arm HBsAg-loss probability ----------------------
-    p_hbsag_loss <- exp(logit_p) / (1 + exp(logit_p))
+    p_hbsag_loss <- expit(logit_p)
 
     # -------- Binomial sampling-error weight (Section 2.3.1) --------
     # The paper's variance function is w_isa = sqrt(p*(1-p)/N_isa).

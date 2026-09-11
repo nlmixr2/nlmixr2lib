@@ -99,11 +99,11 @@ Sun_2023_maribavir <- function() {
     # scale and is carried here verbatim at full reported precision. The
     # back-transformed value in the trailing comment is the Table S2 estimate.
     # Reference subject: 70 kg, without CMV, 800 mg maribavir dose (Table S2 footnote).
-    lcl   <-  1.32774;  label("Apparent clearance in the reference subject (CL/F, L/h)")                       # supplement s005.txt run 171 THETA(1) [ln_CL]; exp = 3.77 L/h (Table S2, 95% CI 3.50-4.06)
-    lvc   <-  2.92052;  label("Apparent central volume of distribution in the reference subject (Vc/F, L)")    # supplement s005.txt run 171 THETA(2) [ln_V2]; exp = 18.6 L (Table S2, 95% CI 17.3-19.8)
-    lq    <- -0.096712; label("Apparent intercompartmental clearance in the reference subject (Q/F, L/h)")     # supplement s005.txt run 171 THETA(3) [ln_Q]; exp = 0.908 L/h (Table S2, 95% CI 0.705-1.17)
-    lvp   <-  2.15842;  label("Apparent peripheral volume of distribution in the reference subject (Vp/F, L)") # supplement s005.txt run 171 THETA(4) [ln_V3]; exp = 8.66 L (Table S2, 95% CI 7.05-10.6)
-    lka   <- -1.092;    label("First-order absorption rate at the 800 mg reference dose (Ka, 1/h)")            # supplement s005.txt run 171 THETA(5) [ln_Ka]; exp = 0.336 1/h (Table S2, 95% CI 0.271-0.415)
+    lcl   <-  1.32774;  label("Apparent clearance in the reference subject (L/h)")                       # supplement s005.txt run 171 THETA(1) [ln_CL]; exp = 3.77 L/h (Table S2, 95% CI 3.50-4.06)
+    lvc   <-  2.92052;  label("Apparent central volume of distribution in the reference subject (L)")    # supplement s005.txt run 171 THETA(2) [ln_V2]; exp = 18.6 L (Table S2, 95% CI 17.3-19.8)
+    lq    <- -0.096712; label("Apparent intercompartmental clearance in the reference subject (L/h)")     # supplement s005.txt run 171 THETA(3) [ln_Q]; exp = 0.908 L/h (Table S2, 95% CI 0.705-1.17)
+    lvp   <-  2.15842;  label("Apparent peripheral volume of distribution in the reference subject (L)") # supplement s005.txt run 171 THETA(4) [ln_V3]; exp = 8.66 L (Table S2, 95% CI 7.05-10.6)
+    lka   <- -1.092;    label("First-order absorption rate at the 800 mg reference dose (1/h)")            # supplement s005.txt run 171 THETA(5) [ln_Ka]; exp = 0.336 1/h (Table S2, 95% CI 0.271-0.415)
     ltlag <- -1.30567;  label("Absorption lag time (h)")                                                      # supplement s005.txt run 171 THETA(6) [ln_ALAG1]; exp = 0.271 h (Table S2, 95% CI 0.241-0.304)
 
     # Allometric body-weight exponents, all FIXED rather than estimated: the model

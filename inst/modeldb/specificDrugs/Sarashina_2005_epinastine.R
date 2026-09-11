@@ -78,10 +78,10 @@ Sarashina_2005_epinastine <- function() {
     # Covariate effects (Sarashina 2005 Table 4 and Discussion)
     e_wt_cl         <- 0.0421 ; label("Fractional per-kg WT slope on CL/F (= theta10/theta1, per kg)")   # Sarashina 2005 Table 4: theta10 = 0.805 L/h/kg; 0.805 / 19.1 = 0.04215
     e_wt_vc         <- 0.0227 ; label("Fractional per-kg WT slope on V1/F (= theta11/theta2, per kg)")   # Sarashina 2005 Table 4: theta11 = 3.95 L/kg; 3.95 / 174 = 0.02270
-    e_fed_cl        <- 1.41   ; label("Fed/fasted ratio on CL/F (theta6, unitless)")                     # Sarashina 2005 Table 4: theta6 = 1.41
-    e_fed_vc        <- 1.75   ; label("Fed/fasted ratio on V1/F (theta7, unitless)")                     # Sarashina 2005 Table 4: theta7 = 1.75
-    e_fed_tlag      <- 0.234  ; label("Fed-state absorption lag time (additive, h)")                     # Sarashina 2005 Table 4: theta8 = 0.234 h
-    e_form_syrup_cl <- 1.06   ; label("Dry-syrup/tablet ratio on CL/F (theta9, unitless)")               # Sarashina 2005 Table 4: theta9 = 1.06
+    e_fed_cl        <- 1.41   ; label("Fed/fasted ratio on CL/F (unitless)")                     # Sarashina 2005 Table 4: theta6 = 1.41
+    e_fed_vc        <- 1.75   ; label("Fed/fasted ratio on V1/F (unitless)")                     # Sarashina 2005 Table 4: theta7 = 1.75
+    e_fed_tlag      <- 0.234  ; label("Fed-state absorption lag time, applied additively (h)")                     # Sarashina 2005 Table 4: theta8 = 0.234 h
+    e_form_syrup_cl <- 1.06   ; label("Dry-syrup/tablet ratio on CL/F (unitless)")               # Sarashina 2005 Table 4: theta9 = 1.06
 
     # Inter-individual variability. Sarashina 2005 reports the NONMEM
     # omega-squared values in Table 5 with the convention CV% ~ sqrt(omega^2);

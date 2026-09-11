@@ -192,7 +192,7 @@ JacoboCabral_2015_tacrolimus <- function() {
     lvp  <- log(383.5); label("Apparent peripheral volume of distribution V_T/F (L)")                  # Jacobo-Cabral 2015 Table 2, V_T/F = 383.5 (RSE 34%)
     lq   <- log(32.49); label("Apparent inter-compartmental clearance Q/F (L/h)")                      # Jacobo-Cabral 2015 Table 2, Q/F = 32.49 (RSE 20%)
     ltlag <- log(0.39); label("Absorption lag time (h)")                                               # Jacobo-Cabral 2015 Table 2, t_lag = 0.39 (RSE 6%)
-    lfdepot <- fixed(log(1)); label("Relative bioavailability F at the reference subject (anchor, unitless)")  # Jacobo-Cabral 2015 Table 2 footnote: F = 100*, was not estimated (fixed at 1 due to absence of IV data)
+    lfdepot <- fixed(log(1)); label("Relative bioavailability F at the reference subject (unitless)")  # Jacobo-Cabral 2015 Table 2 footnote: F = 100*, was not estimated (fixed at 1 due to absence of IV data)
 
     # CYP3A5 genotype effects on CL/F -- Jacobo-Cabral 2015 Table 2 covariate
     # equation 'CL/F = theta3 * INF_CYP3A5' with INF_CYP3A5 = 1 + theta8 (if

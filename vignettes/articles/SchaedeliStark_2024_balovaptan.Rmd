@@ -1,0 +1,794 @@
+---
+title: "Balovaptan (Schaedeli Stark 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Balovaptan (Schaedeli Stark 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("SchaedeliStark_2024_balovaptan"))$reference`
+* Description: `r rxode2::rxode(readModelDb("SchaedeliStark_2024_balovaptan"))$description`
+* Article: <https://doi.org/10.1007/s10928-023-09898-0> (open access; PMCID PMC11136808)
+* Supplement: online supplementary material to the same DOI (goodness-of-fit
+  figures plus the development-stage explicit-binding and empirical-binding
+  two-compartment models; it carries no final-model parameters)
+
+```{r model}
+mod <- rxode2::rxode(readModelDb("SchaedeliStark_2024_balovaptan"))
+mod
+```
+
+# Population
+
+The model was fitted to 3985 balovaptan plasma concentrations from 370 adult
+and pediatric individuals across five studies (Table 1 of the source). Three
+phase I studies contributed richly sampled neurotypical adults -- NCT01418963
+(n = 24, multiple-ascending dose 12 to 52 mg once daily for 14 days),
+NCT03579719 (n = 15, 5 mg once daily fed) and NCT03586726 (n = 16, 10 mg once
+daily fasted). Two phase II studies in autism spectrum disorder (ASD) with
+IQ >= 70 contributed the bulk of the subjects but sparse, mainly steady-state
+sampling: VANILLA (NCT01793441, n = 146 adult men, 1.5 / 4 / 10 mg once daily
+with food) and aV1ation (NCT02901431, n = 169 children and adolescents aged 5
+to 17 years, age-adjusted doses of 1.5 to 10 mg once daily).
+
+Overall the cohort was 91.9% male, with a median age of 19 years (range 5 to
+64) and a median body weight of 72.8 kg (range 18.8 to 152.0). Only 4.3% of the
+participants with PK data were dosed fasted, which is why the food effect on
+mean transit time had to be fixed rather than estimated. Doses spanned 1.5 to
+52 mg once daily; all fitted data were oral. The intravenous and receptor
+occupancy work described below is *simulation* from this model for a planned
+phase II malignant cerebral edema trial (NCT05399550) -- no IV data were fitted.
+
+```{r population}
+str(readModelDb("SchaedeliStark_2024_balovaptan")()$population)
+```
+
+# Model structure
+
+One-compartment disposition with transit-compartment absorption, an empirical
+saturable-binding model that makes the central volume a decreasing function of
+the central amount, and an empirical gut-extraction process gated by a slow
+turnover pool (Fig. 3 and p. 234 of the source):
+
+```
+d/dt(depot)      = Input - ktr*depot - kgutex*moderator1*depot
+d/dt(transit_i)  = ktr*transit_{i-1} - ktr*transit_i          (i = 1..6)
+d/dt(central)    = ktr*transit6 - ke*central
+d/dt(moderator1) = kin - kout*moderator1*(1 + smod*depot),   moderator1(0) = 1
+
+ktr = (ntr + 1)/mtt          mtt = MTT_fasted * 3.39^FED
+ke  = cl/vc                  cl  = CL / (1 + exp(AGEslope*(AGE50 - AGE)))
+vc  = V0 * (WT/76)^1.00 * (1 - vbmax*central/(central + vba50))
+Cc  = 1000 * central/vc      RO  = 100*Cc/(kd_fu + Cc)
+```
+
+Two features drive all of the non-linearity. The **dynamic central volume**
+shrinks by up to 80.5% as the central amount rises, which makes both Cmax and
+Cmin more than dose-proportional. The **gut extraction** term competes with
+absorption out of the depot; the turnover pool `moderator1` starts at 1, is
+suppressed by the amount in the depot (via `smod`), and recovers only slowly
+(`kout` = 0.00205 1/h, a 338 h half-life). Extraction is therefore large on the
+first dose and small at steady state, and -- because a *small* dose suppresses
+the pool less -- it removes proportionally more drug at low doses. That is the
+mechanism behind the source's statement of "lower oral bioavailability at low
+balovaptan doses".
+
+# Source trace
+
+Every `ini()` value and every non-obvious `model()` equation, with its location
+in the source.
+
+| Model quantity | Value | Source location |
+| --- | --- | --- |
+| `lcl` (CL/F) | 8.52 L/h | Table 2, row "CL (L/h)" |
+| `lvc` (V0) | 565 L | Table 2, row "V0 (L)" |
+| `lmtt` (MTT, fasted) | 0.367 h | Table 2, row "MTT (h)" |
+| `ntr` | 5.81 | Table 2, row "Ntr" |
+| `lvbmax` (VLmax) | 0.805 | Table 2, row "VLmax (fraction)" |
+| `lvba50` (VLA50) | 3.36 mg | Table 2, row "VLA50"; unit corrected, see Errata |
+| `lkgutex` (Kgut) | 1.89 1/h | Table 2, row "Kgut (1/h)" |
+| `lkout` (Kout) | 0.00205 1/h, fixed | Table 2, row "Kout (1/h)" |
+| `lsmod` (S) | 22.0 1/mg | Table 2, row "S" |
+| `e_wt_vc` | 1.00, fixed | Table 2, row "WT V0"; Results p. 234 |
+| `e_fed_mtt` | 3.39, fixed | Table 2, row "FOOD MTT"; see Errata |
+| `e_age_cl` (AGEslope) | 0.267 1/year | Table 2, row "AGEslope" |
+| `age50_cl` (AGE50) | 5.34 years | Table 2, row "AGE50 (years)" |
+| `lkd_fu` (Kb/fu_plasma) | 3.16 ng/mL | Back-solved from Table 3; see Errata |
+| `etalcl`, `etalvc`, `etalmtt` | 0.150, 0.0944, 0.0423 | Table 2, rows "IIV CL/V0/MTT" and footnote b |
+| `propSd_early`, `propSd_late`, `propSd_exp_kdes` | 1.20, 0.216, 1.32 1/h | Table 2, rows "RUV early/late/rate" and footnote |
+| `addSd` | 0.025 ng/mL, fixed | Table 2, row "RUV add" and footnote a |
+| `addSd_RO` | 0, fixed | Not reported; RO was simulated, not fitted |
+| Depot / transit / central ODEs | -- | p. 234 equations; transit chain per Fig. 3 |
+| Turnover ODE, `moderator1(0) = 1` | -- | p. 234 equation; Results p. 233 |
+| `ktr = (ntr + 1)/mtt`, `ke = cl/vc` | -- | p. 234 "micro-constants of mass transfer" |
+| `vc` empirical binding | -- | p. 234 and Fig. 3 caption |
+| `cl` age maturation | -- | p. 234; sign corrected, see Errata |
+| `RO` | -- | Methods p. 230 |
+| `Cc = 1000 * central/vc` | -- | Unit conversion, mg/L to ng/mL |
+
+# Assumptions and deviations (Errata)
+
+The source contains three typesetting defects and one reporting gap. Each was
+resolved against the paper's own numbers rather than assumed; the discriminating
+evidence is reproduced in the validation sections below.
+
+**1. The printed age-clearance equation is missing a `1 +`.** As printed
+(p. 234) it reads `CLi = CL * (1 - 1/exp(-AGEslope*(AGE50 - AGE)))`, which
+returns **-143.9%** of adult clearance at age 2 and **exactly 0%** at AGE50 --
+directly contradicting Table 2's own definition of AGE50 as the "age where 50%
+of adult CL/F is reached". Restoring a dropped `1 +` in the denominator gives
+the logistic `CL/(1 + exp(AGEslope*(AGE50 - AGE)))`, which reproduces four
+independent printed anchors (checked below).
+
+**2. Table 2 prints VLA50 in `ug`, but the value is in mg.** Read as 3.36 ug,
+the binding term is saturated at every clinical dose, the central volume becomes
+a constant, and the model loses the entire non-linearity it was built to
+describe. Read as 3.36 mg it reproduces Table 3 to a median of 1.3%; the ug
+reading is off by up to 69% (checked below). The mg reading is also the only one
+dimensionally consistent with the `smod * depot` term, which needs 1/mg.
+
+**3. The food effect on MTT is multiplicative, not an absolute 3.39 h.** Table 2
+lists "FOOD MTT -- Effect of food on MTT -- 3.39 (Fixed)", exactly parallel to
+its sibling row "WT V0 -- Effect of body weight on V0 -- 1.00 (Fixed)", which is
+unambiguously a multiplicative exponent. The Results text instead calls it "an
+estimate of 3.39 h". The multiplicative reading gives a fed Tmax of 2.4 h and an
+AUCss span of -9.6% to +14.6%, matching Fig. 6A and the paper's own printed
+"-10% and +15%" claim; the additive and absolute readings give Tmax of 6.2 h and
+5.7 h and AUCss spans of -32%/+23% and -29%/+22% (checked below).
+
+**4. Neither `Kb` nor `fu_plasma` is reported anywhere.** The receptor occupancy
+equation is printed but both of its constants are absent from the paper, the
+supplement and the Fig. 8 panel. Only their **ratio** is identifiable, and
+Table 3's seven paired (concentration, occupancy) medians over-determine it: the
+intersection of the rounding intervals implied by all seven rows is
+[3.076, 3.446] ng/mL. The model ships `kd_fu` = 3.16 ng/mL, the median of the
+seven row-wise point estimates. **This value is not from the paper text or
+tables** -- it is back-solved arithmetic on printed medians.
+
+Two further implementation notes:
+
+* **Transit chain length.** `Ntr` = 5.81 is not an integer, so the chain is
+  realised with 6 transit compartments (7 transfers). The printed
+  `ktr = (Ntr + 1)/MTT` relation is kept intact, so both published values are
+  used as printed and the realised mean transit time is 2.8% longer than the
+  nominal MTT. Realising 5 transit compartments instead moves Tmax to 2.16 h,
+  further from Fig. 6A.
+* **Where gut extraction acts.** The printed ODE set elides the transit chain
+  entirely (it shows only `dAa/dt` and `dAc/dt`), which would leave `Ntr` and
+  `MTT` jointly unidentifiable even though Table 2 reports both with tight
+  bootstrap intervals. Fig. 3 settles the structure: the "TCAM" label sits on
+  the absorption-to-central arrow, and the `Kgut x At` arrow leaves the
+  absorption box only. Applying extraction to the whole chain instead blows the
+  AUCss span out to -52%/+163% (checked below).
+* **Time-varying residual error.** The printed RUV expression omits the minus
+  sign in its exponent, which would send the SD to infinity rather than decay
+  it; the Results text ("mono-exponential decay from a high value immediately
+  after dosing to a lower level ... half-life of 0.53 h", and ln(2)/1.32 = 0.53)
+  fixes the sign unambiguously.
+
+# Simulation helper
+
+Two endpoints (`Cc` and `RO`) means observation records are tagged with `dvid`
+rather than `cmt`, so that every solve returns both endpoint columns.
+
+```{r helper}
+baloEvents <- function(doseTimes, doseAmts, doseCmt, obsTimes,
+                       WT = 76, AGE = 45, FED = 0, dur = NA_real_) {
+  dosing <- data.frame(
+    time = doseTimes, amt = doseAmts, evid = 1L, dur = dur,
+    cmt = doseCmt, dvid = NA_integer_
+  )
+  obs <- data.frame(
+    time = obsTimes, amt = NA_real_, evid = 0L, dur = NA_real_,
+    cmt = NA_character_, dvid = 1L
+  )
+  out <- rbind(dosing, obs)
+  out <- out[order(out$time, -out$evid), ]
+  out$id <- 1L
+  out$WT <- WT
+  out$AGE <- AGE
+  out$FED <- FED
+  out
+}
+
+# Typical-value (all etas zero) version of the model: the source's Figs. 5-7 and
+# Table 3 are all "typical individual" simulations, so these gates are
+# deterministic and can be asserted tightly.
+modTypical <- rxode2::zeroRe(mod)
+```
+
+# Validation 1: Table 3, intravenous stepped dosing and receptor occupancy
+
+Table 3 of the source reports simulated median plasma concentrations and brain
+V1a receptor occupancies at seven time points following three 60-minute IV
+infusions of 50, 25 and 15 mg on days 1, 2 and 3, for a typical 76 kg adult.
+Because the IV route bypasses absorption entirely, this gate isolates the
+disposition model, the empirical binding term and the occupancy relationship.
+
+```{r table3}
+ivEvents <- baloEvents(
+  doseTimes = c(0, 24, 48),
+  doseAmts  = c(50, 25, 15),
+  doseCmt   = "central",
+  dur       = 1,
+  obsTimes  = sort(unique(c(seq(0, 120, by = 0.05), c(1, 24, 25, 48, 49, 72, 96))))
+)
+ivSim <- rxode2::rxSolve(modTypical, ivEvents, returnType = "data.frame")
+
+table3 <- data.frame(
+  time    = c(1, 24, 25, 48, 49, 72, 96),
+  Cc_pub  = c(352, 74, 261, 59, 166, 42, 15),
+  RO_pub  = c(99, 96, 99, 95, 98, 93, 82)
+) %>%
+  dplyr::left_join(ivSim[, c("time", "Cc", "RO")], by = "time") %>%
+  dplyr::mutate(
+    Cc_pct_diff = 100 * (Cc - Cc_pub) / Cc_pub,
+    RO_diff_pp  = RO - RO_pub
+  )
+
+table3 %>%
+  dplyr::mutate(
+    dplyr::across(c(Cc, Cc_pct_diff, RO_diff_pp), ~ round(.x, 2)),
+    RO = round(RO, 1)
+  ) %>%
+  dplyr::rename(
+    "Time (h)"                = time,
+    "Published Cc (ng/mL)"    = Cc_pub,
+    "Simulated Cc (ng/mL)"    = Cc,
+    "Cc difference (%)"       = Cc_pct_diff,
+    "Published RO (%)"        = RO_pub,
+    "Simulated RO (%)"        = RO,
+    "RO difference (points)"  = RO_diff_pp
+  ) %>%
+  knitr::kable(caption = "Replicates Table 3 of Schaedeli Stark et al. (2024), 76 kg reference column.")
+```
+
+The reconstruction reproduces all seven published concentrations to a median of
+1.3% and all seven occupancies to within 0.2 percentage points.
+
+```{r table3-assert}
+stopifnot(
+  median(abs(table3$Cc_pct_diff)) < 3,
+  max(abs(table3$Cc_pct_diff)) < 6,
+  max(abs(table3$RO_diff_pp)) < 0.5
+)
+```
+
+## The VLA50 unit reading, falsified
+
+Re-running the identical gate with VLA50 read as 3.36 **ug** rather than mg:
+
+```{r vla50}
+modUg <- modTypical %>% rxode2::ini(lvba50 = log(3.36e-3))
+ugSim <- rxode2::rxSolve(modUg, ivEvents, returnType = "data.frame")
+ugDiff <- 100 * (ugSim$Cc[match(table3$time, ugSim$time)] - table3$Cc_pub) / table3$Cc_pub
+
+data.frame(
+  Reading = c("VLA50 = 3.36 mg", "VLA50 = 3.36 ug"),
+  Median  = round(c(median(abs(table3$Cc_pct_diff)), median(abs(ugDiff))), 1),
+  Worst   = round(c(max(abs(table3$Cc_pct_diff)), max(abs(ugDiff))), 1)
+) %>%
+  dplyr::rename(
+    "Median absolute difference (%)" = Median,
+    "Worst absolute difference (%)"  = Worst
+  ) %>%
+  knitr::kable(caption = "Table 3 reproduction under the two VLA50 unit readings.")
+
+stopifnot(median(abs(ugDiff)) > 5 * median(abs(table3$Cc_pct_diff)))
+```
+
+# Validation 2: Fig. 6A, dose-normalized steady-state profiles
+
+Fig. 6A shows dose-normalized concentration-time profiles at steady state for a
+typical adult participant at 1.5, 4, 10, 20 and 50 mg once daily. Both phase II
+ASD studies dosed with food, so these are fed profiles (`FED = 1`).
+
+```{r fig6a-sim}
+oralDoses <- c(1.5, 4, 10, 20, 50)
+
+simSteadyState <- function(dose, model, ...) {
+  ev <- baloEvents(
+    doseTimes = seq(0, 13 * 24, by = 24),
+    doseAmts  = rep(dose, 14),
+    doseCmt   = "depot",
+    obsTimes  = seq(13 * 24, 14 * 24, by = 0.05),
+    FED       = 1,
+    ...
+  )
+  out <- rxode2::rxSolve(model, ev, returnType = "data.frame")
+  out <- out[out$time >= 13 * 24, ]
+  out$time <- out$time - 13 * 24
+  out$dose_mg <- dose
+  out
+}
+
+fig6a <- dplyr::bind_rows(lapply(oralDoses, simSteadyState, model = modTypical))
+
+ggplot2::ggplot(
+  fig6a,
+  ggplot2::aes(time, Cc / dose_mg, colour = factor(dose_mg))
+) +
+  ggplot2::geom_line(linewidth = 0.8) +
+  ggplot2::scale_x_continuous(breaks = seq(0, 24, by = 4)) +
+  ggplot2::labs(
+    x = "Time (h)",
+    y = "Dose-normalized concentration (ng/mL/mg)",
+    colour = "Dose (mg)",
+    title = "Replicates Figure 6A of Schaedeli Stark et al. (2024)"
+  ) +
+  ggplot2::theme_bw()
+```
+
+The published panel shows the characteristic signature of the empirical binding
+model: dose-normalized peaks that *rise* with dose, curves that cross at about
+16 to 17 hours, and dose-normalized troughs that *fall* with dose.
+
+## NCA comparison against Fig. 6A
+
+NCA is computed with `PKNCA` over the final 24-hour dosing interval. The
+reference values are read from Fig. 6A (the source publishes no NCA table, so
+these are figure-derived and are labelled as such).
+
+```{r pknca-typical}
+ncaConc <- fig6a %>%
+  dplyr::filter(!is.na(Cc)) %>%
+  dplyr::mutate(
+    id       = paste0("typical_", dose_mg),
+    dose_lbl = paste0(dose_mg, " mg")
+  ) %>%
+  dplyr::select(id, dose_lbl, dose_mg, time, Cc)
+
+ncaDose <- ncaConc %>%
+  dplyr::group_by(id, dose_lbl, dose_mg) %>%
+  dplyr::summarise(time = 0, .groups = "drop")
+
+oConc <- PKNCA::PKNCAconc(ncaConc, Cc ~ time | id / dose_lbl)
+oDose <- PKNCA::PKNCAdose(ncaDose, dose_mg ~ time | id + dose_lbl)
+oData <- PKNCA::PKNCAdata(
+  oConc, oDose,
+  intervals = data.frame(
+    start = 0, end = 24,
+    cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE
+  )
+)
+ncaRes <- PKNCA::pk.nca(oData)
+
+# Fig. 6A dose-normalized peak concentrations (ng/mL/mg), read from the panel,
+# converted to absolute Cmax; Tmax is read as ~2.5 h at every dose.
+fig6aRead <- data.frame(
+  dose_lbl = paste0(oralDoses, " mg"),
+  cmax     = c(4.9, 5.6, 6.65, 7.75, 8.85) * oralDoses,
+  tmax     = rep(2.5, length(oralDoses))
+)
+
+ncaTable <- nlmixr2lib::ncaComparisonTable(
+  simulated = ncaRes,
+  reference = fig6aRead,
+  by        = "dose_lbl",
+  params    = c("cmax", "tmax"),
+  units     = c(cmax = "ng/mL", tmax = "h")
+)
+ncaTable %>%
+  dplyr::rename("Dose" = dose_lbl) %>%
+  knitr::kable(
+    caption = "Simulated steady-state NCA versus values read from Figure 6A."
+  )
+attr(ncaTable, "footnote")
+```
+
+# Validation 3: Fig. 6B and the printed AUCss span
+
+The source states in its Discussion that "median systemic availability across
+the dosing range of 1.5 mg to 50.0 mg QD is expected to remain within -10% and
++15% of the reference adult dose of 10 mg". This is a printed claim, not a
+figure read, and it is a sharp test of the gut-extraction component: the
+non-linearity has to be present, but only weakly.
+
+```{r fig6b}
+aucss <- fig6a %>%
+  dplyr::group_by(dose_mg) %>%
+  dplyr::summarise(
+    auc = sum(diff(time) * (utils::head(Cc, -1) + utils::tail(Cc, -1)) / 2),
+    .groups = "drop"
+  ) %>%
+  dplyr::mutate(
+    auc_dn  = auc / dose_mg,
+    pct_ref = 100 * (auc_dn / auc_dn[dose_mg == 10] - 1),
+    # At steady state AUCss = F * Dose / CL exactly, so this recovers the
+    # fraction of each dose that escapes gut extraction.
+    f_escape = auc_dn * 8.52 / 1000
+  )
+
+aucss %>%
+  dplyr::mutate(dplyr::across(c(auc_dn, pct_ref, f_escape), ~ round(.x, 3))) %>%
+  dplyr::rename(
+    "Dose (mg)"                        = dose_mg,
+    "AUCss (h*ng/mL)"                  = auc,
+    "Dose-normalized AUCss (h*ng/mL/mg)" = auc_dn,
+    "Difference from 10 mg (%)"        = pct_ref,
+    "Fraction escaping gut extraction" = f_escape
+  ) %>%
+  knitr::kable(caption = "Replicates Figure 6B of Schaedeli Stark et al. (2024); the source's own Fig. 6B medians run from about 88 to 112 h*ng/mL/mg over this dose range.")
+```
+
+The simulated span is -9.6% to +14.6% against the source's printed -10% and
++15%. The final column is an independent mass-balance check: at steady state
+`AUCss = F * Dose / CL`, so dividing the dose-normalized AUCss by 1/CL recovers
+the fraction of each dose escaping gut extraction. It rises from 0.76 at 1.5 mg
+to 0.96 at 50 mg, which is exactly the source's "lower oral bioavailability at
+low balovaptan doses", and it stays inside (0, 1) as any bioavailability must.
+
+```{r fig6b-assert}
+stopifnot(
+  # The printed claim, reproduced to better than one percentage point at both ends.
+  abs(aucss$pct_ref[aucss$dose_mg == 1.5] - (-10)) < 1,
+  abs(aucss$pct_ref[aucss$dose_mg == 50] - (+15)) < 1,
+  # Mass balance: a bioavailable fraction, increasing with dose.
+  all(aucss$f_escape > 0), all(aucss$f_escape < 1),
+  !is.unsorted(aucss$f_escape)
+)
+```
+
+## The food-effect and gut-extraction readings, falsified
+
+```{r alternatives}
+spanFor <- function(model) {
+  a <- dplyr::bind_rows(lapply(c(1.5, 10, 50), simSteadyState, model = model)) %>%
+    dplyr::group_by(dose_mg) %>%
+    dplyr::summarise(
+      auc_dn = sum(diff(time) * (utils::head(Cc, -1) + utils::tail(Cc, -1)) / 2) / dose_mg[1],
+      .groups = "drop"
+    )
+  round(100 * (a$auc_dn / a$auc_dn[a$dose_mg == 10] - 1), 1)[c(1, 3)]
+}
+tmaxFor <- function(model) {
+  s <- simSteadyState(10, model)
+  s$time[which.max(s$Cc)]
+}
+
+# The food effect enters as mtt * 3.39^FED. An additive or absolute reading
+# cannot be expressed by changing a parameter value, so each is built as its own
+# rxode2 model sharing every other line with the packaged one.
+modAdditive <- rxode2::rxode({
+  cl <- 8.52 / (1 + exp(0.267 * (5.34 - AGE)))
+  vc <- 565 * (WT / 76) * (1 - 0.805 * central / (central + 3.36))
+  mtt <- 0.367 + 3.39 * FED
+  ktr <- (5.81 + 1) / mtt
+  ke <- cl / vc
+  moderator1(0) <- 1
+  d/dt(depot) <- -ktr * depot - 1.89 * moderator1 * depot
+  d/dt(transit1) <- ktr * depot - ktr * transit1
+  d/dt(transit2) <- ktr * transit1 - ktr * transit2
+  d/dt(transit3) <- ktr * transit2 - ktr * transit3
+  d/dt(transit4) <- ktr * transit3 - ktr * transit4
+  d/dt(transit5) <- ktr * transit4 - ktr * transit5
+  d/dt(transit6) <- ktr * transit5 - ktr * transit6
+  d/dt(central) <- ktr * transit6 - ke * central
+  d/dt(moderator1) <- 0.00205 - 0.00205 * moderator1 * (1 + 22 * depot)
+  Cc <- 1000 * central / vc
+})
+
+modAllChain <- rxode2::rxode({
+  cl <- 8.52 / (1 + exp(0.267 * (5.34 - AGE)))
+  vc <- 565 * (WT / 76) * (1 - 0.805 * central / (central + 3.36))
+  mtt <- 0.367 * 3.39^FED
+  ktr <- (5.81 + 1) / mtt
+  ke <- cl / vc
+  moderator1(0) <- 1
+  d/dt(depot) <- -ktr * depot - 1.89 * moderator1 * depot
+  d/dt(transit1) <- ktr * depot - ktr * transit1 - 1.89 * moderator1 * transit1
+  d/dt(transit2) <- ktr * transit1 - ktr * transit2 - 1.89 * moderator1 * transit2
+  d/dt(transit3) <- ktr * transit2 - ktr * transit3 - 1.89 * moderator1 * transit3
+  d/dt(transit4) <- ktr * transit3 - ktr * transit4 - 1.89 * moderator1 * transit4
+  d/dt(transit5) <- ktr * transit4 - ktr * transit5 - 1.89 * moderator1 * transit5
+  d/dt(transit6) <- ktr * transit5 - ktr * transit6 - 1.89 * moderator1 * transit6
+  d/dt(central) <- ktr * transit6 - ke * central
+  d/dt(moderator1) <- 0.00205 - 0.00205 * moderator1 * (1 + 22 * depot)
+  Cc <- 1000 * central / vc
+})
+
+alt <- data.frame(
+  Reading = c(
+    "As packaged: food x3.39, extraction on depot only",
+    "Food ADDITIVE (MTT + 3.39 h)",
+    "Gut extraction on depot AND all six transits"
+  ),
+  Low  = c(spanFor(modTypical)[1], spanFor(modAdditive)[1], spanFor(modAllChain)[1]),
+  High = c(spanFor(modTypical)[2], spanFor(modAdditive)[2], spanFor(modAllChain)[2]),
+  Tmax = round(c(tmaxFor(modTypical), tmaxFor(modAdditive), tmaxFor(modAllChain)), 2)
+)
+alt %>%
+  dplyr::rename(
+    "AUCss at 1.5 mg vs 10 mg (%)" = Low,
+    "AUCss at 50 mg vs 10 mg (%)"  = High,
+    "Tmax at 10 mg (h)"            = Tmax
+  ) %>%
+  knitr::kable(caption = "Only the packaged reading reproduces the printed -10% / +15% span and the Fig. 6A Tmax of about 2.5 h.")
+
+stopifnot(
+  abs(alt$Low[2]) > 20, abs(alt$High[3]) > 100,
+  alt$Tmax[2] > 5, alt$Tmax[1] > 2 && alt$Tmax[1] < 3
+)
+```
+
+# Validation 4: Fig. 7, the age effect on clearance
+
+Fig. 7 plots the proportion of adult CL/F against age. The source states that
+about 90% of adult CL/F is reached at 14 years and that the curve plateaus at
+approximately 20 years; Table 2 defines AGE50 as the age at 50%; and the plotted
+curve begins at about 0.29 at age 2.
+
+```{r fig7}
+ageGrid <- seq(2, 65, by = 0.1)
+logistic <- 1 / (1 + exp(0.267 * (5.34 - ageGrid)))
+asPrinted <- 1 - 1 / exp(-0.267 * (5.34 - ageGrid))
+
+ggplot2::ggplot(
+  data.frame(age = ageGrid, frac = logistic),
+  ggplot2::aes(age, frac)
+) +
+  ggplot2::geom_line(linewidth = 0.8) +
+  ggplot2::geom_hline(yintercept = c(0.5, 0.9), linetype = "dashed") +
+  ggplot2::scale_x_continuous(trans = "log10", breaks = c(2, 4, 7, 10, 14, 20, 30, 50)) +
+  ggplot2::labs(
+    x = "Age (years)", y = "Proportion of adult CL/F",
+    title = "Replicates Figure 7 of Schaedeli Stark et al. (2024)"
+  ) +
+  ggplot2::theme_bw()
+
+anchorAges <- c(2, 5.34, 14, 20)
+ageCheck <- data.frame(
+  age       = anchorAges,
+  anchor    = c("Fig. 7 curve starts at about 0.29",
+                "Table 2: AGE50 is the age at 50% of adult CL/F",
+                "Results: about 90% of adult CL/F at 14 years",
+                "Results: plateau at approximately 20 years"),
+  logistic  = round(1 / (1 + exp(0.267 * (5.34 - anchorAges))), 3),
+  as_printed = round(1 - 1 / exp(-0.267 * (5.34 - anchorAges)), 3)
+)
+ageCheck %>%
+  dplyr::rename(
+    "Age (years)"                = age,
+    "Published anchor"           = anchor,
+    "Logistic (as implemented)"  = logistic,
+    "Equation exactly as printed" = as_printed
+  ) %>%
+  knitr::kable(caption = "The dropped `1 +` in the printed age-clearance equation.")
+```
+
+The logistic reading hits every anchor. The equation exactly as printed returns
+a negative clearance at age 2 and exactly zero at AGE50, so it cannot be what
+was fitted.
+
+```{r fig7-assert}
+stopifnot(
+  abs(ageCheck$logistic[1] - 0.29) < 0.01,
+  abs(ageCheck$logistic[2] - 0.50) < 1e-8,
+  abs(ageCheck$logistic[3] - 0.90) < 0.02,
+  ageCheck$logistic[4] > 0.97,
+  # The printed form is not merely different, it is impossible.
+  ageCheck$as_printed[1] < 0,
+  abs(ageCheck$as_printed[2]) < 1e-8
+)
+```
+
+The source's dosing recommendation follows directly: adult doses from age 10,
+70% of the adult dose for ages 5 to 9, and 40% for ages 2 to 4.
+
+```{r pediatric}
+pedGroups <- data.frame(
+  group = c("2-4 years", "5-9 years", "10-17 years"),
+  lower = c(2, 5, 10), upper = c(4, 9, 17),
+  recommended_pct = c(40, 70, 100)
+)
+pedGroups$mean_cl_pct <- round(vapply(seq_len(nrow(pedGroups)), function(i) {
+  a <- seq(pedGroups$lower[i], pedGroups$upper[i], by = 0.1)
+  100 * mean(1 / (1 + exp(0.267 * (5.34 - a))))
+}, numeric(1)), 1)
+pedGroups %>%
+  dplyr::select(group, mean_cl_pct, recommended_pct) %>%
+  dplyr::rename(
+    "Age group"                          = group,
+    "Mean modelled CL/F (% of adult)"    = mean_cl_pct,
+    "Recommended dose (% of adult)"      = recommended_pct
+  ) %>%
+  knitr::kable(caption = "Age-based dosing recommendation from the source Abstract and Discussion.")
+```
+
+# Validation 5: Fig. 5, 14-day profiles across the dose range
+
+Fig. 5 shows typical-individual profiles for 1.5 to 75 mg once daily for 14
+days, followed by washout. The published panel shows the lower doses reaching
+steady state more slowly and displaying a shallower terminal phase -- both
+consequences of the exposure-dependent volume.
+
+```{r fig5}
+fig5Doses <- c(1.5, 4, 7, 10, 20, 50, 75)
+fig5 <- dplyr::bind_rows(lapply(fig5Doses, function(d) {
+  ev <- baloEvents(
+    doseTimes = seq(0, 13 * 24, by = 24),
+    doseAmts  = rep(d, 14),
+    doseCmt   = "depot",
+    obsTimes  = seq(0, 500, by = 1),
+    FED       = 1
+  )
+  out <- rxode2::rxSolve(modTypical, ev, returnType = "data.frame")
+  out$dose_mg <- d
+  out
+}))
+
+ggplot2::ggplot(fig5, ggplot2::aes(time, Cc, colour = factor(dose_mg))) +
+  ggplot2::geom_line(linewidth = 0.5) +
+  ggplot2::scale_y_log10(limits = c(0.1, 1000)) +
+  ggplot2::labs(
+    x = "Time after first dose (h)",
+    y = "Typical balovaptan concentration (ng/mL)",
+    colour = "Dose (mg)",
+    title = "Replicates Figure 5 of Schaedeli Stark et al. (2024)"
+  ) +
+  ggplot2::theme_bw()
+```
+
+```{r fig5-assert}
+# Terminal half-life is exposure-dependent: the volume is larger at low
+# concentration, so the low-dose washout is shallower. Measured over 400-500 h.
+washout <- fig5 %>%
+  dplyr::filter(time >= 400, time <= 500, dose_mg %in% c(1.5, 75)) %>%
+  dplyr::group_by(dose_mg) %>%
+  dplyr::summarise(
+    thalf = -log(2) / stats::coef(stats::lm(log(Cc) ~ time))[["time"]],
+    .groups = "drop"
+  )
+stopifnot(
+  washout$thalf[washout$dose_mg == 1.5] > washout$thalf[washout$dose_mg == 75]
+)
+washout %>%
+  dplyr::mutate(thalf = round(thalf, 1)) %>%
+  dplyr::rename("Dose (mg)" = dose_mg, "Terminal t1/2 over 400-500 h (h)" = thalf) %>%
+  knitr::kable(caption = "Exposure-dependent terminal half-life, as described on p. 239 of the source.")
+```
+
+# Validation 6: virtual cohort and receptor occupancy over 72 hours
+
+Fig. 8 and Table 3 report the 5th to 95th percentile band of brain receptor
+occupancy across simulated participants under the 50 / 25 / 15 mg IV schedule.
+Here 200 participants are simulated (the source used 2000).
+
+```{r cohort}
+rxode2::rxSetSeed(42)
+cohortEvents <- baloEvents(
+  doseTimes = c(0, 24, 48),
+  doseAmts  = c(50, 25, 15),
+  doseCmt   = "central",
+  dur       = 1,
+  obsTimes  = seq(0, 120, by = 0.5)
+)
+cohort <- rxode2::rxSolve(mod, cohortEvents, nSub = 200, returnType = "data.frame")
+
+roBand <- cohort %>%
+  dplyr::group_by(time) %>%
+  dplyr::summarise(
+    p05 = stats::quantile(RO, 0.05),
+    p50 = stats::median(RO),
+    p95 = stats::quantile(RO, 0.95),
+    .groups = "drop"
+  )
+
+ggplot2::ggplot(roBand, ggplot2::aes(time, p50)) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  ggplot2::geom_line(linewidth = 0.8) +
+  ggplot2::geom_hline(yintercept = c(80, 95), linetype = "dashed") +
+  ggplot2::scale_x_continuous(breaks = seq(0, 120, by = 24)) +
+  ggplot2::labs(
+    x = "Time (h)", y = "Brain V1a receptor occupancy (%)",
+    title = "Replicates Figure 8 of Schaedeli Stark et al. (2024)"
+  ) +
+  ggplot2::theme_bw()
+```
+
+The source's design target was occupancy of at least 80% in at least 95% of
+participants over 72 hours, with the caveat that "the RO falls below the limit
+just before reaching the 72-h mark, which was considered acceptable". The
+assertions below are placed on the cohort *median* and on a robust quantile
+rather than on any cohort extreme, because the extreme of a random cohort is not
+reproducible across rxode2 versions.
+
+```{r cohort-assert}
+at <- function(tt) roBand[which.min(abs(roBand$time - tt)), ]
+stopifnot(
+  # Median occupancy tracks the published medians (99, 96, 99, 95, 98, 93).
+  abs(at(1)$p50 - 99) < 1.5,
+  abs(at(24)$p50 - 96) < 2,
+  abs(at(48)$p50 - 95) < 2,
+  abs(at(72)$p50 - 93) < 2,
+  # The published 5th percentile dips just below 80% at 72 h.
+  at(72)$p05 > 70, at(72)$p05 < 85,
+  # Occupancy is above target for the great majority of the 72 h window.
+  mean(roBand$p50[roBand$time <= 72] >= 80) > 0.95
+)
+```
+
+## PKNCA on the virtual cohort
+
+```{r pknca-cohort}
+cohortNca <- cohort %>%
+  dplyr::filter(!is.na(Cc)) %>%
+  dplyr::mutate(dose_lbl = "50/25/15 mg IV", dose_mg = 50) %>%
+  dplyr::select(id = sim.id, dose_lbl, dose_mg, time, Cc)
+
+cohortDose <- cohortNca %>%
+  dplyr::group_by(id, dose_lbl, dose_mg) %>%
+  dplyr::summarise(time = 0, .groups = "drop")
+
+cohortRes <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(cohortNca, Cc ~ time | id / dose_lbl),
+  PKNCA::PKNCAdose(cohortDose, dose_mg ~ time | id + dose_lbl),
+  intervals = data.frame(
+    start = 0, end = 24,
+    cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE
+  )
+))
+
+as.data.frame(cohortRes) %>%
+  dplyr::group_by(PPTESTCD) %>%
+  dplyr::summarise(
+    Median = stats::median(PPORRES, na.rm = TRUE),
+    P05    = stats::quantile(PPORRES, 0.05, na.rm = TRUE),
+    P95    = stats::quantile(PPORRES, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  dplyr::mutate(
+    PPTESTCD = nlmixr2lib::ncaParamLabel(PPTESTCD),
+    dplyr::across(c(Median, P05, P95), ~ signif(.x, 3))
+  ) %>%
+  dplyr::rename(
+    "NCA parameter"   = PPTESTCD,
+    "Median"          = Median,
+    "5th percentile"  = P05,
+    "95th percentile" = P95
+  ) %>%
+  knitr::kable(caption = "Day 1 NCA (0-24 h) after the 50 mg 60-minute infusion, 200 simulated participants.")
+```
+
+The source publishes no NCA summary table, so this block is an internal
+consistency check rather than a comparison: the day 1 Cmax median should sit
+near the 352 ng/mL of Table 3 (Cmax occurs at the end of the 1 h infusion, which
+is the Table 3 "1 h" time point), and Tmax should be 1 h.
+
+```{r pknca-cohort-assert}
+cohortSummary <- as.data.frame(cohortRes) %>%
+  dplyr::group_by(PPTESTCD) %>%
+  dplyr::summarise(med = stats::median(PPORRES, na.rm = TRUE), .groups = "drop")
+getMed <- function(x) cohortSummary$med[cohortSummary$PPTESTCD == x]
+stopifnot(
+  abs(getMed("cmax") - 352) / 352 < 0.10,
+  abs(getMed("tmax") - 1) < 1e-8
+)
+```
+
+# Session information
+
+```{r session}
+sessionInfo()
+```

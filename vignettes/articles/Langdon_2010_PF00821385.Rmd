@@ -389,11 +389,11 @@ free_grid <- tibble(
 )
 fig4 <- bind_rows(
   free_grid |> mutate(species = "Beagle dog",
-                      dHR     = 1.76 * Cc_free_uM),
+                      d_hr     = 1.76 * Cc_free_uM),
   free_grid |> mutate(species = "Human",
-                      dHR     = 0.76 * Cc_free_uM)
+                      d_hr     = 0.76 * Cc_free_uM)
 )
-ggplot(fig4, aes(Cc_free_uM, dHR, colour = species)) +
+ggplot(fig4, aes(Cc_free_uM, d_hr, colour = species)) +
   geom_line(linewidth = 0.8) +
   scale_colour_manual(values = c("Beagle dog" = "#1f77b4",
                                  "Human"      = "#2ca02c")) +

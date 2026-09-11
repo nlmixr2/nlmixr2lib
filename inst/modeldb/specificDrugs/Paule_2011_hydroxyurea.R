@@ -50,11 +50,11 @@ Paule_2011_hydroxyurea <- function() {
     # we convert PK to per-day units (multiply rate constants by 24 h/day,
     # and CL/F by 24 h/day). The fundamental disposition is unchanged.
     # ---------------------------------------------------------------------
-    lka  <- log(3.02 * 24);  label("Population absorption rate constant (Ka, 1/day)")             # Paule 2011 Table 2 (theta_ka 3.02 1/h)
-    lcl  <- log(11.6 * 24);  label("Apparent oral clearance at 70 kg (CL/F, L/day)")              # Paule 2011 Table 2 (11.6 L/h)
-    lvc  <- log(45.3);       label("Apparent central volume of distribution at 70 kg (Vc/F, L)")  # Paule 2011 Table 2
-    lkcp <- log(0.027 * 24); label("Central-to-peripheral first-order transfer rate (kcp, 1/day)")  # Paule 2011 Table 2 (0.027 1/h)
-    lkpc <- fixed(log(0.004 * 24)); label("Peripheral-to-central first-order transfer rate (kpc, 1/day)")  # Paule 2011 Table 2 (kpc fixed at 0.004 1/h)
+    lka  <- log(3.02 * 24);  label("Population absorption rate constant (1/day)")             # Paule 2011 Table 2 (theta_ka 3.02 1/h)
+    lcl  <- log(11.6 * 24);  label("Apparent oral clearance at 70 kg (L/day)")              # Paule 2011 Table 2 (11.6 L/h)
+    lvc  <- log(45.3);       label("Apparent central volume of distribution at 70 kg (L)")  # Paule 2011 Table 2
+    lkcp <- log(0.027 * 24); label("Central-to-peripheral first-order transfer rate (1/day)")  # Paule 2011 Table 2 (0.027 1/h)
+    lkpc <- fixed(log(0.004 * 24)); label("Peripheral-to-central first-order transfer rate (1/day)")  # Paule 2011 Table 2 (kpc fixed at 0.004 1/h)
 
     # Allometric exponents (Paule 2011 Methods; held fixed at the canonical
     # values reported in the paper)
@@ -65,16 +65,16 @@ Paule_2011_hydroxyurea <- function() {
     # HbF percentage PD parameters (Paule 2011 Table 4)
     # Turnover model: dHbF/dt = Kin_HbF - Kout_HbF * (1 - I_HbF) * HbF
     # ---------------------------------------------------------------------
-    lkin_hbf      <- log(0.071); label("Typical zero-order production rate of HbF% (Kin_HbF, %/day)")  # Paule 2011 Table 4
-    lkout_hbf     <- log(0.013); label("Typical first-order elimination rate of HbF% (Kout_HbF, 1/day)")  # Paule 2011 Table 4
+    lkin_hbf      <- log(0.071); label("Typical zero-order production rate of HbF% (%/day)")  # Paule 2011 Table 4
+    lkout_hbf     <- log(0.013); label("Typical first-order elimination rate of HbF% (1/day)")  # Paule 2011 Table 4
     logitimax_hbf <- 0.276;      label("Logit-transformed Imax for HbF (LImax, unitless); back-transformed Imax = 0.569")  # Paule 2011 Table 4 (LImax)
 
     # ---------------------------------------------------------------------
     # MCV PD parameters (Paule 2011 Table 5)
     # Turnover model: dMCV/dt = Kin_MCV - Kout_MCV * (1 - b * C^gamma) * MCV
     # ---------------------------------------------------------------------
-    lkin_mcv  <- log(3.71);  label("Typical zero-order production rate of MCV (Kin_MCV, fL/day)")  # Paule 2011 Table 5
-    lkout_mcv <- log(0.042); label("Typical first-order elimination rate of MCV (Kout_MCV, 1/day)")  # Paule 2011 Table 5
+    lkin_mcv  <- log(3.71);  label("Typical zero-order production rate of MCV (fL/day)")  # Paule 2011 Table 5
+    lkout_mcv <- log(0.042); label("Typical first-order elimination rate of MCV (1/day)")  # Paule 2011 Table 5
     lb_mcv    <- log(0.099); label("Power-function scale constant b for MCV inhibition (units of (L/mg)^gamma)")  # Paule 2011 Table 5 (b)
     gamma_mcv <- 0.19;       label("Power-function exponent gamma for MCV inhibition (unitless)")  # Paule 2011 Table 5 (gamma)
 
@@ -172,7 +172,7 @@ Paule_2011_hydroxyurea <- function() {
     kin_hbf       <- exp(lkin_hbf  + etalkin_hbf)
     kout_hbf      <- exp(lkout_hbf + etalkout_hbf)
     logit_imax    <- logitimax_hbf + etalogitimax_hbf
-    imax_hbf      <- 1 / (1 + exp(-logit_imax))
+    imax_hbf      <- expit(logit_imax)
     inhib_hbf     <- imax_hbf * Cc / (Cc + 0.005)
 
     # Off-drug steady state: effect1(SS) = kin_hbf / kout_hbf (matches the

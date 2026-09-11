@@ -122,15 +122,15 @@ Sanghavi_2020_ipilimumab <- function() {
     e_logldh_cl <- 0.703;         label("Power exponent on log(LDH)/log(217) for CL (unitless)")     # Sanghavi 2020 Table 2: CL_log-BLDH
 
     # Categorical covariate effects on CL applied as exp(coef * indicator).
-    e_sclc_cl   <- -0.124;        label("Exponential coefficient of SCLC tumor type on CL")         # Sanghavi 2020 Table 2: CL_SCLC
-    e_line_cl   <- -0.0949;       label("Exponential coefficient of 1L vs 2L+ line of therapy on CL") # Sanghavi 2020 Table 2: CL_LINE
-    e_n1q3w_cl  <-  0.0950;       label("Exponential coefficient of nivolumab 1 mg/kg Q3W on CL")   # Sanghavi 2020 Table 2: CL_N1Q3W
-    e_n3q2w_cl  <-  0.191;        label("Exponential coefficient of nivolumab 3 mg/kg Q2W on CL")   # Sanghavi 2020 Table 2: CL_N3Q2W
+    e_sclc_cl   <- -0.124;        label("Exponential coefficient of SCLC tumor type on CL (unitless)")         # Sanghavi 2020 Table 2: CL_SCLC
+    e_line_cl   <- -0.0949;       label("Exponential coefficient of 1L vs 2L+ line of therapy on CL (unitless)") # Sanghavi 2020 Table 2: CL_LINE
+    e_n1q3w_cl  <-  0.0950;       label("Exponential coefficient of nivolumab 1 mg/kg Q3W on CL (unitless)")   # Sanghavi 2020 Table 2: CL_N1Q3W
+    e_n3q2w_cl  <-  0.191;        label("Exponential coefficient of nivolumab 3 mg/kg Q2W on CL (unitless)")   # Sanghavi 2020 Table 2: CL_N3Q2W
 
     # Additive effect of any-regimen nivolumab combination therapy on
     # cl_time_max (linear, not exponential). Applied on the same linear scale
     # as Emax_ref and the etacl_time_max random effect.
-    e_combo_cl_time_max <- -0.202;       label("Additive effect of nivolumab combination therapy on cl_time_max") # Sanghavi 2020 Table 2: Emax_COMBO
+    e_combo_cl_time_max <- -0.202;       label("Additive effect of nivolumab combination therapy on cl_time_max, which is signed and dimensionless (unitless)") # Sanghavi 2020 Table 2: Emax_COMBO
 
     # IIV: log-normal on CL and VC (correlated 2x2 block); additive
     # normal on cl_time_max (independent). Variance / covariance entered in

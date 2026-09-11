@@ -180,7 +180,7 @@ Reinecke_2018_levonorgestrel_implant <- function() {
     kout_shbg  <- exp(lkout_shbg)
     kin_shbg   <- rbase_shbg * kout_shbg
 
-    fdepot <- exp(logitfdepot) / (1 + exp(logitfdepot))
+    fdepot <- expit(logitfdepot)
 
     A3nM  <- (central / vc) * (1e6 / MWLNG) + 1e-6
     temp1 <- KALB * KDS + shbg - A3nM

@@ -52,8 +52,8 @@ Archary_2018_lopinavir <- function() {
     # Reported in units of L/h/5.6 kg and L/5.6 kg (the FFM reference); the paper writes
     # the structural formulas with the (FFM/5.6) ratio so the typical-value parameters
     # apply directly at FFM = 5.6 kg.
-    lcl <- log(3.1);  label("Apparent clearance at FFM=5.6 kg, TCHOL=3 mmol/L (CL/F, L/h)")  # Table 2 row 1: CL/F = 3.1 L/h/5.6 kg
-    lvc <- log(9.6);  label("Apparent volume of distribution at FFM=5.6 kg (Vd/F, L)")        # Table 2 row 2: Vd/F = 9.6 L/5.6 kg
+    lcl <- log(3.1);  label("Apparent clearance at FFM=5.6 kg, TCHOL=3 mmol/L (L/h)")  # Table 2 row 1: CL/F = 3.1 L/h/5.6 kg
+    lvc <- log(9.6);  label("Apparent volume of distribution at FFM=5.6 kg (L)")        # Table 2 row 2: Vd/F = 9.6 L/5.6 kg
     lka <- log(0.39); label("First-order absorption rate constant (1/h)")                     # Table 2 row 3: ka = 0.39 /h
 
     # Allometric exponents fixed per Archary 2018 Methods page 4 ("Allometric exponents
@@ -82,7 +82,7 @@ Archary_2018_lopinavir <- function() {
     # an additional 15.5% BSV on the RUV magnitude). This model uses a single
     # proportional error fixed to the larger 37.7% value as a conservative envelope; the
     # vignette documents the simplification.
-    propSd <- 0.377; label("Proportional residual error (CV, fraction)")  # Table 2 row 6 (<5 h post-dose)
+    propSd <- 0.377; label("Proportional residual error, reported as a CV (fraction)")  # Table 2 row 6 (<5 h post-dose)
   })
 
   model({

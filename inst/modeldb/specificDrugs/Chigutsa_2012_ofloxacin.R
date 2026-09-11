@@ -231,14 +231,15 @@ Chigutsa_2012_ofloxacin <- function() {
     lvp        <- log(40);   label("Peripheral volume of distribution Vp at WT 70 kg (L)")                         # Chigutsa 2012 Table 3: Peripheral vol (liters/70 kg) = 40 (RSE 25%)
     lq         <- log(59);   label("Intercompartmental clearance Q at WT 70 kg (L/h)")                             # Chigutsa 2012 Table 3: Intercompartmental clearance (liters/h/70 kg) = 59 (RSE 44%)
     lmtt       <- log(0.74); label("Mean absorption transit time MTT (h, fasted reference)")                       # Chigutsa 2012 Table 3: Durban mean transit time (h) = 0.74 (RSE 18%; PPV shared with Cape Town MTT)
-    lnn        <- log(6);    label("Number of absorption transit compartments NN (continuous, dimensionless)")     # Chigutsa 2012 Table 3: Number of absorption transit compartments = 6 (RSE 15%)
+    lnn        <- log(6);    label("Number of absorption transit compartments NN, estimated on a continuous scale (dimensionless)")     # Chigutsa 2012 Table 3: Number of absorption transit compartments = 6 (RSE 15%)
     lfdepot    <- fixed(log(1)); label("Oral bioavailability F (anchored at 1; not estimated)")                    # Apparent oral CL/F and V/F parameterisation; F was not separately estimated by Chigutsa 2012
 
     # Allometric exponents (fixed per Chigutsa 2012 Methods 'Pharmacokinetic
     # analysis' paragraph 4, citing reference (1) Anderson & Holford 2008
     # for allometric scaling).
     allo_cl_q <- fixed(0.75); label("Allometric exponent on CL_nonGFR and Q (unitless)")                           # Chigutsa 2012 Methods: 'introduced using allometric scaling (1)' -- standard 0.75 for clearances
-    allo_v    <- fixed(1);    label("Allometric exponent on Vc and Vp (unitless)")                                 # Chigutsa 2012 Methods: 'allometrically scaled' -- standard 1.0 for volumes
+    e_lbm_vc  <- fixed(1);    label("Allometric exponent of lean body mass on Vc (unitless)")   # Chigutsa 2012 Methods: 'allometrically scaled' -- standard 1.0 for volumes
+    e_wt_vp   <- fixed(1);    label("Allometric exponent of total body weight on Vp (unitless)") # Chigutsa 2012 Methods: 'allometrically scaled' -- standard 1.0 for volumes
 
     # Food / site effect on mean transit time.
     # Chigutsa 2012 Table 3 reports two separately estimated MTT typical
@@ -293,8 +294,8 @@ Chigutsa_2012_ofloxacin <- function() {
     cl_typ        <- cl_renal_typ + cl_nonren_typ
     cl            <- cl_typ * exp(etalcl)
 
-    vc <- exp(lvc + etalvc) * (LBM / 46)^allo_v                 # allometric scaling, reference 46 kg lean body mass
-    vp <- exp(lvp)          * (WT / 70)^allo_v                  # allometric scaling, reference 70 kg total body weight
+    vc <- exp(lvc + etalvc) * (LBM / 46)^e_lbm_vc                 # allometric scaling, reference 46 kg lean body mass
+    vp <- exp(lvp)          * (WT / 70)^e_wt_vp                  # allometric scaling, reference 70 kg total body weight
     q  <- exp(lq)           * (WT / 70)^allo_cl_q               # allometric scaling, reference 70 kg total body weight
 
     mtt    <- exp(lmtt + etalmtt) * fed_mtt

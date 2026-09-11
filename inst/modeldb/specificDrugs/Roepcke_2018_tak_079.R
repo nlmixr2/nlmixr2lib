@@ -220,7 +220,7 @@ Roepcke_2018_tak_079 <- function() {
     # =========================================================================
 
     # Bioavailability (logit -> fraction). Only applies to depot dosing (SC).
-    fdepot <- exp(logitfdepot) / (1 + exp(logitfdepot))
+    fdepot <- expit(logitfdepot)
 
     # Individual PK parameters. Route effect: SC reduces Vc to ~30% of the IV
     # typical value; IV is the reference (ROUTE_IV = 1).

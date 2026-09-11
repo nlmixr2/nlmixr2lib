@@ -139,10 +139,10 @@ Bizzotto_2016_glucose <- function() {
     # detection happy for the etas on flambda3 and w1.
     lflambda3i <- lflambda3 + etalflambda3
     lw1i       <- lw1       + etalw1
-    flambda3 <- 1 / (1 + exp(-lflambda3i))
-    flambda2 <- 1 / (1 + exp(-lflambda2))                      # var_flambda2 fixed at 0 -> no eta
-    w1       <- 1 / (1 + exp(-lw1i))
-    fw2      <- 1 / (1 + exp(-lfw2))                           # var_fw2    fixed at 0  -> no eta
+    flambda3 <- expit(lflambda3i)
+    flambda2 <- expit(lflambda2)                      # var_flambda2 fixed at 0 -> no eta
+    w1       <- expit(lw1i)
+    fw2      <- expit(lfw2)                           # var_fw2    fixed at 0  -> no eta
     pflow    <- exp(lpflow)                                    # var_F      fixed at 0  -> no eta
 
     # Derived periphery-block rate constants - .mdl MODEL_PREDICTION lines 177-183.

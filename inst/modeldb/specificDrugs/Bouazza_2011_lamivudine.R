@@ -58,11 +58,11 @@ Bouazza_2011_lamivudine <- function() {
 
   ini({
     # Structural parameters at the standard 70 kg reference (Bouazza 2011 Table 1)
-    lka  <- log(0.432); label("Absorption rate constant (Ka, 1/h)")
-    lcl  <- log(31);    label("Apparent clearance at 70 kg / fully matured (CL/F, L/h)")
-    lvc  <- log(76.4);  label("Apparent central volume at 70 kg (Vc/F, L)")
-    lq   <- log(5.83);  label("Apparent intercompartmental clearance at 70 kg (Q/F, L/h)")
-    lvp  <- log(129);   label("Apparent peripheral volume at 70 kg (Vp/F, L)")
+    lka  <- log(0.432); label("Absorption rate constant (1/h)")
+    lcl  <- log(31);    label("Apparent clearance at 70 kg / fully matured (L/h)")
+    lvc  <- log(76.4);  label("Apparent central volume at 70 kg (L)")
+    lq   <- log(5.83);  label("Apparent intercompartmental clearance at 70 kg (L/h)")
+    lvp  <- log(129);   label("Apparent peripheral volume at 70 kg (L)")
 
     # Allometric exponents (theory-based, not estimated; Bouazza 2011 Materials and Methods).
     # The paper applies the canonical 0.75 / 1 values without reporting RSE -> fixed.

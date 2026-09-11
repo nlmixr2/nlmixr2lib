@@ -213,12 +213,12 @@ Ravva_2015_varenicline <- function() {
     # Table 4) and wrapped in fixed(), because in the Ravva 2015 analysis they
     # are prior constants rather than estimated quantities.
     # ------------------------------------------------------------------
-    lka     <- fixed(log(1.69)); label("First-order absorption rate constant (Ka, 1/h)")            # Ravva 2009 Table 4 final-model Ka, via Ravva_2009_varenicline.R
+    lka     <- fixed(log(1.69)); label("First-order absorption rate constant (1/h)")            # Ravva 2009 Table 4 final-model Ka, via Ravva_2009_varenicline.R
     lcl     <- fixed(log(10.4)); label("Apparent clearance (CL/F, L/h) at reference covariates")    # Ravva 2009 Table 4 final-model q_CL
-    lvc     <- fixed(log(337));  label("Apparent central volume of distribution (V2/F, L)")         # Ravva 2009 Table 4 final-model q_V2
-    lvp     <- fixed(log(78.1)); label("Apparent peripheral volume of distribution (V3/F, L)")      # Ravva 2009 Table 4 final-model q_V3
-    lq      <- fixed(log(2.08)); label("Apparent intercompartmental clearance (Q/F, L/h)")          # Ravva 2009 Table 4 final-model q_Q
-    ltlag   <- fixed(log(0.43)); label("Absorption lag time (Alag, h)")                             # Ravva 2009 Table 4 final-model q_Alag
+    lvc     <- fixed(log(337));  label("Apparent central volume of distribution (L)")         # Ravva 2009 Table 4 final-model q_V2
+    lvp     <- fixed(log(78.1)); label("Apparent peripheral volume of distribution (L)")      # Ravva 2009 Table 4 final-model q_V3
+    lq      <- fixed(log(2.08)); label("Apparent intercompartmental clearance (L/h)")          # Ravva 2009 Table 4 final-model q_Q
+    ltlag   <- fixed(log(0.43)); label("Absorption lag time (h)")                             # Ravva 2009 Table 4 final-model q_Alag
 
     e_crcl_cl   <- fixed(0.54); label("Power exponent of CRCL/100 on CL/F (unitless)")                     # Ravva 2009 Table 4 q_CRCL on CL/F
     e_black_cl  <- fixed(1.16); label("Multiplicative factor on CL/F for Black vs White (unitless)")       # Ravva 2009 Table 4 q_Black on CL/F
@@ -265,8 +265,8 @@ Ravva_2015_varenicline <- function() {
     # CV, i.e. log-normal, in contrast to the three effect parameters below
     # whose IIV is reported as an SD on the parameter's own scale.
     # ------------------------------------------------------------------
-    lkon_placebo  <- fixed(log(0.0112)); label("Onset rate constant of the placebo 'kinetic' system (kon, 1/h)")  # Ravva 2015 Supplementary Table S1: k_on = 0.0112 /h (%RSE 142)
-    lkoff_placebo <- fixed(log(0.130));  label("Offset rate constant of the placebo 'kinetic' system (koff, 1/h)") # Ravva 2015 Supplementary Table S1: k_off = 0.130 /h (%RSE 65.4)
+    lkon_placebo  <- fixed(log(0.0112)); label("Onset rate constant of the placebo 'kinetic' system (1/h)")  # Ravva 2015 Supplementary Table S1: k_on = 0.0112 /h (%RSE 142)
+    lkoff_placebo <- fixed(log(0.130));  label("Offset rate constant of the placebo 'kinetic' system (1/h)") # Ravva 2015 Supplementary Table S1: k_off = 0.130 /h (%RSE 65.4)
 
     etalkon_placebo  ~ fixed(0.97987)  # Table S1 k_on IIV %CV = 129 (%RSE 154);  omega^2 = log(1 + 1.29^2) = 0.97987
     etalkoff_placebo ~ fixed(0.88216)  # Table S1 k_off IIV %CV = 119 (%RSE 154); omega^2 = log(1 + 1.19^2) = 0.88216

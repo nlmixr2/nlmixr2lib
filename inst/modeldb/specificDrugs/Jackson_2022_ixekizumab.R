@@ -52,11 +52,11 @@ Jackson_2022_ixekizumab <- function() {
 
   ini({
     # Structural parameters — reference body weight 58.6 kg (Jackson 2022 Table 2 footnotes)
-    lka     <- log(0.00801);   label("Absorption rate constant (Ka, 1/h)")                                     # Table 2: Ka = 0.00801 h^-1
-    lcl     <- log(0.0120);    label("Apparent clearance at 58.6 kg reference weight, ADA-negative (CL, L/h)") # Table 2: CL = 0.0120 L/h
-    lvc     <- log(2.72);      label("Central volume of distribution at 58.6 kg reference weight (V2, L)")        # Table 2: V2 = 2.72 L
-    lvp     <- log(2.11);      label("Peripheral volume of distribution at 58.6 kg reference weight (V3, L)")     # Table 2: V3 = 2.11 L
-    lq      <- log(0.0119);    label("Intercompartmental clearance at 58.6 kg reference weight (Q, L/h)")      # Table 2: Q = 0.0119 L/h
+    lka     <- log(0.00801);   label("Absorption rate constant (1/h)")                                     # Table 2: Ka = 0.00801 h^-1
+    lcl     <- log(0.0120);    label("Apparent clearance at 58.6 kg reference weight, ADA-negative (L/h)") # Table 2: CL = 0.0120 L/h
+    lvc     <- log(2.72);      label("Central volume of distribution at 58.6 kg reference weight (L)")        # Table 2: V2 = 2.72 L
+    lvp     <- log(2.11);      label("Peripheral volume of distribution at 58.6 kg reference weight (L)")     # Table 2: V3 = 2.11 L
+    lq      <- log(0.0119);    label("Intercompartmental clearance at 58.6 kg reference weight (L/h)")      # Table 2: Q = 0.0119 L/h
     lfdepot <- fixed(log(0.72)); label("Subcutaneous bioavailability (F1, fraction) -- adult model value") # Table 2 footnote c: F1 fixed at 0.72 (adult model)
 
     # Allometric weight exponents (reference weight 58.6 kg)

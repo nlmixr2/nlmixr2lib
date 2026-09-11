@@ -65,12 +65,12 @@ Lommerse_2019_raltegravir <- function() {
     # the maturation kernels (paper's original parameterisation), converted
     # inline to months (canonical PNA units) in model() via PNA/12.
     # =====================================================================
-    lvc_neonate  <- log(7.04);   label("Neonate central volume of distribution at 25 kg (V2, L)")            # Table 2, V2 = 7.04 L
-    lvp_neonate  <- log(10.3);   label("Neonate peripheral volume of distribution at 25 kg (V3, L)")         # Table 2, V3 = 10.3 L
-    lcl_max      <- log(9.44);   label("Neonate maximum apparent clearance at full maturation, 25 kg (CL_max, L/h)")   # Table 2, CL_max = 9.44 L/h
-    lq_neonate   <- log(0.786);  label("Neonate intercompartmental clearance at 25 kg (Q, L/h)")             # Table 2, Q = 0.786 L/h
-    lka_max      <- log(0.43);   label("Neonate maximum absorption rate constant at full maturation (KA_max, 1/h)")    # Table 2, KA_max = 0.43 1/h
-    lka_base     <- log(0.0915); label("Neonate absorption rate constant at birth (KA_base, 1/h)")           # Table 2, KA_base = 0.0915 1/h
+    lvc_neonate  <- log(7.04);   label("Neonate central volume of distribution at 25 kg (L)")            # Table 2, V2 = 7.04 L
+    lvp_neonate  <- log(10.3);   label("Neonate peripheral volume of distribution at 25 kg (L)")         # Table 2, V3 = 10.3 L
+    lcl_max      <- log(9.44);   label("Neonate maximum apparent clearance at full maturation, 25 kg (L/h)")   # Table 2, CL_max = 9.44 L/h
+    lq_neonate   <- log(0.786);  label("Neonate intercompartmental clearance at 25 kg (L/h)")             # Table 2, Q = 0.786 L/h
+    lka_max      <- log(0.43);   label("Neonate maximum absorption rate constant at full maturation (1/h)")    # Table 2, KA_max = 0.43 1/h
+    lka_base     <- log(0.0915); label("Neonate absorption rate constant at birth (1/h)")           # Table 2, KA_base = 0.0915 1/h
     cl_tau       <- 11.3;        label("Neonate CL maturation rate constant (1/year); 90% mature by ~11 weeks")        # Table 2, CL_tau = 11.3 1/year
     ka_tau       <- 63.2;        label("Neonate KA maturation rate constant (1/year); 90% mature by ~12 days")         # Table 2, KA_tau = 63.2 1/year
     # CL_base (neonate CL at birth) is fixed at 0 in the paper (Table 2, CL_base = 0);
@@ -78,19 +78,19 @@ Lommerse_2019_raltegravir <- function() {
     # which evaluates to 0 at PNA=0 by construction. No explicit CL_base parameter is needed.
     # F4 (neonate bioavailability after birth) fixed to 1 as the reference anchor for the
     # relative-bioavailability parameterisation.
-    lfdepot_neonate <- fixed(log(1)); label("Neonate oral bioavailability (F4, fraction)")       # Table 2, F4 fixed = 1
+    lfdepot_neonate <- fixed(log(1)); label("Neonate oral bioavailability (fraction)")       # Table 2, F4 fixed = 1
 
     # =====================================================================
     # MATERNAL PK -- Rizk 2015 pediatric popPK (ref [12]) values at the same
     # 25 kg reference. All maternal disposition parameters are fixed; only
     # KA and F are estimated to inform the mother-to-fetus transfer.
     # =====================================================================
-    lcl_mother    <- fixed(log(9.73));  label("Maternal apparent clearance at 25 kg, from Rizk 2015 (CL, L/h)")     # Table 2, CL fixed = 9.73 L/h
-    lvc_mother    <- fixed(log(3.52));  label("Maternal central volume at 25 kg, from Rizk 2015 (V2, L)")           # Table 2, V2 fixed = 3.52 L
-    lvp_mother    <- fixed(log(27));    label("Maternal peripheral volume at 25 kg, from Rizk 2015 (V3, L)")        # Table 2, V3 fixed = 27 L
-    lq_mother     <- fixed(log(0.866)); label("Maternal intercompartmental clearance at 25 kg, from Rizk 2015 (Q, L/h)") # Table 2, Q fixed = 0.866 L/h
-    lka_mother    <- log(0.175);        label("Maternal first-order absorption rate constant (KA, 1/h)")                  # Table 2, KA = 0.175 1/h
-    lfdepot_mother <- log(0.517);       label("Maternal oral bioavailability relative to neonate F=1 anchor (F, fraction)") # Table 2, F = 0.517
+    lcl_mother    <- fixed(log(9.73));  label("Maternal apparent clearance at 25 kg, from Rizk 2015 (L/h)")     # Table 2, CL fixed = 9.73 L/h
+    lvc_mother    <- fixed(log(3.52));  label("Maternal central volume at 25 kg, from Rizk 2015 (L)")           # Table 2, V2 fixed = 3.52 L
+    lvp_mother    <- fixed(log(27));    label("Maternal peripheral volume at 25 kg, from Rizk 2015 (L)")        # Table 2, V3 fixed = 27 L
+    lq_mother     <- fixed(log(0.866)); label("Maternal intercompartmental clearance at 25 kg, from Rizk 2015 (L/h)") # Table 2, Q fixed = 0.866 L/h
+    lka_mother    <- log(0.175);        label("Maternal first-order absorption rate constant (1/h)")                  # Table 2, KA = 0.175 1/h
+    lfdepot_mother <- log(0.517);       label("Maternal oral bioavailability relative to neonate F=1 anchor (fraction)") # Table 2, F = 0.517
 
     # =====================================================================
     # PLACENTAL COUPLING (in utero) -- set to 1000 L/h to enforce
