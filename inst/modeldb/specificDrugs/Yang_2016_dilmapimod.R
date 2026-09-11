@@ -48,11 +48,11 @@ Yang_2016_dilmapimod <- function() {
     # Each typical value is reported in the paper both as exp(theta_pop,k) and as
     # the underlying theta_pop,k on the natural-log scale.
     lcl    <- log(35.9)   ; label("Clearance CL (L/h)")                                                        # Yang 2016 Table 2: exp(theta_pop,1) = 35.9, theta_pop,1 = 3.58
-    lvc    <- log(8.1)    ; label("Central volume of distribution Vc (V1, L)")                                 # Yang 2016 Table 2: exp(theta_pop,2) = 8.1,  theta_pop,2 = 2.09
-    lq     <- log(28.2)   ; label("Inter-compartmental clearance to peripheral1 (Q1, L/h)")                    # Yang 2016 Table 2: exp(theta_pop,3) = 28.2, theta_pop,3 = 3.34
-    lvp    <- log(35.9)   ; label("Peripheral volume of distribution peripheral1 (V2, L)")                     # Yang 2016 Table 2: exp(theta_pop,4) = 35.9, theta_pop,4 = 3.58
-    lq2    <- log(5.7)    ; label("Inter-compartmental clearance to peripheral2 (Q2, L/h)")                    # Yang 2016 Table 2: exp(theta_pop,5) = 5.7,  theta_pop,5 = 1.74
-    lvp2   <- log(115.6)  ; label("Peripheral volume of distribution peripheral2 (V3, L)")                     # Yang 2016 Table 2: exp(theta_pop,6) = 115.6, theta_pop,6 = 4.75
+    lvc    <- log(8.1)    ; label("Central volume of distribution Vc (L)")                                 # Yang 2016 Table 2: exp(theta_pop,2) = 8.1,  theta_pop,2 = 2.09
+    lq     <- log(28.2)   ; label("Inter-compartmental clearance to peripheral1 (L/h)")                    # Yang 2016 Table 2: exp(theta_pop,3) = 28.2, theta_pop,3 = 3.34
+    lvp    <- log(35.9)   ; label("Peripheral volume of distribution peripheral1 (L)")                     # Yang 2016 Table 2: exp(theta_pop,4) = 35.9, theta_pop,4 = 3.58
+    lq2    <- log(5.7)    ; label("Inter-compartmental clearance to peripheral2 (L/h)")                    # Yang 2016 Table 2: exp(theta_pop,5) = 5.7,  theta_pop,5 = 1.74
+    lvp2   <- log(115.6)  ; label("Peripheral volume of distribution peripheral2 (L)")                     # Yang 2016 Table 2: exp(theta_pop,6) = 115.6, theta_pop,6 = 4.75
 
     # BMI covariate (power model centred at 27.4 kg/m^2 per Yang 2016 Results section 3.2)
     e_bmi_cl  <- 1.36     ; label("Power exponent of (BMI/27.4) on CL (unitless)")                              # Yang 2016 Table 2: BMI covariate on CL = 1.36 (95% CI 0.866-1.85)

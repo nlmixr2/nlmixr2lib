@@ -121,8 +121,8 @@ Honda_2005_carvedilol <- function() {
     # theta_3^S and theta_4^S onto log-additive S/R ratios lratiocl /
     # lratiov so that R-enantiomer parameters use lclf / lvf alone and
     # S-enantiomer parameters use lclf + lratiocl and lvf + lratiov.
-    lclf     <- log(1.01) ; label("R-carvedilol CL/F per kg body weight (theta_1, L/h/kg)") # Honda 2005 Table 1: theta_1 = 1.01 L/h/kg (95% CI 0.84-1.18)
-    lvf      <- log(2.53) ; label("R-carvedilol V/F per kg body weight (theta_2, L/kg)")    # Honda 2005 Table 1: theta_2 = 2.53 L/kg (95% CI 2.04-3.02)
+    lclf     <- log(1.01) ; label("R-carvedilol CL/F per kg body weight (L/h/kg)") # Honda 2005 Table 1: theta_1 = 1.01 L/h/kg (95% CI 0.84-1.18)
+    lvf      <- log(2.53) ; label("R-carvedilol V/F per kg body weight (L/kg)")    # Honda 2005 Table 1: theta_2 = 2.53 L/kg (95% CI 2.04-3.02)
     lratiocl <- log(2.13) ; label("Log S/R ratio for CL/F (theta_3; unitless)")              # Honda 2005 Table 1: theta_3 = 2.13 (95% CI 1.64-2.62)
     lratiov  <- log(2.94) ; label("Log S/R ratio for V/F (theta_4; unitless)")               # Honda 2005 Table 1: theta_4 = 2.94 (95% CI 1.98-3.90)
 

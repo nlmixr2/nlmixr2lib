@@ -178,21 +178,21 @@ Groenendaal_2007_morphine_rat_eeg <- function() {
     # 5.66-11.3, the interval printed on the CL row). Only the Estimate and CV%
     # columns are used here, and those are internally consistent as printed.
     lcl <- fixed(log(20.0))
-    label("Morphine blood clearance at median body weight (CL, mL/min)")                    # companion Table 2, Cl Intercept = 20.0 (CV 5.6%)
+    label("Morphine blood clearance at median body weight (mL/min)")                    # companion Table 2, Cl Intercept = 20.0 (CV 5.6%)
     e_wt_cl <- fixed(5.35)
     label("Linear body-weight slope on CL, centred on median body weight (per kg)")         # companion Table 2, Cl Slope factor = 5.35 (CV 25.2%)
     lvc <- fixed(log(68.1))
-    label("Central volume of distribution (V1, mL)")                                        # companion Table 2, V1 = 68.1 (CV 16.7%)
+    label("Central volume of distribution (mL)")                                        # companion Table 2, V1 = 68.1 (CV 16.7%)
     lq <- fixed(log(15.5))
-    label("Intercompartmental clearance to peripheral1 (Q2, mL/min)")                       # companion Table 2, Q2 = 15.5 (CV 11.3%)
+    label("Intercompartmental clearance to peripheral1 (mL/min)")                       # companion Table 2, Q2 = 15.5 (CV 11.3%)
     lvp <- fixed(log(739))
-    label("First peripheral volume at median body weight (V2, mL)")                         # companion Table 2, V2 Intercept = 739 (CV 7.6%)
+    label("First peripheral volume at median body weight (mL)")                         # companion Table 2, V2 Intercept = 739 (CV 7.6%)
     e_wt_vp <- fixed(8.50)
     label("Linear body-weight slope on V2, centred on median body weight (per kg)")         # companion Table 2, V2 Slope factor = 8.50 (CV 17.1%)
     lq2 <- fixed(log(17.8))
-    label("Intercompartmental clearance to peripheral2 (Q3, mL/min)")                       # companion Table 2, Q3 = 17.8 (CV 18.4%)
+    label("Intercompartmental clearance to peripheral2 (mL/min)")                       # companion Table 2, Q3 = 17.8 (CV 18.4%)
     lvp2 <- fixed(log(133))
-    label("Second peripheral volume (V3, mL)")                                              # companion Table 2, V3 = 133 (CV 15.9%)
+    label("Second peripheral volume (mL)")                                              # companion Table 2, V3 = 133 (CV 15.9%)
 
     # ------------------------------------------------------------------
     # Biophase distribution: extended catenary model, estimated in this paper.
@@ -200,9 +200,9 @@ Groenendaal_2007_morphine_rat_eeg <- function() {
     #   dCet/dt = k1e * Cb  - k1e * Cet
     #   dCe/dt  = k1e * Cet - keo * Ce
     lk1e <- log(0.0378)
-    label("Rate constant for transport through the transfer compartment (k1e, 1/min)")      # lead Table 1, k1e = 0.0378 (CV 8.4%; 95% CI 0.0315-0.0441)
+    label("Rate constant for transport through the transfer compartment (1/min)")      # lead Table 1, k1e = 0.0378 (CV 8.4%; 95% CI 0.0315-0.0441)
     lke0 <- log(0.0426)
-    label("Rate constant for loss from the effect compartment, vehicle arm (keo, 1/min)")   # lead Table 1, keo -GF120918 = 0.0426 (CV 10.0%; 95% CI 0.0342-0.0510)
+    label("Rate constant for loss from the effect compartment, vehicle arm (1/min)")   # lead Table 1, keo -GF120918 = 0.0426 (CV 10.0%; 95% CI 0.0342-0.0510)
 
     # Lead paper Equation 7, P_i = theta3 * (1 + theta4 * GF120918_i). Table 1
     # gives theta4 = -0.644 and reports keo(+GF120918) = 0.0152; the identity
@@ -217,13 +217,13 @@ Groenendaal_2007_morphine_rat_eeg <- function() {
     # (Figure 1 renders the denominator of panel (a) as "EC50 - Ce^nH"; that is
     # a PDF sign artefact, Equation 5 in the text is the authoritative form.)
     le0 <- log(44.6)
-    label("Baseline no-drug EEG delta-band amplitude (E0, uV)")                             # lead Table 2, E0 = 44.6 (CV 2.3%; 95% CI 42.6-46.6)
+    label("Baseline no-drug EEG delta-band amplitude (uV)")                             # lead Table 2, E0 = 44.6 (CV 2.3%; 95% CI 42.6-46.6)
     lemax <- log(44.5)
-    label("Maximum drug-induced increase in EEG delta-band amplitude (Emax, uV)")           # lead Table 2, Emax = 44.5 (CV 8.0%; 95% CI 37.5-51.5)
+    label("Maximum drug-induced increase in EEG delta-band amplitude (uV)")           # lead Table 2, Emax = 44.5 (CV 8.0%; 95% CI 37.5-51.5)
     lec50 <- log(451)
-    label("Effect-compartment concentration giving half-maximal effect (EC50, ng/mL)")      # lead Table 2, EC50 = 451 (CV 17.3%; 95% CI 298-604)
+    label("Effect-compartment concentration giving half-maximal effect (ng/mL)")      # lead Table 2, EC50 = 451 (CV 17.3%; 95% CI 298-604)
     lhill <- log(2.32)
-    label("Hill slope factor of the sigmoidal Emax model (nH, unitless)")                   # lead Table 2, nH = 2.32 (CV 10.4%; 95% CI 1.85-2.79)
+    label("Hill slope factor of the sigmoidal Emax model (unitless)")                   # lead Table 2, nH = 2.32 (CV 10.4%; 95% CI 1.85-2.79)
 
     # ------------------------------------------------------------------
     # Inter-animal variability. The published tables label these rows "omega^2",

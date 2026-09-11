@@ -150,7 +150,7 @@ SoriaChacartegui_2026_tramadol <- function() {
     # -----------------------------------------------------------------------
     lka <- log(3.09); label("First-order absorption rate constant, depot to central (1/h)") # Table 2: Ka = 3.09 1/h (RSE 20%; bootstrap 3.15, 95% CI 2.07-5.01)
     lmtt <- log(0.24); label("Mean transit time of the absorption chain (h)")               # Table 2: MTT = 0.24 h (RSE 5.4%; bootstrap 0.24, 95% CI 0.21-0.27)
-    lntr <- log(17.6); label("Number of transit compartments (continuous, dimensionless)")  # Table 2: NCMT = 17.6 (RSE 18.7%; bootstrap 17.5, 95% CI 11.3-90.1)
+    lntr <- log(17.6); label("Number of transit compartments, estimated on a continuous scale (dimensionless)")  # Table 2: NCMT = 17.6 (RSE 18.7%; bootstrap 17.5, 95% CI 11.3-90.1)
 
     # -----------------------------------------------------------------------
     # Covariate effects. Both are PsN SCM 'linear' functions, so each is a

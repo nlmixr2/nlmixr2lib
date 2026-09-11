@@ -124,9 +124,9 @@ Rower_2017_tacrolimus <- function() {
     # Re-expressed here in the canonical (CL/F, V/F) form: CL/F = ke * V.
     # Reference covariates: AGE = 5.7 years, CRCL = 122.4 mL/min/1.73 m^2,
     # CONMED_AZOLE = 0. F/bioavailability was not estimated; defaults to 1.
-    lka <- fixed(log(3.43))                                                 ; label("Absorption rate (Ka, 1/h)")  # Rower 2017 Table 2 final model: Ka fixed at 3.43/h (the estimate from the base model, Results paragraph 1 of "Population PK model")
-    lcl <- log(0.0408 * 233)                                                ; label("Apparent clearance at reference covariates (CL/F, L/h)")  # CL/F = ke_typ * V_typ = 0.0408 * 233 = 9.5064 L/h; both factors from Rower 2017 Table 2 final-model column
-    lvc <- log(233)                                                         ; label("Apparent central volume at reference age (V/F, L)")  # Rower 2017 Table 2 final-model V = 233 L (RSE 17%)
+    lka <- fixed(log(3.43))                                                 ; label("Absorption rate (1/h)")  # Rower 2017 Table 2 final model: Ka fixed at 3.43/h (the estimate from the base model, Results paragraph 1 of "Population PK model")
+    lcl <- log(0.0408 * 233)                                                ; label("Apparent clearance at reference covariates (L/h)")  # CL/F = ke_typ * V_typ = 0.0408 * 233 = 9.5064 L/h; both factors from Rower 2017 Table 2 final-model column
+    lvc <- log(233)                                                         ; label("Apparent central volume at reference age (L)")  # Rower 2017 Table 2 final-model V = 233 L (RSE 17%)
 
     # ----- Covariate exponents (Rower 2017 Table 2 final-model column) -----
     # Both exponents are estimated point estimates with reported RSE -- not fixed.

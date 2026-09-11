@@ -49,18 +49,18 @@ Duffull_2025_mab_tmdd_qss <- function() {
     # (Section 2.1.1). They are not accompanied by standard errors of
     # their own; Table 2's RSE% columns are the FIM-predicted precisions
     # of these values under the two designs.
-    lcl  <- log(4.13);  label("Linear (non-specific) clearance of free antibody from the central compartment (CL, L/h)")  # Duffull 2025 Table 2 row CL, nominal value 4.13
-    lvc  <- log(76.7);  label("Central compartment volume of distribution (Vc, L)")                                       # Duffull 2025 Table 2 row Vc, nominal value 76.7
-    lvp  <- log(70);    label("Peripheral compartment volume of distribution (Vp, L)")                                    # Duffull 2025 Table 2 row Vp, nominal value 70
-    lq   <- log(44.7);  label("Intercompartmental clearance between central and peripheral compartments (Q, L/h)")        # Duffull 2025 Table 2 row Q, nominal value 44.7
+    lcl  <- log(4.13);  label("Linear (non-specific) clearance of free antibody from the central compartment (L/h)")  # Duffull 2025 Table 2 row CL, nominal value 4.13
+    lvc  <- log(76.7);  label("Central compartment volume of distribution (L)")                                       # Duffull 2025 Table 2 row Vc, nominal value 76.7
+    lvp  <- log(70);    label("Peripheral compartment volume of distribution (L)")                                    # Duffull 2025 Table 2 row Vp, nominal value 70
+    lq   <- log(44.7);  label("Intercompartmental clearance between central and peripheral compartments (L/h)")        # Duffull 2025 Table 2 row Q, nominal value 44.7
 
     # ----- Target turnover (Duffull 2025 Table 2, 'Nominal value' column). -----
     # ksyn is reported per unit volume (nM/h); model() multiplies it by
     # Vc to obtain the zero-order synthesis rate of target AMOUNT
     # (nmol/h), matching Equation 3's "+ ksyn Vc" term.
-    lksyn <- log(1.09);  label("Zero-order synthesis rate of the target, per unit central volume (ksyn, nmol/L/h)")  # Duffull 2025 Table 2 row ksyn, nominal value 1.09 nM/h
-    lkdeg <- log(0.349); label("First-order degradation rate constant of free target (kdeg, 1/h)")                   # Duffull 2025 Table 2 row kdeg, nominal value 0.349
-    lkint <- log(11.1);  label("First-order internalisation (elimination) rate constant of the antibody-target complex (kint, 1/h)")  # Duffull 2025 Table 2 row kint, nominal value 11.1
+    lksyn <- log(1.09);  label("Zero-order synthesis rate of the target, per unit central volume (nmol/L/h)")  # Duffull 2025 Table 2 row ksyn, nominal value 1.09 nM/h
+    lkdeg <- log(0.349); label("First-order degradation rate constant of free target (1/h)")                   # Duffull 2025 Table 2 row kdeg, nominal value 0.349
+    lkint <- log(11.1);  label("First-order internalisation (elimination) rate constant of the antibody-target complex (1/h)")  # Duffull 2025 Table 2 row kint, nominal value 11.1
 
     # ----- Quasi-steady-state binding constant. -----
     # Duffull 2025 calls this parameter "Km" and the Table 2 footnote

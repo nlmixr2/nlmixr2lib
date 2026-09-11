@@ -94,7 +94,7 @@ Debord_2001_cyclosporin <- function() {
     # Map onto the rxode2 transit() function via ntr = a - 1 and
     # mtt = a/b so that the Savic 2007 analytical form delivers the same
     # input rate as Debord 2001 Eq. 3.
-    lntr <- log(8.56 - 1);   label("Number of transit compartments (continuous, dimensionless)")  # Debord 2001 Table I: a (mean) = 8.56; ntr = a - 1 = 7.56
+    lntr <- log(8.56 - 1);   label("Number of transit compartments, estimated on a continuous scale (dimensionless)")  # Debord 2001 Table I: a (mean) = 8.56; ntr = a - 1 = 7.56
     lmtt <- log(8.56 / 10.94); label("Mean transit time (h)")                                     # Debord 2001 Table I: a (mean) = 8.56, b (mean) = 10.94 1/h; mtt = a/b = 0.7824 h
 
     # Bioavailability fixed to 1 (Debord 2001 Methods page 378:

@@ -134,11 +134,11 @@ Roepcke_2023_rezafungin <- function() {
     # Structural parameters at the diseased-state reference
     # (DIS_HEALTHY = 0), BSA = 1.9 m^2 and albumin = 3.2 g/dL.
     # Roepcke 2023 Table 2, 'Population mean' column.
-    lcl  <- log(0.328); label("Clearance at the diseased reference, BSA = 1.9 m^2 (CL, L/h)")                                # Roepcke 2023 Table 2 (2.77 %RSE)
-    lvc  <- log(17.7);  label("Central volume at the diseased reference, BSA = 1.9 m^2 (V1, L)")                             # Roepcke 2023 Table 2 (3.96 %RSE)
-    lvp  <- log(19.1);  label("Shared peripheral volume at BSA = 1.9 m^2 and ALB = 3.2 g/dL (V23, L)")                       # Roepcke 2023 Table 2 (2.41 %RSE)
-    lq   <- log(0.236); label("Intercompartmental clearance to peripheral1 (Q2, L/h)")                                       # Roepcke 2023 Table 2 (5.38 %RSE)
-    lq2  <- log(12.4);  label("Intercompartmental clearance to peripheral2 (Q3, L/h)")                                       # Roepcke 2023 Table 2 (4.37 %RSE)
+    lcl  <- log(0.328); label("Clearance at the diseased reference, BSA = 1.9 m^2 (L/h)")                                # Roepcke 2023 Table 2 (2.77 %RSE)
+    lvc  <- log(17.7);  label("Central volume at the diseased reference, BSA = 1.9 m^2 (L)")                             # Roepcke 2023 Table 2 (3.96 %RSE)
+    lvp  <- log(19.1);  label("Shared peripheral volume at BSA = 1.9 m^2 and ALB = 3.2 g/dL (L)")                       # Roepcke 2023 Table 2 (2.41 %RSE)
+    lq   <- log(0.236); label("Intercompartmental clearance to peripheral1 (L/h)")                                       # Roepcke 2023 Table 2 (5.38 %RSE)
+    lq2  <- log(12.4);  label("Intercompartmental clearance to peripheral2 (L/h)")                                       # Roepcke 2023 Table 2 (4.37 %RSE)
 
     # Body-surface-area power exponents, reference 1.9 m^2
     # (Roepcke 2023 Table 2 footnote a).

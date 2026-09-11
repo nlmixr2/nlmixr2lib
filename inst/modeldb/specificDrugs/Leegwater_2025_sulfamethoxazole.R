@@ -150,10 +150,10 @@ Leegwater_2025_sulfamethoxazole <- function() {
     # Table 3, cross-checked against the $THETA block of the supplement
     # control stream (all values there are the final estimates entered as
     # FIX for simulation).
-    lka <- log(0.978); label("First-order absorption rate constant for sulfamethoxazole (ka, 1/h)")                     # Table 3: 0.978 1/h, RSE 45%, bootstrap 95% CI 0.25-8.61; control stream $THETA(3) "0.978 FIX"
+    lka <- log(0.978); label("First-order absorption rate constant for sulfamethoxazole (1/h)")                     # Table 3: 0.978 1/h, RSE 45%, bootstrap 95% CI 0.25-8.61; control stream $THETA(3) "0.978 FIX"
     lcl <- log(0.97); label("Apparent sulfamethoxazole elimination clearance at eGFR 68 mL/min/1.73 m^2 without CRRT (L/h)") # Table 3: 0.97 L/h, RSE 4%; control stream $THETA(1) "0.97 FIX". NOTE this is the K20 (elimination) arm only -- the metabolite formation arm K23 is an ADDITIONAL 0.4*CL, so total sulfamethoxazole elimination is 1.4*CL. See f_clform_nasmx below.
     lvc <- log(37.0); label("Apparent sulfamethoxazole central volume of distribution (L)")                             # Table 3: 37.0 L, RSE 6%, bootstrap 95% CI 21.5-43.3; control stream $THETA(2) "37 FIX"
-    lfdepot <- fixed(log(1)); label("Oral bioavailability (F, unitless)")                                               # Table 3: "Biological availability 1 Fixed"; control stream $THETA(5) "1 FIX". Results: estimated first, found ~100%, then fixed to 100%.
+    lfdepot <- fixed(log(1)); label("Oral bioavailability (unitless)")                                               # Table 3: "Biological availability 1 Fixed"; control stream $THETA(5) "1 FIX". Results: estimated first, found ~100%, then fixed to 100%.
 
     # Sulfamethoxazole covariate effects. Mutually exclusive branches, not
     # multiplicative layers: control stream $PK evaluates

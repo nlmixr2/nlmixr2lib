@@ -58,10 +58,10 @@ Cheng_2026_immunoglobulin <- function() {
     # Structural parameters — typical values for a 70 kg PID patient at the
     # population median IgM = 0.21 g/L. Cheng 2026 Table 4 (page 7).
     lcl   <- log(0.308); label("CL for a 70 kg PID patient (L/day)")                                 # Cheng 2026 Table 4
-    lvc   <- log(3.59);  label("Central volume of distribution for a 70 kg patient (V1, L)")        # Cheng 2026 Table 4
-    lq    <- log(1.08);  label("Intercompartmental clearance for a 70 kg patient (Q, L/day)")        # Cheng 2026 Table 4
-    lvp   <- log(7.37);  label("Peripheral volume of distribution for a 70 kg patient (V2, L)")     # Cheng 2026 Table 4
-    lcbas <- log(5.67);  label("Baseline endogenous IgG for a typical PID patient at IGM = 0.21 g/L (CBAS, g/L)")  # Cheng 2026 Table 4
+    lvc   <- log(3.59);  label("Central volume of distribution for a 70 kg patient (L)")        # Cheng 2026 Table 4
+    lq    <- log(1.08);  label("Intercompartmental clearance for a 70 kg patient (L/day)")        # Cheng 2026 Table 4
+    lvp   <- log(7.37);  label("Peripheral volume of distribution for a 70 kg patient (L)")     # Cheng 2026 Table 4
+    lcbas <- log(5.67);  label("Baseline endogenous IgG for a typical PID patient at IGM = 0.21 g/L (g/L)")  # Cheng 2026 Table 4
 
     # Allometric exponents — fixed to theory-based values in the final model
     # after a base-model evaluation found the empirically estimated exponents

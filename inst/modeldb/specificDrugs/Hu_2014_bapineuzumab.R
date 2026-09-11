@@ -54,10 +54,10 @@ Hu_2014_bapineuzumab <- function() {
     # (Hu 2014 abstract; Reduced Covariate Model paragraph: "the typical
     # values for CL and Vc in a Caucasian subject with a standardized body
     # weight of 70 kg as 0.17 L/day ... and 3.13 L").
-    lcl     <- log(0.17);   label("Bapineuzumab clearance for Caucasian, 70 kg reference (CL, L/day)")    # Hu 2014 Table 2: CL reduced model estimate 0.17
-    lvc     <- log(3.13);   label("Bapineuzumab central volume of distribution for 70 kg reference (Vc, L)")  # Hu 2014 Table 2: Vc reduced model estimate 3.13
-    lq      <- log(0.871);  label("Bapineuzumab inter-compartmental clearance (Q, L/day)")                # Hu 2014 Table 2: Q reduced model estimate 0.871
-    lvp     <- log(3.61);   label("Bapineuzumab peripheral volume of distribution (Vp, L)")               # Hu 2014 Table 2: Vp reduced model estimate 3.61
+    lcl     <- log(0.17);   label("Bapineuzumab clearance for Caucasian, 70 kg reference (L/day)")    # Hu 2014 Table 2: CL reduced model estimate 0.17
+    lvc     <- log(3.13);   label("Bapineuzumab central volume of distribution for 70 kg reference (L)")  # Hu 2014 Table 2: Vc reduced model estimate 3.13
+    lq      <- log(0.871);  label("Bapineuzumab inter-compartmental clearance (L/day)")                # Hu 2014 Table 2: Q reduced model estimate 0.871
+    lvp     <- log(3.61);   label("Bapineuzumab peripheral volume of distribution (L)")               # Hu 2014 Table 2: Vp reduced model estimate 3.61
 
     # Power exponents on body weight (reference 70 kg). Both estimated in the
     # reduced covariate model. The Sensitivity Analysis paragraph notes that

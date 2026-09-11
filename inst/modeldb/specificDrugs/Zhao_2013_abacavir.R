@@ -65,11 +65,11 @@ Zhao_2013_abacavir <- function() {
   ini({
     # Structural parameters (Zhao 2013 Table 2 final estimates).
     # Reference weight for allometric scaling is the population median 17.6 kg.
-    lka  <- log(0.913); label("Absorption rate constant (ka, 1/h)")                                    # Table 2
-    lcl  <- log(20.1);  label("Apparent clearance at 17.6 kg reference (CL/F, L/h)")                   # Table 2
-    lvc  <- log(13.0);  label("Apparent central volume of distribution at 17.6 kg reference (V1/F, L)") # Table 2
-    lvp  <- log(13.5);  label("Apparent peripheral volume of distribution (V2/F, L)")                  # Table 2
-    lq   <- log(2.0);   label("Apparent intercompartmental clearance (Q/F, L/h)")                      # Table 2
+    lka  <- log(0.913); label("Absorption rate constant (1/h)")                                    # Table 2
+    lcl  <- log(20.1);  label("Apparent clearance at 17.6 kg reference (L/h)")                   # Table 2
+    lvc  <- log(13.0);  label("Apparent central volume of distribution at 17.6 kg reference (L)") # Table 2
+    lvp  <- log(13.5);  label("Apparent peripheral volume of distribution (L)")                  # Table 2
+    lq   <- log(2.0);   label("Apparent intercompartmental clearance (L/h)")                      # Table 2
 
     # Allometric exponents (estimated by Zhao 2013, NOT fixed at the canonical 0.75 / 1).
     e_wt_cl <- 0.802; label("Allometric exponent on CL/F (unitless)") # Table 2 (theta_1, RSE 11.6 %)

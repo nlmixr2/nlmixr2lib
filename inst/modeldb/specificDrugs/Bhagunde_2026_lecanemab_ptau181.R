@@ -203,10 +203,10 @@ Bhagunde_2026_lecanemab_ptau181 <- function() {
     # Bhagunde 2026, which used post hoc individual PK parameters.      #
     # Source: Majid 2024 Table 1 and the equations printed beneath it.  #
     # ---------------------------------------------------------------- #
-    lcl <- fixed(log(0.0154)); label("Lecanemab clearance at the reference subject (CL, L/h)")        # Majid 2024 Table 1: CL = 0.0154 L/h (RSE 1.60%)
-    lvc <- fixed(log(3.24));   label("Lecanemab central volume at the reference subject (V1, L)")     # Majid 2024 Table 1: V1 = 3.24 L (RSE 0.799%)
-    lvp <- fixed(log(2.00));   label("Lecanemab peripheral volume at the reference subject (V2, L)")  # Majid 2024 Table 1: V2 = 2.00 L (RSE 4.09%)
-    lq  <- fixed(log(0.00718)); label("Lecanemab intercompartmental clearance (Q, L/h)")              # Majid 2024 Table 1: Q = 0.00718 L/h (RSE 4.23%)
+    lcl <- fixed(log(0.0154)); label("Lecanemab clearance at the reference subject (L/h)")        # Majid 2024 Table 1: CL = 0.0154 L/h (RSE 1.60%)
+    lvc <- fixed(log(3.24));   label("Lecanemab central volume at the reference subject (L)")     # Majid 2024 Table 1: V1 = 3.24 L (RSE 0.799%)
+    lvp <- fixed(log(2.00));   label("Lecanemab peripheral volume at the reference subject (L)")  # Majid 2024 Table 1: V2 = 2.00 L (RSE 4.09%)
+    lq  <- fixed(log(0.00718)); label("Lecanemab intercompartmental clearance (L/h)")              # Majid 2024 Table 1: Q = 0.00718 L/h (RSE 4.23%)
 
     e_wt_cl            <- fixed(0.353);  label("Power exponent for body weight on CL, (WT/72)^e (unitless)")            # Majid 2024 Table 1
     e_alb_cl           <- fixed(-0.374); label("Power exponent for serum albumin on CL, (ALB/43)^e (unitless)")         # Majid 2024 Table 1
@@ -222,9 +222,9 @@ Bhagunde_2026_lecanemab_ptau181 <- function() {
     # (Bhagunde 2026 Section 2.2.2 equation and Table 1)                #
     # ---------------------------------------------------------------- #
     lrbase <- log(3.40);  label("Baseline plasma p-tau181 at the reference subject (pg/mL)")                    # Bhagunde 2026 Table 1: Baseline p-tau181 = 3.40 pg/mL (RSE 1.44%)
-    lemax  <- log(0.480); label("Maximum fractional inhibition of p-tau181 production by lecanemab (Emax, unitless)")  # Bhagunde 2026 Table 1: Emax = 0.480 (RSE 6.67%)
-    lec50  <- log(31.4);  label("Lecanemab serum concentration producing half of Emax (EC50, ug/mL)")           # Bhagunde 2026 Table 1: EC50 = 31.4 (RSE 59.2%). The table mg/mL unit label is a typographical error -- see the vignette Errata
-    lkout  <- log(0.428); label("First-order degradation rate constant of the plasma p-tau181 pool (Kout, 1/year)")  # Bhagunde 2026 Table 1: Kout = 0.428 /year (RSE 21.9%), t1/2 = ln(2)/0.428 = 1.62 year, matching the paper approximately 1.6 years
+    lemax  <- log(0.480); label("Maximum fractional inhibition of p-tau181 production by lecanemab (unitless)")  # Bhagunde 2026 Table 1: Emax = 0.480 (RSE 6.67%)
+    lec50  <- log(31.4);  label("Lecanemab serum concentration producing half of Emax (ug/mL)")           # Bhagunde 2026 Table 1: EC50 = 31.4 (RSE 59.2%). The table mg/mL unit label is a typographical error -- see the vignette Errata
+    lkout  <- log(0.428); label("First-order degradation rate constant of the plasma p-tau181 pool (1/year)")  # Bhagunde 2026 Table 1: Kout = 0.428 /year (RSE 21.9%), t1/2 = ln(2)/0.428 = 1.62 year, matching the paper approximately 1.6 years
 
     e_wt_rbase            <- -0.235; label("Power exponent for body weight on baseline p-tau181, (WT/72)^e (unitless)")           # Bhagunde 2026 Table 1: Body weight on baseline (exponent) = -0.235 (RSE 17.7%)
     e_mmse_rbase          <- -0.468; label("Power exponent for baseline MMSE on baseline p-tau181, (SCORE_MMSE/26)^e (unitless)") # Bhagunde 2026 Table 1: Baseline MMSE on baseline (exponent) = -0.468 (RSE 21.8%)

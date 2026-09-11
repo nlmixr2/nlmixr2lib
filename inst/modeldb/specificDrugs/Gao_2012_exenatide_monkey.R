@@ -86,14 +86,14 @@ Gao_2012_exenatide_monkey <- function() {
     # 1/(pM*min) and Rtot in pM), confirmed by koff/kon = 0.0326/0.272 =
     # 0.12 pM, the KD quoted in Gao 2012 Results 'Monkey PK'.
     # ------------------------------------------------------------------
-    lkel  <- log(0.0346)   ; label("Linear elimination rate constant from the central compartment (kel, 1/min)")      # Table 3 Monkeys: kel = 0.0346 (CV 10%)
-    lk12  <- log(0.0143)   ; label("Transfer rate constant central -> peripheral1 (kpt, 1/min)")                      # Table 3 Monkeys: kpt = 0.0143 (CV 17%)
-    lk21  <- log(0.00593)  ; label("Transfer rate constant peripheral1 -> central (ktp, 1/min)")                      # Table 3 Monkeys: ktp = 0.00593 (CV 17%)
-    lvc   <- log(0.0693)   ; label("Central volume of distribution per kilogram (Vc, L/kg)")                          # Table 3 Monkeys: Vc = 69.3 mL/kg = 0.0693 L/kg (CV 12%); CLc = kel * Vc = 2.39 mL/min/kg per Results 'Monkey PK'
+    lkel  <- log(0.0346)   ; label("Linear elimination rate constant from the central compartment (1/min)")      # Table 3 Monkeys: kel = 0.0346 (CV 10%)
+    lk12  <- log(0.0143)   ; label("Transfer rate constant central -> peripheral1 (1/min)")                      # Table 3 Monkeys: kpt = 0.0143 (CV 17%)
+    lk21  <- log(0.00593)  ; label("Transfer rate constant peripheral1 -> central (1/min)")                      # Table 3 Monkeys: ktp = 0.00593 (CV 17%)
+    lvc   <- log(0.0693)   ; label("Central volume of distribution per kilogram (L/kg)")                          # Table 3 Monkeys: Vc = 69.3 mL/kg = 0.0693 L/kg (CV 12%); CLc = kel * Vc = 2.39 mL/min/kg per Results 'Monkey PK'
     lkon  <- log(0.272)    ; label("Second-order association rate constant of exendin-4 with GLP-1R (kon, 1/(pM*min))") # Table 3 Monkeys: kon = 0.272 (CV 607%)
-    lkoff <- log(0.0326)   ; label("First-order dissociation rate constant of the drug-receptor complex (koff, 1/min)") # Table 3 Monkeys: koff = 0.0326 (CV 2990%)
-    lkint <- log(0.00211)  ; label("Internalisation / degradation rate constant of the drug-receptor complex (kint, 1/min)") # Table 3 Monkeys: kint = 0.00211 (CV 179%)
-    lrtot <- log(60.6)     ; label("Total GLP-1R concentration, held constant (Rtot, pmol/L)")                        # Table 3 Monkeys: Rtot = 60.6 pM (CV 33%)
+    lkoff <- log(0.0326)   ; label("First-order dissociation rate constant of the drug-receptor complex (1/min)") # Table 3 Monkeys: koff = 0.0326 (CV 2990%)
+    lkint <- log(0.00211)  ; label("Internalisation / degradation rate constant of the drug-receptor complex (1/min)") # Table 3 Monkeys: kint = 0.00211 (CV 179%)
+    lrtot <- log(60.6)     ; label("Total GLP-1R concentration, held constant (pmol/L)")                        # Table 3 Monkeys: Rtot = 60.6 pM (CV 33%)
 
     # ------------------------------------------------------------------
     # Subcutaneous absorption. Gao 2012 Table 3 reports only the RANGE of
@@ -109,8 +109,8 @@ Gao_2012_exenatide_monkey <- function() {
     #   10 ug/kg   ka = 0.0142 1/min   (the lower end of the Table 3 range)
     # Substitute the value for the dose group being simulated.
     # ------------------------------------------------------------------
-    lka     <- log(0.0244) ; label("First-order subcutaneous absorption rate constant at the 1 ug/kg dose (ka, 1/min)") # Table 3 Monkeys: ka range 0.0244-0.0142 (CV 10-14%); upper end assigned to the lowest dose per Fig. 7A
-    lfdepot <- log(0.688)  ; label("Absolute subcutaneous bioavailability (F, fraction)")                             # Table 3 Monkeys: F = 0.688 (CV 8%) -- ESTIMATED, unlike the rat and human fits where F was fixed at 1
+    lka     <- log(0.0244) ; label("First-order subcutaneous absorption rate constant at the 1 ug/kg dose (1/min)") # Table 3 Monkeys: ka range 0.0244-0.0142 (CV 10-14%); upper end assigned to the lowest dose per Fig. 7A
+    lfdepot <- log(0.688)  ; label("Absolute subcutaneous bioavailability (fraction)")                             # Table 3 Monkeys: F = 0.688 (CV 8%) -- ESTIMATED, unlike the rat and human fits where F was fixed at 1
 
     # ------------------------------------------------------------------
     # Residual error. Gao 2012 Methods states the variance model

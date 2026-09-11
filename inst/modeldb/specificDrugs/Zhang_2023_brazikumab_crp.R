@@ -194,23 +194,23 @@ Zhang_2023_brazikumab_crp <- function() {
     # NOTE: the drug effect below is NOT exposure-driven, so the PK layer does not
     # feed the CDAI prediction; it is retained so this file simulates both the
     # concentration and the CDAI endpoint from one model.
-    lcl     <- fixed(log(0.26));    label("Clearance (CL, L/day)")                                # Table 2: CL in female patients with CD = 0.26 L/d
-    lvc     <- fixed(log(3.27));    label("Central volume of distribution (Vc, L)")               # Table 2: Vc in female subjects = 3.27 L
-    lvp     <- fixed(log(2.64));    label("Peripheral volume of distribution (Vp, L)")            # Table 2: Vp = 2.64 L
-    lq      <- fixed(log(0.412));   label("Intercompartmental clearance (Q, L/day)")              # Table 2: Q = 0.412 L/d
-    lka     <- fixed(log(0.286));   label("First-order SC absorption rate constant (ka, 1/day)")  # Table 2: ka = 0.286 1/d
-    ltlag   <- fixed(log(0.0296));  label("SC absorption lag time (Tlag, day)")                   # Table 2: Tlag = 0.0296 d
-    lfdepot <- fixed(log(0.88));    label("SC bioavailability (F, fraction)")                     # Table 2: F = 0.88
+    lcl     <- fixed(log(0.26));    label("Clearance (L/day)")                                # Table 2: CL in female patients with CD = 0.26 L/d
+    lvc     <- fixed(log(3.27));    label("Central volume of distribution (L)")               # Table 2: Vc in female subjects = 3.27 L
+    lvp     <- fixed(log(2.64));    label("Peripheral volume of distribution (L)")            # Table 2: Vp = 2.64 L
+    lq      <- fixed(log(0.412));   label("Intercompartmental clearance (L/day)")              # Table 2: Q = 0.412 L/d
+    lka     <- fixed(log(0.286));   label("First-order SC absorption rate constant (1/day)")  # Table 2: ka = 0.286 1/d
+    ltlag   <- fixed(log(0.0296));  label("SC absorption lag time (day)")                   # Table 2: Tlag = 0.0296 d
+    lfdepot <- fixed(log(0.88));    label("SC bioavailability (fraction)")                     # Table 2: F = 0.88
 
     e_alb_cl         <- fixed(-1.32);  label("Power exponent of baseline albumin on CL (centred at 39 g/L)")  # Table 2 footnote a
     e_dis_healthy_cl <- fixed(-0.362); label("Healthy-participant fractional change in CL")                   # Table 2 footnote a
     e_male_vc        <- fixed(0.214);  label("Male fractional change in Vc vs. the female reference")         # Table 2 footnote b
 
     # ---- PD layer: indirect response on CDAI ----------------------------------
-    lrbase    <- log(318);  label("Baseline CDAI score (BCDAI, score units)")                     # Table 2 CRP column: baseline CDAI = 318 (RSE 2%)
-    lthalfrec <- log(11.7); label("CDAI remission half-life (T1/2, day)")                         # Table 2 CRP column: half-life HL = 11.7 d (RSE 8%)
+    lrbase    <- log(318);  label("Baseline CDAI score (score units)")                     # Table 2 CRP column: baseline CDAI = 318 (RSE 2%)
+    lthalfrec <- log(11.7); label("CDAI remission half-life (day)")                         # Table 2 CRP column: half-life HL = 11.7 d (RSE 8%)
     iplac     <- 0.178;     label("Constant inhibitory placebo effect on the CDAI input rate (fraction)")  # Table 2 CRP column: inhibitory placebo effect = 0.178 (RSE 16%)
-    limax     <- log(0.246); label("Maximum CRP-dependent drug inhibition of the CDAI input rate (Imax, fraction)")  # Table 2 CRP column: Imax = 0.246 (RSE 10%)
+    limax     <- log(0.246); label("Maximum CRP-dependent drug inhibition of the CDAI input rate (fraction)")  # Table 2 CRP column: Imax = 0.246 (RSE 10%)
     lec50     <- log(8.03); label("Baseline CRP achieving 50% of Imax (the paper's IB50, mg/L)")   # Table 2 CRP column: IB50 = 8.03 mg/L (RSE 10%)
 
     # Hill coefficient (the paper's gamma). Fixed at 2.07 because although "the
@@ -220,7 +220,7 @@ Zhang_2023_brazikumab_crp <- function() {
     # of 2.07" (Discussion). Kept on the bare linear scale (the registered
     # canonical form) so the fixed value is exact rather than round-tripped
     # through log/exp.
-    hill <- fixed(2.07); label("Hill coefficient of the CRP drug-effect sigmoid (gamma, unitless)")  # Table 2 CRP column: Hill coefficient gamma = 2.07 FIX
+    hill <- fixed(2.07); label("Hill coefficient of the CRP drug-effect sigmoid (unitless)")  # Table 2 CRP column: Hill coefficient gamma = 2.07 FIX
 
     # Inter-individual variability on the PD parameters. Zhang 2023 Methods:
     # BCDAI is log-normal (etalrbase enters as exp(lrbase + etalrbase)), whereas

@@ -127,11 +127,11 @@ Garcia_2025_garadacimab <- function() {
     # APPARENT quantities CL/F and Vc/F for patients, which is why those
     # values are roughly 1/0.387 times larger.
     # ------------------------------------------------------------------
-    lcl <- log(0.00664); label("Clearance at reference covariates (CL, L/h)")                    # Table S4 final model CL = 0.00664 L/h (95% CI 0.00573-0.00769)
-    lvc <- log(2.37);    label("Central volume of distribution at reference weight (V2, L)")     # Table S4 final model V2 = 2.37 L (95% CI 1.77-3.17)
-    lq  <- log(0.00685); label("Intercompartmental clearance at reference weight (Q, L/h)")      # Table S4 final model Q = 0.00685 L/h (95% CI 0.00588-0.00799)
-    lvp <- log(1.41);    label("Peripheral volume of distribution at reference weight (V3, L)")  # Table S4 final model V3 = 1.41 L (95% CI 1.34-1.50)
-    lka <- log(0.00824); label("First-order subcutaneous absorption rate constant (ka, 1/h)")    # Table S4 final model ka = 0.00824 (95% CI 0.00763-0.00889); the Table S4 unit label "(L/h)" is a typo -- ka is a first-order rate constant, 1/h
+    lcl <- log(0.00664); label("Clearance at reference covariates (L/h)")                    # Table S4 final model CL = 0.00664 L/h (95% CI 0.00573-0.00769)
+    lvc <- log(2.37);    label("Central volume of distribution at reference weight (L)")     # Table S4 final model V2 = 2.37 L (95% CI 1.77-3.17)
+    lq  <- log(0.00685); label("Intercompartmental clearance at reference weight (L/h)")      # Table S4 final model Q = 0.00685 L/h (95% CI 0.00588-0.00799)
+    lvp <- log(1.41);    label("Peripheral volume of distribution at reference weight (L)")  # Table S4 final model V3 = 1.41 L (95% CI 1.34-1.50)
+    lka <- log(0.00824); label("First-order subcutaneous absorption rate constant (1/h)")    # Table S4 final model ka = 0.00824 (95% CI 0.00763-0.00889); the Table S4 unit label "(L/h)" is a typo -- ka is a first-order rate constant, 1/h
 
     # Absolute bioavailability of the SC depot, estimated on the logit
     # scale (Methods S1 PopPK code: LOGITTVF1 = LOG(TVF1/(1-TVF1)),
@@ -158,9 +158,9 @@ Garcia_2025_garadacimab <- function() {
     e_wt_cl <- 1.16;  label("Power exponent of body weight on CL and Q, centred at 70 kg (unitless)")        # Table S4 final model "Weight effect on CL and Q" = 1.16 (95% CI 0.963-1.360); ESTIMATED, replacing the base model's fixed 0.750
     e_wt_vc <- 0.843; label("Power exponent of body weight on Vc and Vp, centred at 70 kg (unitless)")       # Table S4 final model "Weight effect on V2 and V3" = 0.843 (95% CI 0.657-1.03); ESTIMATED, replacing the base model's fixed 1.00
 
-    e_race_japanese_cl <- log(1.27); label("Log fold change in CL for Japanese vs non-Japanese subjects")    # Table S4 final model "Japanese effect on CL" = 1.27-fold (95% CI 1.11-1.44)
-    e_race_chinese_cl  <- log(1.02); label("Log fold change in CL for Chinese vs non-Chinese subjects")      # Table S4 final model "Chinese effect on CL" = 1.02-fold (95% CI 0.861-1.21)
-    e_dis_hae_cl       <- log(1.05); label("Log fold change in CL for patients with HAE vs healthy volunteers") # Table S4 final model "Patient effect on CL" = 1.05-fold (95% CI 0.952-1.17)
+    e_race_japanese_cl <- log(1.27); label("Log fold change in CL for Japanese vs non-Japanese subjects (unitless)")    # Table S4 final model "Japanese effect on CL" = 1.27-fold (95% CI 1.11-1.44)
+    e_race_chinese_cl  <- log(1.02); label("Log fold change in CL for Chinese vs non-Chinese subjects (unitless)")      # Table S4 final model "Chinese effect on CL" = 1.02-fold (95% CI 0.861-1.21)
+    e_dis_hae_cl       <- log(1.05); label("Log fold change in CL for patients with HAE vs healthy volunteers (unitless)") # Table S4 final model "Patient effect on CL" = 1.05-fold (95% CI 0.952-1.17)
 
     e_creat_cl <- -0.0343; label("Power exponent of baseline serum creatinine on CL, centred at 0.75 mg/dL (unitless)") # Table S4 final model "sCR effect on CL" = -0.0343 (95% CI -0.214 to 0.146)
     e_alt_cl   <- -0.0773; label("Power exponent of baseline ALT on CL, centred at 25 U/L (unitless)")                  # Table S4 final model "ALT effect on CL" = -0.0773 (95% CI -0.148 to -0.0067)
@@ -200,10 +200,10 @@ Garcia_2025_garadacimab <- function() {
     # garadacimab plasma concentration, with no effect compartment
     # (Methods S1 PopPK/PD code $ERROR block).
     # ------------------------------------------------------------------
-    lemax <- log(0.988);  label("Maximum fractional inhibition of FXIIa-mediated kallikrein activity (Emax, unitless)") # Table S6 final model Emax = 0.988 (95% CI 0.981-0.996)
-    lec50 <- log(17600);  label("Garadacimab concentration producing half-maximal inhibition (EC50, ng/mL)")            # Table S6 final model EC50 = 17600 ng/mL (95% CI 16400-18800)
-    le0   <- log(98.8);   label("Baseline FXIIa-mediated kallikrein activity (E0, percent of baseline)")                # Table S6 final model E0 = 98.8 % of baseline (95% CI 94.9-103)
-    lhill <- log(2.05);   label("Hill coefficient of the inhibitory sigmoid (gamma, unitless)")                         # Table S6 final model Hill coefficient = 2.05 (95% CI 1.88-2.23)
+    lemax <- log(0.988);  label("Maximum fractional inhibition of FXIIa-mediated kallikrein activity (unitless)") # Table S6 final model Emax = 0.988 (95% CI 0.981-0.996)
+    lec50 <- log(17600);  label("Garadacimab concentration producing half-maximal inhibition (ng/mL)")            # Table S6 final model EC50 = 17600 ng/mL (95% CI 16400-18800)
+    le0   <- log(98.8);   label("Baseline FXIIa-mediated kallikrein activity (percent of baseline)")                # Table S6 final model E0 = 98.8 % of baseline (95% CI 94.9-103)
+    lhill <- log(2.05);   label("Hill coefficient of the inhibitory sigmoid (unitless)")                         # Table S6 final model Hill coefficient = 2.05 (95% CI 1.88-2.23)
 
     # ------------------------------------------------------------------
     # PD interindividual variability -- Table S7 FINAL model column, a full

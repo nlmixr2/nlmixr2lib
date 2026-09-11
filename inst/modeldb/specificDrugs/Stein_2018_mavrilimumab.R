@@ -34,10 +34,10 @@ Stein_2018_mavrilimumab <- function() {
 
   ini({
     # Drug disposition (Stein and Peletier 2018 Table 1, Mavrilimumab column)
-    lvc   <- fixed(log(2.8));  label("Central volume of distribution (Vc, L)")                  # Stein and Peletier 2018 Table 1: Vc = 2.8 L
-    lvp   <- fixed(log(5.6));  label("Peripheral volume of distribution (Vp, L)")               # Stein and Peletier 2018 Table 1: Vp = 5.6 L
-    lcl   <- fixed(log(0.3));  label("Linear (nonspecific) clearance (CL, L/day)")              # Stein and Peletier 2018 Table 1: CL = 0.3 L/d
-    lq    <- fixed(log(1.7));  label("Intercompartmental clearance (Q, L/day)")                 # Stein and Peletier 2018 Table 1: Q = 1.7 L/d
+    lvc   <- fixed(log(2.8));  label("Central volume of distribution (L)")                  # Stein and Peletier 2018 Table 1: Vc = 2.8 L
+    lvp   <- fixed(log(5.6));  label("Peripheral volume of distribution (L)")               # Stein and Peletier 2018 Table 1: Vp = 5.6 L
+    lcl   <- fixed(log(0.3));  label("Linear (nonspecific) clearance (L/day)")              # Stein and Peletier 2018 Table 1: CL = 0.3 L/d
+    lq    <- fixed(log(1.7));  label("Intercompartmental clearance (L/day)")                 # Stein and Peletier 2018 Table 1: Q = 1.7 L/d
 
     # Target turnover and binding (QSS approximation; paper Eq. 7)
     lksyn <- fixed(log(2.4));  label("Target synthesis rate (ksyn = Vmax/Vc, nM/day)")          # Stein and Peletier 2018 Table 1: ksyn = Vmax/Vc = 2.4 nM/d

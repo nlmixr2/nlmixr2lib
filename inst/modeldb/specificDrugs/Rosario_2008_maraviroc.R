@@ -62,7 +62,7 @@ Rosario_2008_maraviroc <- function() {
     lka   <- log(1.14);   label("Absorption rate constant ka (1/h)")                       # Table 2: Ka = 1.14 /h (SE 7.6%)
     ltlag <- log(0.01);   label("Absorption lag time ALAG1 (h)")                            # Table 2: ALAG1 = 0.01 h (SE 21%)
     lvc   <- log(754);    label("Central volume of distribution V2 (L)")                    # Table 2: V2 = 754 L (SE 9.5%)
-    lkel  <- log(0.288);  label("Elimination rate constant at 100 mg reference (kel, 1/h)") # Table 2: K(100 mg) = 0.288 /h (SE 5.7%)
+    lkel  <- log(0.288);  label("Elimination rate constant at 100 mg reference (1/h)") # Table 2: K(100 mg) = 0.288 /h (SE 5.7%)
     lk12  <- log(0.074);  label("Distribution rate central -> peripheral1 k12 (paper K23, 1/h)")  # Table 2: K23 = 0.074 /h (SE 6.7%)
     lk21  <- log(0.051);  label("Distribution rate peripheral1 -> central k21 (paper K32, 1/h)")  # Table 2: K32 = 0.051 /h (SE 2.2%)
 

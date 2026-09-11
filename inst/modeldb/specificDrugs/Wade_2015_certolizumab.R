@@ -106,9 +106,9 @@ Wade_2015_certolizumab <- function() {
     # Structural parameters (Wade 2015 Table 3, final population PK model; typical
     # ADA-negative subject at the reference covariate values BSA = 1.76 m^2,
     # ALB = 41 g/L, CRP = 8 mg/L, non-Japanese / non-Black / non-Asian).
-    lka       <- log(0.200); label("First-order SC absorption rate constant (ka, 1/day)")    # Wade 2015 Table 3 (theta1)
-    lcl       <- log(0.685); label("Apparent clearance when ADA-negative (CL/F, L/day)")     # Wade 2015 Table 3 (theta2)
-    lvc       <- log(7.61);  label("Apparent volume of distribution (V/F, L)")               # Wade 2015 Table 3 (theta3)
+    lka       <- log(0.200); label("First-order SC absorption rate constant (1/day)")    # Wade 2015 Table 3 (theta1)
+    lcl       <- log(0.685); label("Apparent clearance when ADA-negative (L/day)")     # Wade 2015 Table 3 (theta2)
+    lvc       <- log(7.61);  label("Apparent volume of distribution (L)")               # Wade 2015 Table 3 (theta3)
     lbaseline <- log(1.23);  label("Additive baseline concentration (ug/mL)")                # Wade 2015 Table 3 (theta4)
 
     # ADA-positive fractional-change factor on CL/F (Table 3 footnote:

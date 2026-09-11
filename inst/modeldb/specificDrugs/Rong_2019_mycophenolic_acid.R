@@ -130,10 +130,10 @@ Rong_2019_mycophenolic_acid <- function() {
     # cross-checked against Maizaud 2025 Table 1 column 'Rong et al. [27]'.
     ltlag <- log(0.162); label("Absorption lag time (h)")                       # S1 TVTlag = 0.162; Table 1 'Tlag=0.162 h'
     lka   <- log(1.98);  label("Absorption rate constant (1/h)")                # S1 TVKA = 1.98; Table 1 'Ka=1.98 h-1'
-    lcl   <- log(2.87);  label("Apparent clearance intercept (CL/F, L/h)")      # S1 TVCL = 2.87; Table 1 'CL/F=2.87 L/h'
-    lvc   <- log(25);    label("Apparent central volume (V1/F, L)")             # S1 TVVC = 25; Table 1 'V1/F=25 L'
-    lq    <- log(36.7);  label("Apparent intercompartmental clearance (Q/F, L/h)") # S1 TVQ = 36.7; Table 1 'Q/F=36.7 L/h'
-    lvp   <- log(607);   label("Apparent peripheral volume (V2/F, L)")          # S1 TVVP = 607; Table 1 'V2/F=607 L'
+    lcl   <- log(2.87);  label("Apparent clearance intercept (L/h)")      # S1 TVCL = 2.87; Table 1 'CL/F=2.87 L/h'
+    lvc   <- log(25);    label("Apparent central volume (L)")             # S1 TVVC = 25; Table 1 'V1/F=25 L'
+    lq    <- log(36.7);  label("Apparent intercompartmental clearance (L/h)") # S1 TVQ = 36.7; Table 1 'Q/F=36.7 L/h'
+    lvp   <- log(607);   label("Apparent peripheral volume (L)")          # S1 TVVP = 607; Table 1 'V2/F=607 L'
 
     # Covariate effects on CL/F. Both are uncentered power terms, so lcl above is an
     # intercept and not a typical clearance -- see the ACMPAG_CC covariateData notes.

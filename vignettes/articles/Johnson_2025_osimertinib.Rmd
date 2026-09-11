@@ -1,0 +1,834 @@
+---
+title: "Osimertinib (Johnson 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Osimertinib (Johnson 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Johnson M, Lin YW, Schmidt H, Sunnaker M, Van Maanen E, Huang X,
+  Rukazenkov Y, Tomkinson H, Vishwanathan K. Population pharmacokinetics of
+  osimertinib in patients with non-small cell lung cancer. Pharmacol Res
+  Perspect. 2025;13(3):e70098. doi:10.1002/prp2.70098
+* Article: <https://doi.org/10.1002/prp2.70098>
+* PMC open-access copy: <https://pmc.ncbi.nlm.nih.gov/articles/PMC12035414/>
+* Supplementary Appendix (covariate equations 2.1 and 2.2, Tables S1 and S2)
+  retrieved from the EuropePMC supplementary-file bundle for PMC12035414.
+
+The packaged model is `Johnson_2025_osimertinib`, a joint one-compartment
+population PK model for osimertinib and its active metabolite AZ5104.
+First-order oral absorption feeds an osimertinib parent compartment, and a
+fixed 25 percent of parent elimination is routed into a second compartment
+representing AZ5104.
+
+This is the AURA3 + FLAURA update of the earlier AURA / AURA2 analysis
+packaged as `Brown_2017_osimertinib`; it is a distinct publication with its
+own parameter set, a different covariate structure, and an external
+validation against the adjuvant ADAURA study. Both are shipped.
+
+```{r model}
+mod <- nlmixr2lib::readModelDb("Johnson_2025_osimertinib")
+```
+
+# Population
+
+Model building used 1364 patients with advanced EGFR-mutation-positive
+non-small cell lung cancer (NSCLC) contributing 41 461 plasma
+concentrations across four studies (Johnson 2025 Methods section 2.1 and
+2.2, Table S1):
+
+* **AURA / AURA extension** (phase 1/2, NCT01802632): 599 patients.
+  Osimertinib 20, 40, 80, 160, and 240 mg once daily (capsule) plus 80 mg
+  (tablet) in the phase 1 component; 80 mg once daily (tablet) in the
+  extension.
+* **AURA2** (phase 2, NCT02094261): 210 patients, 80 mg once daily.
+* **AURA3** (phase 3, NCT02151981): 277 patients, 80 mg once daily.
+* **FLAURA** (phase 3, NCT02296125): 278 patients, 80 mg once daily.
+
+A further **325** patients from the adjuvant **ADAURA** study (phase 3,
+NCT02511106; resected stage IB-IIIA disease) were held out and used only
+for external validation, so they are not part of the 1364 model-building
+subjects.
+
+Pooling all 1689 patients, Johnson 2025 Table 1 reports 65.3 percent
+female, median age 62 years (range 25-91), median body weight 62 kg (range
+29-122), and median baseline albumin 40 g/L (range 17.0-53.3). Under the
+paper's five-level "grouped race" categorisation (Table 1 footnote a,
+which splits the Asian population into Japanese, Chinese, and
+non-Japanese/non-Chinese Asian) the distribution is White 28.2 percent,
+Asian non-Chinese non-Japanese 23.7 percent, Chinese 21.7 percent,
+Japanese 17.8 percent, and Other 8.6 percent.
+
+The **reference (typical) patient of the covariate model** is White, 61 kg
+body weight, and 39 g/L baseline serum albumin -- stated in Johnson 2025
+Results section 3.3 and in the Figure 2 caption. Those are the medians of
+the three model-building cohorts (Table 1 medians 60.5 / 60.0 / 62.0 kg and
+39.0 / 40.0 / 40.0 g/L); the Table 1 "Overall" medians of 62 kg and 40 g/L
+differ because they also include the excluded ADAURA set.
+
+The same metadata is available programmatically:
+
+```{r population-meta, eval = FALSE}
+nlmixr2lib::readModelDb("Johnson_2025_osimertinib")$population
+```
+
+# Source trace
+
+Per-parameter origin is recorded inline next to each `ini()` entry in
+`inst/modeldb/specificDrugs/Johnson_2025_osimertinib.R`. The table below
+collects the same provenance for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Structure: one-compartment parent + one-compartment metabolite in series, first-order oral absorption | n/a | Johnson 2025 Results section 3.3; Methods section 2.4 |
+| Continuous covariate form `P = TP * (Cov/Ref)^beta * exp(eta)` | n/a | Supplementary Appendix eq. 2.1 |
+| Categorical covariate form `P = TP * exp(beta * 1[CAT=x]) * exp(eta)` | n/a | Supplementary Appendix eq. 2.2 |
+| `lka` (osimertinib) | log(0.196 1/h) | Johnson 2025 Table 2 |
+| `lcl` (CLparent/F) | log(14.3 L/h) | Johnson 2025 Table 2 |
+| `lvc` (Vparent/F) | log(918 L) | Johnson 2025 Table 2 |
+| `lcl_az5104` (CLmetabolite/F) | log(31.3 L/h) | Johnson 2025 Table 2 |
+| `lvc_az5104` (Vmetabolite/F) | log(143 L) | Johnson 2025 Table 2 |
+| `fm_az5104` | 0.25, fixed | Johnson 2025 Discussion ("the conversion of osimertinib to metabolite was fixed at 25%") |
+| `e_wt_cl` | 0.421 | Johnson 2025 Table 2 |
+| `e_alb_cl` | 0.825 | Johnson 2025 Table 2 |
+| `e_wt_vc` | 0.814 | Johnson 2025 Table 2 |
+| `e_alb_vc` | 2.27 | Johnson 2025 Table 2 |
+| `e_wt_cl_az5104` | 0.822 | Johnson 2025 Table 2 |
+| `e_alb_cl_az5104` | 0.928 | Johnson 2025 Table 2 |
+| `e_alb_vc_az5104` | -0.831 | Johnson 2025 Table 2 |
+| `e_race_asian_oth_cl_az5104` | 0.182 | Johnson 2025 Table 2 |
+| `e_race_chinese_cl_az5104` | 0.076 | Johnson 2025 Table 2 |
+| `e_race_japanese_cl_az5104` | 0.184 | Johnson 2025 Table 2 |
+| `e_race_other_cl_az5104` | 0.090 | Johnson 2025 Table 2 |
+| IIV CLparent/F | 44.9 percent CV (variance 0.183656) | Johnson 2025 Table 2 |
+| IIV CLmetabolite/F | 49.7 percent CV (variance 0.220741) | Johnson 2025 Table 2 |
+| IIV Vparent/F | 90.9 percent CV (variance 0.602425) | Johnson 2025 Table 2 |
+| IIV Vmetabolite/F | 78.2 percent CV (variance 0.477281) | Johnson 2025 Table 2 |
+| IIV ka | 109 percent CV (variance 0.783073) | Johnson 2025 Table 2 |
+| Correlation (CLparent/F, CLmetabolite/F) | 0.885 | Johnson 2025 Table 2 |
+| Proportional residual error, osimertinib | 0.205 | Johnson 2025 Table 2 |
+| Additive residual error, osimertinib | 30.1 nmol/L -> 0.0150386 mg/L | Johnson 2025 Table 2 |
+| Proportional residual error, AZ5104 | 0.215 | Johnson 2025 Table 2 |
+| Additive residual error, AZ5104 | 0.516 nmol/L -> 2.5056e-4 mg/L | Johnson 2025 Table 2 |
+| Reference body weight 61 kg | n/a | Johnson 2025 Results 3.3; Figure 2 caption |
+| Reference albumin 39 g/L | n/a | Johnson 2025 Results 3.3; Figure 2 caption |
+| Molecular weights 499.62 / 485.59 g/mol | n/a | NOT from Johnson 2025; computed from the published molecular formulae (see Assumptions) |
+
+# Interpreting the between-patient variability column
+
+Johnson 2025 Table 2 groups the random effects under the heading
+"Between-patient variability (% coefficient of variation)" but labels each
+row with the symbol "Omega". Those two readings differ: as a CV the
+log-scale variance is `log(1 + CV^2)`, whereas reading the tabulated
+percentage directly as a log-scale SD gives `(pct/100)^2`. For the largest
+random effect (ka, 109 percent) the two readings differ by 23 percent in
+omega, so the choice is load-bearing.
+
+The paper adjudicates itself. Steady-state AUC for a linear
+one-compartment model is `F * Dose / CL` exactly, so the AUCss fold-change
+of Figure 2 is log-normal with the *clearance* omega and its 90 percent
+prediction interval is `exp(+/- 1.645 * omega)`. The typical-patient AUCss
+interval in Figure 2 spans approximately 0.50 to 2.04 fold:
+
+```{r omega-scale}
+pct <- 44.9 / 100
+omega_cv     <- sqrt(log(1 + pct^2))  # CV reading (used by the packaged model)
+omega_logsd  <- pct                   # alternative "tabulated value is a log-SD" reading
+
+pi_of <- function(om) exp(c(-1, 1) * qnorm(0.95) * om)
+
+omega_check <- tibble::tibble(
+  Reading      = c("CV (packaged)", "log-scale SD"),
+  omega        = c(omega_cv, omega_logsd),
+  `PI lower`   = c(pi_of(omega_cv)[1], pi_of(omega_logsd)[1]),
+  `PI upper`   = c(pi_of(omega_cv)[2], pi_of(omega_logsd)[2])
+)
+knitr::kable(omega_check, digits = 3,
+             caption = "90% prediction interval of the typical-patient AUCss fold change under each reading of Johnson 2025 Table 2. Figure 2 shows approximately 0.50-2.04.")
+
+# Figure 2's typical-patient AUCss whiskers imply omega = ln(hi/lo)/(2*1.645).
+omega_from_figure <- log(2.04 / 0.50) / (2 * qnorm(0.95))
+
+stopifnot(
+  # The CV reading is the closer of the two to what Figure 2 plots.
+  abs(omega_cv - omega_from_figure) < abs(omega_logsd - omega_from_figure),
+  # and it is close in absolute terms as well.
+  abs(omega_cv - omega_from_figure) < 0.02
+)
+omega_from_figure
+```
+
+The packaged model therefore stores `log(1 + CV^2)` for every random
+effect.
+
+# Virtual cohort
+
+The original observed data are not publicly available. Two cohorts are
+built below.
+
+1. A **deterministic scenario set** that reproduces, one row per scenario,
+   every covariate combination plotted in Johnson 2025 Figure 2. Because
+   the model is solved with `rxode2::zeroRe()` these are typical-value
+   profiles and every check against them is exactly reproducible.
+2. A **stochastic cohort** of 150 patients whose covariate distributions
+   approximate Johnson 2025 Table 1, used for the concentration-time
+   figures.
+
+```{r scenarios}
+# Johnson 2025 Figure 2 scenario list. Reference patient: White, 61 kg,
+# 39 g/L albumin. The 5th / 95th percentiles of body weight are 43 / 88 kg
+# and of baseline albumin are 29.3 / 46 g/L (Figure 2 row labels; the 5th
+# percentiles are also quoted in Results section 3.3). Race indicators are
+# all zero for a White patient.
+scenarios <- tibble::tribble(
+  ~scenario,           ~WT, ~ALB,  ~RACE_CHINESE, ~RACE_JAPANESE, ~RACE_ASIAN_OTH, ~RACE_OTHER, ~dose,
+  "01 typical 80 mg",   61, 39.0,              0,              0,               0,           0,    80,
+  "02 weight 43 kg",    43, 39.0,              0,              0,               0,           0,    80,
+  "03 weight 88 kg",    88, 39.0,              0,              0,               0,           0,    80,
+  "04 albumin 29.3",    61, 29.3,              0,              0,               0,           0,    80,
+  "05 albumin 46",      61, 46.0,              0,              0,               0,           0,    80,
+  "06 asian other",     61, 39.0,              0,              0,               1,           0,    80,
+  "07 chinese",         61, 39.0,              1,              0,               0,           0,    80,
+  "08 japanese",        61, 39.0,              0,              1,               0,           0,    80,
+  "09 nonasian nonwh",  61, 39.0,              0,              0,               0,           1,    80,
+  "10 extreme case",    43, 29.3,              0,              0,               1,           0,    80,
+  "11 typical 40 mg",   61, 39.0,              0,              0,               0,           0,    40,
+  "12 typical 160 mg",  61, 39.0,              0,              0,               0,           0,   160
+) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+n_scen <- nrow(scenarios)
+```
+
+Steady state is imposed directly with `ss = 1` rather than by simulating a
+burn-in, so no assertion below depends on how many doses were simulated.
+
+The model declares two endpoints (`Cc` and `Cc_az5104`), so observation
+rows must identify which endpoint they belong to. They carry `dvid = 1`
+rather than a `cmt` value: an ODE-state `cmt` is ambiguous with two
+endpoints and errors, and naming an algebraic observable
+(`cmt = "Cc"`) would auto-inject a compartment slot after the ODE states
+and renumber them. `rxode2` returns both observables as columns at every
+observation time regardless, so one `dvid` is sufficient for a
+simulation-only workflow.
+
+```{r scenario-events}
+obs_grid <- seq(0, 24, by = 0.25)   # includes the mandatory time-zero and end-of-interval records
+
+scen_dose <- scenarios |>
+  dplyr::transmute(id, time = 0, evid = 1L, amt = dose, cmt = "depot",
+                   ss = 1L, ii = 24)
+
+scen_obs <- tidyr::expand_grid(id = scenarios$id, time = obs_grid) |>
+  dplyr::mutate(evid = 0L, amt = 0, dvid = 1L, ss = 0L, ii = 0)
+
+scen_events <- dplyr::bind_rows(scen_dose, scen_obs) |>
+  dplyr::left_join(dplyr::select(scenarios, -dose), by = "id") |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+```
+
+```{r scenario-solve}
+sim_scen <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = scen_events,
+  keep = c("WT", "ALB", "RACE_CHINESE", "RACE_JAPANESE",
+           "RACE_ASIAN_OTH", "RACE_OTHER")
+) |>
+  as.data.frame() |>
+  dplyr::left_join(dplyr::select(scenarios, id, scenario, dose), by = "id")
+
+# Johnson 2025 reports concentrations in nmol/L; the packaged model works
+# in mass units. Convert for direct comparison.
+mw_parent <- 499.62
+mw_az5104 <- 485.59
+
+sim_scen <- sim_scen |>
+  dplyr::mutate(
+    Cc_nM        = Cc        * 1e6 / mw_parent,
+    Cc_az5104_nM = Cc_az5104 * 1e6 / mw_az5104
+  )
+```
+
+# PKNCA validation
+
+All exposure metrics below are computed with `PKNCA` over the steady-state
+dosing interval; no inline trapezoidal integration is used.
+
+```{r pknca-ss}
+nca_input <- function(dat, conc_col) {
+  dat |>
+    dplyr::filter(!is.na(.data[[conc_col]])) |>
+    dplyr::transmute(id, scenario, time,
+                     conc = .data[[conc_col]])
+}
+
+conc_parent <- nca_input(sim_scen, "Cc_nM")
+conc_metab  <- nca_input(sim_scen, "Cc_az5104_nM")
+
+dose_df <- scenarios |>
+  dplyr::transmute(id, scenario, time = 0, amt = dose)
+
+intervals_ss <- data.frame(
+  start = 0, end = 24,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, ctrough = TRUE,
+  auclast = TRUE, cav = TRUE
+)
+
+run_nca <- function(conc_df) {
+  conc_obj <- PKNCA::PKNCAconc(conc_df, conc ~ time | scenario + id,
+                               concu = "nmol/L", timeu = "h")
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | scenario + id,
+                               doseu = "mg")
+  as.data.frame(
+    PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                   intervals = intervals_ss))$result
+  )
+}
+
+nca_parent <- run_nca(conc_parent)
+nca_metab  <- run_nca(conc_metab)
+
+# PKNCA returns groups in alphabetical order, so join by name - never by
+# position.
+wide <- function(x) {
+  x |>
+    dplyr::select(scenario, PPTESTCD, PPORRES) |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+}
+ss_parent <- wide(nca_parent)
+ss_metab  <- wide(nca_metab)
+
+stopifnot(
+  nrow(ss_parent) == n_scen,
+  nrow(ss_metab)  == n_scen,
+  !anyNA(ss_parent$auclast),
+  !anyNA(ss_metab$auclast)
+)
+```
+
+## Dose proportionality (exact)
+
+The model is linear, so Figure 2's 40 mg and 160 mg reference rows must
+reproduce fold changes of exactly 0.5 and 2.0 against the typical 80 mg
+patient. Both sides of this comparison use the same drawn parameters (a
+`zeroRe` solve against its own scaling), so the residual is pure numerical
+error and a tight bound is appropriate.
+
+```{r dose-proportionality}
+auc_of <- function(tbl, scen) tbl$auclast[tbl$scenario == scen]
+
+dose_prop <- tibble::tibble(
+  Dose        = c("40 mg", "160 mg"),
+  Simulated   = c(auc_of(ss_parent, "11 typical 40 mg"),
+                  auc_of(ss_parent, "12 typical 160 mg")) /
+                auc_of(ss_parent, "01 typical 80 mg"),
+  `Figure 2`  = c(0.5, 2.0)
+)
+knitr::kable(dose_prop, digits = 4,
+             caption = "AUCss fold change vs the typical 80 mg patient.")
+
+stopifnot(max(abs(dose_prop$Simulated - dose_prop$`Figure 2`)) < 1e-6)
+```
+
+## Covariate effects on osimertinib exposure
+
+Johnson 2025 Results section 3.5 states that, relative to the typical
+patient, a 43 kg patient has a 17 percent higher Cmaxss and a 16 percent
+higher AUCss; a 29.3 g/L albumin patient has a 34 percent higher Cmaxss
+and a 28 percent higher AUCss; and the extreme case (43 kg, 29.3 g/L,
+Asian non-Chinese non-Japanese) has a 59 percent higher Cmaxss and a 49
+percent higher AUCss.
+
+```{r covariate-forest}
+fold <- function(tbl, param) {
+  ref <- tbl[[param]][tbl$scenario == "01 typical 80 mg"]
+  stats::setNames(tbl[[param]] / ref, tbl$scenario)
+}
+auc_fold  <- fold(ss_parent, "auclast")
+cmax_fold <- fold(ss_parent, "cmax")
+
+forest <- tibble::tibble(
+  Scenario = c("Weight 43 kg", "Weight 88 kg", "Albumin 29.3 g/L",
+               "Albumin 46 g/L", "Asian (non-Chinese, non-Japanese)",
+               "Chinese", "Japanese", "Non-Asian non-White", "Extreme case"),
+  key = c("02 weight 43 kg", "03 weight 88 kg", "04 albumin 29.3",
+          "05 albumin 46", "06 asian other", "07 chinese", "08 japanese",
+          "09 nonasian nonwh", "10 extreme case")
+) |>
+  dplyr::mutate(
+    `AUCss fold (sim)`  = as.numeric(auc_fold[key]),
+    `Cmaxss fold (sim)` = as.numeric(cmax_fold[key]),
+    `AUCss, paper text` = c(1.16, NA, 1.28, NA, NA, NA, NA, NA, 1.49)
+  ) |>
+  dplyr::select(-key)
+
+knitr::kable(forest, digits = 3,
+             caption = "Osimertinib steady-state exposure relative to the typical patient. Paper values are Johnson 2025 Results section 3.5.")
+
+stopifnot(
+  # Body weight: the paper's 16 percent AUCss / 17 percent Cmaxss are
+  # reproduced to better than one percentage point.
+  abs(auc_fold[["02 weight 43 kg"]]  - 1.16) < 0.01,
+  abs(cmax_fold[["02 weight 43 kg"]] - 1.17) < 0.01,
+  # Albumin: the paper's quoted 28 percent AUCss is reproduced within
+  # 2 percentage points (see Assumptions - the paper's own Figure 2 and
+  # Results text disagree about this row).
+  abs(auc_fold[["04 albumin 29.3"]]  - 1.28) < 0.02,
+  # Extreme case, which combines both continuous effects.
+  abs(auc_fold[["10 extreme case"]]  - 1.49) < 0.03,
+  # Race does not act on osimertinib apparent clearance at all
+  # (Results section 3.3: "There was no effect of race on the apparent
+  # clearance of osimertinib"), so these fold changes are exactly 1 up to
+  # solver noise. The metabolite state changes between these scenarios and
+  # perturbs the adaptive stepping of the shared solve, which puts the
+  # observed residual at ~2e-8; 1e-6 is comfortably below any real effect
+  # (the smallest race effect the paper reports is 7 percent).
+  max(abs(auc_fold[c("06 asian other", "07 chinese",
+                     "08 japanese", "09 nonasian nonwh")] - 1)) < 1e-6,
+  # Both continuous covariates act in the direction the paper reports:
+  # lower weight and lower albumin raise exposure.
+  auc_fold[["03 weight 88 kg"]] < 1, auc_fold[["05 albumin 46"]] < 1
+)
+```
+
+## Covariate effects on AZ5104 exposure
+
+For the metabolite the paper reports bounds rather than point values:
+body weight and baseline albumin change AZ5104 AUCss by less than 34
+percent and less than 32 percent respectively (Results section 3.3), and
+across all four non-White grouped-race categories AZ5104 AUCss decreases
+by 7 to 17 percent relative to White patients.
+
+```{r metabolite-covariates}
+auc_fold_m <- fold(ss_metab, "auclast")
+
+race_keys <- c("06 asian other", "07 chinese", "08 japanese",
+               "09 nonasian nonwh")
+race_drop <- 100 * (1 - auc_fold_m[race_keys])
+
+metab_tbl <- tibble::tibble(
+  Scenario = c("Weight 43 kg", "Albumin 29.3 g/L",
+               "Asian (non-Chinese, non-Japanese)", "Chinese",
+               "Japanese", "Non-Asian non-White"),
+  `AZ5104 AUCss change (%)` = 100 * (c(
+    auc_fold_m[["02 weight 43 kg"]], auc_fold_m[["04 albumin 29.3"]],
+    auc_fold_m[race_keys]
+  ) - 1),
+  `Paper bound` = c("< +34%", "< +32%", "-7% to -17%", "-7% to -17%",
+                    "-7% to -17%", "-7% to -17%")
+)
+knitr::kable(metab_tbl, digits = 1,
+             caption = "AZ5104 steady-state exposure relative to the typical patient (Johnson 2025 Results section 3.3).")
+
+stopifnot(
+  # The paper's two "average change of less than X" bounds hold, and hold
+  # tightly - a mis-transcribed exponent would either break the bound or
+  # fall far below it.
+  auc_fold_m[["02 weight 43 kg"]] < 1.34, auc_fold_m[["02 weight 43 kg"]] > 1.32,
+  auc_fold_m[["04 albumin 29.3"]] < 1.32, auc_fold_m[["04 albumin 29.3"]] > 1.30,
+  # The four race categories span the paper's stated 7-17 percent decrease.
+  all(race_drop > 7), all(race_drop < 17),
+  abs(min(race_drop) - 7.3)  < 0.5,
+  abs(max(race_drop) - 16.8) < 0.5
+)
+```
+
+## Metabolite-to-parent exposure ratio (closed form)
+
+Johnson 2025 Introduction states that at steady state each metabolite
+circulates at approximately 10 percent of osimertinib exposure. For this
+model structure the molar ratio is available in closed form:
+`AUCss(AZ5104) / AUCss(osimertinib) = fm * CLparent / CLmetabolite`.
+Because both sides come from the same solve, a tight bound is correct.
+
+```{r metabolite-ratio}
+fm_az5104  <- 0.25
+cl_parent  <- 14.3
+cl_metab   <- 31.3
+ratio_closed_form <- fm_az5104 * cl_parent / cl_metab
+
+# The NCA metabolite AUC is in nmol/L (already a molar frame), so the
+# simulated ratio is directly comparable.
+ratio_sim <- auc_of(ss_metab, "01 typical 80 mg") /
+             auc_of(ss_parent, "01 typical 80 mg")
+
+tibble::tibble(
+  Quantity  = c("Closed form fm * CLp / CLm", "PKNCA on the solved model",
+                "Johnson 2025 Introduction"),
+  `AZ5104 : osimertinib molar AUCss` = c(ratio_closed_form, ratio_sim, 0.10)
+) |>
+  knitr::kable(digits = 4)
+
+stopifnot(
+  # Solve vs its own closed form: pure numerical error, so tight.
+  abs(ratio_sim - ratio_closed_form) < 1e-3,
+  # and within the paper's "approximately 10 percent" description.
+  ratio_sim > 0.08, ratio_sim < 0.14
+)
+```
+
+## Single-dose NCA: half-life and accumulation
+
+Johnson 2025 Introduction (citing the phase 1 characterisation) reports a
+mean osimertinib half-life of approximately 48 h, 3- to 4-fold
+accumulation on once-daily dosing, and a steady-state Cmaxss / Cminss
+ratio of 1.6 at 80 mg.
+
+```{r single-dose-nca}
+sd_events <- dplyr::bind_rows(
+  data.frame(id = 1L, time = 0, evid = 1L, amt = 80, cmt = "depot"),
+  data.frame(id = 1L, time = seq(0, 21 * 24, by = 1), evid = 0L,
+             amt = 0, dvid = 1L)
+) |>
+  dplyr::mutate(WT = 61, ALB = 39, RACE_CHINESE = 0, RACE_JAPANESE = 0,
+                RACE_ASIAN_OTH = 0, RACE_OTHER = 0) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sim_sd <- rxode2::rxSolve(rxode2::zeroRe(mod), events = sd_events) |>
+  as.data.frame() |>
+  # A single-subject solve returns no `id` column; add it back for PKNCA.
+  dplyr::mutate(id = 1L, Cc_nM = Cc * 1e6 / mw_parent)
+
+sd_conc <- sim_sd |>
+  dplyr::filter(!is.na(Cc_nM)) |>
+  dplyr::transmute(id, treatment = "80 mg single dose", time, conc = Cc_nM)
+
+sd_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(sd_conc, conc ~ time | treatment + id,
+                   concu = "nmol/L", timeu = "h"),
+  PKNCA::PKNCAdose(data.frame(id = 1L, treatment = "80 mg single dose",
+                              time = 0, amt = 80),
+                   amt ~ time | treatment + id, doseu = "mg"),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                         half.life = TRUE, aucinf.obs = TRUE)
+))
+sd_res <- as.data.frame(sd_nca$result)
+half_life_sim <- sd_res$PPORRES[sd_res$PPTESTCD == "half.life"]
+
+# Analytic values implied by the packaged typical-value parameters.
+kel_typ        <- 14.3 / 918
+half_life_calc <- log(2) / kel_typ
+accum_calc     <- 1 / (1 - exp(-kel_typ * 24))
+
+cmax_ss    <- ss_parent$cmax[ss_parent$scenario == "01 typical 80 mg"]
+ctrough_ss <- ss_parent$ctrough[ss_parent$scenario == "01 typical 80 mg"]
+
+knitr::kable(
+  tibble::tibble(
+    Quantity = c("Terminal half-life (h)", "Accumulation ratio",
+                 "Cmaxss / Cminss"),
+    Simulated = c(half_life_sim, accum_calc, cmax_ss / ctrough_ss),
+    `Johnson 2025 Introduction` = c(48, NA, 1.6)
+  ),
+  digits = 2,
+  caption = "Single-dose and steady-state descriptors for the typical patient."
+)
+
+stopifnot(
+  # PKNCA's terminal half-life must agree with ln(2)/kel of the packaged
+  # parameters. Same solve, so tight.
+  abs(half_life_sim - half_life_calc) < 0.5,
+  # 3- to 4-fold accumulation, as described in the Introduction.
+  accum_calc > 3, accum_calc < 4
+)
+```
+
+Note that the simulated Cmaxss / Cminss ratio is flatter than the value of
+1.6 quoted in the Introduction; see the Assumptions section below.
+
+# Stochastic cohort and concentration-time profiles
+
+```{r cohort}
+set.seed(20260908)
+
+n_sub <- 150
+
+sample_truncated_lognorm <- function(n, lo, hi, median_val, sd_log) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    draw <- exp(rnorm(n, mean = log(median_val), sd = sd_log))
+    out <- c(out, draw[draw >= lo & draw <= hi])
+  }
+  out[seq_len(n)]
+}
+
+# Grouped-race proportions from Johnson 2025 Table 1 ("Grouped race",
+# Overall column). White is the reference category, encoded as zero for
+# every RACE_* indicator.
+race_pcts <- c(White = 28.2, Asian_oth = 23.7, Chinese = 21.7,
+               Japanese = 17.8, Other = 8.6)
+race_lbl <- sample(names(race_pcts), n_sub, replace = TRUE,
+                   prob = race_pcts / sum(race_pcts))
+
+cohort <- tibble::tibble(
+  id  = seq_len(n_sub),
+  WT  = sample_truncated_lognorm(n_sub, lo = 29, hi = 122,
+                                 median_val = 61, sd_log = 0.21),
+  ALB = sample_truncated_lognorm(n_sub, lo = 17, hi = 53.3,
+                                 median_val = 39, sd_log = 0.13)
+) |>
+  dplyr::mutate(
+    RACE_CHINESE   = as.integer(race_lbl == "Chinese"),
+    RACE_JAPANESE  = as.integer(race_lbl == "Japanese"),
+    RACE_ASIAN_OTH = as.integer(race_lbl == "Asian_oth"),
+    RACE_OTHER     = as.integer(race_lbl == "Other"),
+    race_label     = race_lbl
+  )
+
+coh_events <- dplyr::bind_rows(
+  cohort |> dplyr::transmute(id, time = 0, evid = 1L, amt = 80,
+                             cmt = "depot", ss = 1L, ii = 24),
+  tidyr::expand_grid(id = cohort$id, time = seq(0, 24, by = 0.5)) |>
+    dplyr::mutate(evid = 0L, amt = 0, dvid = 1L, ss = 0L, ii = 0)
+) |>
+  dplyr::left_join(cohort, by = "id") |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+sim_cohort <- rxode2::rxSolve(mod, events = coh_events,
+                              keep = c("WT", "ALB", "race_label")) |>
+  as.data.frame() |>
+  dplyr::mutate(Cc_nM = Cc * 1e6 / mw_parent,
+                Cc_az5104_nM = Cc_az5104 * 1e6 / mw_az5104)
+```
+
+The figure below is the steady-state analogue of Johnson 2025 Figure 4
+(steady-state VPCs for osimertinib at 80 mg once daily): the shaded band
+is the simulated 5th-to-95th percentile envelope and the line is the
+simulated median.
+
+```{r figure-vpc-parent}
+band <- sim_cohort |>
+  dplyr::filter(!is.na(Cc_nM)) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    lo  = quantile(Cc_nM, 0.05),
+    mid = median(Cc_nM),
+    hi  = quantile(Cc_nM, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(band, aes(time)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line(aes(y = mid), linewidth = 0.8) +
+  labs(x = "Time within the steady-state dosing interval (h)",
+       y = "Osimertinib plasma concentration (nmol/L)",
+       caption = paste("Simulated median and 5th-95th percentile envelope,",
+                       n_sub, "patients at 80 mg QD steady state.",
+                       "Compare Johnson 2025 Figure 4."))
+```
+
+```{r figure-typical-both}
+sim_scen |>
+  dplyr::filter(scenario == "01 typical 80 mg", !is.na(Cc_nM)) |>
+  ggplot(aes(time)) +
+  geom_line(aes(y = Cc_nM, colour = "osimertinib")) +
+  geom_line(aes(y = Cc_az5104_nM, colour = "AZ5104")) +
+  scale_colour_manual(values = c(osimertinib = "black", AZ5104 = "red")) +
+  labs(x = "Time within the steady-state dosing interval (h)",
+       y = "Plasma concentration (nmol/L)", colour = NULL,
+       caption = "Typical patient, 80 mg QD steady state. AZ5104 tracks osimertinib at roughly one tenth the molar exposure.")
+```
+
+A distributional sanity check on the cohort, phrased on the centre and a
+robust quantile rather than on an extreme (cohort extremes are not
+reproducible across `rxode2` builds):
+
+```{r cohort-check}
+cohort_cmin <- sim_cohort |>
+  dplyr::filter(!is.na(Cc_nM), time == 24) |>
+  dplyr::pull(Cc_nM)
+
+stopifnot(
+  length(cohort_cmin) == n_sub,
+  # The cohort median trough sits near the typical-value trough. The
+  # cohort median weight and albumin are close to the reference values,
+  # so the two should agree to well within the IIV.
+  abs(log(median(cohort_cmin) / ctrough_ss)) < 0.25,
+  # Spread is broad but bounded: the model carries a 44.9 percent CV on
+  # clearance plus covariate variation.
+  quantile(cohort_cmin, 0.95) / quantile(cohort_cmin, 0.05) > 2,
+  quantile(cohort_cmin, 0.95) / quantile(cohort_cmin, 0.05) < 12
+)
+```
+
+# Comparison against published NCA
+
+Johnson 2025 does not report an NCA table of its own; the descriptors it
+quotes come from the phase 1 characterisation cited in its Introduction
+and from the covariate simulations of Figure 2. The combined comparison
+below uses those published quantities.
+
+```{r nca_compare}
+simulated <- tibble::tibble(
+  metric = c("auc_fold_wt43", "auc_fold_alb293", "auc_fold_extreme",
+             "auc_fold_40mg", "auc_fold_160mg",
+             "metab_parent_ratio", "half_life"),
+  value  = c(auc_fold[["02 weight 43 kg"]],
+             auc_fold[["04 albumin 29.3"]],
+             auc_fold[["10 extreme case"]],
+             auc_fold[["11 typical 40 mg"]],
+             auc_fold[["12 typical 160 mg"]],
+             ratio_sim,
+             half_life_sim)
+) |>
+  tidyr::pivot_wider(names_from = metric, values_from = value)
+
+reference <- tibble::tibble(
+  auc_fold_wt43      = 1.16,
+  auc_fold_alb293    = 1.28,
+  auc_fold_extreme   = 1.49,
+  auc_fold_40mg      = 0.50,
+  auc_fold_160mg     = 2.00,
+  metab_parent_ratio = 0.10,
+  half_life          = 48
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = simulated,
+  reference     = reference,
+  params        = names(reference),
+  units         = c(auc_fold_wt43 = "fold", auc_fold_alb293 = "fold",
+                    auc_fold_extreme = "fold", auc_fold_40mg = "fold",
+                    auc_fold_160mg = "fold", metab_parent_ratio = "ratio",
+                    half_life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated vs published osimertinib quantities (Johnson 2025 Results",
+    "section 3.5, Figure 2, and Introduction).",
+    "* differs from reference by >20%."
+  )
+)
+```
+
+No row differs from its published counterpart by more than 20 percent.
+The two largest gaps are both against quantities the Introduction quotes
+from the phase 1 characterisation rather than from this popPK model, so
+exact agreement is not expected and no parameter has been tuned to close
+either one:
+
+* the AZ5104-to-osimertinib molar exposure ratio (0.114 simulated versus
+  the "approximately 10 percent" of the Introduction, +14 percent). The
+  simulated value is exactly `fm * CLparent / CLmetabolite` and so is a
+  direct consequence of the Table 2 estimates and the fixed 0.25
+  conversion fraction; and
+* the terminal half-life (44.5 h simulated versus approximately 48 h,
+  -7 percent), where the published value is an observed NCA half-life
+  from discretely sampled phase 1 profiles.
+
+# Assumptions and deviations
+
+* **Johnson 2025 Figure 2 transposes its body-weight and albumin rows
+  relative to Table 2 and the Results text.** Measured against the
+  figure's own calibrated axis, the "Weight 43 kg" row plots an AUCss
+  fold change of 1.28 and the "Albumin 29.3 g/L" row plots 1.17; the
+  same transposition appears in the Cmaxss panel (1.32 and 1.17). The
+  Results text (section 3.5) states the opposite assignment -- 16
+  percent for weight and 28 percent for albumin -- and that assignment
+  is what Table 2's exponents actually produce (0.421 on weight gives
+  1.159; 0.825 on albumin gives 1.266). The packaged model encodes
+  Table 2, which the Results text corroborates; the figure rows are
+  treated as a plotting error. The "Extreme case" row, which combines
+  both covariates and is therefore insensitive to the transposition,
+  agrees with all three sources (1.48 measured from the figure, 1.49 in
+  the text, 1.467 simulated).
+* **The paper's quoted albumin percentages are 1 to 4 points above what
+  its own Table 2 exponents produce.** Results section 3.5 quotes 28
+  percent (AUCss) and 34 percent (Cmaxss) for a 29.3 g/L patient; the
+  Table 2 exponents give 26.6 percent and 30.6 percent. The body-weight
+  row, by contrast, is reproduced to 0.1 percentage points (15.9 versus
+  16; 16.9 versus 17), and both AZ5104 bounds are reproduced tightly.
+  The quoted percentages are medians of a 10 000-replicate Monte Carlo
+  that also samples parameter uncertainty, and they are consistent with
+  values read off Figure 2 at plotting resolution. No parameter has been
+  adjusted; the assertion on the albumin row is therefore given a
+  2-percentage-point tolerance while the body-weight and race rows are
+  asserted tightly.
+* **Between-patient variability is read as a coefficient of variation.**
+  Johnson 2025 Table 2 labels the rows with the symbol "Omega" but heads
+  the block "(% coefficient of variation)". The packaged model applies
+  `omega^2 = log(1 + CV^2)`. The "Interpreting the between-patient
+  variability column" section above shows that this reading, and not the
+  alternative of treating the tabulated percentage as a log-scale SD, is
+  the one consistent with the 90 percent prediction intervals plotted in
+  Figure 2.
+* **Molecular weights are not from the paper.** Johnson 2025 reports
+  concentrations and additive residual errors in nmol/L. The packaged
+  model works in mass units (mg in compartments, mg/L in observations)
+  to satisfy the `units$dosing` / `units$concentration` convention, so
+  the parent-to-AZ5104 flux carries the stoichiometric factor
+  `mw_az5104 / mw_parent = 485.59 / 499.62 = 0.9719` and the two
+  additive residual-error terms are converted as
+  `nmol/L * MW / 1e6`. The molecular weights 499.62 g/mol (osimertinib,
+  C28H33N7O2) and 485.59 g/mol (AZ5104, N-desmethyl-osimertinib,
+  C27H31N7O2) are computed from the published molecular formulae using
+  IUPAC standard atomic weights, not taken from Johnson 2025. They are
+  the same values used by the sibling model `Brown_2017_osimertinib`.
+* **The simulated Cmaxss / Cminss ratio is flatter than the published
+  1.6.** With the packaged typical-value parameters the ratio is
+  approximately 1.19. The published 1.6 is quoted in the Introduction
+  from the phase 1 NCA characterisation (a different analysis, on
+  discretely sampled individual profiles), not from this popPK model,
+  and individual profiles under the model's very large absorption-rate
+  variability (109 percent CV on ka) fluctuate considerably more than
+  the typical-value profile does. No parameter has been tuned toward the
+  published ratio.
+* **Fraction converted to AZ5104 is fixed, not estimated.** Johnson 2025
+  Discussion states the conversion was fixed at 25 percent. The value is
+  confounded with the metabolite's apparent volume and clearance in a
+  joint parent/metabolite model, so simulated concentrations are
+  insensitive to it provided the same value is used at simulation as at
+  estimation. It is encoded as `fm_az5104 <- fixed(0.25)` so the
+  fixed-versus-estimated provenance is machine-readable.
+* **Screened-but-not-retained covariates.** Age, sex, smoking status,
+  renal function, WHO performance status, and line of therapy were all
+  tested and rejected, with no point estimates reported. They are
+  recorded in the model file's `covariatesDataExcluded` list so the
+  provenance of the covariate screen is preserved without declaring
+  covariates the model never references.
+* **Missing covariate values.** Johnson 2025 Methods section 2.5 states
+  that covariates missing in more than 10 percent of patients were
+  excluded, and that missing values of time-independent continuous
+  covariates were replaced with the population median. The packaged
+  model does no imputation; users supplying real data must apply that
+  rule themselves. Table 1 reports 0.5 percent missing weight and 1.4
+  percent missing albumin.
+* **Race encoding.** The four `RACE_*` indicators are mutually exclusive
+  and all zero for the White reference category, matching the paper's
+  five-level "grouped race" covariate. The paper's Table 1 also reports
+  an ungrouped race column; the grouped categorisation is the one the
+  covariate model uses.
+* **Virtual cohort.** The original observed concentrations are not
+  publicly available. The 150-patient cohort used for the figures
+  reproduces the Table 1 medians and ranges for weight and albumin and
+  the Table 1 grouped-race proportions, but its correlation structure
+  between covariates is not informed by the paper.
+* **No erratum located.** A search of the Pharmacology Research and
+  Perspectives article landing page and of PubMed in September 2026
+  surfaced no erratum, corrigendum, or correction notice for this
+  article. The internal Figure 2 / Table 2 inconsistency documented
+  above has not been the subject of a published correction.
+
+# Related models
+
+* `Brown_2017_osimertinib` -- the predecessor AURA / AURA2 analysis that
+  this paper updates.
+* `Liang_2024_osimertinib_qsp`, `vanderGaag_2025_osimertinib_pbpk`,
+  `Richardson_2025_osimertinib`, `Hu_2026_pemetrexed_osimertinib_mouse_qsp`
+  -- other osimertinib models in the library.

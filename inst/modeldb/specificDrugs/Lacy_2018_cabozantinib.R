@@ -160,13 +160,13 @@ Lacy_2018_cabozantinib <- function() {
     # (HV reference), male, White, age 64 y, weight 81 kg (overall-cohort
     # medians from Table 2). Apparent (oral) parameters CL/F, Vc/F, Q/F, Vp/F
     # are reported in L/h and L; Ka in 1/h; ALAG1 and D2 in h.
-    lka     <- log(0.979)  ; label("First-order absorption rate constant at the 60 mg tablet reference (Ka, 1/h)")               # Lacy 2018 Table 3 FM Ka = 0.979 (90% CI 0.679, 1.411)
-    ld2     <- log(2.4)    ; label("Zero-order absorption duration for the parallel depot2 process (D2, h)")                     # Lacy 2018 Table 3 FM D2 = 2.4 (90% CI 2.01, 2.866)
-    lcl     <- log(2.478)  ; label("Apparent oral clearance at the reference covariate set (CL/F, L/h)")                         # Lacy 2018 Table 3 FM CL/F = 2.478 (90% CI 2.257, 2.721)
-    lvc     <- log(187.0)  ; label("Apparent central volume of distribution at the reference covariate set (Vc/F, L)")           # Lacy 2018 Table 3 FM Vc/F = 187.0 (90% CI 156.3, 223.9)
-    lq      <- log(31.213) ; label("Apparent inter-compartmental clearance (Q/F, L/h)")                                          # Lacy 2018 Table 3 FM Q/F = 31.213 (90% CI 28.732, 33.92)
-    lvp     <- log(195.1)  ; label("Apparent peripheral volume of distribution (Vp/F, L)")                                       # Lacy 2018 Table 3 FM Vp/F = 195.1 (90% CI 183.3, 207.9)
-    lalag1  <- log(0.784)  ; label("Absorption lag time for the parallel depot1 first-order process (ALAG1, h)")                 # Lacy 2018 Table 3 FM ALAG1 = 0.784 (90% CI 0.757, 0.812)
+    lka     <- log(0.979)  ; label("First-order absorption rate constant at the 60 mg tablet reference (1/h)")               # Lacy 2018 Table 3 FM Ka = 0.979 (90% CI 0.679, 1.411)
+    ld2     <- log(2.4)    ; label("Zero-order absorption duration for the parallel depot2 process (h)")                     # Lacy 2018 Table 3 FM D2 = 2.4 (90% CI 2.01, 2.866)
+    lcl     <- log(2.478)  ; label("Apparent oral clearance at the reference covariate set (L/h)")                         # Lacy 2018 Table 3 FM CL/F = 2.478 (90% CI 2.257, 2.721)
+    lvc     <- log(187.0)  ; label("Apparent central volume of distribution at the reference covariate set (L)")           # Lacy 2018 Table 3 FM Vc/F = 187.0 (90% CI 156.3, 223.9)
+    lq      <- log(31.213) ; label("Apparent inter-compartmental clearance (L/h)")                                          # Lacy 2018 Table 3 FM Q/F = 31.213 (90% CI 28.732, 33.92)
+    lvp     <- log(195.1)  ; label("Apparent peripheral volume of distribution (L)")                                       # Lacy 2018 Table 3 FM Vp/F = 195.1 (90% CI 183.3, 207.9)
+    lalag1  <- log(0.784)  ; label("Absorption lag time for the parallel depot1 first-order process (h)")                 # Lacy 2018 Table 3 FM ALAG1 = 0.784 (90% CI 0.757, 0.812)
 
     # F1 = fraction of the dose absorbed via the first-order depot1; the
     # remaining (1 - F1) is absorbed via the zero-order depot2 process. Paper

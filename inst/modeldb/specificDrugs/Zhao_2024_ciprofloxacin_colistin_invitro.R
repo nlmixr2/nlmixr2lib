@@ -376,7 +376,7 @@ Zhao_2024_ciprofloxacin_colistin_invitro <- function() {
     # max() rather than a bare "+ eps": once a subpopulation has been driven to
     # ~1e-70 CFU/mL the solver can return a small negative excursion, which
     # would make log10() undefined.
-    Cc <- log10(max(cfuObserved, eps))
-    Cc ~ add(addSd)
+    log_cfu <- log10(max(cfuObserved, eps))
+    log_cfu ~ add(addSd)
   })
 }

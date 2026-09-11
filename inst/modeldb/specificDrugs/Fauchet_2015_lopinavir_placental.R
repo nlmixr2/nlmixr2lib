@@ -78,8 +78,8 @@ Fauchet_2015_lopinavir_placental <- function() {
     # parameters for lopinavir based on the MFLA model'). Apparent values absorb F;
     # CL and V are the maternal values for a nonpregnant reference subject.
     lka  <- fixed(log(0.255)); label("Absorption rate constant (1/h)")                  # Table 4 row 'Ka' = 0.255 /h (footnote c 'Fixed value'); Results 'MFLA model' subsection: 'Our data did not allow estimation of a Ka value. The stability of the model was improved for a Ka value fixed to 0.255'
-    lcl  <- log(4.12);         label("Apparent nonpregnant maternal clearance (CL/F, L/h)")    # Table 4 row 'CL' = 4.12 L/h (nonpregnant reference; pregnancy applied via beta_CL_ENC)
-    lvc  <- log(43.1);         label("Apparent maternal volume of distribution (V/F, L)")      # Table 4 row 'V' = 43.1 L
+    lcl  <- log(4.12);         label("Apparent nonpregnant maternal clearance (L/h)")    # Table 4 row 'CL' = 4.12 L/h (nonpregnant reference; pregnancy applied via beta_CL_ENC)
+    lvc  <- log(43.1);         label("Apparent maternal volume of distribution (L)")      # Table 4 row 'V' = 43.1 L
 
     # Placental-transfer rate constants (paper-mechanistic effect-compartment chain).
     # Fetal and amniotic states carry concentration (mg/L) so K_1F operates on Cc

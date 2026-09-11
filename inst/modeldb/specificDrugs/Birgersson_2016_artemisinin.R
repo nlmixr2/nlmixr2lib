@@ -73,7 +73,7 @@ Birgersson_2016_artemisinin <- function() {
     lcl     <- log(417)                ; label("Apparent oral clearance CL/F (L/h)")                          # Birgersson 2016 Table 2: CL/F = 417 L/h (RSE 9.32 %, 95 % CI 350-501)
     lvc     <- log(1210)               ; label("Apparent central volume of distribution V/F (L)")            # Birgersson 2016 Table 2: V/F = 1210 L (RSE 9.02 %, 95 % CI 1030-1450)
     lmtt    <- log(0.787)              ; label("Mean transit time of the absorption chain MTT (h)")          # Birgersson 2016 Table 2: MTT = 0.787 h (RSE 5.97 %, 95 % CI 0.702-0.891)
-    nn_fix  <- fixed(7)                ; label("Number of transit compartments (integer, unitless)")         # Birgersson 2016 Table 2: 'Nr. trans comp' = 7 fix; carried in model() as a structural constant
+    nn_fix  <- fixed(7)                ; label("Number of transit compartments, integer-valued (unitless)")         # Birgersson 2016 Table 2: 'Nr. trans comp' = 7 fix; carried in model() as a structural constant
     lfdepot <- fixed(log(1))           ; label("Reference relative oral bioavailability F (unitless)")        # Birgersson 2016 Table 2: F (%) = 100 (fixed); structural anchor of unity allowing IIV on F to be identified
 
     # Inter-individual and inter-occasion variability (Birgersson 2016 Table 2,

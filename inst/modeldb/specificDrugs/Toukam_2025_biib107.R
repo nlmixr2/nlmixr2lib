@@ -50,20 +50,20 @@ Toukam_2025_biib107 <- function() {
     # mL/day, volumes in mL, Vmax in ug/day. Converted to L/day, L, and
     # mg/day for consistency with units list (concentration ug/mL = mg/L).
     # ------------------------------------------------------------------
-    lka     <- log(0.288);          label("Absorption rate constant for SC dosing (Ka, 1/day)")             # Toukam 2025 Table 3 (Ka 0.288 1/day)
-    lcl     <- log(0.159);          label("Linear clearance for a 70 kg adult (CL, L/day)")                 # Toukam 2025 Table 3 (CL 159 mL/day)
-    lvc     <- log(3.01);           label("Central volume of distribution for a 70 kg adult (V2, L)")       # Toukam 2025 Table 3 (V2 3010 mL)
-    lvp     <- log(1.18);           label("Peripheral volume of distribution for a 70 kg adult (V3, L)")    # Toukam 2025 Table 3 (V3 1180 mL)
-    lq      <- log(0.301);          label("Inter-compartmental clearance for a 70 kg adult (Q, L/day)")     # Toukam 2025 Table 3 (Q 301 mL/day)
-    lvmax   <- log(1.89);           label("Maximum rate of saturable target-mediated elimination (Vmax, mg/day)")  # Toukam 2025 Table 3 (Vmax 1890 ug/day)
-    lkm     <- fixed(log(0.00435)); label("Michaelis-Menten constant (Km, mg/L = ug/mL; in vitro Kd)")    # Toukam 2025 Table 3 (Km 0.00435 ug/mL FIXED)
-    lfdepot <- log(0.738);          label("SC bioavailability (F, fraction)")                               # Toukam 2025 Table 3 (F 73.8%)
-    ltlag   <- fixed(log(0.0793));  label("Absorption lag time for SC doses (Tlag/ALAG1, day)")      # Toukam 2025 Table 3 (Tlag 0.0793 day FIXED)
+    lka     <- log(0.288);          label("Absorption rate constant for SC dosing (1/day)")             # Toukam 2025 Table 3 (Ka 0.288 1/day)
+    lcl     <- log(0.159);          label("Linear clearance for a 70 kg adult (L/day)")                 # Toukam 2025 Table 3 (CL 159 mL/day)
+    lvc     <- log(3.01);           label("Central volume of distribution for a 70 kg adult (L)")       # Toukam 2025 Table 3 (V2 3010 mL)
+    lvp     <- log(1.18);           label("Peripheral volume of distribution for a 70 kg adult (L)")    # Toukam 2025 Table 3 (V3 1180 mL)
+    lq      <- log(0.301);          label("Inter-compartmental clearance for a 70 kg adult (L/day)")     # Toukam 2025 Table 3 (Q 301 mL/day)
+    lvmax   <- log(1.89);           label("Maximum rate of saturable target-mediated elimination (mg/day)")  # Toukam 2025 Table 3 (Vmax 1890 ug/day)
+    lkm     <- fixed(log(0.00435)); label("Michaelis-Menten constant (mg/L = ug/mL; in vitro Kd)")    # Toukam 2025 Table 3 (Km 0.00435 ug/mL FIXED)
+    lfdepot <- log(0.738);          label("SC bioavailability (fraction)")                               # Toukam 2025 Table 3 (F 73.8%)
+    ltlag   <- fixed(log(0.0793));  label("Absorption lag time for SC doses (day)")      # Toukam 2025 Table 3 (Tlag 0.0793 day FIXED)
 
     # Allometric exponents on body weight (reference 70 kg). Toukam 2025
     # Table 3: exponent on CL was estimated at 1.07 (RSE 39.7%); exponents
     # on V2, V3, and Q were fixed at 1, 1, and 0.75 respectively.
-    e_wt_cl <- 1.07;          label("Allometric exponent on CL (estimated, unitless)")  # Toukam 2025 Table 3 (Exponent on CL 1.07 estimated)
+    e_wt_cl <- 1.07;          label("Allometric exponent on CL (unitless)")  # Toukam 2025 Table 3 (Exponent on CL 1.07 estimated)
     e_wt_vc <- fixed(1);      label("Allometric exponent on V2 (unitless)")      # Toukam 2025 Table 3 (Exponent on V2 1 FIXED)
     e_wt_vp <- fixed(1);      label("Allometric exponent on V3 (unitless)")      # Toukam 2025 Table 3 (Exponent on V3 1 FIXED)
     e_wt_q  <- fixed(0.75);   label("Allometric exponent on Q (unitless)")       # Toukam 2025 Table 3 (Exponent on Q 0.75 FIXED)
@@ -92,10 +92,10 @@ Toukam_2025_biib107 <- function() {
     #   E = E0 + Emax * Cc^gamma / (EC50^gamma + Cc^gamma)
     # with Cc = predicted central serum concentration in ug/mL).
     # ------------------------------------------------------------------
-    a4satE0     <- 17.7;          label("Baseline alpha-4 integrin saturation (E0, %)")             # Toukam 2025 Table 4 (E0 17.7%)
-    a4satEmax   <- 77.5;          label("Maximum drug-induced alpha-4 integrin saturation (Emax, % above E0)")  # Toukam 2025 Table 4 (Emax 77.5%)
-    la4satEC50  <- log(0.376);    label("BIIB107 concentration producing 50% of Emax (EC50, ug/mL)")            # Toukam 2025 Table 4 (EC50 0.376 ug/mL)
-    a4satGamma  <- fixed(1);      label("Hill coefficient for alpha-4 integrin saturation (gamma)")     # Toukam 2025 PK-PD equation (gamma fixed at 1)
+    a4satE0     <- 17.7;          label("Baseline alpha-4 integrin saturation (%)")             # Toukam 2025 Table 4 (E0 17.7%)
+    a4satEmax   <- 77.5;          label("Maximum drug-induced alpha-4 integrin saturation (% above E0)")  # Toukam 2025 Table 4 (Emax 77.5%)
+    la4satEC50  <- log(0.376);    label("BIIB107 concentration producing 50% of Emax (ug/mL)")            # Toukam 2025 Table 4 (EC50 0.376 ug/mL)
+    a4satGamma  <- fixed(1);      label("Hill coefficient for alpha-4 integrin saturation, gamma (unitless)")     # Toukam 2025 PK-PD equation (gamma fixed at 1)
 
     # IIV on EC50 (only PD parameter with IIV). Paper reports 10 (with
     # high shrinkage 62%); interpreted as 10% CV consistent with the

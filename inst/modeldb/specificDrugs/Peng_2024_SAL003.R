@@ -110,7 +110,7 @@ Peng_2024_SAL003 <- function() {
     # 'sigma_proportional PK = 0.12' (RSE 1.49%, shrinkage 5.89%); bootstrap (Table S2)
     # mean = 0.12, 95% CI [0.10, 0.14]. Encoded as a proportional SD on the linear scale.
     propSd <- 0.12
-    label("Proportional residual error (SD, fraction)")
+    label("Proportional residual error (fraction)")
   })
 
   model({

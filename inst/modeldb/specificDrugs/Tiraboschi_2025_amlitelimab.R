@@ -57,14 +57,14 @@ Tiraboschi_2025_amlitelimab <- function() {
 
   ini({
     # Structural parameters — reference values for a 75 kg participant with albumin = 47 g/L; values from Tiraboschi 2025 Table S2
-    lka      <- log(0.233);                      label("Absorption rate (Ka, 1/day)")                                                       # Table S2 TVKa
-    lcl      <- log(0.115);                      label("Linear clearance for a 75 kg participant with SCORE_EASI = 0 (CL, L/day)")                # Table S2 TVCLL
-    lvc      <- log(3.46);                       label("Central volume of distribution for a 75 kg participant (V1, L)")                    # Table S2 TVV1
-    lvp      <- log(2.48);                       label("Peripheral volume of distribution for a 75 kg participant (V2, L)")                 # Table S2 TVV2
-    lq       <- log(0.569);                      label("Intercompartmental clearance (Q, L/day)")                                           # Table S2 TVQ2
-    lvmax    <- log(0.0362);                     label("Maximum velocity of nonlinear (TMDD) elimination (Vmax, mg/day)")                   # Table S2 TVVM (labeled 'ug/day' in Table S2, verified mg/day via the paper's 66% TMDD-fraction at LLOQ 0.0469 ug/mL and 20% at 1 ug/mL)
-    lkm      <- log(0.0783);                     label("Michaelis-Menten constant (Km, ug/mL)")                                             # Table S2 TVKM
-    ltlag    <- log(0.0351);                     label("Absorption lag time (ALAG, day)")                                                   # Table S2 TVALAG
+    lka      <- log(0.233);                      label("Absorption rate (1/day)")                                                       # Table S2 TVKa
+    lcl      <- log(0.115);                      label("Linear clearance for a 75 kg participant with SCORE_EASI = 0 (L/day)")                # Table S2 TVCLL
+    lvc      <- log(3.46);                       label("Central volume of distribution for a 75 kg participant (L)")                    # Table S2 TVV1
+    lvp      <- log(2.48);                       label("Peripheral volume of distribution for a 75 kg participant (L)")                 # Table S2 TVV2
+    lq       <- log(0.569);                      label("Intercompartmental clearance (L/day)")                                           # Table S2 TVQ2
+    lvmax    <- log(0.0362);                     label("Maximum velocity of nonlinear (TMDD) elimination (mg/day)")                   # Table S2 TVVM (labeled 'ug/day' in Table S2, verified mg/day via the paper's 66% TMDD-fraction at LLOQ 0.0469 ug/mL and 20% at 1 ug/mL)
+    lkm      <- log(0.0783);                     label("Michaelis-Menten constant (ug/mL)")                                             # Table S2 TVKM
+    ltlag    <- log(0.0351);                     label("Absorption lag time (day)")                                                   # Table S2 TVALAG
     logitfdepot  <- log(0.888 / (1 - 0.888));        label("Typical subcutaneous bioavailability on the logit scale (linear F = 0.888 at population-median albumin 47 g/L)")  # Table S2 TVFsc = 0.888 on linear scale
 
     # Allometric exponents on body weight (reference 75 kg)

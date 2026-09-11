@@ -97,14 +97,14 @@ Jorga_2000_tolcapone_fluctuators <- function() {
     # at the population-median LBM (55 kg), serum protein (72 g/L), serum
     # albumin (44 g/L), under fasted conditions. From Jorga 2000 Table 3
     # (Fluctuator model, Final estimate column).
-    lka      <- log(1.7);  label("Absorption rate constant (ka, 1/h)")                        # Table 3 (ka = 1.7 /h)
-    lcl      <- log(4.8);  label("Apparent clearance for the 200 mg reference (CL/F1, L/h)")  # Table 3 (CL = 4.8 L/h)
-    lvc      <- log(16);   label("Central volume of distribution for the 200 mg reference (Vc, L)")    # Table 3 (Vc = 16 L)
-    lvp      <- log(12);   label("Peripheral volume of distribution for the 200 mg reference (Vp, L)") # Table 3 (Vp = 12 L)
-    lq       <- log(5.2);  label("Inter-compartmental clearance (Q, L/h)")                    # Table 3 (Q = 5.2 L/h)
+    lka      <- log(1.7);  label("Absorption rate constant (1/h)")                        # Table 3 (ka = 1.7 /h)
+    lcl      <- log(4.8);  label("Apparent clearance for the 200 mg reference (L/h)")  # Table 3 (CL = 4.8 L/h)
+    lvc      <- log(16);   label("Central volume of distribution for the 200 mg reference (L)")    # Table 3 (Vc = 16 L)
+    lvp      <- log(12);   label("Peripheral volume of distribution for the 200 mg reference (L)") # Table 3 (Vp = 12 L)
+    lq       <- log(5.2);  label("Inter-compartmental clearance (L/h)")                    # Table 3 (Q = 5.2 L/h)
     # Fasted absolute bioavailability fixed at 0.6 from upstream IV/PO single-
     # dose study (Jorga et al. 1998, Eur J Clin Pharmacol 54:443-447; ref [22]).
-    lfdepot  <- fixed(log(0.6)); label("Fasted absolute bioavailability (F1, fraction)")     # Methods: F1 fixed to 0.6 [ref 22]
+    lfdepot  <- fixed(log(0.6)); label("Fasted absolute bioavailability (fraction)")     # Methods: F1 fixed to 0.6 [ref 22]
 
     # Covariate effects on CL: power-form (LBM/55)^e_lbm_cl and (TPRO/72)^e_tpro_cl
     e_lbm_cl    <-  0.73; label("LBM power exponent on CL")              # Table 3 (theta_LBW(CL) = 0.73)

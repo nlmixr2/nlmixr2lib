@@ -87,9 +87,9 @@ Jung_2023_HL2351 <- function() {
     lka2      <- log(0.024555)  ; label("Direct rate of free drug from absorption site to central (1/h)")       # Code S9 $THETA 4 (0,0.024555) "Ka1"; Table S4 fractal Ka1 = 0.0246 (RSE 78.4%)
     lkrec     <- log(0.0472069) ; label("FcRn-mediated recycling rate of the FcRn-drug complex into central (1/h)") # Code S9 $THETA 5 (0,0.0472069) "Ka2"; Table S4 fractal Ka2 = 0.0472 (RSE 49.6%)
     lkdeg     <- log(0.022881)  ; label("Degradation rate of free drug at the absorption site (1/h)")           # Code S9 $THETA 6 (0,0.022881) "Kdeg"; Table S4 fractal Kdeg = 0.0229 (RSE 56%)
-    lcl       <- log(0.22751)   ; label("Apparent clearance of free drug from central (CL/F, L/h)")             # Code S9 $THETA 7 (0,0.22751); Table S4 fractal CL = 0.228 (RSE 39.6%)
-    lvc       <- log(11.2913)   ; label("Apparent central volume of distribution (Vc/F, L)")                    # Code S9 $THETA 8 (0,11.2913) "V3"; Table S4 fractal Vc = 11.3 (RSE 27.7%)
-    lq        <- log(0.0304478) ; label("Apparent inter-compartmental clearance (Q/F, L/h)")                    # Code S9 $THETA 9 (0,0.0304478); Table S4 fractal Q = 0.0304 (RSE 38.1%)
+    lcl       <- log(0.22751)   ; label("Apparent clearance of free drug from central (L/h)")             # Code S9 $THETA 7 (0,0.22751); Table S4 fractal CL = 0.228 (RSE 39.6%)
+    lvc       <- log(11.2913)   ; label("Apparent central volume of distribution (L)")                    # Code S9 $THETA 8 (0,11.2913) "V3"; Table S4 fractal Vc = 11.3 (RSE 27.7%)
+    lq        <- log(0.0304478) ; label("Apparent inter-compartmental clearance (L/h)")                    # Code S9 $THETA 9 (0,0.0304478); Table S4 fractal Q = 0.0304 (RSE 38.1%)
     la_kss1   <- log(426.482)   ; label("Drug-FcRn QSS dissociation constant at the absorption site (nmol)")    # Code S9 $THETA 2 (0,426.482) "KSS1"; Table S4 fractal Kss1 = 426 (RSE 129%)
     la_fcrn_t <- log(685.457)   ; label("Total active amount of FcRn at the absorption site (nmol)")            # Code S9 $THETA 3 (0,685.457) "FcRn"; Table S4 fractal FcRn = 685 (RSE 72.7%)
     lkss2     <- log(11.595)    ; label("Drug-IL1R QSS dissociation constant in central (nmol/L)")              # Code S9 $THETA 13 (0,11.595) "KSS2"; Table S4 fractal Kss2 = 11.6 (RSE 63.9%)
@@ -98,7 +98,7 @@ Jung_2023_HL2351 <- function() {
 
     # Held fixed by the authors, carried over from the Ngo 2020 base model. Code S9
     # writes these three with a bare "FIX" flag and no bounds.
-    lvp   <- fixed(log(5.06))     ; label("Apparent peripheral volume of distribution (Vp/F, L)")               # Code S9 $THETA 10 "5.06 FIX" "V4"; Table S4 Vp = 5.06 (fixed)
+    lvp   <- fixed(log(5.06))     ; label("Apparent peripheral volume of distribution (L)")               # Code S9 $THETA 10 "5.06 FIX" "V4"; Table S4 Vp = 5.06 (fixed)
     lkint <- fixed(log(0.206))    ; label("Internalisation rate constant of the IL1R-drug complex (1/h)")       # Code S9 $THETA 11 "0.206 FIX" "Kint"; Table S4 Kint = 0.206 (fixed)
     lkup  <- fixed(log(0.00952))  ; label("Uptake rate of free drug from central back to the absorption site (1/h)") # Code S9 $THETA 14 "0.00952 FIX" "Kup"; Table S4 Kup = 0.00952 (fixed)
 

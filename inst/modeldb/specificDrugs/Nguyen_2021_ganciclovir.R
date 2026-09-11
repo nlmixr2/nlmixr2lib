@@ -144,15 +144,15 @@ Nguyen_2021_ganciclovir <- function() {
     # not critically ill. Clearances in L/h, volumes in L, ka in 1/h. All values
     # are typical (population) values of the final model; the review reports no
     # standard errors. No absorption lag time is reported for this model.
-    lcl <- log(2.55) ; label("Clearance at WT = 11.7 kg, eGFR = 167 mL/min/1.73 m^2, not critically ill (CL, L/h)") # Yang 2023 Table 3 (Nguyen 2021): CL = 2.55 * (BW/11.7)^0.75 * (eGFR/167)^0.763 * 0.806^critically ill
-    lvc <- log(5.96) ; label("Central volume of distribution at WT = 11.7 kg (Vc, L)")                              # Yang 2023 Table 3 (Nguyen 2021): Vc = 5.96 * (BW/11.7)
-    lq  <- log(0.222); label("Inter-compartmental clearance at WT = 11.7 kg (Q, L/h)")                              # Yang 2023 Table 3 (Nguyen 2021): Q = 0.222 * (BW/11.7)^0.75
-    lvp <- log(1.29) ; label("Peripheral volume of distribution at WT = 11.7 kg (Vp, L)")                           # Yang 2023 Table 3 (Nguyen 2021): Vp = 1.29 * (BW/11.7)
-    lka <- log(0.506); label("First-order oral absorption rate constant (ka, 1/h)")                                 # Yang 2023 Table 3 (Nguyen 2021): Ka = 0.506
+    lcl <- log(2.55) ; label("Clearance at WT = 11.7 kg, eGFR = 167 mL/min/1.73 m^2, not critically ill (L/h)") # Yang 2023 Table 3 (Nguyen 2021): CL = 2.55 * (BW/11.7)^0.75 * (eGFR/167)^0.763 * 0.806^critically ill
+    lvc <- log(5.96) ; label("Central volume of distribution at WT = 11.7 kg (L)")                              # Yang 2023 Table 3 (Nguyen 2021): Vc = 5.96 * (BW/11.7)
+    lq  <- log(0.222); label("Inter-compartmental clearance at WT = 11.7 kg (L/h)")                              # Yang 2023 Table 3 (Nguyen 2021): Q = 0.222 * (BW/11.7)^0.75
+    lvp <- log(1.29) ; label("Peripheral volume of distribution at WT = 11.7 kg (L)")                           # Yang 2023 Table 3 (Nguyen 2021): Vp = 1.29 * (BW/11.7)
+    lka <- log(0.506); label("First-order oral absorption rate constant (1/h)")                                 # Yang 2023 Table 3 (Nguyen 2021): Ka = 0.506
 
     # Oral bioavailability of ganciclovir from a valganciclovir milligram dose
     # (no molecular-weight conversion was applied by this study).
-    lfdepot <- log(0.438); label("Oral bioavailability of ganciclovir from valganciclovir (F, fraction)")            # Yang 2023 Table 3 (Nguyen 2021): F = 0.438
+    lfdepot <- log(0.438); label("Oral bioavailability of ganciclovir from valganciclovir (fraction)")            # Yang 2023 Table 3 (Nguyen 2021): F = 0.438
 
     # Covariate effects. The eGFR exponent 0.763 is a non-canonical estimated
     # value; the body-weight exponents 0.75 (CL, Q) and 1 (Vc, Vp) are the

@@ -172,25 +172,25 @@ Jung_2024_clopidogrel <- function() {
     # identifiable from oral-only data.
 
     ltlag <- log(0.196)
-    label("Absorption lag time (Tlag, h)")                                     # Jung 2024 Table 2: T_lag = 0.196 h (%RSE 4.59)
+    label("Absorption lag time (h)")                                     # Jung 2024 Table 2: T_lag = 0.196 h (%RSE 4.59)
 
     lka <- log(19.64)
-    label("First-order absorption rate constant depot -> liver (ka, 1/h)")     # Jung 2024 Table 2: k_a = 19.64 1/h (%RSE 28.0); Results 'PK submodel' confirms "corresponding to an absorption half-life of 2.13 min" (log(2)/19.64 h = 2.12 min)
+    label("First-order absorption rate constant depot -> liver (1/h)")     # Jung 2024 Table 2: k_a = 19.64 1/h (%RSE 28.0); Results 'PK submodel' confirms "corresponding to an absorption half-life of 2.13 min" (log(2)/19.64 h = 2.12 min)
 
     lvc <- log(1463.92)
-    label("Clopidogrel central volume (Vc, L; the hepatic volume VH is set equal to it)")  # Jung 2024 Table 2: V_c (= V_H) = 1463.92 L (%RSE 7.56). Methods 'PK model': "Because of parameter unidentifiability, we set the hepatic volume to be the same as the central volume".
+    label("Clopidogrel central volume (L; the hepatic volume VH is set equal to it)")  # Jung 2024 Table 2: V_c (= V_H) = 1463.92 L (%RSE 7.56). Methods 'PK model': "Because of parameter unidentifiability, we set the hepatic volume to be the same as the central volume".
 
     lvp <- log(2823.98)
-    label("Clopidogrel peripheral volume (Vp, L)")                             # Jung 2024 Table 2: V_p = 2823.98 L (%RSE 7.72)
+    label("Clopidogrel peripheral volume (L)")                             # Jung 2024 Table 2: V_p = 2823.98 L (%RSE 7.72)
 
     lcl <- log(9257.28)
-    label("Clopidogrel hepatic metabolic clearance out of the liver compartment (CLc, L/h)")  # Jung 2024 Table 2: CL_c = 9257.28 L/h (%RSE 6.92). This is the parent's ONLY elimination pathway -- Methods 'PK model': "We further assumed that all parent drugs ultimately underwent metabolism in the hepatic compartment."
+    label("Clopidogrel hepatic metabolic clearance out of the liver compartment (L/h)")  # Jung 2024 Table 2: CL_c = 9257.28 L/h (%RSE 6.92). This is the parent's ONLY elimination pathway -- Methods 'PK model': "We further assumed that all parent drugs ultimately underwent metabolism in the hepatic compartment."
 
     lq_liver <- log(845.70)
-    label("Inter-compartmental clearance liver <-> central (Qc, L/h)")          # Jung 2024 Table 2: Q_c = 845.70 L/h (%RSE 7.04); Table 2 footnote defines Q_c as "intercompartmental clearance between hepatic and central compartment"
+    label("Inter-compartmental clearance liver <-> central (L/h)")          # Jung 2024 Table 2: Q_c = 845.70 L/h (%RSE 7.04); Table 2 footnote defines Q_c as "intercompartmental clearance between hepatic and central compartment"
 
     lq <- log(587.93)
-    label("Inter-compartmental clearance central <-> peripheral1 (Qp, L/h)")    # Jung 2024 Table 2: Q_p = 587.93 L/h (%RSE 9.23); Table 2 footnote defines Q_p as "intercompartmental clearance between central and peripheral compartment"
+    label("Inter-compartmental clearance central <-> peripheral1 (L/h)")    # Jung 2024 Table 2: Q_p = 587.93 L/h (%RSE 9.23); Table 2 footnote defines Q_p as "intercompartmental clearance between central and peripheral compartment"
 
     # ==================================================================
     # NESTED METABOLIZED FRACTIONS (LOGIT SCALE)
@@ -257,26 +257,26 @@ Jung_2024_clopidogrel <- function() {
     # ==================================================================
 
     lvc_h4 <- log(51.45)
-    label("Clopidogrel H4 central volume (Vm1, L)")                            # Jung 2024 Table 2: V_m1 = 51.45 L (%RSE 9.81)
+    label("Clopidogrel H4 central volume (L)")                            # Jung 2024 Table 2: V_m1 = 51.45 L (%RSE 9.81)
 
     lcl_h4 <- log(74.25)
-    label("Clopidogrel H4 clearance (CLm1, L/h)")                              # Jung 2024 Table 2: CL_m1 = 74.25 L/h (%RSE 8.87)
+    label("Clopidogrel H4 clearance (L/h)")                              # Jung 2024 Table 2: CL_m1 = 74.25 L/h (%RSE 8.87)
 
     # ==================================================================
     # CLOPIDOGREL CARBOXYLIC ACID (INACTIVE METABOLITE) -- TWO COMPARTMENTS
     # ==================================================================
 
     lvc_cloca <- log(17.34)
-    label("Clopidogrel carboxylic acid central volume (Vm2, L)")                # Jung 2024 Table 2: V_m2 = 17.34 L (%RSE 3.54)
+    label("Clopidogrel carboxylic acid central volume (L)")                # Jung 2024 Table 2: V_m2 = 17.34 L (%RSE 3.54)
 
     lvp_cloca <- log(51.89)
-    label("Clopidogrel carboxylic acid peripheral volume (Vp2, L)")             # Jung 2024 Table 2: V_p2 = 51.89 L (%RSE 6.48)
+    label("Clopidogrel carboxylic acid peripheral volume (L)")             # Jung 2024 Table 2: V_p2 = 51.89 L (%RSE 6.48)
 
     lcl_cloca <- log(7.248)
-    label("Clopidogrel carboxylic acid clearance (CLm2, L/h)")                  # Jung 2024 Table 2: CL_m2 = 7.248 L/h (%RSE 3.53)
+    label("Clopidogrel carboxylic acid clearance (L/h)")                  # Jung 2024 Table 2: CL_m2 = 7.248 L/h (%RSE 3.53)
 
     lq_cloca <- log(4.476)
-    label("Clopidogrel carboxylic acid inter-compartmental clearance (Qm2, L/h)")  # Jung 2024 Table 2: Q_m2 = 4.476 L/h (%RSE 3.59)
+    label("Clopidogrel carboxylic acid inter-compartmental clearance (L/h)")  # Jung 2024 Table 2: Q_m2 = 4.476 L/h (%RSE 3.59)
 
     # ==================================================================
     # PRU TURNOVER PD SUBMODEL
@@ -298,16 +298,16 @@ Jung_2024_clopidogrel <- function() {
     # Using 0.006 would give 204.17 and 4.81 days, matching neither.
 
     lkin <- log(1.225)
-    label("Zero-order PRU production rate (Kin, PRU/h)")                       # Jung 2024 Table 2: K_in = 1.225 (%RSE 3.81)
+    label("Zero-order PRU production rate (PRU/h)")                       # Jung 2024 Table 2: K_in = 1.225 (%RSE 3.81)
 
     lkout <- log(0.00576)
-    label("First-order fractional PRU turnover rate (Kout, 1/h)")              # Jung 2024 Results 'PD submodel': "Kout was estimated to be 0.00576 h-1 (~0.006)" -- Table 2 prints the rounded 0.006
+    label("First-order fractional PRU turnover rate (1/h)")              # Jung 2024 Results 'PD submodel': "Kout was estimated to be 0.00576 h-1 (~0.006)" -- Table 2 prints the rounded 0.006
 
     lemax <- log(57.84)
-    label("Maximum fractional stimulation of PRU turnover by clopidogrel H4 (Emax, unitless multiplier on Kout)")  # Jung 2024 Table 2: E_max = 57.84 (%RSE 12.7). Results 'PD submodel': "Emax was estimated to be 57.84, implying a maximum reduction in PRU at a steady state of 1.7% (1/(1 + 57.84))" -- i.e. the steady-state PRU floor is baseline / (1 + Emax) = 212.67 / 58.84 = 3.61 PRU.
+    label("Maximum fractional stimulation of PRU turnover by clopidogrel H4 (unitless multiplier on Kout)")  # Jung 2024 Table 2: E_max = 57.84 (%RSE 12.7). Results 'PD submodel': "Emax was estimated to be 57.84, implying a maximum reduction in PRU at a steady state of 1.7% (1/(1 + 57.84))" -- i.e. the steady-state PRU floor is baseline / (1 + Emax) = 212.67 / 58.84 = 3.61 PRU.
 
     lec50 <- log(67.32)
-    label("Clopidogrel H4 concentration giving half-maximal stimulation of PRU turnover (EC50, ng/mL)")  # Jung 2024 Table 2: EC_50 = 67.32 ng/mL (%RSE 12.0)
+    label("Clopidogrel H4 concentration giving half-maximal stimulation of PRU turnover (ng/mL)")  # Jung 2024 Table 2: EC_50 = 67.32 ng/mL (%RSE 12.0)
 
     lhill <- log(1.851)
     label("Hill coefficient of the H4-on-PRU sigmoid (unitless)")              # Jung 2024 Table 2: Hill = 1.851 (%RSE 7.46)

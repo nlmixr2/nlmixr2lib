@@ -190,7 +190,7 @@ typical-trajectory replication below focuses on the STEP 5 / 8 design
 ```{r figure-4}
 sim |>
   dplyr::transmute(time_wk = time / 7, arm,
-                   wtch_pct = 100 * (Cc - 105) / 105) |>
+                   wtch_pct = 100 * (BW - 105) / 105) |>
   ggplot(aes(time_wk, wtch_pct, colour = arm)) +
   geom_line(linewidth = 1) +
   scale_colour_manual(values = c("placebo" = "grey50",
@@ -210,8 +210,8 @@ for semaglutide (2.4 mg, average over STEP 3, 5 and 8 studies)").
 twenty_wk <- sim |>
   dplyr::filter(time == 140) |>
   dplyr::transmute(arm,
-                   bwkg_at_20wk = round(Cc, 2),
-                   wtch_pct_at_20wk = round(100 * (Cc - 105) / 105, 2))
+                   bwkg_at_20wk = round(BW, 2),
+                   wtch_pct_at_20wk = round(100 * (BW - 105) / 105, 2))
 knitr::kable(
   twenty_wk,
   caption = "Simulated BW (kg) and BW % change at 20 weeks (typical subject)."
@@ -239,7 +239,7 @@ ss_subject$WM_IBT <- 0L
 ss_events <- make_arm(ss_subject, 0, NA_character_, "steady-state hold")
 ss_sim <- rxode2::rxSolve(mod_typical, events = ss_events,
                           keep = c("arm"))
-ss_drift_pct <- 100 * (max(ss_sim$Cc) - min(ss_sim$Cc)) / step5_subject$WT
+ss_drift_pct <- 100 * (max(ss_sim$BW) - min(ss_sim$BW)) / step5_subject$WT
 cat(sprintf("Steady-state drift over 140 d: %.3f %% of baseline BW\n",
             ss_drift_pct))
 ```

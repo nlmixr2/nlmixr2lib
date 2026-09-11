@@ -71,8 +71,8 @@ Attarwala_2023_mRNA3927 <- function() {
     # cla (clalpha) applies to plasma -> tissue clearances (CL12 and CL32);
     # clb (clbeta)  applies to tissue -> plasma + tissue-elimination (CL23 and CL20).
     # Volume exponents are fixed at 1 per Supp Table S1.
-    e_wt_cla <- 0.631;             label("Allometric exponent on CL12 and CL32 (clalpha, unitless)")    # Table 1, RSE 9.2%
-    e_wt_clb <- 1.10;              label("Allometric exponent on CL23 and CL20 (clbeta, unitless)")     # Table 1, RSE 7.55%
+    e_wt_cla <- 0.631;             label("Allometric exponent on CL12 and CL32 (unitless)")    # Table 1, RSE 9.2%
+    e_wt_clb <- 1.10;              label("Allometric exponent on CL23 and CL20 (unitless)")     # Table 1, RSE 7.55%
 
     # IIV: only CL32 has IIV in the published PK model (Table 1).
     # omega^2 = log(1 + CV^2) ; CV% = 52.7 -> log(1 + 0.527^2) = 0.24510.

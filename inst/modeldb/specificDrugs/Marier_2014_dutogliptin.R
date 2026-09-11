@@ -161,9 +161,9 @@ Marier_2014_dutogliptin <- function() {
     # Formulation-specific first-order absorption rate constants. Marier 2014
     # Results, 'Covariates Analysis': "Statistically significant formulations
     # effects were observed on the Ka of dutogliptin for all formulation tested."
-    lka_cap <- log(1.55);   label("Absorption rate constant, free-base capsule and aqueous solution (Ka, 1/h)")  # Table 2 "1.55 for capsules"; Results p.302 "The Ka of dutogliptin following oral administrations of aqueous solutions was comparable to that of the capsules" -- no separate solution value is printed, so the solution shares the capsule Ka
-    lka_tab <- log(0.558);  label("Absorption rate constant, tartrate-salt tablet (Ka, 1/h)")                    # Table 2 "0.558 for tablets"
-    lka_ec  <- log(0.0204); label("Absorption rate constant, enteric-coated capsule (Ka, 1/h)")                  # Results p.302 "the enteric-coated capsules displayed much slower absorption (0.0204 hour^-1)"
+    lka_cap <- log(1.55);   label("Absorption rate constant, free-base capsule and aqueous solution (1/h)")  # Table 2 "1.55 for capsules"; Results p.302 "The Ka of dutogliptin following oral administrations of aqueous solutions was comparable to that of the capsules" -- no separate solution value is printed, so the solution shares the capsule Ka
+    lka_tab <- log(0.558);  label("Absorption rate constant, tartrate-salt tablet (1/h)")                    # Table 2 "0.558 for tablets"
+    lka_ec  <- log(0.0204); label("Absorption rate constant, enteric-coated capsule (1/h)")                  # Results p.302 "the enteric-coated capsules displayed much slower absorption (0.0204 hour^-1)"
 
     # Absorption lag time. Marier 2014 names ALAG three times as a component of
     # the final model (Abstract "a two-compartment model with a first-order rate
@@ -182,7 +182,7 @@ Marier_2014_dutogliptin <- function() {
     tlag <- fixed(0);       label("Absorption lag time (ALAG, h) at 0; value not reported in Marier 2014")  # NOT REPORTED anywhere in the paper or supplement; operator ruling 2026-08-26 (sidecar request-001 q1 = A)
 
     # ---- Disposition ------------------------------------------------------
-    lcl <- log(176);        label("Apparent clearance at CrCL 115.7 mL/min (CL/F, L/h)")  # Table 2: CL/F = 176 * (CrCL/115.7)^0.848
+    lcl <- log(176);        label("Apparent clearance at CrCL 115.7 mL/min (L/h)")  # Table 2: CL/F = 176 * (CrCL/115.7)^0.848
     e_crcl_cl <- 0.848;     label("Power exponent of creatinine clearance on CL/F (unitless)")  # Table 2 exponent; reproduces the printed CL/F of 121 L/h at CrCL 75 (121.9) and 79 L/h at CrCL 45 (79.0), Results p.302
 
     # Vss/F = 2041 L is the only distribution parameter Marier 2014 prints
@@ -197,9 +197,9 @@ Marier_2014_dutogliptin <- function() {
     # 3-significant-figure rounding envelope of the printed half-lives admits
     # only Vc/F 1167-1306 L, Vp/F 735-874 L, Q/F 70.2-91.6 L/h, so the solve is
     # tightly bounded. Operator ruling 2026-08-26 (sidecar request-001 q2 = A).
-    lvc <- log(1250);       label("Apparent central volume at 82.5 kg, Caucasian/Asian (Vc/F, L)")            # BACK-SOLVED from Table 2 Vss/F = 2041 L plus the three printed terminal half-lives (Results p.302-303); not printed in Marier 2014
-    lvp <- log(791);        label("Apparent peripheral volume at 82.5 kg, Caucasian/Asian (Vp/F, L)")         # BACK-SOLVED; 2041 - 1250 = 791 L preserves the printed Vss/F exactly
-    lq  <- log(78.6);       label("Apparent intercompartmental clearance (Q/F, L/h)")                         # BACK-SOLVED from the same three (CL/F, t1/2) pairs
+    lvc <- log(1250);       label("Apparent central volume at 82.5 kg, Caucasian/Asian (L)")            # BACK-SOLVED from Table 2 Vss/F = 2041 L plus the three printed terminal half-lives (Results p.302-303); not printed in Marier 2014
+    lvp <- log(791);        label("Apparent peripheral volume at 82.5 kg, Caucasian/Asian (L)")         # BACK-SOLVED; 2041 - 1250 = 791 L preserves the printed Vss/F exactly
+    lq  <- log(78.6);       label("Apparent intercompartmental clearance (L/h)")                         # BACK-SOLVED from the same three (CL/F, t1/2) pairs
     e_wt_vc_vp <- 1.0;          label("Power exponent of body weight on Vss/F (unitless)")                        # Table 2: Vss/F = 2041 * (Body Weight/82.5)^1.0
 
     # Race effects on Vss/F, expressed as fractional changes from the pooled

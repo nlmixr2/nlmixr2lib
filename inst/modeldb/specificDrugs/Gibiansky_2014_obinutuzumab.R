@@ -108,20 +108,20 @@ Gibiansky_2014_obinutuzumab <- function() {
     e_wt_vp  <- fixed(1.0);     label("Power exponent of (WT/75) on V2 (unitless; allometric)")       # Gibiansky 2014 Methods (allometric exponent 1.0 on volumes, fixed)
 
     # ---- Sex effects (paper-reported values for SEX = 1 male; applied via (1 - SEXF)) ----
-    e_sex_cl_exp_component <- log(1.49); label("log(ratio) of CL_T for males vs females (applied via (1-SEXF))")     # Gibiansky 2014 Table 3 exp(theta9) = 1.49
-    e_sex_cl_exp_inf   <- log(1.22); label("log(ratio) of CL_inf for males vs females (applied via (1-SEXF))")   # Gibiansky 2014 Table 3 exp(theta10) = 1.22
-    e_sex_vc      <- log(1.18); label("log(ratio) of V1 for males vs females (applied via (1-SEXF))")       # Gibiansky 2014 Table 3 exp(theta11) = 1.18
+    e_sex_cl_exp_component <- log(1.49); label("log ratio of CL_T for males vs females, applied via 1 - SEXF (unitless)")     # Gibiansky 2014 Table 3 exp(theta9) = 1.49
+    e_sex_cl_exp_inf   <- log(1.22); label("log ratio of CL_inf for males vs females, applied via 1 - SEXF (unitless)")   # Gibiansky 2014 Table 3 exp(theta10) = 1.22
+    e_sex_vc      <- log(1.18); label("log ratio of V1 for males vs females, applied via 1 - SEXF (unitless)")       # Gibiansky 2014 Table 3 exp(theta11) = 1.18
 
     # ---- Diagnosis effects ----
     # NHL composite (BCL + DLBCL + MCL) effect on cl_exp_kdes; shared BCL/DLBCL effect and a
     # separate MCL effect on CL_T and CL_inf (effects shared between the two CL components
     # per the NONMEM MU expressions; theta13 in MU_2 and MU_3 and theta14 in MU_2 and MU_3).
-    e_nhl_cl_exp_kdes    <- log(2.08);  label("log(ratio) of cl_exp_kdes for NHL vs CLL (any of BCL/DLBCL/MCL)")           # Gibiansky 2014 Table 3 exp(theta12) = 2.08
-    e_bcldlbcl_cl <- log(0.834); label("log(ratio) of CL_T and CL_inf for BCL or DLBCL vs CLL (shared)")     # Gibiansky 2014 Table 3 exp(theta13) = 0.834
-    e_mcl_cl      <- log(1.75);  label("log(ratio) of CL_T and CL_inf for MCL vs CLL (shared)")              # Gibiansky 2014 Table 3 exp(theta14) = 1.75
+    e_nhl_cl_exp_kdes    <- log(2.08);  label("log ratio of cl_exp_kdes for NHL vs CLL, any of BCL/DLBCL/MCL (unitless)")           # Gibiansky 2014 Table 3 exp(theta12) = 2.08
+    e_bcldlbcl_cl <- log(0.834); label("log ratio of CL_T and CL_inf for BCL or DLBCL vs CLL, shared (unitless)")     # Gibiansky 2014 Table 3 exp(theta13) = 0.834
+    e_mcl_cl      <- log(1.75);  label("log ratio of CL_T and CL_inf for MCL vs CLL, shared (unitless)")              # Gibiansky 2014 Table 3 exp(theta14) = 1.75
 
     # ---- Baseline tumor size effect ----
-    e_bsizlow_cl_exp_kdes <- log(2.65); label("log(ratio) of cl_exp_kdes for BSIZ <= 1750 mm^2 vs BSIZ > 1750 mm^2")       # Gibiansky 2014 Table 3 exp(theta15) = 2.65
+    e_bsizlow_cl_exp_kdes <- log(2.65); label("log ratio of cl_exp_kdes for BSIZ <= 1750 mm^2 vs BSIZ > 1750 mm^2 (unitless)")       # Gibiansky 2014 Table 3 exp(theta15) = 2.65
 
     # ---- Inter-individual variability (omega^2 = log-scale variance; Table 3) ----
     # CV% = 100 * sqrt(exp(omega^2) - 1): cl_exp_kdes 201%, CL_T 122%, CL_inf 41.5%, V1 18.6%,

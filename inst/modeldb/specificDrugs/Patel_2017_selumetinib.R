@@ -85,13 +85,13 @@ Patel_2017_selumetinib <- function() {
     # values are interpreted as hours (only interpretation consistent with the
     # paper's Figure 1 absorption-model diagram and the Figure 4 ~11% food-effect
     # AUC reduction).
-    ld1   <- log(0.622) ; label("Duration of zero-order drug input in the gut under fasted condition (D1, h)")  # Patel 2017 Table 2 theta1
-    ltlag <- log(0.319) ; label("Absorption lag time under fasted condition (ALAG1, h)")                          # Patel 2017 Table 2 theta2
-    lcl   <- log(13.5)  ; label("Apparent oral clearance of selumetinib at the reference covariate set (CL/F, L/h)") # Patel 2017 Table 2 theta3
-    lvc   <- log(32.6)  ; label("Apparent selumetinib central volume of distribution at the reference covariate set (V2/F, L)") # Patel 2017 Table 2 theta4
-    lvp   <- log(55.0)  ; label("Apparent selumetinib peripheral volume of distribution (V3/F, L)")               # Patel 2017 Table 2 theta5
-    lq    <- log(8.2)   ; label("Apparent selumetinib inter-compartmental clearance (Q/F, L/h)")                  # Patel 2017 Table 2 theta6
-    lka   <- log(3.7)   ; label("First-order absorption rate constant for selumetinib from the gut (Ka, 1/h)")    # Patel 2017 Table 2 theta7
+    ld1   <- log(0.622) ; label("Duration of zero-order drug input in the gut under fasted condition (h)")  # Patel 2017 Table 2 theta1
+    ltlag <- log(0.319) ; label("Absorption lag time under fasted condition (h)")                          # Patel 2017 Table 2 theta2
+    lcl   <- log(13.5)  ; label("Apparent oral clearance of selumetinib at the reference covariate set (L/h)") # Patel 2017 Table 2 theta3
+    lvc   <- log(32.6)  ; label("Apparent selumetinib central volume of distribution at the reference covariate set (L)") # Patel 2017 Table 2 theta4
+    lvp   <- log(55.0)  ; label("Apparent selumetinib peripheral volume of distribution (L)")               # Patel 2017 Table 2 theta5
+    lq    <- log(8.2)   ; label("Apparent selumetinib inter-compartmental clearance (L/h)")                  # Patel 2017 Table 2 theta6
+    lka   <- log(3.7)   ; label("First-order absorption rate constant for selumetinib from the gut (1/h)")    # Patel 2017 Table 2 theta7
 
     # Bioavailability anchor: F1 = 1 fixed under fasted condition per Patel 2017
     # Methods, "Bioavailability under the fasted condition was set to 1".
@@ -134,10 +134,10 @@ Patel_2017_selumetinib <- function() {
     # here as a regime-switching effect -- see vignette Assumptions and
     # deviations. Fm > 1 is acknowledged in the paper Discussion to reflect a
     # likely V_ndmsel < V_parent rather than a true >1 fractional conversion.
-    lfm        <- log(1.37)  ; label("Selumetinib-to-N-desmethyl-selumetinib molar conversion coefficient at single dose (FM, unitless)") # Patel 2017 Table 2 theta15
-    lcl_ndmsel  <- log(240)   ; label("Apparent N-desmethyl-selumetinib clearance from central compartment at the reference covariate set (CL_Meta/F, L/h)") # Patel 2017 Table 2 theta16
-    lq_ndmsel   <- log(49.5)  ; label("Apparent N-desmethyl-selumetinib inter-compartmental clearance (Q_Meta/F, L/h)") # Patel 2017 Table 2 theta17
-    lvp_ndmsel  <- log(413)   ; label("Apparent N-desmethyl-selumetinib peripheral volume of distribution (V5/F, L)") # Patel 2017 Table 2 theta18
+    lfm        <- log(1.37)  ; label("Selumetinib-to-N-desmethyl-selumetinib molar conversion coefficient at single dose (unitless)") # Patel 2017 Table 2 theta15
+    lcl_ndmsel  <- log(240)   ; label("Apparent N-desmethyl-selumetinib clearance from central compartment at the reference covariate set (L/h)") # Patel 2017 Table 2 theta16
+    lq_ndmsel   <- log(49.5)  ; label("Apparent N-desmethyl-selumetinib inter-compartmental clearance (L/h)") # Patel 2017 Table 2 theta17
+    lvp_ndmsel  <- log(413)   ; label("Apparent N-desmethyl-selumetinib peripheral volume of distribution (L)") # Patel 2017 Table 2 theta18
 
     # N-desmethyl-selumetinib covariate effects.
     e_bsa_fm  <- 0.908  ; label("Magnitude of BSA power exponent on Fm (unitless; applied with negative sign)") # Patel 2017 Table 2 theta20

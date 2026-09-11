@@ -123,7 +123,7 @@ Pu_2021_evinacumab <- function() {
     # LDL-C concentration units: mg/dL (paper Table 2: sigma additive = 17.97 mg/dL).
     lkin   <- log(38.99); label("Zero-order LDL-C production rate constant Kin (mg/dL/day)")    # Pu 2021 Table 2 final-model Kin
     limax  <- log(0.7435); label("Log of maximum drug-induced inhibitory effect Imax at White / 71 kg reference (unitless, < 1)")  # Pu 2021 Table 2 final-model Imax = 0.743459
-    lic50  <- log(57.4);  label("Evinacumab concentration giving 50% of Imax at 211 mg/dL baseline-LDL reference (IC50, mg/L)")     # Pu 2021 Table 2 final-model IC50
+    lic50  <- log(57.4);  label("Evinacumab concentration giving 50% of Imax at 211 mg/dL baseline-LDL reference (mg/L)")     # Pu 2021 Table 2 final-model IC50
 
     # ----- PD covariate effects (Pu 2021 Table 2 covariate block; supplement final NONMEM expressions) -----
     e_wt_imax       <- -0.27;  label("Power exponent of (WT/71 kg) on Imax (unitless)")                                       # Pu 2021 Table 2 Imax ~ weight (power)

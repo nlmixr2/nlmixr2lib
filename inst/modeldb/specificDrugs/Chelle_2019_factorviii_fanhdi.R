@@ -57,10 +57,10 @@ Chelle_2019_factorviii_fanhdi <- function() {
     # Structural parameters - typical values for the paper's reference patient
     # (FFM = 50.5 kg, AGE = 25 years; derivation-cohort medians). Volumes in L,
     # clearances in L/h match the paper. Source: Chelle 2019 Table 2.
-    lcl <- log(0.195);  label("Clearance for the reference 50.5 kg FFM, 25 year-old patient (CL, L/h)") # Chelle 2019 Table 2: CLpop = 0.195 L/h (5.69% RSE; bootstrap 95% CI 0.176-0.217)
-    lvc <- log(2.30);   label("Central volume for the reference 50.5 kg FFM patient (V1, L)")          # Chelle 2019 Table 2: V1pop = 2.30 L (7.45% RSE; bootstrap 95% CI 1.95-2.62)
-    lq  <- log(0.078);  label("Inter-compartmental clearance (Q, L/h)")                                # Chelle 2019 Table 2: Qpop = 0.078 L/h (21.3% RSE; bootstrap 95% CI 0.047-0.120)
-    lvp <- log(0.449);  label("Peripheral volume for the reference 50.5 kg FFM patient (V2, L)")       # Chelle 2019 Table 2: V2pop = 0.449 L (27.1% RSE; bootstrap 95% CI 0.279-0.776)
+    lcl <- log(0.195);  label("Clearance for the reference 50.5 kg FFM, 25 year-old patient (L/h)") # Chelle 2019 Table 2: CLpop = 0.195 L/h (5.69% RSE; bootstrap 95% CI 0.176-0.217)
+    lvc <- log(2.30);   label("Central volume for the reference 50.5 kg FFM patient (L)")          # Chelle 2019 Table 2: V1pop = 2.30 L (7.45% RSE; bootstrap 95% CI 1.95-2.62)
+    lq  <- log(0.078);  label("Inter-compartmental clearance (L/h)")                                # Chelle 2019 Table 2: Qpop = 0.078 L/h (21.3% RSE; bootstrap 95% CI 0.047-0.120)
+    lvp <- log(0.449);  label("Peripheral volume for the reference 50.5 kg FFM patient (L)")       # Chelle 2019 Table 2: V2pop = 0.449 L (27.1% RSE; bootstrap 95% CI 0.279-0.776)
 
     # Covariate effects: power form for FFM on CL, V1, V2 (Chelle 2019 Eq. 5
     # and Eq. 2: TVPi = Ppop * (covi / covmed)^theta_cov); linear piecewise

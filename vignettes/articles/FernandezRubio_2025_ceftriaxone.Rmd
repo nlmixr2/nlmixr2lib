@@ -1,0 +1,723 @@
+---
+title: "Ceftriaxone (Fernandez Rubio 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ceftriaxone (Fernandez Rubio 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+ui <- rxode2::rxode(readModelDb("FernandezRubio_2025_ceftriaxone"))
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Description: ", ui$description, "\n", sep = "")
+```
+
+* Article: <https://doi.org/10.3390/antibiotics14050508> (open access, CC BY)
+
+Ampicillin plus high-dose ceftriaxone is a first-line regimen for *Enterococcus
+faecalis* infective endocarditis. Ceftriaxone has no intrinsic activity against
+*E. faecalis*; it acts by saturating penicillin-binding proteins 2 and 3, which
+potentiates ampicillin. The synergistic target is therefore a **free**
+ceftriaxone concentration of 5-10 mg/L held for 50-100% of the dosing interval,
+and the clinical problem the paper addresses is how to deliver that in an
+outpatient parenteral antibiotic (OPAT) programme without dosing several times
+a day.
+
+Two features of this model are unusual and worth stating up front.
+
+1. **It is parameterised on unbound drug against the total dose.** The authors
+   fitted ultrafiltrate-measured *free* ceftriaxone concentrations while
+   administering (and bookkeeping) the *total* dose. Clearance and both volumes
+   therefore carry a factor of `1 / fu` and are roughly an order of magnitude
+   larger than the total-drug values quoted in the paper's own Background
+   (Vd 10.69-11.01 L, CL 833-1023 mL/h). No protein-binding term appears in the
+   model: the free fraction is absorbed into the apparent parameters.
+2. **The cohort's protein binding is not the textbook value.** Measured binding
+   was 85.7% pre-dose, 74.7% at +2 h and 79.6% at +4 h, against 79-94% quoted
+   for healthy young individuals -- the hypoproteinaemia of ageing plus binding
+   saturation at these doses. That is the physiological reason the study exists.
+
+# Population
+
+Twenty-four treatment episodes from 16 patients, enrolled prospectively at two
+tertiary teaching hospitals in Seville, Spain during 2021-2022 (Table 1 of the
+source). All 24 episodes were *E. faecalis* infective endocarditis caused by
+ampicillin-susceptible strains, all treated with ampicillin plus ceftriaxone.
+The cohort is elderly (median age 77 years, IQR 71-78; enrolment floor 55
+years), overweight (median BMI 29.3 kg/m^2, IQR 26.7-33.3; median weight 90 kg)
+and mildly-to-moderately renally impaired (median creatinine clearance
+59.5 mL/min/1.73 m^2, IQR 48.5-88.4). Ten of the 16 patients (63%) were male,
+accounting for 18 of the 24 episodes (75%). Ceftriaxone was given as 2 g every
+12 h in 18 episodes (75%), 4 g every 24 h in 3 (12.5%) and 6 g every 24 h in
+3 (12.5%).
+
+Three samples were drawn per episode at steady state (at least 48 h after
+treatment start): immediately pre-dose, at 2 +/- 0.5 h and at 4 +/- 0.5 h. A
+patient who received more than one regimen contributed one sample set per
+regimen, which is why 16 patients yield 24 episodes and 72 observations.
+
+Patients with serum creatinine > 1.5 mg/dL or creatinine clearance
+< 10 mL/min were excluded, so **the model carries no information about severe
+renal impairment or dialysis** even though creatinine clearance is its
+clearance covariate.
+
+The same information is available programmatically via
+`readModelDb("FernandezRubio_2025_ceftriaxone")()$population`.
+
+# Source trace
+
+Every `ini()` entry in
+`inst/modeldb/specificDrugs/FernandezRubio_2025_ceftriaxone.R` carries an
+in-file comment naming its origin. They are collected here for review.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` (CL) | 11.57 L/h | Table 2, "Cl (L/h)", Mean column (10.5% RSE) |
+| `lvc` (V1) | 43.6 L | Table 2, "V1 (L)", Mean column (27.5% RSE) |
+| `lq` (Q) | 19.8 L/h | Table 2, "Q", Mean column (32.4% RSE); unit misprinted as `h-1`, see Errata |
+| `lvp` (V2) | 40.94 L | Table 2, "V2 (L)", Mean column (12.2% RSE) |
+| `e_crcl_cl` | 0.62 | Table 2, "Effect of CrCl on CL" (44.8% RSE) |
+| `e_bmi_vc` | 2.52 | Table 2, "Effect of BMI on V1" (37.3% RSE) |
+| `etalcl` | 0.48^2 = 0.2304 | Table 2, "omega Cl" 0.48 (15.9% RSE); scale settled below |
+| `etalvc` | 0.77^2 = 0.5929 | Table 2, "omega V1" 0.77 (20.6% RSE) |
+| `etalq` | 0.75^2 = 0.5625 | Table 2, "omega Q" 0.75 (40.8% RSE) |
+| `etalvp` | 0.09^2 = 0.0081 | Table 2, "omega V2" 0.09 (68.5% RSE) |
+| `addSd` | 1.41 mg/L | Table 2, "sigma" 1.41 (20% RSE); footnote "constant error" |
+| `cl <- ... * (CRCL / 59.5)^e_crcl_cl` | n/a | Results Sect. 2.2, first displayed equation; general form in Methods Sect. 4.5 |
+| `vc <- ... * (BMI / 29.3)^e_bmi_vc` | n/a | Results Sect. 2.2, second displayed equation |
+| `crcl_ref` | 59.5 mL/min/1.73 m^2 | Results Sect. 2.2 equation constant; equals the Table 1 cohort median |
+| `bmi_ref` | 29.3 kg/m^2 | Results Sect. 2.2 equation constant; equals the Table 1 cohort median |
+| Two-compartment IV disposition | n/a | Results Sect. 2.2, "two-compartment model ... The PK parameters of the model were clearance (CL), central volume (V1), intercompartmental clearance (Q), and peripheral volume (V2)" |
+| `Cc ~ add(addSd)` | n/a | Table 2 footnote, "sigma, constant error to ceftriaxone observations" |
+
+## Settling the variability scale
+
+The Table 2 footnote glosses `omega` as "coefficient of variation for
+between-subject variability", but Methods Sect. 4.5 states the between-subject
+variability "was ascribed to an exponential distribution", i.e.
+`theta_i = theta_pop * exp(eta_i)` with `eta_i ~ N(0, omega^2)`. A column
+header is never sufficient to settle a variability scale, so the encoding
+`etalcl ~ 0.48^2` rests on two independent checks:
+
+1. **Software convention.** Estimation was in Monolix 2024R1 (Methods
+   Sect. 4.5), whose `omega_<parameter>` output is the *standard deviation* of
+   the random effect on the log scale. Monolix has no variance-scale output.
+   The "CV" gloss is the standard abuse of language for a log-normal random
+   effect, where `CV = sqrt(exp(omega^2) - 1)` tends to `omega` as `omega`
+   gets small.
+2. **The paper's own Table 3.** Reconstructing all six Monte Carlo dosing
+   scenarios reproduces the published probabilities of target attainment only
+   under the standard-deviation reading. This is run as a gate below, against
+   both hypotheses, and is the more decisive of the two checks.
+
+# Virtual cohort
+
+The original individual data are not public. The cohort below draws creatinine
+clearance and BMI from log-normal distributions matched to the Table 1 medians
+and interquartile ranges, and assigns every subject to each of the six dosing
+regimens the paper simulated (Methods Sect. 4.6), so the arms are paired on
+covariates exactly as a Monte Carlo dose-comparison requires.
+
+```{r cohort}
+# set.seed() seeds R's RNG. It does NOT seed rxode2's simulation RNG, and
+# rxode2's streams are partitioned per solver thread, so a CI runner with a
+# different thread count draws a different cohort. Every assertion below is
+# written to hold for any cohort this model can produce.
+set.seed(20250515)
+rxode2::rxSetSeed(20250515)
+
+n_arm <- 200L  # per-arm cap; six arms
+
+# Log-normal fits to Table 1: CrCl median 59.5 (IQR 48.5-88.4),
+# BMI median 29.3 (IQR 26.7-33.3). The IQR/1.349 identity gives the
+# log-scale SD.
+cov_tab <- tibble(
+  subject = seq_len(n_arm),
+  CRCL    = exp(rnorm(n_arm, log(59.5), (log(88.4) - log(48.5)) / 1.349)),
+  BMI     = exp(rnorm(n_arm, log(29.3), (log(33.3) - log(26.7)) / 1.349))
+)
+
+# The six regimens of Table 3 / Figure 3.
+regimens <- tibble::tribble(
+  ~arm,                       ~amt,  ~dur, ~ii, ~daily,
+  "2 g/12 h (1 h infusion)",  2000,     1,  12,   4000,
+  "4 g/24 h (1 h infusion)",  4000,     1,  24,   4000,
+  "6 g/24 h (1 h infusion)",  6000,     1,  24,   6000,
+  "2 g/24 h (24 h infusion)", 2000,    24,  24,   2000,
+  "4 g/24 h (24 h infusion)", 4000,    24,  24,   4000,
+  "6 g/24 h (24 h infusion)", 6000,    24,  24,   6000
+)
+regimens$arm <- factor(regimens$arm, levels = regimens$arm)
+
+# Dose to day 4 and evaluate the final 24 h window [72, 96]. With a terminal
+# half-life of 5.9 h at the typical value, 72 h is > 12 half-lives, so the
+# window is at steady state for every arm. Using a 24 h window (rather than
+# each arm's own tau) makes AUC over the window equal DAILY dose / CL for
+# every arm, which is what the deterministic gate below exploits.
+t_ss  <- 72
+t_end <- 96
+obs_grid <- seq(t_ss, t_end, by = 0.1)
+
+make_arm <- function(r, id_offset) {
+  dose <- tidyr::crossing(cov_tab, tibble(time = seq(0, t_end - 1, by = r$ii))) |>
+    mutate(evid = 1L, amt = r$amt, dur = r$dur, cmt = "central", Cc = NA_real_)
+  obs <- tidyr::crossing(cov_tab, tibble(time = obs_grid)) |>
+    mutate(evid = 0L, amt = NA_real_, dur = NA_real_, cmt = "central", Cc = NA_real_)
+  bind_rows(dose, obs) |>
+    mutate(id = id_offset + subject, arm = r$arm) |>
+    arrange(id, time, desc(evid))
+}
+
+events <- bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  make_arm(regimens[i, ], id_offset = (i - 1L) * n_arm)
+}))
+
+# IDs must be disjoint across arms: rxSolve keys subjects on id, and duplicate
+# ids across arms silently merge into one subject receiving the summed dose.
+stopifnot(
+  !anyDuplicated(unique(events[, c("id", "time", "evid")])),
+  dplyr::n_distinct(events$id) == n_arm * nrow(regimens)
+)
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("FernandezRubio_2025_ceftriaxone")
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep   = c("arm", "CRCL", "BMI"),
+  returnType = "data.frame",
+  addDosing  = FALSE
+) |>
+  filter(!is.na(Cc)) |>
+  mutate(arm = factor(as.character(arm), levels = levels(regimens$arm)))
+
+# Concentrations must be non-negative; a negative tail would poison the
+# log-scale plot and PKNCA's terminal-slope fit.
+stopifnot(all(sim$Cc >= 0), nrow(sim) > 0)
+```
+
+# Replicate Figure 3
+
+Figure 3 of the source plots, for each of the six regimens, the median
+simulated free-ceftriaxone concentration with a 5th-95th percentile band, and
+marks the 5 mg/L and 10 mg/L synergy targets. The panel below reproduces it
+over the steady-state day-4 window.
+
+```{r figure-3, fig.height = 6}
+# Replicates Figure 3 of Fernandez Rubio 2025: simulated free ceftriaxone
+# concentration profiles (median and 5-95% population band) for the six
+# ceftriaxone regimens, against the 5 and 10 mg/L synergy targets.
+sim |>
+  group_by(arm, time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05),
+    Q50 = quantile(Cc, 0.50),
+    Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(time = time - t_ss) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, fill = "steelblue") +
+  geom_line(linewidth = 0.7) +
+  geom_hline(yintercept = 5, colour = "red", linetype = "dashed") +
+  geom_hline(yintercept = 10, colour = "darkgreen", linetype = "dashed") +
+  facet_wrap(~arm) +
+  scale_x_continuous(breaks = seq(0, 24, by = 6)) +
+  coord_cartesian(ylim = c(0, 60)) +
+  labs(
+    x = "Time within the steady-state 24 h window (h)",
+    y = "Free ceftriaxone (mg/L)",
+    title = "Figure 3 - simulated free ceftriaxone by regimen",
+    caption = paste(
+      "Replicates Figure 3 of Fernandez Rubio 2025. Dashed lines are the",
+      "5 mg/L (red) and 10 mg/L (green) synergy targets."
+    )
+  )
+```
+
+The qualitative result the paper draws from this figure is reproduced: the
+1 h-infusion regimens produce a high, short-lived peak followed by a trough
+that falls below both targets, whereas the 24 h-infusion regimens hold a flat
+concentration for the whole interval, and only the 4 g and 6 g continuous
+infusions hold it above 5 mg/L and 10 mg/L respectively.
+
+# Reproduce Table 3 - probability of target attainment
+
+Table 3 is a full Monte Carlo scenario table: six dosing regimens crossed with
+two synergy targets (5 and 10 mg/L) and three duration requirements (50%, 75%
+and 100% of the dosing interval). Thirty-six published numbers is enough to be
+a real gate rather than an illustration, so it is reconstructed here in full.
+
+```{r pta}
+pta_table <- function(s) {
+  s |>
+    group_by(arm, id) |>
+    summarise(
+      f5  = mean(Cc >= 5),
+      f10 = mean(Cc >= 10),
+      .groups = "drop"
+    ) |>
+    group_by(arm) |>
+    summarise(
+      `5:50%`   = 100 * mean(f5  >= 0.50),
+      `5:75%`   = 100 * mean(f5  >= 0.75),
+      `5:100%`  = 100 * mean(f5  >= 0.999),
+      `10:50%`  = 100 * mean(f10 >= 0.50),
+      `10:75%`  = 100 * mean(f10 >= 0.75),
+      `10:100%` = 100 * mean(f10 >= 0.999),
+      .groups = "drop"
+    )
+}
+
+pta_sim <- pta_table(sim)
+
+# Table 3 of Fernandez Rubio 2025, transcribed verbatim.
+pta_pub <- tibble::tribble(
+  ~arm,                       ~`5:50%`, ~`5:75%`, ~`5:100%`, ~`10:50%`, ~`10:75%`, ~`10:100%`,
+  "2 g/12 h (1 h infusion)",      90.6,     75.8,      54.3,      57.3,      36.8,       18.2,
+  "4 g/24 h (1 h infusion)",      79.1,     48.2,      22.1,      43.1,      19.3,        4.7,
+  "6 g/24 h (1 h infusion)",      88.6,     65.2,      38.0,      65.8,      35.7,       13.3,
+  "2 g/24 h (24 h infusion)",     73.5,     72.0,      69.1,      23.7,      21.9,       20.0,
+  "4 g/24 h (24 h infusion)",     98.0,     97.8,      97.5,      73.5,      72.0,       69.1,
+  "6 g/24 h (24 h infusion)",     99.6,     99.6,      99.6,      92.0,      91.7,       90.8
+)
+stopifnot(identical(as.character(pta_sim$arm), pta_pub$arm))
+
+cmp_cells <- function(sim_tab, pub_tab) {
+  a <- as.matrix(sim_tab[, -1])
+  b <- as.matrix(pub_tab[, -1])
+  list(rmse = sqrt(mean((a - b)^2)), maxabs = max(abs(a - b)), sim = a, pub = b)
+}
+fit_sd <- cmp_cells(pta_sim, pta_pub)
+
+bind_rows(
+  pta_pub |> mutate(source = "Published (Table 3)"),
+  pta_sim |> mutate(arm = as.character(arm), source = "Simulated")
+) |>
+  relocate(source) |>
+  arrange(arm, source) |>
+  mutate(across(where(is.numeric), \(x) round(x, 1))) |>
+  dplyr::rename(
+    "Source" = source, "Dose regimen" = arm,
+    "5 mg/L, 50%" = `5:50%`, "5 mg/L, 75%" = `5:75%`, "5 mg/L, 100%" = `5:100%`,
+    "10 mg/L, 50%" = `10:50%`, "10 mg/L, 75%" = `10:75%`, "10 mg/L, 100%" = `10:100%`
+  ) |>
+  knitr::kable(
+    caption = paste0(
+      "Probability of target attainment (%), simulated vs Table 3 of ",
+      "Fernandez Rubio 2025. Root-mean-square error over all 36 cells: ",
+      round(fit_sd$rmse, 2), " percentage points."
+    )
+  )
+```
+
+```{r pta-gate}
+# The reconstruction is approximate in one respect that cannot be removed:
+# the paper does not publish the individual covariate values its SIMULX runs
+# resampled, so CrCl and BMI are drawn from log-normal fits to the Table 1
+# medians and IQRs. A log-normal is symmetric on the log scale while the
+# published CrCl IQR is visibly right-skewed (-0.20 / +0.40 in log units
+# about the median), which is the dominant residual error here.
+#
+# Bound chosen with headroom: realised RMSE was 5.8 (n = 1000) and 6.5
+# (n = 200) across development runs. 12 percentage points still goes red on a
+# mis-transcribed clearance, dose or omega scale -- the variance-scale
+# hypothesis tested below lands at 9.1, and a factor-of-two error in CL moves
+# the continuous-infusion cells by 40+ points.
+stopifnot(fit_sd$rmse < 12)
+
+# The continuous-infusion rows are the cleanest signal in Table 3: at steady
+# state a 24 h infusion gives Css = daily dose / (24 * CL), so those cells
+# depend ONLY on the distribution of CL -- not on V1, Q or V2, and not on the
+# shape of the peak. Gate them separately and more tightly.
+ci_rows <- grep("24 h infusion", pta_pub$arm)
+ci_err  <- max(abs(fit_sd$sim[ci_rows, ] - fit_sd$pub[ci_rows, ]))
+stopifnot(ci_err < 12)
+```
+
+## The variability-scale falsifier
+
+The reconstruction above is also the sharpest available test of whether the
+Table 2 `omega` column holds standard deviations or variances. Re-running it
+with `omega` read as variances -- `etalcl ~ 0.48` instead of `0.48^2`, and so
+on -- costs one more solve and settles the question.
+
+```{r omega-falsifier}
+sim_var <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep   = c("arm"),
+  omega  = lotri::lotri(
+    etalcl ~ 0.48, etalvc ~ 0.77, etalq ~ 0.75, etalvp ~ 0.09
+  ),
+  returnType = "data.frame",
+  addDosing  = FALSE
+) |>
+  filter(!is.na(Cc)) |>
+  mutate(arm = factor(as.character(arm), levels = levels(regimens$arm)))
+
+fit_var <- cmp_cells(pta_table(sim_var), pta_pub)
+
+tibble(
+  Hypothesis = c(
+    "omega = SD of eta (Monolix convention; as encoded)",
+    "omega = variance of eta"
+  ),
+  `RMSE over 36 cells (pct pts)` = round(c(fit_sd$rmse, fit_var$rmse), 2),
+  `6 g/24 h CI at 10 mg/L, 100% (published 90.8)` =
+    round(c(fit_sd$sim[6, 6], fit_var$sim[6, 6]), 1),
+  `4 g/24 h CI at 5 mg/L, 100% (published 97.5)` =
+    round(c(fit_sd$sim[5, 3], fit_var$sim[5, 3]), 1)
+) |>
+  knitr::kable(caption = "Which reading of the Table 2 omega column reproduces Table 3?")
+```
+
+```{r omega-gate}
+# Directional, not a tight numeric bound: the two hypotheses differ
+# structurally in the continuous-infusion cells, which depend only on the CL
+# distribution and are therefore the most stable quantity in the whole
+# reconstruction. Realised gap across development runs was 5.8 vs 8.9
+# (n = 1000) and 6.5 vs 9.1 (n = 200).
+stopifnot(fit_sd$rmse < fit_var$rmse)
+
+# The single most discriminating cell. The variance reading under-predicts the
+# 6 g continuous-infusion 10 mg/L attainment by roughly 6 points below the
+# published 90.8-92.0 band, and by enough to flip the paper's headline
+# conclusion (that 6 g/24 h continuous infusion clears the 90% bar).
+stopifnot(
+  abs(fit_sd$sim[6, 6] - 90.8) < 10,
+  fit_var$sim[6, 6] < fit_sd$sim[6, 6]
+)
+```
+
+The standard-deviation reading wins on both measures, which is why the model
+file encodes `etalcl ~ 0.48^2`.
+
+# PKNCA validation
+
+NCA is run on the steady-state day-4 window, re-based so that the window opens
+at time 0. Because the window is 24 h wide for every arm, `AUC` over it is the
+steady-state daily-dose AUC and must equal `daily dose / CL` exactly -- which
+makes it a closed-form gate rather than a descriptive statistic.
+
+```{r pknca}
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  mutate(time = time - t_ss) |>
+  select(id, time, Cc, arm)
+
+# Time-zero anchor: use ONLY !is.na(Cc) as the filter (a `time > 0` or
+# `Cc > 0` filter would drop the anchor and trigger PKNCA's
+# "AUC range starting before the first measurement" warning on every
+# subject). The grid already opens exactly at the window start, so the
+# defensive bind_rows below is a no-op here and is kept as a guard.
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, arm) |> mutate(time = 0, Cc = NA_real_)
+) |>
+  filter(!is.na(Cc)) |>
+  distinct(id, arm, time, .keep_all = TRUE) |>
+  arrange(id, arm, time)
+
+stopifnot(nrow(sim_nca) > 0, all(sim_nca |> count(id, arm) |> pull(n) > 100))
+
+dose_df <- events |>
+  filter(evid == 1L, time >= t_ss, time < t_end) |>
+  transmute(id, time = time - t_ss, amt, arm)
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(sim_nca), Cc ~ time | arm + id)
+dose_obj <- PKNCA::PKNCAdose(as.data.frame(dose_df), amt ~ time | arm + id)
+
+intervals <- data.frame(
+  start = 0, end = 24,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_sum <- as.data.frame(nca_res) |>
+  group_by(arm, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+
+nca_sum |>
+  mutate(across(where(is.numeric), \(x) signif(x, 4))) |>
+  dplyr::rename(
+    "Dose regimen"      = arm,
+    "Cmax (mg/L)"       = cmax,
+    "Tmax (h)"          = tmax,
+    "Cmin (mg/L)"       = cmin,
+    "AUC0-24 (mg*h/L)"  = auclast
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "PKNCA summary of the simulated steady-state 24 h window, median across",
+      "200 subjects per arm. Free ceftriaxone."
+    )
+  )
+```
+
+Two features of that table are artefacts of using a common 24 h window rather
+than each arm's own dosing interval, and are worth naming so they are not read
+as model behaviour. The 2 g/12 h arm contains **two** doses in the window, so
+its median `Tmax` of 13 h simply reports that slightly more than half the
+subjects happened to peak after the second of two identical peaks; either peak
+is equally valid. And the median `AUC0-24` across subjects sits above the
+typical-value `AUC0-24` computed in the next section, because clearance is
+log-normal and the median of a reciprocal is not the reciprocal of the median.
+`Cmin` is the quantity the paper's targets actually concern, and it behaves as
+the paper reports: below 5 mg/L for both once-daily 1 h infusions, and equal to
+`Css` for the continuous infusions.
+
+## Closed-form gate: AUC over 24 h at steady state equals daily dose / CL
+
+Both sides of this comparison use the same parameter draw, so the only
+difference between them is trapezoidal integration error. A tight bound is
+therefore correct here, and it is the check that would catch a mis-transcribed
+clearance, dose or unit.
+
+```{r auc-gate}
+typ <- rxode2::zeroRe(mod)
+
+auc_check <- lapply(seq_len(nrow(regimens)), function(i) {
+  r <- regimens[i, ]
+  grid <- seq(t_ss, t_end, by = 0.02)  # fine grid: the 1 h-infusion peaks are sharp
+  ev <- bind_rows(
+    tibble(time = seq(0, t_end - 1, by = r$ii), evid = 1L, amt = r$amt,
+           dur = r$dur, cmt = "central"),
+    tibble(time = grid, evid = 0L, amt = NA_real_, dur = NA_real_, cmt = "central")
+  ) |>
+    mutate(id = 1L, CRCL = 59.5, BMI = 29.3) |>
+    arrange(time, desc(evid))
+
+  s <- rxode2::rxSolve(typ, ev, omega = NA, returnType = "data.frame",
+                       addDosing = FALSE) |>
+    filter(!is.na(Cc))
+  # Trapezoidal AUC over the 24 h steady-state window.
+  auc <- sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)
+  tibble(
+    arm       = r$arm,
+    auc_sim   = auc,
+    auc_exact = r$daily / 11.57,   # daily dose / typical CL at the reference CrCl
+    css_sim   = if (r$dur == 24) tail(s$Cc, 1) else NA_real_,
+    css_exact = if (r$dur == 24) (r$amt / 24) / 11.57 else NA_real_
+  )
+}) |>
+  bind_rows() |>
+  mutate(pct_diff = 100 * (auc_sim - auc_exact) / auc_exact)
+
+auc_check |>
+  mutate(across(where(is.numeric), \(x) signif(x, 5))) |>
+  dplyr::rename(
+    "Dose regimen"                 = arm,
+    "AUC0-24 simulated (mg*h/L)"   = auc_sim,
+    "Daily dose / CL (mg*h/L)"     = auc_exact,
+    "% difference"                 = pct_diff,
+    "Css simulated (mg/L)"         = css_sim,
+    "Rate / CL (mg/L)"             = css_exact
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Typical-value steady-state AUC over 24 h against the closed form",
+      "daily dose / CL, and continuous-infusion Css against rate / CL."
+    )
+  )
+
+# Same parameters on both sides: the residual is pure trapezoidal error, so a
+# tight bound is right. Realised max |difference| was 0.03%.
+stopifnot(max(abs(auc_check$pct_diff)) < 0.5)
+
+# Continuous-infusion steady state against rate / CL. This is deterministic
+# (zeroRe, fixed covariates), so it is reproducible across thread counts and
+# the bound can be tight. The residual is NOT solver error: it is the
+# approach-to-steady-state remaining after 72 h of infusion, exp(-beta * 72)
+# = 2.0e-4 at the typical-value terminal rate constant beta = 0.1183 /h.
+# Realised 9.9e-6 for all three infusion rates; the bound sits an order of
+# magnitude above that and many orders below any real transcription error,
+# which would move Css by whole percent or more.
+ci <- auc_check |> filter(!is.na(css_sim))
+stopifnot(
+  nrow(ci) == 3,
+  max(abs(ci$css_sim - ci$css_exact) / ci$css_exact) < 1e-4
+)
+```
+
+## Comparison against the published observed concentrations
+
+The paper reports no NCA parameters, so `ncaComparisonTable()` has nothing to
+compare against. It does, however, report the observed mean free ceftriaxone
+concentration at each of the three sampling times, pooled over all 24 episodes
+(Results Sect. 2.1). Reproducing those three numbers is an end-to-end check on
+the whole transcription -- dose amounts, units, clearance, central volume and
+the free-concentration-against-total-dose parameterisation all have to be right
+at once.
+
+The simulated cohort is weighted to match the Table 1 regimen mix (75% on
+2 g/12 h, 12.5% on 4 g/24 h, 12.5% on 6 g/24 h), and sampled pre-dose, at +2 h
+and at +4 h relative to a steady-state dose, exactly as the study did.
+
+```{r observed-comparison}
+mix_n <- c(150L, 25L, 25L)  # 75% / 12.5% / 12.5% of 200, per Table 1
+mix_rows <- rep(seq_len(3), mix_n)
+
+obs_sim <- lapply(seq_len(3), function(k) {
+  r <- regimens[k, ]
+  ids <- which(mix_rows == k)
+  ev <- bind_rows(
+    tidyr::crossing(tibble(subject = ids), tibble(time = seq(0, t_end - 1, by = r$ii))) |>
+      mutate(evid = 1L, amt = r$amt, dur = r$dur, cmt = "central"),
+    tidyr::crossing(tibble(subject = ids), tibble(time = t_ss + c(0, 2, 4))) |>
+      mutate(evid = 0L, amt = NA_real_, dur = NA_real_, cmt = "central")
+  ) |>
+    left_join(cov_tab, by = "subject") |>
+    mutate(id = subject) |>
+    arrange(id, time, desc(evid))
+
+  rxode2::rxSolve(mod, ev, returnType = "data.frame", addDosing = FALSE) |>
+    filter(!is.na(Cc)) |>
+    mutate(timepoint = round(time - t_ss, 1))
+}) |>
+  bind_rows()
+
+obs_cmp <- obs_sim |>
+  group_by(timepoint) |>
+  summarise(sim_mean = mean(Cc), sim_sd = sd(Cc), .groups = "drop") |>
+  mutate(
+    label    = c("Cmin (pre-dose)", "C2 (+2 h)", "C4 (+4 h)"),
+    pub_mean = c(7.8, 34.0, 22.7),
+    pub_sd   = c(6.5, 26.5, 19.7),
+    pct_diff = 100 * (sim_mean - pub_mean) / pub_mean
+  )
+
+obs_cmp |>
+  transmute(
+    "Sampling time"                = label,
+    "Simulated mean (mg/L)"        = signif(sim_mean, 3),
+    "Simulated SD (mg/L)"          = signif(sim_sd, 3),
+    "Published mean (mg/L)"        = pub_mean,
+    "Published SD (mg/L)"          = pub_sd,
+    "% difference in mean"         = signif(pct_diff, 3)
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Simulated vs published (Results Sect. 2.1) observed mean free",
+      "ceftriaxone concentrations, pooled over the Table 1 regimen mix."
+    )
+  )
+```
+
+```{r observed-gate}
+# Assert on the CENTRE of the distribution, never on its extremes: the
+# published SDs are 83%, 78% and 87% of their own means, so the extreme of any
+# 200-subject draw is not reproducible across rxode2 builds. Realised
+# differences in the mean were 2.6% / -5.3% / -5.3% during development.
+#
+# The 25% bound has real teeth: a mis-transcribed clearance, dose amount or
+# concentration unit moves every one of these by tens of percent to orders of
+# magnitude, and the published SDs are large enough that no plausible cohort
+# draw moves a 200-subject mean by 25%.
+stopifnot(max(abs(obs_cmp$pct_diff)) < 25)
+
+# The rank ordering across the three sampling times is a structural claim
+# (peak at +2 h, still elevated at +4 h, trough pre-dose) and holds for any
+# cohort, unlike a numeric bound on any single one of them.
+stopifnot(
+  obs_cmp$sim_mean[obs_cmp$timepoint == 2] > obs_cmp$sim_mean[obs_cmp$timepoint == 4],
+  obs_cmp$sim_mean[obs_cmp$timepoint == 4] > obs_cmp$sim_mean[obs_cmp$timepoint == 0]
+)
+```
+
+All three published means are reproduced to within 6%, which is well inside
+the published sampling variability and is strong evidence that the parameter
+transcription, the unit convention and the free-concentration-against-total-dose
+parameterisation are all correct.
+
+# Assumptions and deviations
+
+## Errata and wording problems in the source
+
+- **"First-order absorption" in an intravenous model.** Results Sect. 2.2
+  describes "a two-compartment model with first-order absorption and
+  elimination". Ceftriaxone was given intravenously in every episode and every
+  simulated regimen in Table 3 is an intravenous infusion; Table 2 lists no
+  absorption rate constant and no bioavailability term. The phrase is
+  boilerplate. The model is encoded as two-compartment IV disposition
+  (CL, V1, Q, V2), which is what the paper's own parameter list describes.
+- **`Q` unit misprinted.** Table 2 heads the Q row `Q (h-1)`. The Table 2
+  footnote and the Results text both define Q as the *intercompartmental
+  clearance*, which in a CL/V1/Q/V2 parameterisation has units of L/h. Reading
+  19.8 as a first-order rate constant instead would make the model
+  dimensionally inconsistent. Encoded as 19.8 L/h.
+- **`omega` glossed as "coefficient of variation".** The Table 2 footnote calls
+  the omega column a coefficient of variation. It is Monolix's `omega_<param>`
+  output, i.e. the standard deviation of the log-scale random effect. See
+  "Settling the variability scale" above; the reading is settled empirically
+  against Table 3, not by the footnote.
+
+## Assumptions made for this vignette
+
+- **Covariate distributions.** The individual CrCl and BMI values are not
+  published, so both are drawn from log-normal distributions matched to the
+  Table 1 medians and IQRs. The published CrCl IQR is right-skewed about its
+  median (-0.20 / +0.40 in log units), which a log-normal cannot represent;
+  this is the dominant source of the residual disagreement with Table 3 and it
+  is why the PTA gate is set at 12 percentage points rather than tighter.
+- **Steady state.** The paper does not state how many doses its SIMULX runs
+  simulated before evaluating attainment. This vignette doses to 72 h -- more
+  than twelve typical-value terminal half-lives -- and evaluates the following
+  24 h window. Table 3's continuous-infusion rows decline slightly across the
+  50% / 75% / 100% columns (73.5 / 72.0 / 69.1), which a true steady state
+  cannot produce, so the published runs were evaluated slightly before steady
+  state. The reconstruction here is therefore very marginally optimistic on
+  those cells.
+- **Uncorrelated random effects.** Methods Sect. 4.5 states that the structure
+  of the between-subject variance-covariance matrix was itself a modelled
+  hypothesis, but Table 2 reports no off-diagonal terms and the paper never
+  states which structure was retained. The etas are taken as uncorrelated.
+- **Covariates not retained.** Body weight, age and sex were screened
+  (Methods Sect. 4.5) but not retained, and no point estimate is published for
+  any of them. They are recorded in the model file's `covariatesDataExcluded`
+  as documentation only. The sex covariate is recorded on the canonical `SEXF`
+  orientation (1 = female), which is the inverse of the source's coding
+  (0 = female, 1 = male); this matters only if the effect is ever recovered.
+- **Bootstrap column not used.** Table 2 reports a 1000-iteration nonparametric
+  bootstrap median and IQR alongside the point estimates. The model carries the
+  "Mean (%RSE)" point estimates, which are the final-model values; the bootstrap
+  summaries are noted per parameter in the model file. Both covariate exponents
+  have bootstrap IQRs that span zero (CrCl on CL: 0.5, -0.32 to 1.1; BMI on V1:
+  2.83, -0.26 to 6.13), which is worth knowing before reusing either term --
+  they are retained here because the authors retained them.
+- **Ampicillin is not modelled.** Every episode received ampicillin, and the
+  5-10 mg/L ceftriaxone target exists only because of it, but the paper models
+  ceftriaxone alone and so does this file.
+
+## Range-of-validity warnings
+
+- The BMI exponent on V1 is 2.52 -- far steeper than an allometric 1 --
+  estimated on 24 episodes with 37.3% RSE. Extrapolating the volume term much
+  outside the observed 26.7-33.3 kg/m^2 interquartile band is not supported by
+  the data behind it.
+- Serum creatinine > 1.5 mg/dL and CrCl < 10 mL/min were exclusion criteria, so
+  the clearance covariate carries no information about severe renal impairment.
+- The cohort is elderly (enrolment floor 55 years, median 77) with measurably
+  reduced protein binding. Because the model is parameterised on unbound drug,
+  applying it to a population with normal binding requires re-deriving the
+  apparent parameters, not just changing covariates.
+```

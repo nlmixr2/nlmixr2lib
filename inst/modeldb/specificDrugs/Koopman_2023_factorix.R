@@ -52,10 +52,10 @@ Koopman_2023_factorix <- function() {
     # Structural parameters - typical values for the paper's reference patient
     # (BW = 73 kg, AGE = 15.8 years). Units: CL and Q in dL/h; V1 and V2 in dL.
     # Source: Koopman 2023 Table 2 ("New" column).
-    lcl  <- log(1.41); label("Clearance for the reference 73 kg, 15.8-year-old patient (CL, dL/h)") # Koopman 2023 Table 2: CL = 1.41 dL/h
-    lvc  <- log(73.1); label("Central volume of distribution for the reference 73 kg patient (V1, dL)") # Koopman 2023 Table 2: V1 = 73.1 dL
-    lq   <- log(2.77); label("Intercompartmental clearance for the reference 73 kg patient (Q2, dL/h)") # Koopman 2023 Table 2: Q2 = 2.77 dL/h
-    lvp  <- log(80.1); label("Peripheral volume of distribution for the reference 73 kg patient (V2, dL)") # Koopman 2023 Table 2: V2 = 80.1 dL
+    lcl  <- log(1.41); label("Clearance for the reference 73 kg, 15.8-year-old patient (dL/h)") # Koopman 2023 Table 2: CL = 1.41 dL/h
+    lvc  <- log(73.1); label("Central volume of distribution for the reference 73 kg patient (dL)") # Koopman 2023 Table 2: V1 = 73.1 dL
+    lq   <- log(2.77); label("Intercompartmental clearance for the reference 73 kg patient (dL/h)") # Koopman 2023 Table 2: Q2 = 2.77 dL/h
+    lvp  <- log(80.1); label("Peripheral volume of distribution for the reference 73 kg patient (dL)") # Koopman 2023 Table 2: V2 = 80.1 dL
 
     # Covariate effect: linear-deviation effect of AGE on CL, centered at 15.8 years.
     # Form: CL multiplied by (1 - e_age_cl * (AGE - 15.8)). Sign convention: a positive

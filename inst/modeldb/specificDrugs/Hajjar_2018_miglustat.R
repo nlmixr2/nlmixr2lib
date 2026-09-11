@@ -155,7 +155,7 @@ Hajjar_2018_miglustat <- function() {
     # 'Modeling' bullet: exponents fixed to 0.75 and 1).
     # =========================================================================
     e_wt_cl <- fixed(0.75);  label("Allometric exponent on clearances (unitless; theoretical 0.75)")     # Hajjar 2018 Methods 'Modeling'
-    allo_v  <- fixed(1.00);  label("Allometric exponent on volumes (unitless; theoretical 1.00)")        # Hajjar 2018 Methods 'Modeling'
+    e_wt_vc_vp  <- fixed(1.00);  label("Allometric exponent on volumes (unitless; theoretical 1.00)")        # Hajjar 2018 Methods 'Modeling'
 
     # =========================================================================
     # Between-subject variability (Hajjar 2018 Table 2 'BSV' column). Lognormal
@@ -186,9 +186,9 @@ Hajjar_2018_miglustat <- function() {
 
     # ---- Individual PK parameters ----------------------------------------
     cl <- exp(lcl + etalcl) * (WT / ref_wt) ^ e_wt_cl
-    vc <- exp(lvc)          * (WT / ref_wt) ^ allo_v
+    vc <- exp(lvc)          * (WT / ref_wt) ^ e_wt_vc_vp
     q  <- exp(lq  + etalq)  * (WT / ref_wt) ^ e_wt_cl
-    vp <- exp(lvp)          * (WT / ref_wt) ^ allo_v
+    vp <- exp(lvp)          * (WT / ref_wt) ^ e_wt_vc_vp
     ka <- exp(lka + etalka)
     d1 <- exp(ld1)
     fdepot <- exp(lfdepot)

@@ -92,12 +92,12 @@ Yamada_2025_zolbetuximab <- function() {
     # in L/h; we use time in days here to align with Kdecay (1/day), so L/h is
     # multiplied by 24 to give L/day. Values are from Yamada 2025 Table 1
     # (final TDC model; footnote a identifies it as the final model).
-    lcl_exp_inf   <- log(0.0117 * 24); label("Steady-state clearance component (CLss, L/day)")    # Yamada 2025 Table 1 (0.0117 L/h * 24)
-    lcl_exp_component <- log(0.0159 * 24); label("Time-decaying clearance component (CLT, L/day)")    # Yamada 2025 Table 1 (0.0159 L/h * 24)
-    lcl_exp_kdes  <- log(0.0209);      label("First-order decay rate of CLT (Kdecay, 1/day)")     # Yamada 2025 Table 1
-    lvc      <- log(3.04);        label("Central volume of distribution (V1, L)")            # Yamada 2025 Table 1
-    lq       <- log(0.0235 * 24); label("Intercompartmental clearance (Q, L/day)")           # Yamada 2025 Table 1 (0.0235 L/h * 24)
-    lvp      <- log(2.49);        label("Peripheral volume of distribution (V2, L)")         # Yamada 2025 Table 1
+    lcl_exp_inf   <- log(0.0117 * 24); label("Steady-state clearance component (L/day)")    # Yamada 2025 Table 1 (0.0117 L/h * 24)
+    lcl_exp_component <- log(0.0159 * 24); label("Time-decaying clearance component (L/day)")    # Yamada 2025 Table 1 (0.0159 L/h * 24)
+    lcl_exp_kdes  <- log(0.0209);      label("First-order decay rate of CLT (1/day)")     # Yamada 2025 Table 1
+    lvc      <- log(3.04);        label("Central volume of distribution (L)")            # Yamada 2025 Table 1
+    lq       <- log(0.0235 * 24); label("Intercompartmental clearance (L/day)")           # Yamada 2025 Table 1 (0.0235 L/h * 24)
+    lvp      <- log(2.49);        label("Peripheral volume of distribution (L)")         # Yamada 2025 Table 1
 
     # Covariate-effect parameters (Yamada 2025 Table 1, TDC model / final model).
     # Continuous covariates enter as power models, normalized to the Figure 1
@@ -132,7 +132,7 @@ Yamada_2025_zolbetuximab <- function() {
     # the proportional value is interpreted as the NONMEM variance so
     # propSd = sqrt(variance); the additive value is interpreted as an SD in
     # ug/mL (consistent with the column-header unit).
-    propSd <- sqrt(0.169); label("Proportional residual error (SD, fraction)")   # Yamada 2025 Table 1
+    propSd <- sqrt(0.169); label("Proportional residual error (fraction)")   # Yamada 2025 Table 1
     addSd  <- 4.03;        label("Additive residual error (ug/mL)")              # Yamada 2025 Table 1
   })
   model({

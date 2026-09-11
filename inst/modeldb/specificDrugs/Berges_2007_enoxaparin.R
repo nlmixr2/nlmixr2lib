@@ -54,11 +54,11 @@ Berges_2007_enoxaparin <- function() {
   ini({
     # Structural parameters at the population median (WT = 65 kg, CRCL = 69 mL/min);
     # Berges 2007 Table 3 final-parameter-estimates column.
-    lka <- log(0.63); label("Absorption rate constant (Ka, 1/h)")                            # Berges 2007 Table 3: KA = 0.63 (95% CI 0.44, 0.81)
-    lcl <- log(0.70); label("Apparent clearance at WT = 65 kg and CRCL = 69 mL/min (CL/F, L/h)") # Berges 2007 Table 3: theta1 = 0.70 (95% CI 0.66, 0.75)
-    lvc <- log(6.43); label("Apparent central volume at WT = 65 kg (V2/F, L)")               # Berges 2007 Table 3: theta2 = 6.43 (95% CI 5.47, 7.39)
-    lq  <- log(0.34); label("Apparent intercompartmental clearance (Q/F, L/h)")              # Berges 2007 Table 3: Q = 0.34 (95% CI 0.17, 0.49)
-    lvp <- log(8.18); label("Apparent peripheral volume (V3/F, L)")                          # Berges 2007 Table 3: V3 = 8.18 (95% CI 1.97, 14.36)
+    lka <- log(0.63); label("Absorption rate constant (1/h)")                            # Berges 2007 Table 3: KA = 0.63 (95% CI 0.44, 0.81)
+    lcl <- log(0.70); label("Apparent clearance at WT = 65 kg and CRCL = 69 mL/min (L/h)") # Berges 2007 Table 3: theta1 = 0.70 (95% CI 0.66, 0.75)
+    lvc <- log(6.43); label("Apparent central volume at WT = 65 kg (L)")               # Berges 2007 Table 3: theta2 = 6.43 (95% CI 5.47, 7.39)
+    lq  <- log(0.34); label("Apparent intercompartmental clearance (L/h)")              # Berges 2007 Table 3: Q = 0.34 (95% CI 0.17, 0.49)
+    lvp <- log(8.18); label("Apparent peripheral volume (L)")                          # Berges 2007 Table 3: V3 = 8.18 (95% CI 1.97, 14.36)
 
     # Allometric / power covariate effects (Berges 2007 Table 3).
     e_wt_cl   <- 0.78; label("Power exponent of (WT / 65) on CL/F (unitless)")                # Berges 2007 Table 3: theta6 = 0.78 (95% CI 0.47, 1.08)

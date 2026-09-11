@@ -163,10 +163,10 @@ vanHest_2005_mycophenolic_acid <- function() {
     # block; cross-checked against Maizaud 2025 Table 1 column 'Van Hest et al. [28]'.
     ltlag <- log(0.21); label("Absorption lag time (h)")                          # S1 TVTlag = 0.21; Table 1 'Tlag=0.21 h'
     lka   <- log(4.1);  label("Absorption rate constant (1/h)")                   # S1 TVKA = 4.1; Table 1 'Ka=4.1 h-1'
-    lcl   <- log(32.5); label("Apparent clearance (CL/F, L/h)")                   # S1 TVCL = 32.5; Table 1 rounds this to 'CL/F=33 L/h'
-    lvc   <- log(91);   label("Apparent central volume (V1/F, L)")                # S1 TVVC = 91; Table 1 'V1/F=91 L'
-    lq    <- log(35);   label("Apparent intercompartmental clearance (Q/F, L/h)") # S1 TVQ = 35; Table 1 'Q/F=35 L/h'
-    lvp   <- log(237);  label("Apparent peripheral volume (V2/F, L)")             # S1 TVVP = 237; Table 1 'V2/F=237 L'
+    lcl   <- log(32.5); label("Apparent clearance (L/h)")                   # S1 TVCL = 32.5; Table 1 rounds this to 'CL/F=33 L/h'
+    lvc   <- log(91);   label("Apparent central volume (L)")                # S1 TVVC = 91; Table 1 'V1/F=91 L'
+    lq    <- log(35);   label("Apparent intercompartmental clearance (L/h)") # S1 TVQ = 35; Table 1 'Q/F=35 L/h'
+    lvp   <- log(237);  label("Apparent peripheral volume (L)")             # S1 TVVP = 237; Table 1 'V2/F=237 L'
 
     # Covariate effects. All continuous covariates enter as CENTERED power terms
     # (CRCL/48, ALB/30, CONMED_CSA_DOSE/450); sex enters as a power of the binary

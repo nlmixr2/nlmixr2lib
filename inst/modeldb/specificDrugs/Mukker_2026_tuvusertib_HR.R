@@ -49,7 +49,7 @@ Mukker_2026_tuvusertib_HR <- function() {
   units <- list(
     time          = "h",
     dosing        = "(none; PD-only model fed by an external tuvusertib plasma-concentration covariate)",
-    concentration = "(observation dHR is the change from baseline in heart rate, bpm; driving covariate CP_TUVUSERTIB_NGML is in ng/mL)"
+    concentration = "(observation d_hr is the change from baseline in heart rate, bpm; driving covariate CP_TUVUSERTIB_NGML is in ng/mL)"
   )
 
   covariateData <- list(
@@ -76,7 +76,7 @@ Mukker_2026_tuvusertib_HR <- function() {
         "Time-fixed per subject. This is the BASELINE reading of the canonical HR covariate, not an observation-time vital sign; the HR register entry directs that baseline-versus-time-varying status be documented per-model, which is what this note does.",
         "Centering reference: the paper does NOT report the cohort mean baseline heart rate (Table 1 gives baseline QTcF but no baseline HR, and no HR summary appears in the supplement). Per the standing policy on undefined centering values, the model uses the rounded clinical standard hr_bl_ref = 70 bpm. This is an ASSUMPTION and is recorded in the vignette Errata.",
         "The assumption is low-impact: the coefficient is -0.0214 bpm/bpm with a 95% CI (-0.148, 0.105) that comfortably spans zero, so a mis-specified centering constant shifts the intercept by at most a fraction of a bpm over any plausible cohort mean (e.g. a true mean of 80 bpm would shift the typical-value prediction by 0.214 bpm). None of the paper's reported validation targets (Table S2) depend on this term, because they tabulate the drug effect corrected for intercept, baseline and time.",
-        "Note that the model's observable is named dHR rather than HR precisely so that it does not shadow this covariate column."
+        "Note that the model's observable is named d_hr rather than HR precisely so that it does not shadow this covariate column."
       ),
       source_name        = "Baseline HR"
     ),
@@ -189,27 +189,27 @@ Mukker_2026_tuvusertib_HR <- function() {
     # ------------------------------------------------------------------
 
     e_tad0h_e0 <- -1.19
-    label("Effect of the 0 h nominal post-dose timepoint on e0 (additive, bpm)")
+    label("Effect of the 0 h nominal post-dose timepoint on e0, applied additively (bpm)")
     # Mukker 2026 Table S1 'Nominal time after dose (0 h), bpm' = -1.19
     # (95% CI -2.56, 0.181).
 
     e_tad1h_e0 <- -5.16
-    label("Effect of the 1 h nominal post-dose timepoint on e0 (additive, bpm)")
+    label("Effect of the 1 h nominal post-dose timepoint on e0, applied additively (bpm)")
     # Mukker 2026 Table S1 'Nominal time after dose (1 h), bpm' = -5.16
     # (95% CI -6.13, -4.19). CI excludes zero.
 
     e_tad2h_e0 <- 0.694
-    label("Effect of the 2 h nominal post-dose timepoint on e0 (additive, bpm)")
+    label("Effect of the 2 h nominal post-dose timepoint on e0, applied additively (bpm)")
     # Mukker 2026 Table S1 'Nominal time after dose (2 h), bpm' = 0.694
     # (95% CI -0.352, 1.74).
 
     e_tad3h_e0 <- 2.80
-    label("Effect of the 3 h nominal post-dose timepoint on e0 (additive, bpm)")
+    label("Effect of the 3 h nominal post-dose timepoint on e0, applied additively (bpm)")
     # Mukker 2026 Table S1 'Nominal time after dose (3 h), bpm' = 2.80
     # (95% CI 1.82, 3.79). CI excludes zero.
 
     e_day8_e0 <- 2.84
-    label("Effect of dosing day 8 versus day 1 on e0 (additive, bpm)")
+    label("Effect of dosing day 8 versus day 1 on e0, applied additively (bpm)")
     # Mukker 2026 Table S1 'Dosing day (Day 8 versus Day 1), bpm' =
     # 2.84 (95% CI 1.78, 3.91). Present in the C-DeltaHR model only;
     # the C-DeltaQTcF model of Table 2 carries no dosing-day term.
@@ -293,7 +293,7 @@ Mukker_2026_tuvusertib_HR <- function() {
 
     # ==================================================================
     # 4. Predicted change from baseline in heart rate (bpm). The
-    #    observable is named dHR, not HR, so that it does not shadow
+    #    observable is named d_hr, not HR, so that it does not shadow
     #    the baseline-HR covariate column of the same canonical name.
     #
     #    As with the companion QTcF model, Mukker 2026 Table S2
@@ -301,9 +301,9 @@ Mukker_2026_tuvusertib_HR <- function() {
     #    differencing this model's prediction against its own
     #    prediction at zero concentration.
     # ==================================================================
-    dHR <- e0_i + slope_i * CP_TUVUSERTIB_NGML + tad_effect +
+    d_hr <- e0_i + slope_i * CP_TUVUSERTIB_NGML + tad_effect +
       e_day8_e0 * DAY8 + e_hr_bl_e0 * hr_bl_centered
 
-    dHR ~ add(addSd)
+    d_hr ~ add(addSd)
   })
 }

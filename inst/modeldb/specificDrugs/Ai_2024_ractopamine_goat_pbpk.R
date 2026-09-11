@@ -68,15 +68,15 @@ Ai_2024_ractopamine_goat_pbpk <- function() {
     # of the supplementary acslX INITIAL block, which is the code that
     # generated the published predictions.
     # ---------------------------------------------------------------------
-    lk_liv <- fixed(log(2.558408));  label("Liver:plasma partition coefficient (Pli, unitless)")        # Ai 2024 Table 4 (2.5584) / supplement `Pli=2.558408`
-    lk_kid <- fixed(log(1.77341));   label("Kidney:plasma partition coefficient (Pki, unitless)")       # Ai 2024 Table 4 (1.7734) / supplement `Pki=1.77341`
-    lk_lun <- fixed(log(1.533326));  label("Lung:plasma partition coefficient (Plu, unitless)")         # Ai 2024 Table 4 (1.5333) / supplement `Plu=1.533326`
-    lk_spl <- fixed(log(1.004675));  label("Spleen:plasma partition coefficient (Psp, unitless)")       # Ai 2024 Table 4 (1.0047) / supplement `Psp=1.004675`
-    lk_hrt <- fixed(log(1.383948));  label("Heart:plasma partition coefficient (Phe, unitless)")        # Ai 2024 Table 4 (1.3839) / supplement `Phe=1.383948`
-    lk_mus <- fixed(log(1.068578));  label("Muscle:plasma partition coefficient (Pmu, unitless)")       # Ai 2024 Table 4 (1.0686) / supplement `Pmu=1.068578`
-    lk_adi <- fixed(log(0.7526104)); label("Fat:plasma partition coefficient (Pfa, unitless)")          # Ai 2024 Table 4 (0.7526) / supplement `Pfa=0.7526104`
-    lk_bra <- fixed(log(0.6896452)); label("Brain:plasma partition coefficient (Pbr, unitless)")        # Ai 2024 Table 4 (0.6896) / supplement `Pbr=0.6896452`
-    lk_res <- fixed(log(9.088835));  label("Rest-of-body:plasma partition coefficient (Pre, unitless)") # Ai 2024 Table 4 (9.0888) / supplement `Pre=9.088835`
+    lk_liv <- fixed(log(2.558408));  label("Liver:plasma partition coefficient (unitless)")        # Ai 2024 Table 4 (2.5584) / supplement `Pli=2.558408`
+    lk_kid <- fixed(log(1.77341));   label("Kidney:plasma partition coefficient (unitless)")       # Ai 2024 Table 4 (1.7734) / supplement `Pki=1.77341`
+    lk_lun <- fixed(log(1.533326));  label("Lung:plasma partition coefficient (unitless)")         # Ai 2024 Table 4 (1.5333) / supplement `Plu=1.533326`
+    lk_spl <- fixed(log(1.004675));  label("Spleen:plasma partition coefficient (unitless)")       # Ai 2024 Table 4 (1.0047) / supplement `Psp=1.004675`
+    lk_hrt <- fixed(log(1.383948));  label("Heart:plasma partition coefficient (unitless)")        # Ai 2024 Table 4 (1.3839) / supplement `Phe=1.383948`
+    lk_mus <- fixed(log(1.068578));  label("Muscle:plasma partition coefficient (unitless)")       # Ai 2024 Table 4 (1.0686) / supplement `Pmu=1.068578`
+    lk_adi <- fixed(log(0.7526104)); label("Fat:plasma partition coefficient (unitless)")          # Ai 2024 Table 4 (0.7526) / supplement `Pfa=0.7526104`
+    lk_bra <- fixed(log(0.6896452)); label("Brain:plasma partition coefficient (unitless)")        # Ai 2024 Table 4 (0.6896) / supplement `Pbr=0.6896452`
+    lk_res <- fixed(log(9.088835));  label("Rest-of-body:plasma partition coefficient (unitless)") # Ai 2024 Table 4 (9.0888) / supplement `Pre=9.088835`
 
     # ---------------------------------------------------------------------
     # Membrane permeability coefficients (PPxx, unitless) for the four
@@ -85,10 +85,10 @@ Ai_2024_ractopamine_goat_pbpk <- function() {
     # `PAmu=PPmu*Qmu` etc.), so PPxx is the permeability expressed as a
     # fraction of tissue plasma flow. Optimised and FIXED.
     # ---------------------------------------------------------------------
-    lpp_mus <- fixed(log(0.02712495));  label("Muscle membrane permeability coefficient (PPmu, fraction of muscle plasma flow)") # Ai 2024 Table 4 Ppmu (0.0271) / supplement `PPmu=0.02712495`
-    lpp_adi <- fixed(log(0.00537883));  label("Fat membrane permeability coefficient (PPfa, fraction of fat plasma flow)")       # Ai 2024 Table 4 Ppfa (0.0054) / supplement `PPfa=0.00537883`
-    lpp_bra <- fixed(log(0.006772557)); label("Brain membrane permeability coefficient (PPbr, fraction of brain plasma flow)")   # Ai 2024 Table 4 Ppbr (0.0068) / supplement `PPbr=0.006772557`
-    lpp_res <- fixed(log(0.002063587)); label("Rest-of-body membrane permeability coefficient (PPre, fraction of rest plasma flow)") # Ai 2024 Table 4 Ppre (0.0021) / supplement `PPre=0.002063587`
+    lpp_mus <- fixed(log(0.02712495));  label("Muscle membrane permeability coefficient (fraction of muscle plasma flow)") # Ai 2024 Table 4 Ppmu (0.0271) / supplement `PPmu=0.02712495`
+    lpp_adi <- fixed(log(0.00537883));  label("Fat membrane permeability coefficient (fraction of fat plasma flow)")       # Ai 2024 Table 4 Ppfa (0.0054) / supplement `PPfa=0.00537883`
+    lpp_bra <- fixed(log(0.006772557)); label("Brain membrane permeability coefficient (fraction of brain plasma flow)")   # Ai 2024 Table 4 Ppbr (0.0068) / supplement `PPbr=0.006772557`
+    lpp_res <- fixed(log(0.002063587)); label("Rest-of-body membrane permeability coefficient (fraction of rest plasma flow)") # Ai 2024 Table 4 Ppre (0.0021) / supplement `PPre=0.002063587`
 
     # ---------------------------------------------------------------------
     # Absorption. Gastric emptying (Kst) moves drug from the gastric
@@ -99,9 +99,9 @@ Ai_2024_ractopamine_goat_pbpk <- function() {
     # Table 4 prints this rate constant as "K int" while Section 2.5 calls
     # it Kgut; they are the same quantity (see the vignette Errata).
     # ---------------------------------------------------------------------
-    lkst  <- fixed(log(0.09103672)); label("First-order gastric emptying rate constant (Kst, 1/h)")                        # Ai 2024 Table 4 (0.0910) / supplement `kst=0.09103672`
-    lka   <- fixed(log(0.9861192));  label("First-order absorption rate constant from intestinal contents (Ka, 1/h)")      # Ai 2024 Table 4 (0.9861) / supplement `ka=0.9861192`
-    lkgut <- fixed(log(0.9016421));  label("First-order fecal excretion rate constant for unabsorbed drug (Kgut, 1/h)")    # Ai 2024 Table 4 "K int" (0.9016) / supplement `kint=0.9016421`
+    lkst  <- fixed(log(0.09103672)); label("First-order gastric emptying rate constant (1/h)")                        # Ai 2024 Table 4 (0.0910) / supplement `kst=0.09103672`
+    lka   <- fixed(log(0.9861192));  label("First-order absorption rate constant from intestinal contents (1/h)")      # Ai 2024 Table 4 (0.9861) / supplement `ka=0.9861192`
+    lkgut <- fixed(log(0.9016421));  label("First-order fecal excretion rate constant for unabsorbed drug (1/h)")    # Ai 2024 Table 4 "K int" (0.9016) / supplement `kint=0.9016421`
 
     # ---------------------------------------------------------------------
     # Elimination and plasma protein binding. Both clearances act on the
@@ -111,9 +111,9 @@ Ai_2024_ractopamine_goat_pbpk <- function() {
     # of exactly 0, i.e. the optimiser never moved it -- see the vignette
     # Errata for what that implies about the renal route.
     # ---------------------------------------------------------------------
-    lclhe  <- fixed(log(0.06243522));   label("Hepatic clearance per unit body weight (Clhe, L/h/kg)")      # Ai 2024 Table 4 (0.0624) / supplement `clhe=0.06243522`
-    lclre  <- fixed(log(0.0001090409)); label("Renal clearance per unit body weight (Clre, L/h/kg)")        # Ai 2024 Table 4 (0.0001) / supplement `clre=0.0001090409`
-    lpbind <- fixed(log(0.1651634));    label("Plasma protein binding ratio (pbind, fraction bound)")       # supplement `pbind=0.1651634` (not tabulated in the paper; appears in Ai 2024 Table 6 as a sensitivity parameter)
+    lclhe  <- fixed(log(0.06243522));   label("Hepatic clearance per unit body weight (L/h/kg)")      # Ai 2024 Table 4 (0.0624) / supplement `clhe=0.06243522`
+    lclre  <- fixed(log(0.0001090409)); label("Renal clearance per unit body weight (L/h/kg)")        # Ai 2024 Table 4 (0.0001) / supplement `clre=0.0001090409`
+    lpbind <- fixed(log(0.1651634));    label("Plasma protein binding ratio (fraction bound)")       # supplement `pbind=0.1651634` (not tabulated in the paper; appears in Ai 2024 Table 6 as a sensitivity parameter)
 
     # ---------------------------------------------------------------------
     # Residual error. Ai 2024 is a deterministic PBPK model fitted to

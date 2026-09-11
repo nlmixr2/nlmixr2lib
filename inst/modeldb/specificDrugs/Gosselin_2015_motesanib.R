@@ -476,10 +476,10 @@ Gosselin_2015_motesanib <- function() {
     # standard error column for all four rows, in place of a percentage.
     # The additive terms are in the paper's concentration unit, ug/L.
     # -----------------------------------------------------------------------
-    addSd     <- fixed(0.334) ; label("Motesanib additive residual error (SD, ug/L)")        # Gosselin 2015 Table 3 motesanib 'Additive error (ug/L) = 0.334', RSE column 'FIX'
-    propSd    <- fixed(0.473) ; label("Motesanib proportional residual error (SD, fraction)") # Gosselin 2015 Table 3 motesanib 'Proportional error (%) = 47.3', RSE column 'FIX'
-    addSd_m4  <- fixed(4.82)  ; label("M4 additive residual error (SD, ug/L)")               # Gosselin 2015 Table 3 M4 'Additive error (ug/L) = 4.82', RSE column 'FIX'
-    propSd_m4 <- fixed(0.448) ; label("M4 proportional residual error (SD, fraction)")        # Gosselin 2015 Table 3 M4 'Proportional error (%) = 44.8%', RSE column 'FIX'
+    addSd     <- fixed(0.334) ; label("Motesanib additive residual error (ug/L)")        # Gosselin 2015 Table 3 motesanib 'Additive error (ug/L) = 0.334', RSE column 'FIX'
+    propSd    <- fixed(0.473) ; label("Motesanib proportional residual error (fraction)") # Gosselin 2015 Table 3 motesanib 'Proportional error (%) = 47.3', RSE column 'FIX'
+    addSd_m4  <- fixed(4.82)  ; label("M4 additive residual error (ug/L)")               # Gosselin 2015 Table 3 M4 'Additive error (ug/L) = 4.82', RSE column 'FIX'
+    propSd_m4 <- fixed(0.448) ; label("M4 proportional residual error (fraction)")        # Gosselin 2015 Table 3 M4 'Proportional error (%) = 44.8%', RSE column 'FIX'
   })
 
   model({

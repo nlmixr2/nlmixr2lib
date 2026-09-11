@@ -176,7 +176,7 @@ Ide_2020_elotuzumab <- function() {
     lvmax  <- log(12.2);      label("Maximum Michaelis-Menten elimination rate VMAX_REF (ug/mL/day) at MCPROT = 0")    # Ide 2020 Table 2: VMAX,REF = 12.2 ug/mL/day; supplement S2 footnote: VMAX,REF reference includes MCPROT = 0 g/dL with >= 1 prior line of therapy
     lkm    <- log(298);       label("Michaelis-Menten constant KM (ug/mL)")                                            # Ide 2020 Table 2: KM = 298 ug/mL
     lrmax  <- log(832);       label("Initial target concentration in peripheral compartment RMAX (ug/mL)")             # Ide 2020 Table 2: RMAX = 832 ug/mL
-    lkint  <- log(0.207e-3);  label("Second-order target-mediated elimination rate KINT_REF (1/day/(ug/mL))")          # Ide 2020 Table 2: KINT = 0.207 x 10^-3 /day/(ug/mL); supplement S2 footnote: reference includes Ld co-administration; the source NONMEM control stream rescales as KINT = exp(MU)/1000
+    lkint  <- log(0.207e-3);  label("Second-order target-mediated elimination rate KINT_REF on the log scale (mL/ug/day)")          # Ide 2020 Table 2: KINT = 0.207 x 10^-3 /day/(ug/mL); supplement S2 footnote: reference includes Ld co-administration; the source NONMEM control stream rescales as KINT = exp(MU)/1000
 
     # Covariate effects on CL (Ide 2020 Table 2). Power exponents on continuous
     # covariates (multiplicative as (cov/ref)^theta). Exponential coefficients
@@ -212,7 +212,7 @@ Ide_2020_elotuzumab <- function() {
 
     # Covariate effects on VMAX and KINT (Ide 2020 Table 2). MCPROT enters
     # un-log-transformed (i.e., exp(theta * MCPROT) directly, NOT (MCPROT/ref)^theta).
-    e_mcprot_vmax   <-  0.277;         label("Exponential coefficient of MCPROT on VMAX (1/(g/dL))")                   # Ide 2020 Table 2: VMAXMCPROT = 0.277
+    e_mcprot_vmax   <-  0.277;         label("Exponential coefficient of MCPROT on VMAX (per g/dL)")                   # Ide 2020 Table 2: VMAXMCPROT = 0.277
     e_line_1l_vmax  <-  log(1.01);     label("Exponential coefficient of LINE_1L on VMAX (unitless)")                  # Ide 2020 Table 2: VMAXLINE=0 = 1.01
     e_combo_len_dex_kint <-  log(10.1);     label("Exponential coefficient of (COMBO_LEN_DEX - 1) on KINT (unitless)")           # Ide 2020 Table 2: KINTLd = 10.1; encoded as exp(log(10.1) * (COMBO_LEN_DEX - 1)) so COMBO_LEN_DEX = 1 (Ld+) gives factor 1 and COMBO_LEN_DEX = 0 (Ld-) gives factor 1/10.1 (paper Discussion: ~10-fold lower KINT in Ld-free arm)
 

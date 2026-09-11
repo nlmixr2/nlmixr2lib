@@ -205,7 +205,7 @@ Hajjar_2018_cipaglucosidase <- function() {
     # and ALL volumes (Vc, Vp) via the canonical Anderson-Holford scaling.
     # =========================================================================
     e_wt_cl <- fixed(0.75);  label("Allometric exponent on clearances (unitless; theoretical 0.75)")     # Hajjar 2018 Methods 'Modeling' bullet: exponents fixed to 0.75 and 1
-    allo_v  <- fixed(1.00);  label("Allometric exponent on volumes (unitless; theoretical 1.00)")        # Hajjar 2018 Methods 'Modeling' bullet: exponents fixed to 0.75 and 1
+    e_wt_vc_vp  <- fixed(1.00);  label("Allometric exponent on volumes (unitless; theoretical 1.00)")        # Hajjar 2018 Methods 'Modeling' bullet: exponents fixed to 0.75 and 1
 
     # =========================================================================
     # Between-subject variability (Hajjar 2018 Table 2 'BSV' column reported
@@ -242,12 +242,12 @@ Hajjar_2018_cipaglucosidase <- function() {
           e_dose130mg_cl ^ DOSE_130MG * e_dose260mg_cl ^ DOSE_260MG
 
     # Central volume: log-normal eta + allometric WT^1.
-    vc <- exp(lvc + etalvc) * (WT / ref_wt) ^ allo_v
+    vc <- exp(lvc + etalvc) * (WT / ref_wt) ^ e_wt_vc_vp
 
     # Inter-compartmental clearance and peripheral volume: allometric only
     # (no BSV reported by paper).
     q  <- exp(lq) * (WT / ref_wt) ^ e_wt_cl
-    vp <- exp(lvp) * (WT / ref_wt) ^ allo_v
+    vp <- exp(lvp) * (WT / ref_wt) ^ e_wt_vc_vp
 
     # MM Vmax allometrically scales as a clearance (mass/time, same exponent
     # as CL). Km is a concentration and does not scale with body weight.

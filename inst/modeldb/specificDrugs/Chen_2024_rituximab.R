@@ -174,20 +174,20 @@ Chen_2024_rituximab <- function() {
     # All PK structural parameters were fixed in the sequential PK-PD fit;
     # Chen 2024 Table 2 marks each "(fixed)" with footnote a, "Parameters
     # derived from our previous publication (Chen et al., 2021)".
-    lcl <- fixed(log(8.69)); label("Clearance at the reference BSA (CL, mL/h)")     # Chen 2024 Table 2 (= Chen 2021 Table 2 theta1)
-    lvc <- fixed(log(1.86)); label("Central volume at the reference BSA (V1, L)")   # Chen 2024 Table 2 (= Chen 2021 Table 2 theta2)
-    lq <- fixed(log(7.5)); label("Inter-compartmental clearance (Q, mL/h)")         # Chen 2024 Table 2 (= Chen 2021 Table 2 theta3)
-    lvp <- fixed(log(1.9)); label("Peripheral volume (V2, L)")                      # Chen 2024 Table 2 (= Chen 2021 Table 2 theta4)
+    lcl <- fixed(log(8.69)); label("Clearance at the reference BSA (mL/h)")     # Chen 2024 Table 2 (= Chen 2021 Table 2 theta1)
+    lvc <- fixed(log(1.86)); label("Central volume at the reference BSA (L)")   # Chen 2024 Table 2 (= Chen 2021 Table 2 theta2)
+    lq <- fixed(log(7.5)); label("Inter-compartmental clearance (mL/h)")         # Chen 2024 Table 2 (= Chen 2021 Table 2 theta3)
+    lvp <- fixed(log(1.9)); label("Peripheral volume (L)")                      # Chen 2024 Table 2 (= Chen 2021 Table 2 theta4)
 
     e_bsa_cl <- fixed(1.26); label("Power exponent of BSA on CL (unitless)")        # Chen 2024 Table 2 theta_BSA~CL (= Chen 2021 Table 2 theta5)
     e_bsa_vc <- fixed(1); label("Power exponent of BSA on V1 (unitless)")           # Chen 2021 Table 2: V1 = theta2 * (BSA/0.9), i.e. structurally linear in BSA
 
     # --- PD sub-model -------------------------------------------------------
     # Estimated in the sequential PK-PD fit (Chen 2024 Table 2, PD block).
-    lemax <- log(99.6); label("Maximum fractional increase in the CD19+ elimination rate (EMAX, unitless)")  # Chen 2024 Table 2, RSE 84.7%
-    lec50 <- log(5.87); label("Rituximab concentration at half-maximal effect (EC50, ug/mL)")                # Chen 2024 Table 2, RSE 50.3%
-    lrbase <- log(395); label("Baseline CD19+ lymphocyte count (BSLN, 10^6/L)")                              # Chen 2024 Table 2, RSE 124.8%
-    lkout <- log(0.051); label("CD19+ lymphocyte elimination rate constant (KOUT, 1/day)")                   # Chen 2024 Table 2, RSE 136.3%
+    lemax <- log(99.6); label("Maximum fractional increase in the CD19+ elimination rate (unitless)")  # Chen 2024 Table 2, RSE 84.7%
+    lec50 <- log(5.87); label("Rituximab concentration at half-maximal effect (ug/mL)")                # Chen 2024 Table 2, RSE 50.3%
+    lrbase <- log(395); label("Baseline CD19+ lymphocyte count (10^6/L)")                              # Chen 2024 Table 2, RSE 124.8%
+    lkout <- log(0.051); label("CD19+ lymphocyte elimination rate constant (1/day)")                   # Chen 2024 Table 2, RSE 136.3%
 
     # --- Inter-individual variability --------------------------------------
     # Chen 2024 Table 2 reports IIV as CV%: CL 37.0%, V1 25.4%, BSLN 65.8%,

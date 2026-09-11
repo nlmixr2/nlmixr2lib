@@ -288,8 +288,8 @@ drug_effect_hr <- function(model, conc, tad = 1, hr_bl = 70, day8 = 0) {
     )
   s <- as.data.frame(rxode2::rxSolve(model, events = ev, omega = NA,
                                      keep = "CP_TUVUSERTIB_NGML"))
-  base <- s$dHR[s$CP_TUVUSERTIB_NGML == 0]
-  s$dHR[s$CP_TUVUSERTIB_NGML != 0] - base
+  base <- s$d_hr[s$CP_TUVUSERTIB_NGML == 0]
+  s$d_hr[s$CP_TUVUSERTIB_NGML != 0] - base
 }
 
 grid_chk_hr <- tidyr::expand_grid(tad = c(0, 1, 2, 3), hr_bl = c(60, 70, 85),
@@ -436,7 +436,7 @@ herg_at <- function(conc) {
   # model declares no random effects at all, and passing `omega = NA` to a
   # model that has no omega errors inside rxSolve with "invalid 'times'
   # argument". Nothing needs suppressing -- the curve is already deterministic.
-  as.data.frame(rxode2::rxSolve(mod_herg, events = ev))$hergInh
+  as.data.frame(rxode2::rxSolve(mod_herg, events = ev))$herg_inh
 }
 
 # Definitional check: at the IC50 the curve must return exactly half of imax.

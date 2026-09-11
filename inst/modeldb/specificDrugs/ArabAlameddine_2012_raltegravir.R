@@ -81,13 +81,13 @@ ArabAlameddine_2012_raltegravir <- function() {
   ini({
     # Structural parameters (Arab-Alameddine 2012 Table 2 'Final population pharmacokinetic parameters' column).
     # Values are apparent (oral) quantities at the HIV+ subject reference (SEXF = 0, CONMED_ATAZANAVIR = 0, TBILI = 30 umol/L) and the HIV- reference (RACE_WHITE = 0).
-    lcl       <- log(60.2); label("Apparent oral clearance (CL/F, L/h)")                                   # Table 2: CL/F = 60.2 L/h, RSE 44.3%
-    lvc       <- log(223);  label("Apparent central volume of distribution at non-Caucasian reference (V1/F, L)") # Table 2: V1/F = 223 L, RSE 52.6%
-    lvp       <- log(113);  label("Apparent peripheral volume of distribution (V2/F, L)")                  # Table 2: V2/F = 113 L, RSE 41.0%
-    lq        <- log(8.5);  label("Apparent inter-compartmental clearance (Q/F, L/h)")                     # Table 2: Q/F = 8.5 L/h, RSE 54.1%
+    lcl       <- log(60.2); label("Apparent oral clearance (L/h)")                                   # Table 2: CL/F = 60.2 L/h, RSE 44.3%
+    lvc       <- log(223);  label("Apparent central volume of distribution at non-Caucasian reference (L)") # Table 2: V1/F = 223 L, RSE 52.6%
+    lvp       <- log(113);  label("Apparent peripheral volume of distribution (L)")                  # Table 2: V2/F = 113 L, RSE 41.0%
+    lq        <- log(8.5);  label("Apparent inter-compartmental clearance (L/h)")                     # Table 2: Q/F = 8.5 L/h, RSE 54.1%
     lka_neg   <- log(0.65); label("First-order absorption rate constant in healthy volunteers (ka HIV-, 1/h)") # Table 2: ka HIV- = 0.65 1/h, RSE 33.0%
     lka_pos   <- log(0.21); label("First-order absorption rate constant in HIV+ patients (ka HIV+, 1/h)")  # Table 2: ka HIV+ = 0.21 1/h, RSE 15.6%
-    lfdepot   <- log(0.75); label("Relative bioavailability for HIV+ at reference covariates (F_HIV+, fraction; F_HIV- = 1 fixed)") # Table 2: F_HIV+ = 0.75, RSE 40.4%; F_HIV- fixed = 1
+    lfdepot   <- log(0.75); label("Relative bioavailability for HIV+ at reference covariates (fraction; F_HIV- = 1 fixed)") # Table 2: F_HIV+ = 0.75, RSE 40.4%; F_HIV- fixed = 1
 
     # Covariate effects on the HIV+ relative bioavailability (Results paragraph 4 / Table 2).
     # Each enters via the linear additive form `(1 + theta * X)` for the binary covariates and

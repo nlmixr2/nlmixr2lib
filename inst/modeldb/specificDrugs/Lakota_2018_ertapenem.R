@@ -117,12 +117,12 @@ Lakota_2018_ertapenem <- function() {
     # Structural parameters - reference values for a subject at the dataset
     # median (WT = 95.90 kg, BSA = 2.06 m^2). All from Lakota 2018 Table 3
     # ("Population mean / Final estimate" column).
-    lcl  <- log(1.79);  label("Clearance for the reference subject (CL, L/h)")     # Table 3
-    lvc  <- log(4.76);  label("Central volume of distribution (Vc, L)")            # Table 3
-    lq   <- log(6.71);  label("Inter-compartmental clearance 1 (CLd1, L/h)")       # Table 3
-    lvp  <- log(2.96);  label("First peripheral volume of distribution (Vp1, L)")  # Table 3
-    lq2  <- log(0.296); label("Inter-compartmental clearance 2 (CLd2, L/h)")       # Table 3
-    lvp2 <- log(1.1);   label("Second peripheral volume of distribution (Vp2, L)") # Table 3
+    lcl  <- log(1.79);  label("Clearance for the reference subject (L/h)")     # Table 3
+    lvc  <- log(4.76);  label("Central volume of distribution (L)")            # Table 3
+    lq   <- log(6.71);  label("Inter-compartmental clearance 1 (L/h)")       # Table 3
+    lvp  <- log(2.96);  label("First peripheral volume of distribution (L)")  # Table 3
+    lq2  <- log(0.296); label("Inter-compartmental clearance 2 (L/h)")       # Table 3
+    lvp2 <- log(1.1);   label("Second peripheral volume of distribution (L)") # Table 3
 
     # Covariate effects - power functions, reference values at dataset medians.
     # CL  = 1.79 * (WT/95.90)^0.278   (Table 3, footnote b)

@@ -145,9 +145,9 @@ Bouazza_2012_clindamycin <- function() {
     # Bouazza 2012 Table 2 ('Structural model' block); apparent values are
     # CL/F and V/F derived from i.v. infusion data so that F = 1 on the i.v.
     # side and F = 0.876 on the oral side.
-    lka <- log(0.967); label("Absorption rate constant (Ka, 1/h)")                      # Table 2: Ka = 0.967 1/h (RSE 26%)
-    lcl <- log(15.2);  label("Clearance at WT = 70 kg (CL, L/h)")                       # Table 2: CL = 15.2 L/h (RSE 8%)
-    lvc <- log(66.2);  label("Volume of distribution (V, L)")                           # Table 2: V = 66.2 L (RSE 9%)
+    lka <- log(0.967); label("Absorption rate constant (1/h)")                      # Table 2: Ka = 0.967 1/h (RSE 26%)
+    lcl <- log(15.2);  label("Clearance at WT = 70 kg (L/h)")                       # Table 2: CL = 15.2 L/h (RSE 8%)
+    lvc <- log(66.2);  label("Volume of distribution (L)")                           # Table 2: V = 66.2 L (RSE 9%)
 
     # Estimated body-weight exponent on CL (NOT canonical 0.75 allometric).
     # Bouazza 2012 Results 'Population pharmacokinetics' final covariate model:

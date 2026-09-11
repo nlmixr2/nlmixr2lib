@@ -97,11 +97,11 @@ Tang_2026_vixarelimab <- function() {
     # estimates carried over from run 6: they agree with Table 3 for nine of eleven
     # thetas but differ for Vc (2.9 vs 3.04) and Kint (0.000146168 vs 0.000141), so
     # Table 3 is used throughout.
-    lvc <- log(3.04);       label("Central volume of distribution (Vc, L)")                      # Table 3 row "Central volume of distribution, Vc (L)"
-    lcl <- log(0.00649);    label("Linear (non-specific) clearance (CL, L/h)")                   # Table 3 row "Clearance, CL (L/h)"
-    lq  <- log(0.0207);     label("Inter-compartmental clearance (Q, L/h)")                      # Table 3 row "Inter-compartmental clearance, Q (L/h)"
-    lvp <- log(1.74);       label("Peripheral volume of distribution (Vp, L)")                   # Table 3 row "Peripheral volume of distribution, Vp (L)"
-    lka <- log(0.0126);     label("First-order subcutaneous absorption rate constant (Ka, 1/h)") # Table 3 row "Absorption rate constant, Ka (h-1)"
+    lvc <- log(3.04);       label("Central volume of distribution (L)")                      # Table 3 row "Central volume of distribution, Vc (L)"
+    lcl <- log(0.00649);    label("Linear (non-specific) clearance (L/h)")                   # Table 3 row "Clearance, CL (L/h)"
+    lq  <- log(0.0207);     label("Inter-compartmental clearance (L/h)")                      # Table 3 row "Inter-compartmental clearance, Q (L/h)"
+    lvp <- log(1.74);       label("Peripheral volume of distribution (L)")                   # Table 3 row "Peripheral volume of distribution, Vp (L)"
+    lka <- log(0.0126);     label("First-order subcutaneous absorption rate constant (1/h)") # Table 3 row "Absorption rate constant, Ka (h-1)"
 
     # Subcutaneous bioavailability, estimated on the LOGIT scale by the authors
     # ($PK: TVPHI = LOG(TVBIO/(1-TVBIO)); PHI = TVPHI + ETA(10); BIO = EXP(PHI)/(1+EXP(PHI))),
@@ -109,10 +109,10 @@ Tang_2026_vixarelimab <- function() {
     logitfdepot <- log(0.566 / (1 - 0.566)); label("Subcutaneous bioavailability on the logit scale (logit(F1), unitless)")  # Table 3 row "Subcutaneous bioavailability, F (%)" = 56.6%
 
     # ---- Target (OSMR-beta) turnover and QSS binding ----
-    lrbase <- log(1.84);      label("Baseline total target (OSMR-beta) concentration (R0, nM)")             # Table 3 row "Baseline receptor level, R0 (nM)"
-    lkdeg  <- log(0.097);     label("Target degradation rate constant (Kdeg, 1/h)")                         # Table 3 row "Receptor degradation rate constant, Kdeg (h-1)"
-    lkss   <- log(0.0296);    label("Quasi-steady-state constant for drug-target binding (Kss, nM)")        # Table 3 row "Quasi steady-state rate constant, Kss (nM)"
-    lkint  <- log(0.000141);  label("Drug-target complex internalisation rate constant (Kint, 1/h)")        # Table 3 row "Complex elimination rate constant Kint (h-1)"
+    lrbase <- log(1.84);      label("Baseline total target (OSMR-beta) concentration (nM)")             # Table 3 row "Baseline receptor level, R0 (nM)"
+    lkdeg  <- log(0.097);     label("Target degradation rate constant (1/h)")                         # Table 3 row "Receptor degradation rate constant, Kdeg (h-1)"
+    lkss   <- log(0.0296);    label("Quasi-steady-state constant for drug-target binding (nM)")        # Table 3 row "Quasi steady-state rate constant, Kss (nM)"
+    lkint  <- log(0.000141);  label("Drug-target complex internalisation rate constant (1/h)")        # Table 3 row "Complex elimination rate constant Kint (h-1)"
 
     # ---- Body-weight covariate effects (power model centred on 81.7 kg) ----
     e_wt_cl <- 0.943; label("Power exponent of WT/81.7 on CL (unitless)")  # Table 3 row "Weight on CL"
@@ -152,7 +152,7 @@ Tang_2026_vixarelimab <- function() {
     # a log-normal residual on the linear scale, i.e. `~ lnorm()` in nlmixr2.
     # Table 3 reports it as CV% = sqrt(exp(sigma^2) - 1) * 100% = 19.6%, so
     # sigma^2 = log(1 + 0.196^2) = 0.0376965 and sigma = 0.1941558.
-    expSd <- 0.1941558; label("Log-scale (log-additive) residual standard deviation")  # Table 3 row "Log-additive residual variability (CV%)" = 19.6%
+    expSd <- 0.1941558; label("Log-scale, log-additive, residual standard deviation (unitless)")  # Table 3 row "Log-additive residual variability (CV%)" = 19.6%
   })
   model({
     # ---- Unit conversion (molar model, mass-unit dose and observation) ----

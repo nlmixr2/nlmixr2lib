@@ -58,15 +58,15 @@ Papachristos_2020_bevacizumab_pkpd <- function() {
 
   ini({
     # Structural PK parameters (reference 70 kg adult, all SNPs wild-type)
-    lcl <- log(0.388); label("Clearance for a 70 kg wild-type adult (CL, L/day)")  # Table 3 row CLpop
-    lvc <- log(5.48);  label("Central volume of distribution (V1, L)")              # Table 3 row V1pop
-    lq  <- log(0.315); label("Inter-compartmental clearance (Q, L/day)")            # Table 3 row Qpop
-    lvp <- log(8.81);  label("Peripheral volume of distribution (V2, L)")           # Table 3 row V2(L)
+    lcl <- log(0.388); label("Clearance for a 70 kg wild-type adult (L/day)")  # Table 3 row CLpop
+    lvc <- log(5.48);  label("Central volume of distribution (L)")              # Table 3 row V1pop
+    lq  <- log(0.315); label("Inter-compartmental clearance (L/day)")            # Table 3 row Qpop
+    lvp <- log(8.81);  label("Peripheral volume of distribution (L)")           # Table 3 row V2(L)
 
     # PD parameters (immediate-response Imax model on free VEGF-A)
-    le0    <- log(684);   label("Baseline free VEGF-A concentration for a wild-type adult (E0, ng/L)")  # Table 3 row E0pop
-    imaxv  <- 0.951;      label("Maximal fractional inhibition of free VEGF-A (Imax, fraction)")        # Table 3 row Imaxpop
-    lic50  <- log(29.1);  label("Bevacizumab concentration producing 50% Imax (IC50, mg/L)")           # Table 3 row IC50pop
+    le0    <- log(684);   label("Baseline free VEGF-A concentration for a wild-type adult (ng/L)")  # Table 3 row E0pop
+    imaxv  <- 0.951;      label("Maximal fractional inhibition of free VEGF-A (fraction)")        # Table 3 row Imaxpop
+    lic50  <- log(29.1);  label("Bevacizumab concentration producing 50% Imax (mg/L)")           # Table 3 row IC50pop
 
     # Allometric / SNP covariate effects on log-CL
     e_wt_cl <- 0.78;  label("Allometric exponent on CL for log(WT/70) (unitless)")  # Table 3 row "log(weight/70) on CL"

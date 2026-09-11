@@ -91,11 +91,11 @@ Wattanakul_2016_paracetamol <- function() {
     # compartment carries IM doses. lfdepot encodes log(F_PO); F_IM is fixed at
     # 1 in the source paper and is left as the rxode2 default f(central) = 1.
     lfdepot <- log(0.844)
-    label("Relative oral syrup bioavailability vs intramuscular (F_PO, fraction)")  # Table 2: F_PO = 0.844 (95% CI 0.682-0.951; 8.4% RSE)
+    label("Relative oral syrup bioavailability vs intramuscular (fraction)")  # Table 2: F_PO = 0.844 (95% CI 0.682-0.951; 8.4% RSE)
 
     # First-order oral absorption rate.
     lka     <- log(4.15)
-    label("Oral syrup absorption rate constant (ka_PO, 1/h)")  # Table 2: ka_PO = 4.15 1/h (95% CI 1.95-9.73; 44.5% RSE)
+    label("Oral syrup absorption rate constant (1/h)")  # Table 2: ka_PO = 4.15 1/h (95% CI 1.95-9.73; 44.5% RSE)
 
     # Zero-order IM input duration. Wattanakul 2016 Table 2 reports IIV (%CV)
     # < 1% for DUR_IM and so the source paper fixed the corresponding eta to
@@ -103,17 +103,17 @@ Wattanakul_2016_paracetamol <- function() {
     # etaldur_im. The DUR_IM population estimate itself is estimated (not
     # fixed) per Table 2.
     ldur_im <- log(0.689)
-    label("IM zero-order input duration (DUR_IM, h)")  # Table 2: DUR_IM = 0.689 h (95% CI 0.621-0.784; 6.2% RSE)
+    label("IM zero-order input duration (h)")  # Table 2: DUR_IM = 0.689 h (95% CI 0.621-0.784; 6.2% RSE)
 
     # Disposition parameters.
     lcl     <- log(10.7)
-    label("Apparent elimination clearance (CL, L/h)")  # Table 2: CL = 10.7 L/h (95% CI 7.35-14.7; 16.9% RSE)
+    label("Apparent elimination clearance (L/h)")  # Table 2: CL = 10.7 L/h (95% CI 7.35-14.7; 16.9% RSE)
     lvc     <- log(45.5)
-    label("Apparent central volume of distribution (V_C, L)")  # Table 2: V_C = 45.5 L (95% CI 36.7-51.5; 8.5% RSE)
+    label("Apparent central volume of distribution (L)")  # Table 2: V_C = 45.5 L (95% CI 36.7-51.5; 8.5% RSE)
     lq      <- log(10.3)
-    label("Apparent intercompartmental clearance (Q, L/h)")  # Table 2: Q = 10.3 L/h (95% CI 4.80-20.1; 36.8% RSE)
+    label("Apparent intercompartmental clearance (L/h)")  # Table 2: Q = 10.3 L/h (95% CI 4.80-20.1; 36.8% RSE)
     lvp     <- log(11.3)
-    label("Apparent peripheral volume of distribution (V_P, L)")  # Table 2: V_P = 11.3 L (95% CI 5.01-29.0; 42.7% RSE)
+    label("Apparent peripheral volume of distribution (L)")  # Table 2: V_P = 11.3 L (95% CI 5.01-29.0; 42.7% RSE)
 
     # Inter-individual variability. Wattanakul 2016 Table 2 reports %CV computed
     # as 100 * sqrt(exp(omega^2) - 1), so the internal-scale variance is

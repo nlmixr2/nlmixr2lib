@@ -43,10 +43,10 @@ Carmichael_2003_hydroxychloroquine <- function() {
   ini({
     # Structural parameters from Table 2 row (d) 'All 123 patients' final model.
     # Abstract: "Cl = 9.9 +/- 0.4 L/h, V = 605 +/- 91 L, ka = 0.77 +/- 0.22 hours -1, t tag = 0.44 +/- 0.02 hours."
-    lcl <- log(9.89) ; label("Population apparent oral clearance (CL/F, L/h)")               # Table 2 row (d): Cl = 9.89 (SE 0.405) L/h
-    lvc <- log(605)  ; label("Population apparent central volume without concomitant MTX (V/F, L)") # Table 2 row (d): V = 605 (SE 91.3) L
-    lka <- log(0.765); label("First-order absorption rate constant (ka, 1/h)")               # Table 2 row (d): ka = 0.765 (SE 0.218) 1/h
-    ltlag <- log(0.44) ; label("Absorption lag time (t_lag, h)")                              # Table 2 row (d): t_tag = 0.44 (SE 0.022) h
+    lcl <- log(9.89) ; label("Population apparent oral clearance (L/h)")               # Table 2 row (d): Cl = 9.89 (SE 0.405) L/h
+    lvc <- log(605)  ; label("Population apparent central volume without concomitant MTX (L)") # Table 2 row (d): V = 605 (SE 91.3) L
+    lka <- log(0.765); label("First-order absorption rate constant (1/h)")               # Table 2 row (d): ka = 0.765 (SE 0.218) 1/h
+    ltlag <- log(0.44) ; label("Absorption lag time (h)")                              # Table 2 row (d): t_tag = 0.44 (SE 0.022) h
     # F was fixed to the 0.746 typical value estimated from the 9-patient bioavailability sub-study
     # and held fixed during all downstream population fits (Results 'Bioavailability' final paragraph:
     # "The typical value for F was 0.746" and Results 'Population Pharmacokinetic Model for Single-Agent

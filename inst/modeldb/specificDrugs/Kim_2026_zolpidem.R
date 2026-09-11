@@ -223,22 +223,22 @@ Kim_2026_zolpidem <- function() {
     # fixed at 1 rather than estimated.
 
     lka <- log(11.7)
-    label("Absorption rate constant, depot -> central (Ka, 1/h)")                    # Kim 2026 Table 2: Ka = 11.7 1/h (RSE 36.8%; SIR median 12.1, 95% CI 6.6-22.3). Data S1 $THETA(3).
+    label("Absorption rate constant, depot -> central (1/h)")                    # Kim 2026 Table 2: Ka = 11.7 1/h (RSE 36.8%; SIR median 12.1, 95% CI 6.6-22.3). Data S1 $THETA(3).
 
     lcl <- log(18.0)
-    label("Apparent clearance (CL/F, L/h)")                                          # Kim 2026 Table 2: CL/F = 18.0 L/h (RSE 7.9%; SIR median 18.0, 95% CI 15.9-20.2). Data S1 $THETA(1).
+    label("Apparent clearance (L/h)")                                          # Kim 2026 Table 2: CL/F = 18.0 L/h (RSE 7.9%; SIR median 18.0, 95% CI 15.9-20.2). Data S1 $THETA(1).
 
     lvc <- log(64.0)
-    label("Apparent central volume of distribution (Vc/F, L)")                       # Kim 2026 Table 2: Vc/F = 64.0 L (RSE 4.9%; SIR median 64.1, 95% CI 58.3-69.9). Data S1 $THETA(2).
+    label("Apparent central volume of distribution (L)")                       # Kim 2026 Table 2: Vc/F = 64.0 L (RSE 4.9%; SIR median 64.1, 95% CI 58.3-69.9). Data S1 $THETA(2).
 
     lmtt <- log(0.25)
-    label("Mean transit time of the absorption chain (MTT, h)")                      # Kim 2026 Table 2: MTT = 0.25 h (RSE 8.4%; SIR median 0.25, 95% CI 0.21-0.29). Data S1 $THETA(4).
+    label("Mean transit time of the absorption chain (h)")                      # Kim 2026 Table 2: MTT = 0.25 h (RSE 8.4%; SIR median 0.25, 95% CI 0.21-0.29). Data S1 $THETA(4).
 
     lnn <- log(19.4)
-    label("Number of transit compartments (NN, unitless)")                           # Kim 2026 Table 2: NN = 19.4 (RSE 18.8%; SIR median 19.4, 95% CI 13.6-28.9). Data S1 $THETA(5). Estimated as a continuous quantity, so the absorption input is the closed-form Erlang density rather than an integer chain of ODE states.
+    label("Number of transit compartments (unitless)")                           # Kim 2026 Table 2: NN = 19.4 (RSE 18.8%; SIR median 19.4, 95% CI 13.6-28.9). Data S1 $THETA(5). Estimated as a continuous quantity, so the absorption input is the closed-form Erlang density rather than an integer chain of ODE states.
 
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability (BIO, fraction)")                                # Kim 2026 Table 2: BIO = "1 Fixed". Data S1 $THETA(6) is "(1) FIX". Results 3.2.1: bioavailability "was included in the model with a fixed typical value of 1 and estimated IIV, resulting in an improvement in the OFV (dOFV = -29.938) and a reduction in the IIV of apparent clearance (CL/F) and apparent volume of distribution (Vc/F)".
+    label("Relative bioavailability (fraction)")                                # Kim 2026 Table 2: BIO = "1 Fixed". Data S1 $THETA(6) is "(1) FIX". Results 3.2.1: bioavailability "was included in the model with a fixed typical value of 1 and estimated IIV, resulting in an improvement in the OFV (dOFV = -29.938) and a reduction in the IIV of apparent clearance (CL/F) and apparent volume of distribution (Vc/F)".
 
     # ====================================================================
     # INTER-INDIVIDUAL VARIABILITY

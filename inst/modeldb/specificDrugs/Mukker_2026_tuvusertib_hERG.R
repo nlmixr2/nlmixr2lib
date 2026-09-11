@@ -5,7 +5,7 @@ Mukker_2026_tuvusertib_hERG <- function() {
     "kinase inhibitor tuvusertib (M1774), measured by GLP-compliant",
     "whole-cell patch clamp in HEK-293 cells stably expressing hERG.",
     "The model is:",
-    "hergInh = imax * C^hill / (ic50^hill + C^hill),",
+    "herg_inh = imax * C^hill / (ic50^hill + C^hill),",
     "with ic50 = 1048 ng/mL (2.83 uM) and hill = 1.12, both fitted to",
     "tail-current block at nominal tuvusertib concentrations of 0.3, 1,",
     "3 and 10 uM (goodness of fit R^2 = 0.98). imax is fixed at 1",
@@ -43,7 +43,7 @@ Mukker_2026_tuvusertib_hERG <- function() {
   units <- list(
     time          = "h",
     dosing        = "(none; static in vitro concentration-response model fed by an external tuvusertib concentration covariate)",
-    concentration = "(observation hergInh is the fraction of hERG tail current blocked, dimensionless 0-1; driving covariate CP_TUVUSERTIB_NGML is the nominal bath tuvusertib concentration in ng/mL)"
+    concentration = "(observation herg_inh is the fraction of hERG tail current blocked, dimensionless 0-1; driving covariate CP_TUVUSERTIB_NGML is the nominal bath tuvusertib concentration in ng/mL)"
   )
 
   covariateData <- list(
@@ -144,14 +144,14 @@ Mukker_2026_tuvusertib_hERG <- function() {
     # concentration CP_TUVUSERTIB_NGML. Standard sigmoidal Imax form
     # (parameter-names.md, 'Sigmoidal PD shape parameters'):
     #
-    #   hergInh = imax * C^hill / (ic50^hill + C^hill)
+    #   herg_inh = imax * C^hill / (ic50^hill + C^hill)
     #
     # At C = ic50 this returns imax / 2 = 0.5, which is the definition
     # of the reported IC50 and is asserted in the validation vignette.
     # ==================================================================
-    hergInh <- imax * CP_TUVUSERTIB_NGML^hill /
+    herg_inh <- imax * CP_TUVUSERTIB_NGML^hill /
       (ic50^hill + CP_TUVUSERTIB_NGML^hill)
 
-    hergInh ~ add(addSd)
+    herg_inh ~ add(addSd)
   })
 }

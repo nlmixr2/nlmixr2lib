@@ -181,7 +181,7 @@ Siccardi_2012_efavirenz <- function() {
     # model') had CL/F 11.6 L/h, V/F 317 L and ka 0.54 1/h; the final
     # model adds the CYP2B6 516G>T effect on CL/F only.
     lka <- log(0.36)
-    label("First-order absorption rate constant (ka, 1/h)")  # Siccardi 2012 Table 2, Population PK column: ka = 0.36 1/h (RSE 76%). Very imprecise (one random sample per HIV-positive patient); the bootstrap 90% CI is 0.4-1.1 1/h and the base model gave 0.54 1/h.
+    label("First-order absorption rate constant (1/h)")  # Siccardi 2012 Table 2, Population PK column: ka = 0.36 1/h (RSE 76%). Very imprecise (one random sample per HIV-positive patient); the bootstrap 90% CI is 0.4-1.1 1/h and the base model gave 0.54 1/h.
 
     lcl <- log(13.3)
     label("Typical apparent oral clearance CL/F for CYP2B6 516GG homozygotes (L/h)")  # Siccardi 2012 Table 2, Population PK column: CL/F 516GG = 13.3 L/h (RSE 7%); same value in Results, 'Population PK model'. Bootstrap 90% CI 10.6-14.1 L/h.

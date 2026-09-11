@@ -70,7 +70,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkCompartmentData(ui, conv),
     .checkFmFamily(ui, conv),
     .checkLogitBackTransform(ui, conv),
-    .checkHandWrittenInverseLogit(ui, conv)
+    .checkHandWrittenInverseLogit(ui, conv),
+    .checkCentralConcentrationName(ui, conv)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -1555,6 +1556,141 @@ checkModelConventions <- function(model, verbose = TRUE) {
   hit <- registered[paste0(tolower(registered), "s") == tolower(nm)]
   if (length(hit)) return(hit[[1]])
   NA_character_
+}
+
+# `Cc` is the central drug concentration -- both directions.
+#
+# compartment-names.md states the convention in the `central` entry: "the
+# conventional output state for plasma concentration `Cc = central / vc`". It
+# drifted in both directions before anything read it. A 2026-09-10 audit of all
+# 2769 models found 130 central concentrations under another name and, worse,
+# 67 models where `Cc` named something that is not a concentration at all -- a
+# log CFU burden, a viral load, a CAR-T count, a body weight. In
+# `Venisse_2008_caspofungin` the drug concentration and the fungal burden were
+# `cc` and `Cc`, distinguishable only by letter case.
+#
+# The check is deliberately two-sided, because a one-sided version passes on
+# exactly the swap that motivated it.
+#
+# Two things legitimately differ from `Cc` and are NOT flagged:
+#   * a SECOND central quantity derived alongside it -- `Cunbound <- central/vc`
+#     beside `Cc <- (complex + central)/vc` (Duke_2024_cefazolin). Recognised by
+#     the model also defining `Cc` (or `Cc_<suffix>`).
+#   * a SCALED derivation -- `* fu`, `* bp`, `/ mw`, unit conversions. Those are
+#     different quantities, so only a BARE `central/vc` is required to be `Cc`.
+#
+# Works on `ui$lstExpr` rather than deparsed text so comments and string
+# literals cannot produce a match.
+.stripExprParens <- function(e) {
+  while (is.call(e) && length(e) == 2L && identical(as.character(e[[1]]), "(")) {
+    e <- e[[2]]
+  }
+  e
+}
+
+# Suffix (possibly "") when `e` is exactly `central<sfx> / vc<sfx>`; NULL if not.
+.plainCentralConcSuffix <- function(e) {
+  e <- .stripExprParens(e)
+  if (!is.call(e) || length(e) != 3L) return(NULL)
+  if (!identical(as.character(e[[1]]), "/")) return(NULL)
+  num <- .stripExprParens(e[[2]])
+  den <- .stripExprParens(e[[3]])
+  if (!is.name(num) || !is.name(den)) return(NULL)
+  m1 <- regmatches(as.character(num),
+                   regexec("^central(_[A-Za-z0-9]+)?$", as.character(num)))[[1]]
+  m2 <- regmatches(as.character(den),
+                   regexec("^vc(_[A-Za-z0-9]+)?$", as.character(den)))[[1]]
+  if (!length(m1) || !length(m2)) return(NULL)
+  s1 <- if (length(m1) >= 2L) m1[[2]] else ""
+  s2 <- if (length(m2) >= 2L) m2[[2]] else ""
+  if (!identical(s1, s2)) return(NULL)
+  s1
+}
+
+.symbolsIn <- function(e, acc = character(0)) {
+  if (is.name(e)) return(c(acc, as.character(e)))
+  if (is.call(e)) {
+    for (i in seq_along(e)) {
+      part <- tryCatch(e[[i]], error = function(e) NULL)
+      if (!is.null(part) && (is.call(part) || is.name(part))) {
+        acc <- .symbolsIn(part, acc)
+      }
+    }
+  }
+  acc
+}
+
+# Does `nm` reach the central drug pool -- a `central*` state or `linCmt()` --
+# through at most `depth` further definitions?
+.reachesCentralPool <- function(nm, defs, depth = 0L, seen = character(0)) {
+  if (nm %in% seen || depth > 6L) return(FALSE)
+  rhs <- defs[[nm]]
+  if (is.null(rhs)) return(FALSE)
+  syms <- .symbolsIn(rhs)
+  if (any(grepl("central", syms)) || any(syms == "linCmt")) return(TRUE)
+  any(vapply(setdiff(syms, c(nm, seen)),
+             function(s) .reachesCentralPool(s, defs, depth + 1L, c(seen, nm)),
+             logical(1)))
+}
+
+.checkCentralConcentrationName <- function(ui, conv) {
+  issues <- .emptyIssues()
+  exprs <- tryCatch(ui$lstExpr, error = function(e) NULL)
+  if (!length(exprs)) return(issues)
+  defs <- list()
+  for (e in exprs) {
+    if (is.call(e) && length(e) == 3L &&
+        as.character(e[[1]]) %in% c("<-", "=") && is.name(e[[2]])) {
+      nm <- as.character(e[[2]])
+      if (is.null(defs[[nm]])) defs[[nm]] <- e[[3]]
+    }
+  }
+  if (!length(defs)) return(issues)
+
+  # (1) a bare `central<sfx>/vc<sfx>` must be `Cc<sfx>`, unless the model also
+  #     defines `Cc<sfx>` -- then this is the second quantity and keeps its name.
+  for (nm in names(defs)) {
+    sfx <- .plainCentralConcSuffix(defs[[nm]])
+    if (is.null(sfx)) next
+    expected <- paste0("Cc", sfx)
+    if (identical(nm, expected)) next
+    # The exemption for a second central quantity requires that the defined
+    # `Cc` IS a central concentration. Merely existing is not enough: in
+    # `Venisse_2008_caspofungin` `Cc` was the fungal burden, and exempting on
+    # its presence alone reported only half of that swap -- the burden, but not
+    # the drug concentration sitting under `cc`, which is the half a reader
+    # needs in order to fix it.
+    if (!is.null(defs[[expected]]) && .reachesCentralPool(expected, defs)) next
+    issues <- rbind(issues, .issue(
+      "compartments", "error", nm,
+      sprintf(paste0("'%s' is the central drug concentration (%s) but is not ",
+                     "named '%s'."), nm, deparse(defs[[nm]])[[1]], expected),
+      sprintf(paste0("Rename '%s' to '%s'. If it is a SECOND central quantity ",
+                     "(unbound beside total, raw beside calibrated), define ",
+                     "'%s' as well and keep this name for the other one."),
+              nm, expected, expected)
+    ))
+  }
+
+  # (2) `Cc` must BE a central concentration. This is the direction that catches
+  #     `Cc <- log10(cfu)`, `Cc <- bwkg` and the rest.
+  for (nm in names(defs)) {
+    if (!grepl("^Cc(_[A-Za-z0-9]+)?$", nm)) next
+    rhs <- .stripExprParens(defs[[nm]])
+    if (!(is.call(rhs) && as.character(rhs[[1]]) %in% c("log", "log10", "log2"))) next
+    if (.reachesCentralPool(nm, defs)) next
+    issues <- rbind(issues, .issue(
+      "compartments", "error", nm,
+      sprintf(paste0("'%s' is a log-transformed quantity (%s), so it is not a ",
+                     "concentration. 'Cc' names the central drug ",
+                     "concentration, not the model's primary observation."),
+              nm, deparse(defs[[nm]])[[1]]),
+      paste0("Name this output by its own canonical -- 'log_cfu' for a log ",
+             "CFU burden, 'log10_viral_load' for a viral load, 'BW' for a ",
+             "body weight -- and leave 'Cc' for 'central / vc'.")
+    ))
+  }
+  issues
 }
 
 .checkFmFamily <- function(ui, conv) {

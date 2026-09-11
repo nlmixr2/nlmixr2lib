@@ -1,0 +1,992 @@
+---
+title: "Subcutaneous atezolizumab population PK and exposure-response (Chan 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Subcutaneous atezolizumab population PK and exposure-response (Chan 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Chan 2025 reports **one population PK model and six exposure-response models**
+from a single study, IMscin001. All seven are packaged; this vignette walks the
+paper as a unit.
+
+```{r models}
+popPK <- readModelDb("Chan_2025_atezolizumab")
+erModels <- c(
+  "Chan_2025_atezolizumab_sae",
+  "Chan_2025_atezolizumab_aeg35",
+  "Chan_2025_atezolizumab_isr",
+  "Chan_2025_atezolizumab_pfs",
+  "Chan_2025_atezolizumab_os"
+)
+```
+
+* Citation: `r rxode2::rxode(popPK)$reference`
+* Article: <https://doi.org/10.1002/psp4.13310>
+* Supporting Information (Tables S1-S10 and the NONMEM control stream) is
+  distributed with the open-access article as files `s001.docx` and `s002.CTL`.
+
+The paper's own framing matters for how the model is built. IMscin001 is a
+two-part study: a phase Ib dose-finding portion and a phase III dose-confirmation
+portion in which model-predicted Cycle-1 AUC~0-21d~ was a **co-primary
+endpoint**. Chan 2025 states this is "the first popPK analysis to derive a
+measure for the primary analysis of a pivotal, Phase III PK non-inferiority
+study".
+
+## What the authors estimated, and what they fixed
+
+This is an **extension** model, and the distinction is the single most important
+thing to understand about it:
+
+```{r what_is_fixed, echo = FALSE}
+tibble::tribble(
+  ~Layer,                              ~Status,                          ~Source,
+  "CL, Vc, Vp, Q",                     "FIXED",                          "historical IV model",
+  "Covariate effects on CL, Vc, Vp",   "FIXED",                          "historical IV model",
+  "IIV on CL, Vc, Vp (3x3 block)",     "FIXED",                          "historical IV model",
+  "KA, F1",                            "ESTIMATED",                      "Chan 2025 Table 2",
+  "Albumin on KA, hemoglobin on F1",   "ESTIMATED",                      "Chan 2025 Table 2",
+  "IIV on KA and F1",                  "ESTIMATED",                      "Chan 2025 Table 2",
+  "Residual error",                    "ESTIMATED",                      "Chan 2025 Table 2"
+) |>
+  knitr::kable(caption = "Chan 2025 fixed the entire disposition layer and estimated only the subcutaneous absorption layer.")
+```
+
+Chan 2025 Methods gives the rationale: "the typical values for the systemic
+parameters ... were fixed to those from the historical IV popPK model, as
+theoretically the disposition parameters are intrinsic to a molecule and should
+not change with different routes of administration." The between-subject
+variances of the disposition parameters were fixed for a second, empirical
+reason: re-estimating them "resulted in high uncertainty on estimates of KA and
+F1".
+
+# Population
+
+The analysis pooled **435 patients** contributing **3100 atezolizumab serum
+concentrations** from all five IMscin001 cohorts (99.8% of the 436 patients with
+PK data). Patients had locally advanced or metastatic non-small cell lung
+cancer. The phase Ib cohorts received subcutaneous atezolizumab co-mixed with
+recombinant human hyaluronidase PH20 followed by intravenous 1200 mg Q3W; the
+phase III portion randomised 2:1 to subcutaneous 1875 mg Q3W as a ready-to-use
+co-formulation (cohort 5, N = 246) or intravenous 1200 mg Q3W (cohort 4,
+N = 122).
+
+Because each phase Ib patient received **both** routes, those patients served as
+their own control -- which the Discussion identifies as what makes bioavailability
+estimable at all, since the phase III portion has no intensive absorption-phase
+sampling.
+
+The exposure-response analyses used **only cohort 5** (N = 246). Chan 2025
+excluded the intravenous arm because intravenous exposure-response has been
+evaluated extensively elsewhere.
+
+```{r population}
+str(popPK()$population, max.level = 1)
+```
+
+Baseline characteristics of the two phase III cohorts (Chan 2025 Table 1):
+
+```{r baseline_table, echo = FALSE}
+baseline <- tibble::tribble(
+  ~Characteristic,          ~`Cohort 4 (IV 1200 mg)`,  ~`Cohort 5 (SC 1875 mg)`,
+  "N",                      "122",                     "246",
+  "Body weight (kg)",       "69.1 [34.6, 114]",        "67.8 [30.0, 117]",
+  "Tumor burden (mm)",      "68.5 [14.0, 245]",        "79.5 [10.0, 319]",
+  "Albumin (g/L)",          "41.2 [4.01, 53.6]",       "40.0 [3.86, 51.0]",
+  "Hemoglobin (g/L)",       "122 [87.0, 1440]",        "123 [79.0, 1160]",
+  "Female",                 "42 (34.4%)",              "72 (29.3%)",
+  "ADA-positive",           "15 (12.3%)",              "43 (17.5%)",
+  "ADA missing",            "14 (11.5%)",              "26 (10.6%)"
+)
+knitr::kable(baseline, caption = "Chan 2025 Table 1, median [min, max] for continuous covariates.")
+```
+
+Two of those ranges are worth flagging because the source control stream guards
+against them explicitly: the albumin minima (3.86 and 4.01 g/L) and the
+hemoglobin maxima (1160 and 1440 g/L) are physiologically implausible recorded
+values. The `$PK` block recodes albumin below 5 g/L and hemoglobin above
+1000 g/L to a missing sentinel and then imputes, so those extremes never reach
+the likelihood.
+
+# Source trace
+
+Every `ini()` entry carries an in-file comment naming its origin. The tables
+below collect them for review.
+
+```{r source_trace_pk, echo = FALSE}
+tibble::tribble(
+  ~Parameter,             ~Value,        ~Status,     ~`Source location`,
+  "lcl",                  "0.200 L/day", "fixed",     "Table 2 'CL (L/d)'; $THETA '0.2 FIX'",
+  "lvc",                  "3.28 L",      "fixed",     "Table 2 'Vc (L)'; $THETA '3.28 FIX'",
+  "lvp",                  "3.63 L",      "fixed",     "Table 2 'Vp (L)'; $THETA '3.63 FIX'",
+  "lq",                   "0.546 L/day", "fixed",     "Table 2 'Q (L/d)'; $THETA '0.546 FIX'",
+  "e_alb_cl",             "-1.12",       "fixed",     "Table 2 'Albumin on CL (ALB/40 in g/L)'",
+  "e_ada_cl",             "0.159",       "fixed",     "Table 2 'ADA status on CL'; $PK CLATAG=(1+THETA(6))",
+  "e_tumsz_cl",           "0.125",       "fixed",     "Table 2 'Tumor burden on CL (Tumor burden/63mm)'",
+  "e_wt_cl",              "0.808",       "fixed",     "Table 2 'Bodyweight on CL (BWT/77 in kg)'",
+  "e_alb_vc",             "-0.350",      "fixed",     "Table 2 'Albumin on Vc (ALB/40 in g/L)'",
+  "e_wt_vc",              "0.559",       "fixed",     "Table 2 'Bodyweight on Vc (BWT/77 in kg)'",
+  "e_sexf_vc",            "-0.129",      "fixed",     "Table 2 'Sex on Vc'; $PK V2SEX=(1+THETA(11))",
+  "e_sexf_vp",            "-0.272",      "fixed",     "Table 2 'Sex on Vp'; $PK V3SEX=(1+THETA(12))",
+  "lka",                  "0.304 1/day", "estimated", "Table 2 'KA (1/d)', RSE 3.0%",
+  "logitfdepot",          "logit(0.718)","estimated", "Table 2 'F1', RSE 1.8%; $PK LF1=LOG(THETA(14)/(1-THETA(14)))",
+  "e_alb_ka",             "0.795",       "estimated", "Table 2 'Albumin on KA', RSE 33.1%",
+  "e_hgb_logitfdepot",    "1.76",        "estimated", "Table 2 'Hemoglobin on F1 On logit scale', RSE 37.8%",
+  "etalcl/etalvc/etalvp", "3x3 block",   "fixed",     "$OMEGA BLOCK(3) FIX (variances 0.0867/0.0328/0.114)",
+  "etalka",               "34.6% SD",    "estimated", "Table 2 'POPIIV KA'",
+  "etalogitfdepot",       "83.0% SD",    "estimated", "Table 2 'POPIIV F1'",
+  "propSd",               "0.190",       "estimated", "Table 2 'Proportional error (%)'",
+  "addSd",                "15.4 ug/mL",  "estimated", "Table 2 'Additive error'"
+) |>
+  knitr::kable(caption = "Population PK model source trace. 'Table 2' and '$THETA/$PK/$OMEGA' both refer to Chan 2025 -- the control stream is supplementary file s002.CTL.")
+```
+
+```{r source_trace_er, echo = FALSE}
+tibble::tribble(
+  ~Model,                             ~Endpoint,                    ~Form,     ~`Source table`,
+  "Chan_2025_atezolizumab_sae",       "Serious adverse events",     "logistic","Table S10D",
+  "Chan_2025_atezolizumab_aeg35",     "Grade 3-5 adverse events",   "logistic","Table S10F",
+  "Chan_2025_atezolizumab_isr",       "Injection site reactions",   "logistic","Table S10G",
+  "Chan_2025_atezolizumab_pfs",       "Progression-free survival",  "Cox",     "Table S10B",
+  "Chan_2025_atezolizumab_os",        "Overall survival",           "Cox",     "Table S10C"
+) |>
+  knitr::kable(caption = "Exposure-response model source trace. Two further endpoints (ORR, AESI) are reported only as AIC and p-value and are therefore not packaged; see Errata.")
+```
+
+## Three structural readings that need the control stream
+
+Chan 2025 Table 2 is ambiguous in three places that the supplementary NONMEM
+control stream resolves. Each was read from `s002.CTL`, not guessed:
+
+1. **The categorical covariates are fractional, not exponential.** Table 2 calls
+   the ADA and sex effects an "additive effect", which could mean additive on
+   the log scale. The control stream writes `IF(ATAG.EQ.1) CLATAG=( 1 +
+   THETA(6))`, so an ADA-positive patient has `cl * 1.159`, **not**
+   `cl * exp(0.159) = cl * 1.172`.
+
+2. **Bioavailability lives on the logit scale and the covariate *multiplies*
+   the logit.** Table 2's row reads "Hemoglobin on F1 On logit scale (HGB/123 in
+   g/L) 1.76". The control stream shows what that means:
+
+   ```
+   LF1 = LOG(THETA(14)/(1-THETA(14)))
+   F1  = EXP(LF1*F1HGB + ETA(6)) / (1 + EXP(LF1*F1HGB + ETA(6)))
+   ```
+
+   with `F1HGB=((HGB/123)**THETA(19))`. So `1.76` is a power exponent on a
+   **multiplier of the logit**, not a slope added to it, and the eta adds to the
+   already-scaled logit.
+
+3. **Table 2 reports standard deviations; the control stream reports
+   variances.** `$OMEGA BLOCK(3) FIX` holds `0.0867 / 0.0328 / 0.114` on the
+   diagonal, whose square roots are exactly the 29.4% / 18.1% / 33.8% printed in
+   Table 2. The block also carries a **negative** CL-Vp covariance (-0.0234),
+   which is load-bearing and not a transcription slip.
+
+# Structural checks
+
+These are deterministic consequences of the parameter values, independent of any
+simulated cohort, so they are asserted exactly. Three of the four are checked
+against numbers the paper states in a *different* place from Table 2, which makes
+them genuine cross-validation rather than restatement.
+
+```{r structural_checks}
+mz <- rxode2::zeroRe(rxode2::rxode(popPK))
+
+typicalCov <- list(WT = 67.8, ALB = 40, TUMSZ = 79.5, ADA_POS = 0, SEXF = 0, HGB = 123)
+
+# Typical-patient secondary parameters, computed from the ini() values directly.
+cl <- 0.200 * (typicalCov$ALB / 40)^-1.12 * (typicalCov$TUMSZ / 63)^0.125 *
+  (typicalCov$WT / 77)^0.808
+vc <- 3.28 * (typicalCov$ALB / 40)^-0.350 * (typicalCov$WT / 77)^0.559
+vp <- 3.63
+q <- 0.546
+
+k10 <- cl / vc; k12 <- q / vc; k21 <- q / vp
+lambdaSum <- k10 + k12 + k21
+beta <- 0.5 * (lambdaSum - sqrt(lambdaSum^2 - 4 * k10 * k21))
+
+vss <- 3.28 + 3.63
+tHalfTerminal <- log(2) / beta
+f1Reference <- plogis(log(0.718 / (1 - 0.718)) * (123 / 123)^1.76)
+kaReference <- 0.304 * (40 / 40)^0.795
+```
+
+```{r structural_table, echo = FALSE}
+tibble::tribble(
+  ~Quantity,                       ~Simulated,          ~Published,  ~`Source of the published value`,
+  "Vss = Vc + Vp (L)",             vss,                 6.91,        "Introduction (independent of Table 2)",
+  "Terminal half-life (day)",      tHalfTerminal,       27,          "Introduction (independent of Table 2)",
+  "F1 at HGB = 123 g/L",           f1Reference,         0.718,       "Table 2",
+  "KA at ALB = 40 g/L (1/day)",    kaReference,         0.304,       "Table 2"
+) |>
+  dplyr::mutate(`% difference` = 100 * (Simulated - Published) / Published) |>
+  knitr::kable(digits = 4, caption = "Structural checks. Vss and the terminal half-life are stated in the Chan 2025 Introduction as properties of the historical model, so reproducing them from Table 2's four disposition values confirms the transcription independently.")
+```
+
+```{r structural_assertions}
+stopifnot(
+  # Exact: Vss is the sum of two transcribed values.
+  abs(vss - 6.91) < 1e-9,
+  # The paper rounds the terminal half-life to a whole number of days.
+  abs(tHalfTerminal - 27) < 1,
+  # Exact: at the reference covariate the multiplier is 1 by construction, so
+  # this fails loudly if the logit round-trip is mis-encoded.
+  abs(f1Reference - 0.718) < 1e-9,
+  abs(kaReference - 0.304) < 1e-9
+)
+```
+
+## Mass-balance identity
+
+For any linear model with elimination only from the central compartment, the
+integral of concentration over `[0, T]` obeys an identity that holds **exactly at
+any T**, with no steady-state or complete-absorption assumption:
+
+$$\mathrm{AUC}[0,T] \cdot \mathrm{CL} = \mathrm{dose\ absorbed} - \mathrm{amount\ remaining\ in\ the\ body}$$
+
+This is the strongest available check on the ODE wiring, the bioavailability
+target and the `Cc = central / vc` scaling all at once, because every term is
+computed by the solver rather than restated from the model file.
+
+```{r mass_balance}
+massBalance <- function(amt, cmt, tEnd = 60) {
+  ev <- rxode2::et(amt = amt, cmt = cmt) |> rxode2::et(seq(0, tEnd, by = 0.005))
+  d <- as.data.frame(ev)
+  for (nm in names(typicalCov)) d[[nm]] <- typicalCov[[nm]]
+  s <- rxode2::rxSolve(mz, d, returnType = "data.frame")
+  s <- s[!duplicated(s$time), ]
+  auc <- sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)
+  fdepot <- if (cmt == "depot") f1Reference else 1
+  absorbed <- amt * fdepot - tail(s$depot, 1)
+  remaining <- tail(s$central, 1) + tail(s$peripheral1, 1)
+  c(eliminated_from_auc = auc * cl, eliminated_by_balance = absorbed - remaining)
+}
+
+balance <- rbind(
+  `SC 1875 mg` = massBalance(1875, "depot"),
+  `IV 1200 mg` = massBalance(1200, "central")
+)
+balance <- cbind(balance,
+                 `relative error` = abs(balance[, 1] - balance[, 2]) / balance[, 2])
+knitr::kable(balance, digits = c(2, 2, 8),
+             caption = "Mass balance over 60 days (mg eliminated). The two columns are computed by independent routes.")
+
+stopifnot(all(balance[, "relative error"] < 1e-3))
+```
+
+# Covariate effects on Cycle-1 AUC~0-21d~
+
+Chan 2025 Figure 3 is a tornado plot of the isolated effect of each significant
+covariate on Cycle-1 AUC~0-21d~ after subcutaneous 1875 mg, referenced to a
+typical patient defined in the figure caption as "Male with treatment-emergent
+ADA-negative status, body weight of 67.8 kg, albumin level of 40 g/L, tumor
+burden of 79.5 mm, and hemoglobin level of 123 g/L".
+
+The figure itself is a raster panel, but the Results section states **one exact
+number** from it: the 5th-percentile albumin value of 26 g/L gives 77.9% of the
+typical AUC, and it is the only covariate effect falling outside 80-125%. That
+single anchor validates the albumin-on-CL, albumin-on-Vc and albumin-on-KA
+encodings simultaneously, because all three act at once.
+
+```{r auc_cycle1_fn}
+aucCycle1 <- function(cov, amt = 1875, cmt = "depot") {
+  ev <- rxode2::et(amt = amt, cmt = cmt) |> rxode2::et(seq(0, 21, by = 0.01))
+  d <- as.data.frame(ev)
+  for (nm in names(cov)) d[[nm]] <- cov[[nm]]
+  s <- rxode2::rxSolve(mz, d, returnType = "data.frame")
+  s <- s[!duplicated(s$time), ]
+  sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)
+}
+
+aucTypical <- aucCycle1(typicalCov)
+albuminLowAuc <- aucCycle1(modifyList(typicalCov, list(ALB = 26)))
+albuminLowPct <- 100 * albuminLowAuc / aucTypical
+```
+
+```{r albumin_anchor, echo = FALSE}
+cat(sprintf(
+  "Isolated albumin effect at the 5th percentile (26 g/L): %.1f%% of typical\nChan 2025 Results states:                                 77.9%%\n",
+  albuminLowPct))
+```
+
+```{r albumin_anchor_assert}
+# Reproducibly within ~2 percentage points. The residual gap is expected: the
+# published figure was computed over the actual 246-patient cohort, this is a
+# single typical patient. A mis-transcribed albumin exponent moves this by tens
+# of percentage points -- e.g. dropping the Vc or KA term alone shifts it past 80%.
+stopifnot(abs(albuminLowPct - 77.9) < 5)
+```
+
+```{r tornado, echo = FALSE, fig.height = 4}
+# The paper does not print the 5th/95th percentiles for the other covariates, so
+# the ranges below are the Table 1 cohort-5 medians perturbed to plausible
+# 5th/95th values; only the albumin point is a published anchor.
+tornadoSpec <- tibble::tribble(
+  ~Covariate,        ~Low,  ~High,  ~Field,
+  "Albumin (g/L)",     26,     46,  "ALB",
+  "Body weight (kg)",  48,     95,  "WT",
+  "Tumor burden (mm)", 20,    200,  "TUMSZ",
+  "Hemoglobin (g/L)",  95,    150,  "HGB"
+)
+tornado <- tornadoSpec |>
+  rowwise() |>
+  mutate(
+    `5th percentile`  = 100 * aucCycle1(modifyList(typicalCov, setNames(list(Low), Field))) / aucTypical,
+    `95th percentile` = 100 * aucCycle1(modifyList(typicalCov, setNames(list(High), Field))) / aucTypical
+  ) |>
+  ungroup()
+
+categorical <- tibble::tibble(
+  Covariate = c("ADA-positive", "Female"),
+  `5th percentile` = c(
+    100 * aucCycle1(modifyList(typicalCov, list(ADA_POS = 1))) / aucTypical,
+    100 * aucCycle1(modifyList(typicalCov, list(SEXF = 1))) / aucTypical
+  )
+) |>
+  mutate(`95th percentile` = `5th percentile`)
+
+tornadoAll <- bind_rows(tornado |> select(Covariate, `5th percentile`, `95th percentile`), categorical)
+
+tornadoAll |>
+  pivot_longer(-Covariate, names_to = "Level", values_to = "Percent") |>
+  ggplot(aes(x = Percent, y = Covariate, colour = Level)) +
+  geom_vline(xintercept = c(80, 100, 125), linetype = c(2, 1, 2), colour = "grey50") +
+  geom_point(size = 3) +
+  labs(x = "Cycle-1 AUC(0-21d) relative to the typical patient (%)", y = NULL,
+       title = "Replicates Chan 2025 Figure 3 (tornado plot)",
+       subtitle = "Dashed lines at 80% and 125%; only the albumin 5th-percentile point is a published anchor") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+The reproduced pattern matches the paper's claim that every covariate effect
+falls inside 80-125% **except** the low-albumin extreme.
+
+# Virtual cohort
+
+Original patient data are not public. The cohorts below reproduce the Table 1
+marginal distributions of the two phase III arms. Chan 2025 reports only
+median [min, max] for the continuous covariates, so a log-normal shape was
+assumed and truncated to the published range -- see Assumptions.
+
+The simulated cohort is capped at 200 subjects for the subcutaneous arm; the
+intravenous arm uses the true N = 122.
+
+```{r cohort}
+rxode2::rxSetSeed(20250413)
+
+nSC <- 200L
+nIV <- 122L
+
+drawCohort <- function(n, wtMed, wtRange, tbMed, tbRange, albMed, albRange,
+                       hgbMed, hgbRange, femalePct, adaPosPct, idOffset) {
+  truncLnorm <- function(n, med, rng, cv) {
+    x <- stats::rlnorm(n, log(med), sqrt(log(cv^2 + 1)))
+    pmin(pmax(x, rng[1]), rng[2])
+  }
+  tibble::tibble(
+    id      = idOffset + seq_len(n),
+    WT      = truncLnorm(n, wtMed,  wtRange,  0.20),
+    TUMSZ   = truncLnorm(n, tbMed,  tbRange,  0.60),
+    ALB     = truncLnorm(n, albMed, albRange, 0.12),
+    HGB     = truncLnorm(n, hgbMed, hgbRange, 0.13),
+    SEXF    = stats::rbinom(n, 1, femalePct / 100),
+    ADA_POS = stats::rbinom(n, 1, adaPosPct / 100)
+  )
+}
+
+# Ranges are the Table 1 min/max, EXCEPT that the physiologically implausible
+# low-albumin and high-hemoglobin extremes are replaced by the source control
+# stream's own guards (ALB < 5 g/L and HGB > 1000 g/L are recoded to missing and
+# imputed), so the truncation bounds below mirror what actually reached the fit.
+cohortSC <- drawCohort(nSC, 67.8, c(30.0, 117), 79.5, c(10.0, 319),
+                       40.0, c(20.0, 51.0), 123, c(79.0, 180),
+                       femalePct = 29.3, adaPosPct = 17.5, idOffset = 0L)
+cohortIV <- drawCohort(nIV, 69.1, c(34.6, 114), 68.5, c(14.0, 245),
+                       41.2, c(20.0, 53.6), 122, c(87.0, 180),
+                       femalePct = 34.4, adaPosPct = 12.3, idOffset = 1000L)
+```
+
+```{r cohort_summary, echo = FALSE}
+bind_rows(mutate(cohortSC, arm = "SC 1875 mg"), mutate(cohortIV, arm = "IV 1200 mg")) |>
+  group_by(arm) |>
+  summarise(N = n(), across(c(WT, TUMSZ, ALB, HGB), median),
+            `Female %` = 100 * mean(SEXF), `ADA+ %` = 100 * mean(ADA_POS), .groups = "drop") |>
+  knitr::kable(digits = 1, caption = "Simulated cohort medians; compare with the Chan 2025 Table 1 column above.")
+```
+
+# Simulation
+
+Ten Q3W cycles are simulated so that both the Cycle-1 and the Cycle-10
+(steady-state) windows the paper reports are available from one solve. The
+observation grid is deliberately dense over the first two days -- a coarse grid
+would let the linear-trapezoid rule overestimate the intravenous AUC across the
+steep distribution phase, which is a plausible mechanism for one of the
+deviations discussed below.
+
+```{r simulate}
+rxode2::rxSetSeed(20250414)
+
+buildEvents <- function(cohort, amt, cmt) {
+  # Dense early, sparse mid-course, dense again across the steady-state cycle.
+  # Interval STARTS (0 and 189) are dose days, and the record rxode2 returns
+  # there is the post-dose value -- which is what an AUC starting at the dose
+  # needs. Interval ENDS must NOT be dose days: an observation placed exactly at
+  # day 21 comes back AFTER the second dose has landed, which for the
+  # intravenous arm makes it the largest concentration in the window and would
+  # silently corrupt both Cmax and Ctrough. The windows therefore close at
+  # 20.999 and 209.999, and the sparse mid-course grid skips dose days.
+  obsTimes <- sort(unique(c(
+    seq(0, 2, by = 0.05), seq(2, 20.75, by = 0.25), 20.999,
+    seq(28, 182, by = 7),
+    189, seq(189.25, 209.75, by = 0.25), 209.999
+  )))
+  dose <- tidyr::expand_grid(id = cohort$id, time = seq(0, 189, by = 21)) |>
+    mutate(amt = amt, evid = 1L, cmt = cmt)
+  obs <- tidyr::expand_grid(id = cohort$id, time = obsTimes) |>
+    # Observe the ODE STATE, never the algebraic observable: rxode2 returns Cc
+    # as a column on these rows.
+    mutate(amt = NA_real_, evid = 0L, cmt = "central")
+  bind_rows(dose, obs) |>
+    arrange(id, time, desc(evid)) |>
+    left_join(cohort, by = "id")
+}
+
+simSC <- rxode2::rxSolve(rxode2::rxode(popPK), buildEvents(cohortSC, 1875, "depot"),
+                         returnType = "data.frame") |> mutate(treatment = "SC 1875 mg")
+
+rxode2::rxSetSeed(20250415)
+simIV <- rxode2::rxSolve(rxode2::rxode(popPK), buildEvents(cohortIV, 1200, "central"),
+                         returnType = "data.frame") |> mutate(treatment = "IV 1200 mg")
+
+sim <- bind_rows(simSC, simIV)
+```
+
+```{r profile_plot, echo = FALSE, fig.height = 4.5}
+sim |>
+  filter(time <= 63) |>
+  group_by(treatment, time) |>
+  summarise(median = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95),
+            .groups = "drop") |>
+  ggplot(aes(time, median, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.18, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "Atezolizumab serum concentration (ug/mL)",
+       title = "Simulated concentration-time profiles, first three cycles",
+       subtitle = "Median with 5th-95th percentile band; compare with Chan 2025 Figure 2 pcVPC") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+The subcutaneous arm shows the flat, delayed peak the paper describes (median
+T~max~ around 4.5 days) and the lower, more variable exposure that the
+Discussion attributes to "the additional variability from absorption
+parameters".
+
+# PKNCA validation
+
+NCA is run over two intervals from the same solve: Cycle 1 (`[0, 21]`) and the
+steady-state Cycle 10 (`[189, 210]`).
+
+```{r pknca}
+# rxSolve returns ONLY the observation grid -- there is no `evid` column in its
+# output and dose records are not echoed back -- so the concentration frame needs
+# no evid filter, and the dose frame is rebuilt from the schedule that was fed in.
+# The filter is `!is.na(Cc)` alone: adding `time > 0` or `Cc > 0` would drop the
+# time-zero row and trigger PKNCA's "AUC range starting before the first
+# measurement" warning for every subject.
+concData <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+
+doseData <- bind_rows(
+  tidyr::expand_grid(id = cohortSC$id, time = seq(0, 189, by = 21)) |>
+    mutate(amt = 1875, treatment = "SC 1875 mg"),
+  tidyr::expand_grid(id = cohortIV$id, time = seq(0, 189, by = 21)) |>
+    mutate(amt = 1200, treatment = "IV 1200 mg")
+)
+
+# Defensive: PKNCA needs a time-zero record in each interval it integrates.
+stopifnot(all(c(0, 189) %in% concData$time))
+
+conc_obj <- PKNCA::PKNCAconc(concData, Cc ~ time | treatment + id,
+                             concu = "ug/mL", timeu = "day")
+dose_obj <- PKNCA::PKNCAdose(doseData, amt ~ time | treatment + id,
+                             doseu = "mg")
+
+intervals <- data.frame(
+  start   = c(0, 189),
+  end     = c(20.999, 209.999),
+  cmax    = TRUE,
+  tmax    = TRUE,
+  auclast = TRUE
+)
+
+ncaResult <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+geoMean <- function(x) exp(mean(log(x[x > 0 & is.finite(x)])))
+
+ncaWide <- as.data.frame(ncaResult) |>
+  mutate(cycle = ifelse(start == 0, "Cycle 1", "Steady state")) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "auclast")) |>
+  group_by(treatment, cycle, PPTESTCD) |>
+  # Geometric mean for concentrations and AUC, median for Tmax -- matching the
+  # summary statistic Chan 2025 Table S5B reports for each.
+  summarise(value = if (first(PPTESTCD) == "tmax") median(PPORRES) else geoMean(PPORRES),
+            .groups = "drop")
+
+# Ctrough is read directly off the solve at the end of the dosing interval
+# rather than through PKNCA. It is a single-timepoint readout rather than a
+# derived NCA quantity, and PKNCA's `ctrough` returns NA for the steady-state
+# window here because its end does not coincide with a dose record.
+troughWide <- sim |>
+  filter(abs(time - 20.999) < 1e-6 | abs(time - 209.999) < 1e-6) |>
+  mutate(cycle = ifelse(time < 100, "Cycle 1", "Steady state")) |>
+  group_by(treatment, cycle) |>
+  summarise(PPTESTCD = "ctrough", value = geoMean(Cc), .groups = "drop")
+
+ncaWide <- bind_rows(ncaWide, troughWide)
+stopifnot(!any(is.na(ncaWide$value)))
+```
+
+```{r pknca_table, echo = FALSE}
+ncaWide |>
+  pivot_wider(names_from = PPTESTCD, values_from = value) |>
+  dplyr::rename("Treatment" = treatment, "Cycle" = cycle, "Cmax (ug/mL)" = cmax,
+                "Tmax (day)" = tmax, "Ctrough (ug/mL)" = ctrough,
+                "AUC (ug*day/mL)" = auclast) |>
+  knitr::kable(digits = 1, caption = "Simulated NCA. Geometric means except Tmax (median), matching Chan 2025 Table S5B.")
+```
+
+# Comparison against the published exposure metrics
+
+```{r comparison}
+simulatedLong <- ncaWide |>
+  select(treatment, cycle, PPTESTCD, PPORRES = value)
+
+published <- tibble::tribble(
+  ~treatment,     ~cycle,          ~cmax, ~tmax, ~ctrough, ~auclast,
+  "SC 1875 mg",   "Cycle 1",         189,   4.5,     97.2,     2907,
+  "SC 1875 mg",   "Steady state",    376,    NA,      205,     6163,
+  "IV 1200 mg",   "Cycle 1",         438,    NA,     88.7,     3328,
+  "IV 1200 mg",   "Steady state",    626,    NA,      179,     6107
+) |>
+  pivot_longer(c(cmax, tmax, ctrough, auclast), names_to = "PPTESTCD", values_to = "PPORRES") |>
+  filter(!is.na(PPORRES))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulatedLong,
+  reference = published,
+  by = c("treatment", "cycle"),
+  units = c(cmax = "ug/mL", tmax = "day", ctrough = "ug/mL", auclast = "ug*day/mL"),
+  tolerance_pct = 20
+)
+
+cmp |>
+  dplyr::rename("Treatment" = treatment, "Cycle" = cycle) |>
+  knitr::kable(
+    digits = 1,
+    caption = paste(
+      "Simulated NCA versus Chan 2025 Table S5B geometric means.",
+      "* differs from the published value by more than 20%."
+    )
+  )
+```
+
+```{r comparison_assertions}
+# ncaComparisonTable() returns FORMATTED character columns for display, so the
+# assertions below recompute the differences from the numeric frames.
+pctDiff <- published |>
+  dplyr::rename(reference = PPORRES) |>
+  dplyr::inner_join(dplyr::rename(simulatedLong, simulated = PPORRES),
+                    by = c("treatment", "cycle", "PPTESTCD")) |>
+  mutate(pct = 100 * (simulated - reference) / reference)
+
+scDiff <- pctDiff |> filter(treatment == "SC 1875 mg")
+ivTrough <- pctDiff |>
+  filter(treatment == "IV 1200 mg", PPTESTCD == "ctrough", cycle == "Cycle 1")
+stopifnot(nrow(scDiff) == 7L, nrow(ivTrough) == 1L, !any(is.na(pctDiff$pct)))
+
+# Bounds are set well outside the spread observed across repeated renders at
+# different solver thread counts (rxSetSeed fixes the draw per thread count, not
+# across them). Realised values on the runs used to set them: SC median -0.5%,
+# SC 80th percentile of |diff| 5.3%, IV Cycle-1 trough -4.1%, worst row 11.4%.
+# The bounds retain real discriminating power: a mis-transcribed F1, KA, dose,
+# volume or unit moves these by tens of percent, and dropping the albumin term
+# alone moves the AUC rows past 20%.
+stopifnot(
+  # The subcutaneous arm is the layer Chan 2025 actually estimated. Assert on
+  # the CENTRE of its distribution, not on any single extreme row.
+  abs(median(scDiff$pct)) < 15,
+  # Robust envelope rather than max(), which would race the cohort draw.
+  quantile(abs(scDiff$pct), 0.8) < 20,
+  # The intravenous Cycle-1 trough is the cleanest single cross-check available:
+  # no bioavailability, no absorption, and no peak-selection or interpolation.
+  abs(ivTrough$pct) < 20,
+  # No published statistic is missed by more than a quarter, in either arm.
+  max(abs(pctDiff$pct)) < 25
+)
+```
+
+## What reproduces
+
+All thirteen published statistics reproduce, none of them starred at the 20%
+tolerance. The subcutaneous arm -- the layer Chan 2025 actually estimated --
+lands within a few percent on every Cycle-1 metric, including T~max~, which is
+the most direct check on the absorption rate constant, and the Cycle-1 AUC that
+served as the study's co-primary endpoint.
+
+A note on the intravenous C~max~, because it is the one place where the
+published value sits close to an arithmetic limit. For a dose delivered into the
+central compartment, an individual patient's C~max~ is exactly `dose / Vc`, and
+for a patient at the cohort-4 median covariates that is:
+
+```{r cmax_ceiling}
+vcCohortIV <- 3.28 * (41.2 / 40)^-0.350 * (69.1 / 77)^0.559
+cat(sprintf("Typical cohort-4 patient: Vc = %.4f L, so dose/Vc = %.1f ug/mL\n",
+            vcCohortIV, 1200 / vcCohortIV))
+cat(sprintf("Chan 2025 Table S5B geometric mean = 438 ug/mL\n"))
+```
+
+The published geometric mean sits about 11% above the typical patient's value.
+A cohort geometric mean *can* exceed it, because it equals `dose` divided by the
+geometric mean of the individual volumes and the covariate distribution need not
+be symmetric on the log scale -- and indeed the simulated cohort here reproduces
+roughly half of that gap on its own. The transcription of Vc is independently
+confirmed twice over: the Introduction states Vss = 6.91 L, which is exactly
+`3.28 + 3.63`, and the intravenous Cycle-1 trough reproduces to within a few
+percent. The residual difference is a property of the unpublished covariate
+distribution, not of the model file.
+
+# Exposure-response
+
+The paper's headline exposure-response result is a **negative** one: across
+three efficacy and four safety endpoints, no exposure metric was statistically
+significant. Packaging these models makes that null reproducible.
+
+```{r er_load}
+erSummary <- tibble::tribble(
+  ~Model,                          ~Endpoint,                   ~`Exposure metric`,   ~`Exposure coefficient`, ~`p-value`,
+  "Chan_2025_atezolizumab_sae",    "Serious adverse events",    "Cmax (per 100)",     0.210,                   "0.441",
+  "Chan_2025_atezolizumab_aeg35",  "Grade 3-5 adverse events",  "AUC0-21d (per 1000)", 0.0879,                 "0.602",
+  "Chan_2025_atezolizumab_isr",    "Injection site reactions",  "AUC0-21d (per 1000)", 0.581,                  "0.0793",
+  "Chan_2025_atezolizumab_pfs",    "Progression-free survival", "Ctrough (per 10)",   -0.002,                  "ns",
+  "Chan_2025_atezolizumab_os",     "Overall survival",          "AUC0-21d (per 1000)", 0.134,                  "ns"
+)
+knitr::kable(erSummary, caption = "Every packaged exposure-response model carries a non-significant exposure term. Chan 2025 Tables S10B-S10G.")
+```
+
+## Safety probability across the observed exposure range
+
+The three logistic models are evaluated across the Cycle-1 exposure range that
+cohort 5 actually spanned (Chan 2025 Table S5B), holding CRP at a representative
+value.
+
+```{r er_logistic, fig.height = 4}
+# These models are purely algebraic -- no ODE, no dose, no time dimension -- so
+# the covariate grid is swept along a dummy `time` axis for a single subject,
+# one row per grid point. Scalars are recycled to the grid length.
+solveStatic <- function(modelName, covs) {
+  n <- max(vapply(covs, length, integer(1)))
+  ev <- data.frame(id = 1L, time = seq_len(n), amt = 0, evid = 0L)
+  for (nm in names(covs)) ev[[nm]] <- rep_len(covs[[nm]], n)
+  s <- as.data.frame(rxode2::rxSolve(
+    rxode2::zeroRe(rxode2::rxode(readModelDb(modelName))),
+    events = ev, returnType = "data.frame"
+  ))
+  stopifnot(nrow(s) == n)
+  s
+}
+
+aucGrid <- seq(666, 6572, length.out = 60)      # Table S5B min-max for cohort 5
+cmaxGrid <- seq(44.8, 514, length.out = 60)
+crpTypical <- 10                                 # representative; see Assumptions
+
+erCurves <- bind_rows(
+  tibble::tibble(
+    Endpoint = "Serious adverse events",
+    Exposure = cmaxGrid / max(cmaxGrid),
+    Probability = solveStatic("Chan_2025_atezolizumab_sae",
+                              list(CMAX = cmaxGrid, CRP = crpTypical))$prob_sae
+  ),
+  tibble::tibble(
+    Endpoint = "Grade 3-5 adverse events",
+    Exposure = aucGrid / max(aucGrid),
+    Probability = solveStatic("Chan_2025_atezolizumab_aeg35",
+                              list(AUC_ATEZO = aucGrid, CRP = crpTypical))$prob_aeg35
+  ),
+  tibble::tibble(
+    Endpoint = "Injection site reactions",
+    Exposure = aucGrid / max(aucGrid),
+    Probability = solveStatic("Chan_2025_atezolizumab_isr",
+                              list(AUC_ATEZO = aucGrid, RACE_HISPANIC = 0,
+                                   RACE_HISPANIC_MISSING = 0))$prob_isr
+  )
+)
+
+ggplot(erCurves, aes(Exposure, Probability, colour = Endpoint)) +
+  geom_line(linewidth = 0.9) +
+  scale_y_continuous(limits = c(0, NA), labels = scales::percent) +
+  labs(x = "Cycle-1 exposure, scaled to the cohort maximum", y = "Predicted event probability",
+       title = "Replicates the flat exposure-safety relationships of Chan 2025 Figure S5",
+       subtitle = "None of the three exposure slopes is statistically significant") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+```{r er_swing}
+# The paper's claim is that these relationships are FLAT, so the assertion is on
+# the MAGNITUDE of the change across the whole observed exposure range, not on
+# the sign of any slope (all three slopes are positive as printed, but a sign
+# assertion on a null effect is exactly the CI-fragile shape to avoid).
+erRange <- erCurves |>
+  group_by(Endpoint) |>
+  summarise(swing = max(Probability) - min(Probability), .groups = "drop")
+
+knitr::kable(erRange, digits = 3,
+             caption = "Absolute change in predicted event probability across the full observed Cycle-1 exposure range.")
+```
+
+The strongest available check on these three models is a **round trip through
+the printed odds ratios**. Each model is solved at two exposures differing by
+exactly one of the units its source table reports the coefficient in, and the
+resulting odds ratio is compared against the published value. This exercises the
+`/100` and `/1000` rescalings inside `model()`, which a swing bound would not:
+getting a divisor wrong moves the odds ratio by orders of magnitude.
+
+```{r er_odds_ratios}
+oddsRatio <- function(modelName, output, covName, lowValue, highValue, extra = list()) {
+  p <- solveStatic(modelName, c(setNames(list(c(lowValue, highValue)), covName), extra))[[output]]
+  (p[2] / (1 - p[2])) / (p[1] / (1 - p[1]))
+}
+
+orCheck <- tibble::tribble(
+  ~Endpoint,                   ~Unit,                     ~Recovered,                                                      ~Published,
+  "Serious adverse events",    "per 100 ug/mL Cmax",      oddsRatio("Chan_2025_atezolizumab_sae", "prob_sae", "CMAX",
+                                                                    100, 200, list(CRP = crpTypical)),                     1.23,
+  "Grade 3-5 adverse events",  "per 1000 ug*day/mL AUC",  oddsRatio("Chan_2025_atezolizumab_aeg35", "prob_aeg35", "AUC_ATEZO",
+                                                                    2000, 3000, list(CRP = crpTypical)),                   1.09,
+  "Injection site reactions",  "per 1000 ug*day/mL AUC",  oddsRatio("Chan_2025_atezolizumab_isr", "prob_isr", "AUC_ATEZO",
+                                                                    2000, 3000, list(RACE_HISPANIC = 0,
+                                                                                     RACE_HISPANIC_MISSING = 0)),          1.79
+)
+
+orCheck |>
+  mutate(`% difference` = 100 * (Recovered - Published) / Published) |>
+  knitr::kable(digits = 3, caption = "Odds ratios recovered from the solved models versus Chan 2025 Tables S10D, S10F and S10G.")
+```
+
+```{r er_assertions}
+stopifnot(
+  # Deterministic -- exact functions of the printed coefficients, so a strict
+  # tolerance is safe here. The published odds ratios are given to three
+  # significant figures, so 1% covers the rounding and nothing else.
+  all(abs(100 * (orCheck$Recovered - orCheck$Published) / orCheck$Published) < 1),
+  # The paper's "flat ER" conclusion, quantified: across the FULL observed
+  # Cycle-1 exposure range -- roughly a ten-fold span -- no endpoint's predicted
+  # probability moves by more than 40 absolute percentage points, and none
+  # approaches certainty. Injection site reactions carry much the largest slope
+  # (a swing of about 0.32) and are the one endpoint whose p-value, 0.0793,
+  # comes close to significance.
+  all(erRange$swing < 0.40),
+  all(erCurves$Probability > 0), all(erCurves$Probability < 0.5)
+)
+```
+
+## Cox relative hazards
+
+Both time-to-event models return a relative hazard only; no baseline hazard is
+encoded, because a Cox regression never produces one. The check below confirms
+that the exposure term is negligible relative to the prognostic covariates --
+the paper's actual finding.
+
+```{r cox}
+pfsRef <- list(CTROUGH = 97.2, AGE = 64, WT = 67.8, ALB = 40, LMET = 0, NLR = 3,
+               HEPIMP_MILD = 0, HEPIMP_MOD = 0)
+osRef <- list(AUC_ATEZO = 2907, ALB = 40, LDH = 220, CRP = 10, NLR = 3,
+              HEPIMP_MILD = 0, HEPIMP_MOD = 0)
+
+hazardRatio <- function(modelName, ref, changes) {
+  base <- solveStatic(modelName, ref)$hr
+  vapply(names(changes), function(nm) {
+    solveStatic(modelName, modifyList(ref, changes[nm]))$hr / base
+  }, numeric(1))
+}
+
+pfsHR <- hazardRatio("Chan_2025_atezolizumab_pfs",
+                     pfsRef,
+                     list(CTROUGH = 218, ALB = 26, LMET = 1, HEPIMP_MILD = 1))
+osHR <- hazardRatio("Chan_2025_atezolizumab_os",
+                    osRef,
+                    list(AUC_ATEZO = 6572, ALB = 26, LDH = 500, HEPIMP_MILD = 1))
+```
+
+```{r cox_table, echo = FALSE}
+bind_rows(
+  tibble::tibble(Model = "PFS", Change = c("Ctrough 97.2 -> 218 ug/mL", "Albumin 40 -> 26 g/L",
+                                           "Liver metastases present", "Mild hepatic impairment"),
+                 `Hazard ratio` = as.numeric(pfsHR)),
+  tibble::tibble(Model = "OS", Change = c("AUC0-21d 2907 -> 6572", "Albumin 40 -> 26 g/L",
+                                          "LDH 220 -> 500 U/L", "Mild hepatic impairment"),
+                 `Hazard ratio` = as.numeric(osHR))
+) |>
+  knitr::kable(digits = 3,
+               caption = "Relative hazards for a move across the observed range of each covariate. The exposure move spans the full cohort range and is by far the smallest effect in each model.")
+```
+
+```{r cox_assertions}
+# Deterministic. The exposure effect across its FULL observed range is smaller
+# than the albumin effect across ITS full observed range, in both models -- the
+# quantitative statement behind "exposure was not a statistically significant
+# covariate". These are exact functions of printed coefficients, so a strict
+# comparison is safe here (contrast with cohort-derived quantities above).
+stopifnot(
+  abs(log(pfsHR[["CTROUGH"]])) < abs(log(pfsHR[["ALB"]])),
+  abs(log(osHR[["AUC_ATEZO"]])) < abs(log(osHR[["ALB"]])),
+  # Sanity on direction for the covariates the paper DOES call significant.
+  pfsHR[["ALB"]] > 1, pfsHR[["LMET"]] > 1, osHR[["LDH"]] > 1
+)
+```
+
+## Why the ORR and AESI models are not packaged
+
+Chan 2025 Tables S10A and S10E report only an AIC and a p-value for the
+objective-response-rate and adverse-event-of-special-interest models; no
+coefficient is printed, so neither can be encoded. This is a **reporting gap in
+the source**, not a transcription gap, and the check below demonstrates that the
+gap is real rather than something recoverable.
+
+The reference (intercept-only) ORR model **can** be recovered exactly, because
+an intercept-only logistic fit has a closed-form maximum-likelihood solution at
+the observed response rate. Table S9A gives the response counts by exposure
+quartile:
+
+```{r orr_backsolve}
+orrYes <- c(6, 10, 8, 5)      # Chan 2025 Table S9A, ORR "Yes" row across quartiles
+orrNo  <- c(50, 42, 45, 47)   # Chan 2025 Table S9A, ORR "No" row
+nYes <- sum(orrYes); nNo <- sum(orrNo); nTot <- nYes + nNo
+
+pHat <- nYes / nTot
+logLik <- nYes * log(pHat) + nNo * log(1 - pHat)
+aicRecovered <- 2 * 1 - 2 * logLik
+
+cat(sprintf("Evaluable patients          : %d (%d responders)\n", nTot, nYes))
+cat(sprintf("Recovered intercept         : %.4f  (logit of %.4f)\n", log(pHat / (1 - pHat)), pHat))
+cat(sprintf("Recovered AIC               : %.1f\n", aicRecovered))
+cat(sprintf("Chan 2025 Table S10A reports: 171.5\n"))
+
+# Exact closed-form identity: this recovers the paper's printed AIC to within
+# rounding, confirming both the Table S9A counts and the reference-model form.
+stopifnot(abs(aicRecovered - 171.5) < 0.05)
+```
+
+The reference model is therefore fully recovered -- but the **exposure**
+coefficient the paper added to it is not printed anywhere, and Table S10A gives
+only `AIC = 173.5` and `p = 0.912` for the AUC~0-21d~ model. A one-parameter
+model cannot be reconstructed from an AIC and a p-value alone, so the ORR
+exposure-response model is deliberately absent from the package.
+
+# Assumptions and deviations
+
+**Assumptions made because the paper does not state them.**
+
+1. **Covariate distribution shape.** Chan 2025 Table 1 reports median [min, max]
+   only. The virtual cohort assumes log-normal marginals with coefficients of
+   variation of 20% (weight), 60% (tumor burden), 12% (albumin) and 13%
+   (hemoglobin), truncated to the published range. Covariates are drawn
+   independently; the true correlations (weight with sex, albumin with tumor
+   burden) are not reported.
+2. **Albumin and hemoglobin truncation bounds.** The Table 1 extremes (albumin
+   3.86 g/L, hemoglobin 1440 g/L) are physiologically implausible recorded
+   values. The source `$PK` block recodes albumin below 5 g/L and hemoglobin
+   above 1000 g/L to a missing sentinel and imputes them, so the cohort here is
+   truncated to values that could actually have reached the likelihood.
+3. **ADA missingness.** 10.6% (SC) and 11.5% (IV) of patients have a missing
+   treatment-emergent ADA status. Chan 2025 Methods imputes missing categorical
+   covariates to the mode, which is ADA-negative, and the control stream reads
+   an already-imputed column (`ATAG=ATAGIM`). The cohort therefore draws
+   `ADA_POS` at the reported positive rate with missing patients treated as
+   negative.
+4. **CRP reference value in the exposure-response figures.** CRP = 10 mg/L is
+   used as a representative value; Chan 2025 does not report the cohort-5 CRP
+   distribution. CRP shifts the curves vertically but not their slope, and the
+   packaged models carry the coefficient exactly as printed.
+5. **Tornado ranges other than albumin.** Only the albumin 5th percentile
+   (26 g/L) is a published anchor. The 5th/95th values used for weight, tumor
+   burden and hemoglobin are plausible values consistent with Table 1, and the
+   corresponding points in the tornado figure are illustrative rather than
+   validated.
+
+**Deliberate deviations from the convention checker.**
+
+6. **Non-canonical observation variables in the logistic models.**
+   `checkModelConventions()` warns that `prob_sae`, `prob_aeg35` and `prob_isr`
+   are not the canonical `Cc`. This is the established repository pattern for
+   Bernoulli-likelihood exposure-response models (compare
+   `Liu_2024_saf189s_proteinuria.R`, which emits the same warning) -- the output
+   is a probability, not a drug concentration, and naming it `Cc` would be
+   actively misleading.
+7. **Placeholder residual error in the logistic models.** Each carries
+   `addSd_prob_* <- fixed(0.001)`. The source likelihood is Bernoulli and
+   estimates no residual; the term exists only because rxode2 requires an
+   observation declaration. It is not a source-derived value and is flagged as
+   such in the model files.
+
+**Errata and source inconsistencies.**
+
+8. **Albumin units in Table S10C.** The overall-survival Cox table labels
+   albumin "g/dL"; the companion progression-free-survival table (S10B) labels
+   the identical covariate from the identical merged dataset "g/L". The models
+   here encode **g/L** in both. Three independent arguments fix the scale: the
+   analysis dataset's albumin column is g/L throughout the paper (Table 1
+   cohort medians 39.0-41.2 g/L; the population PK model normalises to a 40 g/L
+   reference); the two coefficients (-0.062 and -0.082) are of the same order,
+   which is impossible if they were on scales differing by a factor of ten; and
+   the sibling rows in Table S10C are SI throughout ("LDH (100 U/L)", "CRP
+   (10 mg/L)"). The "g/dL" label is an isolated typographical slip.
+9. **Interval boundaries relative to dose records.** Not a source erratum but a
+   reproduction hazard worth recording: an observation placed exactly at day 21
+   is returned by rxode2 *after* the second dose has been applied, which for the
+   intravenous arm makes it the largest concentration in the Cycle-1 window. The
+   NCA windows here therefore close at 20.999 and 209.999 days. Ending them at
+   21 and 210 instead silently inflates the intravenous Cycle-1 C~max~ by about
+   14% and turns C~trough~ into a post-dose peak -- an error large enough to
+   matter but small enough to look plausible.
+10. **The sensitivity-analysis model is not packaged.** Chan 2025 also fitted an
+    alternative model to Cycle-1 phase III data alone, with all parameters
+    estimated and an absorption lag (Table S8: CL 0.217 L/day, Vc 2.74 L,
+    Vp 1.80 L, Q 0.547 L/day, KA 0.373 1/day, F1 0.609, LAG 0.109 day). It is a
+    **robustness check, not a reported final model** -- the paper's conclusion is
+    that it "provided confidence in the individual exposure metrics derived from
+    the original extended model" -- so per the library's
+    replicate-the-author's-structure policy it is excluded. Note also that
+    Table S8's caption claims all variability terms are on the standard-deviation
+    scale, but its residual row (PROP 0.0269, ADD 199) is on the **variance**
+    scale: the square roots, 16.4% and 14.1 ug/mL, sit beside the main model's
+    19.0% and 15.4 ug/mL, whereas the printed values would imply a 2.7%
+    proportional error and a 199 ug/mL additive error.
+11. **Two exposure-response endpoints are unreported.** See "Why the ORR and
+    AESI models are not packaged" above.
+12. **Infusion duration.** The intravenous doses are simulated as bolus inputs
+    into the central compartment. Atezolizumab is administered as a 30-60 minute
+    infusion, and the source control stream carries `DUR` and `RATE` columns, but
+    no infusion duration is reported in the paper. Over a 21-day interval the
+    effect on AUC is negligible; it would slightly lower C~max~.
+
+# Session info
+
+```{r session_info}
+sessionInfo()
+```

@@ -168,11 +168,11 @@ Garcia_2025_garadacimab_hae_attack <- function() {
     # are tabulated as power EXPONENTS, categorical covariates as
     # back-transformed FOLD CHANGES).
     # ------------------------------------------------------------------
-    lcl <- log(0.00664); label("Clearance at reference covariates (CL, L/h)")                    # Table S4 final model CL = 0.00664 L/h
-    lvc <- log(2.37);    label("Central volume of distribution at reference weight (V2, L)")     # Table S4 final model V2 = 2.37 L
-    lq  <- log(0.00685); label("Intercompartmental clearance at reference weight (Q, L/h)")      # Table S4 final model Q = 0.00685 L/h
-    lvp <- log(1.41);    label("Peripheral volume of distribution at reference weight (V3, L)")  # Table S4 final model V3 = 1.41 L
-    lka <- log(0.00824); label("First-order subcutaneous absorption rate constant (ka, 1/h)")    # Table S4 final model ka = 0.00824 1/h
+    lcl <- log(0.00664); label("Clearance at reference covariates (L/h)")                    # Table S4 final model CL = 0.00664 L/h
+    lvc <- log(2.37);    label("Central volume of distribution at reference weight (L)")     # Table S4 final model V2 = 2.37 L
+    lq  <- log(0.00685); label("Intercompartmental clearance at reference weight (L/h)")      # Table S4 final model Q = 0.00685 L/h
+    lvp <- log(1.41);    label("Peripheral volume of distribution at reference weight (L)")  # Table S4 final model V3 = 1.41 L
+    lka <- log(0.00824); label("First-order subcutaneous absorption rate constant (1/h)")    # Table S4 final model ka = 0.00824 1/h
 
     logitfdepot <- log(0.387 / (1 - 0.387)); label("Logit of absolute subcutaneous bioavailability (unitless; F1 = 0.387)")  # Table S4 final model F1 = 0.387
 
@@ -212,7 +212,7 @@ Garcia_2025_garadacimab_hae_attack <- function() {
     # = 2.96 attacks per 4 weeks, matching the Figure 3 reference
     # subject's stated "baseline monthly attack rate of 2.9".
     # ------------------------------------------------------------------
-    lhaz_base <- log(0.00440); label("Baseline (run-in) HAE attack hazard (h0, 1/h)")  # Table S8 final model baseline HAE attack hazard = 0.00440 /h (95% CI 0.00381-0.00510)
+    lhaz_base <- log(0.00440); label("Baseline (run-in) HAE attack hazard (1/h)")  # Table S8 final model baseline HAE attack hazard = 0.00440 /h (95% CI 0.00381-0.00510)
 
     # Constant inhibitory on-treatment (study/placebo) effect. Table S8
     # reports the MULTIPLICATIVE hazard factor 0.728 = exp(THETA(3));
@@ -220,7 +220,7 @@ Garcia_2025_garadacimab_hae_attack <- function() {
     # here as 1 - 0.728 and applied in model() as (1 - iplac * ON_TREATMENT).
     iplac <- 0.272; label("Constant inhibitory on-treatment (placebo/study) effect on the baseline HAE attack hazard (fraction)")  # Table S8 final model placebo effect = 0.728 multiplicative; 1 - 0.728 = 0.272
 
-    lec50 <- log(303); label("Garadacimab concentration producing half-maximal inhibition of the HAE attack hazard (EC50, ng/mL)")  # Table S8 final model EC50 = 303 ng/mL (95% CI 160-533)
+    lec50 <- log(303); label("Garadacimab concentration producing half-maximal inhibition of the HAE attack hazard (ng/mL)")  # Table S8 final model EC50 = 303 ng/mL (95% CI 160-533)
 
     # Imax and the Hill coefficient were FIXED, not estimated. Table S8
     # reports "Imax 1 (fixed)" and "Hill coefficient 1.00 (fixed)", and

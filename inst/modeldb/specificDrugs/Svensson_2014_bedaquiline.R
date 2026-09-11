@@ -114,8 +114,8 @@ Svensson_2014_bedaquiline <- function() {
     # clearances and 1 on apparent volumes around 70 kg (Svensson 2014 Methods
     # 'Model development': 'Allometric scaling was applied to CL and V using
     # body weight and fixed coefficients of 0.75 and 1, respectively.').
-    e_wt_cl_q  <- fixed(0.75) ; label("Allometric exponent on CL and Q (CL/F, Q1/F, Q2/F, CL_M2, Q_M2; unitless)")  # Svensson 2014 Methods Model development (fixed)
-    e_wt_vc_vp <- fixed(1)    ; label("Allometric exponent on Vc and Vp (V/F, VP1/F, VP2/F, V_M2, VP_M2; unitless)") # Svensson 2014 Methods Model development (fixed)
+    e_wt_cl_q  <- fixed(0.75) ; label("Allometric exponent on CL/F, Q1/F, Q2/F, CL_M2 and Q_M2 (unitless)")  # Svensson 2014 Methods Model development (fixed)
+    e_wt_vc_vp <- fixed(1)    ; label("Allometric exponent on V/F, VP1/F, VP2/F, V_M2 and VP_M2 (unitless)") # Svensson 2014 Methods Model development (fixed)
 
     # Drug-drug-interaction multiplicative factors on the bedaquiline and M2
     # apparent clearances when on rifampicin (Factor RIF) or rifapentine

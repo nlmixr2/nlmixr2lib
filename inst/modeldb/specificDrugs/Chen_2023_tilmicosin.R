@@ -133,7 +133,7 @@ Chen_2023_tilmicosin <- function() {
     # log10 CFU/mL observation with a 1-CFU/mL floor (matches the
     # Wen 2016 / Bulitta 2009 / Yadav 2017 in-vitro PD convention so the
     # log10 stays finite if bact is driven below 1 CFU/mL).
-    Cc <- log10(bact + 1)
-    Cc ~ add(addSd)
+    log_cfu <- log10(bact + 1)
+    log_cfu ~ add(addSd)
   })
 }

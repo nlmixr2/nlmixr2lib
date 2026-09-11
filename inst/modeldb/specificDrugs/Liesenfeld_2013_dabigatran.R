@@ -58,16 +58,16 @@ Liesenfeld_2013_dabigatran <- function() {
   ini({
     # Structural PK parameters for the ESRD population (Liesenfeld 2013 Table 2).
     # All apparent (CL/F, V/F) because relative bioavailability F is fixed at 1.
-    lcl     <- log(12.4);  label("Apparent total body clearance in ESRD subjects (CL/F, L/h)")            # Liesenfeld 2013 Table 2
-    lvc     <- log(531);   label("Apparent central volume of distribution (V2/F, L)")                    # Liesenfeld 2013 Table 2
-    lq      <- log(152);   label("Apparent inter-compartmental clearance (Q/F, L/h)")                    # Liesenfeld 2013 Table 2
-    lvp     <- log(499);   label("Apparent peripheral volume of distribution (V3/F, L)")                 # Liesenfeld 2013 Table 2
-    lka     <- log(0.821); label("First-order absorption rate constant (ka, 1/h)")                       # Liesenfeld 2013 Table 2
-    ltlag   <- log(1.67);  label("Absorption lag time for the fed condition (ALAG, h)")                  # Liesenfeld 2013 Table 2
-    lkoa    <- log(313);   label("Hemodialyzer mass transfer-area coefficient (KoA, mL/min)")            # Liesenfeld 2013 Table 2
+    lcl     <- log(12.4);  label("Apparent total body clearance in ESRD subjects (L/h)")            # Liesenfeld 2013 Table 2
+    lvc     <- log(531);   label("Apparent central volume of distribution (L)")                    # Liesenfeld 2013 Table 2
+    lq      <- log(152);   label("Apparent inter-compartmental clearance (L/h)")                    # Liesenfeld 2013 Table 2
+    lvp     <- log(499);   label("Apparent peripheral volume of distribution (L)")                 # Liesenfeld 2013 Table 2
+    lka     <- log(0.821); label("First-order absorption rate constant (1/h)")                       # Liesenfeld 2013 Table 2
+    ltlag   <- log(1.67);  label("Absorption lag time for the fed condition (h)")                  # Liesenfeld 2013 Table 2
+    lkoa    <- log(313);   label("Hemodialyzer mass transfer-area coefficient (mL/min)")            # Liesenfeld 2013 Table 2
 
     # Relative bioavailability fixed at 1.0 (Liesenfeld 2013 Table 2 footnote b).
-    lfdepot <- fixed(log(1.00)); label("Relative bioavailability (F, fraction)")                          # Liesenfeld 2013 Table 2 (fixed)
+    lfdepot <- fixed(log(1.00)); label("Relative bioavailability (fraction)")                          # Liesenfeld 2013 Table 2 (fixed)
 
     # Inter-individual variability. Liesenfeld 2013 Table 2 reports CV%; the
     # exponential random-effect model implies omega^2 = log(CV^2 + 1).

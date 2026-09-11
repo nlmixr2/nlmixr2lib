@@ -82,11 +82,11 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
   ini({
     # ---- Growth model (logistic with carrying capacity) ----
     lknet <- log(1.35)
-    label("Net bacterial growth rate (knet, 1/h)")  # Sadouki 2025 Table 1, Growth model parameters
+    label("Net bacterial growth rate (1/h)")  # Sadouki 2025 Table 1, Growth model parameters
     b0    <- 5.29
-    label("Baseline bacterial concentration (B0, log10 CFU/mL)")  # Sadouki 2025 Table 1
+    label("Baseline bacterial concentration (log10 CFU/mL)")  # Sadouki 2025 Table 1
     bmax  <- 10
-    label("Maximum carrying capacity (Bmax, log10 CFU/mL)")  # Sadouki 2025 Table 1
+    label("Maximum carrying capacity (log10 CFU/mL)")  # Sadouki 2025 Table 1
 
     # ---- Inoculum effect (low vs reference; reference = 10^5 CFU/mL) ----
     cat_b0_lowinoc   <- -0.326
@@ -96,11 +96,11 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
 
     # ---- Meropenem -- bacterial killing ----
     lemax_mer <- log(4.18)
-    label("Meropenem maximum effect (Emax_Mer, 1/h)")  # Sadouki 2025 Table 1, Meropenem killing
+    label("Meropenem maximum effect (1/h)")  # Sadouki 2025 Table 1, Meropenem killing
     lic50_mer <- log(0.0781)
-    label("Meropenem half-maximum-effect concentration (IC50_Mer, mg/L)")  # Sadouki 2025 Table 1
+    label("Meropenem half-maximum-effect concentration (mg/L)")  # Sadouki 2025 Table 1
     lhill_mer <- log(2.76)
-    label("Meropenem Hill exponent (hill_Mer, unitless)")  # Sadouki 2025 Table 1
+    label("Meropenem Hill exponent (unitless)")  # Sadouki 2025 Table 1
 
     # Meropenem chemical degradation in CAMHB at 37 C.
     # Paper reports 10% loss in 8 h => kdeg = -log(0.9)/8 = 0.01317 1/h.
@@ -108,29 +108,29 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
     # implied by the 10%-in-8-h Suppl. Fig. 3 result quoted in the
     # Discussion (page 7).
     lkdeg_mer <- fixed(log(0.01317))
-    label("Meropenem chemical degradation rate (kdeg_Mer, 1/h;, derived from Sadouki 2025 Discussion: 10% loss in 8 h)")  # Sadouki 2025 page 7 + Suppl. Fig. 3 (derived; not in Table 1)
+    label("Meropenem chemical degradation rate (1/h;, derived from Sadouki 2025 Discussion: 10% loss in 8 h)")  # Sadouki 2025 page 7 + Suppl. Fig. 3 (derived; not in Table 1)
 
     # ---- Meropenem -- regrowth dynamics ----
     beta_mer <- 0.922
-    label("Meropenem max loss of antimicrobial effect (BETA_Mer, unitless)")  # Sadouki 2025 Table 1, Meropenem regrowth
+    label("Meropenem max loss of antimicrobial effect (unitless)")  # Sadouki 2025 Table 1, Meropenem regrowth
     ltau_mer <- fixed(log(0.570))
-    label("Meropenem time-shape of effect loss (TAU_Mer, 1/h)")  # Sadouki 2025 Table 1 (FIXED)
+    label("Meropenem time-shape of effect loss (1/h)")  # Sadouki 2025 Table 1 (FIXED)
     coef_taumer_mer <- 0.00155
     label("Proportional Mer concentration effect on TAU_Mer (per mg/L Mer)")  # Sadouki 2025 Table 1, Proportional MER-on-TAU row
 
     # ---- Gentamicin -- bacterial killing ----
     lemax_gen <- log(5.47)
-    label("Gentamicin maximum effect (Emax_Gen, 1/h)")  # Sadouki 2025 Table 1, Gentamicin killing
+    label("Gentamicin maximum effect (1/h)")  # Sadouki 2025 Table 1, Gentamicin killing
     lic50_gen <- log(1.12)
-    label("Gentamicin half-maximum-effect concentration (IC50_Gen, mg/L)")  # Sadouki 2025 Table 1
+    label("Gentamicin half-maximum-effect concentration (mg/L)")  # Sadouki 2025 Table 1
     lhill_gen <- log(3.63)
-    label("Gentamicin Hill exponent (hill_Gen, unitless)")  # Sadouki 2025 Table 1
+    label("Gentamicin Hill exponent (unitless)")  # Sadouki 2025 Table 1
 
     # ---- Gentamicin -- regrowth dynamics ----
     beta_gen <- fixed(0.829)
-    label("Gentamicin max loss of antimicrobial effect (BETA_Gen, unitless)")  # Sadouki 2025 Table 1 (FIXED)
+    label("Gentamicin max loss of antimicrobial effect (unitless)")  # Sadouki 2025 Table 1 (FIXED)
     ltau_gen <- fixed(log(0.517))
-    label("Gentamicin time-shape of effect loss (TAU_Gen, 1/h)")  # Sadouki 2025 Table 1 (FIXED)
+    label("Gentamicin time-shape of effect loss (1/h)")  # Sadouki 2025 Table 1 (FIXED)
 
     # ---- Gentamicin -- concentration-dependent shift of BETA_Gen (Emax-on-BETA) ----
     emax_betagen  <- fixed(-2.97)
@@ -142,17 +142,17 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
 
     # ---- Ciprofloxacin -- bacterial killing ----
     lemax_cip <- log(4.55)
-    label("Ciprofloxacin maximum effect (Emax_Cip, 1/h)")  # Sadouki 2025 Table 1, Ciprofloxacin killing
+    label("Ciprofloxacin maximum effect (1/h)")  # Sadouki 2025 Table 1, Ciprofloxacin killing
     lic50_cip <- log(0.0106)
-    label("Ciprofloxacin half-maximum-effect concentration (IC50_Cip, mg/L)")  # Sadouki 2025 Table 1
+    label("Ciprofloxacin half-maximum-effect concentration (mg/L)")  # Sadouki 2025 Table 1
     lhill_cip <- log(3.58)
-    label("Ciprofloxacin Hill exponent (hill_Cip, unitless)")  # Sadouki 2025 Table 1
+    label("Ciprofloxacin Hill exponent (unitless)")  # Sadouki 2025 Table 1
 
     # ---- Ciprofloxacin -- regrowth dynamics ----
     beta_cip <- fixed(0.674)
-    label("Ciprofloxacin max loss of antimicrobial effect (BETA_Cip, unitless)")  # Sadouki 2025 Table 1 (FIXED)
+    label("Ciprofloxacin max loss of antimicrobial effect (unitless)")  # Sadouki 2025 Table 1 (FIXED)
     ltau_cip <- fixed(log(0.359))
-    label("Ciprofloxacin time-shape of effect loss (TAU_Cip, 1/h)")  # Sadouki 2025 Table 1 (FIXED)
+    label("Ciprofloxacin time-shape of effect loss (1/h)")  # Sadouki 2025 Table 1 (FIXED)
 
     # ---- Ciprofloxacin -- concentration-dependent shift of BETA_Cip ----
     emax_betacip  <- fixed(-4)
@@ -164,7 +164,7 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
 
     # ---- Drug-drug interactions ----
     combo_beta <- fixed(-1)
-    label("Categorical 2- or 3-way combination shift on BETA (additive, unitless)")  # Sadouki 2025 Table 1, Drug interactions (FIXED)
+    label("Categorical 2- or 3-way combination shift on BETA, applied additively (unitless)")  # Sadouki 2025 Table 1, Drug interactions (FIXED)
     mer_on_ic50cip <- fixed(-0.353)
     label("Proportional Mer-presence effect on IC50_Cip (unitless)")  # Sadouki 2025 Table 1 (FIXED)
     gen_on_ic50cip <- fixed(-0.576)

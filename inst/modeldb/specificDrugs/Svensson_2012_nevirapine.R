@@ -246,7 +246,7 @@ Svensson_2012_nevirapine <- function() {
     # =========================================================================
     lmtt_fasted <- log(0.596);  label("Typical absorption mean transit time MTT in the fasted state (h, FED = 0)")  # Svensson 2012 Table 2 'MTT (h) fasted = 0.596 (RSE 8.70%)'
     e_fed_mtt   <- log(2.46 / 0.596);  label("Log-additive multiplicative shift on MTT for the fed state (FED = 1)")  # Svensson 2012 Table 2 'MTT (h) fed = 2.46 (RSE 7.50%)' / 'MTT (h) fasted = 0.596'; e_fed_mtt = log(2.46/0.596) = 1.418 reproduces the 4.13-fold slowing of MTT with food
-    nn_fix      <- fixed(2);  label("Number of Savic-style transit compartments NTRANS (integer, unitless)")  # Svensson 2012 Results 'Population pharmacokinetics' paragraph 1: 'In the final model, the number of transit compartments was fixed to two without significant loss of goodness of fit.'
+    nn_fix      <- fixed(2);  label("Number of Savic-style transit compartments NTRANS, integer-valued (unitless)")  # Svensson 2012 Results 'Population pharmacokinetics' paragraph 1: 'In the final model, the number of transit compartments was fixed to two without significant loss of goodness of fit.'
 
     # =========================================================================
     # Bioavailability (Svensson 2012 Table 2 'F (%) when TB treatment').

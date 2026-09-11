@@ -171,7 +171,7 @@ Beredaki_2024_amphotericinB_liposomal_calbicans <- function() {
     lemax <- log(5.215)
     label("Log maximum reduction Emax relative to the drug-free control (log10 CFU/mL)")  # digitised from Beredaki 2024 Figure 2; implies a bottom asymptote of 2.283 - 5.215 = -2.93 log10 CFU/mL
     lec50 <- log(2.695)
-    label("Log Cmax/MIC producing 50% of Emax (EI50, unitless)")  # digitised from Beredaki 2024 Figure 2
+    label("Log Cmax/MIC producing 50% of Emax (unitless)")  # digitised from Beredaki 2024 Figure 2
     lhill <- log(0.9306)
     label("Log Hill coefficient n of the exposure-response relationship (unitless)")  # digitised from Beredaki 2024 Figure 2
 

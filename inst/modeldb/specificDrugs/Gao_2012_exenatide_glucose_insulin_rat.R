@@ -169,14 +169,14 @@ Gao_2012_exenatide_glucose_insulin_rat <- function() {
     # Gao_2012_exenatide_rat.R; the paper reused the PK fit unchanged to
     # generate the driving concentrations for the PD analysis.
     # ------------------------------------------------------------------
-    lkel  <- log(0.0839)  ; label("Linear elimination rate constant from the central compartment (kel, 1/min)")     # Table 2: kel = 0.0839 (CV 10%)
-    lk12  <- log(0.0282)  ; label("Transfer rate constant central -> peripheral1 (kpt, 1/min)")                     # Table 2: kpt = 0.0282 (CV 15%)
-    lk21  <- log(0.0213)  ; label("Transfer rate constant peripheral1 -> central (ktp, 1/min)")                     # Table 2: ktp = 0.0213 (CV 5%)
-    lvc   <- log(0.0432)  ; label("Central volume of distribution (Vc, L)")                                         # Table 2: Vc = 43.2 mL = 0.0432 L (CV 12%)
+    lkel  <- log(0.0839)  ; label("Linear elimination rate constant from the central compartment (1/min)")     # Table 2: kel = 0.0839 (CV 10%)
+    lk12  <- log(0.0282)  ; label("Transfer rate constant central -> peripheral1 (1/min)")                     # Table 2: kpt = 0.0282 (CV 15%)
+    lk21  <- log(0.0213)  ; label("Transfer rate constant peripheral1 -> central (1/min)")                     # Table 2: ktp = 0.0213 (CV 5%)
+    lvc   <- log(0.0432)  ; label("Central volume of distribution (L)")                                         # Table 2: Vc = 43.2 mL = 0.0432 L (CV 12%)
     lkon  <- log(0.0207)  ; label("Second-order association rate constant of exendin-4 with GLP-1R (kon, 1/(nM*min))") # Table 2: kon = 0.0207 (CV 42%)
-    lkoff <- log(0.0153)  ; label("First-order dissociation rate constant of the drug-receptor complex (koff, 1/min)") # Table 2: koff = 0.0153 (CV 206%)
-    lkint <- log(0.0966)  ; label("Internalisation / degradation rate constant of the drug-receptor complex (kint, 1/min)") # Table 2: kint = 0.0966 (CV 38%)
-    lrtot <- log(5.21)    ; label("Total GLP-1R concentration, held constant (Rtot, nmol/L)")                       # Table 2: Rtot = 5.21 nmol/L (CV 5%)
+    lkoff <- log(0.0153)  ; label("First-order dissociation rate constant of the drug-receptor complex (1/min)") # Table 2: koff = 0.0153 (CV 206%)
+    lkint <- log(0.0966)  ; label("Internalisation / degradation rate constant of the drug-receptor complex (1/min)") # Table 2: kint = 0.0966 (CV 38%)
+    lrtot <- log(5.21)    ; label("Total GLP-1R concentration, held constant (nmol/L)")                       # Table 2: Rtot = 5.21 nmol/L (CV 5%)
 
     # ------------------------------------------------------------------
     # PHARMACODYNAMICS -- Gao 2012 Table 4, the final integrated TMDD
@@ -186,17 +186,17 @@ Gao_2012_exenatide_glucose_insulin_rat <- function() {
     # steady-state relationships kinG = koutG * Gb and kinI = koutI * Ib,
     # so they are derived in model() from the baseline covariates.
     # ------------------------------------------------------------------
-    lkout_glucose <- log(0.046)   ; label("First-order glucose elimination rate constant (koutG, 1/min)")  # Table 4: koutG = 0.046 (CV 9%)
-    lkout_insulin <- log(0.483)   ; label("First-order insulin elimination rate constant (koutI, 1/min)")  # Table 4: koutI = 0.483 (CV 50%)
-    lvg           <- log(0.208)   ; label("Glucose apparent volume of distribution (Vg, L/kg body weight)") # Table 4: Vg = 0.208 l/kg (CV 5%)
+    lkout_glucose <- log(0.046)   ; label("First-order glucose elimination rate constant (1/min)")  # Table 4: koutG = 0.046 (CV 9%)
+    lkout_insulin <- log(0.483)   ; label("First-order insulin elimination rate constant (1/min)")  # Table 4: koutI = 0.483 (CV 50%)
+    lvg           <- log(0.208)   ; label("Glucose apparent volume of distribution (L/kg body weight)") # Table 4: Vg = 0.208 l/kg (CV 5%)
 
     # Linear inter-pool stimulation factors of the feedback loop
     # (Gao 2012 eqs. 5-6). Each enters as (1 + S * (driver - baseline)).
     # Note the two are expressed on DIFFERENT concentration scales,
     # matching the units of the pools they read: SGlu is per millimolar
     # (glucose) and SIns is per nanomolar (insulin).
-    lsstim_glucose_insulin <- log(0.0684) ; label("Linear stimulation factor of glucose on insulin secretion (SGlu, 1/mM)") # Table 4: SGlu = 0.0684 (CV 20%)
-    lsstim_insulin_glucose <- log(0.157)  ; label("Linear stimulation factor of insulin on glucose disposal (SIns, 1/nM)")  # Table 4: SIns = 0.157 (CV 46%)
+    lsstim_glucose_insulin <- log(0.0684) ; label("Linear stimulation factor of glucose on insulin secretion (1/mM)") # Table 4: SGlu = 0.0684 (CV 20%)
+    lsstim_insulin_glucose <- log(0.157)  ; label("Linear stimulation factor of insulin on glucose disposal (1/nM)")  # Table 4: SIns = 0.157 (CV 46%)
 
     # Biphasic (bell-shaped) Adair drug-effect function, Gao 2012 eq. 7:
     #   Sd = Smax * C / (k1 + C + k2 * C^2)
@@ -206,9 +206,9 @@ Gao_2012_exenatide_glucose_insulin_rat <- function() {
     # quantity. The paper interprets them mechanistically (Discussion) as
     # the first and second dissociation constants of a receptor that can
     # bind a second exendin-4 molecule.
-    lsmax    <- log(4.67)   ; label("Maximal stimulation factor of the Adair drug-effect function (Smax, unitless)") # Table 4: Smax = 4.67 (CV 30%)
-    lkadair1 <- log(0.826)  ; label("First (linear) constant of the Adair function (k1, nM)")                        # Table 4: k1 = 0.826 nM (CV 71%)
-    lkadair2 <- log(0.0153) ; label("Second (quadratic, self-inhibition) constant of the Adair function (k2, 1/nM)")  # Table 4: k2 = 0.0153 1/nM (CV 69%)
+    lsmax    <- log(4.67)   ; label("Maximal stimulation factor of the Adair drug-effect function (unitless)") # Table 4: Smax = 4.67 (CV 30%)
+    lkadair1 <- log(0.826)  ; label("First (linear) constant of the Adair function (nM)")                        # Table 4: k1 = 0.826 nM (CV 71%)
+    lkadair2 <- log(0.0153) ; label("Second (quadratic, self-inhibition) constant of the Adair function (1/nM)")  # Table 4: k2 = 0.0153 1/nM (CV 69%)
 
     # ------------------------------------------------------------------
     # Residual error. Gao 2012 Methods states the variance model

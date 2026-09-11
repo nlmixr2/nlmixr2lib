@@ -237,13 +237,13 @@ gc_hfim <- SOLVE(hfim0, data.frame(id = 1L, time = seq(0, 72, by = 0.5),
                                    cmt = "bact_susceptible", dvid = 1L))
 
 cat(sprintf("Static time-kill: log10CFU(0) = %.2f, log10CFU(30) = %.2f  (Bmax = 8.92)\n",
-            gc_tkc$Cc[gc_tkc$time == 0], gc_tkc$Cc[gc_tkc$time == 30]))
+            gc_tkc$log_cfu[gc_tkc$time == 0], gc_tkc$log_cfu[gc_tkc$time == 30]))
 cat(sprintf("Hollow fiber:     log10CFU(0) = %.2f, log10CFU(72) = %.2f  (Bmax = 9.73)\n",
-            gc_hfim$Cc[gc_hfim$time == 0], gc_hfim$Cc[gc_hfim$time == 72]))
+            gc_hfim$log_cfu[gc_hfim$time == 0], gc_hfim$log_cfu[gc_hfim$time == 72]))
 
 bind_rows(
-  transmute(gc_tkc,  time, log10CFU = Cc, model = "Static time-kill (Bmax 8.92)"),
-  transmute(gc_hfim, time, log10CFU = Cc, model = "Hollow fiber (Bmax 9.73)")
+  transmute(gc_tkc,  time, log10CFU = log_cfu, model = "Static time-kill (Bmax 8.92)"),
+  transmute(gc_hfim, time, log10CFU = log_cfu, model = "Hollow fiber (Bmax 9.73)")
 ) |>
   ggplot(aes(time, log10CFU, colour = model)) +
   geom_line(linewidth = 1) +
@@ -332,7 +332,7 @@ tkc_sim <- SOLVE(tkc0, tkc_ev) |>
   left_join(select(tkc_scenarios, id, label), by = "id") |>
   mutate(label = factor(label, levels = tkc_scenarios$label))
 
-ggplot(tkc_sim, aes(time, Cc)) +
+ggplot(tkc_sim, aes(time, log_cfu)) +
   geom_line(linewidth = 0.8, colour = "steelblue") +
   geom_hline(yintercept = 0, linetype = 3, colour = "grey60") +
   facet_wrap(~ label, ncol = 3) +
@@ -346,7 +346,7 @@ ggplot(tkc_sim, aes(time, Cc)) +
 ```{r tkc-endpoints}
 tkc_sim |>
   filter(time == 30) |>
-  transmute(Scenario = label, `log10 CFU/mL at 30 h` = Cc) |>
+  transmute(Scenario = label, `log10 CFU/mL at 30 h` = log_cfu) |>
   arrange(`log10 CFU/mL at 30 h`) |>
   knitr::kable(digits = 2,
                caption = "Bacterial count at the end of the 30-h static time-kill experiment. Suppression (CAZ 128, FOF 16, CZA 0.125/4, CZA 0.002/4 + FOF 2) and regrowth (CAZ 16, FOF 2, avibactam alone at any concentration) reproduce the outcomes reported in Results, 'Static time-kill experiments'.")
@@ -424,7 +424,7 @@ their simulated troughs here (1.74 and 8.41 mg/L) fall below the published
 
 ```{r hfim-replicate, fig.height = 7}
 hfim_long <- hfim_sim |>
-  select(id, label, time, Total = Cc, `3x MIC CZA-R` = CFUrcza, `3x MIC FOF-R` = CFUrfof) |>
+  select(id, label, time, Total = log_cfu, `3x MIC CZA-R` = CFUrcza, `3x MIC FOF-R` = CFUrfof) |>
   pivot_longer(c(Total, `3x MIC CZA-R`, `3x MIC FOF-R`),
                names_to = "population", values_to = "log10CFU") |>
   # The paper plots counts on the observed scale, where non-quantifiable
@@ -446,7 +446,7 @@ ggplot(hfim_long, aes(time, log10CFU, colour = population)) +
 hfim_sim |>
   filter(time == HFIM_DUR) |>
   transmute(Arm = label,
-            `Total (log10 CFU/mL)`   = pmax(Cc, 0),
+            `Total (log10 CFU/mL)`   = pmax(log_cfu, 0),
             `3x MIC CZA-R`           = CFUrcza,
             `3x MIC FOF-R`           = CFUrfof) |>
   knitr::kable(digits = 2,
@@ -518,9 +518,9 @@ stopifnot(dplyr::n_distinct(vpc_sim$id) == N_SUB * nrow(vpc_arms))
 
 vpc_sim |>
   group_by(arm, time) |>
-  summarise(lo = quantile(pmax(Cc, 0), 0.05),
-            md = median(pmax(Cc, 0)),
-            hi = quantile(pmax(Cc, 0), 0.95), .groups = "drop") |>
+  summarise(lo = quantile(pmax(log_cfu, 0), 0.05),
+            md = median(pmax(log_cfu, 0)),
+            hi = quantile(pmax(log_cfu, 0), 0.95), .groups = "drop") |>
   ggplot(aes(time, md)) +
   geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25, fill = "steelblue") +
   geom_line(linewidth = 0.9, colour = "steelblue") +
@@ -570,14 +570,14 @@ grid_obs <- grid |>
 
 grid_sim <- SOLVE(hfim0, bind_rows(grid_obs, grid_doses) |> arrange(id, time, evid))
 
-no_treatment <- grid_sim$Cc[grid_sim$id == grid$id[grid$cza_g == 0 & grid$fof_g == 0] &
+no_treatment <- grid_sim$log_cfu[grid_sim$id == grid$id[grid$cza_g == 0 & grid$fof_g == 0] &
                               grid_sim$time == HFIM_DUR]
 
 surface <- grid_sim |>
   filter(time == HFIM_DUR) |>
-  select(id, Cc) |>
+  select(id, log_cfu) |>
   left_join(grid, by = "id") |>
-  mutate(effect = no_treatment - pmax(Cc, 0))
+  mutate(effect = no_treatment - pmax(log_cfu, 0))
 
 ggplot(surface, aes(factor(cza_g), factor(fof_g), fill = effect)) +
   geom_tile(colour = "white") +
@@ -705,7 +705,7 @@ surface |>
    of the less susceptible subpopulations a baseline was set to
    0 log10(CFU/mL)". `CFUrcza` and `CFUrfof` therefore compute
    `log10(state + 1)`, which sits at 0 until the subpopulation exceeds
-   1 CFU/mL. No equivalent statement is made for the total count, so `Cc` is
+   1 CFU/mL. No equivalent statement is made for the total count, so `log_cfu` is
    the untransformed `log10` of the summed state and can fall below 0 under
    strong killing; the figures above clamp it at 0 for display only, matching
    the paper's convention of assigning 1 CFU/mL to non-quantifiable samples.

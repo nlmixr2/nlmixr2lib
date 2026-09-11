@@ -95,7 +95,7 @@ Schipani_2016_rifampicin <- function() {
     # Schipani 2016 Methods, citing reference 18 (Anderson and
     # Holford 2008): 0.75 for CL.
 
-    allo_v <- fixed(1.0)
+    e_wt_vc <- fixed(1.0)
     label("Allometric exponent on V (unitless)")
     # Schipani 2016 Methods, citing reference 18 (Anderson and
     # Holford 2008): 1.0 for V.
@@ -154,7 +154,7 @@ Schipani_2016_rifampicin <- function() {
     #    Anderson and Holford 2008); reference 70 kg.
     # ------------------------------------------------------------
     bw_cl <- (WT / 70) ^ e_wt_cl
-    bw_v  <- (WT / 70) ^ allo_v
+    bw_v  <- (WT / 70) ^ e_wt_vc
 
     # ------------------------------------------------------------
     # 2. Age power-form factor on CL/F (Schipani 2016 equation 4);

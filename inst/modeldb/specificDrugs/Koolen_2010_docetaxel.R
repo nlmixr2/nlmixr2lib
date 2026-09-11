@@ -206,7 +206,7 @@ Koolen_2010_docetaxel <- function() {
     # so e_rtv_fdepot = log(0.39 / 0.19) ~= 0.719. The shared 72%
     # CV on F (Koolen 2010 Table 2 reports the same 72% for the
     # F1 and F_RTV rows) is carried by a single eta on lfdepot.
-    lfdepot      <- log(0.19)          ; label("Gut bioavailability of docetaxel, no ritonavir (F_doc, fraction)") # Table 2: F1 = 19%, CV 21%
+    lfdepot      <- log(0.19)          ; label("Gut bioavailability of docetaxel, no ritonavir (fraction)") # Table 2: F1 = 19%, CV 21%
     e_rtv_fdepot <- log(0.39 / 0.19)   ; label("Additive log-scale shift in F_gut for concomitant ritonavir (unitless)") # Table 2: F_RTV = 39%, CV 13% (paired with F1 = 19%)
 
     # Ritonavir-driven competitive inhibition of CLi:
@@ -295,7 +295,7 @@ Koolen_2010_docetaxel <- function() {
     # in mg and vc_rtv in L). Drives the competitive CLi inhibition
     # via Koolen 2010 Methods Equation 3.
     # ------------------------------------------------------------
-    crtv     <- central_rtv / vc_rtv
+    Cc_rtv     <- central_rtv / vc_rtv
 
     # ------------------------------------------------------------
     # Individual docetaxel structural parameters.
@@ -334,7 +334,7 @@ Koolen_2010_docetaxel <- function() {
     # well-stirred model treats hepatic extraction and elimination
     # symmetrically.
     # ------------------------------------------------------------
-    cli      <- cli0 / (1 + crtv / ki)
+    cli      <- cli0 / (1 + Cc_rtv / ki)
     fhep     <- qhep / (cli + qhep)
     cl       <- qhep * cli / (cli + qhep)
 

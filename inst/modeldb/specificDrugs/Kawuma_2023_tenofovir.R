@@ -105,13 +105,13 @@ Kawuma_2023_tenofovir <- function() {
     # typical values for a 70 kg individual (Table 2 footnote c).
     # =========================================================================
     lcl <- log(44.7)
-    label("Tenofovir clearance for a 70 kg individual (CL, L/h)")            # Table 2: CL 44.7 (40.2-49.5) L/h
+    label("Tenofovir clearance for a 70 kg individual (L/h)")            # Table 2: CL 44.7 (40.2-49.5) L/h
     lvc <- log(378)
-    label("Tenofovir central volume of distribution for a 70 kg individual (Vc, L)")   # Table 2: Vc 378 (319-459) L
+    label("Tenofovir central volume of distribution for a 70 kg individual (L)")   # Table 2: Vc 378 (319-459) L
     lq <- log(157)
-    label("Tenofovir intercompartmental clearance for a 70 kg individual (Q, L/h)")    # Table 2: Q 157 (103-233) L/h
+    label("Tenofovir intercompartmental clearance for a 70 kg individual (L/h)")    # Table 2: Q 157 (103-233) L/h
     lvp <- log(356)
-    label("Tenofovir peripheral volume of distribution for a 70 kg individual (Vp, L)")  # Table 2: Vp 356 (298-438) L
+    label("Tenofovir peripheral volume of distribution for a 70 kg individual (L)")  # Table 2: Vp 356 (298-438) L
 
     # Allometric exponents, fixed at the canonical values (Methods: "allometric
     # exponents for clearance and volume were fixed to 0.75 and 1,
@@ -127,7 +127,7 @@ Kawuma_2023_tenofovir <- function() {
     # circulation. F_TDF is the structural bioavailability anchor.
     # =========================================================================
     lka_tdf <- log(3.04)
-    label("First-order rate constant for appearance of tenofovir in plasma after a TDF dose (Ka_TDF, 1/h)")  # Table 2: Ka_TDF 3.04 (2.11-3.88) 1/h
+    label("First-order rate constant for appearance of tenofovir in plasma after a TDF dose (1/h)")  # Table 2: Ka_TDF 3.04 (2.11-3.88) 1/h
     lfdepot_tdf <- fixed(log(1))
     label("Bioavailability of tenofovir given as TDF (F_TDF, fraction); the reference against which F_TAF is relative")  # Table 2: F_TDF 1-Fixed
 
@@ -139,11 +139,11 @@ Kawuma_2023_tenofovir <- function() {
     # first-order process with half-life t1/2_TAF-Slow.
     # =========================================================================
     lfdepot_taf <- log(0.822)
-    label("Bioavailability of tenofovir given as TAF, relative to TDF (F_TAF, fraction)")  # Table 2: F_TAF 0.822 (0.723-0.939); Results: "relative bioavailability of tenofovir when given as TAF, was estimated to be 82.2% (95% CI, 72.3-93.9)"
+    label("Bioavailability of tenofovir given as TAF, relative to TDF (fraction)")  # Table 2: F_TAF 0.822 (0.723-0.939); Results: "relative bioavailability of tenofovir when given as TAF, was estimated to be 82.2% (95% CI, 72.3-93.9)"
     logitffo <- log(0.324 / (1 - 0.324))
-    label("Logit of the fraction of the bioavailable TAF dose entering the fast (first-order) pathway (Frac_TAF-Fast, fraction)")  # Table 2: Frac_TAF-Fast 32.4% (27.0-37.7)
+    label("Logit of the fraction of the bioavailable TAF dose entering the fast (first-order) pathway (fraction)")  # Table 2: Frac_TAF-Fast 32.4% (27.0-37.7)
     lka_taf_fast <- log(1.45)
-    label("First-order rate constant for the fast TAF pathway (Ka_TAF, 1/h)")  # Table 2: Ka_TAF 1.45 (0.924-2.60) 1/h
+    label("First-order rate constant for the fast TAF pathway (1/h)")  # Table 2: Ka_TAF 1.45 (0.924-2.60) 1/h
     # The slow pathway is reported as a terminal half-life in DAYS; the
     # equivalent first-order release rate constant in 1/h is log(2) / (6.83 d *
     # 24 h/d) = 0.004229 1/h. Fixed by the authors after a likelihood-profiling

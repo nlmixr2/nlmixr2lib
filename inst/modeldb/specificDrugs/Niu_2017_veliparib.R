@@ -331,9 +331,9 @@ Niu_2017_veliparib <- function() {
     # (BDQ/M2 residual correlation 55%). See the vignette's Assumptions and
     # deviations section.
     # ---------------------------------------------------------------------
-    propSd    <- 0.251    ; label("Veliparib proportional residual error (SD, fraction)")  # Niu 2017 Table 2 'Proportional error for veliparib (%CV), CMultStdev = 25.1%' (bootstrap median 26.0%, 95%CI 21.4-30.5%)
+    propSd    <- 0.251    ; label("Veliparib proportional residual error (fraction)")  # Niu 2017 Table 2 'Proportional error for veliparib (%CV), CMultStdev = 25.1%' (bootstrap median 26.0%, 95%CI 21.4-30.5%)
     addSd     <- 0.607    ; label("Veliparib additive residual error (ng/mL)")             # Niu 2017 Table 2 'Additive error for veliparib (ng/mL) = 0.607' (bootstrap median 0.183, 95%CI 0-0.607 -- poorly determined, see vignette Errata)
-    propSd_m8 <- 0.202808 ; label("M8 proportional residual error (SD, fraction)")         # Niu 2017 Table 2 notes: CMultStdev * Ratio * MultStdev = 0.251 * 0.808 * 1.00; 'Ratio between veliparib and M8 proportional error, ratio = 0.808' (bootstrap median 0.806, 95%CI 0.639-0.926)
+    propSd_m8 <- 0.202808 ; label("M8 proportional residual error (fraction)")         # Niu 2017 Table 2 notes: CMultStdev * Ratio * MultStdev = 0.251 * 0.808 * 1.00; 'Ratio between veliparib and M8 proportional error, ratio = 0.808' (bootstrap median 0.806, 95%CI 0.639-0.926)
     addSd_m8  <- 3.37     ; label("M8 additive residual error (ng/mL)")                    # Niu 2017 Table 2 'Additive error for M8 (ng/mL) = 3.37' (bootstrap median 3.37, 95%CI 1.60-5.60)
   })
 

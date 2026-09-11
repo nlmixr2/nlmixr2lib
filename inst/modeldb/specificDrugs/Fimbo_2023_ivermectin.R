@@ -316,7 +316,7 @@ Fimbo_2023_ivermectin <- function() {
     # Fimbo 2023 Table 2 row 'K a (/h)' = 0.7082 (RSE 17%); bootstrap median 0.7 (95% CI 0.15-0.91)
 
     nn_fix <- fixed(6)
-    label("Number of Savic transit compartments NN (integer, unitless)")
+    label("Number of Savic transit compartments NN, integer-valued (unitless)")
     # Fimbo 2023 Table 2 row 'NN' = '6 (Fixed to this value)'; Data S3 control stream '$THETA (6) FIX ; N' and 'LNFAC = 6.579251 ; log NN factorial, NN=number of transit compartments [log(6!)]'
 
     lfdepot <- fixed(log(1))

@@ -1,0 +1,659 @@
+---
+title: "Amikacin (Lim 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Amikacin (Lim 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Lim_2025_amikacin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Lim_2025_amikacin"))$description`
+* Article: <https://doi.org/10.1128/aac.00818-25>
+* PMC record (open access, with the equation images as supplementary files):
+  <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12326967/>
+
+# Population
+
+Lim 2025 is a single-centre retrospective chart review of every neonate who
+received amikacin with therapeutic drug monitoring at the Department of Neonatal
+and Developmental Medicine, Singapore General Hospital, between November 2012 and
+October 2017. Of 181 eligible neonates, 90 (254 serum concentrations) were used to
+build the population PK model and the remaining 91 (280 concentrations) were held
+out for external validation.
+
+The model-building cohort (Table 1, "PK modeling" column) was predominantly
+extremely and very preterm: median gestational age 29+0 weeks (IQR 26+0 to 31+0,
+range 24+0 to 41+0), median birth weight 1.00 kg (IQR 0.87-1.44) and median weight
+at amikacin initiation 1.34 kg (IQR 0.90-1.90, range 0.58-3.77). 62.2% were male;
+the race distribution was 62.2% Chinese, 13.4% Malay, 12.2% Indian and 12.2%
+other. 25.6% were small for gestational age and 11.1% had intrauterine growth
+restriction. Serum creatinine at initiation was 43 umol/L (IQR 29-57, range
+15-91). No neonate had renal impairment; congenital kidney disease, major
+congenital heart disease, acute kidney injury, unstable renal function and ECMO
+were exclusion criteria.
+
+The institutional regimen was 11 mg/kg every 36 h below 29 weeks postmenstrual age
+and 11 mg/kg every 24 h at or above it, given either as a 30-min intravenous
+infusion or as an intramuscular injection. Therapeutic drug monitoring was
+performed at the third dose: a trough within 30 min preceding the dose and a peak
+60 min after an intramuscular injection or 30 min after the end of a 30-min
+intravenous infusion. The institutional targets were 15-25 mg/L for the peak and
+< 5 mg/L for the trough.
+
+The same information is available programmatically via
+`readModelDb("Lim_2025_amikacin")()$population`.
+
+# Source trace
+
+Lim 2025 contains **no parameter-estimate table**. The entire final model is
+reported as two printed equations in Results, "Population PK analysis" (rendered
+in the PMC supplementary file set as image `aac.00818-25.m001`):
+
+$$\mathrm{CL\ (L/h)} = 0.0487\,(WT/1{,}000)^{0.919}\,(PMA/30)^{1.53}\,
+  \exp\left[\eta \sim N(0,\ \sigma^2 = 0.0188)\right]$$
+
+$$\mathrm{V\ (L/kg)} = 0.497\,(WT/1{,}000)^{0.851}$$
+
+with `WT` in grams (Methods, "Population PK analysis": the weight effect was
+explored with WT "expressed in grams") and `PMA` in weeks (same section: the age
+covariates are "gestational age (GA [weeks]), PMA (weeks), and PNA (days)").
+The reference subject is therefore 1,000 g and 30 weeks postmenstrual age.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL at 1 kg, PMA 30 wk) | `log(0.0487)` L/h | Results, "Population PK analysis", final model equation 1 |
+| `e_wt_cl` | 0.919 | Results, final model equation 1 |
+| `e_page_cl` | 1.53 | Results, final model equation 1 |
+| `lvc` (V at 1 kg) | `log(0.497)` L | Results, "Population PK analysis", final model equation 2 |
+| `e_wt_vc` | 0.851 | Results, final model equation 2 |
+| `etalcl` (BSV on CL) | 0.0188 (log-scale variance) | Results, final model equation 1, `exp[eta ~ N(0, sigma^2 = 0.0188)]` |
+| BSV on V | absent | Results, final model equation 2 carries no `exp[eta]` term |
+| `propSd`, `addSd` | `fixed(0)` | Methods / Results state a combined proportional-additive RUV structure; **no values are published anywhere in the paper** |
+| One compartment, first-order elimination; `d/dt(central)` | n/a | Results, "Population PK analysis", first sentence; Methods, "Population PK analysis" |
+| Dosing into `central` for both IV and IM | n/a | Methods, "Materials and Methods"; the paper reports no absorption-rate parameter for either route |
+| Reference WT = 1,000 g, reference PMA = 30 weeks | n/a | The normalising constants printed inside the two equations |
+
+# Reading the two published equations
+
+Two aspects of the printed equations need arithmetic before the model can be used,
+and both are worked through here so a reviewer can check them.
+
+## The volume equation is in absolute litres, not L/kg
+
+The V equation is tagged `(L/kg)`, which is the unit named in the Methods sentence
+"BSV was evaluated based on V (expressed as liters/kg) and CL (expressed as
+liters/hour)". Taken literally it would mean total volume scales as
+$WT^{1.851}$, which is not physiologically possible. Two independent checks agree
+that the equation returns absolute litres:
+
+```{r v-units}
+v_abs   <- function(wt) 0.497 * wt^0.851          # equation returns litres
+v_perkg <- function(wt) 0.497 * wt^0.851 * wt     # equation returns L/kg
+
+wt_grid <- c(0.58, 1.34, 3.77)   # min, median, max weight at initiation (Table 1)
+v_check <- tibble(
+  `Weight (kg)`               = wt_grid,
+  `V/WT, litres reading (L/kg)` = v_abs(wt_grid) / wt_grid,
+  `V/WT, L/kg reading (L/kg)`   = v_perkg(wt_grid) / wt_grid
+)
+knitr::kable(v_check, digits = 3,
+             caption = "Weight-normalised volume of distribution under the two readings.")
+```
+
+Amikacin is a hydrophilic aminoglycoside confined to extracellular fluid, so its
+weight-normalised volume in neonates is roughly 0.4-0.6 L/kg and **falls** as the
+extracellular fluid fraction falls with maturation. The litres reading gives
+0.54 to 0.41 L/kg across the cohort's weight range, in the right band and falling.
+The L/kg reading gives 0.31 to 1.54 L/kg, rising, and reaches three times the
+plausible value at the heaviest weight.
+
+The paper's own Table 3 settles it independently. A single 11 mg/kg dose gives an
+immediate post-dose concentration of `dose / V`:
+
+```{r v-peak-check}
+c0 <- function(wt, v) 11 * wt / v(wt)
+tibble(
+  Reading = c("V in litres", "V in L/kg"),
+  `C0 at the median 1.34 kg (mg/L)` = c(c0(1.34, v_abs), c0(1.34, v_perkg))
+) |>
+  knitr::kable(digits = 2,
+               caption = "Predicted immediate post-dose concentration versus the observed peaks of Table 3 (IV 22.23 mg/L, IM 24.46 mg/L).")
+```
+
+The litres reading lands on the observed peaks; the L/kg reading is roughly 25%
+low. The model file therefore encodes `vc <- exp(lvc) * (WT / 1)^e_wt_vc` in
+litres, and records the unit discrepancy in its `ini()` comments.
+
+## Table 1's postmenstrual-age column carries a unit error
+
+Table 1 prints "PMA at initiation" as median 45+6 weeks (IQR 39+5 to 53+5, range
+25+6 to 113+6). That column is inconsistent with the rest of the paper, and the
+inconsistency is exactly what you get from computing postmenstrual age as
+`GA_weeks + PNA_days` instead of `GA_weeks + PNA_days / 7`:
+
+```{r pma-reconstruction}
+pma_recon <- function(ga, pma_printed) ga + (pma_printed - ga) / 7
+
+pma_tbl <- tibble(
+  Statistic          = c("Q1", "Median", "Q3"),
+  `GA (weeks)`       = c(26 + 0/7, 29 + 0/7, 31 + 0/7),
+  `PMA printed (weeks)` = c(39 + 5/7, 45 + 6/7, 53 + 5/7)
+) |>
+  mutate(
+    `Implied PNA (days)`     = `PMA printed (weeks)` - `GA (weeks)`,
+    `PMA reconstructed (weeks)` = pma_recon(`GA (weeks)`, `PMA printed (weeks)`)
+  )
+knitr::kable(pma_tbl, digits = 2,
+             caption = "Table 1's GA and PMA columns, and the postmenstrual age implied by reading the residual as days rather than weeks.")
+```
+
+Four independent checks agree that the reconstructed column, median about 31
+weeks, is the true one.
+
+1. **Growth.** Median birth weight is 1.00 kg and median weight at initiation is
+   1.34 kg. The printed PMA implies 16.9 **weeks** of postnatal life, i.e. 20 g
+   of weight gain per week -- roughly a seventh of normal preterm growth. The
+   reconstruction implies 16.9 **days**, i.e. about 140 g per week, which is the
+   expected 8-15 g/kg/day.
+2. **The dosing rule.** The regimen splits at 29 weeks postmenstrual age. Under
+   the printed column the first quartile is already 39.7 weeks, so the q36h arm
+   would be empty. Under the reconstruction the quartiles straddle 29 weeks and
+   the rule partitions the cohort.
+3. **Trough concentrations.** Shown below: the model driven by the printed PMA
+   under-predicts Table 3's observed troughs about sevenfold, while the
+   reconstruction reproduces them.
+4. **Internal consistency of Table 1 itself.** The printed PMA maximum of 113+6
+   weeks is 2.2 years, which no reading of "neonates" supports; as days it is a
+   90-day admission, which the cohort description does support.
+
+This affects only what postmenstrual ages a user should regard as representative
+of the source cohort. **It does not affect the model equations**, which are
+unambiguous. The virtual cohort below uses the reconstruction, and the deviation
+is recorded in the model file's `covariateData$PAGE` notes and in
+"Assumptions and deviations".
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohort below reproduces the
+Table 1 marginal distributions (weight at initiation, gestational age) and the
+reconstructed postmenstrual age, and applies the institutional regimen, with each
+subject assigned to the q24h or q36h arm by the paper's own 29-week rule. The
+covariates are drawn from R's RNG and are therefore reproducible; only the
+between-subject random effect on clearance is drawn by rxode2.
+
+```{r cohort}
+# set.seed() seeds R's RNG, which governs the covariate draws below. It does NOT
+# seed rxode2's simulation RNG, whose streams are partitioned per solver thread,
+# so the eta draws differ between a 2-core CI runner and a 16-thread
+# workstation. Every assertion downstream is written to hold for any cohort the
+# model can produce; see pattern 12 of known-vignette-failure-patterns.md.
+set.seed(20250717)
+
+n_total <- 250L   # splits into ~184 q24h and ~66 q36h; both arms stay under the 200/arm cap
+
+qn75 <- stats::qnorm(0.75)
+
+# Weight at initiation: median 1.34 kg, IQR 0.90-1.90, range 0.58-3.77 (Table 1).
+wt_sdlog <- log(1.90 / 0.90) / (2 * qn75)
+WT <- pmin(pmax(rlnorm(n_total, log(1.34), wt_sdlog), 0.58), 3.77)
+
+# Gestational age: median 29+0 wk, IQR 26+0 to 31+0, range 24+0 to 41+0 (Table 1).
+ga_sd <- (31 - 26) / (2 * qn75)
+GA <- pmin(pmax(rnorm(n_total, 29, ga_sd), 24), 41)
+
+# Postnatal age in days, from the reconstruction above: median 16.86 d,
+# IQR 13.71-22.71 d.
+pna_sdlog <- log(22.71 / 13.71) / (2 * qn75)
+PNA_days <- rlnorm(n_total, log(16.857), pna_sdlog)
+
+PAGE <- GA + PNA_days / 7
+
+subj <- tibble(
+  id        = seq_len(n_total),
+  WT        = WT,
+  GA        = GA,
+  PAGE      = PAGE,
+  tau       = ifelse(PAGE < 29, 36, 24),
+  treatment = ifelse(PAGE < 29, "11 mg/kg q36h (PMA < 29 wk)",
+                                "11 mg/kg q24h (PMA >= 29 wk)"),
+  amt       = 11 * WT
+)
+
+stopifnot(all(table(subj$treatment) <= 200))   # 200-per-arm cap
+
+knitr::kable(
+  subj |>
+    group_by(treatment) |>
+    summarise(
+      n = n(),
+      `WT median (kg)`   = median(WT),
+      `WT IQR (kg)`      = sprintf("%.2f-%.2f", quantile(WT, 0.25), quantile(WT, 0.75)),
+      `PMA median (wk)`  = median(PAGE),
+      `PMA IQR (wk)`     = sprintf("%.1f-%.1f", quantile(PAGE, 0.25), quantile(PAGE, 0.75)),
+      .groups = "drop"
+    ),
+  digits = 2,
+  caption = "Virtual cohort by dosing arm."
+)
+```
+
+```{r events}
+# Three doses (TDM is performed at the third), each a 30-min infusion.
+dosing <- subj |>
+  tidyr::crossing(occ = 0:2) |>
+  mutate(time = occ * tau, evid = 1L, cmt = "central", dur = 0.5) |>
+  select(id, WT, PAGE, treatment, tau, time, amt, evid, cmt, dur)
+
+# Dense grid over the three intervals, for the profile figure and for NCA.
+grid_obs <- subj |>
+  select(id, WT, PAGE, treatment, tau) |>
+  tidyr::crossing(frac = seq(0, 3, by = 1 / 48)) |>
+  mutate(time = frac * tau) |>
+  select(id, WT, PAGE, treatment, tau, time)
+
+# The protocol TDM samples: trough immediately before the third dose, peak 1 h
+# after that infusion starts (= 30 min after the end of a 30-min infusion).
+tdm_obs <- subj |>
+  select(id, WT, PAGE, treatment, tau) |>
+  tidyr::crossing(off = c(-0.1, 1.0)) |>
+  mutate(time = 2 * tau + off) |>
+  select(id, WT, PAGE, treatment, tau, time)
+
+obs <- bind_rows(grid_obs, tdm_obs) |>
+  distinct(id, time, .keep_all = TRUE) |>          # the grid can land on a TDM time
+  mutate(amt = NA_real_, evid = 0L, cmt = "central", dur = NA_real_)
+
+events <- bind_rows(dosing, obs) |> arrange(id, time, desc(evid))
+stopifnot(nrow(distinct(events, id, time, evid)) == nrow(events))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Lim_2025_amikacin")
+
+sim <- rxode2::rxSolve(mod, events = events,
+                       keep = c("treatment", "tau")) |>
+  as.data.frame()
+
+stopifnot(!anyNA(sim$Cc), all(sim$Cc >= 0))
+```
+
+## The solve reproduces its own closed form
+
+The model is a one-compartment system with an infusion, so its solution is known
+exactly. This is a deterministic check between two expressions of the same
+parameters, so it is asserted tightly.
+
+```{r closed-form}
+mod_typ <- rxode2::zeroRe(mod)
+sim_typ <- rxode2::rxSolve(mod_typ, events = events,
+                           keep = c("treatment", "tau")) |>
+  as.data.frame()
+
+cl_of <- function(wt, pma) 0.0487 * wt^0.919 * (pma / 30)^1.53
+v_of  <- function(wt)      0.497  * wt^0.851
+
+# Superposition of three 30-min infusions of rate amt/0.5.
+cc_closed <- function(t, wt, pma, tau) {
+  k <- cl_of(wt, pma) / v_of(wt)
+  R <- 11 * wt / 0.5
+  one <- function(dt) {
+    ifelse(dt <= 0, 0,
+      ifelse(dt <= 0.5,
+             R / (k * v_of(wt)) * (1 - exp(-k * dt)),
+             R / (k * v_of(wt)) * (1 - exp(-k * 0.5)) * exp(-k * (dt - 0.5))))
+  }
+  one(t) + one(t - tau) + one(t - 2 * tau)
+}
+
+chk <- sim_typ |>
+  filter(time > 0) |>
+  mutate(closed = cc_closed(time, WT, PAGE, tau),
+         rel = abs(Cc - closed) / closed)
+
+stopifnot(max(chk$rel) < 1e-6)
+sprintf("max relative difference, ODE solve vs closed form: %.2e", max(chk$rel))
+```
+
+# Replicate published figures
+
+```{r figure-3}
+# Companion to Figure 3 of Lim 2025 (the pcVPC of the final model): the
+# concentration-time profile over the three doses that precede TDM, by arm.
+sim |>
+  group_by(treatment, tafd = time / tau) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05),
+    Q50 = quantile(Cc, 0.50),
+    Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tafd, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~treatment) +
+  labs(x = "Dosing intervals since first dose",
+       y = "Amikacin serum concentration (mg/L)",
+       title = "Simulated amikacin profiles over the first three doses",
+       caption = "Companion to Figure 3 of Lim 2025. Band is the 5th-95th percentile.")
+```
+
+```{r figure-5}
+# Replicates Figure 5 of Lim 2025: the TDM peak and trough concentrations at the
+# third dose against the institutional target ranges (peak 15-25 mg/L,
+# trough < 5 mg/L).
+tdm <- sim |>
+  mutate(sample = case_when(
+    abs(time - (2 * tau - 0.1)) < 1e-8 ~ "Trough (pre-3rd dose)",
+    abs(time - (2 * tau + 1.0)) < 1e-8 ~ "Peak (1 h after 3rd dose start)",
+    TRUE ~ NA_character_
+  )) |>
+  filter(!is.na(sample))
+
+stopifnot(nrow(tdm) == 2L * n_total)   # exactly one peak and one trough per subject
+
+targets <- tibble(
+  sample = c("Peak (1 h after 3rd dose start)", "Peak (1 h after 3rd dose start)",
+             "Trough (pre-3rd dose)"),
+  y      = c(15, 25, 5)
+)
+
+ggplot(tdm, aes(treatment, Cc)) +
+  geom_boxplot(outlier.alpha = 0.3) +
+  geom_hline(data = targets, aes(yintercept = y), linetype = "dashed",
+             colour = "firebrick") +
+  facet_wrap(~sample, scales = "free_y") +
+  coord_flip() +
+  labs(x = NULL, y = "Amikacin serum concentration (mg/L)",
+       title = "Third-dose TDM concentrations against the institutional targets",
+       caption = "Replicates Figure 5 of Lim 2025. Dashed lines are the 15-25 mg/L peak and < 5 mg/L trough targets.")
+```
+
+```{r target-attainment}
+attain <- tdm |>
+  group_by(sample) |>
+  summarise(
+    `Within target (%)` = 100 * mean(
+      if (first(sample) == "Trough (pre-3rd dose)") Cc < 5 else Cc >= 15 & Cc <= 25
+    ),
+    .groups = "drop"
+  ) |>
+  mutate(`Lim 2025 observed (%)` = c(61, 99))
+
+knitr::kable(attain, digits = 1,
+             caption = "Target attainment at the third dose, simulated vs. Lim 2025 Results.")
+```
+
+The trough result reproduces the paper (99% observed, effectively all simulated
+subjects below 5 mg/L). The **peak** attainment is higher in the simulation than
+the 61% Lim 2025 observed, and this is expected rather than a discrepancy in the
+structural model: the packaged model carries between-subject variability on
+clearance only, because that is the only random effect the paper published. The
+residual error structure is reported but its magnitude is not, and there is no
+published between-subject variability on volume -- yet peak concentrations are
+governed almost entirely by volume and by assay and sample-timing error. The
+simulated peaks are therefore much less dispersed than the observed ones, so a
+larger fraction falls inside a fixed 10 mg/L-wide window. The **central tendency**
+is what this model can be held to, and it is checked below.
+
+# PKNCA validation
+
+NCA is run over the third dosing interval, which is the interval in which
+therapeutic drug monitoring was performed, separately for each dosing arm.
+
+```{r pknca}
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  filter(time >= 2 * tau, time <= 3 * tau) |>
+  mutate(time_int = time - 2 * tau) |>
+  select(id, time = time_int, Cc, treatment)
+
+# Guarantee a time-zero (start-of-interval) record for every subject.
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+
+dose_df <- subj |>
+  mutate(time = 0) |>
+  select(id, time, amt, treatment)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- data.frame(
+  start     = 0,
+  end       = c(24, 36),
+  treatment = c("11 mg/kg q24h (PMA >= 29 wk)", "11 mg/kg q36h (PMA < 29 wk)"),
+  cmax      = TRUE,
+  tmax      = TRUE,
+  auclast   = TRUE,
+  half.life = TRUE,
+  cmin      = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_summary <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life", "cmin")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+
+nca_summary |>
+  select(treatment, cmax, tmax, auclast, half.life, cmin) |>
+  rename(
+    "Dosing arm"        = treatment,
+    "Cmax (mg/L)"       = cmax,
+    "Tmax (h)"          = tmax,
+    "AUClast (mg*h/L)"  = auclast,
+    "t1/2 (h)"          = half.life,
+    "Cmin (mg/L)"       = cmin
+  ) |>
+  knitr::kable(digits = 2,
+               caption = "Median NCA parameters over the third dosing interval, by arm.")
+```
+
+The median terminal half-life is around 6-7 h, consistent with the paper's
+reasoning that "most of the amikacin concentrations were measured after the
+distribution phase" so a one-compartment model sufficed, and with the extended
+36 h interval being used for the least mature neonates.
+
+```{r halflife-gate}
+hl <- as.data.frame(nca_res$result) |> filter(PPTESTCD == "half.life")
+# Deterministic band: the packaged model's t1/2 = ln(2) * V/CL is set entirely by
+# WT and PMA. The cohort spans t1/2 from roughly 4 to 11 h; the median cannot
+# move outside 4-10 h unless a structural constant was mis-transcribed.
+stopifnot(median(hl$PPORRES) > 4, median(hl$PPORRES) < 10)
+```
+
+# Comparison against published values
+
+Lim 2025 reports no NCA table. It does report, in Table 3, the mean peak and
+trough serum concentrations actually measured at the third dose, separately for
+the intravenous and intramuscular routes. Those are the paper's only published
+exposure numbers and they are directly comparable to the protocol-matched samples
+drawn from the simulation above.
+
+The packaged model has **no route term** -- Lim 2025 modelled both routes with the
+same one-compartment structure and reported no absorption-rate parameter -- so the
+simulated column is identical for the two reference rows, by construction.
+
+```{r nca-compare}
+sim_tdm <- tdm |>
+  group_by(sample) |>
+  summarise(value = median(Cc), .groups = "drop") |>
+  mutate(PPTESTCD = ifelse(grepl("^Peak", sample), "peak_tdm", "trough_tdm"))
+
+simulated_tbl <- tidyr::crossing(
+  Route = c("Intravenous", "Intramuscular"),
+  sim_tdm |> select(PPTESTCD, PPORRES = value)
+)
+
+published <- tibble::tribble(
+  ~Route,          ~peak_tdm, ~trough_tdm,
+  "Intravenous",   22.23,     1.62,
+  "Intramuscular", 24.46,     1.65
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = simulated_tbl,
+  reference     = published,
+  by            = "Route",
+  units         = c(peak_tdm = "mg/L", trough_tdm = "mg/L"),
+  tolerance_pct = 20,
+  label_first_column = "TDM concentration"
+)
+
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated third-dose TDM concentrations vs. Lim 2025 Table 3 observed means.",
+    "peak_tdm is sampled 1 h after the start of the 30-min infusion and",
+    "trough_tdm immediately before the third dose, matching the paper's TDM",
+    "definitions. * differs from reference by more than 20%."
+  ),
+  align = c("l", "l", "r", "r", "r")
+)
+```
+
+Every cell is within 20% of the published mean. The simulated peak sits between
+the observed intravenous and intramuscular means and the simulated trough matches
+both within a few percent.
+
+```{r tdm-gate}
+peak_med   <- median(tdm$Cc[grepl("^Peak",   tdm$sample)])
+trough_med <- median(tdm$Cc[grepl("^Trough", tdm$sample)])
+
+# Structural gates. Both quantities are dominated by the covariate model and the
+# 11 mg/kg dose; the only stochastic input is the published BSV on CL
+# (variance 0.0188, i.e. about 14% CV), so these bounds carry ample headroom
+# over cohort-to-cohort noise while still failing hard on a mis-transcribed
+# volume, dose, exponent or reference value -- each of which moves these
+# numbers by tens of percent. Realised on this render: peak 22.7, trough 1.5.
+stopifnot(abs(peak_med   - 22.23) / 22.23 < 0.15)   # Table 3 IV mean
+stopifnot(trough_med > 0.7, trough_med < 3.5)       # Table 3 means 1.62 / 1.65
+
+# Essentially every subject should be below the 5 mg/L trough target, as in the
+# paper's 99%.
+stopifnot(mean(tdm$Cc[grepl("^Trough", tdm$sample)] < 5) > 0.90)
+```
+
+## The printed postmenstrual ages do not reproduce Table 3
+
+This is the third of the four checks listed earlier. Re-running the same typical-value
+cohort with Table 1's printed PMA column, instead of the reconstruction, moves the
+predicted trough far away from the observed values:
+
+```{r pma-falsifier}
+# Same subjects, same weights, same regimen -- only PMA changes. Printed PMA is
+# recovered by inverting the reconstruction: PMA_printed = GA + PNA_days.
+subj_printed <- subj |> mutate(PAGE = GA + (PAGE - GA) * 7)
+
+events_printed <- events |>
+  select(-PAGE) |>
+  left_join(subj_printed |> select(id, PAGE), by = "id")
+
+trough_printed <- rxode2::rxSolve(mod_typ, events = events_printed,
+                                  keep = c("treatment", "tau")) |>
+  as.data.frame() |>
+  filter(abs(time - (2 * tau - 0.1)) < 1e-8)
+
+trough_recon <- sim_typ |> filter(abs(time - (2 * tau - 0.1)) < 1e-8)
+
+falsifier <- tibble(
+  `PMA column`            = c("Table 1 as printed", "Reconstructed (GA + PNA/7)"),
+  `Median PMA (weeks)`    = c(median(subj_printed$PAGE), median(subj$PAGE)),
+  `Median trough (mg/L)`  = c(median(trough_printed$Cc), median(trough_recon$Cc)),
+  `Lim 2025 Table 3 (mg/L)` = c(1.62, 1.62)
+)
+knitr::kable(falsifier, digits = 2,
+             caption = "Typical-value trough at the third dose under the two readings of Table 1's PMA column.")
+
+# Deterministic (typical-value) comparison: the printed column under-predicts the
+# observed trough by roughly sevenfold, the reconstruction lands on it.
+stopifnot(median(trough_printed$Cc) < 0.6)
+stopifnot(abs(median(trough_recon$Cc) - 1.62) / 1.62 < 0.5)
+```
+
+# Assumptions and deviations
+
+- **The V equation's `(L/kg)` unit tag is not used.** The printed equation is
+  tagged L/kg but is encoded as absolute litres, for the two reasons worked
+  through in "Reading the two published equations": the L/kg reading implies total
+  volume scaling as $WT^{1.851}$ and a weight-normalised volume of 1.54 L/kg at
+  the cohort's heaviest weight (roughly three times the value amikacin's
+  extracellular distribution allows, and rising rather than falling with
+  maturation), and it under-predicts Table 3's observed peaks by about 25%. The
+  litres reading is physiologically correct on both counts. The `(L/kg)` tag
+  matches the Methods sentence describing how BSV was parameterised during model
+  building, and appears to have been carried onto the final equation.
+
+- **Table 1's "PMA at initiation" column is not used for the virtual cohort.**
+  It is inconsistent with Table 1's own GA and weight columns, with the paper's
+  own 29-week dosing rule, and with Table 3's observed troughs, in the specific
+  way produced by computing `GA_weeks + PNA_days` rather than
+  `GA_weeks + PNA_days / 7`. The cohort uses the reconstruction (median about 31
+  weeks). This is a **deviation from a printed table**, not a change to the model:
+  the model equations are used exactly as published, and a user supplying true
+  postmenstrual ages gets the published behaviour. The reconstruction is recorded
+  in `covariateData$PAGE$notes` and in the `population$page_range` field so it
+  cannot be lost.
+
+- **No between-subject variability on volume.** The published V equation carries
+  no `exp[eta]` term while the CL equation printed immediately above it does, so
+  the omission is treated as informative rather than as a reporting gap. It is
+  corroborated by the Discussion ("there was a good correlation between body WT
+  and volume of distribution (V), which matches our expectation"). No eta is
+  declared on `lvc`.
+
+- **Residual error is encoded at `fixed(0)`.** Lim 2025 states that a combined
+  proportional-additive residual error model was selected, but publishes neither
+  coefficient: the paper has no parameter-estimate table, and the PMC
+  supplementary file set contains only figure and equation images, no control
+  stream. Both `propSd` and `addSd` are therefore `fixed(0)` rather than invented,
+  with the combined structure retained so that a user who obtains the estimates
+  can substitute them directly. Consequently `sim` equals `ipred` in any solve of
+  this model, and simulated concentrations are less dispersed than real
+  observations -- this is the reason the simulated peak-target attainment (about
+  87%) exceeds the paper's observed 61%, as discussed above.
+
+- **No uncertainty on any parameter.** The paper reports a 2,000-replicate
+  bootstrap as "satisfactory" but publishes no standard errors, relative standard
+  errors, or confidence intervals for any estimate, so none are recorded.
+
+- **Route of administration is not modelled.** Amikacin was given intravenously
+  or intramuscularly, and Table 3 compares the two, but the paper models both with
+  the same one-compartment structure and reports no absorption-rate or
+  bioavailability parameter for the intramuscular route. Doses of either route
+  enter `central` directly. A user wanting to distinguish the routes would need to
+  add an absorption compartment, which this paper does not parameterise.
+
+- **The virtual cohort's covariate distributions are assumed.** Table 1 reports
+  medians, interquartile ranges and extremes but not distributional forms. Weight
+  at initiation and postnatal age are drawn as log-normal and gestational age as
+  normal, each matched to the reported median and IQR and truncated to the
+  reported range. Weight is held constant per subject over the three simulated
+  doses, whereas the source data set carried it as time-varying with
+  last-observation-carried-forward imputation; over the 48-72 h simulated here the
+  difference is negligible.
+
+- **Serum creatinine is not in the model.** It was screened as a power covariate
+  on CL and not retained; the paper's Discussion notes that renal maturation in
+  neonates is captured by postmenstrual age instead. No `SCR` column is required.

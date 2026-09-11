@@ -135,10 +135,10 @@ Sathe_2024_sacituzumab <- function() {
     # and a study indicator on RUV are reported but omitted from
     # the simulation model (see vignette Assumptions and deviations).
     # ============================================================
-    propSd    <- 0.204429; label("SG proportional residual SD on log scale (Sathe 2024 Table 1; supplement TH(5))")
-    propSd_sn38   <- 0.357;    label("Free SN-38 proportional residual SD on log scale (Sathe 2024 Table 2; exp(-1.03))")
+    propSd    <- 0.204429; label("SG proportional residual SD on the log scale; Sathe 2024 Table 1, supplement TH(5) (fraction)")
+    propSd_sn38   <- 0.357;    label("Free SN-38 proportional residual SD on the log scale; Sathe 2024 Table 2 (fraction)")
     addSd_tab     <- 27.3;     label("tAB additive residual SD (ug/mL; Sathe 2024 Table 3)")
-    propSd_tab    <- 0.207;    label("tAB proportional residual SD as fraction (Sathe 2024 Table 3)")
+    propSd_tab    <- 0.207;    label("tAB proportional residual SD; Sathe 2024 Table 3 (fraction)")
   })
   model({
     # ------------------------------------------------------------

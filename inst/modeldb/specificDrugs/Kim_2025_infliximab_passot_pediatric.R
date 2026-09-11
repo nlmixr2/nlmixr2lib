@@ -97,22 +97,22 @@ Kim_2025_infliximab_passot_pediatric <- function() {
     # Structural parameters -- typical values before any covariate multiplier.
     # Neither IBD subtype is a unit multiplier (see e_ibd_* below), so these are
     # not the values for a "reference patient" on their own.
-    lcl <- log(0.23); label("Typical clearance before covariate effects (CL, L/day)")   # Data S1 model #8 $THETA1 = 0.23 L/day; Table S2 "0.23"
-    lvc <- log(5.2);  label("Typical central volume before covariate effects (Vc, L)")  # Data S1 model #8 $THETA2 = 5.2 L; Table S2 "5.2"
+    lcl <- log(0.23); label("Typical clearance before covariate effects (L/day)")   # Data S1 model #8 $THETA1 = 0.23 L/day; Table S2 "0.23"
+    lvc <- log(5.2);  label("Typical central volume before covariate effects (L)")  # Data S1 model #8 $THETA2 = 5.2 L; Table S2 "5.2"
 
     # Covariate effects on CL -- identical to the adult variant.
-    e_wt_cl     <- 0.603; label("Power exponent of body weight on CL ((WT/67)^e_wt_cl)")                     # Data S1 model #8 $THETA3 = 0.603
-    e_sex_cl    <- 0.181; label("Log-scale male effect on CL (multiplier exp(e_sex_cl) when SEXF = 0)")      # Data S1 model #8 $THETA4 = 0.181
-    e_ibd_cd_cl <- 0.384; label("Log-scale Crohn's disease effect on CL (multiplier exp(e_ibd_cd_cl))")      # Data S1 model #8 $THETA5 = 0.384
-    e_ibd_uc_cl <- 0.472; label("Log-scale ulcerative colitis effect on CL (multiplier exp(e_ibd_uc_cl))")   # Data S1 model #8 $THETA6 = 0.472
+    e_wt_cl     <- 0.603; label("Power exponent of body weight on CL, WT/67 scaling (unitless)")                     # Data S1 model #8 $THETA3 = 0.603
+    e_sex_cl    <- 0.181; label("Log-scale male effect on CL, multiplier exp(e_sex_cl) when SEXF = 0 (unitless)")      # Data S1 model #8 $THETA4 = 0.181
+    e_ibd_cd_cl <- 0.384; label("Log-scale Crohn's disease effect on CL, multiplier exp(e_ibd_cd_cl) (unitless)")      # Data S1 model #8 $THETA5 = 0.384
+    e_ibd_uc_cl <- 0.472; label("Log-scale ulcerative colitis effect on CL, multiplier exp(e_ibd_uc_cl) (unitless)")   # Data S1 model #8 $THETA6 = 0.472
 
     # Covariate effects on Vc -- identical to the adult variant, plus the age
     # effect that is unique to this paediatric variant.
-    e_wt_vc     <-  0.277; label("Power exponent of body weight on Vc ((WT/67)^e_wt_vc)")                    # Data S1 model #8 $THETA7 = 0.277
-    e_sex_vc    <-  0.209; label("Log-scale male effect on Vc (multiplier exp(e_sex_vc) when SEXF = 0)")     # Data S1 model #8 $THETA8 = 0.209
-    e_ibd_cd_vc <-  0.399; label("Log-scale Crohn's disease effect on Vc (multiplier exp(e_ibd_cd_vc))")     # Data S1 model #8 $THETA9 = 0.399
-    e_ibd_uc_vc <-  0.417; label("Log-scale ulcerative colitis effect on Vc (multiplier exp(e_ibd_uc_vc))")  # Data S1 model #8 $THETA10 = 0.417
-    e_age_vc    <- -0.396; label("Log-scale effect on Vc for age < 15 years (multiplier exp(e_age_vc))")     # Data S1 model #8 $THETA11 = -0.396
+    e_wt_vc     <-  0.277; label("Power exponent of body weight on Vc, WT/67 scaling (unitless)")                    # Data S1 model #8 $THETA7 = 0.277
+    e_sex_vc    <-  0.209; label("Log-scale male effect on Vc, multiplier exp(e_sex_vc) when SEXF = 0 (unitless)")     # Data S1 model #8 $THETA8 = 0.209
+    e_ibd_cd_vc <-  0.399; label("Log-scale Crohn's disease effect on Vc, multiplier exp(e_ibd_cd_vc) (unitless)")     # Data S1 model #8 $THETA9 = 0.399
+    e_ibd_uc_vc <-  0.417; label("Log-scale ulcerative colitis effect on Vc, multiplier exp(e_ibd_uc_vc) (unitless)")  # Data S1 model #8 $THETA10 = 0.417
+    e_age_vc    <- -0.396; label("Log-scale effect on Vc for age < 15 years, multiplier exp(e_age_vc) (unitless)")     # Data S1 model #8 $THETA11 = -0.396
 
     # Inter-individual variability. The control stream gives the SD in each
     # comment: 0.092 = 0.304^2 (CL); 0.050 = 0.224^2 (Vc).

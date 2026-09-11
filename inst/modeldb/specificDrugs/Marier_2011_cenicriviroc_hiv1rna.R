@@ -9,7 +9,7 @@ Marier_2011_cenicriviroc_hiv1rna <- function() {
     "cenicriviroc was assigned later, and this file uses the INN per the",
     "nlmixr2lib naming policy. Cenicriviroc is a dual CCR5 / CCR2 antagonist.",
     "The model is:",
-    "dviralLoad = emax * CSS_CVC / (ic50 + CSS_CVC),",
+    "d_viral_load = emax * CSS_CVC / (ic50 + CSS_CVC),",
     "with emax = -1.43 log10 copies/mL and ic50 = 13.1 ng/mL. It is a SIMPLE",
     "(hyperbolic, non-sigmoidal) Emax model with NO baseline / placebo",
     "intercept term: the authors tested sigmoidal (gamma) and linear",
@@ -50,7 +50,7 @@ Marier_2011_cenicriviroc_hiv1rna <- function() {
   units <- list(
     time          = "h",
     dosing        = "not applicable (static exposure-response model; cenicriviroc exposure enters through the covariate CSS_CVC rather than through rxode2 dose events)",
-    concentration = "log10 copies/mL (the modelled observation dviralLoad is the day-11 CHANGE FROM BASELINE in plasma HIV-1 RNA, NOT a drug concentration; the driving covariate CSS_CVC is the average steady-state cenicriviroc plasma concentration in ng/mL)"
+    concentration = "log10 copies/mL (the modelled observation d_viral_load is the day-11 CHANGE FROM BASELINE in plasma HIV-1 RNA, NOT a drug concentration; the driving covariate CSS_CVC is the average steady-state cenicriviroc plasma concentration in ng/mL)"
   )
 
   covariateData <- list(
@@ -137,7 +137,7 @@ Marier_2011_cenicriviroc_hiv1rna <- function() {
     # So the retained form is hyperbolic (gamma = 1, not estimated), driven
     # by Css, with NO baseline / placebo intercept:
     #
-    #   dviralLoad = emax * Css / (ic50 + Css)
+    #   d_viral_load = emax * Css / (ic50 + Css)
     #
     # Three independent confirmations that there is no intercept term:
     #   (1) Figure 3's fitted curve passes through the origin, where the
@@ -214,7 +214,7 @@ Marier_2011_cenicriviroc_hiv1rna <- function() {
     # Marier 2011 simple Emax model, Methods p. 2770 / Results p. 2772,
     # drawn as Figure 3 (p. 2773):
     #
-    #   dviralLoad = emax * Css / (ic50 + Css)
+    #   d_viral_load = emax * Css / (ic50 + Css)
     #
     # emax is negative, so the returned change from baseline is negative
     # (viral load falls) and bounded below by emax. At CSS_CVC = ic50 the
@@ -224,12 +224,12 @@ Marier_2011_cenicriviroc_hiv1rna <- function() {
     #
     # Units: CSS_CVC and ic50 are both ng/mL, so the quotient is
     # dimensionless and the product carries emax's units of
-    # log10 copies/mL. dviralLoad is a CHANGE FROM BASELINE, so it is
+    # log10 copies/mL. d_viral_load is a CHANGE FROM BASELINE, so it is
     # added to a subject's baseline log10 HIV-1 RNA to obtain the day-11
     # level; the model does not carry the baseline itself.
     # -------------------------------------------------------------------------
-    dviralLoad <- emax * CSS_CVC / (ic50 + CSS_CVC)
+    d_viral_load <- emax * CSS_CVC / (ic50 + CSS_CVC)
 
-    dviralLoad ~ add(addSd)
+    d_viral_load ~ add(addSd)
   })
 }

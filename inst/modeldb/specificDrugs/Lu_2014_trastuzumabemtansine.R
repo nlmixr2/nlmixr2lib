@@ -86,10 +86,10 @@ Lu_2014_trastuzumabemtansine <- function() {
     # in Lu 2014 Table 2 footnote a). Paper parameterization uses clearances on
     # an hour basis via exp(theta)*24 -> L/day, reported in Table 1; we work
     # directly in L/day so the stored typical value is log(CL_Lperday).
-    lcl  <- log(0.676);  label("Clearance at reference covariates (CL, L/day)")                      # Lu 2014 Table 1 (exp(theta1)*24 = 0.676 L/day)
-    lvc  <- log(3.127);  label("Central volume of distribution at reference (Vc, L)")               # Lu 2014 Table 1 (exp(theta2) = 3.127 L)
-    lq   <- log(1.534);  label("Intercompartmental clearance (Q, L/day)")                           # Lu 2014 Table 1 (exp(theta3)*24 = 1.534 L/day)
-    lvp  <- log(0.66);   label("Peripheral volume of distribution (Vp, L)")                         # Lu 2014 Table 1 (exp(theta4) = 0.66 L)
+    lcl  <- log(0.676);  label("Clearance at reference covariates (L/day)")                      # Lu 2014 Table 1 (exp(theta1)*24 = 0.676 L/day)
+    lvc  <- log(3.127);  label("Central volume of distribution at reference (L)")               # Lu 2014 Table 1 (exp(theta2) = 3.127 L)
+    lq   <- log(1.534);  label("Intercompartmental clearance (L/day)")                           # Lu 2014 Table 1 (exp(theta3)*24 = 1.534 L/day)
+    lvp  <- log(0.66);   label("Peripheral volume of distribution (L)")                         # Lu 2014 Table 1 (exp(theta4) = 0.66 L)
 
     # Covariate-effect parameters (Lu 2014 Eq. 5 and Table 1).
     # Continuous covariates enter as power models normalized to the Table 2
@@ -117,7 +117,7 @@ Lu_2014_trastuzumabemtansine <- function() {
     # Residual error. Lu 2014 Table 1 reports a single proportional residual
     # error of 31.56% CV (Sigma row). propSd is stored as the SD on the
     # proportional scale.
-    propSd <- 0.3156; label("Proportional residual error (SD, fraction)")                           # Lu 2014 Table 1 (Sigma = 31.56% CV)
+    propSd <- 0.3156; label("Proportional residual error (fraction)")                           # Lu 2014 Table 1 (Sigma = 31.56% CV)
   })
   model({
     # Individual PK parameters with covariate adjustments (Lu 2014 Eq. 5).

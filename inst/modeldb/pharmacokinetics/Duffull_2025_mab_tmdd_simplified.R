@@ -33,18 +33,18 @@ Duffull_2025_mab_tmdd_simplified <- function() {
   ini({
     # ----- Antibody disposition (Duffull 2025 Table 2, 'Simplified model'
     # ----- column: final parameter estimates with their RSE%). -----
-    lcl  <- log(4.15);  label("Linear (non-specific) clearance of free antibody from the central compartment (CL, L/h)")  # Duffull 2025 Table 2 row CL, simplified model 4.15 (RSE 6%)
-    lvc  <- log(68.4);  label("Central compartment volume of distribution (Vc, L)")                                       # Duffull 2025 Table 2 row Vc, simplified model 68.4 (RSE 9%)
-    lvp  <- log(75.8);  label("Peripheral compartment volume of distribution (Vp, L)")                                    # Duffull 2025 Table 2 row Vp, simplified model 75.8 (RSE 5%)
-    lq   <- log(59.9);  label("Intercompartmental clearance between central and peripheral compartments (Q, L/h)")        # Duffull 2025 Table 2 row Q, simplified model 59.9 (RSE 11%)
+    lcl  <- log(4.15);  label("Linear (non-specific) clearance of free antibody from the central compartment (L/h)")  # Duffull 2025 Table 2 row CL, simplified model 4.15 (RSE 6%)
+    lvc  <- log(68.4);  label("Central compartment volume of distribution (L)")                                       # Duffull 2025 Table 2 row Vc, simplified model 68.4 (RSE 9%)
+    lvp  <- log(75.8);  label("Peripheral compartment volume of distribution (L)")                                    # Duffull 2025 Table 2 row Vp, simplified model 75.8 (RSE 5%)
+    lq   <- log(59.9);  label("Intercompartmental clearance between central and peripheral compartments (L/h)")        # Duffull 2025 Table 2 row Q, simplified model 59.9 (RSE 11%)
 
     # ----- Target turnover (Duffull 2025 Table 2, 'Simplified model'
     # ----- column). -----
     # ksyn is reported per unit volume (nM/h); model() multiplies it by
     # Vc to obtain the zero-order synthesis rate of target AMOUNT
     # (nmol/h), matching Equation 5's "+ ksyn VC" term.
-    lksyn <- log(1.16);  label("Zero-order synthesis rate of the target, per unit central volume (ksyn, nmol/L/h)")  # Duffull 2025 Table 2 row ksyn, simplified model 1.16 (RSE 6%)
-    lkint <- log(11.5);  label("First-order internalisation (elimination) rate constant of the antibody-target complex (kint, 1/h)")  # Duffull 2025 Table 2 row kint, simplified model 11.5 (RSE 5%)
+    lksyn <- log(1.16);  label("Zero-order synthesis rate of the target, per unit central volume (nmol/L/h)")  # Duffull 2025 Table 2 row ksyn, simplified model 1.16 (RSE 6%)
+    lkint <- log(11.5);  label("First-order internalisation (elimination) rate constant of the antibody-target complex (1/h)")  # Duffull 2025 Table 2 row kint, simplified model 11.5 (RSE 5%)
 
     # kdeg does NOT appear in Equations 4 or 5. It survives in this model
     # only through the drug-free initial condition Rtot(0) = ksyn*Vc/kdeg
@@ -52,7 +52,7 @@ Duffull_2025_mab_tmdd_simplified <- function() {
     # identified purely by the baseline total target concentration
     # (ksyn/kdeg = 1.16/0.373 = 3.11 nmol/L). Table 2 nonetheless reports
     # it as estimated in the simplified model with an RSE of 4%.
-    lkdeg <- log(0.373); label("First-order degradation rate constant of free target; enters only via the baseline Rtot(0) = ksyn*Vc/kdeg (kdeg, 1/h)")  # Duffull 2025 Table 2 row kdeg, simplified model 0.373 (RSE 4%)
+    lkdeg <- log(0.373); label("First-order degradation rate constant of free target; enters only via the baseline Rtot(0) = ksyn*Vc/kdeg (1/h)")  # Duffull 2025 Table 2 row kdeg, simplified model 0.373 (RSE 4%)
 
     # No binding constant: Km is absent from the simplified model. Table 2
     # shows an em-dash for both its estimate and its RSE in the

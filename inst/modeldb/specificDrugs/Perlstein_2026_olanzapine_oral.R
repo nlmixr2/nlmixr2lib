@@ -80,11 +80,11 @@ Perlstein_2026_olanzapine_oral <- function() {
     # Structural parameters -- Supplemental Table 2, 'Oral olanzapine
     # population parameter estimates'. The main text never cites this table
     # by number; it is in the Supplementary Online Material PDF.
-    lka   <- log(0.0292);  label("First-order oral absorption rate constant (ka, 1/h)")     # Supplemental Table 2: ka = 0.0292 1/h (RSE 3.5%)
+    lka   <- log(0.0292);  label("First-order oral absorption rate constant (1/h)")     # Supplemental Table 2: ka = 0.0292 1/h (RSE 3.5%)
     lvc   <- log(9.61);    label("Apparent central volume of distribution V/F (L)")         # Supplemental Table 2: V/F = 9.61 L (RSE 15.8%)
     lcl   <- log(22.6);    label("Apparent clearance CL/F (L/h)")                           # Supplemental Table 2: CL/F = 22.6 L/h (RSE 6.2%)
-    lk12  <- log(0.254);   label("First-order transfer rate constant central to peripheral1 (k12, 1/h)")  # Supplemental Table 2: k12 = 0.254 1/h (RSE < 0.01%)
-    lk21  <- log(0.015);   label("First-order transfer rate constant peripheral1 to central (k21, 1/h)")  # Supplemental Table 2: k21 = 0.015 1/h (RSE < 0.01%)
+    lk12  <- log(0.254);   label("First-order transfer rate constant central to peripheral1 (1/h)")  # Supplemental Table 2: k12 = 0.254 1/h (RSE < 0.01%)
+    lk21  <- log(0.015);   label("First-order transfer rate constant peripheral1 to central (1/h)")  # Supplemental Table 2: k21 = 0.015 1/h (RSE < 0.01%)
     ltlag <- log(0.937);   label("Oral absorption lag time (h)")                            # Supplemental Table 2: lag = 0.937 h (RSE 1%)
 
     # Published Emax dopamine D2 receptor occupancy layer, inherited from
@@ -92,7 +92,7 @@ Perlstein_2026_olanzapine_oral <- function() {
     # parameters are fixed. Perlstein 2026 Methods, PK/D2RO Model:
     #   D2RO = ROmax * Cp / (EC50 + Cp)
     emax  <- fixed(100);      label("Maximal attainable dopamine D2 receptor occupancy ROmax (%)")            # Methods PK/D2RO Model: ROmax fixed to 100% (Mamo 2008)
-    lec50 <- fixed(log(11));  label("Plasma olanzapine concentration giving 50% D2 receptor occupancy (EC50, ng/mL)")  # Methods PK/D2RO Model: EC50 = 11 ng/mL, estimated by Mamo 2008
+    lec50 <- fixed(log(11));  label("Plasma olanzapine concentration giving 50% D2 receptor occupancy (ng/mL)")  # Methods PK/D2RO Model: EC50 = 11 ng/mL, estimated by Mamo 2008
 
     # Inter-individual variability -- Supplemental Table 2, Random-effect
     # block. The rows are VARIANCES: at N = 90 subjects the RSE of a variance

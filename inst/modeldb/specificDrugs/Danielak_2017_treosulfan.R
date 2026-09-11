@@ -46,10 +46,10 @@ Danielak_2017_treosulfan <- function() {
     # final-model SAEM estimates, percent-RSE in parentheses). Reference
     # weight is the conventional 70 kg adult typical value used with the
     # paper's allometric exponents (Eq. 9 + Methods "Covariate selection").
-    lcl <- log(14.7);  label("Clearance at 70 kg reference (CL, L/h)")                # Danielak 2017 Table 2: CL 14.7 L/h/70 kg (RSE 6.9 percent)
-    lvc <- log(26.0);  label("Central volume at 70 kg reference (V1, L)")             # Danielak 2017 Table 2: V1 26.0 L/70 kg (RSE 14.0 percent)
-    lq  <- log(2.25);  label("Intercompartmental clearance (Q, L/h)")                 # Danielak 2017 Table 2: Q 2.25 L/h (RSE 22.2 percent); no weight covariate
-    lvp <- log(9.93);  label("Peripheral volume at 70 kg reference (V2, L)")          # Danielak 2017 Table 2: V2 9.93 L/70 kg (RSE 9.0 percent)
+    lcl <- log(14.7);  label("Clearance at 70 kg reference (L/h)")                # Danielak 2017 Table 2: CL 14.7 L/h/70 kg (RSE 6.9 percent)
+    lvc <- log(26.0);  label("Central volume at 70 kg reference (L)")             # Danielak 2017 Table 2: V1 26.0 L/70 kg (RSE 14.0 percent)
+    lq  <- log(2.25);  label("Intercompartmental clearance (L/h)")                 # Danielak 2017 Table 2: Q 2.25 L/h (RSE 22.2 percent); no weight covariate
+    lvp <- log(9.93);  label("Peripheral volume at 70 kg reference (L)")          # Danielak 2017 Table 2: V2 9.93 L/70 kg (RSE 9.0 percent)
 
     # Allometric exponents on weight; paper estimated 0.804 (CL), 0.959 (V1),
     # 0.925 (V2) and then fixed them at 0.75 (CL) and 1 (V1, V2) per

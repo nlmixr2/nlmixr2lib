@@ -561,6 +561,15 @@
     # #474 allometric exponents -> e_wt_<param>
     allo_cl = "e_wt_cl", allo_q = "e_wt_q", allo_vc = "e_wt_vc",
     allovc = "e_wt_vc", allovp = "e_wt_vp",
+    # `allo_v` survived the #474 sweep because it is spelled with a bare `v`
+    # rather than `vc` / `vp`. Retired 2026-09-09. The replacement depends on
+    # what the exponent actually drives: `e_<cov>_vc` for a single volume,
+    # `e_<cov>_vc_vp` for a shared one (the established name even when three
+    # volumes share it), and the covariate is not always WT -- the retired uses
+    # included FFM and LBM. A model() DERIVED MULTIPLIER that merely raises a
+    # ratio to an already-canonical exponent is not this parameter at all and
+    # takes `allom_v`.
+    allo_v = "e_wt_vc / e_wt_vc_vp (or e_ffm_/e_lbm_ per the driving covariate); a derived multiplier is allom_v",
     dCLdWT = "e_wt_cl", dVdWT = "e_wt_vc",
     # #475 logit-scale fractions: F vs absorption-pathway split
     logitf1 = "logitfdepot (bioavailability) or logitffo/logitfburst (pathway split)",

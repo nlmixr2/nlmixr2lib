@@ -134,13 +134,13 @@ Lin_2024_casirivimab <- function() {
     # values (Lin 2024 page 1939, paragraph after Eq. 4): 45-year-old non-White
     # male, 81.6 kg, ALB = 43 g/L, baseline viral load = 6.4 log10 copies/mL,
     # CRP = 5.48 mg/L, NLR = 2.11, seronegative, no supplemental oxygen.
-    lcl     <- log(0.1926); label("Casirivimab clearance for the typical reference subject (CL, L/day)")  # Lin 2024 Table 2: theta1 = 0.1926
-    lvc     <- log(3.917);  label("Casirivimab central volume of distribution at 81.6 kg, ALB 43 g/L, male (Vc, L)")  # Lin 2024 Table 2: theta2 = 3.917
-    lq      <- log(0.4131); label("Casirivimab intercompartmental clearance (Q, L/day)")  # Lin 2024 Table 2
-    lvp     <- log(3.065);  label("Casirivimab peripheral volume of distribution (Vp, L)")  # Lin 2024 Table 2
-    lka     <- log(0.2183); label("Casirivimab first-order absorption rate constant (Ka, 1/day)")  # Lin 2024 Table 2
-    lfdepot     <- log(0.7200);  label("Casirivimab subcutaneous bioavailability for adults / pediatrics >= 6 years (F1, fraction)")  # Lin 2024 Table 2
-    lfdepot_ped <- log(0.8788);  label("Casirivimab subcutaneous bioavailability for pediatrics < 6 years (F1_ped, fraction)")  # Lin 2024 Table 2
+    lcl     <- log(0.1926); label("Casirivimab clearance for the typical reference subject (L/day)")  # Lin 2024 Table 2: theta1 = 0.1926
+    lvc     <- log(3.917);  label("Casirivimab central volume of distribution at 81.6 kg, ALB 43 g/L, male (L)")  # Lin 2024 Table 2: theta2 = 3.917
+    lq      <- log(0.4131); label("Casirivimab intercompartmental clearance (L/day)")  # Lin 2024 Table 2
+    lvp     <- log(3.065);  label("Casirivimab peripheral volume of distribution (L)")  # Lin 2024 Table 2
+    lka     <- log(0.2183); label("Casirivimab first-order absorption rate constant (1/day)")  # Lin 2024 Table 2
+    lfdepot     <- log(0.7200);  label("Casirivimab subcutaneous bioavailability for adults / pediatrics >= 6 years (fraction)")  # Lin 2024 Table 2
+    lfdepot_ped <- log(0.8788);  label("Casirivimab subcutaneous bioavailability for pediatrics < 6 years (fraction)")  # Lin 2024 Table 2
 
     # Allometric exponents on body weight (reference 81.6 kg). For pediatrics
     # < 6 years the exponents are FIXED to classical values (0.75 on CL, 1.0

@@ -68,12 +68,12 @@ Diep_2022_eplontersen <- function() {
     # log(ka) for abdomen; e_injsite_arm_ka is an additive log-shift covariate
     # effect that recovers the arm typical value (ka_arm = 0.217 1/h) when
     # INJSITE_ARM = 1.
-    lka              <- log(0.282); label("First-order SC absorption rate constant for abdomen injection (ka_ab, 1/h; INJSITE_ARM = 0 reference)") # Diep 2022 Table 2 final-model ka_ab = 0.282 1/h
+    lka              <- log(0.282); label("First-order SC absorption rate constant for abdomen injection (1/h; INJSITE_ARM = 0 reference)") # Diep 2022 Table 2 final-model ka_ab = 0.282 1/h
     e_injsite_arm_ka <- log(0.217 / 0.282); label("Additive log-shift covariate effect of INJSITE_ARM on lka (log(ka_arm / ka_ab), unitless)") # Diep 2022 Table 2 final-model: ka_arm / ka_ab = 0.217 / 0.282
-    lcl              <- log(24.1);  label("Linear plasma clearance at reference LBM (CL, L/h)")                          # Diep 2022 Table 2 final-model CL = 24.1 L/h
-    lvc              <- log(50.4);  label("Central volume of distribution at reference WT (Vc, L)")                      # Diep 2022 Table 2 final-model Vc = 50.4 L
-    lq               <- log(3.64);  label("Intercompartmental clearance at reference WT (Q, L/h)")                       # Diep 2022 Table 2 final-model Q = 3.64 L/h
-    lvp              <- log(2790);  label("Peripheral volume of distribution at reference WT (Vp, L)")                   # Diep 2022 Table 2 final-model Vp = 2790 L
+    lcl              <- log(24.1);  label("Linear plasma clearance at reference LBM (L/h)")                          # Diep 2022 Table 2 final-model CL = 24.1 L/h
+    lvc              <- log(50.4);  label("Central volume of distribution at reference WT (L)")                      # Diep 2022 Table 2 final-model Vc = 50.4 L
+    lq               <- log(3.64);  label("Intercompartmental clearance at reference WT (L/h)")                       # Diep 2022 Table 2 final-model Q = 3.64 L/h
+    lvp              <- log(2790);  label("Peripheral volume of distribution at reference WT (L)")                   # Diep 2022 Table 2 final-model Vp = 2790 L
 
     # ---- Covariate effects on PK (Diep 2022 Eqs 1-4) ----
     e_lbm_cl <- 1.42; label("Power exponent of LBM on CL (unitless)") # Diep 2022 Eq 1: CL = tvCL * (LBM / 51.6)^1.42
@@ -88,10 +88,10 @@ Diep_2022_eplontersen <- function() {
     # The PD compartment is the canonical `effect`; the observed variable
     # is the same TTR concentration assigned to a paper-named output `ttr`
     # for clarity in vignettes and PKNCA recipes.
-    lrbase    <- log(31.4);    label("Baseline serum transthyretin (BL, mg/dL)")                                       # Diep 2022 Table 3 BL = 31.4 mg/dL
-    lkout  <- log(0.00398); label("First-order TTR loss rate constant (kout, 1/h)")                                 # Diep 2022 Table 3 kout = 0.00398 1/h
-    imax   <- 0.970;        label("Maximum fractional inhibition of TTR production by eplontersen (Imax, unitless)") # Diep 2022 Table 3 Imax = 0.970
-    lic50  <- log(0.0283);  label("Plasma eplontersen concentration yielding half-maximum inhibition (IC50, ng/mL)") # Diep 2022 Table 3 IC50 = 0.0283 ng/mL
+    lrbase    <- log(31.4);    label("Baseline serum transthyretin (mg/dL)")                                       # Diep 2022 Table 3 BL = 31.4 mg/dL
+    lkout  <- log(0.00398); label("First-order TTR loss rate constant (1/h)")                                 # Diep 2022 Table 3 kout = 0.00398 1/h
+    imax   <- 0.970;        label("Maximum fractional inhibition of TTR production by eplontersen (unitless)") # Diep 2022 Table 3 Imax = 0.970
+    lic50  <- log(0.0283);  label("Plasma eplontersen concentration yielding half-maximum inhibition (ng/mL)") # Diep 2022 Table 3 IC50 = 0.0283 ng/mL
 
     # ---- IIV (Diep 2022 Tables 2 and 3; log-normal eta with omega^2 = log(CV^2 + 1)) ----
     # Single eta on log(ka) shared between arm and abdomen typical values

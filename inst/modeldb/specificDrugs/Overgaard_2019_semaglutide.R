@@ -85,7 +85,7 @@ Overgaard_2019_semaglutide <- function() {
     # Residual error: additive on log-transformed observations (Overgaard 2019 Methods page 652
     # "An additive residual error model on log-transformed concentration values was assessed to
     # adequately describe the data"); maps to proportional in nlmixr2 linear space.
-    propSd <- 0.103; label("Proportional residual error (SD, fraction)")                              # Overgaard 2019 Table 4 (residual error = 0.103, additive on log scale)
+    propSd <- 0.103; label("Proportional residual error (fraction)")                              # Overgaard 2019 Table 4 (residual error = 0.103, additive on log scale)
   })
 
   model({

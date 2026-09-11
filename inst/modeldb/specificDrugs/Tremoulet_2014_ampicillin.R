@@ -62,8 +62,8 @@ Tremoulet_2014_ampicillin <- function() {
     # Structural parameters: per-kg form from Tremoulet 2014 Table 4 (final
     # model). Typical CL and Vc are reported on a per-kg basis so the
     # weight scaling enters as a simple multiplicative WT term in model().
-    lcl <- log(0.078); label("Typical clearance per kg body weight at SCR = 0.6 mg/dL and PMA = 37 weeks (CL, L/h/kg)")  # Tremoulet 2014 Table 4: theta_CL = 0.078
-    lvc <- log(0.399); label("Typical central volume of distribution per kg body weight (Vc, L/kg)")                       # Tremoulet 2014 Table 4: theta_V  = 0.399
+    lcl <- log(0.078); label("Typical clearance per kg body weight at SCR = 0.6 mg/dL and PMA = 37 weeks (L/h/kg)")  # Tremoulet 2014 Table 4: theta_CL = 0.078
+    lvc <- log(0.399); label("Typical central volume of distribution per kg body weight (L/kg)")                       # Tremoulet 2014 Table 4: theta_V  = 0.399
 
     # Covariate effects on CL (Tremoulet 2014 Table 4).
     e_creat_cl <- 0.428; label("Exponent on the (0.6 / CREAT) ratio for CL (unitless)")  # Tremoulet 2014 Table 4: theta_CL,SCR = 0.428

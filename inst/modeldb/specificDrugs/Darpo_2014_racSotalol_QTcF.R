@@ -217,13 +217,13 @@ Darpo_2014_racSotalol_QTcF <- function() {
     # ------------------------------------------------------------------
 
     e_sexf_e0 <- 10.6
-    label("Effect of female sex on e0 (additive, ms)")
+    label("Effect of female sex on e0, applied additively (ms)")
     # Darpo 2014 Table 1 QTcF row 'Female gender (ms)' = 10.6 (SE 3.8;
     # P = 0.005). Reproduces female-reference intercept e0_female =
     # -2.5 + 10.6 = 8.1 ms (Figure 6B caption).
 
     e_sexf_slope <- 7
-    label("Effect of female sex on slope (additive, ms per ug/mL)")
+    label("Effect of female sex on slope, applied additively (ms per ug/mL)")
     # Darpo 2014 Table 1 QTcF row 'Concentration x Female gender
     # interaction (ms per ug ml-1)' = 7 (SE 2.8; P = 0.019).
     # Reproduces female-reference slope slope_female = 24 + 7 = 31

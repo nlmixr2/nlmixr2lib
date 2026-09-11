@@ -141,7 +141,7 @@ Compartment and observation conventions:
 | `bact_susceptible_resistant2`  | CFU/thigh | IPM-S/TOB-R subpop, S2 state (replicating)     |
 | `bact_intermediate_resistant1` | CFU/thigh | IPM-I/TOB-R subpop, S1 state                    |
 | `bact_intermediate_resistant2` | CFU/thigh | IPM-I/TOB-R subpop, S2 state                    |
-| `Cc`        | log10 CFU/thigh | observation: log10 of total bacterial CFU/thigh (+ 1 CFU floor) |
+| `log_cfu`        | log10 CFU/thigh | observation: log10 of total bacterial CFU/thigh (+ 1 CFU floor) |
 
 # Helper: build a humanized thigh-infection scenario
 
@@ -235,10 +235,10 @@ exp1_panels$scenario <- factor(exp1_panels$scenario, levels = c(
 
 exp1_sim <- simulate(exp1_panels)
 
-ggplot(exp1_sim, aes(time, Cc, color = scenario)) +
+ggplot(exp1_sim, aes(time, log_cfu, color = scenario)) +
   geom_line(linewidth = 0.7) +
   scale_y_continuous(limits = c(0, 9), breaks = seq(0, 8, 2)) +
-  labs(x = "Time (h)", y = "log10 CFU/thigh (Cc)", color = NULL,
+  labs(x = "Time (h)", y = "log10 CFU/thigh (log_cfu)", color = NULL,
        title = "Yadav 2017 Figure 1A reproduction (experiment 1)",
        caption = "Humanized 4 g/day IPM + 7 mg/kg q24h TOB regimens over 24 h, typical-value simulation.")
 ```
@@ -256,10 +256,10 @@ exp2_panels$scenario <- factor(exp2_panels$scenario, levels = c(
 
 exp2_sim <- simulate(exp2_panels)
 
-ggplot(exp2_sim, aes(time, Cc, color = scenario)) +
+ggplot(exp2_sim, aes(time, log_cfu, color = scenario)) +
   geom_line(linewidth = 0.7) +
   scale_y_continuous(limits = c(0, 9), breaks = seq(0, 8, 2)) +
-  labs(x = "Time (h)", y = "log10 CFU/thigh (Cc)", color = NULL,
+  labs(x = "Time (h)", y = "log10 CFU/thigh (log_cfu)", color = NULL,
        title = "Yadav 2017 Figure 1B reproduction (experiment 2)",
        caption = "Humanized 5 g/day IPM + 7 mg/kg q24h TOB regimens over 24 h, typical-value simulation.")
 ```
@@ -321,7 +321,7 @@ knitr::kable(
 gc <- exp1_sim |>
   filter(scenario == "Control") |>
   filter(time %in% c(0, 2, 6, 24)) |>
-  select(time, Cc)
+  select(time, log_cfu)
 knitr::kable(gc, digits = 3,
              caption = "Growth control trajectory; expect approach to 8.00.")
 ```
@@ -344,8 +344,8 @@ monotherapy arm must coincide with the antibiotic-free control.
 tob_check <- exp1_sim |>
   filter(scenario %in% c("Control", "TOB 7 mg/kg q24h")) |>
   filter(time %in% c(0, 2, 6, 24)) |>
-  select(time, scenario, Cc) |>
-  tidyr::pivot_wider(names_from = scenario, values_from = Cc)
+  select(time, scenario, log_cfu) |>
+  tidyr::pivot_wider(names_from = scenario, values_from = log_cfu)
 knitr::kable(tob_check, digits = 3,
              caption = "TOB monotherapy must coincide with control (both populations are TOB-resistant).")
 ```
@@ -365,8 +365,8 @@ has KC50 = 96.6 mg/L, well above the simulated IPM concentrations).
 mono_check <- bind_rows(exp1_sim, exp2_sim) |>
   filter(scenario %in% c("IPM 4 g/day (~13.4 mg/L)", "IPM 5 g/day (~17 mg/L)")) |>
   filter(time %in% c(0, 6, 24)) |>
-  select(scenario, time, Cc) |>
-  tidyr::pivot_wider(names_from = time, values_from = Cc,
+  select(scenario, time, log_cfu) |>
+  tidyr::pivot_wider(names_from = time, values_from = log_cfu,
                      names_prefix = "t_")
 knitr::kable(mono_check, digits = 3,
              caption = "IPM monotherapy: knockdown at 6 h, partial regrowth at 24 h.")
@@ -385,7 +385,7 @@ combo_check <- bind_rows(exp1_sim, exp2_sim) |>
     "IPM 4 g/day (~13.4 mg/L)", "IPM 4 g/day + TOB q24h",
     "IPM 5 g/day (~17 mg/L)",   "IPM 5 g/day + TOB q24h")) |>
   filter(time == 24) |>
-  select(scenario, Cc)
+  select(scenario, log_cfu)
 knitr::kable(combo_check, digits = 3,
              caption = "Combination arms vs IPM monotherapy at 24 h; combination must end below monotherapy.")
 ```
@@ -480,9 +480,9 @@ knitr::kable(combo_check, digits = 3,
   `paper_specific_compartment_pattern <- "^bact_"`); the
   experimental drug-input covariates (`Cipm`, `Ctob`) are not in the
   nlmixr2lib canonical register, which targets systemic popPK / PK-PD.
-- **Single observation `Cc` carries log10 CFU/thigh, not a drug
+- **Single observation `log_cfu` carries log10 CFU/thigh, not a drug
   concentration.** nlmixr2lib's single-output convention names the
-  observation `Cc`; the underlying quantity here is log10 of total
+  observation `log_cfu`; the underlying quantity here is log10 of total
   bacterial CFU/thigh with a 1 CFU floor (paper Fig. 1 plotted
   counts below the limit of counting as the limit of counting).
   The `units$concentration` metadata makes this explicit and matches
