@@ -38,13 +38,6 @@ Hartmann_2026_nintedanib_fvcpp <- function() {
   )
   vignette <- "Hartmann_2026_nintedanib"
 
-  # fvcpp is a first sighting of this endpoint as an ODE state in the
-  # library, so it is declared paper-specific rather than promoted to a
-  # canonical compartment. The register already carries fev1pp (FEV1
-  # percent predicted, Harun 2019 cystic fibrosis); a second FVC percent
-  # predicted model is the trigger to promote fvcpp alongside it.
-  paper_specific_compartments <- c("fvcpp")
-
   units <- list(
     time          = "year",
     dosing        = "(no dose events; nintedanib exposure enters through the CTROUGH covariate column, in nM)",

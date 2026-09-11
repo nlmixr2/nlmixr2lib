@@ -943,14 +943,19 @@ sim_pp |>
    unmarked ones. That coefficient's RSE is 43.7% and the paper itself
    cautions that "any physiological interpretation remains difficult".
 
-8. **`fvcpp` and `fvcz` are declared `paper_specific_compartments`, not
-   canonical compartments.** The register carries `fev1pp` (FEV1 percent
-   predicted) as the direct sibling, but the standing convention is that a
-   compartment role is promoted to canonical only once a *second* independent
-   paper uses it. `checkModelConventions()` therefore reports one
-   `observation` warning per exposure-response model; it is expected and is not
-   a naming error. A second FVC-endpoint extraction is the trigger to promote
-   both names.
+8. **`fvcpp` and `fvcz` are registered canonical compartments, founded by this
+   paper.** Both are standard named efficacy endpoints of the fibrosing-ILD
+   literature rather than constructs invented by this analysis, and `fvcpp` has
+   a direct sibling already in the register: `fev1pp`, the same
+   percent-of-predicted construct applied to a different spirometric volume.
+   On that basis they were promoted to canonical compartments in
+   `inst/references/compartment-names.md` on their founding paper, in the same
+   way `fev1pp`, `walk_dist` and `ms_headache_days` were each registered from a
+   single paper. `checkModelConventions()` is consequently clean on all three
+   models. Note that `fvcz` is a *signed* standardised score, typically
+   negative in this population, so a treatment benefit is a less-negative
+   slope; the validation checks below are written to respect that sign rather
+   than assuming positivity.
 
 **Simulation choices in this vignette (none affect the packaged models)**
 

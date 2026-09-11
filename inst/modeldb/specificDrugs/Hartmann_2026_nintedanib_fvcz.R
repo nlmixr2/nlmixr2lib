@@ -39,12 +39,6 @@ Hartmann_2026_nintedanib_fvcz <- function() {
   )
   vignette <- "Hartmann_2026_nintedanib"
 
-  # fvcz is a first sighting of this endpoint as an ODE state in the
-  # library, so it is declared paper-specific rather than promoted to a
-  # canonical compartment. A second FVC Z-score model is the trigger to
-  # promote it alongside the register's existing fev1pp entry.
-  paper_specific_compartments <- c("fvcz")
-
   units <- list(
     time          = "year",
     dosing        = "(no dose events; nintedanib exposure enters through the CTROUGH covariate column, in nM)",

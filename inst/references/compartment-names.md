@@ -2059,6 +2059,20 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Example models:** `Zhang_2025_dupilumab_fev1.R` (dual `Cc` + `FEV1` output; concentration-driven Emax; FEV1 in L), `Jin_2025_benralizumab_fev1.R` (single `FEV1` output; time-driven `Emax * t / (T50 + t)` because the FEV1 exposure-response relationship was flat over the studied dose range; FEV1 in mL).
 - **Notes:** Registered with the uppercase paper spelling `FEV1`, which is how every source and both current models write it, so that a single-output FEV1 model is recognised as canonical without renaming the endpoint to `Cc`. Holds a **volume in whichever unit the source reports** -- mL in `Jin_2025_benralizumab_fev1`, L in `Zhang_2025_dupilumab_fev1` -- so the per-model `units` field, not this name, fixes the scale; never convert a source's FEV1 values to match a sibling model. Distinct from `fev1pp`, which is the same measurement expressed as a percentage of a reference-equation predicted value and is therefore dimensionless and not interconvertible without that reference equation. Residual error on this output uses the `<param>_FEV1` suffix form (`addSd_FEV1`, `propSd_FEV1`).
 
+### fvcpp (**canonical FVC percent predicted**)
+- **Type:** compartment
+- **Role:** Forced vital capacity expressed as a percentage of a reference-equation predicted value -- the primary efficacy endpoint of the fibrosing interstitial-lung-disease trials (INPULSIS-1/2, SENSCIS, INBUILD, InPedILD) and the basis of nintedanib's approved labelling in adults and children.
+- **Source aliases:** `FVC%pred`, `FVCpp`, `FVC (% predicted)`.
+- **Example models:** `Hartmann_2026_nintedanib_fvcpp.R` (single `fvcpp` output; linear annual decline with a concentration-driven slope effect; FVC percent predicted is dimensionless).
+- **Notes:** The direct FVC sibling of `fev1pp` -- same percent-of-predicted construct, different spirometric volume (vital capacity rather than one-second expiratory volume). Dimensionless, and **not** interconvertible with an absolute FVC volume without the reference equation, for the same reason `fev1pp` is not interconvertible with `FEV1`. Registered lowercase to match `fev1pp` rather than the uppercase `FEV1` form, because the percent-predicted endpoints are written lowercase throughout the register. Distinct from `fvcz`, which standardises the same measurement for age, sex and height as a Z-score.
+
+### fvcz (**canonical FVC Z-score**)
+- **Type:** compartment
+- **Role:** Forced vital capacity standardised for age, sex, height and ethnicity as a Z-score (GLI reference equations) -- the growth-robust form of the FVC endpoint, preferred over percent predicted in pediatric populations where a child's reference value changes as they grow.
+- **Source aliases:** `FVC Z-score`, `zFVC`, `FVC SDS`.
+- **Example models:** `Hartmann_2026_nintedanib_fvcz.R` (single `fvcz` output; linear annual decline with a concentration-driven slope effect).
+- **Notes:** A standardised score, so it is dimensionless and **signed** -- values are typically negative in fibrosing-ILD populations and a treatment benefit is a less-negative slope, which means sign-sensitive validation assertions on this state must not assume positivity. Registered alongside `fvcpp` because the two are reported as co-primary forms of the same measurement (Hartmann 2026 models both), but they are separate states: converting between them requires the GLI reference equation and the subject's age, sex and height, so never treat one as a rescaling of the other. This is the register's first Z-score-standardised endpoint; a further standardised endpoint (e.g. a height or weight Z-score) should follow the `<endpoint>z` form established here.
+
 ### ms_headache_days (**canonical monthly headache-day count**)
 - **Type:** compartment
 - **Role:** Monthly headache-day count PD output.
