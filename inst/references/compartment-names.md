@@ -4470,6 +4470,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Ali_2018_amodiaquine.R` (WWARN pooled analysis; three-compartment desethylamodiaquine disposition with sigmoidal postmenstrual-age maturation on its clearance), `Ding_2024_amodiaquine.R` (African pregnant women; two-compartment desethylamodiaquine disposition fed by the entirety of systemic amodiaquine clearance).
 - **Notes:** Founding example `Ali_2018_amodiaquine.R`. Registered when `Ding_2024_amodiaquine.R` was added; both files had been using the `_deaq` suffix already, so registering the name clears the pre-existing `checkModelConventions()` compartment and residual-error warnings on both rather than introducing a new spelling.
 
+### desbutlum (**canonical desbutyl-lumefantrine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Desbutyl-lumefantrine (DLF), the pharmacologically active N-desbutyl metabolite of lumefantrine formed by CYP3A4 and subsequently conjugated by a UDP-glucuronosyltransferase isoform. It is roughly five- to tenfold more potent than the parent in vitro but circulates at two to three orders of magnitude lower exposure, so lumefantrine remains the dominant contributor to parasite killing. Joint lumefantrine + desbutyl-lumefantrine popPK models assume complete bioconversion and apply a molar correction of `MW_DLF / MW_LF = 472.83 / 528.94 = 0.8939` to the mass flux leaving the lumefantrine central compartment (desbutyl-lumefantrine is lumefantrine less a butyl group, C4H8, 56.11 g/mol).
+- **Source aliases:**
+  - `DLF`, `desbutyllumefantrine`, `desbutyl-lumefantrine` -- publication spellings; same species, no transformation.
+- **Example models:** `Hoglund_2015_lumefantrine.R` (HIV-infected Ugandan adults on efavirenz or nevirapine; one-compartment desbutyl-lumefantrine disposition with stoichiometric molar conversion), `Ding_2026_lumefantrine.R` (pooled TRACII + TACT-CV; two-compartment desbutyl-lumefantrine disposition fed by the entirety of systemic lumefantrine clearance, with hyperbolic age maturation on its clearance).
+- **Notes:** Founding example `Hoglund_2015_lumefantrine.R`. Registered when `Ding_2026_lumefantrine.R` was added; both files had been using the `_desbutlum` suffix already, so registering the name clears the pre-existing `checkModelConventions()` compartment and residual-error warnings on `Hoglund_2015_lumefantrine.R` rather than introducing a new spelling -- the same situation that registered `deaq` alongside `Ding_2024_amodiaquine.R`. Do not spell it `dlf`: the shorter form collides visually with nothing in the register but would fragment an already-established suffix.
+
 ### dihydroart (**canonical dihydroartemisinin suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Dihydroartemisinin, active metabolite of artesunate.

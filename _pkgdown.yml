@@ -212,6 +212,8 @@ navbar:
         href: articles/Ali_2018_amodiaquine.html
       - text: "Amodiaquine (Ding 2024)"
         href: articles/Ding_2024_antimalarials_pregnancy.html
+      - text: "Amodiaquine (Ding 2026)"
+        href: articles/Ding_2026_artemether_lumefantrine_amodiaquine.html
       - text: "Amoxicillin (Baklouti 2026)"
         href: articles/Baklouti_2026_amoxicillin.html
       - text: "Amoxicillin (Fournier 2018)"
@@ -322,6 +324,8 @@ navbar:
         href: articles/Wang_2022_aripiprazole.html
       - text: "Armodafinil (Darwish 2012)"
         href: articles/Darwish_2012_armodafinil_modafinil_shift_work_disorder.html
+      - text: "Artemether (Ding 2026)"
+        href: articles/Ding_2026_artemether_lumefantrine_amodiaquine.html
       - text: "Artemether (Hietala 2010)"
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Artemether (Hoglund 2015)"
@@ -2476,6 +2480,8 @@ navbar:
         href: articles/Golzaryan_2025_lu177psmaIT_pbpk.html
       - text: "Lumefantrine (Chotsiri 2019)"
         href: articles/Chotsiri_2019_lumefantrine.html
+      - text: "Lumefantrine (Ding 2026)"
+        href: articles/Ding_2026_artemether_lumefantrine_amodiaquine.html
       - text: "Lumefantrine (Hietala 2010)"
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Lumefantrine (Hoglund 2015)"
@@ -5476,6 +5482,7 @@ articles:
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol
   - articles/Ding_2024_antimalarials_pregnancy
+  - articles/Ding_2026_artemether_lumefantrine_amodiaquine
   - articles/Ding_2026_vancomycin
   - articles/Dings_2026_cafedrine_theodrenaline_ephedrine
   - articles/Dirks_2008_cetuximab

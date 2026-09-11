@@ -438,6 +438,19 @@
     # the antiplatelet-active diastereomer. Used in parent-plus-
     # metabolite popPK models (Danielak 2017 doi:10.1007/s00228-017-2334-z).
     "h4",
+    # Desbutyl-lumefantrine (DLF), the pharmacologically active
+    # N-desbutyl metabolite of lumefantrine produced by CYP3A4 and
+    # subsequently conjugated by a UDP-glucuronosyltransferase isoform.
+    # Lumefantrine less a butyl group (C4H8), so MW 472.83 against 528.94,
+    # giving a molar correction of 0.8939 on the mass flux leaving the
+    # lumefantrine central compartment in joint parent-metabolite models.
+    # Registered with Ding_2026_lumefantrine.R; Hoglund_2015_lumefantrine.R
+    # had been using the `_desbutlum` suffix already, so registering the
+    # name also clears that file's pre-existing compartment and
+    # residual-error warnings rather than introducing a new spelling --
+    # the same situation that registered `deaq` alongside
+    # Ding_2024_amodiaquine.R.
+    "desbutlum",
     # Mycophenolic acid glucuronide (MPAG, the 7-O-glucuronide phase II
     # metabolite of mycophenolic acid produced by UGT1A9 and UGT2B7).
     # MPAG is the major plasma metabolite of mycophenolic acid after
