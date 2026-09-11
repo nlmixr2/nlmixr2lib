@@ -2288,3 +2288,110 @@ test_that(".checkCentralConcentrationName fires in BOTH directions", {
   # (8) a linCmt() solved model satisfies the rule.
   expect_equal(nrow(run(c("Cc <- linCmt()"))), 0L)
 })
+
+# ---------------------------------------------------------------------------
+# prob_<endpoint> landmark exposure-response probability outputs
+#
+# Operator ruling 2026-09-11: the `prob_<endpoint>` SHAPE is canonical, so a
+# landmark ER model with no ODE state and no concentration output no longer
+# needs its endpoint hand-added to inst/references/compartment-names.md.
+# These tests pin the shape, and -- just as importantly -- pin that the check
+# was NOT blanket-weakened for outputs that are genuinely non-canonical.
+# ---------------------------------------------------------------------------
+
+# Build a no-PK-layer logistic ER model whose single output is `out`, shaped
+# after Chen_2025_hemoporfin_patient_rating (exposure enters as a covariate
+# column; the residual is a placeholder because the source likelihood is
+# Bernoulli).
+.erProbModel <- function(out) {
+  body <- sprintf(
+    "{
+      description <- 'Landmark exposure-response'
+      reference <- 'R'
+      units <- list(time = 'h', dosing = 'mg', concentration = 'mg/L')
+      ini({
+        logit_ref <- -12.9; label('Logit intercept (unitless logit)')
+        e_auc_hemo_logit <- 0.981; label('Log-odds per unit exposure (mL/(ug*h))')
+        addSd_%s <- fixed(0.001); label('Placeholder additive residual SD')
+      })
+      model({
+        logit_ep <- logit_ref + e_auc_hemo_logit * AUC_HEMO
+        %s <- expit(logit_ep)
+        %s ~ add(addSd_%s)
+      })
+    }", out, out, out, out
+  )
+  eval(parse(text = paste0("function() ", body)))
+}
+
+.erObsIssues <- function(out) {
+  res <- suppressWarnings(
+    checkModelConventions(.erProbModel(out), verbose = FALSE)
+  )
+  res[res$category == "observation", ]
+}
+
+test_that("a prob_<endpoint> single output raises no observation issue", {
+  # Registered endpoint (has its own H3 entry) and, more importantly,
+  # endpoints that are NOT registered -- those are what the shape rule buys.
+  for (nm in c("prob_roc", "prob_patient_rating", "prob_almost_cured",
+               "prob_aeg35", "prob_significant_improvement")) {
+    expect_equal(nrow(.erObsIssues(nm)), 0L, info = nm)
+  }
+})
+
+test_that("the shape accepts a brand-new endpoint with no register entry", {
+  # The whole point of the ruling: a future ER extraction must pass without a
+  # register edit. Guard with a name deliberately absent from the register.
+  expect_false("prob_brand_new_endpoint42" %in%
+                 nlmixr2lib:::.nlmixr2libConventions()$compartments)
+  expect_equal(nrow(.erObsIssues("prob_brand_new_endpoint42")), 0L)
+})
+
+test_that("a non-canonical single output still warns (check not weakened)", {
+  # Regression guard: accepting prob_* must not accept anything else.
+  for (nm in c("probability", "pRob_roc", "myEndpoint", "response_rate")) {
+    iss <- .erObsIssues(nm)
+    expect_equal(nrow(iss), 1L, info = nm)
+    expect_equal(iss$severity[[1]], "warning", info = nm)
+    expect_match(iss$message[[1]], "is not canonical", info = nm)
+  }
+})
+
+test_that("malformed prob_ spellings are still flagged", {
+  # Trailing underscore, doubled underscore and a capitalised endpoint token
+  # are NOT canonical -- probOutputRegex requires underscore-separated
+  # non-empty lowercase tokens.
+  for (nm in c("prob_roc_", "prob__roc", "prob_ROC", "prob_Roc")) {
+    expect_equal(nrow(.erObsIssues(nm)), 1L, info = nm)
+  }
+})
+
+test_that("probOutputRegex accepts every prob_ output shipped in the library", {
+  # Enumerating test: a newly-added prob_ output that violates the shape
+  # fails here rather than silently shipping a convention warning.
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  files <- list.files(
+    system.file("modeldb", package = "nlmixr2lib"),
+    pattern = "\\.R$", recursive = TRUE, full.names = TRUE
+  )
+  used <- character()
+  for (f in files) {
+    ln <- readLines(f, warn = FALSE)
+    m <- regmatches(ln, regexpr("^\\s+prob_[A-Za-z0-9_]+(?= ~)", ln, perl = TRUE))
+    if (length(m)) used <- c(used, trimws(m))
+  }
+  used <- sort(unique(used))
+  expect_gt(length(used), 30L)
+  expect_true(all(grepl(conv$probOutputRegex, used)),
+              info = paste(used[!grepl(conv$probOutputRegex, used)],
+                           collapse = ", "))
+})
+
+test_that("the prob_ family is an observation form, not a compartment name", {
+  # Scoped deliberately: these models carry no ODE state, so the shape must
+  # not start licensing `d/dt(prob_x)`.
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  expect_false(nlmixr2lib:::.matchesCompartment("prob_brand_new_endpoint42", conv))
+  expect_true(nlmixr2lib:::.matchesProbOutput("prob_brand_new_endpoint42", conv))
+})

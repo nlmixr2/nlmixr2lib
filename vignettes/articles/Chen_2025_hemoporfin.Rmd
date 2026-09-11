@@ -786,11 +786,13 @@ Bernoulli, which has no sigma, and no random effects were estimated. Each ER mod
 carries `addSd_prob_* <- fixed(0.001)` purely so rxode2 has an error model to attach
 to the typical-value probability. It is not a published quantity.
 
-**Convention deviation.** The five ER models use `prob_<endpoint>` as the observation
-variable rather than the canonical `Cc`. `Cc` is reserved for drug concentrations, and
+**Observation-variable naming.** The five ER models use `prob_<endpoint>` as the
+observation variable rather than `Cc`. `Cc` is reserved for drug concentrations, and
 these models have no PK layer and no ODE -- the output is a probability. This matches
-the existing `Chen_2021_lorlatinib_*` family in nlmixr2lib, which carries the same
-`checkModelConventions()` warning for the same reason.
+the existing `Chen_2021_lorlatinib_*` family in nlmixr2lib. `prob_<endpoint>` is itself
+a canonical observation form (operator ruling 2026-09-11, validated by
+`probOutputRegex`), so this is a convention the models follow rather than a deviation
+they take, and `checkModelConventions()` reports no warning for it.
 
 **No covariates other than size and study were tested.** Chen 2025 states explicitly
 (Discussion, limitations) that with 24 pediatric patients no covariate screening

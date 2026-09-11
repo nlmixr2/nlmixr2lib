@@ -2,6 +2,24 @@
 
 # development version
 
+- `checkModelConventions()` now accepts the `prob_<endpoint>` shape as a
+  canonical single-output observation variable, so a landmark
+  exposure-response model with no ODE state and no concentration output no
+  longer warns. Validated by `probOutputRegex`
+  (`^prob_[a-z](_?[a-z0-9]+)*$`) rather than by an enumerated list, following
+  the `<tissue>_slab<n>` precedent: the endpoint token is a per-paper
+  clinical definition, not a member of a closed set. Enumeration had already
+  drifted -- 31 endpoints were registered one-per-paper in
+  `inst/references/compartment-names.md` while 9 more were in use
+  unregistered -- so each new exposure-response extraction carried a spurious
+  "not canonical" warning until someone hand-added its endpoint. Clears 8
+  standing warnings (5 `Chen_2025_hemoporfin_*`, 3
+  `Chan_2025_atezolizumab_*`) and every future one. Accepted as an
+  observation form only, deliberately not as a compartment name. A
+  probability output is still not permitted to be called `Cc`, which names
+  the central-compartment drug concentration. No model file, parameter value
+  or model structure changes.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`

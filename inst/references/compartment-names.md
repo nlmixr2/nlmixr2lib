@@ -1929,6 +1929,15 @@ These are internationally standardised clinical abbreviations registered as cano
 
 Each entry below is a paper-mechanistic PD endpoint registered as a canonical compartment / output-state name so single-output PD models that use them pass the relaxed `Cc` rule.
 
+One family in this section is validated by shape rather than by enumeration -- see `prob_<endpoint>` immediately below. Its per-endpoint entries are retained as documentation of what each endpoint means, but `checkModelConventions()` no longer requires an entry to exist before accepting the name.
+
+### `prob_<endpoint>` (**canonical landmark exposure-response probability output shape**)
+- **Type:** compartment
+- **Role:** Event probability in `[0, 1]` output by a landmark (static, no time dimension) exposure-response model -- typically a binomial / Bernoulli logistic regression of a clinical event on a scalar exposure metric (`AUC`, `Cmax`, `Ctrough`) plus baseline covariates, written as `prob_<endpoint> <- expit(logit_<endpoint>)`. The endpoint token is the paper's clinical endpoint definition in lowercase snake_case (`prob_orr_central`, `prob_teae_grade3`, `prob_hivrna_decr05log`).
+- **Source aliases:** none. Source papers name these `P(event)`, `PROB`, or `Y` in a NONMEM `$ERROR` block; none of those spellings is canonical here.
+- **Example models:** `Shin_2014_sevoflurane.R` (founding example; `prob_roc`), `Fukae_2024_valemetostat_orr_central.R`, `Chen_2025_hemoporfin_patient_rating.R` (no PK layer at all -- `AUC_HEMO` enters as a covariate column).
+- **Notes:** Validated by `probOutputRegex` (`^prob_[a-z](_?[a-z0-9]+)*$`) rather than by an enumerated list, because the endpoint token is a per-paper clinical definition and not a member of a closed set. Enumeration had already drifted: 31 endpoints were registered one-per-paper here while 9 more were in use unregistered, so each new landmark-ER extraction carried a spurious "not canonical" warning until someone hand-added its endpoint. Accepted as an **observation variable only**, deliberately not as a compartment name, because these models carry no ODE state -- the probability is algebraic in the exposure metric and is evaluated once per subject. Do **not** rename a probability output to `Cc`: per PR 512 `Cc` names the central-compartment drug concentration, and renaming would also falsify the `units$concentration` metadata these models carry. Distinguish a probability output from a same-named *measured* state -- `prob_anemia` is the probability of crossing a toxicity-grade threshold, not a hemoglobin concentration. Because the source likelihood is Bernoulli and estimates no residual error, founding models expose a small placeholder additive residual so the nlmixr2 observation machinery accepts the model; that placeholder is flagged as non-source-derived in the model file and vignette. Operator ruling 2026-09-11.
+
 ### ADAS_cog (**canonical Alzheimer Disease Assessment Scale - cognitive subscale**)
 - **Type:** compartment
 - **Role:** ADAS-cog cognitive PD endpoint.
