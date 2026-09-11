@@ -1550,6 +1550,20 @@ navbar:
         href: articles/Toffoli_2001_etoposide.html
       - text: "Etrolizumab (Moein 2022)"
         href: articles/Moein_2022_etrolizumab.html
+      - text: "Etrolizumab (Moein 2025)"
+        href: articles/Moein_2025_etrolizumab.html
+      - text: "Etrolizumab induction clinrem (Moein 2025)"
+        href: articles/Moein_2025_etrolizumab.html
+      - text: "Etrolizumab induction endoimp (Moein 2025)"
+        href: articles/Moein_2025_etrolizumab.html
+      - text: "Etrolizumab induction endorem (Moein 2025)"
+        href: articles/Moein_2025_etrolizumab.html
+      - text: "Etrolizumab maintenance clinrem (Moein 2025)"
+        href: articles/Moein_2025_etrolizumab.html
+      - text: "Etrolizumab maintenance endoimp (Moein 2025)"
+        href: articles/Moein_2025_etrolizumab.html
+      - text: "Etrolizumab maintenance endorem (Moein 2025)"
+        href: articles/Moein_2025_etrolizumab.html
       - text: "Everolimus (Mo 2025)"
         href: articles/Mo_2025_everolimus.html
       - text: "Everolimus (Park 2023)"
@@ -6195,6 +6209,7 @@ articles:
   - articles/Mody_2023_doxorubicin_dexrazoxane_breast_cancer
   - articles/Moein_2022_etrolizumab
   - articles/Moein_2024_apitolisib
+  - articles/Moein_2025_etrolizumab
   - articles/Moes_2016_tacrolimus
   - articles/Moffett_2017_antithrombin
   - articles/Mohamed_2012_colistin
