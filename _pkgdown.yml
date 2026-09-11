@@ -3900,6 +3900,10 @@ navbar:
         href: articles/LledoGarcia_2022_rozanolixizumab.html
       - text: "Rozanolixizumab translated (LledoGarcia 2022)"
         href: articles/LledoGarcia_2022_rozanolixizumab.html
+      - text: "RsvVaccine sna mbma (Kashihara 2026)"
+        href: articles/Kashihara_2026_rsvVaccine_immune_correlates.html
+      - text: "RsvVaccine snaCmi mbma (Kashihara 2026)"
+        href: articles/Kashihara_2026_rsvVaccine_immune_correlates.html
       - text: "Rucaparib (Wang 2015)"
         href: articles/Wang_2015_rucaparib.html
       - text: "Rutin human (DominguezMore 2024)"
@@ -5874,6 +5878,7 @@ articles:
   - articles/Karlsson_2009_voriconazole
   - articles/Karlsson_2010_acute_stroke
   - articles/Karunajeewa_2009_sulfadoxinePyrimethamine
+  - articles/Kashihara_2026_rsvVaccine_immune_correlates
   - articles/Kassir_2014_tacrolimus
   - articles/Kastrissios_2006_apricoxib
   - articles/Kastrissios_2012_managlinatDialanetil
