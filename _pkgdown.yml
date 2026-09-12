@@ -408,6 +408,8 @@ navbar:
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
       - text: "Atezolizumab sae (Chan 2025)"
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
+      - text: "Atomoxetine (Tobin 2026)"
+        href: articles/Tobin_2026_atomoxetine.html
       - text: "Atorvastatin (Kakara 2014)"
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Atorvastatin (Knebel 2013)"
@@ -6697,6 +6699,7 @@ articles:
   - articles/Ting_2014_tobramycin_inhaled
   - articles/Tiraboschi_2023_avalglucosidaseAlfa
   - articles/Tiraboschi_2025_amlitelimab
+  - articles/Tobin_2026_atomoxetine
   - articles/Tod_1998_amikacin
   - articles/Toffoli_2001_etoposide
   - articles/Tong_2026_vancomycin
