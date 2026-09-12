@@ -3298,27 +3298,16 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (presence indicator only; no tirzepatide dose-response was estimable over the studied 5-15 mg range).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family, and is the sibling canonical that the `DOSE_SEMAGLUTIDE_MG` Notes anticipated by name. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
 
-### DOSE_NEMOLIZUMAB_MG (**canonical for per-arm or per-subject assigned nemolizumab dose**)
-- **Description:** Assigned nemolizumab (anti-interleukin-31 receptor A monoclonal antibody) dose in mg per subcutaneous administration; 0 when the arm/subject did not receive nemolizumab (placebo or a comparator arm).
-- **Units:** mg (per administration)
+### DOSE_TBAJ587_MG (**canonical for administered TBAJ-587 oral dose in mg**)
+- **Description:** Administered oral dose of the second-in-class diarylquinoline antitubercular TBAJ-587, in mg, referenced to 200 mg. Used as a *continuous* covariate on absorption, clearance and metabolite-formation parameters.
+- **Units:** mg
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a -- 0 means "this arm/subject did not receive nemolizumab". Consumed as `(DOSE_NEMOLIZUMAB_MG > 0)` in both founding models, because Takechi 2025 found no dose-response over the studied range and modelled the maximum effect as a constant.
+- **Reference category:** n/a -- continuous, referenced to 200 mg (the dose level at which every Leding 2026 Table 1 typical value is reported, and the only level studied under fed conditions).
 - **Source aliases:**
-  - Treatment arm / dosing regimen -- Takechi 2025 Table 3 (Yokozeki et al., Staender et al., Kwatra et al. rows) and Supplementary Table S1.
-- **Example models:** `Takechi_2025_nemolizumab_ppnrs.R` (per-subject; 0 = placebo, 30 = 30 mg Q4W after a 60 mg loading dose, 60 = 60 mg Q4W), `Takechi_2025_nemolizumab_mbma_iga.R` (per study arm; the pooled "30 mg, 60 mg Q4W" arms of OLYMPIA 1 and OLYMPIA 2 and the weight-based 0.5 mg/kg Q4W arm of SPR.115828 are all recorded as presence only), and `Takechi_2025_nemolizumab_mbma_ppnrs.R` identically for the PP-NRS endpoint of the same meta-analysis.
-- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. **Presence indicator in practice:** neither founding model reads the magnitude, so a value of 30 and a value of 60 give identical predictions; the column is kept numeric rather than binary so the randomised arm is recorded faithfully and a future dose-response extension has somewhere to read the dose from. Two of the Takechi 2025 MBMA arms are not clean flat milligram doses -- OLYMPIA 1 and OLYMPIA 2 pooled their 30 mg and 60 mg arms into a single reported arm, and SPR.115828 dosed 0.5 mg/kg -- so a dose-response extension must go back to the individual trial reports rather than trusting a single number in this column. Sibling of `DOSE_DUPILUMAB_MG`, the comparator in the same meta-analysis.
-
-### DOSE_DUPILUMAB_MG (**canonical for per-arm assigned dupilumab dose**)
-- **Description:** Assigned dupilumab (anti-interleukin-4 receptor alpha monoclonal antibody) dose in mg per subcutaneous administration; 0 when the arm/subject did not receive dupilumab.
-- **Units:** mg (per administration)
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a -- 0 means "this arm did not receive dupilumab". Consumed as `(DOSE_DUPILUMAB_MG > 0)` in the founding model.
-- **Source aliases:**
-  - Dupilumab dose -- Takechi 2025 Table 3 (Yosipovitch et al. PRIME and PRIME2 rows), "300 mg, Q2W".
-- **Example models:** `Takechi_2025_nemolizumab_mbma_iga.R` (per study arm; the only administered value in the meta-analysis is 300 mg Q2W, so no dose-response is identifiable and the column acts as a presence indicator selecting the dupilumab-specific Edrug and Kd); `Takechi_2025_nemolizumab_mbma_ppnrs.R` uses it identically for the PP-NRS endpoint.
-- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. Every included dupilumab arm used the same 300 mg Q2W regimen, so this column carries only two distinct values (0 and 300) across the founding meta-analysis and the drug effect is estimated as a constant. Note the DIFFERENT dosing interval from its sibling `DOSE_NEMOLIZUMAB_MG` (Q2W vs Q4W): the two columns are not a common per-administration dose metric and must not be compared to each other numerically. Dupilumab appears elsewhere in this package as an atopic-dermatitis comparator; a model that needs an atopic-dermatitis dupilumab regimen must confirm the interval before reusing this column.
+  - `DOSE` -- Leding 2026 Supporting Information Code S1 `$INPUT` (`DOSE ; dose in mg`), kept distinct there from `AMT ; dose in nmol`.
+- **Example models:** `Leding_2026_tbaj587.R` (founding example; five retained effects, all referenced to 200 mg -- a power function on apparent parent clearance (exponent 0.298), on both relative fractions metabolised (`fm_m3` -0.418, `fm_m2` -0.373) and on apparent M2 clearance (0.146), plus an *exponential* function on the absorption rate constant, `ka * exp(-0.000462 * (DOSE - 200))`. Studied levels 25, 50, 100, 200, 400 and 800 mg).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. **This column is not the dosing amount and cannot be derived from it.** Leding 2026 fitted natural-log-transformed *molar* concentrations and dosed `AMT` in nmol, while the dose covariates act on the mg dose, so a model carrying them needs both quantities on the record; the paper reports no molecular weight, so neither can be computed from the other. Set it on every record of a subject to that subject's assigned mg dose level. For the multiple-dose simulations of Leding 2026 Methods 2.4 it is the daily mg dose, taking the loading-dose value during a loading period and the maintenance value thereafter -- which is what makes the dose dependence of apparent clearance change partway through a loading regimen. The dose non-linearity is real but mechanistically unexplained (Leding 2026 Discussion: "The mechanism of the dose non-linearity is not known but describes likely multiple different processes"); note it raises apparent oral clearance with increasing dose, and the authors report that omitting it or replacing it with a dose-dependent relative bioavailability worsened the fit.
 
 ### DOSE_COTADUTIDE_MG (**canonical for per-arm assigned cotadutide dose**)
 - **Description:** Assigned cotadutide (MEDI0382, a GLP-1/glucagon dual agonist) dose in mg per once-daily subcutaneous injection; 0 when the arm/subject did not receive cotadutide.
