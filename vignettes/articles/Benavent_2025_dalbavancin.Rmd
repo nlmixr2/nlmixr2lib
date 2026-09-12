@@ -1,0 +1,539 @@
+---
+title: "Dalbavancin (Benavent 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dalbavancin (Benavent 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Benavent_2025_dalbavancin"))$reference`
+* Article: [Antimicrob Agents Chemother 2025;69(12):e00773-25](https://doi.org/10.1128/aac.00773-25)
+  (open access, CC BY 4.0; PMC12691635)
+
+Dalbavancin is a lipoglycopeptide with a terminal half-life near two weeks, so a
+single infusion can cover weeks of therapy. Benavent 2025 asked whether one
+1500 mg dose is enough to finish the four-week antibiotic course that follows
+first-stage surgery for a chronic prosthetic joint infection, where the infected
+implant is removed, a vancomycin- plus gentamicin-loaded cement spacer is put in,
+and a new prosthesis is implanted at a second operation months later. Twenty
+patients were treated; eighteen contributed plasma concentrations to a population
+PK model, which was then used for Monte Carlo target-attainment simulations.
+
+The model is deliberately simple: one compartment, intravenous infusion,
+first-order elimination, interindividual variability on both clearance and
+volume, proportional residual error, and **no covariates** -- the covariate
+search improved nothing, so the structural model is the final model.
+
+```{r load-model}
+# rxode2::rxode() resolves the model function to an rxUi without depending on
+# ini()/model() being attached (see known-vignette-failure-patterns 6 and 7).
+mod <- rxode2::rxode(readModelDb("Benavent_2025_dalbavancin"))
+mod
+```
+
+# Population
+
+Eighteen of the twenty enrolled patients contributed total plasma dalbavancin
+concentrations, each supplying one to three samples drawn opportunistically at
+weekly-to-biweekly outpatient visits through week four. The cohort is elderly
+(median age 75.5 years, interquartile interval 69-79) and predominantly female
+(70%, n = 14). Renal function and albumin were uniformly normal -- median
+glomerular filtration rate 90 mL/min (interquartile interval 75.8-96.3) and
+median albumin 45 g/L (38-47) -- which matters, because it is the most likely
+reason no covariate reached significance.
+
+Infection involved a hip prosthesis in 55% of patients, knee in 30%, shoulder in
+10% and ankle in 5%. Coagulase-negative staphylococci accounted for 70.8% of the
+24 isolates (Table 1), with *Cutibacterium acnes* at 25% and *Enterococcus
+faecalis* at 4.2%; four infections were polymicrobial. Every patient received a
+single 1500 mg intravenous dose after a median 11.5 days of prior intravenous
+therapy, given as a 30-minute infusion at one hospital and a 2-hour infusion at
+the other.
+
+The same information is available programmatically:
+
+```{r population}
+str(rxode2::rxode(readModelDb("Benavent_2025_dalbavancin"))$population)
+```
+
+# Source trace
+
+Every value in the model file comes from Table 2 of the paper, which is
+reproduced in full here. The paper prints no other parameter table.
+
+```{r source-trace, echo = FALSE}
+tibble::tribble(
+  ~Quantity,                    ~`Model file`,      ~`Source location`,                                   ~`Published value`,
+  "Central volume",             "lvc = log(17.9)",  "Table 2, 'V (L)'",                                   "17.9 L (6.2% RSE) [18.1% shrinkage]; bootstrap 18.0 (16.0-20.3)",
+  "Clearance",                  "lcl = log(0.036)", "Table 2, 'CL (L/h)'",                                "0.036 L/h (8.2% RSE) [12.6% shrinkage]; bootstrap 0.037 (0.031-0.043)",
+  "IIV on volume",              "etalvc ~ 0.200^2", "Table 2, 'IIV V (SD)'",                              "0.200 SD (27.4% RSE); bootstrap 0.200 (0.061-0.280)",
+  "IIV on clearance",           "etalcl ~ 0.290^2", "Table 2, 'IIV CL (SD)'",                             "0.290 SD (20.8% RSE); bootstrap 0.280 (0.150-0.380)",
+  "Proportional residual",      "propSd = 0.120",   "Table 2, 'b (proportional)'",                        "0.120 (28.6% RSE); bootstrap 0.110 (0.053-0.170)",
+  "Structure",                  "1-cmt IV, kel",    "Results, 'Population pharmacokinetic analysis'",     "'one-compartment model with intravenous infusion and first-order linear elimination'",
+  "Error model",                "Cc ~ prop(propSd)","Results, 'Population pharmacokinetic analysis'",     "'the residual error was modeled as proportional'",
+  "IIV distribution",           "exp(l* + eta)",    "Methods, 'Structural model building'",               "'log-normally distributed ... IIV was described using an exponential model'",
+  "Covariates",                 "none",             "Results, 'Population pharmacokinetic analysis'",     "'The covariate analysis did not result in model improvements'"
+) |>
+  knitr::kable(caption = "Source trace for every model quantity.")
+```
+
+Monolix reports omega on the standard-deviation scale, and Table 2 labels the
+rows `IIV V (SD)` / `IIV CL (SD)` with footnote *a* spelling out "SD, standard
+deviation", so the model file squares the printed values to variances. This is
+the single most consequential reading in the extraction, and the paper leaves no
+room for doubt about it.
+
+# Structural check against closed form
+
+For a one-compartment model with no covariates the typical-value profile has an
+exact closed form, so this check is deterministic -- it contains no random draw
+and the bounds can be tight.
+
+```{r closed-form}
+DOSE <- 1500      # mg, single intravenous dose
+TINF <- 0.5       # h, 30 min infusion used in the paper's Monte Carlo
+
+typ  <- rxode2::zeroRe(mod)
+obs_t <- sort(unique(c(
+  seq(0, 4, by = 0.1),        # resolve the end-of-infusion peak
+  seq(6, 48, by = 6),
+  seq(72, 2520, by = 24),     # out to 15 weeks so AUCinf is well determined
+  seq(504, 528, by = 2),      # the three 24 h PK/PD windows (days 21, 27, 35)
+  seq(648, 672, by = 2),
+  seq(840, 864, by = 2)
+)))
+ev_typ <- rxode2::et(amt = DOSE, dur = TINF, cmt = "central") |> rxode2::et(obs_t)
+sim_typ <- as.data.frame(rxode2::rxSolve(typ, ev_typ))
+
+cl_t  <- 0.036
+vc_t  <- 17.9
+kel_t <- cl_t / vc_t
+
+# Closed form for a constant-rate infusion of duration TINF, evaluated after
+# the infusion has stopped.
+cc_closed <- function(t) {
+  (DOSE / (cl_t * TINF)) * (1 - exp(-kel_t * TINF)) * exp(-kel_t * (t - TINF))
+}
+
+chk <- sim_typ |>
+  filter(time >= TINF) |>
+  mutate(closed = cc_closed(time), pct = 100 * (Cc - closed) / closed)
+
+c(max_abs_pct_diff = max(abs(chk$pct)),
+  cmax_mg_L        = max(sim_typ$Cc),
+  half_life_days   = log(2) / kel_t / 24)
+```
+
+```{r closed-form-assert}
+stopifnot(
+  # Deterministic: solver vs closed form, so this is pure numerical error and a
+  # tight bound is correct. A mis-transcribed V, CL or infusion duration breaks
+  # it immediately.
+  max(abs(chk$pct)) < 0.5,
+  # Cmax = (Dose / (CL * TINF)) * (1 - exp(-kel * TINF)); 83.8 mg/L.
+  abs(max(sim_typ$Cc) - cc_closed(TINF)) < 0.05,
+  # Terminal half-life log(2) * V / CL = 344.6 h = 14.4 days.
+  abs(log(2) / kel_t / 24 - 14.36) < 0.05
+)
+```
+
+# Virtual cohort
+
+The paper simulated 1000 profiles. This vignette uses 200, which is the cohort
+cap for package vignettes; the resulting Monte Carlo noise on a target-attainment
+percentage is a few points, and the assertions below are set outside that noise
+(see the thread-count note in "Assumptions and deviations").
+
+```{r cohort}
+NSUB <- 200
+rxode2::rxSetSeed(20251017)
+ev <- rxode2::et(amt = DOSE, dur = TINF, cmt = "central") |>
+  rxode2::et(obs_t) |>
+  rxode2::et(id = 1:NSUB)
+
+sim <- as.data.frame(rxode2::rxSolve(mod, ev, nSub = NSUB)) |>
+  mutate(treatment = "1500 mg IV (30 min infusion)")
+
+stopifnot(nrow(sim) > 0, !anyNA(sim$Cc), all(sim$Cc >= 0),
+          length(unique(sim$id)) == NSUB)
+```
+
+```{r profile-plot, fig.cap = "Simulated total plasma dalbavancin after a single 1500 mg dose. Median and 5th-95th percentiles over 200 subjects; points are the observed cohort medians reported in Benavent 2025 Results. Replicates the layout of Figure 1 of Benavent 2025 (semi-logarithmic y-axis)."}
+obs_pub <- tibble::tibble(
+  day  = c(12, 20.5, 28),
+  conc = c(58.5, 29.7, 13.3),
+  n    = c(4L, 10L, 9L)
+)
+
+band <- sim |>
+  group_by(day = time / 24) |>
+  summarise(lo = quantile(Cc, 0.05), md = median(Cc), hi = quantile(Cc, 0.95),
+            .groups = "drop") |>
+  # Drop the pre-dose record (zero, so unplottable on a log axis) and truncate
+  # to the five weeks Table 3 covers. This is the PLOT window only -- the PKNCA
+  # input above keeps every record including time zero.
+  filter(day > 0, day <= 35)
+
+ggplot(band, aes(day, md)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.20, fill = "steelblue") +
+  geom_line(colour = "steelblue", linewidth = 0.9) +
+  geom_point(data = obs_pub, aes(day, conc), colour = "firebrick", size = 2.6) +
+  scale_y_log10() +
+  labs(x = "Days after the 1500 mg dose", y = "Total dalbavancin (mg/L)",
+       title = "Simulated cohort vs the observed medians of Benavent 2025") +
+  theme_bw()
+```
+
+The three red points are the cohort medians the paper reports at roughly two,
+three and four weeks. They are *not* a trajectory: each is a median over a
+different, largely non-overlapping handful of patients (n = 4, 10 and 9) sampled
+whenever a clinic visit happened to occur. The three-week point sits essentially
+on the model median; the two-week and four-week points bracket it in opposite
+directions. This is quantified, and treated as a documented deviation rather
+than a gate, below.
+
+# PKNCA validation
+
+Benavent 2025 reports no non-compartmental analysis of its own, so there is no
+published Cmax / AUC / half-life table to compare against and
+`ncaComparisonTable()` is not applicable here. The NCA below instead checks the
+simulated cohort against the quantities the model *does* pin down in closed
+form: `cl.obs` must recover the population clearance, `vz.obs` the population
+volume, and `aucinf.obs` must equal `Dose / CL`.
+
+```{r pknca}
+conc_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+
+dose_nca <- conc_nca |>
+  distinct(id, treatment) |>
+  mutate(time = 0, amt = DOSE)
+
+conc_obj <- PKNCA::PKNCAconc(conc_nca, Cc ~ time | treatment + id,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | treatment + id,
+                             doseu = "mg")
+
+intervals <- data.frame(
+  start      = c(0,    504, 648, 840),
+  end        = c(Inf,  528, 672, 864),
+  cmax       = c(TRUE,  FALSE, FALSE, FALSE),
+  tmax       = c(TRUE,  FALSE, FALSE, FALSE),
+  auclast    = c(TRUE,  TRUE,  TRUE,  TRUE),
+  aucinf.obs = c(TRUE,  FALSE, FALSE, FALSE),
+  half.life  = c(TRUE,  FALSE, FALSE, FALSE),
+  cl.obs     = c(TRUE,  FALSE, FALSE, FALSE),
+  vz.obs     = c(TRUE,  FALSE, FALSE, FALSE)
+)
+
+nca <- suppressWarnings(
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+)
+nca_res <- as.data.frame(nca)
+```
+
+```{r pknca-table, echo = FALSE}
+model_implied <- c(
+  cmax       = (DOSE / (0.036 * TINF)) * (1 - exp(-(0.036 / 17.9) * TINF)),
+  tmax       = TINF,
+  aucinf.obs = DOSE / 0.036,
+  half.life  = log(2) * 17.9 / 0.036,
+  cl.obs     = 0.036,
+  vz.obs     = 17.9
+)
+labels <- c(cmax = "Cmax (mg/L)", tmax = "Tmax (h)",
+            aucinf.obs = "AUC0-inf (mg*h/L)", half.life = "t1/2 (h)",
+            cl.obs = "CL (L/h)", vz.obs = "Vz (L)")
+
+nca_res |>
+  filter(start == 0, PPTESTCD %in% names(model_implied)) |>
+  group_by(PPTESTCD) |>
+  summarise(sim_median = median(PPORRES), .groups = "drop") |>
+  mutate(model = model_implied[PPTESTCD],
+         pct   = 100 * (sim_median - model) / model,
+         `NCA parameter` = labels[PPTESTCD]) |>
+  select(`NCA parameter`,
+         `Simulated cohort median` = sim_median,
+         `Model-implied typical value` = model,
+         `% difference` = pct) |>
+  knitr::kable(digits = c(0, 3, 3, 1),
+               caption = "Cohort NCA against the closed-form typical values implied by Table 2.")
+```
+
+```{r pknca-assert}
+nca_med <- nca_res |>
+  filter(start == 0) |>
+  group_by(PPTESTCD) |>
+  summarise(v = median(PPORRES), .groups = "drop")
+get <- function(k) {
+  x <- nca_med$v[nca_med$PPTESTCD == k]
+  if (length(x) != 1L) stop("no unique NCA row for ", k)
+  x
+}
+
+stopifnot(
+  # Cohort medians, so these must admit the draw. Realised across 1 / 2 / 4 /
+  # 8 / 16 solver threads: CL -4.5 to +5.0%, Vz -4.1 to +3.1%, AUCinf -4.8 to
+  # +4.7%, t1/2 -3.8 to +1.9%. The 12% bound sits outside that spread and
+  # still goes red on a mis-transcribed CL or V, which move these by tens of
+  # percent.
+  abs(100 * (get("cl.obs")     - 0.036)      / 0.036)        < 12,
+  abs(100 * (get("vz.obs")     - 17.9)       / 17.9)         < 12,
+  abs(100 * (get("aucinf.obs") - DOSE/0.036) / (DOSE/0.036)) < 12,
+  abs(100 * (get("half.life")  - log(2)*17.9/0.036) / (log(2)*17.9/0.036)) < 12,
+  # Every subject's terminal fit must be clean for a monoexponential model.
+  min(nca_res$PPORRES[nca_res$PPTESTCD == "adj.r.squared"]) > 0.99
+)
+```
+
+# Reproducing Table 3: probability of target attainment
+
+This is the substantive validation. Table 3 gives the probability that
+fAUC(0-24h)/MIC stays at or above 50 at three, four and five weeks after the
+dose, for four assumed protein-binding values and four MICs -- 48 published
+numbers computed from the same model this package now ships.
+
+The unbound exposure is the total AUC over a 24-hour window multiplied by the
+free fraction `1 - protein binding`. The AUC comes from PKNCA over the three
+interval windows requested above, so no trapezoidal rule is hand-rolled here.
+
+```{r pta}
+auc24 <- nca_res |>
+  filter(PPTESTCD == "auclast", start > 0) |>
+  transmute(id, day = start / 24, auc = PPORRES)
+
+stopifnot(nrow(auc24) == 3L * NSUB)
+
+paper_pta <- tibble::tribble(
+  ~pb_pct, ~day, ~`0.03`, ~`0.06`, ~`0.125`, ~`0.25`,
+  93L, 21, 100,  100,  100,  99.7,
+  93L, 27, 100,  100,  99.6, 97.5,
+  93L, 35, 100,  99.5, 97.2, 85.0,
+  95L, 21, 100,  100,  100,  99.3,
+  95L, 27, 100,  100,  98.8, 92.8,
+  95L, 35, 99.6, 98.7, 93.3, 68.9,
+  97L, 21, 100,  100,  99.6, 93.4,
+  97L, 27, 100,  99.6, 95.5, 66.9,
+  97L, 35, 99.3, 96.2, 79.0, 30.6,
+  99L, 21, 100,  100,  98.4, 65.9,
+  99L, 27, 99.7, 98.2, 87.3, 28.2,
+  99L, 35, 97.8, 89.6, 57.0, 5.4
+) |>
+  pivot_longer(-c(pb_pct, day), names_to = "mic", values_to = "paper") |>
+  mutate(mic = as.numeric(mic))
+
+pta_at <- function(fu, mic, day) {
+  a <- auc24$auc[auc24$day == day]
+  if (length(a) != NSUB) stop("no AUC window for day ", day)
+  100 * mean(fu * a / mic >= 50)
+}
+
+cmp <- paper_pta |>
+  rowwise() |>
+  mutate(simulated = pta_at(1 - pb_pct / 100, mic, day)) |>
+  ungroup() |>
+  mutate(diff = simulated - paper)
+
+stopifnot(nrow(cmp) == 48L, !anyNA(cmp$simulated))
+```
+
+```{r pta-table, echo = FALSE}
+cmp |>
+  mutate(cell = sprintf("%.1f / %.1f", simulated, paper)) |>
+  select(pb_pct, day, mic, cell) |>
+  pivot_wider(names_from = mic, values_from = cell) |>
+  arrange(pb_pct, day) |>
+  rename("Protein binding (%)" = pb_pct, "Day post-dose" = day,
+         "MIC 0.03" = `0.03`, "MIC 0.06" = `0.06`,
+         "MIC 0.125" = `0.125`, "MIC 0.25" = `0.25`) |>
+  knitr::kable(caption = "PTA for fAUC(0-24h)/MIC >= 50, simulated / published (Benavent 2025 Table 3).")
+```
+
+```{r pta-summary, echo = FALSE}
+cmp |>
+  group_by(`Protein binding (%)` = pb_pct) |>
+  summarise(`Median |difference|` = median(abs(diff)),
+            `90th pct |difference|` = quantile(abs(diff), 0.9),
+            `Max |difference|` = max(abs(diff)), .groups = "drop") |>
+  knitr::kable(digits = 2,
+               caption = "Agreement with Table 3, by protein-binding row.")
+```
+
+The 93%, 95% and 97% rows reproduce the published values essentially exactly.
+The 99% row does not, and the disagreement is enormous -- up to 64 percentage
+points. That is not Monte Carlo noise, and the next section shows it is not a
+transcription error in this package either.
+
+```{r pta-assert}
+low <- cmp |> filter(pb_pct < 99L)
+
+stopifnot(
+  # Realised across 1 / 2 / 4 / 8 / 16 solver threads: median |diff|
+  # 0.10 / 0.50 / 0.50 / 0.30 / 0.20 and 90th percentile
+  # 0.95 / 4.50 / 2.25 / 3.10 / 5.50. The bounds sit outside that spread but
+  # still break on a mis-transcribed CL or V, which move whole rows by tens
+  # of points.
+  median(abs(low$diff)) < 3,
+  quantile(abs(low$diff), 0.9) < 12
+)
+```
+
+# The 99% protein-binding row was computed at 98%
+
+Target attainment here depends on the assumed free fraction and the MIC only
+through their ratio `fu / MIC`, because the criterion is
+`fu * AUC24 / MIC >= 50`. That makes Table 3 self-checking: any two cells with
+the same `fu / MIC` must give the same PTA, whichever row and column they sit
+in. They do for the 93%, 95% and 97% rows. They do not for the 99% row, which
+reports a *higher* attainment at `fu / MIC = 0.08` (98.4% at day 21) than the
+97% row does at the larger ratio 0.12 (93.4%) -- impossible for a monotone
+criterion.
+
+Recomputing the fourth row with a free fraction of 2% instead of 1% resolves it:
+
+```{r errata}
+row99 <- cmp |>
+  filter(pb_pct == 99L) |>
+  rowwise() |>
+  mutate(`as labelled (fu = 1%)` = simulated,
+         `at fu = 2% (98% binding)` = pta_at(0.02, mic, day)) |>
+  ungroup()
+```
+
+```{r errata-table, echo = FALSE}
+row99 |>
+  arrange(mic, day) |>
+  # MIC is formatted as text: a numeric column would be rounded to the shared
+  # `digits` and collapse 0.03 / 0.06 / 0.125 / 0.25 onto 0.0 / 0.1 / 0.2.
+  mutate(MIC = format(mic, trim = TRUE, drop0trailing = TRUE)) |>
+  select(`Day post-dose` = day, `MIC (mg/L)` = MIC, `Published` = paper,
+         `as labelled (fu = 1%)`, `at fu = 2% (98% binding)`) |>
+  knitr::kable(digits = 1,
+               caption = "The fourth row of Table 3 against the two candidate free fractions.")
+```
+
+```{r errata-assert}
+d01 <- median(abs(row99$`as labelled (fu = 1%)`       - row99$paper))
+d02 <- median(abs(row99$`at fu = 2% (98% binding)`    - row99$paper))
+c(`median |diff| at fu = 1%` = d01, `median |diff| at fu = 2%` = d02)
+
+stopifnot(
+  # Realised 19.70 / 14.90 / 18.20 / 19.65 / 13.90 (fu = 1%) and
+  # 0.50 / 1.90 / 0.85 / 1.10 / 0.65 (fu = 2%) at 1 / 2 / 4 / 8 / 16 solver
+  # threads. The two readings are separated by an order of magnitude, far
+  # outside the Monte Carlo spread, so both bounds have ample headroom and
+  # both can fail.
+  d01 > 8,
+  d02 < 6
+)
+```
+
+Every cell of the published fourth row lands within a couple of points of the
+2% free fraction, including the two that are most diagnostic because they sit in
+the steep part of the curve: 65.9% published against 66.5% simulated at day 21
+and MIC 0.25, and 28.2% against 28.0% at day 27. At the labelled 1% free
+fraction those same cells simulate at 1.5% and 0.5%.
+
+The paper's own data agree. Its observed median total concentration three weeks
+post-dose is 29.7 mg/L; at 99% binding the unbound AUC over the following 24
+hours is about 7.1 mg*h/L, which against MIC 0.25 gives a ratio of 28 -- well
+below the target of 50, and irreconcilable with a published attainment of 65.9%.
+At 98% binding the ratio is 57, which is consistent.
+
+This is a reporting defect in Table 3, not in the model: the affected row is a
+downstream simulation product, and the packaged model reproduces the other three
+rows to within a few tenths of a percentage point. The conclusion the paper draws
+in prose -- that a single 1500 mg dose covers three to four weeks for MICs up to
+0.125 mg/L, and up to 0.25 mg/L when binding is 97% or lower -- rests on the rows
+that do reproduce and is unaffected.
+
+# Observed concentrations
+
+```{r obs-compare, echo = FALSE}
+nearest <- function(d) obs_t[which.min(abs(obs_t - d * 24))]
+obs_pub |>
+  rowwise() |>
+  mutate(`Model median (mg/L)` = median(sim$Cc[sim$time == nearest(day)])) |>
+  ungroup() |>
+  mutate(`% difference` = 100 * (`Model median (mg/L)` - conc) / conc) |>
+  select(`Nominal day` = day, `Patients sampled` = n,
+         `Observed median (mg/L)` = conc, `Model median (mg/L)`, `% difference`) |>
+  knitr::kable(digits = 1,
+               caption = "Published observed cohort medians (Benavent 2025 Results) against the simulated cohort median.")
+```
+
+The three-week value agrees closely. The two-week and four-week values differ by
+about -20% and +60%, in opposite directions, which no single change to the model
+could produce. The mechanism is in how the published numbers were formed: each is
+a median over a different small subset of patients (n = 4, 10 and 9) at a nominal
+day that is itself an interquartile range (day 12 [8.5-13.5], day 20.5 [18-22],
+day 28 [28-29]), sampled when a clinic visit happened rather than on a schedule.
+A four-patient median is not an estimate of a population median, and patients
+sampled at two weeks are largely not the patients sampled at four weeks. These
+values are reported here for transparency and deliberately excluded from the
+assertion gate; the quantities that *are* gated are the closed-form structural
+check, the cohort NCA, and the 36 reproducible cells of Table 3.
+
+# Assumptions and deviations
+
+* **Total, not unbound, dalbavancin.** The packaged model returns total plasma
+  concentration, which is what was measured and fitted. The paper swept four
+  theoretical protein-binding values (93, 95, 97 and 99%) rather than adopting
+  one, so no single free fraction is packaged; the scaling is applied in this
+  vignette at the point of use. This differs from the sibling model
+  `Baiardi_2025_dalbavancin`, which does package a free fraction because its
+  source paper commits to a single value of 7%.
+* **The fourth row of Table 3 is computed at 98% protein binding, not the
+  labelled 99%.** Demonstrated above. Treat the published fourth row as
+  applying to a free fraction of 2%. The model, and the other 36 published
+  cells, are unaffected.
+* **Infusion duration is an event-table property.** Patients received either a
+  30-minute or a 2-hour infusion depending on the hospital. The paper's Monte
+  Carlo used 30 minutes, so this vignette does too. Over a two-week half-life
+  the choice is immaterial to exposure beyond the first day.
+* **Supplementary material was not retrievable.** Tables S1-S3 and Figures S1-S2
+  (file `AAC00773-25-S0001.docx`) could not be fetched from the EuropePMC
+  supplementary-files endpoint, the publisher, or PMC. None of them carries a
+  model parameter: the complete final model is Table 2 of the main text, which
+  is reproduced in full in the source trace above. The consequences are that the
+  exact observation count is unknown (18 patients contributing 1-3 samples each,
+  so between 18 and 54), the goodness-of-fit and VPC panels could not be
+  inspected, and the secondary target-attainment table for the bacteriostatic
+  criterion (fAUC/MIC >= 25, Table S3) is not reproduced here.
+* **No covariates.** The paper screened age, sex, height, body weight, body mass
+  index, glomerular filtration rate, baseline creatinine clearance and same-day
+  serum albumin, and retained none. All eight are recorded in the model file's
+  `covariatesDataExcluded` so the screen is preserved. The cohort is narrow --
+  elderly, normal renal function, normal albumin -- so the absence of a renal or
+  albumin effect should be read as "not identifiable in these 18 patients",
+  which is how the Discussion reads it too, rather than as evidence of no
+  effect. The packaged clearance is about 30% below values reported for healthy
+  volunteers (0.036 vs 0.050 L/h), so the model should not be extrapolated to
+  younger or renally augmented patients.
+* **Cohort size and assertion bounds.** The paper simulated 1000 profiles; this
+  vignette simulates 200, the package cap. Every bound in the gates above was
+  chosen by measuring the gated statistic at 1, 2, 4, 8 and 16 solver threads
+  -- which draw different
+  cohorts, because `rxSetSeed()` fixes rxode2's RNG per thread and not across
+  thread counts -- and placing the bound outside the observed spread. The
+  realised ranges are recorded in comments beside each `stopifnot()` so a later
+  reader does not tighten them back onto a single draw.
+* **Population metadata.** `n_subjects` is 18, the PK analysis population. The
+  demographic summaries (age, sex, renal function, albumin) are reported by the
+  paper for all 20 enrolled patients; the paper does not separate the 18 who
+  contributed concentrations. Body weight and height are never summarised in the
+  main text, so no weight or height distribution is recorded.
