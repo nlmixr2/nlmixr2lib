@@ -57,7 +57,7 @@
   `theta1` is corrected, and its two anchor chunks now solve the model instead
   of restating its equation inline so the same drift cannot recur silently.
 
-- Add Dvorackova 2026 valganciclovir ([doi:10.1159/000548942](https://doi.org/10.1159/000548942)) -- adult lung transplant recipients receiving intravenous ganciclovir or oral valganciclovir for cytomegalovirus prophylaxis or treatment.
+- Add Park 2025 donepezil ([doi:10.3390/pharmaceutics17121517](https://doi.org/10.3390/pharmaceutics17121517)) -- healthy Korean men given the long-acting intramuscular formulation GB-5001A.
 
 - Add Damnjanovic 2023 levetiracetam, lamotrigine and valproic acid ([doi:10.1177/20420986231181337](https://doi.org/10.1177/20420986231181337)) -- Serbian children aged 2-18 years on dual antiepileptic therapy.
 
