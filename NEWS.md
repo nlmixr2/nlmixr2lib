@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Hadigol 2026 talazoparib and enzalutamide ([doi:10.1002/jcph.70125](https://doi.org/10.1002/jcph.70125)) -- men with metastatic castration-resistant prostate cancer.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`

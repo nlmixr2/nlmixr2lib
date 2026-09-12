@@ -4557,6 +4557,15 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Tuo_2025_clobazam.R` (doi:10.3390/pharmaceutics17070813).
 - **Notes:** Follows the `ndm<drug>` contraction established by `ndmsel` (N-desmethyl-selumetinib) and `ndmima` (N-desmethyl-imatinib), so the suffix reads as `n-desmethyl-clb`. As in `ndmima`, the founding model parameterises the metabolite as apparent with respect to an unidentifiable dosage conversion fraction (`CL_N-CLB/Fm`, `V_N-CLB/Fm`), so `central_ndmclb` holds an Fm-scaled amount; the predicted metabolite concentration is still the true one because the same `Fm` divides both the clearance and the volume. Do not confuse the parent-drug abbreviation `clb` with this suffix: `clb` names clobazam itself, `ndmclb` names the demethylated metabolite.
 
+### ndmenz (**canonical N-desmethyl-enzalutamide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-desmethyl enzalutamide, the major active metabolite of the androgen-receptor inhibitor enzalutamide, formed by CYP2C8/CYP3A4-mediated N-demethylation. It has anti-androgen potency clinically comparable to the parent and circulates at a similar steady-state concentration with a longer half-life (approximately 7.8-8.6 days versus 5.8 days for enzalutamide), so it contributes roughly half of the total pharmacologically active exposure and must be carried explicitly in any model of an enzalutamide drug-drug interaction.
+- **Source aliases:**
+  - `N-desmethyl enzalutamide` -- the name used throughout the enzalutamide literature and in Hadigol 2026 Table 2 (`CLn`, `Vcn`, `Qn`, `Vpn`, `Fmet`); the subscript `n` in those parameter names is this metabolite.
+  - `M2` -- the metabolite code used in some enzalutamide regulatory documents. Do NOT map this onto the registered `m2` suffix, which is N-desmethyl-bedaquiline.
+- **Example models:** `Hadigol_2026_talazoparib_enzalutamide.R` (two-compartment metabolite formed directly into plasma with no depot; `central_ndmenz`, `peripheral1_ndmenz`, `lcl_ndmenz` / `lvc_ndmenz` / `lq_ndmenz` / `lvp_ndmenz`, `e_wt_cl_ndmenz` / `e_wt_vc_ndmenz`, `expSd_ndmenz`; doi:10.1002/jcph.70125).
+- **Notes:** Follows the `ndm<drug>` contraction established by `ndmsel` (N-desmethyl-selumetinib), `ndmima` (N-desmethyl-imatinib) and `ndmclb` (N-desmethylclobazam), so the suffix reads as `n-desmethyl-enz`, and pairs with the `enz` sibling-drug suffix for the parent. Unlike `ndmima` and `ndmclb`, the founding model's metabolite clearance and volume are NOT scaled by an unidentifiable fraction metabolised: Hadigol 2026 resolves the same Fmet-versus-Vcn unidentifiability the other way round, by FIXING `fm` to 0.634 from a published enzalutamide PBPK model and estimating `Vcn` freely, so `central_ndmenz` holds a true amount. Whichever way a source resolves it, only one of the pair can be estimated -- see the `fm` entry in `parameter-names.md`. Note also that in the founding model the parent itself carries a suffix (`enz`) rather than the bare canonical names, because the substrate of interest in that paper is a third drug (talazoparib); a metabolite suffix does not imply that its parent is unsuffixed.
+
 ### dfcr (**canonical 5'-DFCR capecitabine metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 5'-deoxy-5-fluorocytidine (5'-DFCR), formed in the liver by carboxylesterase from capecitabine.
@@ -5093,6 +5102,15 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Role:** Valsartan (angiotensin-II receptor blocker) sibling-drug suffix, paired with amlodipine as the unsuffixed parent in the Heo 2016 amlodipine + valsartan combined PK/PD antihypertensive-interaction model. Drives `central_val` / `peripheral1_val` / `effect_val` compartments, `lcl_val` / `lvc_val` / `lq_val` / `lvp_val` / `ld1_val` PK parameters, and the `propSd_val` / `addSd_val` residuals on valsartan plasma concentration.
 - **Source aliases:** none.
 - **Example models:** `Heo_2016_amlodipine_valsartan.R` (doi:10.1111/bcp.13082).
+
+### enz (**canonical enzalutamide sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Enzalutamide (androgen-receptor inhibitor) sibling-drug suffix, used when enzalutamide is the co-administered PERPETRATOR of a drug-drug interaction rather than the substrate of interest, so the bare canonical names are reserved for the substrate. Drives `depot_enz` / `central_enz` / `peripheral1_enz` compartments, `lcl_enz` / `lvc_enz` / `lq_enz` / `lvp_enz` / `lka_enz` / `lfdepot_enz` PK parameters, the `e_wt_cl_enz` / `e_age_cl_enz` / `e_wt_vc_enz` / `e_age_vc_enz` covariate effects, and the `expSd_enz` residual on enzalutamide plasma concentration.
+- **Source aliases:**
+  - `e` -- the single-letter subscript enzalutamide popPK papers use on every parameter (`CLe/Fe`, `Vce/Fe`, `Qe/Fe`, `Vpe/Fe`, `kae`, `Fe` in Hadigol 2026 Table 1). Not registered as a suffix in its own right, because a bare `_e` is not self-describing.
+  - `MDV3100`, `ENZA` -- the development code and the common abbreviation.
+- **Example models:** `Hadigol_2026_talazoparib_enzalutamide.R` (enzalutamide as the P-glycoprotein-inhibiting perpetrator reducing talazoparib apparent clearance, paired with its `ndmenz` active metabolite; doi:10.1002/jcph.70125).
+- **Notes:** Follows the sibling-drug suffix pattern established by `rtv` (ritonavir) and `val` (valsartan): the substrate whose PK the paper set out to characterise keeps the unsuffixed `central` / `cl` / `vc` / `Cc` names and the co-administered drug is suffixed, regardless of which drug is chemically the "parent" of a metabolite in the system. In the founding model enzalutamide is simultaneously a suffixed perpetrator and the parent of a further-suffixed metabolite (`ndmenz`), which is the reason that convention has to be stated explicitly. Distinct from `Liu_2024_deutenzalutamide.R`, which models deuterated enzalutamide (HC-1119) as its own unsuffixed parent drug and does not use this suffix.
 
 ### 9oh (**canonical 9-hydroxyrisperidone suffix**)
 - **Type:** metabolite-suffix
