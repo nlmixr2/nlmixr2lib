@@ -1536,6 +1536,8 @@ navbar:
         href: articles/Horita_2018_ethambutol.html
       - text: "Ethambutol (Jonsson 2011)"
         href: articles/Jonsson_2011_ethambutol.html
+      - text: "Ethambutol (Maranchick 2026)"
+        href: articles/Maranchick_2026_pyrazinamide_ethambutol.html
       - text: "Ethambutol pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
       - text: "Ethanol (Nemoto 2017)"
@@ -3580,6 +3582,8 @@ navbar:
         href: articles/Horita_2018_pyrazinamide.html
       - text: "Pyrazinamide (Kim 2023)"
         href: articles/Kim_2023_pyrazinamide.html
+      - text: "Pyrazinamide (Maranchick 2026)"
+        href: articles/Maranchick_2026_pyrazinamide_ethambutol.html
       - text: "Pyrazinamide mpbpk (Mehta 2023)"
         href: articles/Mehta_2023_tb_lesion_mpbpk.html
       - text: "Pyrazinamide pbpk (Ramachandran 2023)"
@@ -6139,6 +6143,7 @@ articles:
   - articles/MangasSanjuan_2016_axomadol
   - articles/Mao_2012_vernakalant
   - articles/Mao_2024_sirolimus
+  - articles/Maranchick_2026_pyrazinamide_ethambutol
   - articles/Marathe_2023_belzutifan
   - articles/Marcantonio_2022_efa
   - articles/Marier_2002_tobramycin_rat_conventional
