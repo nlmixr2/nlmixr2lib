@@ -17283,3 +17283,154 @@ sibling such as `AUC_BAST_FW`.
   - `DSSTB1` -- the `$INPUT` column name in the Kim 2026 deposited NONMEM control streams, glossed there as "DSST baseline 1h".
 - **Example models:** `Kim_2026_zolpidem_dsst.R`, `Kim_2026_zolpidem_crt.R`, `Kim_2026_zolpidem_vas.R`, `Kim_2026_zolpidem.R` (founding extraction; screened as a candidate covariate on the PK and all three PD endpoints and not retained on any, so declared in `covariatesDataExcluded` in each -- the DSST baseline is instead estimated structurally as the BASE parameter with age as its covariate).
 - **Notes:** Member of the `_BL` per-subject-baseline suffix family, registered alongside `CRT_BL` and `VAS_SEDATION_BL` from the same founding paper. Deliberately NOT named `SCORE_DSST_BL`: the `SCORE_` prefix belongs to the composite clinical rating instruments (`SCORE_ADAS_COG`, `SCORE_MMSE`) that are reported as an instrument total without a pre-dose/post-dose baseline distinction, whereas the `_BL` family is specifically the pre-dose readout entering a PD parameter. Register a separate `SCORE_DSST` canonical if a future model needs a time-varying (non-baseline) DSST column.
+
+## COPD FEV1 meta-analysis columns
+
+Registered with the `Yang_2026_copd_fev1_adipd_mbma` / `Yang_2026_copd_fev1_ipd`
+extraction. The first group are combined aggregated-data + individual-patient-data
+(ADIPD) meta-analysis infrastructure columns that are not specific to COPD and are
+expected to recur in any combined-evidence model; the rest are COPD-specific.
+
+### DTYPE_AGGREGATED (**canonical for the aggregated-vs-individual record-type indicator in a combined AD + IPD meta-analysis**)
+- **Description:** 1 = the record is an AGGREGATED-data observation (one arm-mean endpoint value read from a published trial report), 0 = the record is an INDIVIDUAL-patient observation (one subject's value). Marks which of the two evidence types a row carries when both are fitted in one model.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (individual-patient record).
+- **Source aliases:**
+  - `DTYPE` -- the `$INPUT` column in the Yang 2026 combined control stream, coded 1 = aggregated and 2 = individual; re-coded to a 0/1 binary for the canonical column so it reads as an ordinary indicator.
+- **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (switches the baseline between a log-normal and its normal-approximated arm mean, switches the residual error between a sample-size-weighted additive model and a power model, and gates the subject-level random effects).
+- **Notes:** Distinguishes the two evidence types WITHIN one data set; it is not a study-design descriptor and says nothing about randomization or blinding. A combined-evidence model typically uses it in three places at once -- the parameter-mean transformation (an arm mean of a log-normally distributed parameter is not log-normal, so an aggregated record needs the normal approximation of the central limit theorem to avoid aggregation bias), the residual-error model (an arm mean of N patients is far less noisy than one patient), and the random-effect structure (subject-level etas are meaningless on an arm mean). Pairs with `NARM`, which supplies the N those transformations need. Register a separate canonical rather than overloading this one if a future model needs more than two evidence types (for example reconstructed individual data as a third level).
+
+### NARM (**canonical for the number of patients contributing to a study arm**)
+- **Description:** Number of patients whose data are summarised by an aggregated-data record, i.e. the size of the trial arm behind an arm-mean endpoint value. Used to weight aggregated records against individual records in a meta-analysis.
+- **Units:** (count of patients)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as `1/sqrt(NARM)` in a residual-error weight or as a variance divisor.
+- **Source aliases:**
+  - `NTRT` -- the `$INPUT` column in the Yang 2026 control streams. NOTE this alias is a NAME COLLISION with a different quantity: `NTRT` is also the source column name in `vanHasselt_2015_eribulin.R` for the cumulative number of days of prior taxane treatment, registered there as an alias of `PRIOR_TAXANE_DAYS`. The two have nothing to do with each other, which is exactly why neither takes `NTRT` as its canonical name.
+  - `N` / `n per arm` / `Number randomized` -- the column heading of a published trial's arm-size table.
+- **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (scales the aggregated additive residual SD by `1/sqrt(NARM)` per the paper's Equation 10, and divides the arm-mean baseline variance by `NARM` in the central-limit-theorem normal approximation of Equations 6-8; arm sizes span 18 to 5,724 patients, which is what makes that approximation valid).
+- **Notes:** Meaningful only on aggregated records; set it to 1 on individual-patient records, where nothing should reference it. Distinct from a study-level total enrolment -- this is the ARM size, because the arm is the unit an aggregated endpoint is averaged over. The two uses pull in the same direction but are not the same quantity: the residual-error weight treats the arm mean as a mean of N noisy measurements, while the baseline-variance divisor treats it as a mean of N subject-level parameter draws. A model doing aggregation-bias correction needs both.
+
+### MEAS_POSTBD (**canonical for the post-bronchodilator spirometry measurement indicator**)
+- **Description:** 1 = this spirometry record was measured AFTER administration of a short-acting bronchodilator, 0 = the record is a pre-bronchodilator (trough) measurement. A record-level, not subject-level, attribute.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (pre-bronchodilator trough measurement).
+- **Source aliases:**
+  - `POSTBD` -- the `$INPUT` column in the Yang 2026 control streams.
+- **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (a post-bronchodilator record is predicted from a baseline raised by the median absolute reversibility of 0.18 L and from only the estimated fraction `rel_postbd` = 0.531 of the long-acting bronchodilator effect, because a short-acting bronchodilator has already recruited part of the available reversibility).
+- **Notes:** Load-bearing in any pooled airways-disease analysis because trials differ in whether they report trough or post-bronchodilator FEV1, and the two are not interconvertible without a reversibility assumption. Do NOT use it to mark a study that reports only post-bronchodilator values -- it is per record, and a single trial commonly reports both. Distinct from `FEV1_PBD_ANCHOR`, which addresses a different reconciliation problem (studies whose absolute FEV1 was reconstructed from a post-bronchodilator BASELINE plus a change from baseline). Scope: specific until a second airways model ratifies the semantics.
+
+### FEV1_PBD_ANCHOR (**canonical for the reported FEV1 value consumed by a post-bronchodilator baseline reconciliation term**)
+- **Description:** The record's own reported FEV1 value, supplied as an input column, for records belonging to studies whose absolute FEV1 was reconstructed as (post-bronchodilator baseline + change from baseline) while the model's baseline is on the pre-bronchodilator scale. 0 for every record to which the reconciliation does not apply, and 0 for all simulation.
+- **Units:** L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0 (no reconciliation; the correction term vanishes).
+- **Source aliases:**
+  - `FEV1` used as a right-hand-side data item -- the Yang 2026 combined control stream writes `POSTBDCORR = FEV1 * (1-THETA(53))` for six named studies with `POSTBD = 0`, where `FEV1` is the `DV` itself.
+- **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (multiplied by `1 - postbd_recon` = 0.116 and added to the pre-bronchodilator prediction for six of the 298 aggregated studies).
+- **Notes:** Exists to reproduce an ESTIMATION-TIME data-reconciliation idiom and must be 0 for forward simulation. The source multiplies the record's own DEPENDENT VARIABLE into the prediction, which rxode2 cannot express (the observation is unknown while solving) and which is not meaningful for simulation; exposing the value as an explicit input column is the faithful translation, and setting it to 0 reproduces the published model exactly for every record outside those six studies. Registered rather than hidden inside the model so that the dependence is auditable. A future extraction meeting the same idiom for a different endpoint should register a parallel `<ENDPOINT>_PBD_ANCHOR`-style column rather than overloading this one, since the anchor is endpoint-specific by construction.
+
+### OCS_NONRESPONDER (**canonical for the oral-corticosteroid-non-responder-only study-population indicator**)
+- **Description:** 1 = the trial enrolled ONLY patients documented not to respond to oral corticosteroids, 0 = an unselected study population. A study-level design covariate.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (unselected study population).
+- **Source aliases:**
+  - `OCNR` -- the derived flag in the Yang 2026 combined control stream, set by `IF (REF.EQ.636) OCNR = 1` with the comment "only non-responders to OCS are included, virtually zero effect".
+- **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (forms `rel_cs = 1 - OCS_NONRESPONDER`, which zeroes the INHALED-corticosteroid component of the anti-inflammatory effect while leaving the non-steroid anti-inflammatory agents -- roflumilast, cilomilast, AZD9668, PH797804 -- untouched).
+- **Notes:** Carries no estimated parameter of its own; it is a pure structural switch, which is why it is a covariate rather than a fitted effect. Selecting on oral-corticosteroid non-response is an enrichment strategy that predicts near-zero inhaled-corticosteroid benefit, so a meta-analysis pooling such a trial with unselected trials must exclude it from the steroid effect or the steroid Emax is biased downward. Distinct from `INCL_EXAC_REQUIRED`, the other study-level entry-criterion covariate registered here, which DOES carry an estimated effect.
+
+### INCL_EXAC_REQUIRED (**canonical for the exacerbation-history trial entry-criterion indicator**)
+- **Description:** 1 = the trial's inclusion criteria required a documented history of disease exacerbations for enrolment, 0 = no such requirement. A study-level design covariate marking trials enriched for exacerbating patients.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no exacerbation-history entry requirement).
+- **Source aliases:**
+  - `INCL` -- the `$INPUT` column in the Yang 2026 control streams.
+- **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (estimated effect on baseline FEV1, `e_incl_exac_base` = -0.0213, and an additional role inside the fixed-coefficient regressions that impute missing background-therapy fractions).
+- **Notes:** A STUDY DESIGN attribute, not a patient characteristic: it describes who the trial was willing to enrol, and is therefore constant within a study. Distinct from `NEXAC12M`, which is a per-patient count of exacerbations in the previous 12 months; a trial can require an exacerbation history without any patient-level count being reported, which is the common case in published aggregated data. Patients meeting an exacerbation-history criterion have lower lung function, so a meta-analysis pooling enriched and unenriched trials needs this term or the enriched trials' baselines look anomalously low. In `Yang_2026_copd_fev1_adipd_mbma` it is 0 on every individual-patient record, because neither individual-patient trial applied the criterion.
+
+### BGTHER_ICS_RUNIN_PCT, BGTHER_LABA_RUNIN_PCT, BGTHER_LAAC_RUNIN_PCT, BGTHER_ICS_MAINT_PCT, BGTHER_LABA_MAINT_PCT, BGTHER_LAAC_MAINT_PCT (**canonical for the percentage of a study arm on a named class of background respiratory therapy, by trial period**)
+- **Description:** Percentage of the patients in a study arm receiving background (non-randomized) therapy of the named drug class, during the named trial period. `ICS` = inhaled corticosteroid, `LABA` = long-acting beta-2 agonist, `LAAC` = long-acting anticholinergic. `RUNIN` = the run-in period before randomized treatment begins; `MAINT` = the randomized maintenance period. Members of the `BGTHER_<class>_<period>_PCT` family.
+- **Units:** % of patients in the arm (0-100, NOT a 0-1 fraction)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0 (no background therapy of that class).
+- **Source aliases:**
+  - `ICSpRUNIN`, `LABApRUNIN`, `LAACpRUNIN`, `ICSpMAINT`, `LABApMAINT`, `LAACpMAINT` -- the `$INPUT` columns in the Yang 2026 control streams. Those columns carry two in-band sentinels that the canonical columns preserve: 9999 = the class was not used at all (treated as 0) and 7777 = the class was used but the fraction was not reported, which activates the source's fixed-coefficient logistic imputation.
+- **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (each class's background contribution is valued at a reference compound for that class -- fluticasone propionate b.i.d. for ICS, salmeterol for LABA, tiotropium at its 18 ug/day reference dose for LAAC -- scaled by the arm fraction; the run-in fractions additionally set the starting point of each class's effect-onset time course, so an arm already on a class starts part-way up its onset curve).
+- **Notes:** An ARM-LEVEL PREVALENCE, not a per-patient indicator: in aggregated meta-analysis data the published trial reports what proportion of an arm was on background therapy, never who. That is why the family is `_PCT` and continuous rather than a set of binary `CONMED_*` indicators, and why the value enters the model linearly as a fraction of a reference compound's effect. Distinct from the `CONMED_<INN>_DOSE` family, which carries RANDOMIZED treatment doses; background therapy is what patients were already taking and is present in placebo arms too, so a model must not gate it on active treatment. The run-in / maintenance split is load-bearing because trials commonly withdraw or standardise background therapy at randomization, so the two periods can carry very different fractions. Percent rather than fraction is deliberate and matches the source columns; a model consuming these divides by 100.
+
+### DIS_COPD_GOLD (**canonical for the GOLD spirometric severity stage of a COPD patient**)
+- **Description:** Global Initiative for Chronic Obstructive Lung Disease (GOLD) spirometric severity stage as an ordinal 1-4 category: 1 = mild, 2 = moderate, 3 = severe, 4 = very severe, assigned from FEV1 percent predicted. Per-patient and time-fixed at screening.
+- **Units:** (ordinal stage 1-4)
+- **Type:** ordinal
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a centred linear deviation `1 + e_gold_<param> * (DIS_COPD_GOLD - ref)` or a piecewise-linear (hockey-stick) form with a knee at the reference. Reference value observed: stage 3 (Yang 2026, the cohort median, used both as the centring constant and as the hockey-stick knee).
+- **Source aliases:**
+  - `FL_COPD` -- the `$INPUT` column in the Yang 2026 control streams, glossed in Supporting Information Table S1 footnote 1 as the "% predicted GOLD Stage Category at the screening phase". Sentinel -99 marks a missing stage, which the source replaces with the median stage 3.
+- **Example models:** `Yang_2026_copd_fev1_ipd.R` (hockey-stick with separate slopes below and above stage 3 on baseline FEV1 and on vilanterol efficacy, plus a single slope on the disease-progression slope), `Yang_2026_copd_fev1_adipd_mbma.R` (a SINGLE linear slope on baseline, the hockey stick having been deliberately linearized away to remove a source of aggregation bias).
+- **Notes:** Carried as a SINGLE ORDINAL COLUMN, deliberately not as pre-binned stage indicators, following the rationale recorded for `SMOKE_TTFC_SCORE`: the founding models fit piecewise-LINEAR effects in the raw stage number, which indicator columns cannot reproduce, and one column can serve either a linear-in-stage or a level-by-level parameterisation. Distinct from `DIS_COPD`, a binary has-COPD-or-not indicator, and from `FEV1_PCTPRED`, the continuous measurement the stage is binned from -- a model with access to the continuous value should prefer it, since the staging discards information. GOLD also publishes an A-D / A-E symptom-and-exacerbation grouping that is NOT this variable; register a separate canonical if a model needs it. The two founding models show the same covariate fitted with different functional forms in the same paper, so always read the per-model `covariateData[[DIS_COPD_GOLD]]$notes` for the form and centring rather than assuming.
+
+### DIS_COPD_GOLD_LOW, DIS_COPD_GOLD_HIGH (**canonical for the lowest and highest GOLD spirometric stage admitted by a trial's inclusion criteria**)
+- **Description:** The bounds of the GOLD spirometric severity range a trial was willing to enrol, each as an ordinal 1-4 category. Study-level design covariates that stand in for a per-patient severity distribution when only aggregated data are available.
+- **Units:** (ordinal stage 1-4)
+- **Type:** ordinal
+- **Scope:** specific
+- **Reference category:** n/a -- typically combined into the arm's mean stage as `(DIS_COPD_GOLD_LOW + DIS_COPD_GOLD_HIGH) / 2` and then centred. In the background-therapy imputation regressions of the founding model they are centred separately, at 2 and 4 respectively.
+- **Source aliases:**
+  - `LOWDS` and `HIGHDS` -- the `$INPUT` columns in the Yang 2026 control streams.
+- **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (the aggregated arm's mean severity is the midpoint of the two, which is the paper's deliberate linearization of the published model's separate lowest-and-highest severity effects; they also drive the fixed-coefficient logistic regressions that impute missing background-therapy fractions).
+- **Notes:** Used on AGGREGATED-data records in place of `DIS_COPD_GOLD`, because a published trial reports its inclusion range rather than each patient's stage. A trial admitting a single stage sets both columns equal. The midpoint is an approximation to the arm's mean severity and will be wrong for a trial whose enrolment was skewed within its admitted range; the founding paper adopts it explicitly to keep the aggregated and individual covariate models on the same scale and thereby avoid aggregation bias (Section 2.3.1). Registered as a pair rather than as a single range-width column because the two bounds enter the imputation regressions with different centrings.
+
+### CONMED_ACLIDINIUM_DOSE, CONMED_ARFORMOTEROL_DOSE, CONMED_AZD9668_DOSE, CONMED_BATEFENTEROL_DOSE, CONMED_BEA2180_DOSE, CONMED_BECLOMETHASONE_DOSE, CONMED_BUDESONIDE_DOSE, CONMED_CILOMILAST_DOSE, CONMED_FLUTICASONEFUROATE_DOSE, CONMED_FLUTICASONEPROPIONATE_DOSE, CONMED_FORMOTEROL_DOSE, CONMED_GLYCOPYRRONIUM_DOSE, CONMED_GSK233705_DOSE, CONMED_INDACATEROL_DOSE, CONMED_MOMETASONE_DOSE, CONMED_OLODATEROL_DOSE, CONMED_PH797804_DOSE, CONMED_REVEFENACIN_DOSE, CONMED_ROFLUMILAST_DOSE, CONMED_SALMETEROL_DOSE, CONMED_TIOTROPIUM_DOSE, CONMED_UMECLIDINIUM_DOSE, CONMED_VILANTEROL_DOSE (**canonical for the per-arm total daily dose of a named respiratory agent in a COPD dose-response meta-analysis**)
+- **Description:** Total daily dose of the named agent assigned to the study arm (per-arm meta-analysis) or to the individual subject (subject-level trial simulation). 0 = the agent was not given as a randomized treatment in this arm, so it contributes nothing; every column of the family 0 = a placebo (or background-therapy-only) arm. Members of the `CONMED_<INN>_DOSE` family, alongside its rheumatoid-arthritis, psoriasis, statin and anticoagulant members.
+- **Units:** ug/day of TOTAL DAILY dose throughout this family, including for the orally dosed agents (roflumilast, cilomilast), so that one unit serves every column and matches the unit of each drug's ED50. Note that a b.i.d. regimen therefore appears as twice its per-administration dose -- budesonide 160 ug b.i.d. is 320, formoterol 9 ug b.i.d. is 18, aclidinium 400 ug b.i.d. is 800.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0 (this agent was not given as a randomized treatment in this arm).
+- **Source aliases:**
+  - `avdostot1` / `avdostot2` / `avdostot3` -- the Yang 2026 control streams carry up to three treatment slots per arm, each a (`drgNoN`, `avdostotN`) pair of a drug code and its average total daily dose. The wide per-drug columns of this family are the same information keyed by drug name instead of by slot: the source's `IF (drgNo1.EQ.25) VILDOSE = avdostot1` idiom becomes a `CONMED_VILANTEROL_DOSE` column directly.
+- **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (all 23 columns; each drives its own drug's Emax or constant-effect term, which are then summed within drug class and combined across the three bronchodilator classes through a power interaction), `Yang_2026_copd_fev1_ipd.R` (`CONMED_VILANTEROL_DOSE` and `CONMED_FLUTICASONEFUROATE_DOSE` only).
+- **Notes:** Reference doses against which the founding model quotes each drug's reference efficacy: aclidinium 200 (q.d.) / 800 (b.i.d.), arformoterol 50, budesonide 320, formoterol 18, indacaterol 75, glycopyrronium 100, roflumilast 500, tiotropium 18 (HandiHaler) / 5 (Respimat), vilanterol 25, revefenacin 175, olodaterol 5, batefenterol 400, fluticasone furoate 100 ug/day. Ten of the 23 carry NO dose-response at all -- beclomethasone, cilomilast, fluticasone propionate, mometasone, salmeterol, umeclidinium, AZD9668, GSK233705, BEA2180 and PH797804 have a single constant effect, and the model keys those on the column being NON-ZERO, following the idiom already recorded for `CONMED_MTX_DOSE` in `Mandema_2011_biologicDMARDs_mbma.R`. The column still carries the dose so the arm is self-describing; do not read dose-proportionality into those ten. `CONMED_FLUTICASONEPROPIONATE_DOSE` and `CONMED_FLUTICASONEFUROATE_DOSE` are DIFFERENT MOLECULES with different effects and different dose-responses and must never be merged into a single "fluticasone" column; the founding source's own Table S3 mislabels one as a ratio of the other, which is exactly the confusion the two distinct names prevent. `CONMED_ARFORMOTEROL_DOSE` carries no parameters of its own in the founding model, which assumes arformoterol's Emax equals formoterol's and its ED50 is half of formoterol's because it is the single active enantiomer of racemic formoterol. Several columns name development codes rather than INNs (AZD9668, BEA2180, GSK233705, PH797804) because the source identifies those investigational compounds only by code; if one is later assigned an INN, register the INN name as an alias rather than renaming the column.
+
+### FORM_ACLIDINIUM_BID, FORM_MOMETASONE_BID, FORM_OLODATEROL_BID, FORM_BATEFENTEROL_BID (**canonical for the twice-daily-regimen indicator of a named inhaled respiratory agent**)
+- **Description:** 1 = the arm received the named agent on a twice-daily schedule, 0 = once daily (the model reference). Selects between two separately parameterised versions of one drug's effect. Members of the `FORM_<drug>_<variant>` family, alongside `FORM_FLV_BID_XR` and `FORM_LOV_BID_XR`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (once-daily regimen).
+- **Source aliases:**
+  - `dosfreqNo1` / `dosfreqNo2` / `dosfreqNo3` -- the Yang 2026 control streams code 1 = q.d. and 2 = b.i.d. per treatment slot; the binary indicator is `dosfreqNoN == 2` for the slot carrying that drug.
+- **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (aclidinium selects a separate b.i.d. reference efficacy AND a separate b.i.d. ED50; mometasone multiplies the q.d. effect by `rel_mome_bid` = 0.784; olodaterol and batefenterol each switch from a q.d. Emax dose-response to a distinct CONSTANT b.i.d. effect).
+- **Notes:** The regimen is not reducible to the total daily dose: the founding model gives the b.i.d. arms their own potency parameters, not merely twice the dose, because a split dose has a different trough-concentration profile and trough FEV1 is the endpoint. Note the four members are used differently -- a separate Emax/ED50 pair, a multiplicative ratio, and a switch from a dose-response to a flat effect -- so always read the per-model `covariateData` entry rather than assuming a common form. The founding control stream records that q.d. and b.i.d. were "never given in ambiguous combination in dataset" for each of these drugs, which is what makes a single binary sufficient. Umeclidinium deliberately has NO member of this family because the founding model assigns its q.d. and b.i.d. regimens the same effect.
+
+### FORM_TIOTROPIUM_SMI (**canonical for the tiotropium soft-mist-inhaler device indicator**)
+- **Description:** 1 = tiotropium was delivered by the Respimat soft-mist inhaler, 0 = by the Spiriva HandiHaler dry-powder inhaler (the model reference).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (HandiHaler dry-powder inhaler).
+- **Source aliases:**
+  - `dosfrm1SM` / `dosfrm2SM` / `dosfrm3SM` -- the Yang 2026 control streams set a single `SMI` flag if any treatment slot is a soft-mist formulation.
+- **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (selects the 5 ug/day reference dose and the Respimat reference efficacy of 0.120 L in place of the 18 ug/day HandiHaler pair at 0.122 L; the Respimat ED50 is then DERIVED from the HandiHaler Emax and the Respimat reference efficacy rather than estimated, via `ed50_smi = 5 * (emax_dpi / effref_smi - 1)`).
+- **Notes:** A genuine formulation / device covariate, unlike its sibling `FORM_TIOTROPIUM_OPENLABEL`. The two devices deliver very different nominal doses for a similar effect (5 versus 18 ug/day), so a meta-analysis pooling them on nominal dose without this indicator would badly misestimate tiotropium potency. The founding control stream records that there are "no occurances of tio being given as HandiHaler with another drug as SMI", which is what allows a single arm-level flag rather than a per-slot one.
+
+### FORM_TIOTROPIUM_OPENLABEL (**canonical for the open-label tiotropium administration indicator**)
+- **Description:** 1 = tiotropium was given open-label, 0 = blinded (the model reference).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (blinded administration).
+- **Source aliases:**
+  - `DRGOL1` / `DRGOL2` / `DRGOL3` -- the Yang 2026 control streams set an open-label flag per treatment slot.
+- **Example models:** `Yang_2026_copd_fev1_adipd_mbma.R` (scales the tiotropium reference efficacy by `rel_tio_ol` = 0.918 while keeping the blinded ED50, i.e. open-label tiotropium is estimated to perform about 8% worse than the same drug given blinded).
+- **Notes:** Strictly a TRIAL-CONDUCT covariate rather than a formulation, and is registered in the `FORM_<drug>_<variant>` family only because it selects between two variants of one drug's effect in exactly the way the other members do; the alternative of a general `OPENLABEL` covariate was rejected because the estimated effect is a tiotropium-specific potency ratio, not a generic unblinding bias, and pooling it across drugs would be unsupported. The direction is counterintuitive -- open-label administration reducing rather than inflating the measured effect -- and reflects that the open-label tiotropium arms served as active comparators in trials of other drugs rather than as the trial's own test arm. The founding control stream records that "blinded tio never given with another drug being OL in dataset".
