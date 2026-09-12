@@ -1896,6 +1896,54 @@ These are internationally standardised clinical abbreviations registered as cano
 
 ---
 
+### fHR (**canonical fractional heart-rate response**)
+- **Type:** compartment
+- **Role:** Fractional increase in heart rate relative to the individual's own maximal increase: `fHR(t) = deltaHR(t) / max(deltaHR)`, a unitless quantity bounded in `[0, 1]`. Used as the observation variable in PK/PD models that normalise each subject's heart-rate excursion to their own maximum instead of modelling beats per minute, so that `Emax` is a fraction rather than a bpm change. The authors of the founding example interpret it as the probability of reaching an individual's maximal heart rate, which is why they fit Hill-type functions to it.
+- **Source aliases:** `fHRi,t`, `fBPM`, `fracBPM` (Wolowich 2025 supplement parameter tables) -- translate to `fHR`.
+- **Example models:** `Wolowich_2025_thc.R`, `Wolowich_2025_thc_11oh.R`, `Wolowich_2025_thc_gedm.R` (founding examples; IV delta-9-THC acute tachycardia in healthy volunteers).
+- **Notes:** Distinct from the bpm-valued heart-rate observable `HR` used by `Feng_2012_higenamine.R`, `Hwang_2023_carvedilol.R` and the `Langdon_2010_PF00821385_*.R` pair -- do NOT use `fHR` for a model whose endpoint is beats per minute, and do not use `HR` for a normalised endpoint, because the residual-error magnitude and `Emax` are on incomparable scales. The `f` prefix carries its usual register meaning of "fraction" (`fdepot`, `fm`, `ffo`). Residual error follows the standard per-output rule: `addSd_fHR`. Back-transforming to bpm requires the per-individual baseline and maximal delta-HR, which are data-normalisation constants rather than fitted parameters, so a model observing `fHR` is not directly comparable to one observing `HR`.
+
+### dHR (**canonical change-from-baseline heart rate**)
+- **Type:** compartment
+- **Role:** Change from baseline in heart rate, in beats per minute (`dHR(t) = HR(t) - HR_baseline`), a signed quantity. Used as the observation variable in concentration-DeltaHR exposure-response models -- most often the companion analysis that establishes the first Garnett assumption ("no effect of drug on heart rate") underpinning a concentration-QTc analysis, where the endpoint of interest is the drug-induced *change* rather than the absolute rate.
+- **Source aliases:** `DeltaHR`, `dHR` -- translate to `dHR`.
+- **Example models:** `Mukker_2026_tuvusertib_HR.R` (founding example; Garnett linear mixed-effects C-DeltaHR model for the ATR inhibitor tuvusertib in patients with advanced solid tumors).
+- **Notes:** There is a second, model-mechanical reason to prefer `dHR` over `HR` for a change-from-baseline endpoint: a C-DeltaHR model typically needs the subject's BASELINE heart rate simultaneously, as the covariate column `HR`, and an observation variable named `HR` would shadow that column inside `model()`. Distinct from `fHR` (the same excursion normalised to each individual's own maximum, unitless and bounded in `[0, 1]`) and from `HR` (absolute beats per minute). Residual error follows the standard per-output rule (`addSd` for a single-output model, `addSd_dHR` when multi-output). Note the deliberate asymmetry with `QTc` / `QTcF`, which are used as the observation name in change-from-baseline concentration-QTc models (`Darpo_2014_racSotalol_QTcF.R`, `Mukker_2026_tuvusertib_QTcF.R`) rather than a `dQTcF` sibling: that predates this entry and there is no covariate-shadowing pressure there, since those models take baseline QTc as `QTC_BL` rather than `QTc`.
+
+### dRR (**canonical change-from-baseline RR interval**)
+- **Type:** compartment
+- **Role:** Change from baseline in the RR interval -- the time elapsing between two consecutive R waves on an electrocardiogram -- in milliseconds (`dRR(t) = RR(t) - RR_baseline`), a signed quantity. Used as the observation variable in concentration-DeltaRR exposure-response models, i.e. the heart-rate companion analysis of a concentration-QTc study fitted on the reciprocal (interval) scale rather than the beats-per-minute scale. A positive `dRR` is RR lengthening, that is heart-rate *slowing*; the sign convention is therefore opposite to `dHR`.
+- **Source aliases:** `DeltaRR`, `RR` (bare, when the source labels the delta endpoint by the interval name -- e.g. the Patel 2020 Figure S2 y-axis) -- translate to `dRR`.
+- **Example models:** `Patel_2020_sapanisertib_RR.R` (founding example; linear mixed-effects concentration-DeltaRR model for the mTORC1/2 inhibitor sapanisertib in patients with advanced solid tumors, intercept -25.504 msec and slope +0.147 msec per ng/mL).
+- **Notes:** Registered as a canonical sibling of `dHR` and for the same stated reason: an absolute RR interval is roughly 850 msec whereas a DeltaRR is on the order of -25 to +18 msec, so the two are on incomparable scales and a residual-error magnitude or intercept fitted against one must not be read against the other. Adopting the `d` prefix here (rather than the bare interval name) was an operator ruling (sidecar `oare_PMC7586797` request-001 q1, answered 2026-09-02): the competing bare-name precedent set by `QTc` / `QTcF` / `QTcI` is for *absolute* interval names, and a delta is exactly what `dHR` already encodes, so the heart-rate-domain pair `(dHR, dRR)` is kept mutually consistent. Note that this leaves the deliberate `QTc`-family asymmetry documented in the `dHR` entry untouched -- `Darpo_2014_racSotalol_QTcF.R`, `Mukker_2026_tuvusertib_QTcF.R`, `Zhou_2025_fruquintinib_*` and the two companion `Patel_2020_sapanisertib_QTcI.R` / `_QTcF.R` files continue to name change-from-baseline QTc endpoints by the bare corrected-interval name. Unlike `dHR`, there is no covariate-shadowing pressure in the founding example (Patel 2020's fits are intercept + slope only, with no baseline-RR covariate column), so the scale-incomparability argument stands alone. `dRR` is the interval-scale partner of `dHR`, not a substitute for it: converting between them requires the individual's absolute baseline (`HR = 60000 / RR` with RR in msec), which is a data-normalisation constant rather than a fitted parameter. Residual error follows the standard per-output rule (`addSd` for a single-output model, `addSd_dRR` when multi-output). Distinct from the population-based QT correction exponent fitted against RR (`QTcP`), which consumes RR as a regressor rather than observing it.
+
+### hergInh (**canonical fractional hERG potassium-channel block**)
+- **Type:** compartment
+- **Role:** Fraction of the hERG (human ether-a-go-go related gene) potassium-channel tail current blocked by a drug, a unitless quantity bounded in `[0, 1]`. Used as the observation variable in in-vitro concentration-response models fitted to whole-cell patch-clamp data, the standard nonclinical assay for proarrhythmic (QT-prolongation) liability under ICH S7B. Typically observed from a sigmoidal Imax / Hill expression `imax * C^hill / (ic50^hill + C^hill)` driven by the nominal bath concentration.
+- **Source aliases:** `hERG inhibition`, `% hERG block`, `tail-current inhibition` -- translate to `hergInh` and express as a FRACTION (0-1), not a percentage, so that `imax` is comparable across models.
+- **Example models:** `Mukker_2026_tuvusertib_hERG.R` (founding example; GLP whole-cell patch clamp in HEK-293 cells stably expressing hERG, IC50 1048 ng/mL, Hill 1.12).
+- **Notes:** Lower-camel `hergInh` rather than `hERGInh` because the register's mixed-case clinical-abbreviation canonicals (`QTc`, `aPTT`, `P1NP`, `Hba1c`) capitalise only where the abbreviation opens the name; here the name is a compound ending in a role token, matching `uacrObs` and `tumor_size`. Conceptually a fractional-occupancy / fractional-effect output in the same family as `RL_op` and `RL_antag` (mu-opioid receptor-occupancy fractions) rather than a physical compartment. An in-vitro assay output: models observing it carry no inter-individual variability and typically no residual error, because the source is a single fitted concentration-response curve rather than a population. Distinct from `QTc` / `QTcF`, which are the downstream clinical electrophysiologic consequence -- a paper reporting both (as the founding example does) yields two separate model files, and the quantitative link between them is an exposure-margin comparison, not a shared equation.
+
+### pappBa, pappAb (**canonical directional apparent permeability across a cell monolayer**)
+- **Type:** compartment
+- **Role:** Apparent permeability of a drug across a polarised cell monolayer in a Transwell (directional flux) assay, in units of 1e-6 cm/s. `pappBa` is the **basolateral-to-apical** direction -- the one carrying active efflux by an apically expressed transporter such as BCRP or P-gp -- and `pappAb` is the reciprocal **apical-to-basolateral** direction. Used as the observation variable in in-vitro concentration-response models fitted to directional flux data, most commonly a saturation curve in which rising donor-side concentration saturates the transporter and the efflux component of permeability decays, e.g. the inhibitory Emax form `emax * (1 - C / (km + C))` driven by the donor-compartment concentration. The efflux ratio the assay exists to measure is `pappBa / pappAb`.
+- **Source aliases:** `Papp`, `P_app`, `apparent permeability`, `B-to-A permeability` / `BA` (translate to `pappBa`), `A-to-B permeability` / `AB` (translate to `pappAb`) -- always express in 1e-6 cm/s so that `emax` is comparable across models. A source that reports only an undirected "Papp" must be read for its assay direction before a name is chosen; do not default to `pappBa`.
+- **Example models:** `Agarwal_2011_sorafenib_bcrp.R` (founding example; saturation of BCRP-mediated basolateral-to-apical permeability of sorafenib across MDCKII monolayers stably transfected with murine *Bcrp1*, apparent affinity km = 3.6 ng/mL). No `pappAb` model exists yet; the name is reserved so that the reciprocal direction cannot later be forced to reuse `pappBa`.
+- **Notes:** **Direction-qualified by design**, ratified by operator decision (sidecar `oare_PMC3014301` request-001 q1, answered 2026-09-02) over a bare `papp` with the direction recorded only in the Description. The reasoning is the same one that produced the parent-qualified `CP_FRUQUINTINIB_M11_NGML`: directional flux is the whole point of a Transwell assay, both directions are routinely reported in the same paper (the founding example reports both in Figure 3), and a bare `papp` would silently conflate two different measured quantities the first time an A-to-B model were added. The qualified form additionally avoids a namespace collision with `papp`, which already exists in the registry as an `ini()` **parameter** name for in-vitro apparent permeability in `Granda_2024_kynurenicacid_pbpk.R`, `Granda_2024_oseltamivircarboxylate_pbpk.R` and `Granda_2024_tenofovir_pbpk.R` -- note that in those PBPK models `papp` is a fixed input constant feeding a passive-diffusion clearance, whereas `pappBa` here is a modelled observation. An in-vitro assay output in the same family as `hergInh`: models observing it carry no inter-individual variability and typically no residual error, because the source is a single fitted concentration-response curve from one cell-culture experiment rather than a population. Distinct from any permeability-surface-area product (`psa`) or PBPK partition coefficient, which are systemic model parameters rather than assay readouts. The data-reduction step that produces the observation from raw receiver-side appearance -- `Papp = (dQ/dt) / (A * C0)` -- is applied before the model is fitted and is not encoded in the model file.
+
+### vblAccum (**canonical fold increase in intracellular vinblastine accumulation**)
+- **Type:** compartment
+- **Role:** Fold increase in the intracellular accumulation of the prototypical P-glycoprotein substrate vinblastine in the presence of an inhibitor, relative to untreated control, a dimensionless quantity normally at or above 1. Used as the observation variable in in-vitro concentration-response models that quantify a drug's potency as a **P-gp inhibitor (perpetrator)**, typically from a sigmoidal Emax expression `e0 + (emax - e0) * C^hill / (ic50^hill + C^hill)` driven by the inhibitor concentration in the incubation medium. The readout is an accumulation *increase* because blocking apical efflux traps the probe inside the cell.
+- **Source aliases:** `fold increase in accumulation`, `relative accumulation`, `E` (Agarwal 2011 Methods Equation 3) -- translate to `vblAccum` and express as a FOLD CHANGE relative to control, not a percentage and not an absolute pmol/mg protein, so that `e0`, `emax` and `ic50` are comparable across models.
+- **Example models:** `Agarwal_2011_sorafenib_pgp.R` (founding example; inhibition of human MDR1 by sorafenib in MDCKII-*MDR1* monolayers, IC50 15900 ng/mL = 15.9 ug/mL = 25 uM, Hill 1.84).
+- **Notes:** **Probe-specific by design**, ratified by operator decision (sidecar `oare_PMC3014301` request-001 q2, answered 2026-09-02) over a generic `probeAccumFold` with the probe recorded in the entry Description and in `covariateData`. A generic name would require the probe to be carried out-of-band to be interpretable, and a single paper commonly runs several probes: the founding example uses vinblastine for the P-gp arm and prazosin and mitoxantrone for the BCRP arm. Sibling probe canonicals therefore follow the same `<probe>Accum` shape when a fittable curve exists for them (`praAccum`, `mtxAccum` -- neither registered yet, because the founding paper's Figure 6B shows no BCRP inhibition and so has nothing to fit). Named for the specific assay readout in the same way `hergInh` names a specific channel's tail-current block. An in-vitro assay output: models observing it carry no inter-individual variability and typically no residual error. **Note the direction of the pharmacology** -- a model observing `vblAccum` describes the modelled drug as an *inhibitor* of the transporter, not a substrate of it; the two roles are independent and the founding example is the case that separates them (sorafenib inhibits P-gp without being transported by it, and is transported by BCRP without inhibiting it). Distinct from `pappBa` / `pappAb`, which measure the *modelled* drug's own transport rather than its effect on a probe.
+
+### serumK (**canonical serum potassium**)
+- **Type:** compartment
+- **Role:** Serum potassium concentration PD output / turnover-state, in mmol/L. Used as the observation variable in indirect-response / turnover models of drug-induced potassium shifts (mineralocorticoid-receptor antagonists, potassium-sparing diuretics, RAAS inhibitors). Standard clinical-laboratory biomarker reported on essentially every comprehensive metabolic panel; KDIGO and ESC thresholds for hyperkalemia are at 5.5 and 6.0 mmol/L. Distinct from any drug-PK central compartment because the modelled species is the endogenous electrolyte rather than the dosed drug.
+- **Source aliases:** `K`, `K+`, `serum_K`, `POTAS` -- translate to `serumK` when assembling input data; document the source-paper symbol in the model file's `description`.
+- **Example models:** `Goulooze_2022_finerenone.R` (FIDELIO-DKD Phase III PKPD turnover model for finerenone effect on serum K; founding example).
+
 ## Bacterial-count PD outputs
 
 ### cfu (**canonical colony-forming-unit count**)
@@ -2606,6 +2654,56 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Sun_2025_maribavir_sae.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.04 per 10 ug*h/mL; reference-patient probability 0.19 at zero exposure)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Registered on first sighting as a well-formed member of the explicitly extensible adverse-event-term family, not as a new modelling concept. **Distinct from `prob_teae_grade3`**, and the distinction is a common source of error: SERIOUSNESS is a regulatory reporting criterion whereas CTCAE grade >= 3 is a severity scale, and the two sets overlap without nesting -- a grade 3 laboratory abnormality requiring no hospitalisation is not serious, while a grade 2 event causing hospitalisation is. Distinct also from `prob_adr`, which pools every reaction with no threshold at all. As a composite it subsumes the single-preferred-term members of the family and must NOT be modelled alongside them as a competing risk.
 
+### deltaUPDRS (**canonical change-from-baseline total UPDRS score**)
+- **Type:** compartment
+- **Role:** Change-from-baseline in total Unified Parkinson's Disease Rating Scale (UPDRS) score PD output, used as the modelled endpoint in algebraic Parkinson's disease-progression models that combine a linear disease-progression slope with an asymptotic short-term symptomatic-effect component.
+- **Source aliases:** `Delta UPDRS`, the Lee 2011 paper's `Delta_UPDRS_it` notation.
+- **Example models:** `Lee_2011_parkinson_progression.R`.
+
+### deltaBCVA (**canonical change-from-baseline best-corrected visual acuity**)
+- **Type:** compartment
+- **Role:** Change from baseline in best-corrected visual acuity PD output, used as the modelled endpoint in algebraic ophthalmology disease-progression models that fit the change score directly rather than the absolute acuity. Companion to `bcva`, which holds the absolute acuity as an ODE state; use `deltaBCVA` when the paper's own structural equation targets the change from baseline and there is no absolute-acuity state to observe.
+- **Source aliases:** `Effect`, the Zhang 2025 supplement's notation in `Effect = K x Time`.
+- **Example models:** `Zhang_2025_bietti_crystalline_dystrophy_mbma.R`.
+- **Notes:** Follows the `delta<INSTRUMENT>` prefix convention of `deltaUPDRS` (`Lee_2011_parkinson_progression.R`) rather than the `cfb` suffix convention of `das28cfb`, because this model is the direct structural analogue of `Lee_2011_parkinson_progression`: an algebraic, no-ODE, no-dose disease-progression model whose endpoint is the change score itself. The register carries both forms; `delta<INSTRUMENT>` marks a change score that is the model's only output, and `<state>cfb` marks a change-score variant of a state that also exists in absolute form in the same model. The scale is LogMAR (higher = worse vision), so a positive `deltaBCVA` is vision loss; note that the covariate register's `SCORE_BCVA` is defined on the ETDRS-letter scale instead (higher = better) and the two are not interchangeable without conversion.
+
+### walkDist (**canonical 6-minute walk distance**)
+- **Type:** compartment
+- **Role:** 6-minute walk-test distance PD output (Hamuro 2017 DMD).
+- **Source aliases:** none.
+- **Example models:** `Hamuro_2017_DMD_6MWT.R`.
+
+### msHeadacheDays (**canonical monthly headache-day count**)
+- **Type:** compartment
+- **Role:** Monthly headache-day count PD output.
+- **Source aliases:** none.
+- **Example models:** `FiedlerKelly_2020_fremanezumab_cm.R` (and its sibling `FiedlerKelly_2020_fremanezumab_em.R`).
+
+### migraineDays (**canonical monthly migraine-day count**)
+- **Type:** compartment
+- **Role:** Monthly migraine-day count PD output.
+- **Source aliases:** none.
+- **Example models:** `FiedlerKelly_2020_fremanezumab_cm.R` (and its sibling `FiedlerKelly_2020_fremanezumab_em.R`).
+
+### viralLoad (**canonical viral load**)
+- **Type:** compartment
+- **Role:** Viral load PD output (virology).
+- **Source aliases:** none.
+- **Example models:** `Koloskoff_2025_ganciclovir.R`.
+
+### dviralLoad (**canonical change-from-baseline log viral-load PD output**)
+- **Type:** compartment
+- **Role:** Change from baseline in log-transformed plasma viral load, used as the observation variable of a direct (algebraic, non-ODE) exposure-response model. Negative values are antiviral suppression; add the subject's baseline log viral load to recover an absolute level. This is the change-from-baseline sibling of the absolute PD state `viralLoad`, on the same pattern as `ddbp` / `dbp`: use `viralLoad` when the model integrates a viral-dynamics ODE and observes the load itself, and `dviralLoad` when the model predicts the treatment-induced delta directly, which is what a short-course antiviral monotherapy exposure-response analysis reports.
+- **Source aliases:** `delta log HIV-1 RNA`, `dlog HIV-1 RNA`, `change from baseline in HIV-1 RNA`, `dlog VL`.
+- **Example models:** `Marier_2011_cenicriviroc_hiv1rna.R` (founding example; simple intercept-free Emax model in the NCA-derived average steady-state cenicriviroc concentration `CSS_CVC`, observing the day-11 change from baseline in plasma HIV-1 RNA in log10 copies/mL), `Parasrampuria_2025_temsavir_hivrna_day8.R` (Emax model in the model-derived steady-state temsavir trough `CTROUGH`, observing the Day 1 to Day 8 change from baseline in plasma HIV-1 RNA in log10 copies/mL during fostemsavir functional monotherapy; unlike the founding example it carries a non-zero placebo intercept `e0` and two baseline covariates scaling the Emax term).
+- **Notes:** Not an ODE state -- the model that founded it has no `d/dt()` at all -- so a model using `dviralLoad` needs no `compartmentData` entry for it. **The logarithm base and the viral-load unit are per-model and must be documented in `units$concentration`**, because virology reporting conventions differ: HIV-1 RNA is conventionally log10 copies/mL, HCV RNA log10 IU/mL. The name is deliberately virus-agnostic; if a future paper models two viruses jointly, register virus-suffixed siblings rather than overloading this name. Distinct from the covariate `HCV_VLOAD`, which carries an observed *baseline* viral load on the linear scale as a model input rather than a predicted delta.
+
+### aaaSize (**canonical abdominal aortic aneurysm size**)
+- **Type:** compartment
+- **Role:** Abdominal aortic aneurysm size PD output.
+- **Source aliases:** none.
+- **Example models:** `Sherer_2012_AAA.R`.
+
 ## PBPK bare organ-amount compartments (Zhang 2011 family)
 
 PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full-body PBPK extractions that don't prefix the organ name with `a_` / `vp_`. New PBPK extractions should prefer the spelled-out `a_<organ>` namespace, but the bare forms remain canonical for paper-mechanistic models that already use them.
@@ -3152,6 +3250,14 @@ State variables specific to the Cardilin 2018 combination radiation + radiosensi
 - **Example models:** `Cardilin_2018_radiation_radiosensitizer_mouse.R`.
 
 ### rad_depot (**canonical radiation-timing trigger compartment**)
+- **Type:** compartment
+- **Role:** Radiation-timing trigger compartment; a unit bolus is dosed in at each irradiation time and decays fast so that the kill hazard integrates to the linear-quadratic lethal-lesion number per fraction (a Dirac-delta numerical device, not a fitted state).
+- **Source aliases:** none.
+- **Example models:** `Cardilin_2018_radiation_radiosensitizer_mouse.R`.
+
+---
+
+### radDepot (**canonical radiation-timing trigger compartment**)
 - **Type:** compartment
 - **Role:** Radiation-timing trigger compartment; a unit bolus is dosed in at each irradiation time and decays fast so that the kill hazard integrates to the linear-quadratic lethal-lesion number per fraction (a Dirac-delta numerical device, not a fitted state).
 - **Source aliases:** none.
