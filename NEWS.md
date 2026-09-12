@@ -44,6 +44,8 @@
   physical unit otherwise (24). Two parameters that carried no `label()` at all
   (`Kretsos_2014_olokizumab` `propSd` and `propSd_crp`) now have one. No
   parameter value, model structure or parameter name changes.
+- Add Chen 2026 NSCLC overall-survival MBMA ([doi:10.1002/psp4.70197](https://doi.org/10.1002/psp4.70197)) -- treatment-naive advanced non-small cell lung cancer unsuitable for platinum-doublet chemotherapy.
+
 - Add Kumta 2025 piperacillin and tazobactam ([doi:10.1128/aac.00601-24](https://doi.org/10.1128/aac.00601-24)) -- critically ill neurosurgical adults with an external ventricular drain.
 
 - Add Huang 2025 colistin sulfate ([doi:10.1177/00368504251325334](https://doi.org/10.1177/00368504251325334)) -- critically ill adults on continuous veno-venous hemodiafiltration.

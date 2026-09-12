@@ -13799,6 +13799,18 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Dings_2026_neonatal_acidosis.R` (+3.26 mmol/L neonatal base excess relative to untreated newborns -- the larger of the two treatment effects, which is the paper's central comparative finding).
 - **Notes:** Specific scope. A single canonical for the fixed-dose combination rather than two separate indicators, because the two components are never given apart -- cafedrine and theodrenaline are co-formulated at a fixed 20:1 ratio and doses are expressed as cafedrine equivalents. Do not split into `TRT_CAFEDRINE` and `TRT_THEODRENALINE`: no source reports them independently and the model cannot identify separate effects. Sibling of `TRT_EPHEDRINE`; mutually exclusive with it.
 
+### TRT_IPSOS_CONTROL (**canonical for IPSOS-trial control-arm indicator**)
+- **Description:** Binary trial-arm indicator: 1 = the study arm is the CONTROL arm of the phase III IPSOS trial (NCT03191786, reported as Lee 2023), in which investigators chose single-agent gemcitabine or vinorelbine for treatment-naive advanced NSCLC patients unsuitable for platinum-doublet chemotherapy; 0 = the arm is one of the historical single-agent-chemotherapy control arms drawn from the published literature.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (a historical published single-agent-chemotherapy control arm). This is the reference treatment against which the IPSOS control arm's hazard ratio is expressed.
+- **Source aliases:**
+  - `IPSOS control` -- Chen 2026 Tables 3, 4 and S7 Covariate column, and the `IPSOSHR` results column.
+  - `ID == 15` -- the trial selector in the Chen 2026 NONMEM dataset `psp470197-sup-0001-Supinfo1.csv` and the `IF (ID.EQ.15)` branch of the distributed `$PRED` block, evaluated with the atezolizumab arm excluded.
+- **Example models:** `Chen_2026_nsclc_os_mbma.R` (coefficient -0.633 on the overall-survival log hazard ratio, i.e. HR 0.531 [0.424, 0.664] for the IPSOS control arm relative to historical controls after adjusting for ECOG performance status).
+- **Notes:** MBMA **trial-arm** indicator, not a patient characteristic -- it identifies which published cohort an arm came from, in the same spirit as the `STUDY_<id>` family, but is filed under `TRT_` because the quantity it modifies is a treatment-effect hazard ratio rather than a PK parameter of a study cohort. Member of the `TRT_<arm>` treatment-arm-indicator family (`TRT_EPHEDRINE`, `TRT_PBT`, `TRT_PDFVIII_VWF`, ...). **Do not set this flag on an IPSOS atezolizumab arm.** Chen 2026's final model (Model 010) is fitted with the atezolizumab arm excluded, so within that model the IPSOS trial identifier and the IPSOS control arm coincide; the atezolizumab treatment effect belongs to the paper's Model 041, whose reference survival curve is not published. A future extraction that needs the atezolizumab arm should add a separate `TRT_IPSOS_ATEZOLIZUMAB` indicator rather than overloading this one. Founding example: Chen 2026.
+
 ### TRT_PBT (**canonical for plasma-based-therapy treatment-arm indicator**)
 - **Description:** Binary treatment-arm indicator: 1 = the infusion is a plasma-based therapy (PBT) -- fresh frozen plasma, solvent/detergent-treated plasma, or an equivalent whole-plasma infusion -- 0 = it is not. Used in ADAMTS13 / coagulation-factor replacement models where plasma infusion is the comparator against a recombinant or plasma-derived concentrate, and the products differ in how much of the active factor they deliver per administered unit.
 - **Units:** (binary)
@@ -13918,7 +13930,37 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Reference category:** 0% (no ECOG-0 patients; all ECOG >= 1).
 - **Source aliases:** `%ECOG PS score of 0` / `ps.0` (Franzese 2026 Table 1 / Table S1 covariate label).
 - **Example models:** `Franzese_2026_pdl1_nsclc_mbma.R` (linear coefficient on OS non-chemotherapy hazard (-0.400) and on PFS global hazard (-0.293) in a mNSCLC MBMA of PD-(L)1 immunotherapy).
-- **Notes:** MBMA study-arm-level covariate. Distinct from the per-subject `ECOG_GE1` and `ECOG_GE2` binaries (individual-level indicators). Family precedent: `DIS_CHD_PERCENT` (Vargo 2014).
+- **Notes:** MBMA study-arm-level covariate. Distinct from the per-subject `ECOG_GE1` and `ECOG_GE2` binaries (individual-level indicators). Family precedent: `DIS_CHD_PERCENT` (Vargo 2014). Sibling members of the same family: `PS_ECOG_1_PCT`, `PS_ECOG_2_PCT`, `PS_ECOG_3_PCT`.
+
+### PS_ECOG_1_PCT (**canonical for ECOG-performance-status-1 cohort prevalence percentage**)
+- **Description:** Study-arm-level percentage (0-100) of the enrolled cohort with an Eastern Cooperative Oncology Group (ECOG) Performance Status score of 1 at baseline (restricted in strenuous activity but ambulatory and able to carry out light work). Continuous covariate scaled in percent (not fraction).
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0% (no ECOG-1 patients). In a model that carries the whole `PS_ECOG_*_PCT` set, ECOG 0 is the natural reference level and is represented by leaving all of `PS_ECOG_1_PCT` / `PS_ECOG_2_PCT` / `PS_ECOG_3_PCT` at 0.
+- **Source aliases:** `PS1` (Chen 2026 NONMEM `$INPUT`); `PS.1` (Chen 2026 Tables S5 / S6); `ECOG PS 1 (%)` (Chen 2026 Table 2).
+- **Example models:** `Chen_2026_nsclc_os_mbma.R` (linear coefficient 0.004 on the overall-survival log hazard ratio, i.e. HR 1.004 for an all-ECOG-1 arm relative to an all-ECOG-0 arm, in an MBMA of platinum-ineligible advanced NSCLC).
+- **Notes:** MBMA study-arm-level covariate; sibling of `PS_ECOG_0_PCT` (founding example Franzese 2026), from which the naming pattern is taken unchanged. The four `PS_ECOG_<n>_PCT` members sum to 100 within an arm, so a model that uses ECOG 0 as its reference level consumes only levels 1, 2 and 3. Distinct from the per-subject `ECOG_GE1` / `ECOG_GE2` binaries (individual-level indicators). Arm-level ECOG percentages are frequently IMPUTED in meta-analytic databases -- Chen 2026 mapped Karnofsky Performance Scores where available and otherwise split composite ECOG categories with a logistic regression calibrated on studies with similar entry criteria -- so record the imputation provenance in the model's `covariateData` notes.
+
+### PS_ECOG_2_PCT (**canonical for ECOG-performance-status-2 cohort prevalence percentage**)
+- **Description:** Study-arm-level percentage (0-100) of the enrolled cohort with an Eastern Cooperative Oncology Group (ECOG) Performance Status score of 2 at baseline (ambulatory and capable of all self-care but unable to work; up and about more than half of waking hours). Continuous covariate scaled in percent (not fraction).
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0% (no ECOG-2 patients); ECOG 0 is the usual reference performance-status level.
+- **Source aliases:** `PS2` (Chen 2026 NONMEM `$INPUT`); `PS.2` (Chen 2026 Tables S5 / S6).
+- **Example models:** `Chen_2026_nsclc_os_mbma.R` (pooled with `PS_ECOG_3_PCT` under a single coefficient 0.769, i.e. HR 2.158 relative to an all-ECOG-0 arm; the dominant covariate effect in that paper).
+- **Notes:** MBMA study-arm-level covariate; sibling of `PS_ECOG_0_PCT` and `PS_ECOG_1_PCT`. Sources very often POOL ECOG 2 and ECOG 3 into one composite category, either in reporting or in the model itself. Keep the two as separate columns even then: the pooling is a property of the model equation (sum the two columns inside `model()`, as `Chen_2026_nsclc_os_mbma` does) rather than of the data, and source datasets routinely carry them apart even when the main-text table shows them together. Do not introduce a pooled `PS_ECOG_23_PCT` column.
+
+### PS_ECOG_3_PCT (**canonical for ECOG-performance-status-3 cohort prevalence percentage**)
+- **Description:** Study-arm-level percentage (0-100) of the enrolled cohort with an Eastern Cooperative Oncology Group (ECOG) Performance Status score of 3 at baseline (capable of only limited self-care; confined to bed or chair more than half of waking hours). Continuous covariate scaled in percent (not fraction).
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0% (no ECOG-3 patients); ECOG 0 is the usual reference performance-status level.
+- **Source aliases:** `PS3` (Chen 2026 NONMEM `$INPUT`); `PS.3` (Chen 2026 Tables S5 / S6).
+- **Example models:** `Chen_2026_nsclc_os_mbma.R` (pooled with `PS_ECOG_2_PCT` under the shared coefficient 0.769).
+- **Notes:** MBMA study-arm-level covariate; sibling of `PS_ECOG_0_PCT`, `PS_ECOG_1_PCT` and `PS_ECOG_2_PCT`. Usually zero or near-zero, because most oncology trials exclude ECOG 3 patients; it is non-zero in only four of the 41 arms of the Chen 2026 database. See `PS_ECOG_2_PCT` for why the 2-and-3 pooling stays in the model equation rather than in the column set.
 
 ### RACE_ASIAN_PCT (**canonical for Asian-race cohort prevalence percentage**)
 - **Description:** Study-arm-level percentage (0-100) of the enrolled cohort who are Asian (any Asian subgroup, matching the individual-level `RACE_ASIAN` canonical). Continuous covariate scaled in percent (not fraction).
