@@ -4418,6 +4418,8 @@ navbar:
         href: articles/Jia_2025_tak_071.html
       - text: "Tak 079 (Roepcke 2018)"
         href: articles/Roepcke_2018_tak_079.html
+      - text: "Talazoparib enzalutamide (Hadigol 2026)"
+        href: articles/Hadigol_2026_talazoparib_enzalutamide.html
       - text: "Tamibarotene pediatric (Azechi 2024)"
         href: articles/Azechi_2024_tamibarotene_pediatric.html
       - text: "Tamsulosin (Tsuda 2010)"
@@ -5865,6 +5867,7 @@ articles:
   - articles/Gupta_2016_amatuximab
   - articles/Gupta_2016_lenvatinib
   - articles/Gupta_2017_ixazomib
+  - articles/Hadigol_2026_talazoparib_enzalutamide
   - articles/Hajjar_2018_DMD_6MWT
   - articles/Hajjar_2018_pompe_disease
   - articles/Hall_2017_dapsone
