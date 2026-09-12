@@ -3466,6 +3466,8 @@ navbar:
         href: articles/Cheah_2016_polymyxin_Abaumannii_dynamics.html
       - text: "PolymyxinB (Liang 2023)"
         href: articles/Liang_2023_polymyxinB.html
+      - text: "PolymyxinB (Wang 2026)"
+        href: articles/Wang_2026_polymyxinB.html
       - text: "PolymyxinB (Yang 2025)"
         href: articles/Yang_2025_polymyxinB.html
       - text: "PolymyxinB AB121D0 (Lacroix 2025)"
@@ -6810,6 +6812,7 @@ articles:
   - articles/Wang_2025_serplulimab
   - articles/Wang_2025_somatrogon
   - articles/Wang_2025_voriconazole
+  - articles/Wang_2026_polymyxinB
   - articles/Ward_2026_magnesium_pbpk
   - articles/Warren_2025_pde4_il13_atopic_dermatitis
   - articles/Waterhouse_2024_vedolizumab
