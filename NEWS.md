@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chae 2026 teicoplanin ([doi:10.2147/DDDT.S550736](https://doi.org/10.2147/DDDT.S550736)) — Korean neutropenic adults after haematopoietic stem cell transplantation.
+- Add Wang 2026 polymyxin B ([doi:10.2147/DDDT.S521070](https://doi.org/10.2147/DDDT.S521070)) -- critically ill adults in Chinese intensive care units.
 
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
