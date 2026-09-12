@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Babel 2026 telisotuzumab vedotin ([doi:10.1002/psp4.70219](https://doi.org/10.1002/psp4.70219)) — adults with c-Met protein overexpressing advanced solid tumours, mostly non-small cell lung cancer. Six models: conjugate and unconjugated MMAE payload population PK, plus four exposure-response logistic models.
+- Add Dong 2026 piperacillin ([doi:10.2147/DDDT.S551307](https://doi.org/10.2147/DDDT.S551307)) — critically ill adults in a Chinese intensive care unit.
 
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
