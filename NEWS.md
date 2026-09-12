@@ -249,7 +249,7 @@
   `theta1` is corrected, and its two anchor chunks now solve the model instead
   of restating its equation inline so the same drift cannot recur silently.
 
-- Add Chen 2025 sulfamethoxazole and trimethoprim ([doi:10.1128/aac.00519-25](https://doi.org/10.1128/aac.00519-25)) -- adults with Pneumocystis jirovecii pneumonia on intravenous co-trimoxazole, including patients on continuous renal replacement therapy.
+- Add Kolowrat 2025 apixaban ([doi:10.1111/cts.70392](https://doi.org/10.1111/cts.70392)) -- hospitalized adults with nonvalvular atrial fibrillation, with and without concomitant amiodarone.
 
 - Add Damnjanovic 2023 levetiracetam, lamotrigine and valproic acid ([doi:10.1177/20420986231181337](https://doi.org/10.1177/20420986231181337)) -- Serbian children aged 2-18 years on dual antiepileptic therapy.
 
