@@ -4468,6 +4468,8 @@ navbar:
         href: articles/Cao_2013_tefibazumab.html
       - text: "Teicoplanin (ButraguenoLaiseca 2025)"
         href: articles/ButraguenoLaiseca_2025_teicoplanin.html
+      - text: "Teicoplanin (Chae 2026)"
+        href: articles/Chae_2026_teicoplanin.html
       - text: "Teicoplanin (Chen 2023)"
         href: articles/Chen_2023_teicoplanin.html
       - text: "Teicoplanin (GarciaHervalejo 2026)"
@@ -5526,6 +5528,7 @@ articles:
   - articles/Centanni_2025_sunitinib_thrombocytopenia
   - articles/Cerqueira_2025_resveratrol
   - articles/Chae_2012_metformin
+  - articles/Chae_2026_teicoplanin
   - articles/Chairat_2016_oseltamivir
   - articles/Chakraborty_2012_canakinumab
   - articles/Chala_2023_efavirenz
