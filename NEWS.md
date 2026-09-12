@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yang 2025 osimertinib and AZ5104 ([doi:10.1002/cpt.3759](https://doi.org/10.1002/cpt.3759)) — adults with EGFR-mutated advanced NSCLC.
+- Add Westra 2025 osimertinib with cobicistat boosting ([doi:10.1002/jcph.70085](https://doi.org/10.1002/jcph.70085)) -- adults with advanced NSCLC selected for low osimertinib trough exposure (OSIBOOST trial). Two models: the de novo OSIBOOST fit and the paper's Brown-2017-based generalizability re-analysis.
 
 - Rename the seven covariate canonicals that were carried in non-ALL-CAPS form
   purely because a source paper spelled them that way: `dilution` ->
