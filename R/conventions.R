@@ -236,6 +236,35 @@
   # inst/references/compartment-names.md.
   slabCompartmentRegex = "^[a-z][a-z_]*_slab[0-9]+$",
   observationVar = "Cc",
+  # Canonical PD-output form for a landmark exposure-response model whose
+  # dependent variable is an event PROBABILITY in [0, 1] rather than a
+  # concentration: `prob_<endpoint>`. Accepted as a single-output
+  # observation variable by .checkObservation(); deliberately NOT added to
+  # the compartment register, because these models carry no ODE state --
+  # the probability is an algebraic function of a scalar exposure metric
+  # and baseline covariates, evaluated once per subject.
+  #
+  # Validated by regex rather than an enumerated list, following the
+  # slabCompartmentRegex precedent above, because the endpoint token is a
+  # per-paper clinical definition rather than a member of a closed set.
+  # Enumerating it drifted in practice: 31 names had been registered
+  # one-per-paper in compartment-names.md while 9 more were in use
+  # unregistered, so every new landmark-ER extraction carried a spurious
+  # "not canonical" warning until someone hand-added its endpoint.
+  # Per-endpoint H3 entries in inst/references/compartment-names.md remain
+  # the place to document what an endpoint MEANS (and how it differs from
+  # a same-named concentration state); the checker simply no longer gates
+  # on that documentation existing.
+  #
+  # `Cc` is NOT an acceptable alternative spelling here: per PR 512, `Cc`
+  # names the central-compartment drug concentration, and a probability is
+  # not one -- renaming would also break the units$concentration metadata
+  # these models rely on. Operator ruling 2026-09-11.
+  # Founding example: Shin_2014_sevoflurane (prob_roc, the entry that
+  # founded the shape). Documented in inst/references/compartment-names.md.
+  # Each underscore must separate non-empty lowercase tokens, so a trailing
+  # underscore or a doubled `__` is rejected rather than quietly canonical.
+  probOutputRegex = "^prob_[a-z](_?[a-z0-9]+)*$",
   # propSd and addSd are the canonical proportional and additive
   # residual-error SDs; expSd is the log-scale residual SD used with
   # `~ lnorm(...)`. powExp is the power-error exponent `b` in a power
@@ -1103,6 +1132,14 @@
     }
   }
   FALSE
+}
+
+# TRUE when `name` is a canonical `prob_<endpoint>` PD probability output.
+# Observation-variable validator only -- see conv$probOutputRegex for why
+# this family is intentionally not accepted as a compartment name.
+.matchesProbOutput <- function(name, conv) {
+  if (is.null(conv$probOutputRegex)) return(FALSE)
+  grepl(conv$probOutputRegex, name)
 }
 
 # TRUE when `name` ends with `_<metab>` for any registered metabolite.

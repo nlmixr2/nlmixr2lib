@@ -2,33 +2,35 @@
 
 # development version
 
-- Give `FernandezTeruel_2025_capivasertib` a usable concomitant-paclitaxel arm.
-  The 2025 paper keeps the factor `(1 + PACL * Imax_pacl)` in its printed `Imax`
-  equation and defines `Imax_pacl` in the equation legend, but reports no
-  estimate for it anywhere -- not in Table 2, the supplement, or any figure
-  panel. It was previously encoded as `fixed(0)`, which made the paclitaxel
-  covariate inert. It now carries `fixed(1.15)`, borrowed from the 2024 parent
-  model (`FernandezTeruel_2024_capivasertib`, Fernandez-Teruel 2024 Table 3).
-  This is a cross-fit borrow, not a 2025 estimate -- every other shared
-  parameter was re-estimated between the two fits -- and is labelled as such in
-  the model file, the `CONMED_PACLITAXEL` covariate notes, and the vignette
-  Errata. Patients without paclitaxel are unaffected, since `(1 + 0 * 1.15) = 1`.
-  The encoding is checked in the vignette against the 2024 paper's own printed
-  result that paclitaxel raises `CL_ss/F` by 20%.
+- `checkModelConventions()` now accepts the `prob_<endpoint>` shape as a
+  canonical single-output observation variable, so a landmark
+  exposure-response model with no ODE state and no concentration output no
+  longer warns. Validated by `probOutputRegex`
+  (`^prob_[a-z](_?[a-z0-9]+)*$`) rather than by an enumerated list, following
+  the `<tissue>_slab<n>` precedent: the endpoint token is a per-paper
+  clinical definition, not a member of a closed set. Enumeration had already
+  drifted -- 31 endpoints were registered one-per-paper in
+  `inst/references/compartment-names.md` while 9 more were in use
+  unregistered -- so each new exposure-response extraction carried a spurious
+  "not canonical" warning until someone hand-added its endpoint. Clears 8
+  standing warnings (5 `Chen_2025_hemoporfin_*`, 3
+  `Chan_2025_atezolizumab_*`) and every future one. Accepted as an
+  observation form only, deliberately not as a compartment name. A
+  probability output is still not permitted to be called `Cc`, which names
+  the central-compartment drug concentration. No model file, parameter value
+  or model structure changes.
 
-- Correct a backwards sign-reasoning comment in
-  `FernandezTeruel_2024_capivasertib` and its vignette. Both stated that,
-  because `Imax < 0`, a multiplier above 1 *deepens* the auto-inhibition of
-  `CL/F`. The opposite holds: `Imax` is the log of the fractional inhibition, so
-  a multiplier above 1 drives `Imax_i` further negative, shrinks
-  `exp(Imax_i)`, and therefore shallows the inhibition and raises `CL/F`. The
-  encoded model was always correct -- no parameter value or model behaviour
-  changes -- but the sentence inverted the very reasoning a reader needs in
-  order to follow the dose and paclitaxel effects. The replacement wording
-  anchors the direction in the paper's own dose panel (the multiplier shrinks
-  as dose rises, which is what deepens the inhibition to the printed
-  18% / 22% / 54%). A library-wide sweep of every model that multiplies a log-
-  or logit-scale magnitude by a covariate factor found no other instance.
+- Document the five Chen 2025 hemoporfin exposure-response endpoints
+  (`prob_almost_cured`, `prob_significant_improvement`,
+  `prob_any_improvement`, `prob_investigator_rating`, `prob_patient_rating`)
+  in `inst/references/compartment-names.md`. These were among the endpoints
+  in use but unregistered. Dropping the enumeration gate removed the prompt
+  to register them, not the value of doing so: the entry records what each
+  endpoint means clinically -- the three expert-panel entries are cumulative
+  thresholds on one ordinal scale and must not be treated as competing
+  risks, and only the two rater endpoints have a significant exposure
+  slope -- which the validating regex cannot carry. Documentation only; no
+  model file, parameter value or model structure changes.
 
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
