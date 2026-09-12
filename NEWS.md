@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Laporte-Amargos 2026 piperacillin ([doi:10.1128/aac.01253-25](https://doi.org/10.1128/aac.01253-25)) -- adults with haematological malignancy and febrile neutropenia.
+- Add Schlachter 2026 atogepant ([doi:10.1007/s40262-025-01566-5](https://doi.org/10.1007/s40262-025-01566-5)) -- healthy participants and adults with episodic or chronic migraine.
 
 - Add Kumta 2025 piperacillin and tazobactam ([doi:10.1128/aac.00601-24](https://doi.org/10.1128/aac.00601-24)) -- critically ill neurosurgical adults with an external ventricular drain.
 
