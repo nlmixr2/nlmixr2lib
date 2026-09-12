@@ -1424,8 +1424,10 @@ navbar:
         href: articles/Park_2025_efineptakin_alfa.html
       - text: "Eflornithine rat (Jansson 2008)"
         href: articles/Jansson_2008_eflornithine.html
-      - text: "Efpeglenatide (Choi 2025)"
-        href: articles/Choi_2025_efpeglenatide.html
+      - text: "EGF IFN chimera (DoldanMartelli 2013)"
+        href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
+      - text: "Elexacaftor (Truong 2025)"
+        href: articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor.html
       - text: "Elinzanetant (Willmann 2024)"
         href: articles/Willmann_2024_elinzanetant.html
       - text: "Elotuzumab (Ide 2020)"
@@ -2096,20 +2098,48 @@ navbar:
         href: articles/Vos_2025_iminobiotin.html
       - text: "Imipenem (Bai 2024)"
         href: articles/Bai_2024_imipenem.html
+      - text: "Imipenem (Chen 2020)"
+        href: articles/Zhang_2025_imipenem_model_review.html
       - text: "Imipenem (Couffignal 2014)"
         href: articles/Couffignal_2014_imipenem.html
+      - text: "Imipenem (Dao 2022)"
+        href: articles/Zhang_2025_imipenem_model_review.html
+      - text: "Imipenem (deVelde 2020)"
+        href: articles/Zhang_2025_imipenem_model_review.html
+      - text: "Imipenem (Dinh 2022)"
+        href: articles/Zhang_2025_imipenem_model_review.html
+      - text: "Imipenem (Dong 2019)"
+        href: articles/Zhang_2025_imipenem_model_review.html
+      - text: "Imipenem (Ikawa 2008)"
+        href: articles/Zhang_2025_imipenem_model_review.html
+      - text: "Imipenem (Jaruratanasirikul 2021)"
+        href: articles/Zhang_2025_imipenem_model_review.html
       - text: "Imipenem (Lamoth 2009)"
         href: articles/Lamoth_2009_imipenem.html
+      - text: "Imipenem (Nguyen 2021)"
+        href: articles/Zhang_2025_imipenem_model_review.html
+      - text: "Imipenem (Por 2021)"
+        href: articles/Zhang_2025_imipenem_model_review.html
+      - text: "Imipenem (Truong 2025)"
+        href: articles/Zhang_2025_imipenem_model_review.html
       - text: "Imipenem (Wang 2024)"
         href: articles/Wang_2024_imipenem.html
       - text: "Imipenem amikacin PA001 (Yadav 2017)"
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
       - text: "Imipenem amikacin PA088 (Yadav 2017)"
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
+      - text: "Imipenem children (Yoshizawa 2013)"
+        href: articles/Zhang_2025_imipenem_model_review.html
+      - text: "Imipenem neonates (Yoshizawa 2013)"
+        href: articles/Zhang_2025_imipenem_model_review.html
+      - text: "Imipenem neutropenia (Lafaurie 2023)"
+        href: articles/Zhang_2025_imipenem_model_review.html
       - text: "Imipenem pbpk (Feng 2026)"
         href: articles/Feng_2026_imipenem_pbpk.html
       - text: "Imipenem qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Imipenem recovery (Lafaurie 2023)"
+        href: articles/Zhang_2025_imipenem_model_review.html
       - text: "Imipenem tobramycin PA001 (Yadav 2017)"
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
       - text: "Imipenem tobramycin PA022 (Yadav 2017)"
@@ -2722,8 +2752,8 @@ navbar:
         href: articles/Choi_2018_metformin.html
       - text: "Metformin (vanRongen 2018)"
         href: articles/vanRongen_2018_metformin.html
-      - text: "Methadone (Watt 2026)"
-        href: articles/Watt_2026_methadone.html
+      - text: "Metformin (Yoon 2013)"
+        href: articles/Yoon_2013_metformin.html
       - text: "Methotrexate (Aumente 2006)"
         href: articles/Wang_2023_methotrexate.html
       - text: "Methotrexate (Blackman 2026)"
@@ -2784,12 +2814,6 @@ navbar:
         href: articles/Randell_2024_metronidazole.html
       - text: "Metronidazole (Suyagh 2011)"
         href: articles/Suyagh_2011_metronidazole.html
-      - text: "Mg1113 human (Kwak 2025)"
-        href: articles/Kwak_2025_mg1113.html
-      - text: "Mg1113 monkey (Kwak 2025)"
-        href: articles/Kwak_2025_mg1113.html
-      - text: "Mg1113 rabbit (Kwak 2025)"
-        href: articles/Kwak_2025_mg1113.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
       - text: "MI 219 (Zou 2012)"
@@ -7196,6 +7220,7 @@ articles:
   - articles/Zhang_2025_dupilumab_fev1
   - articles/Zhang_2025_erythroferrone
   - articles/Zhang_2025_fluconazole
+  - articles/Zhang_2025_imipenem_model_review
   - articles/Zhang_2025_nedosiran
   - articles/Zhang_2025_olanzapine
   - articles/Zhang_2025_remdesivir
