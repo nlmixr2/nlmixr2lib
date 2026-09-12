@@ -2,7 +2,12 @@
 
 # development version
 
-- Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.
+- Settle the change-from-baseline naming convention: `<state>cfb` is the
+  library-wide form, and the competing `d_<state>` prefix is retired. The
+  unreleased Zhang 2025 Bietti crystalline dystrophy model's observation is
+  renamed `d_bcva` to `bcvacfb`, and `inst/references/compartment-names.md`
+  now states the rule. The four surviving prefixed names (`d_updrs`, `d_hr`,
+  `d_rr`, `d_viral_load`) convert in a follow-up.
 
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
