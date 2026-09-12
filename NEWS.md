@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhao 2025 nivolumab ([doi:10.1002/psp4.70120](https://doi.org/10.1002/psp4.70120)) -- adults with advanced solid tumors receiving subcutaneous or intravenous nivolumab.
+- Add Han 2025 fluoxetine ([doi:10.3390/pharmaceutics17121516](https://doi.org/10.3390/pharmaceutics17121516)) -- Chinese psychiatric adolescents and adults.
 
 - Rename the seven covariate canonicals that were carried in non-ALL-CAPS form
   purely because a source paper spelled them that way: `dilution` ->
