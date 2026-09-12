@@ -1414,10 +1414,8 @@ navbar:
         href: articles/Park_2025_efineptakin_alfa.html
       - text: "Eflornithine rat (Jansson 2008)"
         href: articles/Jansson_2008_eflornithine.html
-      - text: "EGF IFN chimera (DoldanMartelli 2013)"
-        href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
-      - text: "Elexacaftor (Truong 2025)"
-        href: articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor.html
+      - text: "Efpeglenatide (Choi 2025)"
+        href: articles/Choi_2025_efpeglenatide.html
       - text: "Elinzanetant (Willmann 2024)"
         href: articles/Willmann_2024_elinzanetant.html
       - text: "Elotuzumab (Ide 2020)"
@@ -5483,7 +5481,7 @@ articles:
   - articles/Choe_2012_busulfan
   - articles/Choi_2011_remifentanil
   - articles/Choi_2018_metformin
-  - articles/Choi_2025_denosumab
+  - articles/Choi_2025_efpeglenatide
   - articles/Chotsiri_2019_lumefantrine
   - articles/Chotsiri_2019_piperaquine
   - articles/Chotsiri_2024_primaquine_metabolites
