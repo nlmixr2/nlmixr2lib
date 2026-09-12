@@ -42,7 +42,7 @@ Kashihara_2026_rsvVaccine_sna_mbma <- function() {
     ),
     dosing        = paste0(
       "not applicable -- vaccine exposure enters through the ",
-      "SNA_RSVA_RATIO covariate, not through dosing records."
+      "SNA_RSVA_PBORATIO covariate, not through dosing records."
     ),
     concentration = paste0(
       "ve_ari, ve_lrtd2 and ve_lrtd3 are vaccine efficacies in percent. The ",
@@ -51,7 +51,7 @@ Kashihara_2026_rsvVaccine_sna_mbma <- function() {
   )
 
   covariateData <- list(
-    SNA_RSVA_RATIO = list(
+    SNA_RSVA_PBORATIO = list(
       description        = paste0(
         "Placebo-corrected serum neutralizing activity against RSV subtype ",
         "A: the ratio of the vaccine-arm SNA titer to the placebo-arm SNA ",
@@ -231,13 +231,13 @@ Kashihara_2026_rsvVaccine_sna_mbma <- function() {
     #
     #   SNA_i = log2(SNA_vaccine,i) - log2(SNA_placebo,i) = log2(ratio)
     #
-    # SNA_RSVA_RATIO is the ratio itself, exactly as tabulated in Table 2, so
+    # SNA_RSVA_PBORATIO is the ratio itself, exactly as tabulated in Table 2, so
     # the difference of logs collapses to the log of the tabulated ratio.
     # ln2 is spelled out because rxode2's parser provides log() but not
     # log2().
     # ======================================================================
     ln2 <- 0.693147180559945
-    sna <- log(SNA_RSVA_RATIO) / ln2
+    sna <- log(SNA_RSVA_PBORATIO) / ln2
 
     # ======================================================================
     # 2. Transformed VE by severity level (Kashihara 2026 Equation 1)

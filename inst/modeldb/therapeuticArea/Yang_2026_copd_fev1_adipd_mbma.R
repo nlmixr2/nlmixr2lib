@@ -37,15 +37,15 @@ Yang_2026_copd_fev1_adipd_mbma <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (individual-patient record).",
-      notes              = "Source column DTYPE, coded 1 = aggregated and 2 = individual; re-coded here to a 0/1 binary so it reads as an ordinary indicator. This column switches THREE things at once and is the single most load-bearing covariate in the model: (1) the baseline uses the normal approximation to the mean of a log-normal for aggregated records and the plain log-normal for individual records (paper Section 2.3.2, Equations 1-8); (2) the residual error is additive scaled by 1/sqrt(NARM) for aggregated records and a power model with its own IIV for individual records (paper Equation 10); (3) the disease-progression slope and the vilanterol reference efficacy carry additional between-subject etas on individual records only. Aggregated and individual records share every structural parameter.",
+      notes              = "Source column DTYPE, coded 1 = aggregated and 2 = individual; re-coded here to a 0/1 binary so it reads as an ordinary indicator. This column switches THREE things at once and is the single most load-bearing covariate in the model: (1) the baseline uses the normal approximation to the mean of a log-normal for aggregated records and the plain log-normal for individual records (paper Section 2.3.2, Equations 1-8); (2) the residual error is additive scaled by 1/sqrt(N_ARM) for aggregated records and a power model with its own IIV for individual records (paper Equation 10); (3) the disease-progression slope and the vilanterol reference efficacy carry additional between-subject etas on individual records only. Aggregated and individual records share every structural parameter.",
       source_name        = "DTYPE"
     ),
-    NARM = list(
+    N_ARM = list(
       description        = "Number of patients contributing to this study arm.",
       units              = "(count of patients)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Source column NTRT. Used ONLY on aggregated-data records, in two places: the residual-error weight (additive error scaled by 1/sqrt(NARM), paper Equation 10 'err = eps_AD / sqrt(N_ij)') and the standard deviation of the normal approximation to the arm-mean baseline (paper Equations 6-8, variance divided by N). The arm sizes in the aggregated data range from 18 to 5,724 patients (paper Section 2.3.2), which is what makes the central-limit-theorem approximation valid. Set to 1 on individual-patient records, where it is not referenced.",
+      notes              = "Source column NTRT. Used ONLY on aggregated-data records, in two places: the residual-error weight (additive error scaled by 1/sqrt(N_ARM), paper Equation 10 'err = eps_AD / sqrt(N_ij)') and the standard deviation of the normal approximation to the arm-mean baseline (paper Equations 6-8, variance divided by N). The arm sizes in the aggregated data range from 18 to 5,724 patients (paper Section 2.3.2), which is what makes the central-limit-theorem approximation valid. Set to 1 on individual-patient records, where it is not referenced.",
       source_name        = "NTRT"
     ),
     MEAS_POSTBD = list(
@@ -559,7 +559,7 @@ Yang_2026_copd_fev1_adipd_mbma <- function() {
 
     # ---- Residual error ---------------------------------------------------
     # Two different error models, selected by DTYPE_AGGREGATED (paper Eq. 10).
-    addSd_FEV1  <- sqrt(0.040742)   ; label("Additive residual SD for an aggregated arm-mean record, before the 1/sqrt(NARM) weight (L)") # Table S3 'Variance of the additive residual error of AD' = 0.0407 (RSE 2.8%); $SIGMA (1.) = 0.040742. NONMEM $SIGMA is a VARIANCE, so the SD is sqrt(0.040742) = 0.2018
+    addSd_FEV1  <- sqrt(0.040742)   ; label("Additive residual SD for an aggregated arm-mean record, before the 1/sqrt(N_ARM) weight (L)") # Table S3 'Variance of the additive residual error of AD' = 0.0407 (RSE 2.8%); $SIGMA (1.) = 0.040742. NONMEM $SIGMA is a VARIANCE, so the SD is sqrt(0.040742) = 0.2018
     powSd_FEV1  <- sqrt(0.00635275) ; label("Residual-error scale for an individual-patient record (L^(1-powExp_FEV1))") # Table S3 'Variance of the power residual error of IPD' = 0.0063 (RSE 2.3%); $SIGMA (2.) = 0.00635275; SD = sqrt(0.00635275) = 0.0797
     powExp_FEV1 <- 0.629635         ; label("Power of the prediction in the individual-patient residual-error model (unitless)") # Table S3 'power error index for IPD error model' = 0.63 (RSE 4.1%); $THETA (68) = 0.629635
 
@@ -709,18 +709,18 @@ Yang_2026_copd_fev1_adipd_mbma <- function() {
 
     # An INDIVIDUAL record's baseline is log-normal about the study value.
     # An AGGREGATED record's baseline is the MEAN of that log-normal over
-    # NARM patients, which the paper approximates by a normal with the
-    # log-normal's mean and its variance divided by NARM (paper Equations
+    # N_ARM patients, which the paper approximates by a normal with the
+    # log-normal's mean and its variance divided by N_ARM (paper Equations
     # 6-8). Using the log-normal itself for the arm mean is what produced
     # the 8-10% aggregation bias the paper set out to remove (Section 3.2).
     ln_mean  <- exp(cv_base * cv_base / 2)
     ln_sd    <- sqrt(exp(cv_base * cv_base) - 1) * ln_mean
-    b_ad     <- tvb * study_b * ln_mean + tvb * study_b * ln_sd / sqrt(NARM) * eta_arm_base
+    b_ad     <- tvb * study_b * ln_mean + tvb * study_b * ln_sd / sqrt(N_ARM) * eta_arm_base
     b_ipd    <- tvb * study_b * exp(etabase * cv_base)
     b        <- DTYPE_AGGREGATED * b_ad + (1 - DTYPE_AGGREGATED) * b_ipd
 
     b_pbd_ad  <- tvb_pbd * study_b * ln_mean +
-      tvb_pbd * study_b * ln_sd / sqrt(NARM) * eta_arm_base
+      tvb_pbd * study_b * ln_sd / sqrt(N_ARM) * eta_arm_base
     b_pbd_ipd <- tvb_pbd * study_b * exp(etabase * cv_base)
     b_pbd     <- DTYPE_AGGREGATED * b_pbd_ad + (1 - DTYPE_AGGREGATED) * b_pbd_ipd
 
@@ -929,13 +929,13 @@ Yang_2026_copd_fev1_adipd_mbma <- function() {
     # ==================================================================
     # 10. Residual error -- two models selected by record type.
     #
-    # An aggregated arm mean of NARM patients carries an additive error
-    # shrunk by 1/sqrt(NARM); an individual record carries a power error
+    # An aggregated arm mean of N_ARM patients carries an additive error
+    # shrunk by 1/sqrt(N_ARM); an individual record carries a power error
     # whose magnitude has its own log-normal between-subject variability.
     # The two are combined into one SD so a single endpoint can serve both
     # record types.
     # ==================================================================
-    sd_ad  <- addSd_FEV1 / sqrt(NARM)
+    sd_ad  <- addSd_FEV1 / sqrt(N_ARM)
     sd_ipd <- powSd_FEV1 * FEV1^powExp_FEV1 * exp(etapowSd_FEV1)
     sdFEV1 <- DTYPE_AGGREGATED * sd_ad + (1 - DTYPE_AGGREGATED) * sd_ipd
 

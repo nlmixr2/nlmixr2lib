@@ -138,7 +138,7 @@ adipd_covs <- function(...) {
     FORM_TIOTROPIUM_OPENLABEL = 0,
     # Reference arm: aggregated record, reference covariate values, no
     # background therapy, no reconciliation term.
-    DTYPE_AGGREGATED = 1, NARM = 200, MEAS_POSTBD = 0, FEV1_PBD_ANCHOR = 0,
+    DTYPE_AGGREGATED = 1, N_ARM = 200, MEAS_POSTBD = 0, FEV1_PBD_ANCHOR = 0,
     OCS_NONRESPONDER = 0, INCL_EXAC_REQUIRED = 0,
     AGE = 63.4, SEXF = 0.329, SMOKE = 0.463, DIS_COPD_GOLD = 3,
     DIS_COPD_GOLD_LOW = 2, DIS_COPD_GOLD_HIGH = 4,
@@ -420,7 +420,7 @@ theta_b <- ui_adipd$theta[["base"]]
 
 # What the model predicts for an aggregated arm mean at the reference arm.
 model_arm_mean <- solve_typical(
-  ui_adipd, make_events(list(adipd_covs(NARM = 200)), times = 0)
+  ui_adipd, make_events(list(adipd_covs(N_ARM = 200)), times = 0)
 )$FEV1[1]
 
 # Brute force: draw 200 individual log-normal baselines per arm, 20000 arms.
@@ -475,7 +475,7 @@ set rather than at a single arm.
 
 ```{r check-residual-weight}
 narm_grid <- c(18, 50, 200, 1000, 5724)   # the paper's reported arm-size range
-ev_narm <- make_events(lapply(narm_grid, function(n) adipd_covs(NARM = n)),
+ev_narm <- make_events(lapply(narm_grid, function(n) adipd_covs(N_ARM = n)),
                        times = 24)
 s_narm <- solve_typical(ui_adipd, ev_narm)
 
@@ -493,7 +493,7 @@ An individual-patient record instead carries the power error model, whose SD
 rises with the prediction.
 
 ```{r check-residual-ipd}
-ev_dt <- make_events(list(adipd_covs(DTYPE_AGGREGATED = 0, NARM = 1)),
+ev_dt <- make_events(list(adipd_covs(DTYPE_AGGREGATED = 0, N_ARM = 1)),
                      times = c(0, 24))
 s_dt <- solve_typical(ui_adipd, ev_dt)
 expected_sd <- ui_adipd$theta[["powSd_FEV1"]] *
@@ -671,7 +671,7 @@ arms <- expand.grid(
 ev_f4 <- make_events(lapply(seq_len(nrow(arms)), function(i) {
   adipd_covs(
     SEXF = if (arms$sex[i] == "Male") 0 else 1,
-    DTYPE_AGGREGATED = 1, NARM = 200,
+    DTYPE_AGGREGATED = 1, N_ARM = 200,
     CONMED_VILANTEROL_DOSE = 25,
     CONMED_FLUTICASONEFUROATE_DOSE = if (arms$trt[i] == "VI 25") 0 else 200
   )

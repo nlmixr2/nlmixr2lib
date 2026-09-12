@@ -214,19 +214,19 @@ no time course are needed, so a single `evid = 0` row per scenario is the
 whole event table.
 
 ```{r sim-helper}
-# Solve either model over a grid of immunogenicity values. `IFNG_RATIO` is
+# Solve either model over a grid of immunogenicity values. `IFNG_PBORATIO` is
 # supplied to both models, but rxode2 returns a covariate column only when the
 # model actually references it -- the SNA-only model does not, so that column
 # comes back for the secondary model and not the primary one. `any_of()`
 # tolerates both shapes; a fixed `select()` would error on the primary model.
 solve_grid <- function(model, sna_ratio, ifng_ratio = 1) {
-  ev <- expand.grid(SNA_RSVA_RATIO = sna_ratio, IFNG_RATIO = ifng_ratio)
+  ev <- expand.grid(SNA_RSVA_PBORATIO = sna_ratio, IFNG_PBORATIO = ifng_ratio)
   ev$id   <- seq_len(nrow(ev))
   ev$time <- 0
   ev$amt  <- 0
   ev$evid <- 0
   out <- rxode2::rxSolve(model, ev, returnType = "data.frame") |>
-    dplyr::select(dplyr::any_of(c("SNA_RSVA_RATIO", "IFNG_RATIO")),
+    dplyr::select(dplyr::any_of(c("SNA_RSVA_PBORATIO", "IFNG_PBORATIO")),
                   ve_ari, ve_lrtd2, ve_lrtd3,
                   tve_ari, tve_lrtd2, tve_lrtd3)
   # One prediction row per input scenario: guards against a silent endpoint
@@ -282,8 +282,8 @@ and their 95% confidence intervals overlaid.
 grid_sna <- solve_grid(tv_sna, sna_ratio = exp(seq(log(1), log(20), length.out = 120)))
 
 pred_long <- grid_sna |>
-  select(SNA_RSVA_RATIO, ve_ari, ve_lrtd2, ve_lrtd3) |>
-  pivot_longer(-SNA_RSVA_RATIO, names_to = "key", values_to = "ve") |>
+  select(SNA_RSVA_PBORATIO, ve_ari, ve_lrtd2, ve_lrtd3) |>
+  pivot_longer(-SNA_RSVA_PBORATIO, names_to = "key", values_to = "ve") |>
   mutate(severity = factor(
     recode(key, ve_ari = "ARI", ve_lrtd2 = "LRTD 2+", ve_lrtd3 = "LRTD 3+"),
     levels = c("ARI", "LRTD 2+", "LRTD 3+")
@@ -291,7 +291,7 @@ pred_long <- grid_sna |>
 
 obs_plot <- ve_obs |> left_join(tab2 |> select(study, sna_a), by = "study")
 
-ggplot(pred_long, aes(SNA_RSVA_RATIO, ve)) +
+ggplot(pred_long, aes(SNA_RSVA_PBORATIO, ve)) +
   geom_hline(yintercept = 0, linewidth = 0.3, colour = "grey60") +
   geom_line(linewidth = 0.9, colour = "#2166ac") +
   geom_errorbar(data = obs_plot,
@@ -402,7 +402,7 @@ set.seed(20260911)
 n_trial <- 200L   # trials, not subjects; within the 200-per-arm cohort cap
 ev_btv <- data.frame(
   id = seq_len(n_trial), time = 0, amt = 0, evid = 0,
-  SNA_RSVA_RATIO = 8, IFNG_RATIO = 1
+  SNA_RSVA_PBORATIO = 8, IFNG_PBORATIO = 1
 )
 sim_btv <- rxode2::rxSolve(mod_sna, ev_btv, returnType = "data.frame")
 
@@ -450,7 +450,7 @@ grid_cmi <- solve_grid(
 )
 
 fig3 <- grid_cmi |>
-  select(SNA_RSVA_RATIO, IFNG_RATIO, ve_ari, ve_lrtd2, ve_lrtd3) |>
+  select(SNA_RSVA_PBORATIO, IFNG_PBORATIO, ve_ari, ve_lrtd2, ve_lrtd3) |>
   pivot_longer(c(ve_ari, ve_lrtd2, ve_lrtd3),
                names_to = "key", values_to = "ve") |>
   mutate(
@@ -458,11 +458,11 @@ fig3 <- grid_cmi |>
       recode(key, ve_ari = "ARI", ve_lrtd2 = "LRTD 2+", ve_lrtd3 = "LRTD 3+"),
       levels = c("ARI", "LRTD 2+", "LRTD 3+")
     ),
-    ifng = factor(IFNG_RATIO, levels = c(3.5, 20.6),
+    ifng = factor(IFNG_PBORATIO, levels = c(3.5, 20.6),
                   labels = c("IFN-gamma ratio 3.5", "IFN-gamma ratio 20.6"))
   )
 
-ggplot(fig3, aes(SNA_RSVA_RATIO, ve, colour = ifng)) +
+ggplot(fig3, aes(SNA_RSVA_PBORATIO, ve, colour = ifng)) +
   geom_hline(yintercept = 0, linewidth = 0.3, colour = "grey60") +
   geom_line(linewidth = 0.9) +
   facet_wrap(~severity) +
@@ -478,7 +478,7 @@ ggplot(fig3, aes(SNA_RSVA_RATIO, ve, colour = ifng)) +
 
 ```{r figure-3-checks}
 sep <- grid_cmi |>
-  group_by(SNA_RSVA_RATIO) |>
+  group_by(SNA_RSVA_PBORATIO) |>
   summarise(
     d_ari   = diff(range(ve_ari)),
     d_lrtd2 = diff(range(ve_lrtd2)),
@@ -495,14 +495,14 @@ stopifnot(
   # Higher cell-mediated immunity gives higher efficacy: the paper's
   # conclusion that "CMI may be correlated with additional clinical benefits
   # in mitigating the severity of RSV infection".
-  all(grid_cmi$ve_lrtd3[grid_cmi$IFNG_RATIO == 20.6] >
-      grid_cmi$ve_lrtd3[grid_cmi$IFNG_RATIO == 3.5])
+  all(grid_cmi$ve_lrtd3[grid_cmi$IFNG_PBORATIO == 20.6] >
+      grid_cmi$ve_lrtd3[grid_cmi$IFNG_PBORATIO == 3.5])
 )
 
 sep |>
-  filter(SNA_RSVA_RATIO %in% range(SNA_RSVA_RATIO)) |>
+  filter(SNA_RSVA_PBORATIO %in% range(SNA_RSVA_PBORATIO)) |>
   mutate(across(starts_with("d_"), \(x) round(x, 2))) |>
-  dplyr::rename("RSV-A SNA ratio" = SNA_RSVA_RATIO,
+  dplyr::rename("RSV-A SNA ratio" = SNA_RSVA_PBORATIO,
                 "ARI spread (%)" = d_ari,
                 "LRTD 2+ spread (%)" = d_lrtd2,
                 "LRTD 3+ spread (%)" = d_lrtd3) |>
@@ -617,9 +617,9 @@ slopes |>
   spirit.
 
 - **Two new canonical covariate columns were registered** for this extraction:
-  `SNA_RSVA_RATIO` and `IFNG_RATIO`, forming a `<ANALYTE>_RATIO` family of
+  `SNA_RSVA_PBORATIO` and `IFNG_PBORATIO`, forming a `<ANALYTE>_RATIO` family of
   placebo-corrected, study-arm-level vaccine immunogenicity readouts. Both are
-  documented in `inst/references/covariate-columns.md`. `IFNG_RATIO` is
+  documented in `inst/references/covariate-columns.md`. `IFNG_PBORATIO` is
   deliberately **not** an alias of the existing `IFNG` canonical, which is an
   absolute serum concentration in pg/mL used for target-mediated-disposition
   scaling; the two differ in units, level of aggregation, and meaning.

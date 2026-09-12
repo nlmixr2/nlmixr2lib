@@ -44,7 +44,7 @@ Kashihara_2026_rsvVaccine_snaCmi_mbma <- function() {
     ),
     dosing        = paste0(
       "not applicable -- vaccine exposure enters through the ",
-      "SNA_RSVA_RATIO and IFNG_RATIO covariates, not through dosing records."
+      "SNA_RSVA_PBORATIO and IFNG_PBORATIO covariates, not through dosing records."
     ),
     concentration = paste0(
       "ve_ari, ve_lrtd2 and ve_lrtd3 are vaccine efficacies in percent. The ",
@@ -53,7 +53,7 @@ Kashihara_2026_rsvVaccine_snaCmi_mbma <- function() {
   )
 
   covariateData <- list(
-    SNA_RSVA_RATIO = list(
+    SNA_RSVA_PBORATIO = list(
       description        = paste0(
         "Placebo-corrected serum neutralizing activity against RSV subtype ",
         "A: the ratio of the vaccine-arm SNA titer to the placebo-arm SNA ",
@@ -73,7 +73,7 @@ Kashihara_2026_rsvVaccine_snaCmi_mbma <- function() {
       ),
       source_name        = "RSV-A SNA (ratio to placebo)"
     ),
-    IFNG_RATIO = list(
+    IFNG_PBORATIO = list(
       description        = paste0(
         "Placebo-corrected cell-mediated immunity: the ratio of the ",
         "vaccine-arm interferon-gamma response to the placebo-arm ",
@@ -249,8 +249,8 @@ Kashihara_2026_rsvVaccine_snaCmi_mbma <- function() {
     # provides log() but not log2().
     # ======================================================================
     ln2 <- 0.693147180559945
-    sna <- log(SNA_RSVA_RATIO) / ln2
-    cmi <- log(IFNG_RATIO)
+    sna <- log(SNA_RSVA_PBORATIO) / ln2
+    cmi <- log(IFNG_PBORATIO)
 
     # ======================================================================
     # 2. Transformed VE by severity level (Kashihara 2026 Equation 3)
