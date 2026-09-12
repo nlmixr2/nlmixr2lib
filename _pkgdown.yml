@@ -750,10 +750,8 @@ navbar:
         href: articles/AbdulAziz_2025_caspofungin.html
       - text: "Caspofungin (Wurthwein 2013)"
         href: articles/Wurthwein_2013_caspofungin.html
-      - text: "Caspofungin (Xu 2026)"
-        href: articles/Xu_2026_caspofungin.html
-      - text: "Caspofungin optimalDesign (Xu 2026)"
-        href: articles/Xu_2026_caspofungin.html
+      - text: "CC292 (Li 2017)"
+        href: articles/Li_2017_CC292.html
       - text: "Cebranopadol (Kleideiter 2017)"
         href: articles/Kleideiter_2017_cebranopadol.html
       - text: "Cebranopadol (Kleideiter 2018)"
@@ -3428,6 +3426,8 @@ navbar:
         href: articles/ElassaissSchaap_2017_pembrolizumab.html
       - text: "Pembrolizumab (Lindauer 2017)"
         href: articles/Lindauer_2017_pembrolizumab.html
+      - text: "Pembrolizumab qol mbma (Zou 2026)"
+        href: articles/Zou_2026_pembrolizumab_qol.html
       - text: "Pemetrexed osimertinib mouse qsp (Hu 2026)"
         href: articles/Hu_2026_pemetrexed_osimertinib_mouse_qsp.html
       - text: "Pemigatinib (Gong 2023)"
@@ -7293,6 +7293,7 @@ articles:
   - articles/Zou_2022_furmonertinib
   - articles/Zou_2025_edoxaban
   - articles/Zou_2026_meropenem
+  - articles/Zou_2026_pembrolizumab_qol
   - articles/Zufferey_2018_fondaparinux
   - articles/Zuo_2016_UDCA
   - articles/Zuo_2024_apatinib
