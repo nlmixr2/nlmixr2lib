@@ -629,6 +629,18 @@ lie well above the solid full-model curves at late times.
   starts at 11.9 nM, below the 32.8 nM target level, which is exactly the
   condition the Figure 5 caption gives for that dose having no cross-over time.
   No model parameter depends on it.
+* **The upstream citation is corrected against Crossref.** Straube's reference
+  [5] is "P. M. Glassman and V. R. Muzykantov, *Target-Mediated Exposure
+  Enhancement: A Previously Unexplored Limit of TMDD*, Journal of
+  Pharmacokinetics and Pharmacodynamics 47 (2020): 573-591". The title and
+  authors are right but the pagination is a misprint: Crossref and EuropePMC
+  both give 47(5):411-420 for that title (doi:10.1007/s10928-020-09693-1,
+  PMID 32488574, PMCID PMC7529850), and 573-591 is the pagination of the
+  *Gibiansky* 2008 TMDD-approximation paper in volume 35 of the same journal.
+  The `reference` field of the four caplacizumab and linagliptin model files
+  therefore cites the Crossref pagination and DOI rather than the pagination as
+  printed in the source. This is a bibliographic correction only -- no
+  parameter, equation or dose is affected.
 * **Printed rounding.** Several Table 2 / Table S1 columns are rounded more
   coarsely than the quantities derived from them. `keD = CL/Vc` computed from
   the printed `CL` and `Vc` differs from the printed `keD` by 1.9% (omalizumab,

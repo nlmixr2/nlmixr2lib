@@ -8,7 +8,7 @@ Straube_2025_linagliptin_1cmt <- function() {
     "Parameters in Table 2 were estimated by Straube by fitting the",
     "one-compartment TMDD model in Equation (2) to linagliptin total-drug time",
     "courses digitised from Glassman PM, Muzykantov VR.",
-    "J Pharmacokinet Pharmacodyn. 2020;47:573-591; doi:10.1007/s10928-020-09700-5.",
+    "Target-Mediated Exposure Enhancement: A Previously Unexplored Limit of TMDD. J Pharmacokinet Pharmacodyn. 2020;47(5):411-420; doi:10.1007/s10928-020-09693-1.",
     "koff and Kd were fixed at values reported in Wu N, An G. AAPS J. 2020;22:125;",
     "doi:10.1208/s12248-020-00514-4.",
     sep = " "
