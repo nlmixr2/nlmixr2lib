@@ -694,10 +694,23 @@ clearance expression references `t` / `time` without one of these.
 |---|---|---|
 | Sigmoidal in time: `cl <- cl_base * exp(max * t^g / (t50^g + t^g))` | `cl_time_` | `cl_time_max`, `cl_t50`, `cl_time_hill` |
 | Exponential decay to a constant: `cl <- cl_exp_inf + cl_exp_component * exp(-k * t)` | `cl_exp_` | `cl_exp_inf`, `cl_exp_component`, `cl_exp_kdes` |
+| Concentration-driven autoinduction: `cl <- cl_base * exp(max * C^g/(ec50^g + C^g) * t/(t50 + t))` | `cl_time_` + `cl_conc_` | `cl_time_max`, `cl_t50`, `cl_ec50`, `cl_conc_hill` |
+
+The third form carries two sigmoidicities and they sit on different axes:
+`cl_conc_hill` is the Hill coefficient on CONCENTRATION (the `C^g/(ec50^g +
+C^g)` factor), `cl_time_hill` is the one on TIME. A model with both must name
+both; a model whose time factor is the plain hyperbola `t/(t50 + t)` has no
+`cl_time_hill` at all. `cl_ec50` is the driver concentration giving
+half-maximal induction and belongs to the concentration factor, not to
+`cl_t50`. Founding example: `Du_2025_repotrectinib.R`, where the driver is the
+pre-dose trough held constant across the dosing interval.
 
 Prefix `l` for the log scale (`lcl_t50`), `eta` for the IIV partner
 (`etacl_time_max`), `e_<cov>_` for a covariate effect
-(`e_nhl_cl_exp_kdes`).
+(`e_nhl_cl_exp_kdes`). The concentration-driven form carries its parameters on
+the log scale in `ini()` (`lcl_time_max`, `lcl_ec50`, `lcl_conc_hill`,
+`lcl_t50`), per the `Kuchimanchi_2024_dostarlimab.R` and
+`Masters_2022_avelumab.R` precedent.
 
 Do **not** use `emax`, `imax`, `gamma`, `hill` or `t50` BARE for clearance
 time-dependence: all of them are also standard PD parameter names, and several
