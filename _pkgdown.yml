@@ -932,6 +932,8 @@ navbar:
         href: articles/Zhao_2024_ciprofloxacin_colistin.html
       - text: "Ciprofloxacin colistin plasma (Zhao 2024)"
         href: articles/Zhao_2024_ciprofloxacin_colistin.html
+      - text: "Ciprofol (Wang 2026)"
+        href: articles/Wang_2026_ciprofol.html
       - text: "Cisplatin (Boer 2015)"
         href: articles/Boer_2015_cisplatin.html
       - text: "Cisplatin (Royer 2011)"
@@ -6810,6 +6812,7 @@ articles:
   - articles/Wang_2025_serplulimab
   - articles/Wang_2025_somatrogon
   - articles/Wang_2025_voriconazole
+  - articles/Wang_2026_ciprofol
   - articles/Ward_2026_magnesium_pbpk
   - articles/Warren_2025_pde4_il13_atopic_dermatitis
   - articles/Waterhouse_2024_vedolizumab
