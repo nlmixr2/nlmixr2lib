@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhao 2026 infliximab ([doi:10.1007/s40262-025-01565-6](https://doi.org/10.1007/s40262-025-01565-6)) — children 10 years old and younger with inflammatory bowel disease.
+- Add Larson 2026 sulbactam-durlobactam pediatric dose-selection models ([doi:10.1093/ofid/ofaf695.659](https://doi.org/10.1093/ofid/ofaf695.659)) — simulated pediatric patients from birth (28 weeks of gestation) to < 18 years.
 
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
