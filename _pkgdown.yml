@@ -3692,6 +3692,8 @@ navbar:
         href: articles/Chen_2024_remimazolam.html
       - text: "Remimazolam (Chen 2025)"
         href: articles/Chen_2025_remimazolam.html
+      - text: "Remimazolam (Liang 2026)"
+        href: articles/Liang_2026_remimazolam.html
       - text: "Remimazolam pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
       - text: "Repotrectinib (Du 2025)"
@@ -6062,6 +6064,7 @@ articles:
   - articles/Liang_2024_lenalidomide
   - articles/Liang_2024_osimertinib
   - articles/Liang_2024_rituximab
+  - articles/Liang_2026_remimazolam
   - articles/LiemMoolenaar_2011_scopolamine
   - articles/Liesenfeld_2006_dabigatran
   - articles/Liesenfeld_2013_dabigatran
