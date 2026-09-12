@@ -2,13 +2,33 @@
 
 # development version
 
-- Rename the procalcitonin covariate column from `PCT` to `PROCALCITONIN`. A
-  bare `PCT` collided with the established `_PCT` percent suffix
-  (`BODYFAT_PCT`, `RACE_ASIAN_PCT`, `CUM_FLUID_BAL_PCT` and others) and with
-  `PCT` = proximal convoluted tubule in `Lu_2014_sglt_qsp.R`, which is
-  unaffected. Affects `Liu_2025_voriconazole` (whose effect parameter
-  `e_pct_cl` becomes `e_procalcitonin_cl`) and the documentation-only entry in
-  `Peng_2025_meropenem`; `PCT` is retained as a source alias.
+- Give `FernandezTeruel_2025_capivasertib` a usable concomitant-paclitaxel arm.
+  The 2025 paper keeps the factor `(1 + PACL * Imax_pacl)` in its printed `Imax`
+  equation and defines `Imax_pacl` in the equation legend, but reports no
+  estimate for it anywhere -- not in Table 2, the supplement, or any figure
+  panel. It was previously encoded as `fixed(0)`, which made the paclitaxel
+  covariate inert. It now carries `fixed(1.15)`, borrowed from the 2024 parent
+  model (`FernandezTeruel_2024_capivasertib`, Fernandez-Teruel 2024 Table 3).
+  This is a cross-fit borrow, not a 2025 estimate -- every other shared
+  parameter was re-estimated between the two fits -- and is labelled as such in
+  the model file, the `CONMED_PACLITAXEL` covariate notes, and the vignette
+  Errata. Patients without paclitaxel are unaffected, since `(1 + 0 * 1.15) = 1`.
+  The encoding is checked in the vignette against the 2024 paper's own printed
+  result that paclitaxel raises `CL_ss/F` by 20%.
+
+- Correct a backwards sign-reasoning comment in
+  `FernandezTeruel_2024_capivasertib` and its vignette. Both stated that,
+  because `Imax < 0`, a multiplier above 1 *deepens* the auto-inhibition of
+  `CL/F`. The opposite holds: `Imax` is the log of the fractional inhibition, so
+  a multiplier above 1 drives `Imax_i` further negative, shrinks
+  `exp(Imax_i)`, and therefore shallows the inhibition and raises `CL/F`. The
+  encoded model was always correct -- no parameter value or model behaviour
+  changes -- but the sentence inverted the very reasoning a reader needs in
+  order to follow the dose and paclitaxel effects. The replacement wording
+  anchors the direction in the paper's own dose panel (the multiplier shrinks
+  as dose rises, which is what deepens the inhibition to the printed
+  18% / 22% / 54%). A library-wide sweep of every model that multiplies a log-
+  or logit-scale magnitude by a covariate factor found no other instance.
 
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes

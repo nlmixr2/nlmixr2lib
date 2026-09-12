@@ -127,12 +127,18 @@ FernandezTeruel_2025_capivasertib <- function() {
         "patients (10.6%, Table S1), in the BEECH study and part B of the",
         "China PK study. The term (1 + PACL * Imax_pacl) is RETAINED in the",
         "paper's printed Imax equation (p. 7) and Imax_pacl is defined in the",
-        "equation legend, but ITS ESTIMATE IS REPORTED NOWHERE -- not in",
-        "Table 2, not in the supplement, not in any figure. See the",
-        "`e_pacl_cl_time_max` entry in ini() for how that gap is encoded and",
-        "why. The reference level pools capivasertib monotherapy and",
-        "capivasertib + fulvestrant, since fulvestrant was screened and not",
-        "retained."
+        "equation legend, but ITS ESTIMATE IS REPORTED NOWHERE IN THIS PAPER",
+        "-- not in Table 2, not in the supplement, not in any figure panel.",
+        "The coefficient used here is therefore BORROWED from the 2024 parent",
+        "model (FernandezTeruel_2024_capivasertib.R, Imax_pacl = 1.15), held",
+        "constant, and is the only parameter in this file not taken from",
+        "Fernandez Teruel 2025. Setting CONMED_PACLITAXEL = 1 therefore",
+        "simulates a cross-fit approximation, NOT a 2025 estimate; every other",
+        "parameter shared by the two fits was re-estimated. See the",
+        "`e_pacl_cl_time_max` entry in ini() and the vignette Errata for the",
+        "full provenance. The reference level pools capivasertib monotherapy",
+        "and capivasertib + fulvestrant, since fulvestrant was screened and",
+        "not retained."
       ),
       source_name        = "PACL"
     )
@@ -305,23 +311,38 @@ FernandezTeruel_2025_capivasertib <- function() {
     e_wt_logitffo      <- -1.27;    label("Power exponent of (WT / 67 kg) acting on the logit-scale first-order fraction (unitless)")  # Fernandez Teruel 2025 Table 2: F1_BBW = -1.27 (bootstrap median -1.2, 95% CI -1.62 to -0.811)
     e_dose_cl_time_max <- -0.00213; label("Linear-deviation coefficient of planned dose on log-Imax, per mg above 480 mg (1/mg)")   # Fernandez Teruel 2025 Table 2: Imax_dose = -0.00213 (bootstrap median -0.00209, 95% CI -0.00253 to -0.00133)
 
-    # UNREPORTED IN THE SOURCE -- encoded as fixed(0), NOT estimated, NOT
-    # imputed. The paper's printed Imax equation (p. 7) retains the factor
+    # NOT REPORTED IN THIS PAPER -- the value below is BORROWED from the 2024
+    # parent model, held constant, and is the ONE parameter in this file that
+    # does not come from Fernandez Teruel 2025. Read the provenance before
+    # using the paclitaxel arm.
+    #
+    # The paper's printed Imax equation (p. 7) retains the factor
     # (1 + PACL * Imax_pacl), and the equation legend states "Imax_pacl
     # represents the relationship between concomitant paclitaxel and Imax",
     # but no estimate for it appears anywhere on disk: not in Table 2 (which
     # tabulates every OTHER coefficient in every equation), not in the
     # supplement (Tables S1-S5, Figures S1-S6), and not inside any figure
-    # panel. The 2024 parent model reports Imax_pacl = 1.15, but that is a
-    # DIFFERENT fit -- every other shared parameter was re-estimated here
-    # (Imax -1.87 vs -1.54, Imax_dose -0.00213 vs -0.00183) -- so carrying it
-    # across would be fabricating a 2025 value.
+    # panel (the publisher's native-resolution figure files were checked).
     #
-    # Setting it to 0 makes (1 + PACL * 0) = 1, so the encoded model is EXACTLY
-    # the paper's model for every paclitaxel-free patient. That is 89.4% of the
-    # PopPK cohort and 100% of the CAPItello-291 population this paper exists
-    # to describe. To simulate the paclitaxel arm, a user must supply a value.
-    e_pacl_cl_time_max <- fixed(0); label("Fractional change in log-Imax with concomitant paclitaxel (unitless); UNREPORTED in the source, set to 0 = no effect")  # Fernandez Teruel 2025 p. 7 equation retains the term; the estimate is reported nowhere. See vignette Errata.
+    # Carrying the 2024 estimate across is a cross-fit borrow, not a 2025
+    # estimate: every other shared parameter WAS re-estimated between the two
+    # fits (Imax -1.54 -> -1.87, Imax_dose -0.00183 -> -0.00213), so the true
+    # 2025 value is unknown and is not necessarily 1.15. What the borrow does
+    # buy is a usable paclitaxel arm instead of an inert one, and the equation
+    # form is identical between the two papers, so the value is at least
+    # dimensionally and structurally transportable.
+    #
+    # The borrowed value reproduces the 2024 paper's own printed covariate
+    # result, which is the check that the ENCODING (as opposed to the
+    # transported value) is right. Fernandez-Teruel 2024 Sect. 4 reports
+    # patients on concomitant paclitaxel had 20% higher CL_ss/F (median ratio
+    # 1.20). On the 2024 fit at 400 mg:
+    #   no paclitaxel: exp(-1.54 * 1.1464)          = 0.1711 -> 17.1% inhibition
+    #   + paclitaxel : exp(-1.54 * 1.1464 * 2.15)   = 0.0225 ->  2.3% inhibition
+    #   CL_ss/F ratio = (1 - 0.0225) / (1 - 0.1711) = 1.179   vs printed 1.20
+    # (1.179 is the typical-subject value; the printed 1.20 is a median over a
+    # cohort carrying IIV on Imax.)
+    e_pacl_cl_time_max <- fixed(1.15); label("Fractional change in log-Imax with concomitant paclitaxel (unitless)")  # NOT from Fernandez Teruel 2025, which reports no estimate: borrowed from the 2024 parent, Fernandez-Teruel 2024 Table 3 Imax_pacl = 1.15 (RSE 12.5%, bootstrap 95% CI 1-6.91), per operator decision 2026-09-11. See vignette Errata.
 
     # --- Between-subject variability ---------------------------------------
     # Table 2 reports every IIV in a single column headed "CV (%)", and one of
@@ -384,8 +405,13 @@ FernandezTeruel_2025_capivasertib <- function() {
     # Fernandez Teruel 2025 p. 7: the dose and paclitaxel effects are
     # MULTIPLICATIVE on the log-scale magnitude, and so is the random effect:
     #   Imax_i = Imax * (1 + (DOSE - 480)*Imax_dose) * (1 + PACL*Imax_pacl) * exp(eta)
-    # Since Imax < 0, a multiplier > 1 deepens the inhibition and a multiplier
-    # < 1 shallows it.
+    # Imax is the LOG of the fractional inhibition and is negative, so the
+    # multiplier acts in the COUNTER-INTUITIVE direction: a multiplier > 1
+    # drives Imax_i further negative, shrinking exp(Imax_i), which SHALLOWS
+    # the inhibition and raises CL/F; a multiplier < 1 DEEPENS it. The paper's
+    # own two printed reductions confirm the direction -- 640 mg carries the
+    # SMALLER multiplier (0.659) and gives the LARGER inhibition (29.1%),
+    # while 400 mg carries 1.170 and gives 11.2%.
     lcl_time_max_ind <- lcl_time_max *
       (1 + (DOSE_CAPIVASERTIB_MG - 480) * e_dose_cl_time_max) *
       (1 + CONMED_PACLITAXEL * e_pacl_cl_time_max) *
