@@ -378,6 +378,17 @@ notes: <free text>
 - **Example models:** `Voller_2017_phenobarbital.R` (linear-deviation effect on CL: `clbw = 1 + 0.369 * (WT_BIRTH - 2.59)`), `Wu_2025_paracetamol.R` (power-law scaling of PTNA CL_birth and GFR_birth terms with reference 1.75 kg).
 - **Notes:** Time-fixed at birth; characterises pre-/term-newborn cohorts. Pairs with `GA` (gestational age at birth) when both are reported. The conventional clinical-PK abbreviation `BWT` is intentionally NOT used as the canonical name because it is already used across the codebase (Gandhi 2021, Li 2019, Chen 2022, Wojciechowski 2022, Lu 2019) as a source-name alias for body weight (`WT`). The `WT_BIRTH` form keeps the `WT` root consistent with the existing body-weight canonical and avoids the `BWT` ambiguity.
 
+### HT_BIRTH (**canonical for birth length**)
+- **Description:** Body length measured at birth. Time-fixed per subject. Distinct from `HT` (baseline or current body height), on exactly the principle that distinguishes `WT_BIRTH` from `WT`: a neonatal dataset can carry both a daily body length and the value recorded at birth, and a model that fitted one must not be driven with the other.
+- **Units:** cm
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(HT_BIRTH / ref)^exponent` or with linear centering. Reference value observed: 33 cm (Padavia 2024, extreme-preterm cohort median 32.75 cm rounded to the value the published equation uses).
+- **Source aliases:**
+  - `BL` -- Padavia 2024 source-paper symbol for birth length in cm (`beta_V2_BL`); same quantity, no value transformation.
+- **Example models:** `Padavia_2024_paracetamol.R` (reference 33 cm; power exponent 6.46 on the paracetamol peripheral volume of distribution V2, the only size covariate the paper retained on a volume).
+- **Notes:** Registered because the source dataset separately carries a time-varying daily body length -- Padavia 2024 Methods 2.2 states that "Bodyweight and body length were also collected every day during treatment", while Results 3.2 and the Conclusion both name the retained covariate specifically as *birth* length. Reusing `HT` here would make one canonical name mean two different measurements in the same dataset, so the fixed-at-birth value gets its own column just as birth weight does. Pairs with `WT_BIRTH` and `GA` in pre-/term-newborn cohorts. A model retaining `HT_BIRTH` alongside the time-varying `WT` (as Padavia 2024 does) should say so in `covariateData`, because the two size descriptors then differ in whether they are fixed at birth and a user joining the wrong column into either one gets a silently wrong model.
+
 ### AGE_DPF (**canonical for zebrafish-larval age in days post-fertilization**)
 - **Description:** Age of a zebrafish (Danio rerio) larva in days post-fertilization (dpf). Time-fixed per subject in destructive-sampling designs (each larva is harvested at exactly one observation, so its dpf is fixed at the value assigned at exposure-start).
 - **Units:** days post-fertilization (dpf)

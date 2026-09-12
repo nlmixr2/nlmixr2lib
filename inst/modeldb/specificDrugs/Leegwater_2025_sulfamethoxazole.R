@@ -151,7 +151,7 @@ Leegwater_2025_sulfamethoxazole <- function() {
     # control stream (all values there are the final estimates entered as
     # FIX for simulation).
     lka <- log(0.978); label("First-order absorption rate constant for sulfamethoxazole (1/h)")                     # Table 3: 0.978 1/h, RSE 45%, bootstrap 95% CI 0.25-8.61; control stream $THETA(3) "0.978 FIX"
-    lcl <- log(0.97); label("Apparent sulfamethoxazole elimination clearance at eGFR 68 mL/min/1.73 m^2 without CRRT (L/h)") # Table 3: 0.97 L/h, RSE 4%; control stream $THETA(1) "0.97 FIX". NOTE this is the K20 (elimination) arm only -- the metabolite formation arm K23 is an ADDITIONAL 0.4*CL, so total sulfamethoxazole elimination is 1.4*CL. See f_clform_nasmx below.
+    lcl <- log(0.97); label("Apparent sulfamethoxazole elimination clearance at eGFR 68 mL/min/1.73 m^2 without CRRT (L/h)") # Table 3: 0.97 L/h, RSE 4%; control stream $THETA(1) "0.97 FIX". NOTE this is the K20 (elimination) arm only -- the metabolite formation arm K23 is an ADDITIONAL 0.4*CL, so total sulfamethoxazole elimination is 1.4*CL. See clrat_nasmx below.
     lvc <- log(37.0); label("Apparent sulfamethoxazole central volume of distribution (L)")                             # Table 3: 37.0 L, RSE 6%, bootstrap 95% CI 21.5-43.3; control stream $THETA(2) "37 FIX"
     lfdepot <- fixed(log(1)); label("Oral bioavailability (unitless)")                                               # Table 3: "Biological availability 1 Fixed"; control stream $THETA(5) "1 FIX". Results: estimated first, found ~100%, then fixed to 100%.
 
@@ -165,7 +165,7 @@ Leegwater_2025_sulfamethoxazole <- function() {
     # N-acetyl sulfamethoxazole (metabolite) parameters. The "_nasmx" suffix
     # is registered as a metabolite-suffix entry in
     # inst/references/compartment-names.md.
-    f_clform_nasmx <- fixed(0.4); label("N-acetyl sulfamethoxazole formation clearance as a multiple of sulfamethoxazole CL (unitless)") # Table 3 "Conversion parent metabolite: 0.4 x CL"; control stream "K23 = 0.4*CL/V2". Methods: "No urine concentrations were available for sulfamethoxazole or N-acetyl sulfamethoxazole; therefore, 40% of the total sulfamethoxazole clearance was estimated to be converted to N-acetyl sulfamethoxazole" (citing Kucers' the Use of Antibiotics, ref. 19). Deliberately NOT named fm_nasmx: K23 sits alongside K20 rather than inside it, so 0.4 is the formation clearance relative to the ELIMINATION clearance, and the implied share of TOTAL clearance is 0.4/1.4 = 0.286. See the vignette Errata.
+    clrat_nasmx <- fixed(0.4); label("N-acetyl sulfamethoxazole formation clearance as a multiple of sulfamethoxazole CL (unitless)") # Table 3 "Conversion parent metabolite: 0.4 x CL"; control stream "K23 = 0.4*CL/V2". Methods: "No urine concentrations were available for sulfamethoxazole or N-acetyl sulfamethoxazole; therefore, 40% of the total sulfamethoxazole clearance was estimated to be converted to N-acetyl sulfamethoxazole" (citing Kucers' the Use of Antibiotics, ref. 19). Deliberately NOT named fm_nasmx: K23 sits alongside K20 rather than inside it, so 0.4 is the formation clearance relative to the ELIMINATION clearance, and the implied share of TOTAL clearance is 0.4/1.4 = 0.286. See the vignette Errata.
     lcl_nasmx <- log(1.34); label("Apparent N-acetyl sulfamethoxazole clearance at eGFR 68 mL/min/1.73 m^2 without CRRT (L/h)") # Table 3: 1.34 L/h, RSE 4%, bootstrap 95% CI 1.21-1.43; control stream $THETA(4) "1.34 FIX"
     lvc_nasmx <- log(3.98); label("Apparent N-acetyl sulfamethoxazole central volume of distribution (L)")              # Table 3: 3.98 L, RSE 24%, bootstrap 95% CI 1.55-6.33; control stream $THETA(7) "3.98 FIX"
     e_crcl_cl_nasmx <- 0.797; label("Power exponent on (CRCL/68) for N-acetyl sulfamethoxazole CL in patients not receiving CRRT (unitless)") # Table 3 "eGFR on CL" (metabolite block): 0.797, RSE 7%, bootstrap 95% CI 0.65-0.92; control stream $THETA(10) "0.797 FIX"
@@ -219,12 +219,12 @@ Leegwater_2025_sulfamethoxazole <- function() {
     #
     # K20 and K23 are BOTH first-order losses from the sulfamethoxazole
     # compartment, so total sulfamethoxazole elimination is
-    # (1 + f_clform_nasmx) * cl / vc, i.e. 1.4 * cl / vc. The Methods
+    # (1 + clrat_nasmx) * cl / vc, i.e. 1.4 * cl / vc. The Methods
     # sentence describing 0.4 as a share of "total" clearance is looser than
     # what the control stream implements; the vignette Errata reproduces the
     # paper's own target-attainment percentages to confirm the 1.4 factor.
     kel       <- cl / vc                          # K20
-    kform     <- f_clform_nasmx * cl / vc         # K23
+    kform     <- clrat_nasmx * cl / vc         # K23
     kel_nasmx <- cl_nasmx / vc_nasmx              # K30
 
     # The metabolite transfer is a plain amount-for-amount transfer, as
