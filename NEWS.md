@@ -46,7 +46,7 @@
   physical unit otherwise (24). Two parameters that carried no `label()` at all
   (`Kretsos_2014_olokizumab` `propSd` and `propSd_crp`) now have one. No
   parameter value, model structure or parameter name changes.
-- Add Tseng 2026 vancomycin ([doi:10.2147/DDDT.S574548](https://doi.org/10.2147/DDDT.S574548)) -- adults with intracranial hemorrhage and an external ventricular drain.
+- Add Jia 2026 rivaroxaban ([doi:10.1007/s00228-026-04034-6](https://doi.org/10.1007/s00228-026-04034-6)) -- adults after a transjugular intrahepatic portosystemic shunt (TIPS).
 
 - Add Kumta 2025 piperacillin and tazobactam ([doi:10.1128/aac.00601-24](https://doi.org/10.1128/aac.00601-24)) -- critically ill neurosurgical adults with an external ventricular drain.
 
