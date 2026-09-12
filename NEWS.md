@@ -57,7 +57,7 @@
   `theta1` is corrected, and its two anchor chunks now solve the model instead
   of restating its equation inline so the same drift cannot recur silently.
 
-- Add Takechi 2025 nemolizumab ([doi:10.1007/s13555-025-01554-4](https://doi.org/10.1007/s13555-025-01554-4)) -- Japanese patients with atopic dermatitis or prurigo nodularis (popPK), and prurigo nodularis (PP-NRS popPD, plus IGA- and PP-NRS-success-rate MBMAs vs dupilumab).
+- Add Bihorel 2025 evinacumab ([doi:10.1002/psp4.70016](https://doi.org/10.1002/psp4.70016)) -- children, adolescents and adults with homozygous familial hypercholesterolemia, plus phase 1 participants.
 
 - Add Damnjanovic 2023 levetiracetam, lamotrigine and valproic acid ([doi:10.1177/20420986231181337](https://doi.org/10.1177/20420986231181337)) -- Serbian children aged 2-18 years on dual antiepileptic therapy.
 
