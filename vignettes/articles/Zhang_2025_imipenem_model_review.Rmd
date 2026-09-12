@@ -56,7 +56,7 @@ Four of the review's 18 studies were already in `nlmixr2lib`, extracted
 directly from their primary publications. Those were **not**
 re-extracted; they are better provenance than anything this review can
 supply, and they serve below as the validation set for the review's own
-accuracy. Three studies could not be reconstructed from the review
+accuracy. Two studies could not be reconstructed from the review
 alone. Nothing was silently dropped.
 
 ```{r coverage, echo = FALSE}
@@ -72,7 +72,7 @@ coverage <- tibble::tribble(
    8L, "Chen et al. (2020b)",             "Extracted",              "Chen_2020_imipenem",
    9L, "de Velde et al. (2020)",          "Extracted (NONMEM arm)", "deVelde_2020_imipenem",
   10L, "Nguyen et al. (2021)",            "Extracted",              "Nguyen_2021_imipenem",
-  11L, "Jaruratanasirikul et al. (2021)", "Blocked: needs an ABW canonical", NA_character_,
+  11L, "Jaruratanasirikul et al. (2021)", "Extracted",              "Jaruratanasirikul_2021_imipenem",
   12L, "Por et al. (2021)",               "Extracted",              "Por_2021_imipenem",
   13L, "Dao et al. (2022)",               "Extracted",              "Dao_2022_imipenem",
   14L, "Dinh et al. (2022)",              "Extracted",              "Dinh_2022_imipenem",
@@ -84,8 +84,8 @@ coverage <- tibble::tribble(
 knitr::kable(coverage)
 ```
 
-**13 model files extracted from 11 studies, 4 already covered from their
-primaries, 3 blocked.** The three blocked studies are:
+**14 model files extracted from 12 studies, 4 already covered from their
+primaries, 2 blocked.** The two blocked studies are:
 
 * **Li and Xie (2019)** -- a CRRT cohort whose total clearance is
   `CL_CRRT + CL_body`, with `CL_CRRT = Sd x CRRTintensity x BW/1000`.
@@ -104,13 +104,22 @@ primaries, 3 blocked.** The three blocked studies are:
   dialysate-flow covariate `Qd` is centred on 500 with no unit stated;
   CRRT flows are prescribed in mL/h while the canonical `DFR` column is
   mL/min, and with an exponent of 1.944 a 60-fold unit error becomes a
-  2800-fold clearance error.
-* **Jaruratanasirikul et al. (2021)** -- needs an `ABW` (adjusted body
-  weight) covariate canonical, which the register does not yet carry
-  (`WT`, `IBW`, `BMI`, `BSA` and `FFM` are registered; `ABW` and `LBW`
-  are not). Its central volume is `V1 = 13.8 - 0.348 x (ABW - 60)`.
-  Note also that this study's Table 2 central volume (13.6 L) disagrees
-  with the intercept printed in its Table 3 formula (13.8 L).
+  2800-fold clearance error. Both questions turn on what the primary
+  says, so the primary (Clin Ther 2020;42(8):1564-1577.e8,
+  [doi:10.1016/j.clinthera.2020.06.010](https://doi.org/10.1016/j.clinthera.2020.06.010))
+  has been queued for acquisition and this study deferred until it
+  arrives, rather than shipped on a guessed unit.
+
+**Jaruratanasirikul et al. (2021) was previously blocked and is now
+included.** It needs an `ABW` (adjusted body weight) covariate column,
+which the register did not carry -- `WT`, `IBW`, `BMI`, `BSA` and `FFM`
+were registered, `ABW` was not -- because its central volume is
+`V1 = 13.8 - 0.348 x (ABW - 60)`. `ABW` was ratified as a canonical
+covariate column with this extraction as its founding example; see
+`inst/references/covariate-columns.md`. Its two source quirks (a Table 2
+central volume of 13.6 L against a Table 3 formula intercept of 13.8 L,
+and a linear volume term that goes negative above 99.7 kg) are recorded
+in the per-model deviations below.
 
 # Population
 
@@ -123,7 +132,7 @@ haematological malignancy, neutropenia, AECOPD, CRRT, ECMO, neonates and
 children.
 
 Per-model demographics are in each file's `population` metadata; the
-table below collects the cohorts for the 13 models extracted here from
+table below collects the cohorts for the 14 models extracted here from
 the review's Table 1.
 
 ```{r population, echo = FALSE}
@@ -136,7 +145,8 @@ pop <- tibble::tribble(
   "Chen_2020_imipenem",                  "China",      247L, "67 (20-97) y",     "65 (37.5-110)",  "Critically ill, +/- ECMO",
   "deVelde_2020_imipenem",               "Netherlands", 26L, "51 (39-54) y",     "75 (66-85)",     "Critically ill",
   "Nguyen_2021_imipenem",                "Vietnam",     44L, "65 (60-72) y",     "50 (47-55)",     "AECOPD",
-  "Por_2021_imipenem",                   "USA",         23L, "51-55 y",          "89.6-105.1",     "Burns, +/- CVVH",
+  "Jaruratanasirikul_2021_imipenem",     "Thailand",    50L, "56.2 (41-66.6) y", "62.9 (52.8-70)", "Critically ill, +/- ECMO",
+  "Por_2021_imipenem",                 "USA",         23L, "51-55 y",          "89.6-105.1",     "Burns, +/- CVVH",
   "Dao_2022_imipenem",                   "Switzerland", 82L, "GA 26.9 wk, PNA 21 d", "1.16 (0.5-4.1)", "Neonates (extremely preterm)",
   "Dinh_2022_imipenem",                  "Vietnam",     24L, "57.5 +/- 19.9 y",  "51.3 +/- 8.6",   "Critically ill",
   "Lafaurie_2023_imipenem_neutropenia",  "France",      16L, "37 (18.3-78.3) y", "65.5 (48-101)",  "Neutropenic adults (during)",
@@ -155,7 +165,7 @@ str(readModelDb("Dao_2022_imipenem")()$population[c("n_subjects", "ga_range", "w
 # Source trace
 
 Every `ini()` value in every file carries an in-file comment naming its
-origin. Because all 13 models share one secondary source, the trace
+origin. Because all 14 models share one secondary source, the trace
 collapses to a single rule, stated here once and repeated per parameter
 in the files:
 
@@ -181,6 +191,7 @@ The covariate equations transcribed from Table 3 are:
 | `Chen_2020_imipenem` | `CL = 8.88 x (CLcr/59.1)^0.295 x (BW/65.0)^0.306 x e^1.16 [ECMO] x e^eta` |
 | `deVelde_2020_imipenem` | `Ke = 0.637 x ((eGFR CKD-EPI-abs)/119)^0.655 x e^eta` |
 | `Nguyen_2021_imipenem` | `CL = 7.88 x (CLcr/75.54)^0.532 x e^eta` |
+| `Jaruratanasirikul_2021_imipenem` | `CL = 13.3 + 0.112 x (eGFR CKD-EPI - 89)`; `V1 = 13.8 - 0.348 x (ABW - 60)` |
 | `Por_2021_imipenem` | `Vc = 32.67 x (BW/99.5)^0.74 x (ALB/2.7)^-1.17 x e^eta`; `Vp = 41.23 x (ALB/2.7)^-3.68`; no CVVH: `CL = 15.31 x (CLcr/145.83)^0.46 x (BW/99.5)^0.33 x e^eta`; with CVVH: `CL = 13.78 x (BW/99.5)^0.75 x e^eta + 1.56` |
 | `Dao_2022_imipenem` | `CL = 0.21 x (BW/1.16)^0.75 x (1 + 0.22 x (PNA-21)/21) x (1 + 1.31 x (GA-26.9)/26.9) x (46.6/SCr)^0.2`; `V = 0.73 x (BW/1.16)^0.75` |
 | `Dinh_2022_imipenem` | `CL = 4.79 x e^(0.00642 x CLcr)` |
@@ -222,6 +233,12 @@ cfg <- list(
     cov = list(CRCL = 119), cl_pub = 0.637 * 29.6, vc_pub = 29.6, dose = 500),
   Nguyen_2021_imipenem = list(
     cov = list(CRCL = 75.54), cl_pub = 7.88, vc_pub = 15.1, dose = 500),
+  Jaruratanasirikul_2021_imipenem = list(
+    # Both covariate terms are LINEAR deviations, so the reference subject
+    # is the one at which both deviations are zero: eGFR CKD-EPI = 89
+    # mL/min/1.73 m^2 and ABW = 60 kg. vc_pub is the Table 3 FORMULA
+    # INTERCEPT (13.8 L), not the Table 2 value (13.6 L) -- see the Errata.
+    cov = list(CRCL = 89, ABW = 60), cl_pub = 13.3, vc_pub = 13.8, dose = 1000),
   Por_2021_imipenem = list(
     # ALB supplied in canonical SI g/L; the model converts to the g/dL the
     # source was calibrated on, so 27 g/L == the reference 2.7 g/dL.
@@ -536,15 +553,20 @@ already in the registry or are blocked:
 
 ## Gate 4 -- renal-function gradient
 
-Seven of the 13 models carry a renal-function covariate on clearance,
+Eight of the 14 models carry a renal-function covariate on clearance,
 all with a positive coefficient. Clearance must therefore increase
 monotonically with creatinine clearance in every one of them. A sign
 error, or a reference constant placed in the wrong position of a ratio,
-breaks this.
+breaks this. Note that the eight are not all on the same renal scale --
+`deVelde_2020_imipenem` uses an absolute CKD-EPI eGFR in mL/min while
+`Jaruratanasirikul_2021_imipenem` uses the BSA-normalised CKD-EPI eGFR
+in mL/min/1.73 m^2 -- so the grid below is a within-model sweep, not a
+cross-model comparison of clearance at a common renal function.
 
 ```{r gate-renal}
 renal_models <- c("Chen_2020_imipenem", "deVelde_2020_imipenem",
                   "Dinh_2022_imipenem", "Dong_2019_imipenem",
+                  "Jaruratanasirikul_2021_imipenem",
                   "Nguyen_2021_imipenem", "Por_2021_imipenem",
                   "Truong_2025_imipenem")
 crcl_grid <- c(15, 30, 60, 90, 120, 150)
@@ -596,6 +618,7 @@ spread is the review's central finding, made quantitative.
 ```{r gate-ss}
 adults_ss <- c("Chen_2020_imipenem", "deVelde_2020_imipenem",
                "Dinh_2022_imipenem", "Ikawa_2008_imipenem",
+               "Jaruratanasirikul_2021_imipenem",
                "Lafaurie_2023_imipenem_neutropenia",
                "Lafaurie_2023_imipenem_recovery",
                "Nguyen_2021_imipenem", "Por_2021_imipenem",
@@ -645,8 +668,8 @@ Four of the review's 18 studies were already in `nlmixr2lib`, extracted
 from their **primary** publications: `Lamoth_2009_imipenem`,
 `Couffignal_2014_imipenem`, `Bai_2024_imipenem` and
 `Wang_2024_imipenem`. They form a validation set for the review's
-accuracy, and the result decides how much weight the other 13 models can
-carry.
+accuracy, and the result decides how much weight the other 14 models
+can carry.
 
 **Structural parameters and covariate equations: 4 of 4 agree exactly.**
 The review's Table 2 typical values and Table 3 covariate formulations
@@ -693,9 +716,9 @@ an **apparent CV** of a log-normal random effect, so
   more than 50%;
 * badly wrong for a row that is really a variance -- but the only known
   such row, Wang 2024, is already extracted from its primary and is
-  therefore not among the 13 models here.
+  therefore not among the 14 models here.
 
-The alternative -- blocking all 13 models until every primary is
+The alternative -- blocking all 14 models until every primary is
 obtained -- was rejected because the per-study answer requires exactly
 the primaries that the "re-verify against the primary" notes already
 flag. **Treat every IIV magnitude in this family as provisional. The
@@ -789,6 +812,48 @@ much firmer ground.**
   split as 151/0. Unusual enough to warrant re-checking against the
   primary; it would make sex unidentifiable by construction rather than
   merely non-significant.
+* **`Jaruratanasirikul_2021_imipenem` -- the source disagrees with
+  itself about the central volume.** Table 2 prints `V1: 13.6 L`, while
+  the Table 3 covariate formula reads `V1 = 13.8 - 0.348 x (ABW - 60)`,
+  i.e. an intercept of 13.8 L at the reference `ABW` of 60 kg. The
+  **formula intercept** is encoded, because it is the quantity the
+  covariate term is conditioned on: pairing the Table 2 value with the
+  Table 3 slope would shift every predicted volume by a constant 0.2 L
+  and break the reference-subject identity that Gate 2 tests. The
+  discrepancy is 1.5%. Clearance has no such conflict -- Table 2 and the
+  Table 3 intercept agree exactly at 13.3 L/h -- which is mild evidence
+  that the 13.6 is the slip.
+* **`Jaruratanasirikul_2021_imipenem` -- the volume term has a bounded
+  domain and the model will not tell you when you leave it.** `V1` is
+  linear in `ABW` with a **negative** slope, so it falls to zero at
+  `ABW = 60 + 13.8/0.348 = 99.7 kg` and is negative above that. The
+  study's own cohort is light (median total body weight 62.9 kg, IQR
+  52.8-70.0), so the term was fitted far from the zero-crossing; do not
+  simulate this model at obese adjusted body weights. The clearance term
+  is linear too but with a positive slope, so it has no reachable
+  zero-crossing. This is the same failure shape as the two centred
+  linear age terms in `Dao_2022_imipenem` noted above.
+* **`Jaruratanasirikul_2021_imipenem` -- ABW is a newly ratified
+  canonical, and its formula is not in the source.** `ABW` (adjusted
+  body weight) was added to `inst/references/covariate-columns.md` with
+  this extraction as its founding example. Neither the review nor its
+  Table 3 footnote -- which glosses only "ABW, adjusted body weight" --
+  states which ideal-body-weight formula or which interpolation factor
+  the primary used. The conventional `IBW + 0.4 x (TBW - IBW)` is
+  recorded in the register and in the model file as the usual
+  convention, explicitly not as a value read from this source. A user
+  driving this model must supply `ABW` on whatever scale the primary
+  used, which means the primary is needed before the covariate can be
+  reproduced exactly.
+* **`Jaruratanasirikul_2021_imipenem` -- the most permissive covariate
+  selection thresholds in the review.** Forward inclusion at
+  `dOFV > 3.84` (p < 0.05) and backward elimination at `dOFV > 6.64`
+  (p < 0.01), against the `10.828` (p < 0.001) backward threshold used
+  by, for example, Nguyen 2021. Both retained effects should be read
+  with that in mind. The study's headline negative result -- that ECMO
+  support, ECMO type, ECMO flow rate and ECMO duration were all screened
+  and none retained -- is correspondingly stronger, since it survived
+  the easiest threshold to pass.
 * **`Lafaurie_2023_imipenem_*` -- two files, not one.** The review
   reports the neutropenic and recovered phases with separate structural
   values, separate IIV **and separate residual error**. A per-phase
