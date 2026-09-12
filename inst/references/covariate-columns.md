@@ -3174,6 +3174,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (presence indicator only; no tirzepatide dose-response was estimable over the studied 5-15 mg range).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family, and is the sibling canonical that the `DOSE_SEMAGLUTIDE_MG` Notes anticipated by name. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
 
+### DOSE_TBAJ587_MG (**canonical for administered TBAJ-587 oral dose in mg**)
+- **Description:** Administered oral dose of the second-in-class diarylquinoline antitubercular TBAJ-587, in mg, referenced to 200 mg. Used as a *continuous* covariate on absorption, clearance and metabolite-formation parameters.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- continuous, referenced to 200 mg (the dose level at which every Leding 2026 Table 1 typical value is reported, and the only level studied under fed conditions).
+- **Source aliases:**
+  - `DOSE` -- Leding 2026 Supporting Information Code S1 `$INPUT` (`DOSE ; dose in mg`), kept distinct there from `AMT ; dose in nmol`.
+- **Example models:** `Leding_2026_tbaj587.R` (founding example; five retained effects, all referenced to 200 mg -- a power function on apparent parent clearance (exponent 0.298), on both relative fractions metabolised (`fm_m3` -0.418, `fm_m2` -0.373) and on apparent M2 clearance (0.146), plus an *exponential* function on the absorption rate constant, `ka * exp(-0.000462 * (DOSE - 200))`. Studied levels 25, 50, 100, 200, 400 and 800 mg).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. **This column is not the dosing amount and cannot be derived from it.** Leding 2026 fitted natural-log-transformed *molar* concentrations and dosed `AMT` in nmol, while the dose covariates act on the mg dose, so a model carrying them needs both quantities on the record; the paper reports no molecular weight, so neither can be computed from the other. Set it on every record of a subject to that subject's assigned mg dose level. For the multiple-dose simulations of Leding 2026 Methods 2.4 it is the daily mg dose, taking the loading-dose value during a loading period and the maintenance value thereafter -- which is what makes the dose dependence of apparent clearance change partway through a loading regimen. The dose non-linearity is real but mechanistically unexplained (Leding 2026 Discussion: "The mechanism of the dose non-linearity is not known but describes likely multiple different processes"); note it raises apparent oral clearance with increasing dose, and the authors report that omitting it or replacing it with a dose-dependent relative bioavailability worsened the fit.
+
 ### DOSE_COTADUTIDE_MG (**canonical for per-arm assigned cotadutide dose**)
 - **Description:** Assigned cotadutide (MEDI0382, a GLP-1/glucagon dual agonist) dose in mg per once-daily subcutaneous injection; 0 when the arm/subject did not receive cotadutide.
 - **Units:** mg (per once-daily injection)

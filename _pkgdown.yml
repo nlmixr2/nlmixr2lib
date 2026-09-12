@@ -4292,6 +4292,8 @@ navbar:
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
       - text: "Tazobactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Tbaj587 (Leding 2026)"
+        href: articles/Leding_2026_tbaj587.html
       - text: "Tebipenem (Ebihara 2025)"
         href: articles/Ebihara_2025_tebipenem.html
       - text: "Tebipenem (Ganesan 2023)"
@@ -6008,6 +6010,7 @@ articles:
   - articles/Le_2015_lampalizumab
   - articles/Le_2015_lampalizumab_cyno
   - articles/Leber_2023_immunosuppressants_hemoperfusion
+  - articles/Leding_2026_tbaj587
   - articles/Lee_2011_parkinson_progression
   - articles/Lee_2013_colistin
   - articles/Lee_2015_sumatriptan
