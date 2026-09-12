@@ -1358,6 +1358,10 @@ navbar:
         href: articles/Kapitanov_2025_dupilumab.html
       - text: "Durvalumab (Abegesah 2025)"
         href: articles/Abegesah_2025_durvalumab.html
+      - text: "Durvalumab (Ogasawara 2020)"
+        href: articles/Ogasawara_2020_durvalumab.html
+      - text: "Durvalumab (Zhao 2026)"
+        href: articles/Zhao_2026_durvalumab.html
       - text: "Durvalumab (deVries 2025)"
         href: articles/deVries_2025_durvalumab.html
       - text: "Durvalumab (Ogasawara 2020)"
@@ -7268,7 +7272,7 @@ articles:
   - articles/Zhao_2025_nivolumab
   - articles/Zhao_2025_paracetamol
   - articles/Zhao_2025_vancomycin
-  - articles/Zhao_2026_infliximab
+  - articles/Zhao_2026_durvalumab
   - articles/Zhao_2026_venetoclax
   - articles/Zheng_2012_minipig_mab
   - articles/Zheng_2014_azithromycin
