@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Chae 2026 teicoplanin ([doi:10.2147/DDDT.S550736](https://doi.org/10.2147/DDDT.S550736)) — Korean neutropenic adults after haematopoietic stem cell transplantation.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`
