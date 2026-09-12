@@ -8,7 +8,7 @@ Straube_2025_caplacizumab_1cmt <- function() {
     "Parameters in Table 2 were estimated by Straube by fitting the",
     "one-compartment TMDD model in Equation (2) to ALX-0081 total-drug time",
     "courses digitised from Glassman PM, Muzykantov VR.",
-    "J Pharmacokinet Pharmacodyn. 2020;47:573-591; doi:10.1007/s10928-020-09700-5,",
+    "Target-Mediated Exposure Enhancement: A Previously Unexplored Limit of TMDD. J Pharmacokinet Pharmacodyn. 2020;47(5):411-420; doi:10.1007/s10928-020-09693-1,",
     "which is also the source of the fixed koff, Kd, Rb and Tacc values.",
     sep = " "
   )
