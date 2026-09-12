@@ -3824,6 +3824,8 @@ navbar:
         href: articles/Liang_2024_rituximab.html
       - text: "Rivaroxaban (Gu 2025)"
         href: articles/Gu_2025_rivaroxaban.html
+      - text: "Rivaroxaban (Jia 2026)"
+        href: articles/Jia_2026_rivaroxaban.html
       - text: "Rivaroxaban (Lai 2026)"
         href: articles/Lai_2026_rivaroxaban.html
       - text: "Rivaroxaban (Ren 2026)"
@@ -5827,6 +5829,7 @@ articles:
   - articles/Ji_2025_TDI01
   - articles/Jia_2015_unfractionatedHeparin
   - articles/Jia_2025_tak_071
+  - articles/Jia_2026_rivaroxaban
   - articles/Jian_2025_peginterferon_alfa_2b
   - articles/Jiang_2008_gemcitabine
   - articles/Jiang_2023_imatinib
