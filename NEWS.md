@@ -57,7 +57,7 @@
   `theta1` is corrected, and its two anchor chunks now solve the model instead
   of restating its equation inline so the same drift cannot recur silently.
 
-- Add Liu 2025 selpercatinib ([doi:10.1002/psp4.70042](https://doi.org/10.1002/psp4.70042)) -- adults, adolescents and children aged 2 years and older with RET-altered solid tumors.
+- Add Huo 2025 lamotrigine ([doi:10.2147/DDDT.S541597](https://doi.org/10.2147/DDDT.S541597)) -- Chinese women with epilepsy during pregnancy and postpartum.
 
 - Add Damnjanovic 2023 levetiracetam, lamotrigine and valproic acid ([doi:10.1177/20420986231181337](https://doi.org/10.1177/20420986231181337)) -- Serbian children aged 2-18 years on dual antiepileptic therapy.
 
