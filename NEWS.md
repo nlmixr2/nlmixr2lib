@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Babel 2026 telisotuzumab vedotin ([doi:10.1002/psp4.70219](https://doi.org/10.1002/psp4.70219)) — adults with c-Met protein overexpressing advanced solid tumours, mostly non-small cell lung cancer. Six models: conjugate and unconjugated MMAE payload population PK, plus four exposure-response logistic models.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`

@@ -4330,6 +4330,18 @@ navbar:
         href: articles/Morris_2011_telapristone.html
       - text: "Telavancin (VanWart 2025)"
         href: articles/VanWart_2025_telavancin.html
+      - text: "Telisotuzumab (Babel 2026)"
+        href: articles/Babel_2026_telisotuzumab.html
+      - text: "Telisotuzumab corneal (Babel 2026)"
+        href: articles/Babel_2026_telisotuzumab.html
+      - text: "Telisotuzumab mmae (Babel 2026)"
+        href: articles/Babel_2026_telisotuzumab.html
+      - text: "Telisotuzumab neuropathy (Babel 2026)"
+        href: articles/Babel_2026_telisotuzumab.html
+      - text: "Telisotuzumab orr (Babel 2026)"
+        href: articles/Babel_2026_telisotuzumab.html
+      - text: "Telisotuzumab teae (Babel 2026)"
+        href: articles/Babel_2026_telisotuzumab.html
       - text: "Telmisartan pbpk (Tsuchitani 2024)"
         href: articles/Tsuchitani_2024_telmisartan_pbpk.html
       - text: "Temocapril pbpk (Luo 2024)"
@@ -5163,6 +5175,7 @@ articles:
   - articles/Ayyar_2024_givosiran
   - articles/Ayyoub_2016_pyronaridine
   - articles/Azechi_2024_tamibarotene_pediatric
+  - articles/Babel_2026_telisotuzumab
   - articles/Back_2018_fenofibrate
   - articles/Bae_2026_MIT001
   - articles/Baheti_2011_tenofovir
