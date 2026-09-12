@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Rich 2026 momelotinib and its M21 metabolite ([doi:10.1002/cpt.70076](https://doi.org/10.1002/cpt.70076)) -- adults with myelofibrosis plus healthy and organ-impaired phase I participants.
+- Add Wang 2026 ciprofol ([doi:10.1186/s12871-026-03647-9](https://doi.org/10.1186/s12871-026-03647-9)) — Chinese children aged 1-9 years undergoing elective urologic surgery.
 
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
