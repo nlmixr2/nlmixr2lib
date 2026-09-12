@@ -282,8 +282,8 @@ Chen_2025_trimethoprim <- function() {
     # the printed numbers are variances on the log scale and go into ini()
     # unchanged. Methods: "Interindividual variability was characterised using
     # an exponential residual model", matching the exp(eta) form of Eq. 3-4.
-    etalvc ~ 0.19                                                                                            # Table 6 "omega^2 V": 0.19, RSE 16.78%, bootstrap median 0.18 (95% CI 0.13-0.25); omega = 43.6% on the log scale
-    etalcl ~ 0.25                                                                                            # Table 6 "omega^2 CL": 0.25, RSE 3.80%, bootstrap median 0.25 (95% CI 0.14-0.25); omega = 50.0% on the log scale
+    etalvc ~ 0.19                                                                                            # Table 6 'omega^2 V': 0.19, RSE 16.78%, bootstrap median 0.18 (95% CI 0.13-0.25); omega = 43.6% on the log scale
+    etalcl ~ 0.25                                                                                            # Table 6 'omega^2 CL': 0.25, RSE 3.80%, bootstrap median 0.25 (95% CI 0.14-0.25); omega = 50.0% on the log scale
 
     # Residual error. Results: "residual variability was appropriately
     # characterised using a proportional error model" for both analytes;

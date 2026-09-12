@@ -236,8 +236,8 @@ Chen_2025_sulfamethoxazole <- function() {
     # the printed numbers are variances on the log scale and go into ini()
     # unchanged. Methods: "Interindividual variability was characterised using
     # an exponential residual model", matching the exp(eta) form of Eq. 1-2.
-    etalvc ~ 0.08                                                                                                     # Table 5 "omega^2 V": 0.08, RSE 26.83%, bootstrap median 0.13 (95% CI 0.06-0.22); omega = 28.3% on the log scale
-    etalcl ~ 0.16                                                                                                     # Table 5 "omega^2 CL": 0.16, RSE 3.91%, bootstrap median 0.17 (95% CI 0.08-0.25); omega = 40.0% on the log scale
+    etalvc ~ 0.08                                                                                                     # Table 5 'omega^2 V': 0.08, RSE 26.83%, bootstrap median 0.13 (95% CI 0.06-0.22); omega = 28.3% on the log scale
+    etalcl ~ 0.16                                                                                                     # Table 5 'omega^2 CL': 0.16, RSE 3.91%, bootstrap median 0.17 (95% CI 0.08-0.25); omega = 40.0% on the log scale
 
     # Residual error. Results: "residual variability was appropriately
     # characterised using a proportional error model" for both analytes;
