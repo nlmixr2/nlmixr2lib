@@ -2352,6 +2352,8 @@ navbar:
         href: articles/Denti_2018_levofloxacin.html
       - text: "Levofloxacin (Lee 2025)"
         href: articles/Lee_2025_levofloxacin.html
+      - text: "Levofloxacin (Nguyen 2026)"
+        href: articles/Nguyen_2026_levofloxacin.html
       - text: "Levofloxacin (Sawe 2025)"
         href: articles/Sawe_2025_levofloxacin.html
       - text: "Levofloxacin rat (Hurtado 2014)"
@@ -6270,6 +6272,7 @@ articles:
   - articles/Ngo_2020_HL2351
   - articles/Ngo_2023_rivaroxaban
   - articles/Nguyen_2025_valbenazine_huntington_chorea
+  - articles/Nguyen_2026_levofloxacin
   - articles/Nguyen_2026_linezolid
   - articles/Ni_2013_ciclosporin
   - articles/Nicholas_2009_ponezumab
