@@ -4700,14 +4700,26 @@ navbar:
         href: articles/Nguyen_2025_valbenazine_huntington_chorea.html
       - text: "Valbenazine tmc (Nguyen 2025)"
         href: articles/Nguyen_2025_valbenazine_huntington_chorea.html
+      - text: "Valemetostat (Inoue 2025)"
+        href: articles/Inoue_2025_valemetostat_ptcl.html
       - text: "Valemetostat anc decrease (Fukae 2024)"
         href: articles/Fukae_2024_valemetostat_exposure_response.html
       - text: "Valemetostat anemia (Fukae 2024)"
         href: articles/Fukae_2024_valemetostat_exposure_response.html
+      - text: "Valemetostat anemia (Inoue 2025)"
+        href: articles/Inoue_2025_valemetostat_ptcl.html
       - text: "Valemetostat dose interruption (Fukae 2024)"
         href: articles/Fukae_2024_valemetostat_exposure_response.html
+      - text: "Valemetostat dose interruption (Inoue 2025)"
+        href: articles/Inoue_2025_valemetostat_ptcl.html
       - text: "Valemetostat dose reduction (Fukae 2024)"
         href: articles/Fukae_2024_valemetostat_exposure_response.html
+      - text: "Valemetostat dose reduction (Inoue 2025)"
+        href: articles/Inoue_2025_valemetostat_ptcl.html
+      - text: "Valemetostat neutropenia (Inoue 2025)"
+        href: articles/Inoue_2025_valemetostat_ptcl.html
+      - text: "Valemetostat orr bicr (Inoue 2025)"
+        href: articles/Inoue_2025_valemetostat_ptcl.html
       - text: "Valemetostat orr central (Fukae 2024)"
         href: articles/Fukae_2024_valemetostat_exposure_response.html
       - text: "Valemetostat orr investigator (Fukae 2024)"
@@ -4716,6 +4728,10 @@ navbar:
         href: articles/Fukae_2024_valemetostat_exposure_response.html
       - text: "Valemetostat teae grade3 (Fukae 2024)"
         href: articles/Fukae_2024_valemetostat_exposure_response.html
+      - text: "Valemetostat teae grade3 (Inoue 2025)"
+        href: articles/Inoue_2025_valemetostat_ptcl.html
+      - text: "Valemetostat thrombocytopenia (Inoue 2025)"
+        href: articles/Inoue_2025_valemetostat_ptcl.html
       - text: "Valganciclovir (Vezina 2010)"
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
@@ -5879,6 +5895,7 @@ articles:
   - articles/Ide_2020_elotuzumab
   - articles/Idkaidek_2011_ibuprofen
   - articles/Iida_2008_nicorandil
+  - articles/Inoue_2025_valemetostat_ptcl
   - articles/Ippolito_2024_pacmilimab_qsp
   - articles/Ishibashi_2024_ensitrelvir
   - articles/Isla_2024_fosfomycinCalcium
