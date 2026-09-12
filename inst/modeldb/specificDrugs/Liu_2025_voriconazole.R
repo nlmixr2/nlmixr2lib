@@ -10,13 +10,14 @@ Liu_2025_voriconazole <- function() {
   )
 
   covariateData <- list(
-    PCT = list(
+    PROCALCITONIN = list(
       description        = "Serum procalcitonin concentration",
       units              = "ug/L",
       type               = "continuous",
       reference_category = NULL,
       notes              = paste(
-        "Median-normalized power effect on apparent clearance, (PCT / 0.19)^e_pct_cl, per the published",
+        "Median-normalized power effect on apparent clearance, (PROCALCITONIN / 0.19)^e_procalcitonin_cl,",
+        "per the published",
         "final-model equation on Liu 2025 p. 4024. The divisor 0.19 ug/L is the training-group median of",
         "Liu 2025 Table 1 (IQR 0.13-0.28 ug/L; testing group median also 0.19, IQR 0.12-0.29), so the",
         "printed typical CL/F of 4.35 L/h is the value at the cohort-median procalcitonin -- this is a",
@@ -30,7 +31,11 @@ Liu_2025_voriconazole <- function() {
         "therapeutic-drug-monitoring sample, and missing values were median-imputed (Methods, 'Data",
         "Collection and Processing'), which is consistent with a per-sample series.",
         "C-reactive protein, the other inflammation marker, was excluded from the whole analysis because",
-        "more than 50% of values were missing (Liu 2025 Discussion, limitation four)."
+        "more than 50% of values were missing (Liu 2025 Discussion, limitation four).",
+        "The paper writes this covariate as PCT throughout; the canonical column spells the analyte out",
+        "because a bare PCT collides with the established _PCT percent suffix (BODYFAT_PCT, RACE_ASIAN_PCT,",
+        "CUM_FLUID_BAL_PCT and others) and with PCT = proximal convoluted tubule in Lu_2014_sglt_qsp.R.",
+        "See inst/references/covariate-columns.md, PROCALCITONIN."
       ),
       source_name        = "PCT"
     ),
@@ -48,7 +53,7 @@ Liu_2025_voriconazole <- function() {
         "stepwise covariate search, ahead of ALT, AST, ALP, GGT and total bilirubin, and cites evidence that",
         "elevated bile acids indicate the hepatic dysfunction that impairs voriconazole metabolism.",
         "Fasting-versus-postprandial status is not stated. Baseline-versus-time-varying status is likewise",
-        "not stated; see the PCT notes for the same consideration."
+        "not stated; see the PROCALCITONIN notes for the same consideration."
       ),
       source_name        = "TBA"
     ),
@@ -155,7 +160,7 @@ Liu_2025_voriconazole <- function() {
     # powers of a median-normalized ratio while age enters as an exponential
     # of the deviation from the median -- this asymmetry is exactly as
     # printed in the paper's own equation and is not a transcription slip.
-    e_pct_cl <- -0.209; label("Power exponent for PCT on CL/F (unitless)")  # Liu 2025 Table 2 final model, "PCT on CL/F" = -0.209 (RSE 20.1%, bootstrap median -0.210, 95% CI -0.305 to -0.124); appears as the exponent of (PCT/0.19) in the published equation, p. 4024
+    e_procalcitonin_cl <- -0.209; label("Power exponent for procalcitonin on CL/F (unitless)")  # Liu 2025 Table 2 final model, "PCT on CL/F" = -0.209 (RSE 20.1%, bootstrap median -0.210, 95% CI -0.305 to -0.124); appears as the exponent of (PCT/0.19) in the published equation, p. 4024
     e_tba_cl <- -0.158; label("Power exponent for TBA on CL/F (unitless)")  # Liu 2025 Table 2 final model, "TBA on CL/F" = -0.158 (RSE 27.9%, bootstrap median -0.155, 95% CI -0.255 to -0.070); appears as the exponent of (TBA/3.95) in the published equation, p. 4024
     e_age_cl <- -0.017; label("Exponential coefficient for AGE on CL/F, per year above 72 (1/year)")  # Liu 2025 Table 2 final model, "Age on CL/F" = -0.017 (RSE 24.9%, bootstrap median -0.017, 95% CI -0.026 to -0.009); appears as exp[-0.017 * (AGE - 72.0)] in the published equation, p. 4024
 
@@ -210,9 +215,14 @@ Liu_2025_voriconazole <- function() {
     # The three divisors / centring constants 0.19, 3.95 and 72.0 are the
     # training-group medians of Table 1, so a subject at the cohort median
     # of all three covariates has the printed typical CL/F of 4.35 L/h.
+    #
+    # The paper's PCT is procalcitonin; the canonical data column is named
+    # PROCALCITONIN in full because a bare PCT collides with the _PCT
+    # percent suffix and with PCT = proximal convoluted tubule elsewhere in
+    # the library. Nothing about the equation changes.
     ka <- exp(lka)
     cl <- exp(lcl + etalcl) *
-      (PCT / 0.19)^e_pct_cl *
+      (PROCALCITONIN / 0.19)^e_procalcitonin_cl *
       (TBA / 3.95)^e_tba_cl *
       exp(e_age_cl * (AGE - 72.0))
 
