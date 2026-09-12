@@ -2,7 +2,7 @@
 
 # development version
 
-- Add He 2025 YPEG-rhGH ([doi:10.3389/fphar.2025.1651323](https://doi.org/10.3389/fphar.2025.1651323)) -- healthy elderly subjects and healthy young adults.
+- Add Zhao 2025 nivolumab ([doi:10.1002/psp4.70120](https://doi.org/10.1002/psp4.70120)) -- adults with advanced solid tumors receiving subcutaneous or intravenous nivolumab.
 
 - Rename the seven covariate canonicals that were carried in non-ALL-CAPS form
   purely because a source paper spelled them that way: `dilution` ->

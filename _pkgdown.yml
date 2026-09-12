@@ -3082,6 +3082,8 @@ navbar:
         href: articles/Hu_2024_nivolumab_ipilimumab_pediatric.html
       - text: "Nivolumab (Zhang 2019)"
         href: articles/Zhang_2019_nivolumab.html
+      - text: "Nivolumab (Zhao 2025)"
+        href: articles/Zhao_2025_nivolumab.html
       - text: "Nivolumab qsp (Shchelokov 2023)"
         href: articles/Shchelokov_2023_nivolumab_qsp.html
       - text: "Norepinephrine (Li 2024)"
@@ -7156,6 +7158,7 @@ articles:
   - articles/Zhao_2024_ciprofloxacin_colistin
   - articles/Zhao_2024_tacrolimus
   - articles/Zhao_2025_methotrexate
+  - articles/Zhao_2025_nivolumab
   - articles/Zhao_2025_paracetamol
   - articles/Zhao_2025_vancomycin
   - articles/Zhao_2026_venetoclax
