@@ -20,6 +20,18 @@
   the central-compartment drug concentration. No model file, parameter value
   or model structure changes.
 
+- Document the five Chen 2025 hemoporfin exposure-response endpoints
+  (`prob_almost_cured`, `prob_significant_improvement`,
+  `prob_any_improvement`, `prob_investigator_rating`, `prob_patient_rating`)
+  in `inst/references/compartment-names.md`. These were among the endpoints
+  in use but unregistered. Dropping the enumeration gate removed the prompt
+  to register them, not the value of doing so: the entry records what each
+  endpoint means clinically -- the three expert-panel entries are cumulative
+  thresholds on one ordinal scale and must not be treated as competing
+  risks, and only the two rater endpoints have a significant exposure
+  slope -- which the validating regex cannot carry. Documentation only; no
+  model file, parameter value or model structure changes.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`
