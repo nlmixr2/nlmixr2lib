@@ -4734,6 +4734,8 @@ navbar:
         href: articles/Staatz_2005_gentamicin_vancomycin.html
       - text: "Vancomycin (Takada 2025)"
         href: articles/Takada_2025_vancomycin.html
+      - text: "Vancomycin (Tseng 2026)"
+        href: articles/Tseng_2026_vancomycin.html
       - text: "Vancomycin (Yoon 2023)"
         href: articles/Yoon_2023_vancomycin.html
       - text: "Vancomycin (Yu 2023)"
@@ -6710,6 +6712,7 @@ articles:
   - articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor
   - articles/Tsai_2023_ceftriaxone
   - articles/Tseng_2026_piperacillin
+  - articles/Tseng_2026_vancomycin
   - articles/Tsuchitani_2024_telmisartan_pbpk
   - articles/Tsuchitani_2026_apixaban_pbpk
   - articles/Tsuda_2010_tamsulosin
