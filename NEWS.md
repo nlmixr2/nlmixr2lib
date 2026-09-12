@@ -2,6 +2,30 @@
 
 # development version
 
+- Fix three models whose renal-replacement-therapy clearance arm was silently
+  inert: `Veinstein_2013_gentamicin`, `Dohmann_2025_piperacillin` and
+  `Eyler_2014_ertapenem`. Each assigned the gated total clearance to a separate
+  `cl_total` while defining both `cl` and `vc`; for those model shapes rxode2
+  solves the system with its analytic linear-compartment kernel driven by that
+  pair and discards the explicit `d/dt()`, so the `cl_total` and `kel` output
+  columns switched with the gate while the simulated amounts did not. The gated
+  sum is now written into `cl` itself. The effect was large -- for Veinstein the
+  corrected typical-subject AUC0-24 falls from 477 to 190 mg.h/L against a
+  published 190.8, and the 24-h trough from 12.7 to 4.1 mg/L against a published
+  4.1. A sweep of all 37 model/gate pairs in the library carrying an `*_ACTIVE`
+  covariate found no other affected model. New test
+  `tests/testthat/test-modeldb-active-gate.R` solves every such model at both
+  gate states and fails if no ODE state moves; the `RRT_HEMODIAL_ACTIVE`,
+  `lcl_hemodialysis` and `lclmax_hemoadsorption` register entries no longer
+  document the broken idiom.
+
+- Fix the `Dohmann_2025_piperacillin` vignette's dialysis event table, which
+  placed observation records only inside the evaluated interval. Because
+  `RRT_HEMODIAL_ACTIVE` is carried forward from the last record, the gate
+  latched on at the first session and never switched off. Correcting both
+  defects improved agreement with the paper's Table 4: worst cell 16 to 12
+  percentage points, Spearman rank correlation 0.984.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`

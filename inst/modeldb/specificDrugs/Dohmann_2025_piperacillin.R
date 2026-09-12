@@ -124,7 +124,30 @@ Dohmann_2025_piperacillin <- function() {
     # Non-dialysis (intrinsic body) clearance with the power effect of the
     # BSA-individualized MDRD eGFR, reference 21.8 mL/min as printed in the
     # Methods 2.5 CL equation.
-    cl <- exp(lcl + etalcl) * (CRCL / 21.8)^e_crcl_cl  # L/h
+    # Haemodialysis-arm clearance: an additive term with no interindividual
+    # variability, gated on only while a session is running.
+    cl_hemodialysis <- exp(lcl_hemodialysis)           # L/h
+
+    # TOTAL clearance. Methods 2.5: "Patients with iHD were modelled by
+    # including a second clearance process during the times of dialysis. The
+    # dialysis clearance was turned on or off by a regressor variable
+    # (theta_HD = 0 or 1)".
+    #
+    # IMPORTANT -- the gated sum MUST be assigned to `cl` itself, not to a
+    # separate `cl_total`. For some model shapes rxode2 does not integrate the
+    # d/dt() a file declares -- it solves the system with its analytic
+    # linear-compartment kernel driven by variables named `cl` and `vc`, and
+    # the explicit right-hand side is discarded. Defining both names is
+    # necessary but not sufficient, and there is no reliable static tell. Assigning only the non-dialysis arm to `cl`
+    # and eliminating via `cl_total / vc` yields a model whose dialysis arm
+    # is silently INERT: the reported `cl_total` and `kel` columns switch
+    # correctly while the simulated amounts decay at the interdialytic rate
+    # in BOTH states. Same hazard and same fix as Berthaud_2025_cefazolin.R
+    # and Lee_2024_gentamicin_teigen.R; regression-tested for every model
+    # carrying an *_ACTIVE gate covariate in
+    # tests/testthat/test-modeldb-active-gate.R.
+    cl <- exp(lcl + etalcl) * (CRCL / 21.8)^e_crcl_cl +
+      RRT_HEMODIAL_ACTIVE * cl_hemodialysis  # L/h
 
     # Central volume with the power effect of body surface area. The
     # reference divisor is 1.88 m^2 (the authors' own simulation-cohort mean
@@ -133,16 +156,7 @@ Dohmann_2025_piperacillin <- function() {
     # vignette errata section for the side-by-side comparison.
     vc <- exp(lvc + etalvc) * (BSA / 1.88)^e_bsa_vc    # L
 
-    # Haemodialysis-arm clearance: an additive term with no interindividual
-    # variability, gated on only while a session is running.
-    cl_hemodialysis <- exp(lcl_hemodialysis)           # L/h
-
-    # Methods 2.5: "Patients with iHD were modelled by including a second
-    # clearance process during the times of dialysis. The dialysis clearance
-    # was turned on or off by a regressor variable (theta_HD = 0 or 1)".
-    cl_total <- cl + RRT_HEMODIAL_ACTIVE * cl_hemodialysis  # L/h
-
-    kel <- cl_total / vc
+    kel <- cl / vc
 
     # One-compartment model with linear elimination and intravenous
     # (zero-order infusion) input; no absorption compartment.

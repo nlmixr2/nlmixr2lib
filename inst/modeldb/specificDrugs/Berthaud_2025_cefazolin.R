@@ -119,15 +119,20 @@ Berthaud_2025_cefazolin <- function() {
     #    half-life" with a "dialysis half-life").
     #
     #    IMPORTANT -- the gated sum MUST be assigned to `cl` itself, not to a
-    #    separate `cl_total`. rxode2 recognises the joint presence of `cl` and
-    #    `vc` and solves the one-compartment system analytically from that
-    #    pair, discarding the explicit d/dt() right-hand side. Writing
+    #    separate `cl_total`. For some model shapes rxode2 does not integrate the
+    #    d/dt() a file declares -- it solves the system with its analytic
+    #    linear-compartment kernel driven by variables named `cl` and `vc`,
+    #    and the explicit right-hand side is discarded. Writing
     #    `cl <- <residual arm>` and then eliminating with `cl_total / vc`
     #    yields a model whose dialysis arm is silently INERT: the reported
     #    `cl_total` and `kel` columns look correct while the simulated
     #    concentrations decay at the interdialytic rate in both states.
-    #    Verified in the validation vignette by a two-state gate check.
-    #    Same hazard and same fix as Lee_2024_gentamicin_teigen.R.
+    #    Verified in the validation vignette by a two-state gate check, and
+    #    regression-tested for every model carrying an *_ACTIVE gate
+    #    covariate in tests/testthat/test-modeldb-active-gate.R.
+    #    Same hazard and same fix as Lee_2024_gentamicin_teigen.R,
+    #    Veinstein_2013_gentamicin.R, Dohmann_2025_piperacillin.R and
+    #    Eyler_2014_ertapenem.R.
     cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl +
       RRT_HEMODIAL_ACTIVE * cl_hemodialysis  # L/h
 

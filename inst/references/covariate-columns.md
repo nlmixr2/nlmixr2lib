@@ -1739,18 +1739,38 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
-- **Reference category:** 0 (no dialysis running). Models that compose an additional `cl_hemodialysis` term should gate it by `RRT_HEMODIAL_ACTIVE = 1` so that the interdialytic clearance reduces to the intrinsic body clearance.
+- **Reference category:** 0 (no dialysis running). Models that compose an additional `cl_hemodialysis` term should gate it by `RRT_HEMODIAL_ACTIVE = 1` so that the interdialytic clearance reduces to the intrinsic body clearance. **Write the gated total into `cl` itself** -- see the encoding rule in Notes below; a separate `cl_total` variable silently disables the dialysis arm.
 - **Source aliases:**
   - `HEMODIALYSIS` -- prior canonical name (2026-06-09 -- 2026-06-19); the 2026-06-19 RRT family standardization renamed it to `RRT_HEMODIAL_ACTIVE` to align with the sibling `RRT_HEMODIAL_STATUS` / `RRT_CRRT_STATUS` shape.
   - `DIAL` -- legacy form (used in Liesenfeld 2013, Jacobs 2016, Veinstein 2013 prior to the 2026-06-09 rename to the more explicit `HEMODIALYSIS`).
   - `IHD_ON`, `HD_ACTIVE`, `RRT_ACTIVE` -- variant abbreviations used in adjacent ESRD / CRRT popPK literature.
 - **Example models:**
-  - `Liesenfeld_2013_dabigatran.R` (Michaels-equation gate; `cl_total <- cl + RRT_HEMODIAL_ACTIVE * Michaels(BFR, DFR, KoA)`; the dialysis arm is derived from blood flow rate, dialysate flow rate, and a hemodialyzer mass-transfer-area coefficient).
-  - `Jacobs_2016_colistin.R` (additive on/off gate of fixed device-level hemodialysis-clearance constants for CMS and colistin; `cl_tot <- cl + RRT_HEMODIAL_ACTIVE * cl_hd_cms`).
-  - `Veinstein_2013_gentamicin.R` (additive arm with an estimated primary `ini` parameter; `cl_total <- cl + RRT_HEMODIAL_ACTIVE * cl_hemodialysis`).
-  - `Berthaud_2025_cefazolin.R` (additive arm in a paediatric maintenance-hemodialysis cohort, with the arm driven by a continuous membrane surface area instead of a bare estimate: `cl_total <- cl + RRT_HEMODIAL_ACTIVE * cl_hemodialysis` where `cl_hemodialysis <- exp(lcl_hemodialysis) * (FILT_SA / 1)^1.26`. Note that Berthaud 2025 does NOT print the gate in its final-equation block -- the block states only `CLtot_i = CL_i + CLdial_i` -- and the on/off structure is established by the Introduction ("during hemodialysis sessions, a dialysis clearance ... is added to the patient residual elimination clearance"), by the Discussion's contrast between an "interdialytic" and a "dialysis" half-life, and by Figure 4's three-sessions-per-week simulation design).
+  - `Veinstein_2013_gentamicin.R` (additive arm with an estimated primary `ini` parameter; `cl <- exp(lcl + etalcl) * WT + RRT_HEMODIAL_ACTIVE * cl_hemodialysis`).
+  - `Liesenfeld_2013_dabigatran.R` (Michaels-equation gate; the dialysis arm is derived from blood flow rate, dialysate flow rate, and a hemodialyzer mass-transfer-area coefficient rather than estimated directly. Retains a separate gated `cl_total`; its explicit ODE is honoured -- verified by solving both gate states, not assumed -- but do not copy the shape, for the reason in Notes).
+  - `Jacobs_2016_colistin.R` (additive on/off gate of fixed device-level hemodialysis-clearance constants for CMS and colistin, in a parent-metabolite chain; likewise retains a separate gated `cl_tot` whose explicit ODE is honoured, and likewise is not a shape to copy).
+  - `Berthaud_2025_cefazolin.R` (additive arm in a paediatric maintenance-hemodialysis cohort, with the arm driven by a continuous membrane surface area instead of a bare estimate: `cl <- exp(lcl + etalcl) * (WT / 70)^0.75 + RRT_HEMODIAL_ACTIVE * cl_hemodialysis` where `cl_hemodialysis <- exp(lcl_hemodialysis) * (FILT_SA / 1)^1.26`. Note that Berthaud 2025 does NOT print the gate in its final-equation block -- the block states only `CLtot_i = CL_i + CLdial_i` -- and the on/off structure is established by the Introduction ("during hemodialysis sessions, a dialysis clearance ... is added to the patient residual elimination clearance"), by the Discussion's contrast between an "interdialytic" and a "dialysis" half-life, and by Figure 4's three-sessions-per-week simulation design).
   - `VanWart_2025_telavancin.R` (same additive-arm shape as Veinstein 2013, with IIV on the dialysis arm: `cl_hemodialysis <- exp(lcl_hemodialysis + etalcl_hemodialysis) * RRT_HEMODIAL_ACTIVE`, CL_DL = 1.77 L/h; Van Wart 2025 states CL_DL "was estimated only during those periods where intermittent hemodialysis (IHD) was active and was fixed to a value of zero when IHD was not operative"). Paired in the same model with the interdialytic `T_POST_HEMODIAL` on central volume.
 - **Notes:** Distinct from a renal-impairment indicator (subject-level baseline class) and from `RRT_HEMODIAL_STATUS` (the subject-level treatment-status indicator) -- `RRT_HEMODIAL_ACTIVE` is the per-time-point gate that turns the dialysis-clearance term on and off WITHIN a single hemodialysis subject's record. Pair with `BFR` and `DFR` when the dialysis clearance depends on flow rates; pair with a filter-specific mass-transfer coefficient (estimated `lkoa` in the model, not a covariate) when the Michaels parameterisation is used. Pair with `lcl_hemodialysis` (canonical) when the dialysis arm is a primary estimated structural parameter rather than a derived expression.
+
+  **Encoding rule -- write the gated total into `cl`, never into a separate `cl_total`.** rxode2 does not always integrate the `d/dt()` a model file declares: for some model shapes it solves the linear-compartment system with its analytic kernel driven by variables named `cl` (or `CL`) and `vc` (or `v`), and the explicit right-hand side is discarded. When that happens, the idiom
+
+  ```r
+  cl       <- <off-therapy arm>
+  cl_total <- cl + RRT_HEMODIAL_ACTIVE * cl_hemodialysis
+  kel      <- cl_total / vc
+  d/dt(central) <- -kel * central
+  ```
+
+  produces a **silently inert** dialysis arm: the reported `cl_total` and `kel` output columns switch correctly with the gate while the simulated amounts decay at the off-therapy rate in BOTH states. Write it as a single assignment instead:
+
+  ```r
+  cl <- <off-therapy arm> + RRT_HEMODIAL_ACTIVE * cl_hemodialysis
+  kel <- cl / vc
+  ```
+
+  Under the REPLACEMENT rule (see the `lcl_hemodialysis` entry in `parameter-names.md`) the same principle applies: `cl <- (1 - RRT_HEMODIAL_ACTIVE) * <off-therapy arm> + RRT_HEMODIAL_ACTIVE * cl_hemodialysis`.
+
+  You cannot tell by inspection whether a given model is affected -- defining both `cl` and `vc` is necessary but not sufficient, and `Liesenfeld_2013_dabigatran.R` and `Jacobs_2016_colistin.R` both define the pair yet have their explicit ODEs honoured, while `Eyler_2014_ertapenem.R` (a plain two-compartment model) did not. So treat the single-assignment form as mandatory for new models rather than as a case-by-case judgement. Nothing else in the package catches a violation: `checkModelConventions()` does not, `modeldb$linCmt` reads `FALSE` for an affected model, and a validation vignette that simulates only one gate state cannot see it. The mechanical gate is `tests/testthat/test-modeldb-active-gate.R`, which solves every model carrying an `RRT_*_ACTIVE` covariate at gate 0 and gate 1 and fails if no ODE state moves. Three shipped models were found inert by that sweep and repaired on 2026-09-12: `Veinstein_2013_gentamicin.R`, `Dohmann_2025_piperacillin.R` and `Eyler_2014_ertapenem.R`. The same hazard applies verbatim to the sibling gates `RRT_CRRT_ACTIVE`, `RRT_CAPD_ACTIVE` and `RRT_CCPD_ACTIVE`.
 
 ### RRT_CRRT_ACTIVE (**canonical for continuous-renal-replacement-therapy-active indicator (time-varying gate)**)
 - **Description:** Within-subject time-varying indicator for whether a continuous or extended extracorporeal renal-replacement-therapy modality is currently running -- continuous venovenous hemodialysis (CVVHD), hemofiltration (CVVH), hemodiafiltration (CVVHDF), sustained low-efficiency dialysis (SLED), or extended daily diafiltration (EDD-f). 1 while the therapy is running; 0 while it is interrupted and in subjects never treated. Completes the `RRT_<modality>_<kind>` family as the continuous-modality counterpart of `RRT_HEMODIAL_ACTIVE`.
