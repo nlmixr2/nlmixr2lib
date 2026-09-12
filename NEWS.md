@@ -2,7 +2,16 @@
 
 # development version
 
-- Add Schouwenburg 2026 cefuroxime ([doi:10.1007/s40262-025-01577-2](https://doi.org/10.1007/s40262-025-01577-2)) -- critically ill term neonates and children in paediatric intensive care.
+- Add Zhao 2026 infliximab ([doi:10.1007/s40262-025-01565-6](https://doi.org/10.1007/s40262-025-01565-6)) — children 10 years old and younger with inflammatory bowel disease.
+
+- Drop the parameter symbol from the unit slot of every label that carried
+  one: `label("Typical clearance (CL, L/h)")` becomes
+  `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`
+  becomes `(mg/kg)`. 2778 labels across 553 model files. The symbol repeats
+  the name the parameter already carries in `ini()`, or the source paper's
+  symbol for the same quantity; either way it is not a unit, and it forced
+  every consumer to split the slot before reading it. The trailing
+  parenthetical now holds the unit and nothing else.
 
 - Add Kumta 2025 piperacillin and tazobactam ([doi:10.1128/aac.00601-24](https://doi.org/10.1128/aac.00601-24)) -- critically ill neurosurgical adults with an external ventricular drain.
 
