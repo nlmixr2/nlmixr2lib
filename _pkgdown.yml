@@ -1358,10 +1358,6 @@ navbar:
         href: articles/Kapitanov_2025_dupilumab.html
       - text: "Durvalumab (Abegesah 2025)"
         href: articles/Abegesah_2025_durvalumab.html
-      - text: "Durvalumab (Ogasawara 2020)"
-        href: articles/Ogasawara_2020_durvalumab.html
-      - text: "Durvalumab (Zhao 2026)"
-        href: articles/Zhao_2026_durvalumab.html
       - text: "Durvalumab (deVries 2025)"
         href: articles/deVries_2025_durvalumab.html
       - text: "Durvalumab (Ogasawara 2020)"
@@ -2552,6 +2548,8 @@ navbar:
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Lumefantrine (Hoglund 2015)"
         href: articles/Hoglund_2015_artemether_lumefantrine.html
+      - text: "Lumefantrine (Juma 2026)"
+        href: articles/Juma_2026_lumefantrine.html
       - text: "Lumefantrine (Kay 2020)"
         href: articles/Kay_2020_lumefantrine.html
       - text: "Lumefantrine (Kay 2022)"
