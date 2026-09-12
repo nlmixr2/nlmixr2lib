@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hartmann 2026 nintedanib ([doi:10.1002/psp4.70135](https://doi.org/10.1002/psp4.70135)) — children and adolescents 6 to less than 18 years with fibrosing interstitial lung disease; one population PK model and two FVC exposure-response models.
+- Add Tsuchiwata 2026 tofacitinib ([doi:10.5414/CP204781](https://doi.org/10.5414/CP204781)) — adults with active ankylosing spondylitis.
 
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
