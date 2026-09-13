@@ -771,14 +771,37 @@ stopifnot(
   all(pta_curve |> dplyr::group_by(arm) |> dplyr::arrange(mic, .by_group = TRUE) |>
         dplyr::summarise(mono = all(diff(pta_pct) <= 1e-9), .groups = "drop") |>
         dplyr::pull(mono)),
-  # The ECMO arm never attains the trough target better than the non-ECMO arm,
-  # which is the direction of the paper's Cmin finding.
-  all(pta_at_mic90$ECMO <= pta_at_mic90$`Non-ECMO` + 1e-9),
+  # The ECMO arm's trough distribution sits below the non-ECMO arm's, which is
+  # the direction of the paper's Cmin finding. Asserted on the MEDIAN trough,
+  # NOT on the thresholded PTA percentages: at these MIC90 values both arms sit
+  # at 93-100% attainment, so the two percentages differ by only 1-4 subjects
+  # out of 200 and their ORDER flips with the rxode2 thread count. Measured
+  # 2026-09-13, ECMO / Non-ECMO PTA at C. parapsilosis: 95.5/97.5 at 1 thread,
+  # 97.0/96.0 at 2, 93.5/96.0 at 4, 97.5/96.0 at 8, 96.0/97.5 at 28 -- and at 4
+  # threads the C. albicans and C. glabrata rows invert too (100/99.5). The
+  # median ratio over that same sweep is stable at 0.83-0.96, always below 1.
+  # This is the "medians and robust quantiles, never a cohort extreme" rule the
+  # cohort chunk above states; the percentage form violated it.
+  local({
+    med <- nca_wide |>
+      dplyr::group_by(arm) |>
+      dplyr::summarise(m = median(ctrough), .groups = "drop")
+    m <- stats::setNames(med$m, med$arm)
+    m[["ECMO"]] < m[["Non-ECMO"]]
+  }),
   # C. parapsilosis at MIC90 1.0 mg/L is the hard target, as in the paper.
+  # Thread-stable: the non-ECMO arm sits at 96-97.5% there against 99.5-100%
+  # for the other two species across the same 1..28-thread sweep.
   pta_at_mic90$`Non-ECMO`[pta_at_mic90$species == "C. parapsilosis"] <
     min(pta_at_mic90$`Non-ECMO`[pta_at_mic90$species != "C. parapsilosis"]),
-  breakpoint$mic_at_90pct_pta[breakpoint$arm == "ECMO"] <=
-    breakpoint$mic_at_90pct_pta[breakpoint$arm == "Non-ECMO"] + 1e-9
+  # The two arms' 90%-PTA breakpoints agree to within one point of the MIC grid.
+  # An ORDERING assertion here is not safe either: the breakpoint is a threshold
+  # crossing on the same noisy curve, and over the 1..28-thread sweep the ratio
+  # ran 0.889, 1.000, 1.000, 1.125, 0.889, 0.889 -- i.e. exactly +/- one grid
+  # step, with the ECMO arm ahead at 8 threads.
+  abs(log(breakpoint$mic_at_90pct_pta[breakpoint$arm == "ECMO"] /
+          breakpoint$mic_at_90pct_pta[breakpoint$arm == "Non-ECMO"])) <=
+    log(2^(log2(16 / 0.015) / 59)) + 1e-9
 )
 ```
 
