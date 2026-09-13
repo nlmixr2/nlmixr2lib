@@ -4008,6 +4008,8 @@ navbar:
         href: articles/Aoyama_2012_sepantronium.html
       - text: "Serplulimab (Wang 2025)"
         href: articles/Wang_2025_serplulimab.html
+      - text: "Serplulimab (Wang 2026)"
+        href: articles/Wang_2026_serplulimab.html
       - text: "Sertraline (Cooper 2015)"
         href: articles/Cooper_2015_sertraline.html
       - text: "Sertraline (Xia 2025)"
@@ -6810,6 +6812,7 @@ articles:
   - articles/Wang_2025_serplulimab
   - articles/Wang_2025_somatrogon
   - articles/Wang_2025_voriconazole
+  - articles/Wang_2026_serplulimab
   - articles/Ward_2026_magnesium_pbpk
   - articles/Warren_2025_pde4_il13_atopic_dermatitis
   - articles/Waterhouse_2024_vedolizumab
