@@ -454,20 +454,29 @@ Sawe_2025_levofloxacin <- function() {
     # ka, matching DADT(1) = TRANSIT - KA*A(1) and
     # DADT(2) = KA*A(1) - K*A(2).
     #
-    # Dose to `depot`. Do NOT add `f(depot) <- 0` here. That line is the
-    # natural-looking analogue of the control stream's "F1 = 0" (and is
-    # what several older transit models in this package carry), but under
-    # rxUi with rxode2 5.1.7 it silently zeroes the transit input as well
-    # and the model then absorbs nothing at all -- every concentration
-    # comes back 0. Without it, transit() is already the only input
-    # pathway: the bolus is not separately added, and mass balance is
-    # exact (a single 1000 mg dose with F = 1 yields AUC(0-inf) * CL =
-    # 999.98 mg, and the steady-state AUC identity in the validation
-    # vignette holds to under 0.1%). The vignette's AUC identity check is
-    # the standing regression gate for this.
+    # Dose to `depot`, with the bolus suppressed by `f(depot) <- 0` --
+    # the control stream's "F1 = 0". transit() reads the raw dose amount
+    # from podo(depot) regardless of f(depot), so the entire dose still
+    # enters through the analytical transit chain; without the
+    # suppression the bolus is delivered *in addition to* the transit
+    # input and the model administers twice the dose.
+    #
+    # An earlier revision omitted this line, on the belief that it
+    # "silently zeroed the transit input" under rxUi. That zeroing was
+    # rxode2's automatic ODE-to-linCmt() conversion (rxode2 issue 1370),
+    # which discarded the transit() term and kept the suppressed bolus,
+    # leaving no input at all. It was a solver defect, not an f() defect,
+    # and the mass-balance figure quoted in support of the omission
+    # (AUC(0-inf) * CL = 999.98 mg for a 1000 mg dose) was measured on
+    # the converted model rather than on this one. With the line
+    # restored, a single 1000 mg dose with F = 1 gives
+    # AUC(0-inf) * CL = 999.99 mg. The vignette's steady-state AUC
+    # identity check is the standing regression gate.
     kel <- cl / vc
     d/dt(depot)   <- transit(nn, mtt, fbio) - ka * depot
     d/dt(central) <-                          ka * depot - kel * central
+
+    f(depot) <- 0
 
     # 6. Observation and error. Dose in mg and V in L give Cc in mg/L
     # (= ug/mL), the units the paper reports throughout; the control
