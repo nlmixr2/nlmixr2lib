@@ -956,6 +956,8 @@ navbar:
         href: articles/Bouazza_2012_clindamycin.html
       - text: "Clindamycin (Muller 2010)"
         href: articles/Muller_2010_clindamycin.html
+      - text: "Clindamycin (Pfaffendorf 2026)"
+        href: articles/Pfaffendorf_2026_fosmidomycin_clindamycin.html
       - text: "Clindamycin (Smith 2017)"
         href: articles/Smith_2017_clindamycin.html
       - text: "Clobazam (Tuo 2025)"
@@ -1770,6 +1772,8 @@ navbar:
         href: articles/Huppe_2023_fosfomycin.html
       - text: "FosfomycinCalcium (Isla 2024)"
         href: articles/Isla_2024_fosfomycinCalcium.html
+      - text: "Fosmidomycin (Pfaffendorf 2026)"
+        href: articles/Pfaffendorf_2026_fosmidomycin_clindamycin.html
       - text: "Fospropofol (Gibiansky 2005)"
         href: articles/Gibiansky_2005_fospropofol.html
       - text: "Fremanezumab (FiedlerKelly 2019)"
@@ -6372,6 +6376,7 @@ articles:
   - articles/Petric_2023_vinpocetine
   - articles/Petrov_2024_romiplostim
   - articles/Pettersen_2009_pantoprazole
+  - articles/Pfaffendorf_2026_fosmidomycin_clindamycin
   - articles/Philippe_2015_cyclosporine
   - articles/Pierre_2017_morphine
   - articles/PillaReddy_2013_panss_subscales
