@@ -3344,6 +3344,8 @@ navbar:
         href: articles/Li_2014_penicillinG.html
       - text: "Pentadecanoic triheptadecanoic (Mascarenhas 2015)"
         href: articles/Mascarenhas_2015_pentadecanoic_triheptadecanoic.html
+      - text: "Pentobarbital (Helfer 2026)"
+        href: articles/Helfer_2026_pentobarbital.html
       - text: "Pentobarbital (Ketharanathan 2023)"
         href: articles/Ketharanathan_2023_pentobarbital.html
       - text: "Perampanel (Silva 2023)"
@@ -5712,6 +5714,7 @@ articles:
   - articles/He_2025_lidocaine
   - articles/Heathman_2024_efavirenz
   - articles/Heida_2024_mycophenolic_acid
+  - articles/Helfer_2026_pentobarbital
   - articles/Hempel_2003_daunorubicin_liposomal
   - articles/Hendriksen_2013_artesunate
   - articles/Henin_2009_capecitabine
