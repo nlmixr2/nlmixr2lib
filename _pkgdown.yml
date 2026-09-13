@@ -2812,6 +2812,8 @@ navbar:
         href: articles/Chua_2025_mirikizumab.html
       - text: "Misoprostol (Vorontsova 2022)"
         href: articles/Vorontsova_2022_misoprostol.html
+      - text: "Mitiperstat (Sunnaker 2026)"
+        href: articles/Sunnaker_2026_mitiperstat.html
       - text: "Mitoxantrone human pbpk (An 2012)"
         href: articles/An_2012_mitoxantrone_pbpk.html
       - text: "Mitoxantrone mouse pbpk (An 2012)"
@@ -6629,6 +6631,7 @@ articles:
   - articles/Sun_2025_paclitaxel
   - articles/Sun_2025_teicoplanin
   - articles/Sun_2026_tilmicosin
+  - articles/Sunnaker_2026_mitiperstat
   - articles/Suri_2018_brentuximab
   - articles/Suyagh_2011_metronidazole
   - articles/Suyagh_2012_canrenone
