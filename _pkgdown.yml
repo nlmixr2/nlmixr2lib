@@ -1138,6 +1138,10 @@ navbar:
         href: articles/Lv_2024_delafloxacin.html
       - text: "Denosumab (Choi 2025)"
         href: articles/Choi_2025_denosumab.html
+      - text: "Denosumab kn012 (Zhu 2026)"
+        href: articles/Zhu_2026_denosumab.html
+      - text: "Denosumab reference (Zhu 2026)"
+        href: articles/Zhu_2026_denosumab.html
       - text: "Desmopressin (Agerso 2004)"
         href: articles/Agerso_2004_desmopressin.html
       - text: "Desmopressin (Schutte 2018)"
@@ -7045,6 +7049,7 @@ articles:
   - articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer
   - articles/Zhu_2024_borneol_pbpk
   - articles/Zhu_2024_pyrotinib
+  - articles/Zhu_2026_denosumab
   - articles/Zieck_2023_ceftazidime
   - articles/Zierhut_2008_osteoprotegerin
   - articles/Zingmark_2003_clomethiazole

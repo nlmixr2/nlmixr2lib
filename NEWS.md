@@ -2,6 +2,10 @@
 
 # development version
 
+- Add Zhu 2026 denosumab, as two models for the biosimilar and reference arms
+  ([doi:10.1016/j.bonr.2026.101916](https://doi.org/10.1016/j.bonr.2026.101916))
+  — Chinese postmenopausal women with osteoporosis.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`
