@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Beijer 2026 cloxacillin ([doi:10.1093/jac/dkag116](https://doi.org/10.1093/jac/dkag116)) -- adults undergoing total hip or knee arthroplasty.
+- Add Zhu 2026 denosumab, as two models for the biosimilar and reference arms
+  ([doi:10.1016/j.bonr.2026.101916](https://doi.org/10.1016/j.bonr.2026.101916))
+  — Chinese postmenopausal women with osteoporosis.
 
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
