@@ -3858,6 +3858,8 @@ navbar:
         href: articles/Liang_2026_remimazolam.html
       - text: "Remimazolam pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Remlifanserin (Darwish 2026)"
+        href: articles/Darwish_2026_remlifanserin.html
       - text: "Repotrectinib (Du 2025)"
         href: articles/Du_2025_repotrectinib.html
       - text: "Reserpine rat (AlfoseaCuadrado 2024)"
@@ -5684,6 +5686,7 @@ articles:
   - articles/Darwish_2012_armodafinil_modafinil_shift_work_disorder
   - articles/Darwish_2025a_trofinetide
   - articles/Darwish_2025b_trofinetide
+  - articles/Darwish_2026_remlifanserin
   - articles/Dasti_2025_mrna_vaccines
   - articles/Davis_2008_maraviroc
   - articles/deAlwis_1998_ondansetron
