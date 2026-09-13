@@ -2,6 +2,40 @@
 
 # development version
 
+- Fix `Sawe_2025_levofloxacin`, which administered twice the dose. The model
+  omitted `f(depot) <- 0`, so each dose entered `depot` as a bolus *and* again
+  through the analytical `transit()` chain: `AUC(0-inf) * CL` came to 1999.99 mg
+  for a 1000 mg dose. The line had been left out on the belief that it zeroed
+  the transit input, which was in fact rxode2's ODE-to-`linCmt()` auto-conversion
+  ([rxode2 issue 1370](https://github.com/nlmixr2/rxode2/issues/1370)) discarding
+  the `transit()` term. The vignette's steady-state AUC identity now holds
+  because the model is right, not because the solver had replaced it. A sweep of
+  all 47 models that call `transit()` found no other instance.
+
+- Update the vignettes that documented rxode2's ODE-to-`linCmt()` auto-conversion
+  defect, now that rxode2 refuses the conversion when it would change the model.
+  `Marques_2025_salbutamol` no longer describes its plain-ODE twin as a
+  `transit()`/`rxUi` workaround -- that diagnosis was wrong -- and now asserts the
+  two model handles agree. `Schreib_2024_busulfan` keeps `useLinCmt = FALSE` so it
+  stays correct on older rxode2, but its demonstration of the constant-`kel`
+  rewrite becomes an agreement check. Both vignettes previously carried assertions
+  that required the defect to be present and failed once it was fixed.
+
+- Fix the `Smythe_2013_gatifloxacin` NCA interval. The chunk filtered `time > 0`
+  out of the concentration data while asking PKNCA for an interval starting at 0,
+  so `auclast` and `aucinf.obs` came back `NA` for every subject and the
+  simulated-versus-published AUC table was empty. Simulated AUC0-inf is 35.97
+  (first dose) and 32.44 mg*h/L (steady state) against published medians of 41.2
+  and 35.4.
+
+- Correct two vignette claims that were written against unusable output.
+  `Barras_2009_enoxaparin` said ~20-30% discrepancies in cAUC were expected; the
+  simulated median is 2.7-fold the published one, because Table 3's cAUC runs to
+  the bleeding event over a mean 3.5-day therapy while the vignette integrates a
+  fixed 96-h course. `Dong_2014_mycophenolic_acid` quoted a typical Cmax of
+  8-12 mg/L and IMPDH activity of ~13-18% of baseline; the values are 7-10 mg/L
+  and ~15-20%.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.
