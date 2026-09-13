@@ -1220,6 +1220,8 @@ navbar:
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
       - text: "Dimethyltryptamine betaPower (Eckernas 2023)"
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
+      - text: "Dndi6148 (Assmus 2026)"
+        href: articles/Assmus_2026_dndi6148.html
       - text: "Dndi6148 human (Henninger 2026)"
         href: articles/Henninger_2026_dndi6148.html
       - text: "Dndi6148 mouse (Henninger 2026)"
@@ -5157,6 +5159,7 @@ articles:
   - articles/Asimus_2007_artemisinin
   - articles/Assmus_2025_benznidazole
   - articles/Assmus_2025_benznidazole_mouse
+  - articles/Assmus_2026_dndi6148
   - articles/Athanassa_2025_minocycline
   - articles/Attarwala_2023_mRNA3927
   - articles/Axelsen_2024_selexipag

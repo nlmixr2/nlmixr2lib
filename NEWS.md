@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Assmus 2026 DNDI-6148 ([doi:10.1371/journal.pntd.0014220](https://doi.org/10.1371/journal.pntd.0014220)) — healthy adult men in a first-in-human single ascending dose study.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`
