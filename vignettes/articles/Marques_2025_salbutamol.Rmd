@@ -123,16 +123,28 @@ Every structural equation and every `ini()` value, with its source location.
 | Model selection criteria | BICc / -2LL | Table S4 (see Errata item 4) |
 | Covariate screen | correlations and p-values | Table S5 (see Errata item 5) |
 
-# Model handle and a required rxode2 workaround
+# Model handles
 
 The packaged model uses rxode2's built-in `transit()`, the closed-form
-(gamma-density) input rate of the Savic transit-absorption model. On the
-rxode2 version installed here, `transit()` silently evaluates to zero when the
-model is solved through an `rxUi` object obtained from `readModelDb()`, while
-the *identical* generated ODE code solves correctly as a plain `rxode2` model.
-The check below documents the defect and builds the plain-ODE twin used for
-every simulation in this vignette. All parameter values are read out of the
-packaged model's `iniDf`, so nothing is re-typed from the paper here.
+(gamma-density) input rate of the Savic transit-absorption model. Every
+simulation below is run through a plain `rxode2` twin of the packaged model,
+built with `rxNorm()`, because the cohort section draws the seven random
+effects itself and supplies them as data columns alongside `params = theta` --
+a plain-model idiom. All parameter values are read out of the packaged model's
+`iniDf`, so nothing is re-typed from the paper here.
+
+The check below confirms the two handles agree, which is what makes the twin a
+faithful stand-in for the packaged model.
+
+> **Historical note.** Earlier revisions of this vignette described the twin as
+> a *workaround* for `transit()` "silently evaluating to zero under `rxUi`".
+> That diagnosis was wrong. The zeroing came from `rxSolve()`'s automatic
+> ODE-to-`linCmt()` conversion (rxode2 issue 1370), which discarded the
+> `transit()` input term while keeping `f(depot) <- 0`, so the converted model
+> received no dose at all. It only ever affected the `rxUi` path because the
+> plain-model path does not attempt the conversion; `transit()` itself was
+> never at fault. rxode2 now refuses the conversion for models it cannot
+> represent faithfully, and the two handles agree.
 
 ```{r model-handle}
 mod <- rxode2::rxode2(readModelDb("Marques_2025_salbutamol"))
@@ -149,7 +161,7 @@ theta <- setNames(ini$est[!is.na(ini$ntheta)], theta_names)
 theta <- theta[!names(theta) %in% c("addSd", "propSd")]
 eta_var <- setNames(ini$est[!is.na(ini$neta1)], eta_names)
 
-# Demonstrate the defect: same code, two handles, one of them returns zero.
+# Both handles must give the same profile.
 ev_probe <- rbind(
   data.frame(id = 1L, time = 0, amt = 4, evid = 1L, cmt = "depot"),
   data.frame(id = 1L, time = seq(0, 24, by = 0.5), amt = 0, evid = 0L,
@@ -165,15 +177,20 @@ cmax_ode <- max(rxode2::rxSolve(
   mod_ode, ev_probe_eta, params = theta, returnType = "data.frame")$Cc)
 
 tibble::tibble(
-  Handle = c("rxUi from readModelDb() (transit() returns 0)",
+  Handle = c("rxUi from readModelDb()",
              "plain rxode2 model from rxNorm() of the same rxUi"),
   `Cmax (ug/mL)` = c(cmax_ui, cmax_ode)
 ) |>
-  knitr::kable(digits = 7, caption = "The rxode2 transit()/rxUi defect that forces the plain-ODE twin.")
+  knitr::kable(digits = 7, caption = "The two handles agree, so the plain-ODE twin is a faithful stand-in for the packaged model.")
 
-# Lock the workaround in: if a future rxode2 fixes the rxUi path, cmax_ui
-# becomes non-zero and this assertion fires, prompting the simplification.
-stopifnot(cmax_ui == 0, cmax_ode > 0)
+# Standing gate. A non-zero Cmax on the rxUi path catches any future
+# reintroduction of the silent no-dose failure (rxode2 issue 1370); the
+# agreement check catches the twin drifting away from the packaged model.
+stopifnot(
+  cmax_ui > 0,
+  cmax_ode > 0,
+  abs(cmax_ui / cmax_ode - 1) < 1e-4
+)
 ```
 
 ## Transit-chain self-consistency
