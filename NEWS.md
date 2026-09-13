@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.

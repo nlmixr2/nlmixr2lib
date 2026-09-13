@@ -1364,6 +1364,8 @@ navbar:
         href: articles/Kovalenko_2016_dupilumab.html
       - text: "Dupilumab (Kovalenko 2020)"
         href: articles/Kovalenko_2020_dupilumab.html
+      - text: "Dupilumab (Nguyen 2026)"
+        href: articles/Nguyen_2026_dupilumab.html
       - text: "Dupilumab (Zhang 2021)"
         href: articles/Zhang_2021_dupilumab.html
       - text: "Dupilumab 3cmt qsp (Kapitanov 2025)"
@@ -6588,6 +6590,7 @@ articles:
   - articles/Ngo_2020_HL2351
   - articles/Ngo_2023_rivaroxaban
   - articles/Nguyen_2025_valbenazine_huntington_chorea
+  - articles/Nguyen_2026_dupilumab
   - articles/Nguyen_2026_levofloxacin
   - articles/Nguyen_2026_linezolid
   - articles/Ni_2013_ciclosporin
