@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Beijer 2026 cloxacillin ([doi:10.1093/jac/dkag116](https://doi.org/10.1093/jac/dkag116)) -- adults undergoing total hip or knee arthroplasty.
+
 - Drop the parameter symbol from the unit slot of every label that carried
   one: `label("Typical clearance (CL, L/h)")` becomes
   `label("Typical clearance (L/h)")`, `(V1, L)` becomes `(L)`, `(FC0, mg/kg)`

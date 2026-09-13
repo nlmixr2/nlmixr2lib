@@ -972,6 +972,8 @@ navbar:
         href: articles/Jung_2024_clopidogrel.html
       - text: "Clopidogrel (Pejcic 2024)"
         href: articles/Pejcic_2024_clopidogrel.html
+      - text: "Cloxacillin (Beijer 2026)"
+        href: articles/Beijer_2026_cloxacillin.html
       - text: "Clozapine (Han 2025)"
         href: articles/Han_2025_clozapine.html
       - text: "Clozapine (Li 2012)"
@@ -5188,6 +5190,7 @@ articles:
   - articles/Baverel_2015_tralokinumab
   - articles/Bayoumy_2025_thioguanine
   - articles/Beal_2001_iv1cmt_bql
+  - articles/Beijer_2026_cloxacillin
   - articles/Bellanti_2014_deferiprone
   - articles/Bellanti_2015_deferoxamine
   - articles/Bellanti_2017_deferiprone
