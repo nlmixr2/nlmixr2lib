@@ -608,7 +608,10 @@ related to clearance at all.
   A reviewer who prefers Table 2 need only swap the two diagonals of the
   `etalvc + etalcl` block. Note that this choice does not affect any
   gate in this vignette: all of them are conditioned on each subject’s
-  own solved `cl` and `vc`.
+  own solved `cl` and `vc`. This reading was **reviewed and ratified on
+  2026-09-11**: the control stream is the executable artefact the fit
+  actually ran, whereas the printed Table 2 is a transcription of it,
+  and transcription is where row-swaps occur.
 - **Section 3.4 mislabels the RSE column as residual error** (“Residual
   error was estimated to be 15% and 11% for V/F and CL/F”); Table 2
   lists those values under `RSE`, and the residual error magnitude is

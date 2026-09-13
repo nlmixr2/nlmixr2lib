@@ -119,15 +119,26 @@ bundle (`DDDT-19-4021-e0006.jpg` through `e0008.jpg`):
 \mathrm{V/F\ (L)} = 140 \qquad\qquad \mathrm{K_a\ (h^{-1})} = 1.1
 ```
 
+The equations above are reproduced in the paper’s own notation. In the
+packaged model the procalcitonin covariate column is named
+`PROCALCITONIN` in full, and its effect parameter `e_procalcitonin_cl`,
+rather than the paper’s `PCT`: a bare `PCT` column would collide with
+the library’s established `_PCT` percent suffix (`BODYFAT_PCT`,
+`RACE_ASIAN_PCT`, `CUM_FLUID_BAL_PCT` and others) and with `PCT` =
+proximal convoluted tubule in the renal QSP model `Lu_2014_sglt_qsp.R`.
+The source column name `PCT` is recorded in
+`covariateData$PROCALCITONIN$source_name`. Nothing about the equation
+itself changes.
+
 | Equation / parameter | Value | Source location |
 |----|----|----|
 | `lka` (fixed) | 1.1 /h | Table 2, “Ka (h-1) = 1.1 fixed”; third display equation p. 4024. Methods: estimating Ka gave RSE 145%, so it was fixed “following reference 18” (Pascual 2012, Clin Infect Dis 55:381-390) |
 | `lcl` | 4.35 L/h | Table 2 final model, CL/F (RSE 4.4%; bootstrap 4.33, 95% CI 3.98-4.71); leading constant of the first display equation p. 4024 |
 | `lvc` | 140 L | Table 2 final model, V/F (RSE 12.6%; bootstrap 139, 95% CI 102-177); second display equation p. 4024 |
-| `e_pct_cl` | -0.209 | Table 2 final model, “PCT on CL/F” (RSE 20.1%; bootstrap -0.210, 95% CI -0.305 to -0.124); exponent of (PCT/0.19) in the first display equation |
+| `e_procalcitonin_cl` | -0.209 | Table 2 final model, “PCT on CL/F” (RSE 20.1%; bootstrap -0.210, 95% CI -0.305 to -0.124); exponent of (PCT/0.19) in the first display equation |
 | `e_tba_cl` | -0.158 | Table 2 final model, “TBA on CL/F” (RSE 27.9%; bootstrap -0.155, 95% CI -0.255 to -0.070); exponent of (TBA/3.95) in the first display equation |
 | `e_age_cl` | -0.017 /year | Table 2 final model, “Age on CL/F” (RSE 24.9%; bootstrap -0.017, 95% CI -0.026 to -0.009); coefficient in exp\[-0.017 x (AGE - 72.0)\] |
-| PCT centring 0.19 ug/L | divisor | First display equation p. 4024; equals the Table 1 training-group median procalcitonin |
+| PROCALCITONIN centring 0.19 ug/L | divisor | First display equation p. 4024; equals the Table 1 training-group median procalcitonin |
 | TBA centring 3.95 umol/L | divisor | First display equation p. 4024; equals the Table 1 training-group median total bile acids |
 | AGE centring 72.0 years | offset | First display equation p. 4024; equals the Table 1 training-group median age |
 | `etalcl` | 43.9% -\> var 0.192721 | Table 2 final model, “eta CL (%)” (RSE 9.8%, shrinkage 25.0%; bootstrap 43.9%, 95% CI 35.2-52.2). Read as a log-scale SD; see “IIV scale” below |
@@ -218,15 +229,15 @@ mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
 # The published equation, transcribed by hand from p. 4024.
-cl_published <- function(PCT, TBA, AGE) {
-  4.35 * (PCT / 0.19)^-0.209 * (TBA / 3.95)^-0.158 * exp(-0.017 * (AGE - 72.0))
+cl_published <- function(PROCALCITONIN, TBA, AGE) {
+  4.35 * (PROCALCITONIN / 0.19)^-0.209 * (TBA / 3.95)^-0.158 * exp(-0.017 * (AGE - 72.0))
 }
 
 scenarios <- tibble::tribble(
-  ~scenario,                     ~PCT,  ~TBA,  ~AGE,
+  ~scenario,                       ~PROCALCITONIN, ~TBA,  ~AGE,
   "Cohort median (reference)",   0.19,  3.95,  72,
-  "Lower quartile PCT",          0.13,  3.95,  72,
-  "Upper quartile PCT",          0.28,  3.95,  72,
+  "Lower quartile procalcitonin",   0.13,  3.95,  72,
+  "Upper quartile procalcitonin",   0.28,  3.95,  72,
   "Lower quartile TBA",          0.19,  2.50,  72,
   "Upper quartile TBA",          0.19,  7.45,  72,
   "Lower quartile age",          0.19,  3.95,  67,
@@ -253,14 +264,14 @@ cl_model <- rxode2::rxSolve(mod_typ, events = ev_cl, keep = c("scenario")) |>
 #> Warning: multi-subject simulation without without 'omega'
 
 cl_cmp <- scenarios |>
-  dplyr::mutate(cl_hand = cl_published(PCT, TBA, AGE)) |>
+  dplyr::mutate(cl_hand = cl_published(PROCALCITONIN, TBA, AGE)) |>
   dplyr::left_join(cl_model, by = "scenario") |>
   dplyr::mutate(`Diff %` = 100 * (cl_model / cl_hand - 1))
 
 cl_cmp |>
   dplyr::rename(
     "Scenario"          = scenario,
-    "PCT (ug/L)"        = PCT,
+    "Procalcitonin (ug/L)" = PROCALCITONIN,
     "TBA (umol/L)"      = TBA,
     "Age (years)"       = AGE,
     "Published eq (L/h)" = cl_hand,
@@ -270,18 +281,19 @@ cl_cmp |>
                caption = "Packaged model vs the hand-transcribed published CL/F equation.")
 ```
 
-| Scenario | PCT (ug/L) | TBA (umol/L) | Age (years) | Published eq (L/h) | Packaged model (L/h) | Diff % |
+| Scenario | Procalcitonin (ug/L) | TBA (umol/L) | Age (years) | Published eq (L/h) | Packaged model (L/h) | Diff % |
 |:---|---:|---:|---:|---:|---:|---:|
 | Cohort median (reference) | 0.19 | 3.95 | 72 | 4.350 | 4.350 | 0 |
-| Lower quartile PCT | 0.13 | 3.95 | 72 | 4.709 | 4.709 | 0 |
-| Upper quartile PCT | 0.28 | 3.95 | 72 | 4.011 | 4.011 | 0 |
+| Lower quartile procalcitonin | 0.13 | 3.95 | 72 | 4.709 | 4.709 | 0 |
+| Upper quartile procalcitonin | 0.28 | 3.95 | 72 | 4.011 | 4.011 | 0 |
 | Lower quartile TBA | 0.19 | 2.50 | 72 | 4.676 | 4.676 | 0 |
 | Upper quartile TBA | 0.19 | 7.45 | 72 | 3.935 | 3.935 | 0 |
 | Lower quartile age | 0.19 | 3.95 | 67 | 4.736 | 4.736 | 0 |
 | Upper quartile age | 0.19 | 3.95 | 78 | 3.928 | 3.928 | 0 |
 | Septic + cholestatic, age 85 | 2.00 | 20.00 | 85 | 1.650 | 1.650 | 0 |
 
-Packaged model vs the hand-transcribed published CL/F equation. {.table}
+Packaged model vs the hand-transcribed published CL/F equation. {.table
+style="width:100%;"}
 
 ``` r
 
@@ -331,8 +343,8 @@ lnorm_from_iqr <- function(n, med, q1, q3) {
 # so the intravenous / oral comparison isolates the route and is not confounded
 # by two independent covariate draws.
 subj_base <- tibble::tibble(
-  # Table 1 training group: PCT 0.19 (0.13-0.28), TBA 3.95 (2.50-7.45)
-  PCT = lnorm_from_iqr(n_arm, 0.19, 0.13, 0.28),
+  # Table 1 training group: procalcitonin 0.19 (0.13-0.28), TBA 3.95 (2.50-7.45)
+  PROCALCITONIN = lnorm_from_iqr(n_arm, 0.19, 0.13, 0.28),
   TBA = lnorm_from_iqr(n_arm, 3.95, 2.50, 7.45),
   # Age 72 (67-78), truncated at the >= 60 y inclusion criterion
   AGE = pmax(60, stats::rnorm(n_arm, 72, (78 - 67) / (2 * qnorm(0.75)))),
@@ -398,7 +410,7 @@ regardless.
 # name shadows it in confusing ways.
 simdf <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("arm", "PCT", "TBA", "AGE", "WT")
+  keep = c("arm", "PROCALCITONIN", "TBA", "AGE", "WT")
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -593,7 +605,7 @@ asks the solver for the exact steady-state solution.
 ``` r
 
 subjects <- events |>
-  dplyr::distinct(id, arm, PCT, TBA, AGE, WT)
+  dplyr::distinct(id, arm, PROCALCITONIN, TBA, AGE, WT)
 
 ss_dose <- subjects |>
   dplyr::mutate(
@@ -840,8 +852,8 @@ exactly on the interval end, which the 0.05 h grid above guarantees.
   inclusion criteria, so the age effect is supported only over roughly
   60-90 years. The two laboratory covariates enter as power terms with
   no upper bound; extrapolation far outside the published interquartile
-  ranges (PCT 0.13-0.28 ug/L, TBA 2.50-7.45 umol/L) is not supported by
-  the data.
+  ranges (procalcitonin 0.13-0.28 ug/L, TBA 2.50-7.45 umol/L) is not
+  supported by the data.
 - **The machine-learning layer is not represented.** The paper’s
   headline XGBoost / random-forest / CatBoost voting ensemble, its RFECV
   feature selection and its SHAP interpretation are not pharmacokinetic

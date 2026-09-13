@@ -776,15 +776,17 @@ transcription, and it is discussed below.
   convention used by the authors, and that a natural-log covariate would
   conventionally be named `LNBW`. Under the natural-log reading every
   volume would be larger by a factor of 2.303 (V at the median 28.1 kg
-  would be 757 L rather than 329 L). **This choice is unresolved and is
-  the subject of an open question to the maintainers.** Nothing on disk
-  discriminates the two readings: Table 3 reports interval-average
-  concentrations, which are `dose/(CL * tau)` and therefore exactly
-  independent of V (the residual scan in this vignette finds no interior
-  optimum in V – the fit improves monotonically as V grows and converges
-  on the V-free closed form); the supplement’s Figure S1 VPC is plotted
-  against absolute clock time on trough-only TDM data; and no NONMEM
-  control stream was published. Every gate in this vignette is therefore
+  would be 757 L rather than 329 L). **The base-10 reading was ratified
+  by the maintainers on 2026-09-11 on the strength of that notation
+  convention; the base remains unresolved in the source itself and can
+  only be settled by the authors.** Nothing on disk discriminates the
+  two readings: Table 3 reports interval-average concentrations, which
+  are `dose/(CL * tau)` and therefore exactly independent of V (the
+  residual scan in this vignette finds no interior optimum in V – the
+  fit improves monotonically as V grows and converges on the V-free
+  closed form); the supplement’s Figure S1 VPC is plotted against
+  absolute clock time on trough-only TDM data; and no NONMEM control
+  stream was published. Every gate in this vignette is therefore
   insensitive to the log base, but a user simulating single-dose
   exposure, Cmax, or half-life is not.
 

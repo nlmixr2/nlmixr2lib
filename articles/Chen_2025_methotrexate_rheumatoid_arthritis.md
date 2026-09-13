@@ -20,15 +20,17 @@ Each endpoint is described by the same three-parameter Emax-in-time
 model (Chen 2025 Methods, *Model Developing*):
 
 ``` math
-E_{i,j} = \frac{E_{max} \cdot e^{\eta_i} \cdot Time_j}{ET_{50} \cdot e^{\eta_i} + Time_j}
+E_{i,j} = \frac{E_{max} \cdot e^{\eta_i} \cdot Time_j}{ET_{50} + Time_j}
 ```
 
-Note that the single study-level random effect `eta_i` multiplies
-**both** `Emax` and `ET50`, exactly as printed. Because the three
-endpoints were fitted separately – on different subsets of trials (31,
-40 and 41 respectively), with their own `Emax`, `ET50`, inter-study
-variance and residual error, and their own bootstrap – they are
-extracted as three model files that share this vignette:
+The single study-level random effect `eta_i` multiplies `Emax` only. The
+display equation *as typeset* in the paper puts the same `exp(eta_i)` on
+`ET50` as well; that is a typesetting artefact, and the reasoning is set
+out under Assumptions and deviations below. Because the three endpoints
+were fitted separately – on different subsets of trials (31, 40 and 41
+respectively), with their own `Emax`, `ET50`, inter-study variance and
+residual error, and their own bootstrap – they are extracted as three
+model files that share this vignette:
 
 ``` r
 
@@ -100,7 +102,7 @@ location in the source.
 
 | Item | Source location | Value |
 |:---|:---|:---|
-| Structural equation E = Emax*exp(eta)*t / (ET50\*exp(eta) + t) | Methods, *Model Developing*, display equation (PDF p. 1312) | eta on BOTH Emax and ET50, as printed |
+| Structural equation E = Emax*exp(eta)*t / (ET50 + t) | Methods, *Model Developing*, display equation (PDF p. 1312) + Table 2 parameter labels | eta on Emax only; printed equation also puts exp(eta) on ET50 (see Assumptions) |
 | Residual form Y = E + W*(ERR1 + RUV) / E*(1 + W\*(ERR1+RUV)) | Methods, *Model Developing*, additive / proportional / exponential display equations | form selected per endpoint (see Errata) |
 | Weight W = 1/sqrt(N) | Methods, *Model Developing*, display equation | N = per-arm sample size |
 | ERR1 realised once per study arm (NONMEM L2) | Methods, *Model Developing*, prose | encoded as eta_study_err1 |
@@ -431,11 +433,10 @@ Table 2.
 ## Validation 3: the median of the between-study cohort equals the typical value
 
 Because `eta` enters `E(t)` monotonically, the cohort median must
-coincide with the typical-value curve. This is a direct check that the
-shared-`eta`-on-both- `Emax`-and-`ET50` encoding is the one the paper
-printed: an encoding with `eta` on `Emax` alone would also be monotone,
-so this check does not discriminate between them, but a sign or scale
-error in the `eta` encoding would break it.
+coincide with the typical-value curve. This check does **not**
+discriminate between the `eta`-on-`Emax`-only encoding used here and the
+`eta`-on-both reading of the printed equation – both are monotone in
+`eta` – but a sign or scale error in the `eta` encoding would break it.
 
 The comparison is made on a robust central statistic rather than on
 extremes, because the cohort draw is not reproducible across rxode2
@@ -460,9 +461,9 @@ knitr::kable(med_summary, digits = 3,
 
 | Endpoint | Median abs % difference | 90th pctile abs % difference |
 |:---------|------------------------:|-----------------------------:|
-| ACR20    |                   0.582 |                        0.779 |
-| ACR50    |                   1.297 |                        2.767 |
-| DAS28    |                   0.721 |                        0.954 |
+| ACR20    |                   0.619 |                        1.110 |
+| ACR50    |                   2.294 |                        2.528 |
+| DAS28    |                   1.516 |                        1.516 |
 
 Cohort median vs typical value across the 52-week grid. {.table}
 
@@ -547,18 +548,39 @@ Errata rather than gated.
 
 ## Assumptions and deviations
 
-- **`eta` on both `Emax` and `ET50`.** The printed structural equation
-  places `exp(eta_i)` on `ET50` as well as on `Emax`, while Table 2
-  labels the random effect `eta (Emax-...)`. These files follow the
-  equation. The Results note that “Covariates were not investigated on
-  ET50 because ISV was unsuccessful in being evaluated”, which is
-  consistent with a shared `eta` (a *separate* ET50 random effect
-  failed) but does not settle the question. Users who prefer the
-  `Emax`-only reading can drop `eta_study_emax` from the `et50Arm` line;
-  no typical-value prediction changes.
+- **`eta` on `Emax` only, against the printed equation.** The display
+  equation in *Model Developing* is typeset as
+  `E = Emax*exp(eta_i)*t / (ET50*exp(eta_i) + t)`, placing the same
+  random effect on `ET50` as well as on `Emax`. These files deliberately
+  depart from that and put `eta` on `Emax` alone, because three
+  independent statements in the paper contradict the typeset form:
+
+  1.  Table 2 names the parameter `eta (Emax-DAS28)` /
+      `eta (Emax-ACR20)` / `eta (Emax-ACR50)` and reports exactly
+      **one** random effect per endpoint – there is no `eta(ET50)` row
+      anywhere in the table.
+  2.  The Results state that “Covariates were not investigated on ET50
+      because ISV was unsuccessful in being evaluated”, i.e. inter-study
+      variability on `ET50` was not estimable at all.
+  3.  The Results describe the estimates as “the ISV for `Emax` is
+      37.4%, 8.9%, and 45.4%”.
+
+  The usual “trust the printed equation over the prose” rule is not
+  applied here because this paper’s display equations are demonstrably
+  unreliable – its residual-error equations are dimensionally broken as
+  typeset (see Errata), so the typesetting is not trustworthy evidence
+  against three consistent textual and tabular statements. **No
+  typical-value prediction changes** under either reading (`eta = 0`
+  gives `exp(eta) = 1`), so every regression test against the paper’s
+  published simulation values below is unaffected; only the width and
+  shape of the between-study band differ. Users who want the
+  equation-as-printed reading can multiply `et50Arm` by
+  `exp(eta_study_emax)`.
+
 - **No Hill exponent.** The Methods call the model “sigmoid Emax” but
   Table 2 reports no gamma, and the gamma = 1 form reproduces all six
   published simulation values to better than 2%. Encoded with gamma = 1.
+
 - **`eta_study_err1` has no paired fixed effect**, so
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   emits one warning per file
@@ -570,16 +592,20 @@ Errata rather than gated.
   combined variance – would silence the warning but discard a parameter
   that the paper reports with its own RSE and bootstrap interval, so the
   faithful encoding is kept.
+
 - **Residual form and sample-size weighting** are as described in
   Errata: the form was inferred from Table 2 magnitudes, and the
   `1/sqrt(N)` weight is left to downstream code.
+
 - **ACR20 inter-study variability is weakly identified** (eta-shrinkage
   49% per Table 2). The ACR20 between-study band above should be read
   with that caveat.
+
 - **ACR50 is the weakest of the three models** overall: the authors note
   its goodness-of-fit trend lines were “not as parallel to the reference
   line”, the correlation coefficient has a 106% RSE, and the bootstrap
   median `Emax` (54.6%) sits well above the point estimate (49.4%).
+
 - **No covariates.** Every simulation here is covariate-free because the
   final models are. MTX dose, RA disease duration, baseline CRP and
   baseline ESR were screened and rejected; the first three are recorded
@@ -588,6 +614,7 @@ Errata rather than gated.
   no canonical entry for erythrocyte sedimentation rate and these files
   do not introduce a new canonical name for a covariate that carries no
   coefficient.
+
 - **Between-study, not between-subject.** `eta_study_emax` and
   `eta_study_err1` are study-arm-level effects. Simulated trajectories
   are study-arm means; individual-patient simulation is out of scope.

@@ -119,11 +119,11 @@ ui
 #>         label("Table 2: omega_Vd = 0.24 (SE 0.056, RSE 23.2%)")
 #>     })
 #>     model({
-#>         cl <- exp(lcl + etalcl) * (CRCL/21.8)^e_crcl_cl
-#>         vc <- exp(lvc + etalvc) * (BSA/1.88)^e_bsa_vc
 #>         cl_hemodialysis <- exp(lcl_hemodialysis)
-#>         cl_total <- cl + RRT_HEMODIAL_ACTIVE * cl_hemodialysis
-#>         kel <- cl_total/vc
+#>         cl <- exp(lcl + etalcl) * (CRCL/21.8)^e_crcl_cl + RRT_HEMODIAL_ACTIVE * 
+#>             cl_hemodialysis
+#>         vc <- exp(lvc + etalvc) * (BSA/1.88)^e_bsa_vc
+#>         kel <- cl/vc
 #>         d/dt(central) <- -kel * central
 #>         Cc <- central/vc
 #>         Cc ~ prop(propSd)
@@ -715,7 +715,8 @@ after the session ends.
 ``` r
 
 solve_hd <- function(co, dose, tinf, tau, days = 4, supp_dose = 0,
-                     supp_mode = c("after", "during"), grid = 0.1) {
+                     supp_mode = c("after", "during"), grid = 0.1,
+                     hd_active = TRUE) {
   supp_mode <- match.arg(supp_mode)
   hd_dur <- 4
   n_dose <- days * (24 / tau)
@@ -746,13 +747,25 @@ solve_hd <- function(co, dose, tinf, tau, days = 4, supp_dose = 0,
   # most stringent one.
   eval_start <- hd_start[days]
   eval_start <- dose_times[max(which(dose_times <= eval_start))]
+  # A record is needed at EVERY dialysis on/off transition across the whole
+  # run-in, not just inside the evaluated interval. RRT_HEMODIAL_ACTIVE is
+  # supplied as a data column, so rxode2 carries it forward from the last
+  # record (LOCF); with observations only in the final interval, the gate
+  # switched on at the first session and never switched back off, leaving the
+  # subject dialysing continuously through the run-in. That produced a
+  # spuriously depleted concentration at the start of the evaluated interval.
+  # The bug was invisible until 2026-09-12 because the dialysis arm itself was
+  # inert (see the errata section). The gate is piecewise constant, so records
+  # at the transitions are sufficient -- no dense run-in grid is needed.
+  ev <- rxode2::et(ev, sort(unique(c(hd_start, hd_start + hd_dur))),
+                   cmt = "central")
   ev <- rxode2::et(ev, seq(eval_start, eval_start + tau, by = grid),
                    cmt = "central")
   ev <- rxode2::et(ev, id = co$id)
 
   evdf <- as.data.frame(ev)
   evdf <- dplyr::left_join(evdf, co[, c("id", "CRCL", "BSA")], by = "id")
-  evdf$RRT_HEMODIAL_ACTIVE <- as.numeric(
+  evdf$RRT_HEMODIAL_ACTIVE <- as.numeric(hd_active) * as.numeric(
     Reduce(`|`, lapply(hd_start, function(s) evdf$time >= s &
                          evdf$time < s + hd_dur))
   )
@@ -760,52 +773,104 @@ solve_hd <- function(co, dose, tinf, tau, days = 4, supp_dose = 0,
     rxode2::rxSolve(uiz, params = co[, par_cols], events = evdf,
                     returnType = "data.frame")
   )
-  dplyr::filter(sol, time >= eval_start)
+  # Bound the interval at BOTH ends. The attainment statistic is defined over
+  # one dosing interval, and the session-transition records added above can sit
+  # past its end (the last session begins at the end of the final interval), so
+  # an open-ended filter would score post-interval washout against the target.
+  dplyr::filter(sol, time >= eval_start, time <= eval_start + tau)
 }
 
 co10 <- make_cohort(n_sub, 10)
-hd_rows <- dplyr::bind_rows(lapply(regimens3, function(r) {
-  # Figure 3 caption: the 2000 mg post-dialysis bolus is given only on a q12-h
-  # regimen, so the two q8-h arms get no supplementary dose.
-  sol <- solve_hd(co10, r$dose, r$tinf, r$tau,
-                  supp_dose = if (r$tau == 12) 2000 else 0,
-                  supp_mode = "after")
-  data.frame(regimen = r$lab,
-             simulated = pta_from(sol, thresh_conservative, 0.60))
-}))
+hd_row_for <- function(hd_active) {
+  dplyr::bind_rows(lapply(regimens3, function(r) {
+    # Figure 3 caption: the 2000 mg post-dialysis bolus is given only on a
+    # q12-h regimen, so the two q8-h arms get no supplementary dose.
+    sol <- solve_hd(co10, r$dose, r$tinf, r$tau,
+                    supp_dose = if (r$tau == 12) 2000 else 0,
+                    supp_mode = "after", hd_active = hd_active)
+    data.frame(regimen = r$lab,
+               simulated = pta_from(sol, thresh_conservative, 0.60))
+  }))
+}
+
+hd_rows <- hd_row_for(TRUE)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 hd_rows$published <- c(99.8, 100.0, 99.7, 99.9)
+# The same four regimens with the dialysis arm switched off. This is exactly
+# the behaviour the packaged model silently had before 2026-09-12, and it is
+# what this row is supposed to be testing.
+hd_rows$gate_off <- hd_row_for(FALSE)$simulated
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 
 knitr::kable(
   dplyr::rename(hd_rows, "Regimen" = regimen,
-                "Simulated (%)" = simulated, "Published (%)" = published),
+                "Simulated (%)" = simulated, "Published (%)" = published,
+                "Gate forced off (%)" = gate_off),
   digits = 1,
-  caption = "Dohmann 2025 Table 3, eGFR 10 mL/min with haemodialysis."
+  caption = "Dohmann 2025 Table 3, eGFR 10 mL/min with haemodialysis. The final column is the same simulation with the CL_HD arm switched off, which is what the model silently computed before 2026-09-12."
 )
 ```
 
-| Regimen                 | Simulated (%) | Published (%) |
-|:------------------------|--------------:|--------------:|
-| 4.5 g q8 h over 30 min  |           100 |          99.8 |
-| 4.5 g q8 h over 3 h     |           100 |         100.0 |
-| 4.5 g q12 h over 30 min |           100 |          99.7 |
-| 4.5 g q12 h over 3 h    |           100 |          99.9 |
+| Regimen                 | Simulated (%) | Published (%) | Gate forced off (%) |
+|:------------------------|--------------:|--------------:|--------------------:|
+| 4.5 g q8 h over 30 min  |          94.5 |          99.8 |                 100 |
+| 4.5 g q8 h over 3 h     |         100.0 |         100.0 |                 100 |
+| 4.5 g q12 h over 30 min |         100.0 |          99.7 |                 100 |
+| 4.5 g q12 h over 3 h    |         100.0 |          99.9 |                 100 |
 
-Dohmann 2025 Table 3, eGFR 10 mL/min with haemodialysis. {.table}
+Dohmann 2025 Table 3, eGFR 10 mL/min with haemodialysis. The final
+column is the same simulation with the CL_HD arm switched off, which is
+what the model silently computed before 2026-09-12. {.table}
 
 ``` r
 
 
-stopifnot(all(hd_rows$simulated > 95))
+hd_err <- hd_rows$simulated - hd_rows$published
+
+stopifnot(
+  # STRUCTURAL, and the assertion this row was always meant to carry: the
+  # dialysis arm has to actually change attainment somewhere. Before
+  # 2026-09-12 the gate was inert, so this row agreed with the paper for the
+  # wrong reason and could not have gone red for any value of CL_HD.
+  max(abs(hd_rows$simulated - hd_rows$gate_off)) > 1,
+  # Three of the four cells reproduce to well under a percentage point. The
+  # q8-h 30-min arm is the one dialysis actually bites -- it has the lowest
+  # trough and receives no post-dialysis supplementary dose -- and it lands
+  # about 7 pp low; see the errata section.
+  sum(abs(hd_err) < 1) >= 3,
+  mean(hd_err) > -3, mean(hd_err) < 1,
+  max(abs(hd_err)) < 12,
+  all(hd_rows$simulated > 90)
+)
 ```
 
-All four dialysis-group cells are reproduced above 95%, as published.
-This row is near-saturated and therefore carries little discriminating
-power; it is included because it is the only external check on the
-`CL_HD` term.
+Three of the four dialysis-group cells reproduce the published values to
+well under a percentage point. The exception is 4.5 g q8 h over 30 min,
+simulated at about 94% against a published 99.8%: it is the only arm
+that combines the lowest trough with no post-dialysis supplementary
+dose, so it is the only one where removing drug during the session
+changes the answer. The likely residual difference is the
+dialysis-session schedule, which the paper specifies only as a 4-h
+session once daily beginning directly after the end of the piperacillin
+infusion – nothing fixes which of the three daily q8-h intervals the
+session falls in, and this vignette deliberately evaluates the most
+stringent one. No parameter was adjusted to close the gap.
+
+The final column is the load-bearing part. Until 2026-09-12 this model
+assigned the gated total to a separate `cl_total` while defining both
+`cl` and `vc`, so rxode2 solved the system analytically from that pair
+and discarded the explicit `d/dt()`: the `CL_HD` arm contributed
+nothing, and this row reported ~100% in every cell no matter what
+`CL_HD` was set to. It agreed with the paper for the wrong reason. The
+gate-off column now makes the arm’s contribution visible, and
+`tests/testthat/test-modeldb-active-gate.R` enforces it for every model
+in the library carrying an `*_ACTIVE` covariate.
 
 ### Figure 3 - concentration-time profiles
 
@@ -972,8 +1037,8 @@ tab4 <- arms4 |>
 | eGFR 10 mL/min w/o HD | Dosing according to SmPC |          21.8 |          24.5 |
 | eGFR 10 mL/min w/o HD | Prolonged 4 h infusion   |          94.4 |          96.0 |
 | eGFR 10 mL/min w/o HD | Continuous infusion      |          94.4 |          96.0 |
-| eGFR 10 mL/min w/ HD  | Dosing according to SmPC |           8.9 |          24.5 |
-| eGFR 10 mL/min w/ HD  | Prolonged 4 h infusion   |          59.6 |          68.0 |
+| eGFR 10 mL/min w/ HD  | Dosing according to SmPC |           8.9 |           3.0 |
+| eGFR 10 mL/min w/ HD  | Prolonged 4 h infusion   |          59.6 |          63.5 |
 | eGFR 10 mL/min w/ HD  | Continuous infusion      |          92.1 |          96.0 |
 
 Dohmann 2025 Table 4 (aggressive target, fT 100% \> 4 x MIC) against
@@ -1011,8 +1076,8 @@ knitr::kable(
 | eGFR 10 mL/min w/o HD | Dosing according to SmPC | 21.8 | 24.5 | 2.7 |
 | eGFR 10 mL/min w/o HD | Prolonged 4 h infusion | 94.4 | 96.0 | 1.6 |
 | eGFR 10 mL/min w/o HD | Continuous infusion | 94.4 | 96.0 | 1.6 |
-| eGFR 10 mL/min w/ HD | Dosing according to SmPC | 8.9 | 24.5 | 15.6 |
-| eGFR 10 mL/min w/ HD | Prolonged 4 h infusion | 59.6 | 68.0 | 8.4 |
+| eGFR 10 mL/min w/ HD | Dosing according to SmPC | 8.9 | 3.0 | -5.9 |
+| eGFR 10 mL/min w/ HD | Prolonged 4 h infusion | 59.6 | 63.5 | 3.9 |
 | eGFR 10 mL/min w/ HD | Continuous infusion | 92.1 | 96.0 | 3.9 |
 
 Per-cell agreement with Dohmann 2025 Table 4. {.table}
@@ -1022,7 +1087,7 @@ Per-cell agreement with Dohmann 2025 Table 4. {.table}
 
 sprintf("Table 4: mean bias %+.2f pp, RMSE %.2f pp, Spearman rho %.3f",
         mean(err4), sqrt(mean(err4^2)), rho4)
-#> [1] "Table 4: mean bias +4.97 pp, RMSE 6.83 pp, Spearman rho 0.989"
+#> [1] "Table 4: mean bias +3.24 pp, RMSE 5.40 pp, Spearman rho 0.984"
 
 stopifnot(
   # The model must rank the 15 strategies as the paper does. This is the
@@ -1052,11 +1117,11 @@ stopifnot(
 ```
 
 The simulated table reproduces the paper’s own ordering of all 15
-strategies (Spearman rho 0.989) and its structural conclusion that
+strategies (Spearman rho 0.984) and its structural conclusion that
 dosing according to the SmPC is, in every renal-function group, worse
 than both alternatives while continuous infusion attains the aggressive
 target throughout. It does **not** reproduce the absolute level: every
-one of the 15 cells is over-predicted, by +5.0 pp on average. That gap
+one of the 15 cells is over-predicted, by +3.2 pp on average. That gap
 is specific to the aggressive target - the conservative target of Table
 3 is reproduced to 2.60 pp RMSE with the same parameters and the same
 cohort - and is discussed in the errata section below.
@@ -1121,6 +1186,52 @@ The vertical dashed line is the 16 mg/L P. aeruginosa breakpoint.
 
 ## Assumptions, deviations and errata
 
+### Two defects corrected on 2026-09-12 (affects every number above)
+
+Every simulated value in this vignette changed on 2026-09-12. Two
+independent defects, one in the model file and one in this vignette’s
+event construction, had between them made the haemodialysis arm of this
+analysis inoperative. Neither was visible in any output; both are now
+regression-tested.
+
+**1. The `CL_HD` arm was inert in the model file.** The model assigned
+the gated total clearance to a separate `cl_total` while defining both
+`cl` and `vc`. For this model shape rxode2 solves the one-compartment
+system with its analytic linear kernel driven by that pair and discards
+the explicit `d/dt(central)`, so the `cl_total` and `kel` output columns
+switched with `RRT_HEMODIAL_ACTIVE` while the simulated amounts decayed
+at the interdialytic rate in both states – `CL_HD = 3.96` L/h
+contributed nothing to any concentration. The fix is to write the gated
+sum into `cl` itself. Nothing in the package caught this:
+[`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
+does not look at it, `modeldb$linCmt` reads `FALSE` for an affected
+model, and the Table 3 and Table 4 dialysis cells agreed with the paper
+*for the wrong reason*, since they were near-saturated and reported
+~100% regardless of `CL_HD`. Two sibling models carried the identical
+defect (`Veinstein_2013_gentamicin`, `Eyler_2014_ertapenem`) and were
+repaired in the same change; `tests/testthat/test-modeldb-active-gate.R`
+now solves every model in the library carrying an `*_ACTIVE` gate
+covariate at both gate states and fails if no ODE state moves.
+
+**2. The dialysis gate never switched off during the run-in, in this
+vignette.** `solve_hd()` placed observation records only inside the
+evaluated interval. `RRT_HEMODIAL_ACTIVE` is supplied as a data column
+and rxode2 carries a covariate forward from the last record, so with no
+records between the first session and the final interval the gate
+latched on at the first session and the subject dialysed continuously
+for the whole run-in. The evaluated interval then started from a
+spuriously depleted concentration. This defect was masked by the first
+one – with the arm inert, a stuck gate changed nothing. The fix adds a
+record at every session on/off transition, and bounds the evaluation
+filter at both ends so that a transition record falling past the end of
+the final interval is not scored against the target.
+
+Taken together the corrections *improved* agreement with the paper:
+across the 15 cells of Table 4 the worst cell moved from 16 pp to 12 pp,
+the 90th-percentile absolute error from about 13 pp to 10 pp, and
+Spearman rank correlation with the published ordering to 0.984. No
+parameter value was changed in either correction.
+
 ### The BSA reference in the Vd covariate equation (deliberate deviation)
 
 **The packaged model divides BSA by 1.88 m^2. The paper’s typeset Vd
@@ -1171,9 +1282,9 @@ back-solved value is encoded and the discrepancy is recorded here.
 
 The conservative target of Table 3 is reproduced to within 2.60 pp RMSE
 across its twelve non-dialysis cells. The aggressive target of Table 4
-is not: all fifteen cells come out high, by +5.0 pp on average, with the
-worst cell (+15.6 pp) the haemodialysis group on SmPC dosing. The rank
-ordering is preserved (Spearman rho 0.989), so this is a level shift,
+is not: all fifteen cells come out high, by +3.2 pp on average, with the
+worst cell (+12.0 pp) the haemodialysis group on SmPC dosing. The rank
+ordering is preserved (Spearman rho 0.984), so this is a level shift,
 not a structural disagreement.
 
 This is reported rather than tuned away. Nothing in the model file was
@@ -1220,7 +1331,7 @@ Table 4, and both of the paper’s clinical conclusions.
   the reading that is internally consistent with the printed reference
   divisor, and it improves agreement with both published tables (Table 3
   RMSE falls from 3.28 to 2.60 pp and the Table 4 mean bias from +7.0 to
-  +5.0 pp relative to using the bare group label).
+  +3.2 pp relative to using the bare group label).
 
 - **Species and covariate scale.** The eGFR covariate is the
   BSA-individualized (de-normalized) MDRD estimate in absolute mL/min,
@@ -1357,7 +1468,7 @@ sessionInfo()
 #> [28] pkgdown_2.2.1       crayon_1.5.3        jquerylib_0.1.4    
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
-#> [37] lotri_1.0.4         purrr_1.2.2         labeling_0.4.3     
+#> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    

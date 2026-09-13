@@ -367,7 +367,7 @@ stopifnot(
 c(max_auc_relerr = max(auc_chk$auc_relerr),
   max_halflife_relerr = max(auc_chk$thalf_relerr))
 #>      max_auc_relerr max_halflife_relerr 
-#>        1.220174e-05        8.477226e-14
+#>        1.220174e-05        8.222124e-14
 ```
 
 ## Check 3 – reproducing the paper’s own AUC24 equation (equation 6)

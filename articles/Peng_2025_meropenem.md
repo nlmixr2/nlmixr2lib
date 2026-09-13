@@ -16,9 +16,9 @@
   QEFF; Cockcroft-Gault creatinine clearance acts on the endogenous arm
   through an exponential term centered at the 13.6 mL/min cohort median.
   Central volume 26.0 L with no inter-individual variability (fixed to
-  zero by the authors). Age, sex, body weight, APACHE II, CRP, PCT,
-  sepsis, renal-failure category and anuria were screened but not
-  retained.
+  zero by the authors). Age, sex, body weight, APACHE II, CRP,
+  procalcitonin, sepsis, renal-failure category and anuria were screened
+  but not retained.
 - Article: [Drug Des Devel Ther.
   2025;19:1105-1117](https://doi.org/10.2147/DDDT.S489603)
 

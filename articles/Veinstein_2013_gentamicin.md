@@ -224,6 +224,8 @@ ggplot(vpc_summary, aes(time, Q50)) +
 #> log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.
+#> Warning: Removed 3 rows containing missing values or values outside the scale range
+#> (`geom_ribbon()`).
 ```
 
 ![](Veinstein_2013_gentamicin_files/figure-html/fig-vpc-1.png)
@@ -370,7 +372,7 @@ dplyr::bind_rows(simulated_view, published) |>
 
 | Treatment | Source | Cmax (mg/L) | AUC0-24 (mg.h/L) |
 |:---|:---|---:|---:|
-| 6 mg/kg pre-HD | Simulated (this vignette, 200-subject VPC mean) | 31.0 | 466 |
+| 6 mg/kg pre-HD | Simulated (this vignette, 200-subject VPC mean) | 31.0 | 182 |
 | 6 mg/kg pre-HD | Table 3 (observed) | 31.8 +/- 16.8 | 209 +/- 103 |
 | 6 mg/kg pre-HD | Table 5 (MCS) | 31.0 +/- 10.9 | 190.8 +/- 65.0 |
 
@@ -409,11 +411,81 @@ knitr::kable(
 
 | Time_h | Simulated | Veinstein_2013_Table_3 |
 |-------:|----------:|-----------------------:|
-|     24 |     11.92 |            4.1 +/- 2.3 |
-|     48 |      5.52 |            1.8 +/- 1.2 |
+|     24 |      3.93 |            4.1 +/- 2.3 |
+|     48 |      1.93 |            1.8 +/- 1.2 |
 
 Simulated mean trough concentrations (mg/L) at t = 24 h and t = 48 h
 compared with the Veinstein 2013 Table 3 cohort means. {.table}
+
+### The dialysis gate is load-bearing
+
+Everything above depends on the dialysis-clearance arm actually being
+applied while a session runs. Until 2026-09-12 it was not: the model
+carried the gated sum in a separate `cl_total` and rxode2 solved the
+system analytically from `cl` and `vc`, discarding the explicit
+`d/dt()`, so the reported `cl_total` and `kel` columns switched with the
+gate while the simulated amounts did not. The check below is
+deterministic – it solves the typical subject with the random effects
+zeroed, so both sides use the same parameters and the comparison is pure
+structure, not a draw that can shift between rxode2 builds.
+
+``` r
+
+gate_off_events <- typ_events
+gate_off_events$RRT_HEMODIAL_ACTIVE <- 0L
+
+gate_on  <- sim_typical
+gate_off <- rxode2::rxSolve(mod_typical, events = gate_off_events,
+                            keep = c("WT", "treatment", "RRT_HEMODIAL_ACTIVE")) |>
+  as.data.frame()
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalcl_hemodialysis', 'etalvc'
+
+trapz <- function(d) {
+  d <- d[!duplicated(d$time) & d$time <= 24, ]
+  sum(diff(d$time) * (head(d$Cc, -1) + tail(d$Cc, -1)) / 2)
+}
+
+gate_check <- tibble::tibble(
+  Quantity  = c("AUC0-24 (mg.h/L)", "C24 (mg/L)", "C48 (mg/L)"),
+  Gate_live = c(trapz(gate_on),
+                gate_on$Cc[which.min(abs(gate_on$time - 24))],
+                gate_on$Cc[which.min(abs(gate_on$time - 48))]),
+  Gate_inert = c(trapz(gate_off),
+                 gate_off$Cc[which.min(abs(gate_off$time - 24))],
+                 gate_off$Cc[which.min(abs(gate_off$time - 48))]),
+  Published = c(190.8, 4.1, 1.8)
+)
+
+stopifnot(
+  # Structural: the dialysis arm must move the solution at all. This is the
+  # assertion the pre-2026-09-12 model failed, silently.
+  all(abs(gate_check$Gate_live - gate_check$Gate_inert) /
+        gate_check$Gate_inert > 0.25),
+  # The typical-value solve reproduces the published cohort means. Tight
+  # bounds are correct here because the solve is deterministic.
+  abs(gate_check$Gate_live[1] - 190.8) / 190.8 < 0.10,
+  abs(gate_check$Gate_live[2] - 4.1) / 4.1 < 0.15,
+  abs(gate_check$Gate_live[3] - 1.8) / 1.8 < 0.15
+)
+
+knitr::kable(
+  gate_check,
+  digits = 2,
+  caption = "Typical-subject exposure with the dialysis gate live, with it forced off (the behaviour the model silently had before 2026-09-12), and the Veinstein 2013 published values. Ignoring the dialysis arm over-predicts AUC0-24 roughly 2.5-fold and the 24-h trough roughly 3-fold.",
+  align = c("l", "r", "r", "r")
+)
+```
+
+| Quantity         | Gate_live | Gate_inert | Published |
+|:-----------------|----------:|-----------:|----------:|
+| AUC0-24 (mg.h/L) |    188.97 |     476.68 |     190.8 |
+| C24 (mg/L)       |      4.06 |      12.70 |       4.1 |
+| C48 (mg/L)       |      1.71 |       5.36 |       1.8 |
+
+Typical-subject exposure with the dialysis gate live, with it forced off
+(the behaviour the model silently had before 2026-09-12), and the
+Veinstein 2013 published values. Ignoring the dialysis arm over-predicts
+AUC0-24 roughly 2.5-fold and the 24-h trough roughly 3-fold. {.table}
 
 ## Assumptions and deviations
 
@@ -427,13 +499,24 @@ compared with the Veinstein 2013 Table 3 cohort means. {.table}
   parameterisation is therefore structural rather than empirically
   estimated.
 - **RRT_HEMODIAL_ACTIVE gating is a simple binary additive arm.** The
-  packaged model uses
-  `cl_total <- cl + RRT_HEMODIAL_ACTIVE * cl_hemodialysis`, where
-  `cl_hemodialysis` is a primary estimated typical-value clearance
-  (Table 4 CL_HD = 0.955 mL/min/kg). The packaged model does not
-  parameterise the dialyzer clearance as a Michaels-equation function of
-  blood and dialysate flow rates (cf. Liesenfeld 2013 dabigatran); the
-  Veinstein 2013 protocol fixed the dialyzer (Toray B3
+  packaged model writes the gated total directly into `cl`, as
+  `cl <- exp(lcl + etalcl) * WT + RRT_HEMODIAL_ACTIVE * cl_hemodialysis`,
+  where `cl_hemodialysis` is a primary estimated typical-value clearance
+  (Table 4 CL_HD = 0.955 mL/min/kg). The single assignment is
+  load-bearing and not a stylistic choice: until 2026-09-12 this model
+  carried the gated sum in a separate `cl_total` variable and eliminated
+  via `cl_total / vc`, which left the dialysis arm **silently inert** –
+  rxode2 solved the one-compartment system analytically from `cl` and
+  `vc` and discarded the explicit `d/dt()`, so the reported `cl_total`
+  and `kel` columns switched with the gate while the simulated amounts
+  decayed at the interdialytic rate in both states. Every simulated
+  number below therefore differs from the versions of this vignette
+  rendered before that date. The defect is now regression-tested for
+  every model carrying an `*_ACTIVE` gate covariate in
+  `tests/testthat/test-modeldb-active-gate.R`. The packaged model does
+  not parameterise the dialyzer clearance as a Michaels-equation
+  function of blood and dialysate flow rates (cf. Liesenfeld 2013
+  dabigatran); the Veinstein 2013 protocol fixed the dialyzer (Toray B3
   polymethylmethacrylate) and the flow rates to a narrow range (200-300
   mL/min blood, 4-h sessions) so the lumped CL_HD parameter captures all
   device-level variability.

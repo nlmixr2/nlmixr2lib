@@ -1004,7 +1004,7 @@ published figures.**
     #>  [1] generics_0.1.4      sass_0.4.10         xml2_1.6.0         
     #>  [4] digest_0.6.39       magrittr_2.0.5      RColorBrewer_1.1-3 
     #>  [7] evaluate_1.0.5      grid_4.6.1          fastmap_1.2.0      
-    #> [10] lotri_1.0.4         jsonlite_2.0.0      whisker_0.4.1      
+    #> [10] lotri_1.0.5         jsonlite_2.0.0      whisker_0.4.1      
     #> [13] rxode2ll_2.0.17     backports_1.5.1     purrr_1.2.2        
     #> [16] viridisLite_0.4.3   scales_1.4.0        textshaping_1.0.5  
     #> [19] jquerylib_0.1.4     cli_3.6.6           crayon_1.5.3       

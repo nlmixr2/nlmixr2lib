@@ -1,0 +1,1103 @@
+# Infliximab (Zhao 2026)
+
+## Model and source
+
+- Citation: Zhao Q, Jongsma MME, Vuijk SA, de Winter BCM,
+  Martinez-Vinson C, Kolho KL, Norsa L, Hussey S, Wine E, Cohen S,
+  Shouval DS, Assa A, Lev-Tzion R, de Meij T, Wolters VM, Huynh HQ,
+  Preijers T, de Ridder L. Population Pharmacokinetics Analysis of
+  Infliximab in up to 10-Year-Old Patients with Paediatric Inflammatory
+  Bowel Disease: Label-Recommended Dose Fails to Achieve Therapeutic
+  Target Concentration. Clin Pharmacokinet. 2026;65(1):79-94.
+  <doi:10.1007/s40262-025-01565-6>
+- Description: Two-compartment population PK model of intravenous
+  infliximab in young paediatric patients with inflammatory bowel
+  disease aged 10 years or younger, with allometric body-weight scaling
+  (exponents fixed at 0.75 on clearance terms and 1 on volume terms) and
+  power effects of serum albumin and C-reactive protein on clearance
+  (Zhao 2026). Developed on 640 serum concentrations from 104 children
+  across 14 European and Canadian centres; 14.4 percent of measurements
+  were below the limit of quantification and were handled with the M3
+  method. Peripheral volume V2 and inter-compartmental clearance Q could
+  not be estimated from the sparse trough-dominated data and are FIXED
+  to the values of the published Chung and Clemente-Bautista paediatric
+  models. Inter-individual variability sits on clearance only. Residual
+  variability is proportional with six separate magnitudes selected per
+  observation by which commercial infliximab ELISA measured the sample,
+  the paper’s central methodological contribution. Typical clearance in
+  this cohort (0.779 L/day/65 kg) is roughly twice that reported for
+  older children and adults.
+- Article: <https://doi.org/10.1007/s40262-025-01565-6>
+- Supplement (open access, two PDFs: Supplementary Tables 1-2 and
+  Supplementary Figures 1-4):
+  <https://doi.org/10.1007/s40262-025-01565-6>
+
+``` r
+
+mod <- rxode2::rxode(readModelDb("Zhao_2026_infliximab"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+```
+
+## Population
+
+Zhao 2026 is the first population-pharmacokinetic analysis of infliximab
+restricted to children with inflammatory bowel disease who were 10 years
+old or younger when infliximab was started. Therapeutic-drug-monitoring
+data were collected retrospectively from 14 European and Canadian
+centres (patients treated 2004-2016, data collected 2015-2019). The
+cohort comprised 104 children with a median age of 8.2 years (range
+1.2-10.0) and a median body weight of 25 kg (range 9.5-40.9) at the
+first infusion; 54 of 104 (52%) were female, 59 (57%) had Crohn’s
+disease and 45 (43%) ulcerative colitis (Table 1). Sixteen patients were
+under 6 years old, an age band in which infliximab is off-label.
+
+Baseline inflammatory markers were high relative to published values for
+children over 10 years: C-reactive protein 10.4 +/- 22.3 mg/L (median 3,
+range 0.02-302) and erythrocyte sedimentation rate 19.6 +/- 13.6 mm/h.
+Serum albumin was 39.6 +/- 4.8 g/L (median 40.5, range 19.6-50). The
+median infusion was 6 mg/kg (range 3.5-15). Race and ethnicity are not
+reported.
+
+The Abstract and Results 3.1 report 2150 measured concentrations, of
+which only four were peak samples; Results 3.3 states that the
+model-development dataset comprised 640 measurements, 95 of them (14.4%)
+below the limit of quantification and handled with the M3 method. The
+near-absence of peak samples is the source of the two fixed disposition
+parameters and, as shown below, of this model’s principal limitation.
+
+The same information is available programmatically via the model’s
+`population` metadata:
+
+``` r
+
+pop <- readModelDb("Zhao_2026_infliximab")()$population
+str(pop, max.level = 1)
+#> List of 15
+#>  $ species       : chr "human"
+#>  $ n_subjects    : int 104
+#>  $ n_studies     : int 1
+#>  $ n_centres     : int 14
+#>  $ age_range     : chr "1.2-10.0 years"
+#>  $ age_median    : chr "8.2 years"
+#>  $ weight_range  : chr "9.5-40.9 kg"
+#>  $ weight_median : chr "25 kg"
+#>  $ sex_female_pct: num 52
+#>  $ race_ethnicity: NULL
+#>  $ disease_state : chr "paediatric inflammatory bowel disease (57% Crohn's disease, 43% ulcerative colitis); baseline C-reactive protei"| __truncated__
+#>  $ dose_range    : chr "intravenous infliximab, median 6 mg/kg (range 3.5-15) per infusion; label induction at weeks 0, 2 and 6 followe"| __truncated__
+#>  $ regions       : chr "Europe (Netherlands, France, Finland, Italy, Ireland, Czech Republic, Israel, Belgium) and Canada"
+#>  $ n_observations: int 640
+#>  $ notes         : chr "Baseline demographics are Zhao 2026 Table 1 (total-cohort column); covariate values are recorded at the first i"| __truncated__
+```
+
+## Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Zhao_2026_infliximab.R`.
+The table below collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| Structural model: two compartments, intravenous | – | Results 3.3, “A two-compartmental popPK model best described the IFX disposition in this population” |
+| Covariate model form: power on median-normalised covariate, multiplied by allometric weight term | – | Eq. 3 (continuous covariates); Methods 2.3.2, “values were normalized to the population median” |
+| `lcl` (CL) | 0.779 L/day/65 kg | Table 2, final model; RSE 7%; bootstrap 0.775 (0.615-0.943) |
+| `lvc` (V1) | 17.2 L/65 kg | Table 2, final model; RSE 16%; bootstrap 17.1 (10.831-23.629) |
+| `lvp` (V2) | 1.21 L/65 kg, FIXED | Table 2, final model, “1.21 (FIX)”; value from Chung et al. and Clemente-Bautista et al. per Results 3.3 |
+| `lq` (Q) | 0.0697 L/day/65 kg, FIXED | Table 2, final model, “0.0697 (FIX)”; same provenance |
+| `e_wt_cl_q` | 0.75, FIXED | Eq. 3 and Eq. 4, `(body weight/65 kg)^0.75`; Results 3.3, “fixed at 0.75 for all CL terms … a priori” |
+| `e_wt_vc_vp` | 1, FIXED | Eq. 3 and Eq. 4 text, “if the parameter is volume of distribution, the exponential … is 1”; Results 3.3 |
+| `e_alb_cl` | -0.758 | Table 2, “ALB on CL”; RSE 32%; bootstrap -0.754 (-1.270 to -0.246) |
+| Albumin centring value | 40.5 g/L | Results 3.3, “from the reference value of 40.5 g/L”; Table 1 total-cohort median |
+| `e_crp_cl` | 0.0545 | Table 2, “CRP on CL”; RSE 36%; bootstrap 0.0541 (0.016-0.093) |
+| CRP centring value | 3 mg/L | Results 3.3, “from the reference value of 3 mg/L”; Table 1 total-cohort median |
+| `etalcl` | 0.156 (= log(1 + 0.411^2)) | Table 2, “CL (%CV)” = 41.1%; RSE 12%, shrinkage 15%; bootstrap 39.8% (26.88-52.35%) |
+| `propSdSanquin` | 0.975 (= sqrt(0.951)) | Table 2, “Prop. RUV for Sanquin” = 0.951; RSE 27% |
+| `propSdImmundiagnostik` | 0.884 (= sqrt(0.781)) | Table 2, “Prop. RUV for Immundiagnostik” = 0.781; RSE 9% |
+| `propSdCaltag` | 0.785 (= sqrt(0.617)) | Table 2, “Prop. RUV for Caltag” = 0.617; RSE 9% |
+| `propSdMatrixBiotek` | 0.769 (= sqrt(0.591)) | Table 2, “Prop. RUV for Matrix biotek” = 0.591; RSE 20% |
+| `propSdBenHorin` | 0.943 (= sqrt(0.889)) | Table 2, “Prop. RUV for Shomron Ben-Horin” = 0.889; RSE 25% |
+| `propSdPromonitor` | 0.956 (= sqrt(0.914)) | Table 2, “Prop. RUV for Promonitor” = 0.914; RSE 31% |
+| Six-way assay stratification of the residual error | – | Methods 2.3.1, error model evaluated “for each of the six different \[IFX\] assays”; Table 1 assay counts |
+| Target trough concentration | 5 mg/L | Methods 2.3.5, per the ECCO/ESPGHAN guideline (van Rheenen et al.) |
+
+The reported `Prop. RUV` values are NONMEM `$SIGMA` **variances**, so
+the SDs that `prop()` requires are their square roots. The argument
+establishing that scale is in [Assumptions and
+deviations](#assumptions-and-deviations); it is the one non-obvious
+transcription decision in this extraction.
+
+## Structural identities
+
+These checks are deterministic – they use
+[`rxode2::zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html)
+to suppress between-subject variability, and every reference quantity is
+computed from the values **printed in the paper** rather than from the
+model’s own output, so a mis-transcribed parameter, allometric exponent
+or unit makes them fail.
+
+``` r
+
+tmod <- rxode2::zeroRe(mod)
+#> Warning: No sigma parameters in the model
+
+# Reference quantities from the PRINTED Table 2 values only. Nothing here reads
+# the model object, so these are an independent check of the encoding.
+printed <- list(cl = 0.779, vc = 17.2, vp = 1.21, q = 0.0697,
+                e_cl = 0.75, e_v = 1, wt_ref = 65,
+                alb_ref = 40.5, crp_ref = 3)
+
+printed_pars <- function(wt) {
+  list(cl = printed$cl * (wt / printed$wt_ref)^printed$e_cl,
+       vc = printed$vc * (wt / printed$wt_ref)^printed$e_v,
+       vp = printed$vp * (wt / printed$wt_ref)^printed$e_v,
+       q  = printed$q  * (wt / printed$wt_ref)^printed$e_cl)
+}
+
+# Closed-form terminal half-life of a two-compartment IV model.
+terminal_half_life <- function(p) {
+  k10 <- p$cl / p$vc; k12 <- p$q / p$vc; k21 <- p$q / p$vp
+  b <- k10 + k12 + k21
+  log(2) / ((b - sqrt(b^2 - 4 * k10 * k21)) / 2)
+}
+
+solve_typical <- function(wt, amt, dose_times, obs_times, alb = printed$alb_ref,
+                          crp = printed$crp_ref, assay = 2L) {
+  ev <- rxode2::et(amt = amt, time = dose_times, cmt = "central") |>
+    rxode2::et(obs_times, cmt = "central")
+  d <- as.data.frame(ev)
+  d$WT <- wt; d$ALB <- alb; d$CRP <- crp; d$ASSAY_IFX <- assay
+  out <- rxode2::rxSolve(tmod, d, returnType = "data.frame")
+  out[!is.na(out$Cc), ]
+}
+```
+
+### Single 5 mg/kg dose in the median 25 kg child
+
+``` r
+
+wt <- 25
+amt <- 5 * wt
+p <- printed_pars(wt)
+prof <- solve_typical(wt, amt, dose_times = 0, obs_times = seq(0, 400, by = 0.05))
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+
+# Trapezoidal AUC over the solved window, and the drug still in the body at the
+# end of it.
+auc_window <- sum(diff(prof$time) *
+                    (head(prof$Cc, -1) + tail(prof$Cc, -1)) / 2)
+remaining <- tail(prof$central, 1) + tail(prof$peripheral1, 1)
+
+identities <- tibble::tribble(
+  ~Identity, ~Reference, ~Model,
+  "C(0) = dose / V1", amt / p$vc, prof$Cc[1],
+  "AUC(0,inf) = dose / CL", amt / p$cl, auc_window,
+  "AUC(0,T) * CL = dose in - amount remaining", amt - remaining, auc_window * p$cl,
+  "Terminal half-life (days)", terminal_half_life(p), NA_real_
+) |>
+  mutate(`% diff` = 100 * (Model - Reference) / Reference)
+
+knitr::kable(identities, digits = 4,
+             caption = "Deterministic identities. Reference values use only the printed Table 2 parameters.")
+```
+
+| Identity                                    | Reference |    Model | % diff |
+|:--------------------------------------------|----------:|---------:|-------:|
+| C(0) = dose / V1                            |   18.8953 |  18.8953 |  0e+00 |
+| AUC(0,inf) = dose / CL                      |  328.5508 | 328.5511 |  1e-04 |
+| AUC(0,T) \* CL = dose in - amount remaining |  125.0000 | 125.0001 |  1e-04 |
+| Terminal half-life (days)                   |   14.4997 |       NA |     NA |
+
+Deterministic identities. Reference values use only the printed Table 2
+parameters. {.table}
+
+``` r
+
+
+# Mass balance and the dose/volume identity are exact algebra, so these are
+# tight by construction; only solver tolerance separates the two sides.
+stopifnot(
+  abs(prof$Cc[1] - amt / p$vc) / (amt / p$vc) < 1e-6,
+  abs(auc_window * p$cl - (amt - remaining)) / amt < 1e-4,
+  # AUC(0,400) has not quite reached AUC(0,inf); 400 days is >27 terminal
+  # half-lives, so the shortfall is far below 0.1%.
+  abs(auc_window - amt / p$cl) / (amt / p$cl) < 1e-3
+)
+
+cat(sprintf("Terminal half-life at 25 kg: %.1f days\n", terminal_half_life(p)))
+#> Terminal half-life at 25 kg: 14.5 days
+```
+
+### Covariate sensitivity against the printed prose
+
+Results 3.3 makes two quantitative claims about the covariate model.
+Both are reproduced here from the model’s own clearance output, so a
+wrong exponent or a wrong centring constant breaks them.
+
+``` r
+
+cl_at <- function(alb, crp) {
+  o <- solve_typical(25, 125, 0, c(0, 1), alb = alb, crp = crp)
+  unique(o$cl)
+}
+
+# "CL decreased by approximately 17% for every 10 g/L increase in albumin from
+# the reference value of 40.5 g/L". The printed 17% is reproduced by a 35 -> 45
+# g/L step; a step starting at 40.5 itself gives 15.4%. Both readings confirm
+# the exponent, which is what is load-bearing.
+alb_35_45 <- 100 * (1 - cl_at(45, 3) / cl_at(35, 3))
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+alb_from_ref <- 100 * (1 - cl_at(50.5, 3) / cl_at(40.5, 3))
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+
+# "CL increased by approximately 1.6% for every 1 mg/L increase in CRP from the
+# reference value of 3 mg/L". This pins BOTH the exponent and the centring
+# value of 3 mg/L exactly.
+crp_3_4 <- 100 * (cl_at(40.5, 4) / cl_at(40.5, 3) - 1)
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+
+claims <- tibble::tribble(
+  ~Claim, ~Printed, ~Model,
+  "CL change, albumin 35 -> 45 g/L", "-17%", sprintf("-%.1f%%", alb_35_45),
+  "CL change, albumin 40.5 -> 50.5 g/L", "(not printed)", sprintf("-%.1f%%", alb_from_ref),
+  "CL change, CRP 3 -> 4 mg/L", "+1.6%", sprintf("+%.2f%%", crp_3_4)
+)
+knitr::kable(claims, caption = "Printed covariate sensitivity statements (Results 3.3) vs the packaged model.")
+```
+
+| Claim                                | Printed       | Model  |
+|:-------------------------------------|:--------------|:-------|
+| CL change, albumin 35 -\> 45 g/L     | -17%          | -17.3% |
+| CL change, albumin 40.5 -\> 50.5 g/L | (not printed) | -15.4% |
+| CL change, CRP 3 -\> 4 mg/L          | +1.6%         | +1.58% |
+
+Printed covariate sensitivity statements (Results 3.3) vs the packaged
+model. {.table}
+
+``` r
+
+
+stopifnot(
+  abs(alb_35_45 - 17.3) < 0.5,
+  abs(crp_3_4 - 1.58) < 0.05
+)
+```
+
+## Non-compartmental analysis (PKNCA)
+
+Zhao 2026 reports **no** NCA parameters – the paper’s only exposure
+metric is `AUC` over weeks 6-14, used solely to compare assays and
+reported as p-values rather than values (Table 5). The reference column
+below is therefore derived from the paper’s printed structural
+parameters, which is what is available to check against, and is labelled
+as such.
+
+``` r
+
+nca_wt <- 25
+nca_amt <- 5 * nca_wt
+nca_p <- printed_pars(nca_wt)
+
+# A sampling grid dense through the distribution phase so AUC is not
+# understated, extended to a window many terminal half-lives long.
+nca_times <- sort(unique(c(seq(0, 2, by = 0.1), seq(2.5, 14, by = 0.5),
+                           seq(15, 60, by = 2), seq(64, 240, by = 8))))
+nca_prof <- solve_typical(nca_wt, nca_amt, dose_times = 0, obs_times = nca_times)
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+stopifnot(all(nca_prof$Cc >= 0))
+
+sim_nca <- nca_prof |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(id = 1L, treatment = "5 mg/kg IV, 25 kg") |>
+  dplyr::select(id, time, Cc, treatment)
+
+# Guarantee a time-zero record so PKNCA's AUC interval starts at a measurement.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |>
+    dplyr::mutate(time = 0, Cc = nca_amt / nca_p$vc)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+dose_df <- data.frame(id = 1L, treatment = "5 mg/kg IV, 25 kg",
+                      time = 0, amt = nca_amt)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                             concu = "mg/L", timeu = "day")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                             doseu = "mg")
+
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(
+    conc_obj, dose_obj,
+    intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                           aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE)
+  ),
+  verbose = FALSE
+)
+
+reference <- tibble::tibble(
+  treatment  = "5 mg/kg IV, 25 kg",
+  cmax       = nca_amt / nca_p$vc,
+  tmax       = 0,
+  aucinf.obs = nca_amt / nca_p$cl,
+  half.life  = terminal_half_life(nca_p),
+  cl.obs     = nca_p$cl
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = reference,
+  by        = "treatment",
+  units     = c(cmax = "mg/L", tmax = "day", aucinf.obs = "mg*day/L",
+                half.life = "day", cl.obs = "L/day"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = paste(
+  "PKNCA on the packaged model vs closed-form values from the paper's printed",
+  "CL, V1, V2 and Q. The paper publishes no NCA parameters.",
+  "* differs from reference by >20%."),
+  align = c("l", "l", "r", "r", "r"))
+```
+
+| NCA parameter            | treatment         | Reference | Simulated | % diff |
+|:-------------------------|:------------------|----------:|----------:|-------:|
+| Cmax (mg/L)              | 5 mg/kg IV, 25 kg |      18.9 |      18.9 |  -0.0% |
+| Tmax (day)               | 5 mg/kg IV, 25 kg |         0 |         0 |      — |
+| AUC0-∞ (obs) (mg\*day/L) | 5 mg/kg IV, 25 kg |       329 |       329 |  +0.0% |
+| t½ (day)                 | 5 mg/kg IV, 25 kg |      14.5 |      14.3 |  -1.3% |
+| CL/F (L/day)             | 5 mg/kg IV, 25 kg |      0.38 |      0.38 |  -0.0% |
+
+PKNCA on the packaged model vs closed-form values from the paper’s
+printed CL, V1, V2 and Q. The paper publishes no NCA parameters. \*
+differs from reference by \>20%. {.table}
+
+``` r
+
+
+# CL recovered by NCA must match Dose/AUC from the printed parameters. This is
+# pure algebra on a deterministic profile, so it is tight.
+nca_tbl <- as.data.frame(nca_res)
+get_nca <- function(code) {
+  v <- nca_tbl$PPORRES[nca_tbl$PPTESTCD == code]
+  if (length(v) != 1L) stop("no unique NCA row for '", code, "'")
+  v
+}
+stopifnot(
+  abs(get_nca("cl.obs") - nca_p$cl) / nca_p$cl < 0.01,
+  abs(get_nca("cmax") - nca_amt / nca_p$vc) / (nca_amt / nca_p$vc) < 0.01,
+  abs(get_nca("half.life") - terminal_half_life(nca_p)) /
+    terminal_half_life(nca_p) < 0.05
+)
+```
+
+`cl.obs` from PKNCA reproduces the printed clearance for a 25 kg child,
+and `half.life` reproduces the closed-form terminal half-life,
+confirming that the allometric exponents and the two fixed disposition
+parameters are encoded as printed.
+
+## The paper’s headline result: Table 6
+
+Table 6 reports the percentage of a maintenance dosing interval spent
+below the 5 mg/L target for two typical patients – a 5-year-old weighing
+18 kg and an 8-year-old weighing 35 kg – across three dose levels and
+three intervals, after label induction at weeks 0, 2 and 6. Methods
+2.3.5 states that each scenario was simulated as 1000 virtual patients,
+so the reported percentage is a population quantity: the fraction of
+patient-time below target across the cohort, not a property of the
+median curve. Reproducing it therefore requires the between-subject
+variability on clearance to be switched on.
+
+``` r
+
+n_per_arm <- 200L  # per-arm cap; ample for this statistic
+
+pct_below_target <- function(wt, dose_mg_kg, tau, n = n_per_arm, target = 5) {
+  rxode2::rxSetSeed(20260910)  # common random numbers across scenarios
+  amt <- dose_mg_kg * wt
+  induction <- c(0, 14, 42)
+  maintenance <- seq(42 + tau, by = tau, length.out = 30)
+  t0 <- max(maintenance)
+  ev <- rxode2::et(amt = amt, time = c(induction, maintenance), cmt = "central") |>
+    rxode2::et(seq(t0, t0 + tau, by = 0.25), cmt = "central")
+  d <- as.data.frame(ev)
+  d$WT <- wt; d$ALB <- printed$alb_ref; d$CRP <- printed$crp_ref
+  d$ASSAY_IFX <- 2L
+  o <- rxode2::rxSolve(mod, d, nSub = n, returnType = "data.frame")
+  o <- o[!is.na(o$Cc) & o$time >= t0 & o$time < t0 + tau, ]
+  100 * mean(o$Cc < target)
+}
+
+table6 <- tibble::tribble(
+  ~patient,              ~wt, ~dose, ~tau_wk, ~published,
+  "5 years old (18 kg)",  18,   5.0,       4,         27,
+  "5 years old (18 kg)",  18,   5.0,       6,         42,
+  "5 years old (18 kg)",  18,   5.0,       8,         53,
+  "5 years old (18 kg)",  18,   7.5,       4,          9,
+  "5 years old (18 kg)",  18,   7.5,       6,         33,
+  "5 years old (18 kg)",  18,   7.5,       8,         46,
+  "5 years old (18 kg)",  18,  10.0,       4,          0,
+  "5 years old (18 kg)",  18,  10.0,       6,         25,
+  "5 years old (18 kg)",  18,  10.0,       8,         40,
+  "8 years old (35 kg)",  35,   5.0,       4,         27,
+  "8 years old (35 kg)",  35,   5.0,       6,         33,
+  "8 years old (35 kg)",  35,   5.0,       8,         47,
+  "8 years old (35 kg)",  35,   7.5,       4,          0,
+  "8 years old (35 kg)",  35,   7.5,       6,         25,
+  "8 years old (35 kg)",  35,   7.5,       8,         47,
+  "8 years old (35 kg)",  35,  10.0,       4,          0,
+  "8 years old (35 kg)",  35,  10.0,       6,         25,
+  "8 years old (35 kg)",  35,  10.0,       8,         40
+) |>
+  rowwise() |>
+  mutate(simulated = pct_below_target(wt, dose, tau_wk * 7)) |>
+  ungroup() |>
+  mutate(abs_diff = abs(simulated - published))
+
+table6 |>
+  transmute(Patient = patient,
+            `Dose (mg/kg)` = dose,
+            `Interval (weeks)` = tau_wk,
+            `Published (%)` = published,
+            `Simulated (%)` = round(simulated, 1),
+            `Absolute difference (pp)` = round(abs_diff, 1)) |>
+  knitr::kable(caption = paste(
+    "Percentage of the maintenance dosing interval spent below 5 mg/L.",
+    "Published values are Zhao 2026 Table 6."))
+```
+
+| Patient | Dose (mg/kg) | Interval (weeks) | Published (%) | Simulated (%) | Absolute difference (pp) |
+|:---|---:|---:|---:|---:|---:|
+| 5 years old (18 kg) | 5.0 | 4 | 27 | 19.7 | 7.3 |
+| 5 years old (18 kg) | 5.0 | 6 | 42 | 43.1 | 1.1 |
+| 5 years old (18 kg) | 5.0 | 8 | 53 | 58.0 | 5.0 |
+| 5 years old (18 kg) | 7.5 | 4 | 9 | 11.0 | 2.0 |
+| 5 years old (18 kg) | 7.5 | 6 | 33 | 29.8 | 3.2 |
+| 5 years old (18 kg) | 7.5 | 8 | 46 | 46.1 | 0.1 |
+| 5 years old (18 kg) | 10.0 | 4 | 0 | 6.6 | 6.6 |
+| 5 years old (18 kg) | 10.0 | 6 | 25 | 22.2 | 2.8 |
+| 5 years old (18 kg) | 10.0 | 8 | 40 | 38.1 | 1.9 |
+| 8 years old (35 kg) | 5.0 | 4 | 27 | 12.8 | 14.2 |
+| 8 years old (35 kg) | 5.0 | 6 | 33 | 33.3 | 0.3 |
+| 8 years old (35 kg) | 5.0 | 8 | 47 | 49.9 | 2.9 |
+| 8 years old (35 kg) | 7.5 | 4 | 0 | 5.8 | 5.8 |
+| 8 years old (35 kg) | 7.5 | 6 | 25 | 20.8 | 4.2 |
+| 8 years old (35 kg) | 7.5 | 8 | 47 | 36.9 | 10.1 |
+| 8 years old (35 kg) | 10.0 | 4 | 0 | 3.1 | 3.1 |
+| 8 years old (35 kg) | 10.0 | 6 | 25 | 14.6 | 10.4 |
+| 8 years old (35 kg) | 10.0 | 8 | 40 | 28.7 | 11.3 |
+
+Percentage of the maintenance dosing interval spent below 5 mg/L.
+Published values are Zhao 2026 Table 6. {.table style="width:100%;"}
+
+``` r
+
+
+cat(sprintf("median |diff| = %.1f pp; 90th percentile = %.1f pp; max = %.1f pp\n",
+            median(table6$abs_diff), quantile(table6$abs_diff, 0.9),
+            max(table6$abs_diff)))
+#> median |diff| = 3.7 pp; 90th percentile = 10.7 pp; max = 14.2 pp
+```
+
+The centre of the comparison is what matters here: the simulated cohort
+is a random draw, and `rxSetSeed()` fixes the draw only for a given
+solver-thread count, so the per-cell values move between machines. The
+gate is therefore on robust summaries across the 18 cells rather than on
+any single cell or on the extremes.
+
+``` r
+
+# Measured at 1 / 2 / 4 / 16 solver threads: median |diff| 4.91 / 3.71 / 3.39 /
+# 3.11 pp and 90th percentile 12.81 / 10.65 / 10.34 / 10.43 pp. The bounds sit
+# outside that range with headroom -- do not tighten them back to one run. A
+# mis-transcribed clearance, volume, dose or allometric exponent moves all 18
+# cells by tens of percentage points and still breaks them.
+stopifnot(
+  median(table6$abs_diff) < 8,
+  quantile(table6$abs_diff, 0.9) < 18
+)
+
+# The paper's central clinical conclusion, and the one that is robust to the
+# cohort draw: the younger, lighter patient spends more of every interval below
+# target than the older, heavier one at matched dose and interval. Asserted on
+# the TREND across all nine matched pairs rather than pair-by-pair, because the
+# q4w 10 mg/kg pair sits near zero where the ordering is a coin flip.
+paired <- table6 |>
+  select(wt, dose, tau_wk, simulated) |>
+  pivot_wider(names_from = wt, values_from = simulated, names_prefix = "wt")
+stopifnot(mean(paired$wt18 - paired$wt35) > 3)
+
+# Monotone trends, asserted on the DETERMINISTIC typical-value curve so they
+# are exact rather than a race between noisy statistics.
+typical_pct <- function(wt, dose_mg_kg, tau, target = 5) {
+  amt <- dose_mg_kg * wt
+  maintenance <- seq(42 + tau, by = tau, length.out = 30)
+  t0 <- max(maintenance)
+  o <- solve_typical(wt, amt, c(0, 14, 42, maintenance),
+                     seq(t0, t0 + tau, by = 0.05))
+  o <- o[o$time >= t0 & o$time < t0 + tau, ]
+  100 * mean(o$Cc < target)
+}
+trend <- expand.grid(wt = c(18, 35), dose = c(5, 7.5, 10), tau_wk = c(4, 6, 8)) |>
+  rowwise() |>
+  mutate(pct = typical_pct(wt, dose, tau_wk * 7)) |>
+  ungroup()
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+
+for (w in c(18, 35)) {
+  for (d in c(5, 7.5, 10)) {
+    x <- trend$pct[trend$wt == w & trend$dose == d]
+    stopifnot(all(diff(x) >= 0))          # longer interval never helps
+  }
+  for (tw in c(4, 6, 8)) {
+    x <- trend$pct[trend$wt == w & trend$tau_wk == tw]
+    stopifnot(all(diff(x) <= 0))          # higher dose never hurts
+  }
+}
+```
+
+Both of the paper’s dosing conclusions follow. At the label-recommended
+5 mg/kg every 8 weeks the typical young child is below target for
+roughly half the interval, and only a 4-week interval brings the
+subtherapeutic fraction close to zero – Conclusions: “To maintain trough
+concentrations above 5 mg/L in paediatric patients with IBD (\<= 10
+years old), the dosing interval during the maintenance phase should be
+reduced to 4 weeks.”
+
+``` r
+
+profile_for <- function(wt, dose_mg_kg, tau) {
+  amt <- dose_mg_kg * wt
+  maintenance <- seq(42 + tau, by = tau, length.out = 4)
+  o <- solve_typical(wt, amt, c(0, 14, 42, maintenance),
+                     seq(0, max(maintenance) + tau, by = 0.25))
+  o$dose <- paste0(dose_mg_kg, " mg/kg")
+  o$interval <- paste0("q", tau %/% 7, "w")
+  o$patient <- if (wt == 18) "5 years old (18 kg)" else "8 years old (35 kg)"
+  o
+}
+profiles <- do.call(rbind, lapply(c(18, 35), function(w)
+  do.call(rbind, lapply(c(5, 7.5, 10), function(d)
+    do.call(rbind, lapply(c(28, 42, 56), function(t) profile_for(w, d, t)))))))
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+#> ℹ omega/sigma items treated as zero: 'etalcl'
+
+ggplot(profiles, aes(time / 7, Cc, colour = interval)) +
+  geom_line() +
+  geom_hline(yintercept = 5, linetype = "dashed") +
+  facet_grid(patient ~ dose) +
+  scale_y_log10() +
+  labs(x = "Time (weeks)", y = "Infliximab concentration (mg/L)",
+       colour = "Maintenance\ninterval",
+       title = "Replicates Figures 3 and 4 of Zhao 2026",
+       subtitle = "Typical-value profiles; dashed line is the 5 mg/L target") +
+  theme_bw()
+```
+
+![](Zhao_2026_infliximab_files/figure-html/fig34-1.png)
+
+## Label-recommended dosing across the cohort weight distribution
+
+Figure 2 of Zhao 2026 simulates the label-recommended regimen over the
+study population. Results 3.7 quantifies it: with the standard 8-week
+maintenance interval, concentrations fell below 5 mg/L for 63% of the
+interval at 5 mg/kg, 50% at 7.5 mg/kg and 38% at 10 mg/kg, while median
+trough concentrations exceeded 5 mg/L during induction (weeks 2-6).
+
+These three numbers are the one place where the extraction does not
+cleanly reproduce the paper, and the reason is a disagreement inside the
+source rather than in the model: a cohort centred on 25 kg cannot be
+below target for *more* of the interval (63%) than either of Table 6’s
+typical patients at the same dose and interval (53% at 18 kg, 47% at 35
+kg). The table below therefore reports both readings of “concentrations
+fell below 5 mg/L” – the individual prediction and the simulated
+observation – and [Assumptions and
+deviations](#assumptions-and-deviations) records what was tested.
+Nothing was tuned to close the gap.
+
+``` r
+
+# Weight distribution matching Table 1 (median 25 kg, range 9.5-40.9, mean 25.3
+# +/- 7.1). A truncated normal on the reported mean and SD reproduces both the
+# median and the range.
+rxode2::rxSetSeed(20260910)
+set.seed(20260910)
+cohort_wt <- pmin(pmax(rnorm(n_per_arm, 25.3, 7.1), 9.5), 40.9)
+
+label_regimen <- function(dose_mg_kg) {
+  rxode2::rxSetSeed(20260910)
+  induction <- c(0, 14, 42)
+  maintenance <- seq(42 + 56, by = 56, length.out = 6)
+  subj <- lapply(seq_along(cohort_wt), function(i) {
+    amt <- dose_mg_kg * cohort_wt[i]
+    ev <- rxode2::et(amt = amt, time = c(induction, maintenance), cmt = "central") |>
+      rxode2::et(seq(0, max(maintenance) + 56, by = 1), cmt = "central")
+    d <- as.data.frame(ev)
+    d$id <- i; d$WT <- cohort_wt[i]
+    d$ALB <- printed$alb_ref; d$CRP <- printed$crp_ref; d$ASSAY_IFX <- 2L
+    d
+  })
+  d <- do.call(rbind, subj)
+  o <- rxode2::rxSolve(mod, d, returnType = "data.frame")
+  o <- o[!is.na(o$Cc), ]
+  o$dose <- paste0(dose_mg_kg, " mg/kg")
+  o
+}
+fig2 <- do.call(rbind, lapply(c(5, 7.5, 10), label_regimen))
+
+fig2_summary <- fig2 |>
+  group_by(dose, time) |>
+  summarise(median = median(Cc),
+            p05 = quantile(Cc, 0.05),
+            p95 = quantile(Cc, 0.95), .groups = "drop")
+
+ggplot(fig2_summary, aes(time / 7, median)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2) +
+  geom_line() +
+  geom_hline(yintercept = 5, linetype = "dashed") +
+  facet_wrap(~dose) +
+  scale_y_log10() +
+  labs(x = "Time (weeks)", y = "Infliximab concentration (mg/L)",
+       title = "Replicates Figure 2 of Zhao 2026",
+       subtitle = paste("Label-recommended regimen: induction at weeks 0, 2, 6",
+                        "then every 8 weeks; median with 5th-95th percentiles")) +
+  theme_bw()
+```
+
+![](Zhao_2026_infliximab_files/figure-html/fig2-1.png)
+
+``` r
+
+# Median trough exceeds 5 mg/L during induction (weeks 2-6), i.e. at the week-2
+# and week-6 pre-dose times.
+induction_troughs <- fig2_summary |>
+  filter(time %in% c(14, 42)) |>
+  select(dose, time, median)
+knitr::kable(induction_troughs, digits = 2,
+             caption = "Median induction trough concentrations (weeks 2 and 6).")
+```
+
+| dose      | time | median |
+|:----------|-----:|-------:|
+| 10 mg/kg  |   14 |  53.72 |
+| 10 mg/kg  |   42 |  48.33 |
+| 5 mg/kg   |   14 |  26.86 |
+| 5 mg/kg   |   42 |  24.16 |
+| 7.5 mg/kg |   14 |  40.29 |
+| 7.5 mg/kg |   42 |  36.25 |
+
+Median induction trough concentrations (weeks 2 and 6). {.table}
+
+``` r
+
+
+# Fraction of the LAST 8-week maintenance interval below target, by dose, under
+# both readings of "concentrations fell below 5 mg/L": the individual PREDICTION
+# (Cc, the quantity Table 6 is reproduced with above) and the simulated
+# OBSERVATION (sim, which carries the proportional residual error). Results 3.7
+# does not say which it used, and with a residual SD near 0.9 the two differ
+# substantially -- so both are shown rather than one being chosen to fit.
+last_start <- 42 + 56 * 6
+maint_below <- fig2 |>
+  filter(time >= last_start, time < last_start + 56) |>
+  group_by(dose) |>
+  summarise(pct_pred = 100 * mean(Cc < 5),
+            pct_obs = 100 * mean(sim < 5), .groups = "drop") |>
+  mutate(published = c(63, 38, 50)[match(dose, c("5 mg/kg", "10 mg/kg", "7.5 mg/kg"))],
+         diff_pred = pct_pred - published,
+         diff_obs = pct_obs - published)
+
+maint_below |>
+  transmute(Dose = dose,
+            `Published (%)` = published,
+            `Simulated, prediction (%)` = round(pct_pred, 1),
+            `Difference (pp)` = round(diff_pred, 1),
+            `Simulated, observation (%)` = round(pct_obs, 1),
+            `Difference (pp) ` = round(diff_obs, 1)) |>
+  knitr::kable(caption = paste(
+    "Percentage of the 8-week maintenance interval below 5 mg/L.",
+    "Published values are Zhao 2026 Results 3.7."))
+```
+
+| Dose | Published (%) | Simulated, prediction (%) | Difference (pp) | Simulated, observation (%) | Difference (pp) |
+|:---|---:|---:|---:|---:|---:|
+| 10 mg/kg | 38 | 33.2 | -4.8 | 44.3 | 6.3 |
+| 5 mg/kg | 63 | 53.7 | -9.3 | 60.4 | -2.6 |
+| 7.5 mg/kg | 50 | 41.2 | -8.8 | 50.7 | 0.7 |
+
+Percentage of the 8-week maintenance interval below 5 mg/L. Published
+values are Zhao 2026 Results 3.7. {.table}
+
+``` r
+
+
+stopifnot(
+  # Induction troughs above target at every dose (Results 3.7: "median IFX
+  # trough concentrations exceeded 5 mg/L in the induction period"). A large
+  # margin -- the lowest is around 24 mg/L -- so this is safe on any cohort.
+  all(induction_troughs$median > 5),
+  # Higher dose reduces subtherapeutic time. Published 63 -> 50 -> 38 is a
+  # 25-point ordered effect, so the trend is safe to assert; asserted on the
+  # endpoints rather than pairwise, and on both readings.
+  maint_below$pct_pred[maint_below$dose == "10 mg/kg"] <
+    maint_below$pct_pred[maint_below$dose == "5 mg/kg"],
+  maint_below$pct_obs[maint_below$dose == "10 mg/kg"] <
+    maint_below$pct_obs[maint_below$dose == "5 mg/kg"],
+  # The observation reading brackets the published values. Measured differences
+  # at 1/2/4/16 threads spanned -3 to +7 pp; the prediction reading is
+  # reproducibly 5-10 pp low at every dose and is recorded as a deviation in
+  # "Assumptions and deviations" rather than gated.
+  median(abs(maint_below$diff_obs)) < 12
+)
+```
+
+## Assay-stratified residual error
+
+Stratifying the residual error by ELISA is the paper’s central
+methodological contribution. The `ASSAY_IFX` covariate selects one of
+six proportional residual SDs per observation; because it enters
+**only** the error model, the predicted exposure is identical across
+assays. That is the analytic form of the paper’s own conclusion (Table
+5: all 15 pairwise comparisons of `AUC` over weeks 6-14 gave p \> 0.05)
+and is a demonstration rather than a gate – it holds by construction of
+the model.
+
+``` r
+
+assay_names <- c("Sanquin", "Immundiagnostik", "Caltag",
+                 "Matrix Biotek", "Ben-Horin (in-house)", "Promonitor")
+
+assay_sim <- do.call(rbind, lapply(seq_along(assay_names), function(k) {
+  rxode2::rxSetSeed(20260910)
+  ev <- rxode2::et(amt = 5 * 25, time = 0, cmt = "central") |>
+    rxode2::et(seq(0, 56, by = 2), cmt = "central")
+  d <- as.data.frame(ev)
+  d$WT <- 25; d$ALB <- printed$alb_ref; d$CRP <- printed$crp_ref
+  d$ASSAY_IFX <- k
+  o <- rxode2::rxSolve(mod, d, nSub = n_per_arm, returnType = "data.frame")
+  o <- o[!is.na(o$Cc), ]
+  o$assay <- assay_names[k]
+  o$code <- k
+  o
+}))
+
+assay_tbl <- assay_sim |>
+  group_by(code, assay) |>
+  summarise(`Residual SD in model` = unique(round(propSdAssay, 3)),
+            `Median individual prediction (mg/L)` = round(median(ipredSim), 3),
+            `Observed-scale CV (%)` = round(100 * sd(sim / ipredSim), 1),
+            .groups = "drop") |>
+  mutate(`Table 2 variance` = c(0.951, 0.781, 0.617, 0.591, 0.889, 0.914)[code]) |>
+  select(Code = code, Assay = assay, `Table 2 variance`,
+         `Residual SD in model`, `Median individual prediction (mg/L)`,
+         `Observed-scale CV (%)`)
+knitr::kable(assay_tbl,
+             caption = paste("Per-assay residual error. The individual",
+                             "predictions are identical across assays because",
+                             "the assay enters only the error model."))
+```
+
+| Code | Assay | Table 2 variance | Residual SD in model | Median individual prediction (mg/L) | Observed-scale CV (%) |
+|---:|:---|---:|---:|---:|---:|
+| 1 | Sanquin | 0.951 | 0.975 | 3.984 | 96.0 |
+| 2 | Immundiagnostik | 0.781 | 0.884 | 3.984 | 87.0 |
+| 3 | Caltag | 0.617 | 0.785 | 3.984 | 77.3 |
+| 4 | Matrix Biotek | 0.591 | 0.769 | 3.984 | 75.7 |
+| 5 | Ben-Horin (in-house) | 0.889 | 0.943 | 3.984 | 92.8 |
+| 6 | Promonitor | 0.914 | 0.956 | 3.984 | 94.1 |
+
+Per-assay residual error. The individual predictions are identical
+across assays because the assay enters only the error model. {.table
+style="width:100%;"}
+
+``` r
+
+
+stopifnot(
+  # sqrt() of the printed Table 2 variances is what the model carries.
+  all(abs(assay_tbl$`Residual SD in model` -
+            round(sqrt(assay_tbl$`Table 2 variance`), 3)) < 1e-9),
+  # Exposure is assay-independent: every assay yields the same median IPRED.
+  diff(range(assay_tbl$`Median individual prediction (mg/L)`)) < 1e-6
+)
+```
+
+``` r
+
+ggplot(assay_sim, aes(factor(round(time)), sim / ipredSim)) +
+  geom_boxplot(outlier.size = 0.3) +
+  facet_wrap(~assay) +
+  scale_y_log10() +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  labs(x = "Time (days)", y = "Observed / individual prediction",
+       title = "Residual-error magnitude by infliximab ELISA",
+       subtitle = "Proportional residual SD ranges from 0.769 (Matrix Biotek) to 0.975 (Sanquin)") +
+  theme_bw()
+#> Warning in transformation$transform(x): NaNs produced
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
+#> Warning: Removed 4425 rows containing non-finite outside the scale range
+#> (`stat_boxplot()`).
+```
+
+![](Zhao_2026_infliximab_files/figure-html/assay-plot-1.png)
+
+## Comparison with older children and adults
+
+Tables 3 and 4 place this model beside six published paediatric models
+(\> 10 to \< 17 years) and six adult models. The comparison motivates
+the paper’s title claim, and it is reproduced here directly from those
+tables rather than resimulated, since only this paper’s model is
+packaged.
+
+``` r
+
+tibble::tribble(
+  ~Population, ~`CL (L/day/65 kg)`, ~`V1 (L/65 kg)`, ~Source,
+  "Children <= 10 years (this model)", "0.779", "17.2", "Table 2",
+  "Children > 10 to < 17 years (range across 6 models)", "0.0151-0.353", "2.97-4.44", "Table 3",
+  "Adults (range across 6 models)", "0.199-0.359", "3.41-5.03", "Table 4"
+) |>
+  knitr::kable(caption = "Typical parameter values by age group (Zhao 2026 Tables 2-4).")
+```
+
+| Population | CL (L/day/65 kg) | V1 (L/65 kg) | Source |
+|:---|:---|:---|:---|
+| Children \<= 10 years (this model) | 0.779 | 17.2 | Table 2 |
+| Children \> 10 to \< 17 years (range across 6 models) | 0.0151-0.353 | 2.97-4.44 | Table 3 |
+| Adults (range across 6 models) | 0.199-0.359 | 3.41-5.03 | Table 4 |
+
+Typical parameter values by age group (Zhao 2026 Tables 2-4). {.table
+style="width:100%;"}
+
+Clearance in this cohort is roughly twice the highest value reported for
+older children or adults, which the Discussion attributes to immature
+FcRn recycling (citing Tian et al.) and to the higher inflammatory
+burden of these patients. Central volume, however, is 3-5 times the
+published values, and the consequences of that are discussed next.
+
+## Assumptions and deviations
+
+**Residual error is on the variance scale.** Table 2’s six `Prop. RUV`
+rows are printed as bare decimals (0.591 to 0.951) with no percent sign
+and no unit, while the inter-individual-variability row in the same
+table is explicitly labelled `CL (%CV)` and carries a percent sign. That
+asymmetry already suggests the residual rows are raw NONMEM `$SIGMA`
+values, which are variances. The reported %RSEs settle it
+quantitatively. Splitting the 640 fitted observations across assays in
+proportion to the Table 1 patient counts gives roughly 86, 192, 209, 37,
+74 and 43 observations per stratum. The asymptotic %RSE of a variance is
+`sqrt(2/n)`, and of an SD `sqrt(1/(2n))` – a factor of two apart. Those
+predictions are 15, 10, 10, 23, 16 and 22% on the variance scale versus
+8, 5, 5, 12, 8 and 11% on the SD scale, against reported values of 27,
+9, 9, 20, 25 and 31%. The variance reading tracks the reported precision
+across all six strata (ratios 0.9 to 1.8, as expected for real estimates
+that exceed the asymptotic floor); the SD reading is uniformly low by a
+factor of about 2.5. The model therefore carries
+[`sqrt()`](https://rdrr.io/r/base/MathFun.html) of each printed value.
+Note that the two readings differ by at most 27% in relative terms
+because the printed values sit near 1, and that neither affects any
+quantity validated above: `zeroRe()` suppresses the error entirely for
+the deterministic checks, and the Table 6 statistic is computed from
+individual predictions.
+
+**Central volume is large and the model should not be used for peaks.**
+V1 = 17.2 L/65 kg gives `C(0) = 5 * 65 / 17.2 = 18.9 mg/L` after a 5
+mg/kg dose, independent of body weight because the volume exponent is 1.
+The observed peak concentration after a 5 mg/kg infliximab infusion is
+around 100 mg/L, and the comparator models in Tables 3 and 4 (V1 of 3-5
+L/65 kg) reproduce that. The discrepancy is a direct consequence of the
+dataset: Results 3.1 records that of 2150 concentrations “only four peak
+samples” were collected, and Results 3.3 states that V2 and Q could not
+be estimated at all for the same reason. V1 is reported with a 16% RSE
+and a bootstrap interval of 10.8-23.6 L/65 kg, so this is the paper’s
+genuine estimate rather than a transcription error, but it is identified
+almost entirely by trough kinetics. A consequence worth stating
+explicitly: combining the high CL with the high V1 gives a terminal
+half-life of about 14.5 days for a 25 kg child, **longer** than the 8-9
+days implied by the adult comparator models, which sits awkwardly with
+the Discussion’s mechanistic argument that immature FcRn recycling
+shortens infliximab half-life in young children. **Use this model for
+trough concentrations and dosing-interval questions, which is what it
+was built for and what is validated above; do not use it to predict Cmax
+or early post-infusion concentrations.**
+
+**Table 6’s statistic is a population fraction, not a median-curve
+property.** Methods 2.3.5 states that 1000 virtual patients were
+simulated per scenario but does not define how “percentage of time
+interval below target” was computed. The median-curve reading and the
+population patient-time reading were both tested: the median curve
+under-predicts the q4w cells badly (11% versus a published 27% for the
+18 kg patient at 5 mg/kg), whereas the population patient-time fraction
+reproduces all 18 cells with a median absolute difference of 3
+percentage points. The vignette uses the population reading and states
+the assumption here.
+
+**Results 3.7 and Table 6 are not mutually consistent, and they favour
+different readings of “below 5 mg/L”.** Results 3.7 reports 63 / 50 /
+38% of the 8-week maintenance interval below target at 5 / 7.5 / 10
+mg/kg for a cohort drawn from the study weight distribution, whose
+median weight is 25 kg. Table 6 reports 53% for an 18 kg patient and 47%
+for a 35 kg patient at 5 mg/kg q8w. A cohort centred at 25 kg should
+land between those two typical-patient values, i.e. between 47 and 53% –
+not above both at 63%. The two published analyses therefore disagree
+with each other, independently of this extraction. Consistently with
+that, they favour different readings: the individual *prediction*
+reproduces Table 6 (median absolute difference 3 pp over 18 cells) but
+runs 5-10 pp below Results 3.7 at every dose, while the simulated
+*observation*, which carries the residual error, brackets Results 3.7
+(median absolute difference about 3 pp) and would over-predict Table 6.
+Because the residual SD is near 0.9, the two readings are far apart, and
+neither section states which was used. The vignette uses the prediction
+reading throughout for interpretability and consistency with the
+headline table, reports both readings side by side against Results 3.7,
+and gates only the observation reading there. The three
+prediction-reading differences are a reproducible deviation, not a
+flickering one; they are recorded rather than tuned away.
+
+Two candidate explanations for the Results 3.7 numbers were tested and
+rejected. Using the observed albumin and CRP distributions (normal on
+39.6 +/- 4.8 g/L, truncated to 19.6-50; lognormal with median 3 and mean
+10.4 mg/L, truncated to 0.02-302) instead of the cohort medians moves
+the prediction-reading fractions by less than 1 pp, so the covariate
+spread is not the mechanism. Computing over the first maintenance
+interval (weeks 6-14, the window the paper uses for its `AUC`
+comparison) instead of at steady state moves them the wrong way, down by
+6-7 pp, because the closely spaced induction doses leave that interval
+starting higher than steady state.
+
+**Two Table 6 cells for the 8-year-old appear to be carried over from
+the 5-year-old row.** Three cells drive most of the residual
+disagreement, all in the 35 kg block: 5 mg/kg q4w (published 27%,
+simulated 13%), 7.5 mg/kg q8w (published 47%, simulated 37%) and 10
+mg/kg q6w and q8w (published 25 and 40%, simulated 15 and 29%). The
+published 8-year-old values at 10 mg/kg (0, 25, 40) are byte-identical
+to the 5-year-old values at 10 mg/kg, and the 8-year-old 7.5 mg/kg q8w
+value (47%) is identical to its own 5 mg/kg q8w value even though the
+q6w value drops from 33 to 25% over the same dose increase. Duplication
+across adjacent rows is the most economical explanation. The paper’s
+prose independently confirms the two cells that matter most – Results
+3.7: “reaching 53% in 5-year-old patients with IBD and 47% in 8-year-old
+patients with IBD at an 8-week interval” – and the model reproduces both
+(58 and 50%). The gate is set on robust summaries across all 18 cells so
+that these cells are visible in the table without being tuned away.
+
+**The fixed V2 and Q carry an ambiguous reference weight.** Results 3.3
+states that V2 and Q were fixed to values from the published models of
+Chung et al. and Clemente-Bautista et al. Table 3 prints those donor
+values as `V2 = 1.21 L/37.4 kg` and `Q = 0.0697 L/day/37.4 kg` (Chung) –
+the **same numbers** that Table 2 and Table 3’s own refined-model column
+carry against a **65 kg** reference. The authors adopted the numerals
+without renormalising them from the donor’s reference weight, so the two
+tables disagree about what physical volume 1.21 L denotes. This model
+encodes them as printed for Zhao’s own model, at 65 kg, because the
+paper’s table for its own model is the authority. The alternative
+reading makes V2 and Q 1.7 times larger at any body weight and lengthens
+the terminal half-life by 13.2% (14.5 to 16.4 days at 25 kg). Table 6
+was used to try to arbitrate: the as-printed reading gives a median
+absolute difference of 3.11 percentage points over the 18 cells versus
+3.45 for the alternative, which favours the as-printed reading but is
+not decisive – Q is an order of magnitude below CL, so the peripheral
+compartment barely influences trough concentrations and the statistic
+has little power to separate the two.
+
+**CRP enters as a power term and is undefined at zero.**
+`(CRP/3)^0.0545` sends clearance to zero as CRP approaches zero. The
+cohort minimum is 0.02 mg/L, at which the multiplier is 0.762, so the
+form is well behaved over the observed range, but a user simulating an
+exactly-zero CRP must floor the value at the assay’s lower reporting
+limit.
+
+**The 65 kg allometric reference is far outside the data.** Body weights
+ranged from 9.5 to 40.9 kg, so both `lcl` and `lvc` are extrapolations
+to a weight no patient had. The authors chose 65 kg so their estimates
+would be comparable with the adult and older-paediatric literature in
+Tables 3 and 4, and the Discussion flags the consequence: “it could not
+be ignored that the covariate distribution impacts scaling of CL and V1,
+ultimately impacting the estimation of the typical values (Eq. 3)”. All
+simulations here dose weights inside the observed range.
+
+**Covariates screened but not retained are recorded, not encoded.** Age,
+height, body surface area, sex, diagnosis type, concomitant
+immunomodulator use, erythrocyte sedimentation rate and Physician’s
+Global Assessment were all screened (Methods 2.3.2) and rejected. The
+paper reports no point estimate, objective-function change or confidence
+interval for any of them, so none can be encoded; they are documented in
+the model file’s `covariatesDataExcluded` list. Notably ESR is retained
+on clearance by four of the six comparator models in Table 3, which
+makes its rejection here a finding rather than an omission.
+
+**Covariates are treated as static in these simulations.** Albumin and
+CRP are laboratory values drawn alongside each
+therapeutic-drug-monitoring sample and are time-varying in the source
+dataset; body weight changes as a child grows over a multi-year
+treatment course. Every simulation here holds all three fixed, at the
+cohort medians for albumin and CRP, matching the paper’s own
+typical-patient simulations.
+
+**BLQ handling is not reproduced.** 95 of 640 measurements (14.4%) were
+below the limit of quantification and were handled with the M3 method
+during estimation. The packaged model emits continuous concentrations,
+so there is no BLQ step in these simulations; the M3 method affects
+parameter estimation, not forward simulation.
+
+**Two assay labels in Supplementary Table 1 are not among the six
+modelled strata.** Supplementary Table 1 maps 14 contributing centres
+onto vendor labels and includes “apDIA” (Ghent), which contributed no
+patients to the PK analysis, and “Sanquin (LC-MS/MS)” (Utrecht), whose
+observations fall in the Sanquin stratum – no separate LC-MS/MS residual
+magnitude is estimated. “Immune diagnostic” (Dublin) and
+“Promonitor/Sanquin” (Tampere) are the Immundiagnostik and Promonitor
+strata under variant spellings.
+
+**Minor arithmetic and typesetting inconsistencies in the source.** The
+14.4% BLQ figure does not equal 95/640 = 14.8%. Table 1 prints two
+consecutive rows both labelled “Female, n (%)” (54 (52%) and 50 (48%));
+the second is evidently male. The immunomodulator percentages (59.0% and
+41.0%) are transposed relative to their counts (46 and 58 of 104). The
+Table 1 Physician’s Global Assessment block cannot be reconciled across
+columns (total-cohort remission of 2 versus 10 in the under-6 column
+alone). None of these touch a parameter used by the model.
+
+**A new canonical covariate column was registered.** `ASSAY_IFX` is an
+integer 1-6 code naming which commercial infliximab ELISA measured a
+sample, added to `inst/references/covariate-columns.md` as an
+auto-approved member of the `ASSAY_<method>` family. An integer stratum
+rather than five or six paired binary indicators follows the guidance
+already recorded in the `ASSAY_CMIA` entry for datasets mixing more than
+two assays, and the `STUDY_TACRO_FRANCKE` precedent.

@@ -1040,14 +1040,17 @@ the package.
 
 **Deliberate deviations from the convention checker.**
 
-6.  **Non-canonical observation variables in the logistic models.**
+6.  **Probability observation variables in the logistic models.** The
+    logistic models observe `prob_sae`, `prob_aeg35` and `prob_isr`
+    rather than `Cc` – the output is a probability, not a drug
+    concentration, and naming it `Cc` would be actively misleading. This
+    is the established repository pattern for Bernoulli-likelihood
+    exposure-response models (compare `Liu_2024_saf189s_proteinuria.R`).
+    `prob_<endpoint>` is a canonical observation form (operator ruling
+    2026-09-11, validated by `probOutputRegex`), so
     [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
-    warns that `prob_sae`, `prob_aeg35` and `prob_isr` are not the
-    canonical `Cc`. This is the established repository pattern for
-    Bernoulli-likelihood exposure-response models (compare
-    `Liu_2024_saf189s_proteinuria.R`, which emits the same warning) –
-    the output is a probability, not a drug concentration, and naming it
-    `Cc` would be actively misleading.
+    reports no warning for it; this item is retained to explain the
+    naming, not to record a deviation.
 7.  **Placeholder residual error in the logistic models.** Each carries
     `addSd_prob_* <- fixed(0.001)`. The source likelihood is Bernoulli
     and estimates no residual; the term exists only because rxode2
@@ -1143,7 +1146,7 @@ sessionInfo()
 #> [28] pkgdown_2.2.1       crayon_1.5.3        jquerylib_0.1.4    
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
-#> [37] lotri_1.0.4         purrr_1.2.2         labeling_0.4.3     
+#> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    

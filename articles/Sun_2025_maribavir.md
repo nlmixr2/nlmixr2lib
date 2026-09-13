@@ -20,9 +20,11 @@
   CL/F, a dose effect on Ka, and proton-pump-inhibitor effects on both
   Ka and relative bioavailability. Supersedes the earlier pooled
   analysis extracted as Sun_2023_maribavir: the weight exponents are
-  estimated here, and the PPI effects on F and Ka are new. The
-  exposure-response analyses reported alongside this PK model are not
-  extracted; see the vignette Assumptions and deviations section.
+  estimated here, and the PPI effects on F and Ka are new. The sixteen
+  exposure-response logistic regressions reported alongside this PK
+  model are extracted as the companion Sun_2025_maribavir\_\* family,
+  which consumes this model’s individual exposures as their AUC_MBV_SS
+  and AUC_MBV_DAY covariate columns.
 - Article: <https://doi.org/10.1002/psp4.70054>
 - Supporting Information (file `s001`, which contains the **final NONMEM
   control stream** plus Tables S1-S4):
@@ -44,6 +46,13 @@ A companion model from the same programme,
 that supported the adolescent dosing recommendation. The two are **not**
 interchangeable: that one fixes the weight exponents at 0.75 / 1 and
 carries no PPI effect.
+
+This vignette covers **seventeen** models from one paper. The population
+PK model is validated first; the sixteen exposure-response logistic
+regressions that Sun 2025 fitted to the phase 3 AURORA arm are packaged
+as the `Sun_2025_maribavir_*` family and validated in the
+*Exposure-response models* section below, which also closes the loop by
+feeding PK-simulated exposures into the efficacy model.
 
 ``` r
 
@@ -130,7 +139,7 @@ mod
 #>         units = "(binary)", type = "binary", reference_category = "0 (no moderate hepatic impairment)", 
 #>         notes = "Screened as an effect on Vc/F (THETA(13), labelled '[Vc~Child-Pugh Class B]') and derived in the control stream as HEPN2 = 1 when HEPN equals 2, but the coefficient is '(0) FIX'. 18 of 930 individuals were Child-Pugh class B (Table S1). The Discussion lists hepatic impairment among the covariates with no evidence of an effect on maribavir PK.", 
 #>         source_name = "HEPN2"))
-#>     description <- "Updated two-compartment population PK model for oral maribavir in healthy volunteers, phase I special populations, and hematopoietic cell transplant (HCT) or solid organ transplant (SOT) recipients with cytomegalovirus (CMV) infection (Sun 2025, n = 930, 7431 concentration records pooled across phase 1, 2 and 3 studies including AURORA and SOLSTICE). First-order absorption with an absorption lag time, first-order elimination, estimated (not fixed) allometric body-weight exponents on CL/F, Vc/F, Q/F and Vp/F, strong CYP3A4 inhibitor and inducer effects and a CMV disease-state effect on CL/F, a dose effect on Ka, and proton-pump-inhibitor effects on both Ka and relative bioavailability. Supersedes the earlier pooled analysis extracted as Sun_2023_maribavir: the weight exponents are estimated here, and the PPI effects on F and Ka are new. The exposure-response analyses reported alongside this PK model are not extracted; see the vignette Assumptions and deviations section."
+#>     description <- "Updated two-compartment population PK model for oral maribavir in healthy volunteers, phase I special populations, and hematopoietic cell transplant (HCT) or solid organ transplant (SOT) recipients with cytomegalovirus (CMV) infection (Sun 2025, n = 930, 7431 concentration records pooled across phase 1, 2 and 3 studies including AURORA and SOLSTICE). First-order absorption with an absorption lag time, first-order elimination, estimated (not fixed) allometric body-weight exponents on CL/F, Vc/F, Q/F and Vp/F, strong CYP3A4 inhibitor and inducer effects and a CMV disease-state effect on CL/F, a dose effect on Ka, and proton-pump-inhibitor effects on both Ka and relative bioavailability. Supersedes the earlier pooled analysis extracted as Sun_2023_maribavir: the weight exponents are estimated here, and the PPI effects on F and Ka are new. The sixteen exposure-response logistic regressions reported alongside this PK model are extracted as the companion Sun_2025_maribavir_* family, which consumes this model's individual exposures as their AUC_MBV_SS and AUC_MBV_DAY covariate columns."
 #>     paper_specific_residual_sds <- c("propSdPhase1", "propSdPhase23")
 #>     population <- list(species = "human", n_subjects = 930L, 
 #>         n_studies = "Not stated as a single count. The pooled dataset spans phase 1 (n = 206), phase 2/3 (n = 724, which includes SOLSTICE), and AURORA (n = 238, a subset of the phase 2/3 group), plus a phase 1 study in Japanese-descended and non-Hispanic Caucasian individuals (NCT05319353) newly added in this update.", 
@@ -812,6 +821,688 @@ Typical-value steady-state profiles for a 70 kg transplant recipient
 with CMV at three dose levels, showing the flattening of the profile at
 higher doses that the negative dose-on-Ka exponent produces.
 
+## Exposure-response models
+
+Sun 2025 is a two-part paper. Everything above concerns the population
+PK model. The second half reports **sixteen logistic exposure-response
+regressions** fitted to the 238-patient maribavir arm of the phase 3
+AURORA study, and all sixteen are packaged here as the
+`Sun_2025_maribavir_*` family. They share one cohort, one fitting
+approach and one pair of exposure metrics; each was fitted independently
+by the authors, so each is a separate model file, following the same
+convention as the `Chen_2021_lorlatinib_*` family.
+
+Two exposure metrics are involved and they are **not interchangeable**:
+
+- `AUC_MBV_SS` – steady-state AUC over the dosing interval on the last
+  day of exposure. Drives the two **efficacy** models (Table S3,
+  main-paper Figure 3).
+- `AUC_MBV_DAY` – AUC over the calendar day on which the adverse event
+  occurred. Drives the fourteen **safety** models (Figure S3, Table S4).
+
+Every coefficient is per **10 ug\*h/mL** of exposure, so each model
+divides its exposure column by 10 inside `model()`.
+
+``` r
+
+er_models <- c(
+  "Sun_2025_maribavir_cmv_clearance_wk8", "Sun_2025_maribavir_cmv_clearance_wk16",
+  "Sun_2025_maribavir_dysgeusia", "Sun_2025_maribavir_nausea",
+  "Sun_2025_maribavir_vomiting", "Sun_2025_maribavir_diarrhea",
+  "Sun_2025_maribavir_neutropenia", "Sun_2025_maribavir_immunosuppressant_increase",
+  "Sun_2025_maribavir_infection", "Sun_2025_maribavir_gvhd",
+  "Sun_2025_maribavir_renal_disorder", "Sun_2025_maribavir_anemia",
+  "Sun_2025_maribavir_pyrexia", "Sun_2025_maribavir_headache",
+  "Sun_2025_maribavir_thrombocytopenia", "Sun_2025_maribavir_sae"
+)
+
+er_ui <- lapply(er_models, function(nm) rxode2::rxode(readModelDb(nm)))
+names(er_ui) <- er_models
+
+er_ini <- function(nm) {
+  d <- er_ui[[nm]]$iniDf
+  stats::setNames(d$est, d$name)
+}
+
+inventory <- do.call(rbind, lapply(er_models, function(nm) {
+  p <- er_ini(nm)
+  data.frame(
+    Model     = sub("^Sun_2025_maribavir_", "", nm),
+    Driver    = if ("AUC_MBV_SS" %in% er_ui[[nm]]$allCovs) "AUCss" else "AUCday",
+    Intercept = unname(p["logit_ref"]),
+    Slope     = unname(p["e_auc_logit"]),
+    `Risk factors` = sum(grepl("^e_", names(p))) - 1L,
+    check.names = FALSE
+  )
+}))
+knitr::kable(inventory, digits = 4,
+             caption = "The sixteen Sun 2025 exposure-response models.")
+```
+
+| Model                      | Driver | Intercept |   Slope | Risk factors |
+|:---------------------------|:-------|----------:|--------:|-------------:|
+| cmv_clearance_wk8          | AUCss  |     1.960 |  0.0092 |            8 |
+| cmv_clearance_wk16         | AUCss  |     0.794 | -0.0131 |            7 |
+| dysgeusia                  | AUCday |    -2.060 |  0.0686 |            2 |
+| nausea                     | AUCday |    -2.520 |  0.0659 |            1 |
+| vomiting                   | AUCday |    -2.890 |  0.0684 |            1 |
+| diarrhea                   | AUCday |    -3.000 |  0.0589 |            1 |
+| neutropenia                | AUCday |    -0.990 |  0.0530 |            6 |
+| immunosuppressant_increase | AUCday |    -5.450 |  0.0531 |            1 |
+| infection                  | AUCday |    -3.590 |  0.0650 |            0 |
+| gvhd                       | AUCday |    -3.310 |  0.0573 |            1 |
+| renal_disorder             | AUCday |    -3.410 |  0.0769 |            1 |
+| anemia                     | AUCday |    -3.840 |  0.0669 |            2 |
+| pyrexia                    | AUCday |    -3.250 |  0.0450 |            0 |
+| headache                   | AUCday |    -3.330 |  0.0513 |            3 |
+| thrombocytopenia           | AUCday |    -3.560 |  0.0480 |            3 |
+| sae                        | AUCday |    -1.460 |  0.0374 |            3 |
+
+The sixteen Sun 2025 exposure-response models. {.table}
+
+### Source trace: every coefficient against its published odds ratio
+
+Sun 2025 prints, for each coefficient, both an `Estimate (SE)` and an
+`OR (95% CI)`, and the Methods define the odds ratio as the
+exponentiated estimate. That redundancy is a free consistency check on
+the transcription, and it is run mechanically here rather than asserted.
+
+Both printed columns are **rounded**, so the correct test is an
+*interval* one – does some real `b` exist with `round(b, d) == Estimate`
+and `round(exp(b), 3) == OR`? – rather than `exp(printed) == printed`,
+which fails on rounding alone. The table below lists every coefficient
+in all sixteen models, with the published odds ratio transcribed from
+the source.
+
+``` r
+
+# Published OR column, transcribed from Sun 2025 Table S3 (efficacy) and the
+# Figure S3 parameter tables (safety). Intercepts print "-" for OR and are
+# excluded. NA marks a coefficient whose OR the source does not print.
+published_or <- tibble::tribble(
+  ~model,                        ~param,                       ~or,
+  "cmv_clearance_wk8",  "e_auc_logit",                1.01,
+  "cmv_clearance_wk8",  "e_te_resist_mbv_logit",      0.0475,
+  "cmv_clearance_wk8",  "e_cd8_pp65_mid_logit",      11.1,
+  "cmv_clearance_wk8",  "e_cd8_pp65_hi_logit",        1.91,
+  "cmv_clearance_wk8",  "e_cd8_pp65_nr_logit",        5.01,
+  "cmv_clearance_wk8",  "e_cmvdna_high_logit",        0.350,
+  "cmv_clearance_wk8",  "e_hct_tcell_infusion_logit", 0.0575,
+  "cmv_clearance_wk8",  "e_region_europe_logit",      0.301,
+  "cmv_clearance_wk8",  "e_region_asiapacific_logit", 0.235,
+  "cmv_clearance_wk16", "e_auc_logit",                0.987,
+  "cmv_clearance_wk16", "e_te_resist_mbv_logit",      0.0299,
+  "cmv_clearance_wk16", "e_cd8_pp65_mid_logit",       1.86,
+  "cmv_clearance_wk16", "e_cd8_pp65_hi_logit",        2.74,
+  "cmv_clearance_wk16", "e_cd8_pp65_nr_logit",        3.04,
+  "cmv_clearance_wk16", "e_t_hct_logit",              1.05,
+  "cmv_clearance_wk16", "e_region_europe_logit",      0.527,
+  "cmv_clearance_wk16", "e_region_asiapacific_logit", 0.225,
+  "dysgeusia",          "e_auc_logit",                1.07,
+  "dysgeusia",          "e_region_asiapacific_logit", 0.635,
+  "dysgeusia",          "e_region_europe_logit",      0.295,
+  "nausea",             "e_auc_logit",                1.07,
+  "nausea",             "e_cmv_prophy_prior_logit",   0.0508,
+  "vomiting",           "e_auc_logit",                1.07,
+  "vomiting",           "e_hct_prior_logit",          0.129,
+  "diarrhea",           "e_auc_logit",                1.06,
+  "diarrhea",           "e_hct_tcell_infusion_logit", 5.72,
+  "neutropenia",        "e_auc_logit",                1.05,
+  "neutropenia",        "e_cd8_pp65_mid_logit",       0.453,
+  "neutropenia",        "e_cd8_pp65_hi_logit",        0.256,
+  "neutropenia",        "e_cd8_pp65_nr_logit",        0.986,
+  "neutropenia",        "e_wbc_cat_mid_logit",        0.303,
+  "neutropenia",        "e_wbc_cat_hi_logit",         0.167,
+  "neutropenia",        "e_wbc_cat_nr_logit",         0.123,
+  "immunosuppressant_increase", "e_auc_logit",        1.05,
+  "immunosuppressant_increase", "e_hct_prior_logit",  6.65,
+  "infection",          "e_auc_logit",                1.07,
+  "gvhd",               "e_auc_logit",                1.06,
+  "gvhd",               "e_sexm_logit",               3.01,
+  "renal_disorder",     "e_auc_logit",                1.08,
+  "renal_disorder",     "e_cmvdna_high_logit",        0.212,
+  "anemia",             "e_auc_logit",                1.07,
+  "anemia",             "e_region_asiapacific_logit", 3.12,
+  "anemia",             "e_region_europe_logit",      4.62,
+  "pyrexia",            "e_auc_logit",                1.05,
+  "headache",           "e_auc_logit",                1.05,
+  "headache",           "e_hct_tcd_alemtuzumab_logit", 5.84,
+  "headache",           "e_hct_tcd_atg_logit",        0.414,
+  "headache",           "e_hct_tcd_exvivo_logit",     2.37,
+  "thrombocytopenia",   "e_auc_logit",                1.05,
+  "thrombocytopenia",   "e_sexm_logit",               3.03,
+  "thrombocytopenia",   "e_conmed_antilymphocyte_logit", 0.271,
+  "thrombocytopenia",   "e_hct_nuccell_logit",        1.01,
+  "sae",                "e_auc_logit",                1.04,
+  "sae",                "e_cd8_pp65_mid_logit",       0.160,
+  "sae",                "e_cd8_pp65_hi_logit",        0.714,
+  "sae",                "e_cd8_pp65_nr_logit",        0.689
+)
+
+# Number of decimals the source printed the ESTIMATE to, recovered from the
+# packaged value itself, so the interval is the source's own rounding interval.
+n_dec <- function(x) {
+  s <- format(x, scientific = FALSE, trim = TRUE)
+  if (!grepl("[.]", s)) return(0L)
+  nchar(sub("^.*[.]", "", sub("0+$", "", s)))
+}
+
+or_check <- published_or
+or_check$est <- mapply(function(m, p) unname(er_ini(paste0("Sun_2025_maribavir_", m))[p]),
+                       or_check$model, or_check$param)
+# Interval test: does ANY b consistent with the printed estimate exponentiate
+# into the printed OR's own rounding interval?
+or_check$ok <- mapply(function(est, or) {
+  d  <- n_dec(est)
+  lo <- est - 0.5 * 10^(-d); hi <- est + 0.5 * 10^(-d)
+  # rounding interval of the printed OR, at its own printed precision
+  dor <- n_dec(or)
+  or_lo <- or - 0.5 * 10^(-dor); or_hi <- or + 0.5 * 10^(-dor)
+  # do [exp(lo), exp(hi)] and [or_lo, or_hi] overlap?
+  exp(hi) >= or_lo && exp(lo) <= or_hi
+}, or_check$est, or_check$or)
+
+stopifnot(
+  # Every packaged estimate must be consistent with the source's own printed
+  # odds ratio. A transcription slip in any digit breaks this immediately.
+  nrow(or_check) == 56L,
+  all(or_check$ok)
+)
+
+or_check |>
+  dplyr::transmute(
+    Model   = model,
+    Parameter = sub("^e_|_logit$", "", param),
+    Estimate = est,
+    `exp(estimate)` = round(exp(est), 4),
+    `Published OR` = or,
+    Consistent = ifelse(ok, "yes", "NO")
+  ) |>
+  knitr::kable(caption = paste(
+    "All 56 published coefficients across the sixteen models, each checked",
+    "against its own printed odds ratio under the interval test."))
+```
+
+| Model | Parameter | Estimate | exp(estimate) | Published OR | Consistent |
+|:---|:---|---:|---:|---:|:---|
+| cmv_clearance_wk8 | auc_logit | 0.00920 | 1.0092 | 1.0100 | yes |
+| cmv_clearance_wk8 | te_resist_mbv_logit | -3.05000 | 0.0474 | 0.0475 | yes |
+| cmv_clearance_wk8 | cd8_pp65_mid_logit | 2.41000 | 11.1340 | 11.1000 | yes |
+| cmv_clearance_wk8 | cd8_pp65_hi_logit | 0.64900 | 1.9136 | 1.9100 | yes |
+| cmv_clearance_wk8 | cd8_pp65_nr_logit | 1.61000 | 5.0028 | 5.0100 | yes |
+| cmv_clearance_wk8 | cmvdna_high_logit | -1.05000 | 0.3499 | 0.3500 | yes |
+| cmv_clearance_wk8 | hct_tcell_infusion_logit | -2.86000 | 0.0573 | 0.0575 | yes |
+| cmv_clearance_wk8 | region_europe_logit | -1.20000 | 0.3012 | 0.3010 | yes |
+| cmv_clearance_wk8 | region_asiapacific_logit | -1.45000 | 0.2346 | 0.2350 | yes |
+| cmv_clearance_wk16 | auc_logit | -0.01310 | 0.9870 | 0.9870 | yes |
+| cmv_clearance_wk16 | te_resist_mbv_logit | -3.51000 | 0.0299 | 0.0299 | yes |
+| cmv_clearance_wk16 | cd8_pp65_mid_logit | 0.62300 | 1.8645 | 1.8600 | yes |
+| cmv_clearance_wk16 | cd8_pp65_hi_logit | 1.01000 | 2.7456 | 2.7400 | yes |
+| cmv_clearance_wk16 | cd8_pp65_nr_logit | 1.11000 | 3.0344 | 3.0400 | yes |
+| cmv_clearance_wk16 | t_hct_logit | 0.04890 | 1.0501 | 1.0500 | yes |
+| cmv_clearance_wk16 | region_europe_logit | -0.64100 | 0.5268 | 0.5270 | yes |
+| cmv_clearance_wk16 | region_asiapacific_logit | -1.49000 | 0.2254 | 0.2250 | yes |
+| dysgeusia | auc_logit | 0.06860 | 1.0710 | 1.0700 | yes |
+| dysgeusia | region_asiapacific_logit | -0.45500 | 0.6344 | 0.6350 | yes |
+| dysgeusia | region_europe_logit | -1.22000 | 0.2952 | 0.2950 | yes |
+| nausea | auc_logit | 0.06590 | 1.0681 | 1.0700 | yes |
+| nausea | cmv_prophy_prior_logit | -2.98000 | 0.0508 | 0.0508 | yes |
+| vomiting | auc_logit | 0.06840 | 1.0708 | 1.0700 | yes |
+| vomiting | hct_prior_logit | -2.05000 | 0.1287 | 0.1290 | yes |
+| diarrhea | auc_logit | 0.05890 | 1.0607 | 1.0600 | yes |
+| diarrhea | hct_tcell_infusion_logit | 1.74000 | 5.6973 | 5.7200 | yes |
+| neutropenia | auc_logit | 0.05300 | 1.0544 | 1.0500 | yes |
+| neutropenia | cd8_pp65_mid_logit | -0.79200 | 0.4529 | 0.4530 | yes |
+| neutropenia | cd8_pp65_hi_logit | -1.36000 | 0.2567 | 0.2560 | yes |
+| neutropenia | cd8_pp65_nr_logit | -0.01400 | 0.9861 | 0.9860 | yes |
+| neutropenia | wbc_cat_mid_logit | -1.19000 | 0.3042 | 0.3030 | yes |
+| neutropenia | wbc_cat_hi_logit | -1.79000 | 0.1670 | 0.1670 | yes |
+| neutropenia | wbc_cat_nr_logit | -2.09000 | 0.1237 | 0.1230 | yes |
+| immunosuppressant_increase | auc_logit | 0.05310 | 1.0545 | 1.0500 | yes |
+| immunosuppressant_increase | hct_prior_logit | 1.89000 | 6.6194 | 6.6500 | yes |
+| infection | auc_logit | 0.06500 | 1.0672 | 1.0700 | yes |
+| gvhd | auc_logit | 0.05730 | 1.0590 | 1.0600 | yes |
+| gvhd | sexm_logit | 1.10000 | 3.0042 | 3.0100 | yes |
+| renal_disorder | auc_logit | 0.07690 | 1.0799 | 1.0800 | yes |
+| renal_disorder | cmvdna_high_logit | -1.55000 | 0.2122 | 0.2120 | yes |
+| anemia | auc_logit | 0.06690 | 1.0692 | 1.0700 | yes |
+| anemia | region_asiapacific_logit | 1.14000 | 3.1268 | 3.1200 | yes |
+| anemia | region_europe_logit | 1.53000 | 4.6182 | 4.6200 | yes |
+| pyrexia | auc_logit | 0.04500 | 1.0460 | 1.0500 | yes |
+| headache | auc_logit | 0.05130 | 1.0526 | 1.0500 | yes |
+| headache | hct_tcd_alemtuzumab_logit | 1.77000 | 5.8709 | 5.8400 | yes |
+| headache | hct_tcd_atg_logit | -0.88200 | 0.4140 | 0.4140 | yes |
+| headache | hct_tcd_exvivo_logit | 0.86300 | 2.3703 | 2.3700 | yes |
+| thrombocytopenia | auc_logit | 0.04800 | 1.0492 | 1.0500 | yes |
+| thrombocytopenia | sexm_logit | 1.11000 | 3.0344 | 3.0300 | yes |
+| thrombocytopenia | conmed_antilymphocyte_logit | -1.30000 | 0.2725 | 0.2710 | yes |
+| thrombocytopenia | hct_nuccell_logit | 0.00689 | 1.0069 | 1.0100 | yes |
+| sae | auc_logit | 0.03740 | 1.0381 | 1.0400 | yes |
+| sae | cd8_pp65_mid_logit | -1.83000 | 0.1604 | 0.1600 | yes |
+| sae | cd8_pp65_hi_logit | -0.33600 | 0.7146 | 0.7140 | yes |
+| sae | cd8_pp65_nr_logit | -0.37300 | 0.6887 | 0.6890 | yes |
+
+All 56 published coefficients across the sixteen models, each checked
+against its own printed odds ratio under the interval test. {.table
+style="width:100%;"}
+
+All 56 coefficients are consistent with their published odds ratios.
+
+### The efficacy relationship is flat (replicates Figure 3)
+
+The paper’s headline efficacy result is a **negative** one: neither the
+primary nor the key secondary endpoint has a significant relationship
+with steady-state maribavir exposure. Packaging the models lets that be
+shown rather than asserted. The two fitted slopes do not even agree in
+sign.
+
+``` r
+
+# Table S3 reference patient: no TE resistance mutation, CD8+CD69+pp65 < 0.5%,
+# very low / low baseline CMV DNA, North America, no post-HCT T-cell infusion.
+auc_grid <- seq(0, 600, by = 5)
+
+ref_cov <- function(nm) {
+  covs <- er_ui[[nm]]$allCovs
+  vals <- stats::setNames(rep(0, length(covs)), covs)
+  vals[["AUC_MBV_SS"]] <- 0  # overwritten below
+  as.list(vals)
+}
+
+solve_er <- function(nm, driver, grid, extra = list()) {
+  covs <- er_ui[[nm]]$allCovs
+  ev <- data.frame(id = seq_along(grid), time = 0, evid = 0L,
+                   amt = NA_real_, dv = NA_real_)
+  for (cv in covs) ev[[cv]] <- if (!is.null(extra[[cv]])) extra[[cv]] else 0
+  ev[[driver]] <- grid
+  rxode2::rxSolve(er_ui[[nm]], ev, returnType = "data.frame")
+}
+
+fig3 <- dplyr::bind_rows(
+  solve_er("Sun_2025_maribavir_cmv_clearance_wk8", "AUC_MBV_SS", auc_grid) |>
+    dplyr::transmute(AUCss = AUC_MBV_SS, p = prob_cmv_clearance_wk8,
+                     Endpoint = "(a) Primary: clearance at week 8"),
+  solve_er("Sun_2025_maribavir_cmv_clearance_wk16", "AUC_MBV_SS", auc_grid) |>
+    dplyr::transmute(AUCss = AUC_MBV_SS, p = prob_cmv_clearance_wk16,
+                     Endpoint = "(b) Key secondary: maintained to week 16")
+)
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+
+ggplot2::ggplot(fig3, ggplot2::aes(AUCss, p)) +
+  ggplot2::geom_line(linewidth = 1) +
+  ggplot2::facet_wrap(~Endpoint) +
+  ggplot2::coord_cartesian(ylim = c(0, 1)) +
+  ggplot2::labs(x = "AUCss of maribavir (ug*h/mL)",
+                y = "Probability of response") +
+  ggplot2::theme_bw()
+```
+
+![Replicates Figure 3 of Sun 2025: probability of the primary (a) and
+key secondary (b) endpoint as a function of steady-state maribavir AUC,
+for the Table S3 reference
+patient.](Sun_2025_maribavir_files/figure-html/er-figure3-1.png)
+
+Replicates Figure 3 of Sun 2025: probability of the primary (a) and key
+secondary (b) endpoint as a function of steady-state maribavir AUC, for
+the Table S3 reference patient.
+
+``` r
+
+# Quantify the relationship at three exposures: zero (the intercept anchor), the
+# AURORA median of roughly 170 ug*h/mL, and the top of the plotted range.
+at <- function(endpoint, auc) fig3$p[fig3$Endpoint == endpoint & fig3$AUCss == auc]
+eps <- unique(fig3$Endpoint)
+
+flat <- data.frame(
+  Endpoint = eps,
+  `P at AUCss = 0`   = vapply(eps, at, numeric(1), auc = 0),
+  `P at AUCss = 170` = vapply(eps, at, numeric(1), auc = 170),
+  `P at AUCss = 600` = vapply(eps, at, numeric(1), auc = 600),
+  `Odds ratio per 10 ug*h/mL` = exp(c(
+    er_ini("Sun_2025_maribavir_cmv_clearance_wk8")[["e_auc_logit"]],
+    er_ini("Sun_2025_maribavir_cmv_clearance_wk16")[["e_auc_logit"]])),
+  `Published OR` = c(1.01, 0.987),
+  check.names = FALSE, row.names = NULL
+)
+
+stopifnot(
+  # Assert on the PUBLISHED quantity -- the odds ratio per 10 ug*h/mL -- rather
+  # than on an absolute probability change, which depends on where each
+  # intercept sits on the logistic curve and is therefore not the number the
+  # paper reports. Both must round to the printed OR.
+  round(flat$`Odds ratio per 10 ug*h/mL`, 2)[1] == 1.01,
+  round(flat$`Odds ratio per 10 ug*h/mL`, 3)[2] == 0.987,
+  # Structural: the two slopes have OPPOSITE signs. A sign error in either
+  # transcription breaks this immediately.
+  flat$`Odds ratio per 10 ug*h/mL`[1] > 1,
+  flat$`Odds ratio per 10 ug*h/mL`[2] < 1,
+  # Over the observed exposure range the movement is small in absolute terms.
+  abs(flat$`P at AUCss = 170`[1] - flat$`P at AUCss = 0`[1]) < 0.05,
+  abs(flat$`P at AUCss = 170`[2] - flat$`P at AUCss = 0`[2]) < 0.10
+)
+
+knitr::kable(flat, digits = 3, caption = paste(
+  "Both exposure-efficacy odds ratios reproduce their published values, and",
+  "the two point estimates lie on opposite sides of 1."))
+```
+
+| Endpoint | P at AUCss = 0 | P at AUCss = 170 | P at AUCss = 600 | Odds ratio per 10 ug\*h/mL | Published OR |
+|:---|---:|---:|---:|---:|---:|
+| \(a\) Primary: clearance at week 8 | 0.877 | 0.892 | 0.925 | 1.009 | 1.010 |
+| \(b\) Key secondary: maintained to week 16 | 0.689 | 0.639 | 0.502 | 0.987 | 0.987 |
+
+Both exposure-efficacy odds ratios reproduce their published values, and
+the two point estimates lie on opposite sides of 1. {.table}
+
+Two things are worth reading carefully off that table, because “flat” is
+easy to over-claim. The **odds ratios** are the quantity the paper
+reports, and both are essentially 1 (1.01 and 0.987) with p-values of
+0.503 and 0.247 – neither relationship is statistically significant, and
+the two point estimates fall on *opposite* sides of 1, which is the
+clearest available statement that neither carries signal.
+
+The **absolute probability movement**, however, is not uniformly
+negligible, and the plot above shows why. The primary endpoint’s
+intercept of 1.96 puts its reference patient at a response probability
+near 0.88, out on the flat shoulder of the logistic curve, so even the
+full 0-600 ug\*h/mL sweep moves it by under 5 percentage points. The key
+secondary endpoint’s intercept of 0.794 puts its reference patient near
+0.69, much closer to the steep middle of the curve, so the same
+non-significant slope drags it down by roughly 19 percentage points
+across that full range – and by about 6 points across the exposures
+actually observed. A non-significant odds ratio is not the same thing as
+a visually flat probability curve, and this pair of endpoints is a clean
+illustration of the difference.
+
+For contrast, the same reference-patient sweep over the **safety**
+endpoints is steeply positive for all fourteen. The two panels below
+place the flattest and steepest safety relationships beside each other.
+
+``` r
+
+safety_models <- setdiff(er_models, er_models[1:2])
+aucday_grid <- seq(0, 950, by = 10)
+
+safety_curves <- dplyr::bind_rows(lapply(safety_models, function(nm) {
+  s <- solve_er(nm, "AUC_MBV_DAY", aucday_grid)
+  prob_col <- grep("^prob_", names(s), value = TRUE)
+  data.frame(AUCday = s$AUC_MBV_DAY, p = s[[prob_col]],
+             Endpoint = sub("^Sun_2025_maribavir_", "", nm))
+}))
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+
+stopifnot(
+  # Every safety endpoint must be monotonically INCREASING in exposure: all
+  # fourteen published slopes are positive, so a sign error anywhere breaks this.
+  all(vapply(split(safety_curves, safety_curves$Endpoint),
+             function(d) all(diff(d$p[order(d$AUCday)]) > 0), logical(1)))
+)
+
+ggplot2::ggplot(safety_curves, ggplot2::aes(AUCday, p, colour = Endpoint)) +
+  ggplot2::geom_line(linewidth = 0.7) +
+  ggplot2::coord_cartesian(ylim = c(0, 1)) +
+  ggplot2::labs(x = "AUCday of maribavir (ug*h/mL)",
+                y = "Probability of the adverse event", colour = NULL) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.position = "right", legend.text = ggplot2::element_text(size = 7))
+```
+
+![Probability of each of the fourteen treatment-emergent adverse events
+as a function of the day-of-event maribavir AUC, for each model's own
+reference patient. Replicates the fitted curves of Figure
+S3.](Sun_2025_maribavir_files/figure-html/er-safety-curves-1.png)
+
+Probability of each of the fourteen treatment-emergent adverse events as
+a function of the day-of-event maribavir AUC, for each model’s own
+reference patient. Replicates the fitted curves of Figure S3.
+
+### Against the published observed quartile proportions
+
+Figure S3 prints, for each endpoint, the observed event proportion and
+its 95% confidence interval within each day-of-event AUC quartile,
+alongside the fitted curve. Those observed proportions are a genuinely
+independent check on the packaged coefficients: they come from the data,
+not from the regression. Sun 2025 prints them for panels a and b, which
+are checked here.
+
+The check has to be posed carefully. A quartile is an interval of
+exposures, not a point, and its top quartile is open-ended – so
+predicting at a midpoint would be meaningless. Instead, because each
+model is monotone in exposure, the predicted probability for any subject
+in a quartile must lie between the model’s value at that quartile’s
+lower and upper bound. The observed proportion is a pooled estimate over
+patients who differ in the model’s covariates, so the prediction is
+averaged over the published covariate distribution (region for
+dysgeusia; prior CMV prophylaxis for nausea) rather than taken at the
+reference stratum. The test is then whether that predicted **range**
+overlaps the observed proportion’s published **confidence interval**.
+
+``` r
+
+# Observed proportions, quartile boundaries and 95% CIs: Sun 2025 Figure S3
+# panels a and b.
+observed <- tibble::tribble(
+  ~Endpoint,   ~lo,  ~hi, ~n_resp, ~n_tot, ~ci_lo, ~ci_hi,
+  "dysgeusia", 14.1, 116,      2L,    60L,  0.004, 0.115,
+  "dysgeusia", 116,  201,     10L,    59L,  0.084, 0.290,
+  "dysgeusia", 201,  313,     19L,    59L,  0.206, 0.456,
+  "dysgeusia", 313,  783,     30L,    60L,  0.368, 0.632,
+  "nausea",      0,  116,      5L,    60L,  0.028, 0.184,
+  "nausea",    116,  199,      8L,    59L,  0.060, 0.250,
+  "nausea",    199,  309,     18L,    59L,  0.192, 0.439,
+  "nausea",    309,  951,     33L,    60L,  0.416, 0.679
+)
+observed$observed <- observed$n_resp / observed$n_tot
+
+# Published covariate distributions for the 238-patient AURORA arm (Table S2):
+# region for dysgeusia, prior CMV prophylaxis for nausea. Each row is one
+# stratum with its cohort weight and its covariate settings.
+strata <- list(
+  dysgeusia = list(
+    w    = c(0.248, 0.580, 0.172),
+    covs = list(list(REGION_EUROPE = 0, REGION_ASIAPACIFIC = 0),   # North America
+                list(REGION_EUROPE = 1, REGION_ASIAPACIFIC = 0),   # Europe
+                list(REGION_EUROPE = 0, REGION_ASIAPACIFIC = 1))), # Asia Pacific
+  nausea = list(
+    w    = c(0.908, 0.092),
+    covs = list(list(CMV_PROPHY_PRIOR = 0), list(CMV_PROPHY_PRIOR = 1)))
+)
+
+# Cohort-weighted predicted probability at a single exposure.
+pred_weighted <- function(endpoint, auc) {
+  nm <- paste0("Sun_2025_maribavir_", endpoint)
+  st <- strata[[endpoint]]
+  ps <- vapply(st$covs, function(cv) {
+    s <- solve_er(nm, "AUC_MBV_DAY", auc, extra = cv)
+    s[[grep("^prob_", names(s), value = TRUE)]]
+  }, numeric(1))
+  sum(st$w * ps)
+}
+
+observed$pred_lo <- mapply(pred_weighted, observed$Endpoint, observed$lo)
+observed$pred_hi <- mapply(pred_weighted, observed$Endpoint, observed$hi)
+observed$overlaps <- observed$pred_hi >= observed$ci_lo &
+                     observed$pred_lo <= observed$ci_hi
+
+stopifnot(
+  # The cohort weights must be a probability distribution.
+  all(abs(vapply(strata, function(x) sum(x$w), numeric(1)) - 1) < 1e-8),
+  # Monotone in exposure, so the lower bound of the predicted range really is
+  # the lower bound.
+  all(observed$pred_hi > observed$pred_lo),
+  # The observed proportions rise monotonically across quartiles for both
+  # endpoints -- the qualitative finding the figure is drawn to show.
+  all(vapply(split(observed, observed$Endpoint),
+             function(d) all(diff(d$observed) > 0), logical(1))),
+  # Every one of the eight published quartiles must be consistent with the
+  # packaged model. This is an INDEPENDENT check: the observed proportions and
+  # their CIs come from the trial data, not from the regression coefficients.
+  all(observed$overlaps)
+)
+
+observed |>
+  dplyr::transmute(
+    Endpoint,
+    `AUCday quartile`   = sprintf("[%g, %g)", lo, hi),
+    `Observed n/N`      = sprintf("%d/%d", n_resp, n_tot),
+    `Observed (95% CI)` = sprintf("%.3f (%.3f-%.3f)", observed, ci_lo, ci_hi),
+    `Predicted range`   = sprintf("%.3f-%.3f", pred_lo, pred_hi),
+    Consistent          = ifelse(overlaps, "yes", "NO")
+  ) |>
+  knitr::kable(caption = paste(
+    "Published observed event proportions per day-of-event AUC quartile",
+    "(Sun 2025 Figure S3 panels a and b) against the cohort-weighted predicted",
+    "range from the packaged models. All eight quartiles are consistent."))
+```
+
+| Endpoint | AUCday quartile | Observed n/N | Observed (95% CI) | Predicted range | Consistent |
+|:---|:---|:---|:---|:---|:---|
+| dysgeusia | \[14.1, 116) | 2/60 | 0.033 (0.004-0.115) | 0.068-0.125 | yes |
+| dysgeusia | \[116, 201) | 10/59 | 0.169 (0.084-0.290) | 0.125-0.201 | yes |
+| dysgeusia | \[201, 313) | 19/59 | 0.322 (0.206-0.456) | 0.201-0.341 | yes |
+| dysgeusia | \[313, 783) | 30/60 | 0.500 (0.368-0.632) | 0.341-0.918 | yes |
+| nausea | \[0, 116) | 5/60 | 0.083 (0.028-0.184) | 0.068-0.135 | yes |
+| nausea | \[116, 199) | 8/59 | 0.136 (0.060-0.250) | 0.135-0.210 | yes |
+| nausea | \[199, 309) | 18/59 | 0.305 (0.192-0.439) | 0.210-0.349 | yes |
+| nausea | \[309, 951) | 33/60 | 0.550 (0.416-0.679) | 0.349-0.950 | yes |
+
+Published observed event proportions per day-of-event AUC quartile (Sun
+2025 Figure S3 panels a and b) against the cohort-weighted predicted
+range from the packaged models. All eight quartiles are consistent.
+{.table}
+
+### End-to-end: the PK model feeds the exposure-response models
+
+The exposure columns are not measurements. Sun 2025 derived them from
+the population PK model extracted above, so the two halves of the paper
+compose. This section closes that loop: it simulates a 400 mg
+twice-daily cohort with the PK model, computes each subject’s
+steady-state AUC by the exact mass-balance identity used earlier in this
+vignette, and pushes those AUCs through the primary efficacy model.
+
+``` r
+
+rxode2::rxSetSeed(20250911)
+set.seed(20250911)
+
+n_er  <- 200
+wt_er <- pmin(pmax(stats::rlnorm(n_er, meanlog = log(73.0), sdlog = 0.23), 36.1), 141)
+
+# 400 mg twice daily to steady state, then a dense 24 h observation window.
+ev_one <- as.data.frame(
+  rxode2::et(amt = 400, ii = 12, until = 24 * 20, cmt = "depot") |>
+    rxode2::et(seq(24 * 19, 24 * 20, length.out = 49), cmt = "central")
+)
+# Keep ii / addl: dropping them would silently reduce the regimen to a
+# single dose, and by hour 456 the profile would be empty.
+ev_one <- ev_one[, c("time", "cmt", "amt", "ii", "addl", "evid")]
+
+ev_er <- do.call(rbind, lapply(seq_len(n_er), function(i) {
+  d <- ev_one
+  d$id <- i
+  d$WT <- wt_er[i]
+  d
+}))
+ev_er$DOSE                     <- 400
+ev_er$DIS_CMV                  <- 1
+ev_er$CONMED_CYP3A4_INH_STRONG <- 0
+ev_er$CONMED_CYP3A4_IND        <- 0
+ev_er$CONMED_PPI               <- 0
+ev_er$STUDY_MARIBAVIR_PHASE1   <- 0
+
+sim_er <- rxode2::rxSolve(mod, ev_er, returnType = "data.frame", addDosing = FALSE)
+
+# Steady-state AUC over one 12 h dosing interval: trapezoid over the final 24 h
+# window, halved. At steady state the two intervals in that window are identical.
+auc_tab <- sim_er |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    AUC_MBV_SS = {
+      o <- order(time)
+      sum(diff(time[o]) * (utils::head(Cc[o], -1) + utils::tail(Cc[o], -1)) / 2) / 2
+    },
+    .groups = "drop"
+  )
+
+stopifnot(
+  # The simulated exposures must land inside the range the exposure-response
+  # models were fitted over. Median, not extreme, per this vignette's
+  # cohort-assertion convention.
+  stats::median(auc_tab$AUC_MBV_SS) > 80,
+  stats::median(auc_tab$AUC_MBV_SS) < 400
+)
+
+# Push the simulated exposures through the primary efficacy model, holding the
+# Table S3 reference patient in every other respect.
+eff_nm <- "Sun_2025_maribavir_cmv_clearance_wk8"
+eff_ev <- data.frame(id = auc_tab$id, time = 0, evid = 0L,
+                     amt = NA_real_, dv = NA_real_,
+                     AUC_MBV_SS = auc_tab$AUC_MBV_SS)
+for (cv in setdiff(er_ui[[eff_nm]]$allCovs, "AUC_MBV_SS")) eff_ev[[cv]] <- 0
+eff_sim <- rxode2::rxSolve(er_ui[[eff_nm]], eff_ev, returnType = "data.frame")
+#> Warning: multi-subject simulation without without 'omega'
+
+auc_q <- stats::quantile(auc_tab$AUC_MBV_SS, c(0.1, 0.9))
+p_q   <- stats::quantile(eff_sim$prob_cmv_clearance_wk8, c(0.1, 0.9))
+
+stopifnot(
+  # The point of the exercise. A wide spread in simulated exposure must produce
+  # an almost invisible spread in predicted response, because the
+  # exposure-efficacy relationship is flat. If a future edit inflated the slope,
+  # this bound is what catches it. Deterministic given the drawn cohort only
+  # through the exposure spread, which the preceding median bounds pin.
+  auc_q[[2]] / auc_q[[1]] > 1.5,
+  diff(p_q) < 0.05
+)
+
+endtoend <- data.frame(
+  Quantity = c("Simulated AUCss, median (ug*h/mL)",
+               "Simulated AUCss, 10th-90th percentile",
+               "P(clearance at week 8), median",
+               "P(clearance at week 8), 10th-90th percentile"),
+  Value = c(
+    sprintf("%.1f", stats::median(auc_tab$AUC_MBV_SS)),
+    sprintf("%.1f - %.1f", auc_q[[1]], auc_q[[2]]),
+    sprintf("%.3f", stats::median(eff_sim$prob_cmv_clearance_wk8)),
+    sprintf("%.3f - %.3f", p_q[[1]], p_q[[2]])
+  )
+)
+
+knitr::kable(endtoend, caption = paste(
+  "A", sprintf("%.1f-fold", auc_q[[2]] / auc_q[[1]]),
+  "spread in simulated steady-state exposure maps to a spread of just",
+  sprintf("%.3f", diff(p_q)), "in predicted probability of confirmed CMV",
+  "clearance -- the paper's flat exposure-efficacy finding, reproduced",
+  "end to end from dose to response."))
+```
+
+| Quantity                                     | Value         |
+|:---------------------------------------------|:--------------|
+| Simulated AUCss, median (ug\*h/mL)           | 152.0         |
+| Simulated AUCss, 10th-90th percentile        | 86.8 - 255.4  |
+| P(clearance at week 8), median               | 0.891         |
+| P(clearance at week 8), 10th-90th percentile | 0.885 - 0.900 |
+
+A 2.9-fold spread in simulated steady-state exposure maps to a spread of
+just 0.015 in predicted probability of confirmed CMV clearance – the
+paper’s flat exposure-efficacy finding, reproduced end to end from dose
+to response. {.table}
+
 ## Assumptions and deviations
 
 ### Structural readings taken from the control stream
@@ -852,53 +1543,67 @@ higher doses that the negative dose-on-Ka exponent produces.
   internal-consistency check that supports it. Only Vc/F is sensitive to
   the choice, and only by \<2% in SD.
 
-### Exposure-response models: reported but not extracted
+### Exposure-response models: what was and was not extracted
 
-Sun 2025 is a two-part paper. The population PK model above is fully
-extracted. The exposure-response (E-R) analyses are **not** extracted
-here, and the reason differs by endpoint:
+All sixteen fully-parameterised exposure-response regressions are
+extracted, as the `Sun_2025_maribavir_*` family validated in the section
+above. Three decisions in that extraction are deviations worth
+recording.
 
-- **Efficacy (Table S3).** Two logistic regressions – confirmed CMV
-  clearance at week 8, and clearance with no tissue-invasive disease
-  maintained to week 16 – are reported in full, with intercepts, an
-  AUCss slope and every risk-factor coefficient. They are extractable as
-  written. They are not extracted in this pass because doing so requires
-  roughly eight new canonical covariate columns that do not yet exist in
-  `inst/references/covariate-columns.md` (baseline CD8+CD69+pp65
-  stimulation category, treatment-emergent maribavir-resistance
-  mutation, high baseline CMV DNA, post-HCT T-cell infusion, an Asia
-  Pacific enrolling-region indicator, and days from HCT onset to
-  treatment), and a new canonical name needs operator ratification
-  rather than a librarian’s guess. The paper’s headline result is that
-  **neither** relationship is statistically significant: the AUCss
-  coefficients are 0.00920 (SE 0.0137, p = 0.503) and -0.0131 (SE
-  0.0113, p = 0.247) per 10 ug\*h/mL, i.e. essentially flat.
-- **Safety versus AUCss (Figure 4).** Nausea and vomiting show
-  statistically significant positive relationships (p = 0.0394 and
-  0.00296), but the figure prints **no coefficients** – only the
-  p-value, the fitted curve and the observed quartile proportions. There
-  is nothing to transcribe, and recovering an intercept and slope by
-  digitising a raster figure would manufacture precision the paper never
-  published.
-- **Safety versus AUCday (Figure S3, Table S4).** Fourteen logistic
-  regressions across dysgeusia, nausea, vomiting, diarrhea, neutropenia,
-  raised immunosuppressant concentrations, invasive infection, acute
-  GvHD, renal disorder, anemia, pyrexia, headache, thrombocytopenia and
-  serious adverse events. These *are* fully parameterised in the
-  supplement and are extractable; they carry the same new-canonical
-  requirement as the efficacy models, plus several more (T-cell
-  depletion modality, prior HCT, prior CMV prophylaxis, total baseline
-  white blood cell category, transplanted nucleated cell number).
+- **Safety versus AUCss (main-paper Figure 4) is NOT extracted, and
+  cannot be.** Nausea and vomiting show statistically significant
+  relationships with the STEADY-STATE metric (p = 0.0394 and 0.00296),
+  but Figure 4 prints no coefficients – only the p-value, the fitted
+  curve and the observed quartile proportions. There is nothing to
+  transcribe, and recovering an intercept and slope by digitising a
+  raster figure would manufacture precision the paper never published.
+  The packaged `Sun_2025_maribavir_nausea` and
+  `Sun_2025_maribavir_vomiting` models are the **AUCday** models of
+  Figure S3, which are a different exposure metric and a weaker causal
+  claim: a day-of-event AUC is partly a consequence of when in the
+  treatment course the event happened. Do not read them as the Figure 4
+  result.
+- **The headache model’s fourth T-cell-depletion level is deliberately
+  dropped.** Figure S3 panel l reports a `Not reported` level with
+  estimate `-12.7` and standard error `1460` (p = 0.993). That is the
+  signature of complete separation – the level has exactly ONE subject
+  in the 238-patient cohort (Table S2) – not an estimate. Shipping it
+  would put a spurious `exp(-12.7) = 3e-6` odds ratio into the model
+  file. `HCT_TCD_ALEMTUZUMAB`, `HCT_TCD_ATG` and `HCT_TCD_EXVIVO` are
+  packaged; an unreported subject falls into the `None` reference.
+- **The anemia region coefficients follow Figure S3, not Table S4.**
+  Table S4 assigns odds ratio 3.12 to “Europe vs. North America” and
+  4.62 to “Asia Pacific vs. North America”, while Figure S3 panel j
+  assigns 3.12 to Asia Pacific and 4.62 to Europe. The figure is
+  internally consistent and the table is not: the figure’s estimates
+  exponentiate to its own odds ratios (`exp(1.14) = 3.13` for Asia
+  Pacific, `exp(1.53) = 4.62` for Europe), whereas Table S4 prints odds
+  ratios only and cannot be checked against itself. Anemia is the only
+  endpoint where the two sources conflict.
 
-One discrepancy in the source is worth recording for whoever extracts
-these later. For **anemia**, Table S4 assigns odds ratio 3.12 to “Europe
-vs. North America” and 4.62 to “Asia Pacific vs. North America”, while
-Figure S3 panel j assigns 3.12 to Asia Pacific and 4.62 to Europe.
-Figure S3 is internally consistent and Table S4 is not: the figure’s
-estimates exponentiate to its own odds ratios (`exp(1.14) = 3.13` for
-Asia Pacific, `exp(1.53) = 4.62` for Europe), whereas Table S4 reports
-odds ratios only and cannot be checked against itself. The figure should
-be preferred.
+Two further points affect how the packaged models should be consumed.
+
+- **The exposure columns are inputs, not measurements.** Every model
+  carries `AUC_MBV_SS` or `AUC_MBV_DAY` as a covariate with no PK layer,
+  exactly as the source analysis did. Derive them from
+  `modellib("Sun_2025_maribavir")`; the end-to-end section above shows
+  the composition.
+- **`HCT_NUCCELL` has an unstated absolute scale.** Figure S3 panel m
+  prints `400 cells Reference` and a coefficient per
+  `Increment of 1000 cells`, with no multiplier and no per-kg
+  normalisation. Read literally that is not a plausible graft cell dose
+  – a real allogeneic graft holds on the order of 10^8 to 10^10
+  nucleated cells. The model file carries the source’s own numbers
+  verbatim rather than guessing a multiplier, so it reproduces the
+  published odds ratio whatever the underlying unit turns out to be; a
+  user supplying a real cell dose must first rescale it onto the
+  source’s scale.
+- **The placeholder residual error is not a published quantity.** Each
+  model carries `addSd_prob_* <- fixed(0.001)` purely so rxode2 has an
+  error model to attach to the typical-value probability. The source
+  fits a Bernoulli likelihood, which has no sigma, and estimates no
+  random effects; the models are therefore deterministic given their
+  covariates.
 
 ### Simulation assumptions
 

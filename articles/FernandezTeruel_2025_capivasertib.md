@@ -110,7 +110,7 @@ full here.
 | Accumulation ratio 1.47, effective half-life 7.25 h at 400 mg \[4/3\] | Sect. 3.2 (gates) |
 | Median steady-state AUC 7650 ug\*h/L and Cmax 1460 ug/L | Sect. 3.2 (gates) |
 | Exposure window 252-264 h (last dosing day of week 2) | Sect. 2.3 |
-| Imax_pacl | NOT REPORTED ANYWHERE – see Assumptions and deviations |
+| Imax_pacl = 1.15 | NOT IN THIS PAPER – borrowed from Fernandez-Teruel 2024 Table 3; see Assumptions and deviations |
 
 Source trace for every parameter and equation. {.table}
 
@@ -836,73 +836,137 @@ stopifnot(all(tab$Pass[!tab$Deviation]))
 
 ## Assumptions and deviations
 
-- **`Imax_pacl` is not reported anywhere and is set to 0.** The printed
-  Imax equation (p. 7) retains the factor `(1 + PACL * Imax_pacl)` and
-  the equation legend defines `Imax_pacl` as “the relationship between
+- **`Imax_pacl` is not reported in this paper; the value used is
+  BORROWED from the 2024 parent model.** This is the one parameter in
+  the model file that does not come from Fernandez Teruel 2025, and it
+  is the most important caveat on this extraction. The printed Imax
+  equation (p. 7) retains the factor `(1 + PACL * Imax_pacl)` and the
+  equation legend defines `Imax_pacl` as “the relationship between
   concomitant paclitaxel and Imax”, but no estimate for it appears in
   Table 2 – which tabulates every other coefficient in every other
-  equation – nor in Tables S1-S5, nor in any figure panel. The 2024
-  parent model reports `Imax_pacl = 1.15`, but that is a different fit:
-  `Imax` moved from -1.54 to -1.87 and `Imax_dose` from -0.00183 to
-  -0.00213 between the two, so carrying the 2024 value across would
-  fabricate a 2025 estimate. Setting it to 0 makes `(1 + PACL * 0) = 1`,
-  so the encoded model is *exactly* the paper’s model for every
-  paclitaxel-free patient – 89.4% of the PopPK cohort and 100% of the
-  CAPItello-291 population this paper exists to describe. Simulating the
-  paclitaxel arm requires supplying a value.
-- **The weight normalisation constant is 67 kg, not the 65 kg cohort
-  median.** Both printed covariate equations read `(BBW/67)`, carried
-  over from the 2024 parent model, while Table S1 gives a median weight
-  of 65 kg. The equation governs. The age constant, 57 years, is both
-  the printed constant and the cohort median, so no such distinction
-  arises there.
-- **IIV is read as `omega = CV / 100`.** Table 2 reports all five IIVs
-  in one column headed “CV (%)”, and one of them – LogitF1 – is additive
-  on the logit scale, where a log-normal `100 * sqrt(exp(omega^2) - 1)`
-  back-transform is undefined. A single column cannot carry two
-  conventions, so the column is read as `100 * omega` throughout. This
-  matches the reading used for the same table layout by the same first
-  author in `FernandezTeruel_2024_capivasertib`.
-- **No IIV on Ka or D2.** The 2024 parent model held both at a fixed
-  15% CV. The 2025 Table 2 lists neither, so neither is encoded; nothing
-  is invented to fill the gap.
-- **The RSE column of Table 2 is not used.** Its values are implausible
-  as relative standard errors – CL0/F is listed at 0.0509% against a
-  bootstrap 95% CI of 56.8-62 around 59.6, which implies roughly 2%.
-  Nothing in the model file depends on the RSE column; the bootstrap
-  intervals, which are internally consistent, are quoted in the in-file
-  comments instead.
-- **The model equations were recovered with `pdftotext -layout`.** The
-  publisher-supplied structured text renders the entire p. 7
-  display-equation block as a single dropped-formula placeholder. Had
-  the equations not been recovered, the weight effect would have been
-  mis-encoded as the 2024 model’s linear-deviation form, and the age
-  covariate missed altogether.
-- **Two prose claims are reproduced only approximately, and are flagged
-  as deviations rather than gated.** Neither involves a simulated
-  cohort, so both are stable, reproducible disagreements rather than
-  sampling noise, and both are reported instead of being tuned away. (i)
-  Sect. 3.2 states the CL/F plateau “would be achieved after
-  approximately 168 h (Day 7)”; with T50 = 126 h and a Hill exponent of
-  5 the decline is 81% complete at 168 h and needs about 215 h to reach
-  95%. (ii) Sect. 3.2 summarises the demographic covariate effects as
-  “\< 20% difference in exposure” between the 5th and 95th percentiles;
-  computed exactly from Table 2 the spans are 22.7% for body weight and
-  20.0% for age. The paper’s own Figure 2a shows body-weight points at
-  roughly 1.10 and 0.90, i.e. a 20-point span, so the model agrees with
-  the figure and it is the rounded prose summary that is slightly
-  optimistic.
-- **Region and race are not in the model.** The paper screened both and
-  found Chinese/Asian steady-state exposure less than 15% higher than
-  the rest of the world, which it judged not clinically relevant. That
-  claim cannot be checked against this model file, because no region
-  term was retained to check.
-- **Exposure-response is documented, not shipped.** See the
-  Exposure-response section: the efficacy analysis is a published null,
-  and the safety logistic regressions have no published coefficients.
-  The reconstruction shown there is derived from the paper’s own printed
-  predicted probabilities and is validated against Figure S6, but it
-  recovers only the product `b*A`, not the slope alone.
-- **Cohort demographics are assumed log-normal (weight) and normal
-  (age)**, truncated to the Table S1 ranges. The paper reports medians
-  and ranges only, not distributional shape. \`\`\`
+  equation – nor in Tables S1-S5, nor inside any figure panel (the
+  publisher’s native-resolution figure files were checked).
+
+  Per operator decision (2026-09-11), the model carries
+  `Imax_pacl = 1.15` across from the 2024 parent
+  (`FernandezTeruel_2024_capivasertib.R`, Fernandez-Teruel 2024 Table 3:
+  RSE 12.5%, bootstrap 95% CI 1-6.91), held constant via `fixed()`.
+  **This is a cross-fit borrow, not a 2025 estimate.** Every other
+  parameter shared by the two fits was re-estimated – `Imax` moved from
+  -1.54 to -1.87 and `Imax_dose` from -0.00183 to -0.00213 – so the true
+  2025 value is unknown and is not necessarily 1.15. Any simulation with
+  `CONMED_PACLITAXEL = 1` is an approximation whose paclitaxel effect
+  carries 2024 provenance; the 89.4% of the cohort and 100% of the
+  CAPItello-291 population that are paclitaxel-free are unaffected,
+  because `(1 + 0 * 1.15) = 1`.
+
+  What the borrow can be checked against is the 2024 paper’s own printed
+  covariate result, which validates the *encoding* even though it cannot
+  validate transporting the value. Fernandez-Teruel 2024 Sect. 4 reports
+  that patients on concomitant paclitaxel had 20% higher `CL_ss/F`
+  (median ratio 1.20). Reproducing that on the 2024 fit at 400 mg:
+
+``` r
+
+# 2024 fit: Imax = -1.54, Imax_dose = -0.00183, Imax_pacl = 1.15.
+m_dose  <- 1 + (400 - 480) * -0.00183
+inh_no  <- exp(-1.54 * m_dose)
+inh_pac <- exp(-1.54 * m_dose * (1 + 1 * 1.15))
+clf_ratio <- (1 - inh_pac) / (1 - inh_no)
+
+knitr::kable(
+  data.frame(
+    Quantity = c(
+      "Max CL/F inhibition, no paclitaxel",
+      "Max CL/F inhibition, + paclitaxel",
+      "CL_ss/F ratio, paclitaxel vs none"
+    ),
+    Computed = sprintf("%.3f", c(inh_no, inh_pac, clf_ratio)),
+    `Fernandez-Teruel 2024` = c("0.18 (18% decrease)", "not printed", "1.20"),
+    check.names = FALSE
+  ),
+  caption = paste(
+    "Encoding check for the borrowed Imax_pacl, against the 2024 paper's",
+    "printed paclitaxel effect. The computed ratio is the typical-subject",
+    "value; the printed 1.20 is a median over a cohort carrying IIV on Imax."
+  )
+)
+```
+
+| Quantity                           | Computed | Fernandez-Teruel 2024 |
+|:-----------------------------------|:---------|:----------------------|
+| Max CL/F inhibition, no paclitaxel | 0.171    | 0.18 (18% decrease)   |
+| Max CL/F inhibition, + paclitaxel  | 0.022    | not printed           |
+| CL_ss/F ratio, paclitaxel vs none  | 1.179    | 1.20                  |
+
+Encoding check for the borrowed Imax_pacl, against the 2024 paper’s
+printed paclitaxel effect. The computed ratio is the typical-subject
+value; the printed 1.20 is a median over a cohort carrying IIV on Imax.
+{.table}
+
+``` r
+
+
+# The encoding, not the transported value, is what this pins: a 20% rise in
+# CL_ss/F to within the IIV-driven gap between a typical subject and a cohort
+# median. A reading of Imax_pacl as anything other than a multiplier on the
+# log-scale magnitude misses this by far more.
+stopifnot(abs(clf_ratio - 1.20) < 0.05)
+```
+
+Note the counter-intuitive direction this check also confirms: because
+`Imax` is the *log* of the fractional inhibition and is negative, a
+multiplier greater than 1 drives `Imax_i` further negative and therefore
+*shallows* the inhibition, raising `CL/F`. That is why a positive
+`Imax_pacl` produces *higher* clearance on paclitaxel. \* **The weight
+normalisation constant is 67 kg, not the 65 kg cohort median.** Both
+printed covariate equations read `(BBW/67)`, carried over from the 2024
+parent model, while Table S1 gives a median weight of 65 kg. The
+equation governs. The age constant, 57 years, is both the printed
+constant and the cohort median, so no such distinction arises there. \*
+**IIV is read as `omega = CV / 100`.** Table 2 reports all five IIVs in
+one column headed “CV (%)”, and one of them – LogitF1 – is additive on
+the logit scale, where a log-normal `100 * sqrt(exp(omega^2) - 1)`
+back-transform is undefined. A single column cannot carry two
+conventions, so the column is read as `100 * omega` throughout. This
+matches the reading used for the same table layout by the same first
+author in `FernandezTeruel_2024_capivasertib`. \* **No IIV on Ka or
+D2.** The 2024 parent model held both at a fixed 15% CV. The 2025 Table
+2 lists neither, so neither is encoded; nothing is invented to fill the
+gap. \* **The RSE column of Table 2 is not used.** Its values are
+implausible as relative standard errors – CL0/F is listed at 0.0509%
+against a bootstrap 95% CI of 56.8-62 around 59.6, which implies roughly
+2%. Nothing in the model file depends on the RSE column; the bootstrap
+intervals, which are internally consistent, are quoted in the in-file
+comments instead. \* **The model equations were recovered with
+`pdftotext -layout`.** The publisher-supplied structured text renders
+the entire p. 7 display-equation block as a single dropped-formula
+placeholder. Had the equations not been recovered, the weight effect
+would have been mis-encoded as the 2024 model’s linear-deviation form,
+and the age covariate missed altogether. \* **Two prose claims are
+reproduced only approximately, and are flagged as deviations rather than
+gated.** Neither involves a simulated cohort, so both are stable,
+reproducible disagreements rather than sampling noise, and both are
+reported instead of being tuned away. (i) Sect. 3.2 states the CL/F
+plateau “would be achieved after approximately 168 h (Day 7)”; with T50
+= 126 h and a Hill exponent of 5 the decline is 81% complete at 168 h
+and needs about 215 h to reach 95%. (ii) Sect. 3.2 summarises the
+demographic covariate effects as “\< 20% difference in exposure” between
+the 5th and 95th percentiles; computed exactly from Table 2 the spans
+are 22.7% for body weight and 20.0% for age. The paper’s own Figure 2a
+shows body-weight points at roughly 1.10 and 0.90, i.e. a 20-point span,
+so the model agrees with the figure and it is the rounded prose summary
+that is slightly optimistic. \* **Region and race are not in the
+model.** The paper screened both and found Chinese/Asian steady-state
+exposure less than 15% higher than the rest of the world, which it
+judged not clinically relevant. That claim cannot be checked against
+this model file, because no region term was retained to check. \*
+**Exposure-response is documented, not shipped.** See the
+Exposure-response section: the efficacy analysis is a published null,
+and the safety logistic regressions have no published coefficients. The
+reconstruction shown there is derived from the paper’s own printed
+predicted probabilities and is validated against Figure S6, but it
+recovers only the product `b*A`, not the slope alone. \* **Cohort
+demographics are assumed log-normal (weight) and normal (age)**,
+truncated to the Table S1 ranges. The paper reports medians and ranges
+only, not distributional shape. \`\`\`

@@ -66,7 +66,7 @@ modellib(name = "PK_1cmt")
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x5613b4061b08>
+#> <environment: 0x56292d68c620>
 modellib(name = "PK_1cmt", eta = c("ka", "vc"), reserr = "addSd")
 #>  
 #>  
@@ -85,68 +85,7 @@ modellib(name = "PK_1cmt", eta = c("ka", "vc"), reserr = "addSd")
 #> ℹ parameter labels from comments are typically ignored in non-interactive mode
 #> ℹ Need to run with the source intact to parse comments
 #> ℹ promote `etaKa` to between subject variability with initial estimate 0.1
-#> ℹ change initial estimate of `etaKa` to `0.1`
-#> ℹ promote `etaVc` to between subject variability with initial estimate 0.1
-#> ℹ change initial estimate of `etaVc` to `0.1`
-#>  
-#>  
-#> ℹ parameter labels from comments are typically ignored in non-interactive mode
-#> ℹ Need to run with the source intact to parse comments
-#>  
-#>  
-#> ℹ parameter labels from comments are typically ignored in non-interactive mode
-#> ℹ Need to run with the source intact to parse comments
-#> ! remove population parameter `propSd`
-#> ℹ add residual parameter `CcAddSd` and set estimate to 1
-#> ℹ change initial estimate of `CcAddSd` to `1`
-#>  ── rxode2-based solved PK 1-compartment model ────────────────────────────────── 
-#>  ── Initalization: ──  
-#> Fixed Effects ($theta): 
-#>     lka     lcl     lvc CcAddSd 
-#>    0.45    1.00    3.45    1.00 
-#> 
-#> Omega ($omega): 
-#>       etaKa etaVc
-#> etaKa   0.1   0.0
-#> etaVc   0.0   0.1
-#> 
-#> States ($state or $stateDf): 
-#>   Compartment Number Compartment Name Rate   Off Internal #
-#> 1                  1            depot TRUE FALSE          1
-#> 2                  2          central TRUE FALSE          2
-#>  ── μ-referencing ($muRefTable): ──  
-#>   theta   eta level
-#> 1   lka etaKa    id
-#> 2   lvc etaVc    id
-#> 
-#>  ── Model (Normalized Syntax): ── 
-#> function() {
-#>     compartmentData <- list(depot = list(analyte = "drug", units = NA_character_, 
-#>         specimen = "administration site", verified = FALSE), 
-#>         central = list(analyte = "drug", units = NA_character_, 
-#>             specimen = "plasma", verified = FALSE))
-#>     description <- "One compartment PK model with linear clearance"
-#>     reference <- "nlmixr2lib template"
-#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
-#>     ini({
-#>         lka <- 0.45
-#>         label("Absorption rate (Ka)")
-#>         lcl <- 1
-#>         label("Clearance (CL)")
-#>         lvc <- 3.45
-#>         label("Central volume of distribution (V)")
-#>         CcAddSd <- c(0, 1)
-#>         etaKa ~ 0.1
-#>         etaVc ~ 0.1
-#>     })
-#>     model({
-#>         ka <- exp(lka + etaKa)
-#>         cl <- exp(lcl)
-#>         vc <- exp(lvc + etaVc)
-#>         Cc <- linCmt()
-#>         Cc ~ add(CcAddSd)
-#>     })
-#> }
+#> Error in rbind(deparse.level, ...): numbers of columns of arguments do not match
 modellib(name = "PK_1cmt", reserr = "addSd")
 #>  
 #>  
@@ -154,41 +93,5 @@ modellib(name = "PK_1cmt", reserr = "addSd")
 #>  
 #> ! remove population parameter `propSd`
 #> ℹ add residual parameter `CcAddSd` and set estimate to 1
-#> ℹ change initial estimate of `CcAddSd` to `1`
-#>  ── rxode2-based solved PK 1-compartment model ────────────────────────────────── 
-#>  ── Initalization: ──  
-#> Fixed Effects ($theta): 
-#>     lka     lcl     lvc CcAddSd 
-#>    0.45    1.00    3.45    1.00 
-#> 
-#> States ($state or $stateDf): 
-#>   Compartment Number Compartment Name Rate   Off Internal #
-#> 1                  1            depot TRUE FALSE          1
-#> 2                  2          central TRUE FALSE          2
-#>  ── Model (Normalized Syntax): ── 
-#> function() {
-#>     compartmentData <- list(depot = list(analyte = "drug", units = NA_character_, 
-#>         specimen = "administration site", verified = FALSE), 
-#>         central = list(analyte = "drug", units = NA_character_, 
-#>             specimen = "plasma", verified = FALSE))
-#>     description <- "One compartment PK model with linear clearance"
-#>     reference <- "nlmixr2lib template"
-#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
-#>     ini({
-#>         lka <- 0.45
-#>         label("Absorption rate (Ka)")
-#>         lcl <- 1
-#>         label("Clearance (CL)")
-#>         lvc <- 3.45
-#>         label("Central volume of distribution (V)")
-#>         CcAddSd <- c(0, 1)
-#>     })
-#>     model({
-#>         ka <- exp(lka)
-#>         cl <- exp(lcl)
-#>         vc <- exp(lvc)
-#>         Cc <- linCmt()
-#>         Cc ~ add(CcAddSd)
-#>     })
-#> }
+#> Error in rbind(deparse.level, ...): numbers of columns of arguments do not match
 ```
