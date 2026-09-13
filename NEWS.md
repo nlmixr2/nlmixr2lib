@@ -2,6 +2,16 @@
 
 # development version
 
+- **These vignettes now require an rxode2 that does not silently rewrite an ODE
+  system into `linCmt()`** ([rxode2 issue
+  1370](https://github.com/nlmixr2/rxode2/issues/1370)). On rxode2 5.1.7 and
+  earlier, `Marques_2025_salbutamol`, `Schreib_2024_busulfan` and
+  `Sawe_2025_levofloxacin` fail to build rather than render numbers taken from
+  a model other than the one written. That is deliberate: the same three
+  vignettes previously rendered cleanly against the rewritten model. The fix
+  carries no rxode2 version bump, so `DESCRIPTION` still asks only for
+  `rxode2 (>= 5.0.2)` and the constraint cannot yet be expressed mechanically.
+
 - Fix `Sawe_2025_levofloxacin`, which administered twice the dose. The model
   omitted `f(depot) <- 0`, so each dose entered `depot` as a bolus *and* again
   through the analytical `transit()` chain: `AUC(0-inf) * CL` came to 1999.99 mg
