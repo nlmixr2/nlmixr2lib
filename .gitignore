@@ -19,6 +19,8 @@ docs
 .claude/worktrees/
 # consolidation worktrees created by runner-merge-claude-branches
 .worktrees/
+# per-task worktrees created inside the repo by Claude Code
+.claude-wt/
 # parallel vignette-gate output (verify_vignettes_parallel.R)
 .vignette_gate.log
 .vignette_results.jsonl

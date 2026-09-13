@@ -1,5 +1,5 @@
 Peng_2025_meropenem <- function() {
-  description <- "One-compartment IV population PK model for prolonged-infusion meropenem in 21 Chinese critically ill adults on continuous venovenous hemofiltration (Peng 2025). Total clearance is the sum of an estimated endogenous (body) clearance of 2.89 L/h and the individually measured CRRT clearance supplied as the data column QEFF; Cockcroft-Gault creatinine clearance acts on the endogenous arm through an exponential term centered at the 13.6 mL/min cohort median. Central volume 26.0 L with no inter-individual variability (fixed to zero by the authors). Age, sex, body weight, APACHE II, CRP, PCT, sepsis, renal-failure category and anuria were screened but not retained."
+  description <- "One-compartment IV population PK model for prolonged-infusion meropenem in 21 Chinese critically ill adults on continuous venovenous hemofiltration (Peng 2025). Total clearance is the sum of an estimated endogenous (body) clearance of 2.89 L/h and the individually measured CRRT clearance supplied as the data column QEFF; Cockcroft-Gault creatinine clearance acts on the endogenous arm through an exponential term centered at the 13.6 mL/min cohort median. Central volume 26.0 L with no inter-individual variability (fixed to zero by the authors). Age, sex, body weight, APACHE II, CRP, procalcitonin, sepsis, renal-failure category and anuria were screened but not retained."
   reference <- "Peng Y, Liu Y, Cheng Z, Zhang Q, Xie F, Zhu S, Li S. Population pharmacokinetics of prolonged infusion for meropenem: tailoring dosing recommendations for Chinese critically ill patients on continuous renal replacement therapy with consideration for renal function. Drug Des Devel Ther. 2025;19:1105-1117. doi:10.2147/DDDT.S489603"
   vignette <- "Peng_2025_meropenem"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
@@ -84,11 +84,11 @@ Peng_2025_meropenem <- function() {
       type        = "continuous",
       notes       = "Peng 2025 Methods: screened; not retained. Cohort values not tabulated; the paper reports only that C-reactive protein was among the collected laboratory examinations."
     ),
-    PCT = list(
+    PROCALCITONIN = list(
       description = "Procalcitonin",
       units       = "ng/mL",
       type        = "continuous",
-      notes       = "Peng 2025 Methods: screened; not retained. Cohort values not tabulated. Documentation only -- procalcitonin has no entry in inst/references/covariate-columns.md, and none is proposed here because the covariate was not retained and the paper reports no values or effect estimate for it; the units above are the conventional clinical ones, not a source-paper statement."
+      notes       = "Peng 2025 Methods: screened; not retained. Cohort values not tabulated. Documentation only. The paper writes the covariate as PCT; the canonical column in inst/references/covariate-columns.md is PROCALCITONIN spelled out, because a bare PCT collides with the _PCT percent suffix (BODYFAT_PCT, RACE_ASIAN_PCT, CUM_FLUID_BAL_PCT and others) and with PCT = proximal convoluted tubule in Lu_2014_sglt_qsp.R. The units above are the conventional clinical ones (ng/mL = ug/L), not a source-paper statement."
     ),
     DIS_SEPSIS = list(
       description = "Sepsis (versus other infection) indicator",

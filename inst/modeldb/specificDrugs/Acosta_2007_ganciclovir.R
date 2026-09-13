@@ -94,6 +94,23 @@ Acosta_2007_ganciclovir <- function() {
     # Structural PK -- Yang 2023 Table 3, Acosta et al. (2007) row. Body weight
     # enters un-normalized, so the reference subject is WT = 1 kg. Clearance in
     # L/h, volume in L, ka in 1/h. One-compartment model with a depot.
+    #
+    # INDEPENDENT CONFIRMATION of all four structural values plus the CL
+    # exponent: Kata K, et al. J Pharm Health Care Sci. 2025;11:89
+    # (doi:10.1186/s40780-025-00496-5) re-used this Acosta 2007 model without
+    # re-estimation as the prior for a Bayesian neonatal analysis, and prints
+    # it in its Methods as Eqs. 1-4: CL = 0.146 * WT^1.68 (L/h), V = 1.15
+    # (L/kg), Ka = 0.591 (1/h), F = 0.536, with WT in kg. That is a second
+    # secondary source, independent of Yang 2023, agreeing on every value.
+    # Caveat retained: Kata 2025's own INTRODUCTION restates the same
+    # equations with the CL exponent as 1.18 rather than 1.68, in a sentence
+    # that is separately garbled (it says "WT is body weight in grams", under
+    # which V = 1.15 * WT would be ~1150 L). Kata 2025's Methods states 1.68
+    # twice, once as a display equation, and agrees with Yang 2023, so 1.68 is
+    # the 2-of-3 reading. The primary Acosta 2007 is not open access
+    # (PMID 17392728) and remains unobtained, so this is still a
+    # secondary-sourced transcription -- see Kata_2025_ganciclovir_maturation
+    # and its vignette for the full argument.
     lcl <- log(0.146); label("Clearance coefficient at WT = 1 kg (L/h)")            # Yang 2023 Table 3 (Acosta 2007): CL = 0.146 * BW^1.68
     lvc <- log(1.15) ; label("Central volume coefficient at WT = 1 kg (L)")          # Yang 2023 Table 3 (Acosta 2007): V = 1.15 * BW
     lka <- log(0.591); label("First-order oral absorption rate constant (1/h)")     # Yang 2023 Table 3 (Acosta 2007): Ka = 0.591

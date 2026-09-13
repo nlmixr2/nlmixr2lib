@@ -914,7 +914,14 @@ checkModelConventions <- function(model, verbose = TRUE) {
     # Cbrain_csf <- ... where brain_csf is the underlying canonical
     # compartment); the C-prefix denotes the concentration-derived
     # output state corresponding to a registered compartment amount.
+    # Also accept the `prob_<endpoint>` landmark exposure-response
+    # probability-output family (conv$probOutputRegex). These models have no
+    # ODE state and no concentration output, so neither the compartment
+    # register nor the Cc/C<cmt> concentration aliases can cover them; per
+    # the 2026-09-11 operator ruling the shape itself is canonical rather
+    # than each endpoint needing a hand-added register entry.
     is_canon_pd <- .matchesCompartment(obs, conv) ||
+      .matchesProbOutput(obs, conv) ||
       startsWith(obs, "Cc_") ||
       (startsWith(obs, "C") && nchar(obs) > 1 &&
        .matchesCompartment(substr(obs, 2, nchar(obs)), conv))
@@ -931,10 +938,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
         ),
         sprintf(
           paste0(
-            "Rename to '%s' for plasma-drug-concentration outputs, ",
-            "or register the PD output name as a canonical compartment ",
-            "in R/conventions.R if it is a recurring paper-mechanistic ",
-            "endpoint."
+            "Rename to '%s' for plasma-drug-concentration outputs; use ",
+            "'prob_<endpoint>' (lowercase, e.g. prob_orr_central) for a ",
+            "landmark exposure-response event probability in [0, 1]; or ",
+            "register the PD output name as a canonical compartment in ",
+            "inst/references/compartment-names.md if it is a recurring ",
+            "paper-mechanistic endpoint."
           ),
           conv$observationVar
         )

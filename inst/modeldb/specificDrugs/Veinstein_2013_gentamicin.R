@@ -79,19 +79,34 @@ Veinstein_2013_gentamicin <- function() {
     # reported per kg; multiplying by actual body weight returns absolute
     # L/h (clearances) and L (volume) for a given subject. The (WT)^1 scaler
     # is structural, not estimated as a separate exponent.
-    cl              <- exp(lcl              + etalcl)              * WT  # L/h
     cl_hemodialysis <- exp(lcl_hemodialysis + etalcl_hemodialysis) * WT  # L/h
-    vc              <- exp(lvc              + etalvc)              * WT  # L
 
-    # Total apparent clearance (Veinstein 2013 Methods, Population PK
+    # TOTAL apparent clearance (Veinstein 2013 Methods, Population PK
     # modeling equation: dC/dt = R0/V - [(CL_HD + CL_NHD)/V] * C during the
     # dialysis session, reducing to dC/dt = R0/V - [CL_NHD/V] * C
     # interdialytically). The dialysis arm cl_hemodialysis is added to the
-    # body baseline cl only while a hemodialysis session is running,
-    # encoded via the RRT_HEMODIAL_ACTIVE time-varying covariate.
-    cl_total <- cl + RRT_HEMODIAL_ACTIVE * cl_hemodialysis
+    # body baseline only while a hemodialysis session is running, encoded
+    # via the RRT_HEMODIAL_ACTIVE time-varying covariate.
+    #
+    # IMPORTANT -- the gated sum MUST be assigned to `cl` itself, not to a
+    # separate `cl_total`. For some model shapes rxode2 does not integrate the
+    # d/dt() a file declares -- it solves the system with its analytic
+    # linear-compartment kernel driven by variables named `cl` and `vc`, and
+    # the explicit right-hand side is discarded. Defining both names is
+    # necessary but not sufficient, and there is no reliable static tell. Assigning only the interdialytic arm to `cl`
+    # and eliminating via `cl_total / vc` yields a model whose dialysis arm
+    # is silently INERT: the reported `cl_total` and `kel` columns switch
+    # correctly while the simulated amounts decay at the interdialytic rate
+    # in BOTH states. Same hazard and same fix as Berthaud_2025_cefazolin.R
+    # and Lee_2024_gentamicin_teigen.R; regression-tested for every model
+    # carrying an *_ACTIVE gate covariate in
+    # tests/testthat/test-modeldb-active-gate.R.
+    cl <- exp(lcl + etalcl) * WT +
+      RRT_HEMODIAL_ACTIVE * cl_hemodialysis  # L/h
 
-    kel <- cl_total / vc
+    vc <- exp(lvc + etalvc) * WT  # L
+
+    kel <- cl / vc
 
     # One-compartment IV (zero-order input via the dosing infusion rate);
     # no depot. Dose is delivered into 'central' with a duration / rate set

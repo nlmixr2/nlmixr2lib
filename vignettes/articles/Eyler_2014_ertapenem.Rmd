@@ -407,11 +407,75 @@ comparison |>
 ```
 
 The simulated >= 40% T > MIC attainment matches the published values
-to within rounding, and the simulated median % time above 2 mg/L is
-within ~5 percentage points of the published Table 3 entry across all
-four regimens (the small differences reflect the residual-error
-assumption documented in Assumptions and deviations below; the paper's
-simulation magnitude was not perturbed by a residual term).
+to within rounding. The simulated median % time above 2 mg/L runs a few
+percentage points high -- within about 8 points of the published Table 3
+entry across all four regimens, and in the same direction in each
+(the differences reflect the residual-error assumption documented in
+Assumptions and deviations below; the paper's simulation magnitude was not
+perturbed by a residual term).
+
+## The dialytic clearance arm is load-bearing
+
+Every number in the table above depends on `cl_dialysis` actually being added
+to systemic clearance while the CRRT circuit runs. Until 2026-09-12 it was not:
+the model assigned the gated total to a separate `cl_total` while defining both
+`cl` and `vc`, so rxode2 solved the two-compartment system with its analytic
+linear kernel from that pair and discarded the explicit `d/dt()`. The
+`cl_total` and `kel` output columns switched with `RRT_HEMODIAL_ACTIVE` while
+the simulated amounts did not -- CLdial = 2.16 L/h, three-quarters as large as
+the systemic 2.88 L/h, contributed nothing. The check below re-runs the same
+four regimens with the circuit switched off, which is exactly what the model
+silently computed before that date.
+
+```{r dialysis-arm-load-bearing}
+gate_off_events <- fig4_events
+gate_off_events$RRT_HEMODIAL_ACTIVE <- 0L
+
+sim_gate_off <- rxode2::rxSolve(mod, events = gate_off_events,
+                                keep = c("WT", "treatment",
+                                         "RRT_HEMODIAL_ACTIVE")) |>
+  as.data.frame()
+
+median_c24 <- function(d) {
+  d |>
+    dplyr::filter(time == 24) |>
+    dplyr::group_by(treatment) |>
+    dplyr::summarise(Cu = stats::median(Cunbound), .groups = "drop")
+}
+
+gate_compare <- median_c24(sim_fig4) |>
+  dplyr::rename(circuit_on = Cu) |>
+  dplyr::left_join(dplyr::rename(median_c24(sim_gate_off), circuit_off = Cu),
+                   by = "treatment") |>
+  dplyr::mutate(ratio = circuit_off / circuit_on)
+
+stopifnot(
+  # Structural, and the assertion this vignette previously lacked: switching
+  # the circuit off must change the solution. Before 2026-09-12 this ratio was
+  # exactly 1 for every regimen, for any value of CLdial.
+  all(gate_compare$ratio > 1.4),
+  # Attainment reproduces the published Table 3 column to within rounding.
+  max(abs(comparison$simulated_pct_geq_40 -
+            comparison$published_pct_geq_40)) < 1,
+  # Median % of interval above 2 mg/L: biased high, bounded, same sign in
+  # every regimen. Asserted as a bounded bias rather than as absent.
+  all(comparison$simulated_median_pct >=
+        comparison$published_median_pct_above_2),
+  max(comparison$simulated_median_pct -
+        comparison$published_median_pct_above_2) < 12
+)
+
+gate_compare |>
+  dplyr::rename("Regimen" = treatment,
+                "Median Cu at 24 h, circuit on (mg/L)" = circuit_on,
+                "Median Cu at 24 h, circuit off (mg/L)" = circuit_off,
+                "Ratio" = ratio) |>
+  knitr::kable(
+    digits = 2,
+    caption = "Median unbound ertapenem at 24 h with the CRRT circuit running and with it switched off. The right-hand column is the behaviour the packaged model silently had before 2026-09-12; ignoring the dialytic arm inflates the 24-h unbound concentration by roughly two-fold.",
+    align = c("l", "r", "r", "r")
+  )
+```
 
 # PKNCA validation
 
