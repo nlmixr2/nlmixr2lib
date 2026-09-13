@@ -1,5 +1,5 @@
 Chen_2025_methotrexate_das28_mbma <- function() {
-  description <- "MBMA. Model-based meta-analysis of the DAS28 (Disease Activity Score for 28 joints) time course under methotrexate (MTX) monotherapy in adults with active rheumatoid arthritis, fitted to study-arm-mean summary data digitised from 31 randomised controlled trials (of 69 trials / 7999 patients screened into the pooled database). The endpoint is the percentage change in DAS28 from baseline, described by a three-parameter Emax-in-time model E(t) = Emax * exp(eta) * t / (ET50 * exp(eta) + t), where a SINGLE study-level random effect scales Emax and ET50 together exactly as printed in the source Model Developing equation. Emax = -54.90% and ET50 = 20.6 weeks; inter-study variability on Emax is 37.4%. No covariate was retained: MTX dose, RA disease duration, baseline CRP and baseline ESR were all screened by forward selection / backward elimination and none reduced the objective function significantly, so the final model is covariate-free (see covariatesDataExcluded). Residual error is proportional and is reported UNWEIGHTED; the source weights each study-arm observation by W = 1/sqrt(N) for arm size N, which downstream simulation code must apply. Suitable simulation scope is study-arm-mean DAS28 percentage-change trajectories, NOT individual-patient responses. Companion endpoint models from the same paper are modellib('Chen_2025_methotrexate_acr20_mbma') and modellib('Chen_2025_methotrexate_acr50_mbma')."
+  description <- "MBMA. Model-based meta-analysis of the DAS28 (Disease Activity Score for 28 joints) time course under methotrexate (MTX) monotherapy in adults with active rheumatoid arthritis, fitted to study-arm-mean summary data digitised from 31 randomised controlled trials (of 69 trials / 7999 patients screened into the pooled database). The endpoint is the percentage change in DAS28 from baseline, described by a three-parameter Emax-in-time model E(t) = Emax * exp(eta) * t / (ET50 + t), where a SINGLE study-level random effect scales Emax, per the Table 2 parameter label 'eta (Emax-DAS28)'. Emax = -54.90% and ET50 = 20.6 weeks; inter-study variability on Emax is 37.4%. No covariate was retained: MTX dose, RA disease duration, baseline CRP and baseline ESR were all screened by forward selection / backward elimination and none reduced the objective function significantly, so the final model is covariate-free (see covariatesDataExcluded). Residual error is proportional and is reported UNWEIGHTED; the source weights each study-arm observation by W = 1/sqrt(N) for arm size N, which downstream simulation code must apply. Suitable simulation scope is study-arm-mean DAS28 percentage-change trajectories, NOT individual-patient responses. Companion endpoint models from the same paper are modellib('Chen_2025_methotrexate_acr20_mbma') and modellib('Chen_2025_methotrexate_acr50_mbma')."
 
   reference <- paste(
     "Chen S, Wu Y, Huang W, Zhou J, Wei Z, Wu X.",
@@ -66,14 +66,29 @@ Chen_2025_methotrexate_das28_mbma <- function() {
     # equation is rendered as a display equation in the PDF and is LOST
     # from the preprocessed markdown, recovered via pdftotext -layout):
     #
-    #   E_ij = Emax * exp(eta_i) * Time_j / (ET50 * exp(eta_i) + Time_j)
+    #   E_ij = Emax * exp(eta_i) * Time_j / (ET50 + Time_j)
     #
-    # Note the single eta_i multiplies BOTH Emax and ET50 as printed.
-    # Table 2 labels the random effect "eta (Emax-DAS28)", i.e. names it
-    # after Emax alone, but the printed equation places exp(eta_i) on
-    # ET50 as well. Per the standing "trust the printed equation over
-    # the prose/label" policy this file encodes the equation as printed.
-    # See the vignette Assumptions and Deviations section.
+    # ETA PLACEMENT. The display equation as typeset places the SAME
+    # exp(eta_i) on ET50 as well:
+    #   E_ij = Emax * exp(eta_i) * Time_j / (ET50 * exp(eta_i) + Time_j)
+    # Three independent statements in the paper show that is a
+    # typesetting artefact and that the random effect belongs on Emax
+    # alone:
+    #   1. Table 2 names the parameter "eta (Emax-DAS28)" and reports
+    #      exactly ONE random effect per endpoint; there is no
+    #      eta(ET50) row for any of the three endpoints.
+    #   2. Results: "Covariates were not investigated on ET50 because
+    #      ISV was unsuccessful in being evaluated" -- inter-study
+    #      variability on ET50 was not estimable at all.
+    #   3. Results: "the ISV for Emax is 37.4%, 8.9%, and 45.4%" --
+    #      the estimated ISV is named after Emax.
+    # This paper's typesetting is demonstrably unreliable elsewhere
+    # (its residual-error display equations are dimensionally broken;
+    # see the vignette Errata), so "trust the printed equation" does
+    # not outrank the table here. Encoded with eta on Emax only.
+    # Typical-value predictions are identical under either reading
+    # (eta = 0 gives exp(eta) = 1); only the between-study spread
+    # differs. See the vignette Assumptions and Deviations section.
     #
     # There is NO Hill/sigmoidicity exponent: the Methods call this a
     # "sigmoid Emax" model but no gamma is reported in Table 2, and the
@@ -151,10 +166,11 @@ Chen_2025_methotrexate_das28_mbma <- function() {
     # function of follow-up time only. `time` is the follow-up time in
     # weeks since the start of MTX treatment.
 
-    # The single study-level eta scales Emax and ET50 together, exactly
-    # as printed in the Chen 2025 Model Developing equation.
+    # The single study-level eta scales Emax only, per the Chen 2025
+    # Table 2 parameter label "eta (Emax-DAS28)"; ET50 carries no
+    # inter-study variability (see the ETA PLACEMENT note in ini()).
     emaxArm <- emax * exp(eta_study_emax)
-    et50Arm <- exp(let50) * exp(eta_study_emax)
+    et50Arm <- exp(let50)
 
     # Study-arm mean DAS28 percentage change from baseline. Cc is the
     # canonical observation name; here it is a PERCENTAGE CHANGE (a
