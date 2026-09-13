@@ -92,11 +92,14 @@ to mis-transcribe.
    reading is the one that reproduces the paper's own 18% / 22% / 54%
    reductions.
 2. **The covariate and random effects on `Imax` are multiplicative on the log
-   scale**, not on the fraction. Because `Imax < 0`, a multiplier above 1
-   *deepens* the auto-inhibition and a multiplier below 1 shallows it. The
-   negative dose slope (`Imax_dose = -0.00183`) therefore makes the inhibition
-   grow with dose, which is what produces the more-than-dose-proportional
-   exposure above 480 mg.
+   scale**, not on the fraction. Because `Imax < 0`, the multiplier acts in the
+   counter-intuitive direction: a multiplier above 1 drives `Imax_i` further
+   negative, shrinks `exp(Imax_i)`, and therefore *shallows* the
+   auto-inhibition and raises `CL/F`; a multiplier below 1 *deepens* it. The
+   negative dose slope (`Imax_dose = -0.00183`) makes the multiplier shrink as
+   dose rises (1.146 at 400 mg, 1 at 480 mg, 0.414 at 800 mg), so the
+   inhibition still grows with dose -- which is what produces the
+   more-than-dose-proportional exposure above 480 mg.
 
 Every disposition, absorption and clearance parameter is apparent (`/F`): the
 pooled dataset has no intravenous arm, so `F` is not identifiable and is

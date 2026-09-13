@@ -1,0 +1,564 @@
+---
+title: "Tiapride (Huang 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tiapride (Huang 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+```
+
+```{r libraries, message = FALSE, warning = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+rxode2::rxSetSeed(20260913)
+
+mod <- readModelDb("Huang_2026_tiapride")
+ui <- rxode2::rxode(mod)
+```
+
+## The paper
+
+Huang and colleagues developed a population pharmacokinetic model for
+**tiapride**, a benzamide-class D2 antagonist used for tic disorders, in 38
+Chinese children and adolescents aged 5-15 years followed as outpatients at a
+single centre. Two models are reported: a plasma model (Table 2) and a
+sequentially-fitted plasma-saliva joint model (Table 3) that adds a
+Michaelis-Menten-driven saliva compartment. **Only the plasma model is
+implemented in `nlmixr2lib`**; the joint model cannot be reconstructed from the
+published values, for the reason set out in the Errata below.
+
+Reference:
+
+```{r reference, echo = FALSE, results = "asis"}
+cat(ui$reference, "\n")
+```
+
+## Population
+
+```{r population, echo = FALSE}
+pop <- ui$population
+knitr::kable(
+  data.frame(
+    Field = names(pop),
+    Value = vapply(pop, function(x) paste(
+      if (is.null(names(x))) x else paste0(names(x), " ", x),
+      collapse = "; "
+    ), character(1)),
+    row.names = NULL
+  ),
+  caption = "Study population (Huang 2026 Table 1 and Methods)."
+)
+```
+
+Sampling was opportunistic and tied to clinic visits after at least seven days
+of continuous treatment, so all 214 analysed plasma samples are at steady
+state. Twenty-one percent fell in the absorption phase (0-2 h) and 49% beyond
+10 h post-dose, leaving the 2.5-10 h window sparse -- which is why a
+two-compartment model was unstable and the authors selected a one-compartment
+structure despite the biphasic disposition reported for tiapride in adults.
+
+## Source trace
+
+Every equation and every `ini()` value, with the location it came from.
+**Equations 1-10 of the source are vector graphics that both `pdftotext` and
+the markdown preprocessor drop silently**; they were recovered by rendering
+pages 3-8 of the PDF at 200-500 dpi and reading them as images.
+
+```{r source-trace, echo = FALSE}
+knitr::kable(
+  tibble::tribble(
+    ~Item,                       ~Value,                    ~Source,
+    "Ka",                        "0.219 1/h",               "Table 2; Equation 5",
+    "CL/F",                      "15.3 L/h",                "Table 2; Equation 6",
+    "Vd/F",                      "5.77 L",                  "Table 2; Equation 7",
+    "FFM exponent on CL/F",      "0.553",                   "Table 2; Equation 6",
+    "FFM reference value",       "30.62 kg",                "Equation 6 denominator = Table 1 cohort median FFM",
+    "IIV Ka",                    "17.6% -> omega = 0.176",  "Table 2 'eta Ka (%)'",
+    "IIV CL/F",                  "22.8% -> omega = 0.228",  "Table 2 'eta CL/F (%)'",
+    "IIV Vd/F",                  "84.3% -> omega = 0.843",  "Table 2 'eta Vd/F (%)'",
+    "Proportional residual",     "15.6%",                   "Table 2 'eps prop (%)'",
+    "Additive residual",         "87.9 ng/mL = 0.0879 mg/L","Table 2 'eps add (ng/mL)'",
+    "Structural model",          "1-cmt, first-order absorption, linear elimination", "Results; Figure 2 (left half)",
+    "IIV model",                 "exponential, P = theta * exp(eta)",  "Methods Equations 1-3",
+    "Residual model",            "combined proportional + additive",   "Results 'a combined error model'",
+    "Covariate model",           "power function on continuous covariates", "Methods Equation 3",
+    "Therapeutic window",        "560-2000 ng/mL steady-state Cmax",   "Methods Model-Based Simulations (ref 13)",
+    "PTA, 100 mg bid / 75 mg tid / 100 mg tid", "98.2% / 97.1% / 97.3%", "Results Monte Carlo Simulations"
+  ),
+  caption = "Source trace for the Huang 2026 plasma model."
+)
+```
+
+## Model
+
+```{r model-print}
+ui
+```
+
+### Flip-flop disposition
+
+The estimated elimination rate constant is an order of magnitude larger than
+the absorption rate constant, so the observed terminal slope reports
+**absorption**, not elimination.
+
+```{r flipflop}
+theta <- setNames(ui$theta, names(ui$theta))
+ka_tv <- exp(theta[["lka"]])
+cl_tv <- exp(theta[["lcl"]])
+vc_tv <- exp(theta[["lvc"]])
+kel_tv <- cl_tv / vc_tv
+
+c(ka = ka_tv, kel = kel_tv,
+  t_half_absorption = log(2) / ka_tv,
+  t_half_elimination = log(2) / kel_tv)
+```
+
+`ln(2)/Ka` = `r round(log(2) / ka_tv, 2)` h reproduces the terminal half-life
+of 3.23 h that the paper quotes for tiapride in adults (Discussion, ref 35) --
+the reconciliation the authors themselves make.
+
+A guard that the `cl` / `vc` pair has not silently been replaced by rxode2's
+analytic solution, discarding the explicit ODEs:
+
+```{r lincmt-guard}
+stopifnot(length(ui$linCmt) == 0L)
+```
+
+## Typical-value single dose: closed-form gates
+
+The typical-value solve is deterministic, so it is checked against exact
+closed-form identities rather than tolerance bands.
+
+```{r typical-solve}
+dose_mg <- 75
+
+ev_typ <- data.frame(
+  id   = 1L,
+  time = c(0, sort(unique(c(seq(0, 4, by = 0.02), seq(0, 48, by = 0.1))))),
+  amt  = NA_real_,
+  evid = 0L,
+  cmt  = "central",
+  FFM  = 30.62
+)
+ev_typ$amt[1] <- dose_mg
+ev_typ$evid[1] <- 1L
+ev_typ$cmt[1] <- "depot"
+
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_typ,
+                           keep = "FFM") |>
+  as.data.frame()
+if (is.null(sim_typ$id)) sim_typ$id <- 1L
+
+# Closed form for a one-compartment first-order-absorption model.
+tmax_cf <- log(kel_tv / ka_tv) / (kel_tv - ka_tv)
+cmax_cf <- dose_mg * ka_tv / (vc_tv * (ka_tv - kel_tv)) *
+  (exp(-kel_tv * tmax_cf) - exp(-ka_tv * tmax_cf))
+aucinf_cf <- dose_mg / cl_tv
+
+c(tmax_closed_form = tmax_cf, cmax_closed_form = cmax_cf,
+  aucinf_closed_form = aucinf_cf)
+```
+
+```{r typical-nca, warning = FALSE}
+nca_conc <- sim_typ |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(regimen = "75 mg single dose") |>
+  dplyr::select(id, time, Cc, regimen)
+
+nca_conc <- dplyr::bind_rows(
+  nca_conc,
+  nca_conc |> dplyr::distinct(id, regimen) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, regimen, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, regimen, time)
+
+nca_dose <- data.frame(id = 1L, time = 0, amt = dose_mg,
+                       regimen = "75 mg single dose")
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | regimen + id,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | regimen + id,
+                             doseu = "mg")
+
+intervals_sd <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE,
+  half.life = TRUE, lambda.z = TRUE
+)
+
+nca_sd <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                         intervals = intervals_sd))
+nca_sd_tbl <- as.data.frame(nca_sd$result) |>
+  dplyr::select(PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+nca_sd_tbl
+```
+
+```{r typical-gates}
+stopifnot(
+  # Mass balance: CL/F * AUC(0-inf) must return the administered dose exactly.
+  # Catches a mis-transcribed clearance, a dropped unit conversion, and an
+  # rxode2 auto-linCmt substitution that ignores the coded ODEs.
+  abs(cl_tv * nca_sd_tbl$aucinf.obs / dose_mg - 1) < 0.005,
+  # Terminal slope reports absorption (flip-flop), not elimination.
+  abs(nca_sd_tbl$half.life - log(2) / ka_tv) < 0.05,
+  # Cmax and Tmax against the exact closed form for this structure.
+  abs(nca_sd_tbl$cmax / cmax_cf - 1) < 0.01,
+  abs(nca_sd_tbl$tmax - tmax_cf) < 0.05,
+  # The solve must not have drifted negative anywhere.
+  all(sim_typ$Cc >= 0)
+)
+```
+
+All four typical-value identities hold to better than 1%.
+
+### Comparison against the values the paper quotes
+
+```{r nca-comparison, warning = FALSE}
+published <- tibble::tribble(
+  ~regimen,             ~tmax, ~half.life,
+  "75 mg single dose",  2.0,   3.23
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_sd,
+  reference     = published,
+  by            = "regimen",
+  units         = c(tmax = "h", half.life = "h"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated typical-value NCA against the tiapride descriptors Huang 2026",
+    "quotes in its Discussion. * differs from reference by >20%."
+  )
+)
+```
+
+The terminal half-life matches to 2%. **Tmax is a starred deviation and is
+expected to be**: 2 h is the observed peak time the paper reports for tiapride
+(Discussion), while the fitted model puts the typical Tmax at
+`r round(tmax_cf, 2)` h. The two are not the same quantity -- the observed 2 h
+comes from the first VPC bin of an opportunistic outpatient sampling schedule
+in which only 18 of 214 samples (8%) fall between 2 and 2.5 h, so the peak time
+is poorly resolved by the data. No parameter was adjusted to close this gap.
+
+## Virtual cohort and Monte Carlo simulation (replicates Figure 5)
+
+The paper simulated 1000 virtual patients whose fat-free mass follows the
+distribution of the modelled population, dosed for five consecutive days across
+eight regimens, and read the peak concentration over the 12 h following the
+last dose. FFM is drawn log-normally to reproduce the Table 1 median and IQR.
+
+```{r cohort}
+n_per_arm <- 200  # 200 per arm is the library cap; the paper used 1000
+
+ffm_median <- 30.62
+ffm_sdlog <- mean(c(log(34.65 / 30.62), log(30.62 / 26.93))) / qnorm(0.75)
+c(ffm_sdlog = ffm_sdlog)
+
+regimens <- tibble::tribble(
+  ~label,          ~dose,  ~ii,
+  "50 mg bid",     50.0,   12,
+  "50 mg tid",     50.0,    8,
+  "66.6 mg bid",   66.6,   12,
+  "66.6 mg tid",   66.6,    8,
+  "75 mg bid",     75.0,   12,
+  "75 mg tid",     75.0,    8,
+  "100 mg bid",   100.0,   12,
+  "100 mg tid",   100.0,    8
+)
+
+make_arm <- function(label, dose, ii, id_offset) {
+  subj <- data.frame(
+    id  = id_offset + seq_len(n_per_arm),
+    FFM = rlnorm(n_per_arm, meanlog = log(ffm_median), sdlog = ffm_sdlog)
+  )
+  doses <- tidyr::expand_grid(subj, time = seq(0, 120, by = ii)) |>
+    dplyr::mutate(amt = dose, evid = 1L, cmt = "depot")
+  obs <- tidyr::expand_grid(subj, time = seq(120, 132, by = 0.1)) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central")
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::mutate(regimen = label) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- do.call(
+  dplyr::bind_rows,
+  Map(make_arm, regimens$label, regimens$dose, regimens$ii,
+      id_offset = (seq_len(nrow(regimens)) - 1L) * n_per_arm)
+)
+
+# Disjoint IDs across arms, so no cross-arm collision in the solve or in PKNCA.
+stopifnot(
+  dplyr::n_distinct(events$id) == nrow(regimens) * n_per_arm,
+  events |> dplyr::distinct(id, regimen) |> nrow() ==
+    nrow(regimens) * n_per_arm
+)
+```
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = events,
+                       keep = c("regimen", "FFM")) |>
+  as.data.frame()
+
+sim_obs <- sim |> dplyr::filter(!is.na(Cc))
+stopifnot(nrow(sim_obs) > 0, all(sim_obs$Cc >= 0))
+```
+
+`Cc` is the individual prediction and carries no residual error, so the peak
+read off it is the model's Cmax rather than an upward-biased maximum of a
+noisy series.
+
+```{r figure5, fig.height = 6, fig.width = 8}
+sim_obs <- sim_obs |>
+  dplyr::mutate(
+    Cc_ngml = Cc * 1000,
+    regimen = factor(regimen, levels = regimens$label)
+  )
+
+ribbon <- sim_obs |>
+  dplyr::group_by(regimen, time) |>
+  dplyr::summarise(
+    p05 = quantile(Cc_ngml, 0.05),
+    p50 = median(Cc_ngml),
+    p95 = quantile(Cc_ngml, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(ribbon, aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "#e8879b", alpha = 0.5) +
+  geom_line(aes(y = p50), colour = "#b2182b", linewidth = 0.8) +
+  geom_hline(yintercept = c(560, 2000), linetype = "dotted") +
+  facet_wrap(~regimen, ncol = 4) +
+  labs(
+    x = "Time (h)", y = "Tiapride plasma concentration (ng/mL)",
+    title = "Replicates Figure 5 of Huang 2026",
+    subtitle = "Median and 5th-95th percentile over the 12 h after the last of five days of dosing"
+  ) +
+  theme_bw()
+```
+
+### Probability of target attainment
+
+```{r pta}
+cmax_ss <- sim_obs |>
+  dplyr::group_by(regimen, id) |>
+  dplyr::summarise(cmax_ngml = max(Cc_ngml), .groups = "drop")
+
+pta <- cmax_ss |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(
+    `Median Cmax (ng/mL)` = round(median(cmax_ngml)),
+    `PTA, Cmax >= 560 ng/mL (%)` = round(100 * mean(cmax_ngml >= 560), 1),
+    `Cmax > 2000 ng/mL (%)` = round(100 * mean(cmax_ngml > 2000), 1),
+    .groups = "drop"
+  )
+
+knitr::kable(
+  pta,
+  caption = paste(
+    "Simulated steady-state peak concentration by regimen.",
+    "Huang 2026 reports PTA of 98.2%, 97.1% and 97.3% for 100 mg bid,",
+    "75 mg tid and 100 mg tid respectively."
+  )
+)
+```
+
+```{r pta-gate}
+pta_ref <- c(`100 mg bid` = 98.2, `75 mg tid` = 97.1, `100 mg tid` = 97.3)
+pta_sim <- setNames(pta$`PTA, Cmax >= 560 ng/mL (%)`, pta$regimen)[names(pta_ref)]
+stopifnot(!anyNA(pta_sim))  # a name mismatch must fail loudly, not pass vacuously
+
+pta_diff <- pta_sim - pta_ref
+pta_diff
+```
+
+```{r pta-assert}
+stopifnot(
+  # The three regimens the paper singles out must all clear 90% attainment.
+  # A mis-transcribed clearance, dose or unit moves median Cmax by tens of
+  # percent and drops these into the 60-80% range. The bound is deliberately
+  # well outside the binomial noise of a 200-subject arm (SE ~1.2 points at
+  # p = 0.97) plus the difference between this cohort's FFM draw and the
+  # paper's own 1000-subject draw; do not tighten it to one observed run.
+  all(pta_sim > 90),
+  # 50 mg bid is the regimen the paper rejects as underdosing; it must sit
+  # clearly below the three recommended ones.
+  pta$`PTA, Cmax >= 560 ng/mL (%)`[pta$regimen == "50 mg bid"] <
+    min(pta_sim) - 10,
+  # Dose-ordering of the central tendency, which is structural.
+  median(cmax_ss$cmax_ngml[cmax_ss$regimen == "100 mg tid"]) >
+    median(cmax_ss$cmax_ngml[cmax_ss$regimen == "50 mg bid"])
+)
+```
+
+The model reproduces the paper's central finding: 75 mg tid, 100 mg bid and
+100 mg tid all attain the 560 ng/mL lower bound in nearly every subject, and
+the two 100 mg regimens push a larger fraction above the 2000 ng/mL upper
+bound -- which is exactly the efficacy/safety trade-off on which the authors
+select 75 mg tid.
+
+### Steady-state exposure gate
+
+```{r ss-exposure}
+# Over one dosing interval at steady state, CL/F * AUC(0-tau) = dose. Checked
+# on the typical subject so the identity is exact rather than a cohort average.
+ev_ss <- data.frame(
+  id = 1L,
+  time = c(seq(0, 120, by = 8),
+           seq(120, 128, by = 0.02)),
+  amt = c(rep(75, length(seq(0, 120, by = 8))),
+          rep(NA_real_, length(seq(120, 128, by = 0.02)))),
+  evid = c(rep(1L, length(seq(0, 120, by = 8))),
+           rep(0L, length(seq(120, 128, by = 0.02)))),
+  cmt = c(rep("depot", length(seq(0, 120, by = 8))),
+          rep("central", length(seq(120, 128, by = 0.02)))),
+  FFM = 30.62
+) |>
+  dplyr::arrange(time, dplyr::desc(evid))
+
+sim_ss <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_ss) |>
+  as.data.frame() |>
+  dplyr::filter(!is.na(Cc), time >= 120)
+
+auc_tau <- sum(diff(sim_ss$time) *
+                 (head(sim_ss$Cc, -1) + tail(sim_ss$Cc, -1)) / 2)
+
+c(auc_tau = auc_tau, dose_over_cl = 75 / cl_tv,
+  ratio = auc_tau / (75 / cl_tv))
+
+stopifnot(abs(auc_tau / (75 / cl_tv) - 1) < 0.01)
+```
+
+At steady state the area over one 8 h interval returns `Dose / (CL/F)` to
+better than 1%, confirming the dosing pathway and the FFM reference value are
+wired correctly.
+
+## Covariate effect of fat-free mass
+
+```{r ffm-effect}
+ffm_grid <- seq(18, 50, by = 1)
+cl_by_ffm <- cl_tv * (ffm_grid / 30.62)^ui$theta[["e_ffm_cl"]]
+
+ggplot(data.frame(FFM = ffm_grid, CL = cl_by_ffm), aes(FFM, CL)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(data = data.frame(FFM = 30.62, CL = cl_tv), size = 2.5) +
+  labs(x = "Fat-free mass (kg)", y = "Apparent clearance CL/F (L/h)",
+       title = "Equation 6: CL/F = 15.3 * (FFM/30.62)^0.553") +
+  theme_bw()
+
+# Across the cohort IQR, clearance spans a factor of:
+round((34.65 / 26.93)^ui$theta[["e_ffm_cl"]], 3)
+```
+
+Over the interquartile range of fat-free mass in the study population,
+apparent clearance varies by only about 14%, consistent with the modest
+exponent and its wide bootstrap confidence interval (0.277-0.771).
+
+## Assumptions and deviations
+
+### The plasma-saliva joint model is not implemented
+
+Huang 2026 also reports a joint plasma-saliva model (Table 3, Equations 8-10,
+Figure 2): a saliva compartment fed from the central compartment through
+Michaelis-Menten transport (Vmax = 34.7 mg/h, Km = 762 ng/mL fixed) and cleared
+by a first-order rate constant `K30 = 6.24 * (FFM/30.62)^0.38 * exp(eta)`, with
+30% IIV on K30 and 28.4% proportional residual error.
+
+**That sub-model cannot be reconstructed from the published values.** The
+saliva state's amount is fully determined by the three printed constants, but
+converting it to the observed *saliva concentration* needs a scale -- an
+apparent saliva volume -- and no such parameter appears anywhere in the paper:
+not in Tables 1-3, not in Equations 1-10, not in any figure caption, and there
+is no supplement (EuropePMC returns HTTP 404 for
+`PMC13111164/supplementaryFiles`, reports `hasSuppl: N`, and the article
+carries no data-availability statement). Writing
+`Csaliva = Vmax * Cc / ((Km + Cc) * K30 * Vsaliva)`, the candidate values of
+`Vsaliva` disagree by more than twofold depending on which printed quantity is
+used to recover it:
+
+| Basis for recovery | Implied `Vsaliva` |
+|---|---|
+| NONMEM's default `S3 = 1` (a unit-volume compartment) | 1 L |
+| Model median saliva / plasma at the Figure 4 VPC peak | ~1.35 L |
+| Fitting the Figure 1 regressions to the saturating form | ~1.9 L |
+| The reported mean saliva:plasma ratio of 2.3 | ~3.2 L |
+| Sharing the central volume, as in `Nguyen_2026_linezolid` | 5.77 L (falsified: gives saliva ~4x below the observed data) |
+
+Choosing any of these would fix the sub-model's primary output to within a
+factor that the source does not license, so the saliva layer is deliberately
+absent rather than guessed. It is queued for the operator.
+
+Two structural facts about that sub-model were nevertheless settled and are
+recorded here for whoever completes it: the transport is **not**
+mass-conserving as printed (Vmax = 34.7 mg/h exceeds the cohort's entire
+average absorption rate of ~9 mg/h at a 215 mg/day median dose, and at a plasma
+concentration of 780 ng/mL the transport term of 17.6 mg/h would exceed
+elimination at 11.9 mg/h -- so the plasma parameters could not have been held
+fixed if saliva drew mass from central), which is consistent with the dashed
+central-to-saliva arrow in Figure 2; and the saliva compartment is at
+quasi-steady state with plasma throughout, since `K30 = 6.24 1/h` is a 6.7 min
+half-life.
+
+### Interindividual variability scale
+
+Table 2 heads the variability rows `eta Ka (%)`, `eta CL/F (%)` and
+`eta Vd/F (%)` -- the eta itself as a percentage -- so they are read as
+`omega * 100` and encoded as `omega^2`. The paper prints no CV% column and no
+control stream that would settle the convention independently. Read instead as
+a log-normal CV%, the two small terms barely move (17.6% -> 0.1745, 22.8% ->
+0.2249) but Vd/F would fall from 0.843 to 0.7444. Given the 56% shrinkage on
+`eta Vd/F` and the bootstrap interval spanning 30-133%, that term carries
+little information either way.
+
+### Other assumptions
+
+* **Fat-free mass equation.** The paper does not state how the FFM column was
+  derived. For a 5-15 year old cohort the Al-Sallami paediatric correction to
+  the Janmahasatian adult formula is the usual choice, and a user supplying
+  `FFM` should compute it that way. The virtual cohort here draws FFM directly
+  from a log-normal matched to the Table 1 median and IQR, as the paper did.
+* **Bioavailability.** The study is oral-only, so `CL/F` and `Vd/F` are
+  apparent. No `F` term is reported and none is encoded.
+* **Units.** The model works in mg / L / h, so `Cc` is in mg/L; the paper
+  reports ng/mL throughout and 1 mg/L = 1000 ng/mL. The additive residual
+  87.9 ng/mL is encoded as 0.0879 mg/L.
+* **Dosing schedule for Figure 5.** The paper says "simulated for 5 consecutive
+  days" and plots 120-132 h, so the last dose is at t = 120 h with observation
+  over the following 12 h and no further doses; that is what is reproduced.
+* **PTA definition.** The paper's phrasing ("the proportion of simulated
+  steady-state peak concentration within the therapeutic window of
+  560-2000 ng/mL") is ambiguous, but only the lower-bound reading
+  `P(Cmax >= 560)` reproduces the reported 97-98% values while also leaving
+  room for the paper's separate observation that the 100 mg regimens push more
+  patients above 2000 ng/mL. Both quantities are tabulated above.
+* **Internal inconsistencies in the source.** The Discussion states
+  `K30 = 6.19 1/h` and an IIV of 31.3% where Table 3 gives 6.24 and 30%, and
+  says the optimal regimen is "75 mg bid" where the Abstract, Results and
+  Conclusions all say 75 mg tid. The tables and the majority text are taken as
+  authoritative. Table 1 prints BSA in "cm2" and BMI in "kg cm2", both of which
+  are typographical errors for m^2 and kg/m^2.
+
+## Session information
+
+```{r session, echo = FALSE}
+sessionInfo()
+```

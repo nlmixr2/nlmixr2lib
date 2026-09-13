@@ -104,7 +104,7 @@ tibble::tribble(
   "Accumulation ratio 1.47, effective half-life 7.25 h at 400 mg [4/3]", "Sect. 3.2 (gates)",
   "Median steady-state AUC 7650 ug*h/L and Cmax 1460 ug/L", "Sect. 3.2 (gates)",
   "Exposure window 252-264 h (last dosing day of week 2)", "Sect. 2.3",
-  "Imax_pacl", "NOT REPORTED ANYWHERE -- see Assumptions and deviations"
+  "Imax_pacl = 1.15", "NOT IN THIS PAPER -- borrowed from Fernandez-Teruel 2024 Table 3; see Assumptions and deviations"
 ) |>
   knitr::kable(caption = "Source trace for every parameter and equation.")
 ```
@@ -677,18 +677,71 @@ stopifnot(all(tab$Pass[!tab$Deviation]))
 
 # Assumptions and deviations
 
-* **`Imax_pacl` is not reported anywhere and is set to 0.** The printed Imax
-  equation (p. 7) retains the factor `(1 + PACL * Imax_pacl)` and the equation
-  legend defines `Imax_pacl` as "the relationship between concomitant paclitaxel
-  and Imax", but no estimate for it appears in Table 2 -- which tabulates every
-  other coefficient in every other equation -- nor in Tables S1-S5, nor in any
-  figure panel. The 2024 parent model reports `Imax_pacl = 1.15`, but that is a
-  different fit: `Imax` moved from -1.54 to -1.87 and `Imax_dose` from -0.00183
-  to -0.00213 between the two, so carrying the 2024 value across would fabricate
-  a 2025 estimate. Setting it to 0 makes `(1 + PACL * 0) = 1`, so the encoded
-  model is *exactly* the paper's model for every paclitaxel-free patient -- 89.4%
-  of the PopPK cohort and 100% of the CAPItello-291 population this paper exists
-  to describe. Simulating the paclitaxel arm requires supplying a value.
+* **`Imax_pacl` is not reported in this paper; the value used is BORROWED from
+  the 2024 parent model.** This is the one parameter in the model file that does
+  not come from Fernandez Teruel 2025, and it is the most important caveat on
+  this extraction. The printed Imax equation (p. 7) retains the factor
+  `(1 + PACL * Imax_pacl)` and the equation legend defines `Imax_pacl` as "the
+  relationship between concomitant paclitaxel and Imax", but no estimate for it
+  appears in Table 2 -- which tabulates every other coefficient in every other
+  equation -- nor in Tables S1-S5, nor inside any figure panel (the publisher's
+  native-resolution figure files were checked).
+
+  Per operator decision (2026-09-11), the model carries `Imax_pacl = 1.15`
+  across from the 2024 parent (`FernandezTeruel_2024_capivasertib.R`,
+  Fernandez-Teruel 2024 Table 3: RSE 12.5%, bootstrap 95% CI 1-6.91), held
+  constant via `fixed()`. **This is a cross-fit borrow, not a 2025 estimate.**
+  Every other parameter shared by the two fits was re-estimated -- `Imax` moved
+  from -1.54 to -1.87 and `Imax_dose` from -0.00183 to -0.00213 -- so the true
+  2025 value is unknown and is not necessarily 1.15. Any simulation with
+  `CONMED_PACLITAXEL = 1` is an approximation whose paclitaxel effect carries
+  2024 provenance; the 89.4% of the cohort and 100% of the CAPItello-291
+  population that are paclitaxel-free are unaffected, because
+  `(1 + 0 * 1.15) = 1`.
+
+  What the borrow can be checked against is the 2024 paper's own printed
+  covariate result, which validates the *encoding* even though it cannot
+  validate transporting the value. Fernandez-Teruel 2024 Sect. 4 reports that
+  patients on concomitant paclitaxel had 20% higher `CL_ss/F` (median ratio
+  1.20). Reproducing that on the 2024 fit at 400 mg:
+
+```{r imax-pacl-encoding-check}
+# 2024 fit: Imax = -1.54, Imax_dose = -0.00183, Imax_pacl = 1.15.
+m_dose  <- 1 + (400 - 480) * -0.00183
+inh_no  <- exp(-1.54 * m_dose)
+inh_pac <- exp(-1.54 * m_dose * (1 + 1 * 1.15))
+clf_ratio <- (1 - inh_pac) / (1 - inh_no)
+
+knitr::kable(
+  data.frame(
+    Quantity = c(
+      "Max CL/F inhibition, no paclitaxel",
+      "Max CL/F inhibition, + paclitaxel",
+      "CL_ss/F ratio, paclitaxel vs none"
+    ),
+    Computed = sprintf("%.3f", c(inh_no, inh_pac, clf_ratio)),
+    `Fernandez-Teruel 2024` = c("0.18 (18% decrease)", "not printed", "1.20"),
+    check.names = FALSE
+  ),
+  caption = paste(
+    "Encoding check for the borrowed Imax_pacl, against the 2024 paper's",
+    "printed paclitaxel effect. The computed ratio is the typical-subject",
+    "value; the printed 1.20 is a median over a cohort carrying IIV on Imax."
+  )
+)
+
+# The encoding, not the transported value, is what this pins: a 20% rise in
+# CL_ss/F to within the IIV-driven gap between a typical subject and a cohort
+# median. A reading of Imax_pacl as anything other than a multiplier on the
+# log-scale magnitude misses this by far more.
+stopifnot(abs(clf_ratio - 1.20) < 0.05)
+```
+
+  Note the counter-intuitive direction this check also confirms: because `Imax`
+  is the *log* of the fractional inhibition and is negative, a multiplier
+  greater than 1 drives `Imax_i` further negative and therefore *shallows* the
+  inhibition, raising `CL/F`. That is why a positive `Imax_pacl` produces
+  *higher* clearance on paclitaxel.
 * **The weight normalisation constant is 67 kg, not the 65 kg cohort median.**
   Both printed covariate equations read `(BBW/67)`, carried over from the 2024
   parent model, while Table S1 gives a median weight of 65 kg. The equation

@@ -931,13 +931,15 @@ exposure-response model is deliberately absent from the package.
 
 **Deliberate deviations from the convention checker.**
 
-6. **Non-canonical observation variables in the logistic models.**
-   `checkModelConventions()` warns that `prob_sae`, `prob_aeg35` and `prob_isr`
-   are not the canonical `Cc`. This is the established repository pattern for
+6. **Probability observation variables in the logistic models.** The logistic
+   models observe `prob_sae`, `prob_aeg35` and `prob_isr` rather than `Cc` --
+   the output is a probability, not a drug concentration, and naming it `Cc`
+   would be actively misleading. This is the established repository pattern for
    Bernoulli-likelihood exposure-response models (compare
-   `Liu_2024_saf189s_proteinuria.R`, which emits the same warning) -- the output
-   is a probability, not a drug concentration, and naming it `Cc` would be
-   actively misleading.
+   `Liu_2024_saf189s_proteinuria.R`). `prob_<endpoint>` is a canonical
+   observation form (operator ruling 2026-09-11, validated by
+   `probOutputRegex`), so `checkModelConventions()` reports no warning for it;
+   this item is retained to explain the naming, not to record a deviation.
 7. **Placeholder residual error in the logistic models.** Each carries
    `addSd_prob_* <- fixed(0.001)`. The source likelihood is Bernoulli and
    estimates no residual; the term exists only because rxode2 requires an

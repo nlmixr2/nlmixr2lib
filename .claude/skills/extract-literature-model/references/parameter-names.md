@@ -144,6 +144,59 @@ Source-paper aliases that translate to `ltlag` without sidecar:
 Inside `model()` the bare name is `tlag`. Apply via `alag(depot) <- tlag`
 or `alag(<cmt>) <- tlag` (preferred over carrying a separate `lag` compartment).
 
+### Sequential zero-order then first-order absorption
+
+Canonical zero-order input duration: **`ld1`** (log duration of the zero-order
+release into the depot), applied via `dur(depot) <- d1`. Dose records must carry
+`rate = -2` for rxode2 to use the modelled duration.
+
+Canonical zero-order time fraction: **`fzo`** (bare; logit-scale sibling
+`logitfzo` when a paper estimates it on the logit scale). `fzo` is the fraction
+of the TOTAL ABSORPTION TIME CONSTANT that is zero-order --
+
+    fzo = d1 / (d1 + 1/ka)
+
+-- and is **NOT** a split of the dose between a zero-order and a first-order
+pathway. The two readings are different models: a dose split is a parallel
+input, whereas `fzo` reparameterises a strictly sequential one. Papers
+reporting this idiom frequently gloss it loosely as "the fraction of the dose
+absorbed by a zero-order process"; the arithmetic, not the prose, settles it.
+
+`fzo` exists so that `ka` need not be estimated independently of `d1`:
+
+    ka = fzo / (d1 * (1 - fzo))
+
+Because `ka` is then derived, any covariate applied to `d1` propagates into
+`ka`. A source table may therefore label such an effect as acting "on ka" while
+its own display equation applies it to the duration; encode it on `d1`, which
+reproduces both.
+
+Verify the reading before adopting it: substitute the paper's tabulated `fzo`
+and `d1` into the relation and confirm it returns the paper's own reported
+`ka`. Founding example: `Schlachter_2026_atogepant.R` (Fk0 0.693, Tk0 0.908 h;
+`0.908 / (0.908 + 1/2.486) = 0.693` and `0.693 / (0.908 * 0.307) = 2.486`,
+reproducing the reported derived ka of 2.48/h).
+
+Source-paper aliases that translate to `fzo` without sidecar: `Fk0`, `FR`,
+`FRAC0`, `F_ZERO`. Bare rather than log-transformed because it is bounded in
+(0, 1); use `logitfzo` when the source estimates a logit.
+
+### Blood-to-plasma concentration ratio
+
+Canonical: **`bpr`** (blood:plasma concentration ratio, unitless). Used both as
+a PBPK distribution input and, in popPK models pooling plasma with whole-blood
+or dried-blood-sample (DBS) assays, as the factor relating the two matrices:
+`Cb <- bpr * Cc`.
+
+Source-paper aliases that translate to `bpr` without sidecar: `Rb`, `R_BP`,
+`B:P`, `BP`, `blood-plasma ratio`. Suffix per analyte when a model carries
+several (`bpr_<analyte>`), as in `Luo_2024_perindopril_pbpk.R`
+(`bpr` / `bpr_perat`).
+
+Examples: `Luo_2024_perindopril_pbpk.R` (both `fixed(1)`, assumed),
+`Schlachter_2026_atogepant.R` (estimated 0.573, RSE 2%; relates the DBS arm of
+the pooled dataset to the plasma prediction).
+
 ## Gastrointestinal transit and enterohepatic rate constants
 
 First-order rate constants for the gut-lumen mass balance in oral PBPK models
@@ -694,10 +747,23 @@ clearance expression references `t` / `time` without one of these.
 |---|---|---|
 | Sigmoidal in time: `cl <- cl_base * exp(max * t^g / (t50^g + t^g))` | `cl_time_` | `cl_time_max`, `cl_t50`, `cl_time_hill` |
 | Exponential decay to a constant: `cl <- cl_exp_inf + cl_exp_component * exp(-k * t)` | `cl_exp_` | `cl_exp_inf`, `cl_exp_component`, `cl_exp_kdes` |
+| Concentration-driven autoinduction: `cl <- cl_base * exp(max * C^g/(ec50^g + C^g) * t/(t50 + t))` | `cl_time_` + `cl_conc_` | `cl_time_max`, `cl_t50`, `cl_ec50`, `cl_conc_hill` |
+
+The third form carries two sigmoidicities and they sit on different axes:
+`cl_conc_hill` is the Hill coefficient on CONCENTRATION (the `C^g/(ec50^g +
+C^g)` factor), `cl_time_hill` is the one on TIME. A model with both must name
+both; a model whose time factor is the plain hyperbola `t/(t50 + t)` has no
+`cl_time_hill` at all. `cl_ec50` is the driver concentration giving
+half-maximal induction and belongs to the concentration factor, not to
+`cl_t50`. Founding example: `Du_2025_repotrectinib.R`, where the driver is the
+pre-dose trough held constant across the dosing interval.
 
 Prefix `l` for the log scale (`lcl_t50`), `eta` for the IIV partner
 (`etacl_time_max`), `e_<cov>_` for a covariate effect
-(`e_nhl_cl_exp_kdes`).
+(`e_nhl_cl_exp_kdes`). The concentration-driven form carries its parameters on
+the log scale in `ini()` (`lcl_time_max`, `lcl_ec50`, `lcl_conc_hill`,
+`lcl_t50`), per the `Kuchimanchi_2024_dostarlimab.R` and
+`Masters_2022_avelumab.R` precedent.
 
 Do **not** use `emax`, `imax`, `gamma`, `hill` or `t50` BARE for clearance
 time-dependence: all of them are also standard PD parameter names, and several
@@ -711,3 +777,46 @@ course, which is meaningless in isolation but looks like a clearance value.
 
 Periodic (diurnal / circadian) variation is a different structure and keeps its
 own names; do not fold it into `cl_time_` or `cl_exp_`.
+
+## Postnatal-age maturation (Anderson-Holford form)
+
+Neonatal and paediatric papers routinely describe the maturation of an
+elimination process as a sigmoid hyperbolic (Hill) function of **postnatal
+age**, in the Anderson & Holford (Annu Rev Pharmacol Toxicol 2008;48:303-332)
+form. The distinguishing feature is that the maturation term is **additive on
+the absolute scale** and the driver is an *age* axis, not treatment time:
+
+```
+cl <- cl_pna0 + cl_matspan * PNA^hill / (pna50^hill + PNA^hill)
+```
+
+so the curve runs from `cl_pna0` at PNA 0 to the asymptote
+`cl_pna0 + cl_matspan`, reaching the midpoint at `PNA = pna50`.
+
+| Role | Name | Notes |
+|---|---|---|
+| Value of the maturing parameter at postnatal age 0 | `cl_pna0` | The intercept, not the asymptote. Prefix `l` for the log scale (`lcl_pna0`). |
+| Absolute amount gained between birth and full maturation | `cl_matspan` | The *span*, not the plateau: the plateau is `cl_pna0 + cl_matspan`. Named so it cannot be mistaken for a total clearance. |
+| Postnatal age at half of the maturation span | `pna50` | Carries the PNA anchor in the name, so it is distinct from the bare `t50` that `cl_time_` forbids and from a PD `ec50`. |
+| Sigmoidicity of the maturation | `lhill` | Already canonical -- see "Sigmoidal PD shape parameters". No separate maturation-specific spelling. |
+
+Substitute the maturing parameter's own stem for `cl_` when the model matures
+something other than clearance (`gfr_pna0` / `gfr_matspan` for a glomerular
+filtration rate, and so on).
+
+**Boundary against `cl_time_`.** This family is *not* the `cl_time_` family of
+the previous section, and the two must not be merged. `cl_time_max` is defined
+as the magnitude of a **log**-clearance change consumed inside
+`exp(cl_time_max * t^hill/(t50^hill + t^hill))`, and its driver `t` is time on
+study or on treatment. Here the amplitude is an **absolute** increment in the
+parameter's own units and the driver is the subject's postnatal age, which is a
+property of the subject rather than of the analysis. A model that matures with
+age *and* drifts with time on treatment can therefore carry both families at
+once without a name collision.
+
+Example models: `inst/modeldb/specificDrugs/Kata_2025_ganciclovir_maturation.R`
+(founding example; GCV clearance in mL/min/1.73m^2 maturing over postnatal age
+in a preterm neonate) and `inst/modeldb/endogenous/Wu_2024_gfr_maturation.R`
+(the same structure applied to GFR, using the parameter-specific stems
+`lgfrbirth` / `lgfrmax` for the birth value and the allometrically-scaled
+plateau, together with `lpna50` and `lhill`).

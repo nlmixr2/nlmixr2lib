@@ -1,0 +1,804 @@
+---
+title: "Nivolumab, subcutaneous and intravenous (Zhao 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nivolumab, subcutaneous and intravenous (Zhao 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Zhao_2025_nivolumab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Zhao_2025_nivolumab"))$description`
+* Article: <https://doi.org/10.1002/psp4.70120>
+* Supplement (open access, EuropePMC PMC12706396): supplemental tables
+  (Figure S1, Tables S1-S3), the full-model NONMEM control stream
+  (labelled "File S1" inside the document), and the `$PRIOR` control
+  stream (labelled "File S2").
+
+Nivolumab is a fully human IgG4 monoclonal antibody against PD-1. A
+subcutaneous formulation co-formulated with recombinant human
+hyaluronidase PH20 (rHuPH20) was developed to avoid intravenous infusion
+visits, and was tested against intravenous nivolumab in the phase III
+PK non-inferiority trial CheckMate 67T (NCT04810078).
+
+This model is the **pre-specified population PK model** for that trial.
+It was built on a pooled dataset of 19 historical intravenous nivolumab
+monotherapy studies plus the subcutaneous phase I/II study CheckMate 8KX,
+so that the CheckMate 67T co-primary PK endpoints could be derived from a
+model rather than from noncompartmental analysis (NCA). The paper's own
+subject is a methodology comparison -- it uses clinical trial simulation
+to show that re-estimating this model with the NONMEM `$PRIOR` subroutine
+gives the same exposures as a pooled re-analysis, and that both beat
+conventional-schedule NCA. The model packaged here is the pre-specified
+model itself, whose estimates are reported in supplemental Table S2.
+
+## Structure
+
+Systemic disposition is shared by both routes (the paper's premise: "The
+systemic PK is expected to be identical for i.v. and s.c. administered
+nivolumab"):
+
+* Two-compartment linear disposition (`central`, `peripheral1`),
+  parameterised as CL, Vc, Q, Vp (NONMEM `ADVAN4 TRANS4`, `S2 = V2`).
+* **Time-varying clearance**, a sigmoid-Emax function of time since the
+  first dose:
+  `CL(t) = CL_base * exp(Emax * t^HILL / (T50^HILL + t^HILL))`.
+  With `Emax = -0.303`, clearance falls to `exp(-0.303) = 0.739` of
+  baseline (a 26% reduction) as `t` exceeds `T50`.
+* Covariate effects: power functions of baseline body weight and eGFR on
+  CL, power of body weight on Vc, and exponential effects of female sex,
+  ECOG >= 1, gastric cancer and classical Hodgkin lymphoma.
+
+Subcutaneous absorption adds:
+
+* A `depot` with first-order absorption rate `ka`.
+* Bioavailability on the **logit** scale, exactly as the paper's printed
+  equation for `F_i` and the control streams construct it: covariate
+  factors multiply the typical fraction on the natural scale, then the
+  logit of that product carries the random effect,
+  `F_i = expit(logit(TVF1) + eta_F)`.
+
+The dosing route is expressed **structurally** rather than with a route
+covariate: bioavailability applies only to the depot, so subcutaneous
+doses go to `depot` and intravenous doses go to `central` (where `F = 1`).
+This reproduces the source `ADVAN4` setup, in which `F1` governs
+compartment 1 only.
+
+```{r model}
+# rxode() gives the rxUi, whose $meta carries the file-level metadata;
+# readModelDb() alone returns the bare model function.
+mod <- rxode2::rxode(readModelDb("Zhao_2025_nivolumab"))
+mod
+```
+
+# Population
+
+The pooled analysis dataset (Table 1) contained **3554 subjects**: 66
+who received subcutaneous nivolumab with rHuPH20 in CheckMate 8KX
+(CA2098KX), and 3488 who received intravenous nivolumab across the
+studies listed in Table S1. Subjects in CheckMate 8KX who received
+subcutaneous nivolumab *without* rHuPH20 were excluded.
+
+```{r population}
+pop <- mod$meta$population
+data.frame(
+  Characteristic = c(
+    "Subjects (total)", "  subcutaneous (CheckMate 8KX)", "  intravenous",
+    "Studies pooled", "Age", "Baseline body weight", "Baseline eGFR",
+    "Baseline albumin", "Female", "ECOG performance status", "Disease"
+  ),
+  Value = c(
+    format(pop$n_subjects, big.mark = ","),
+    format(pop$n_subjects_sc), format(pop$n_subjects_iv, big.mark = ","),
+    format(pop$n_studies), pop$age_range, pop$weight_range,
+    pop$renal_function, pop$albumin,
+    paste0(pop$sex_female_pct, "%"), pop$ecog_distribution, pop$disease_state
+  )
+) |>
+  knitr::kable(caption = "Baseline characteristics of the pooled dataset (Zhao 2025 Table 1).")
+```
+
+Tumour types spanned NSCLC (25.9%), melanoma (24.7%), renal cell
+carcinoma (20.1%), bladder cancer (8.7%), classical Hodgkin lymphoma
+(7.2%), SCCHN (4.8%), SCLC (2.7%), colorectal (1.7%), gastric (1.6%) and
+other (2.4%). CheckMate 67T itself enrolled only previously-treated
+advanced or metastatic **clear-cell renal cell carcinoma**, so the
+simulations below set both retained tumour-type indicators to 0 (RCC
+falls in the model's reference tumour group).
+
+# Source trace
+
+Every `ini()` value comes from supplemental Table S2 ("Parameter
+estimates of nivolumab prespecified model"). The two control streams give
+an independent confirmation of each one, because the `$PRIOR` stream's
+`$THETAP` / `$OMEGAP` records restate the same pre-specified values as
+prior means. Three readings required arbitration and are documented in
+the Errata section below.
+
+```{r source-trace, echo = FALSE}
+data.frame(
+  Parameter = c(
+    "lcl", "lvc", "lq", "lvp", "lka", "logitfdepot",
+    "e_wt_cl", "e_crcl_cl", "e_sex_cl", "e_ecog_ge1_cl",
+    "e_tumtp_gastric_cl", "e_tumtp_hodgkin_classical_cl",
+    "e_wt_vc", "e_sex_vc", "e_sex_fdepot", "e_ecog_ge1_fdepot",
+    "cl_time_max", "cl_t50", "cl_time_hill",
+    "etalcl, etalvc (block)", "etalvp", "etacl_time_max",
+    "etalka, etalogitfdepot (block)", "propSd",
+    "Disposition ODEs", "Time-varying CL equation",
+    "Logit bioavailability", "Reference WT / eGFR"
+  ),
+  `Source location` = c(
+    "Table S2 CL0_REF = 0.0109 L/h (x 24 -> L/day)",
+    "Table S2 Vc_REF = 4.25 L",
+    "Table S2 Q_REF = 0.0327 L/h (x 24 -> L/day)",
+    "Table S2 Vp_REF = 2.63 L",
+    "Table S2 Ka_REF = 0.307 /day",
+    "Table S2 F_REF = 0.752",
+    "Table S2 CL_WTB = 0.622", "Table S2 CL_eGFR = 0.139",
+    "Table S2 CL_SEX = -0.158", "Table S2 CL_PS = 0.174",
+    "Table S2 CL_GC = 0.180", "Table S2 CL_CHL = -0.330",
+    "Table S2 Vc_WTB = 0.630", "Table S2 Vc_SEX = -0.134",
+    "Table S2 F_SEX = 0.859", "Table S2 F_PS = 1.07",
+    "Table S2 Emax_REF = -0.303", "Table S2 T50 = 1.40e3 h (/ 24 -> day)",
+    "Table S2 HILL = 2.82",
+    "Table S2 omega^2_CL 0.114, cov 0.0377, omega^2_Vc 0.126",
+    "Table S2 omega^2_Vp = 0.235", "Table S2 omega^2_Emax = 0.0519",
+    "Table S2 omega^2_Ka 0.0955, cov 0.213, omega^2_F 0.862",
+    "Table S2 proportional = 0.204",
+    "Methods 2.2; control streams $SUBROUTINE ADVAN4 TRANS4, S2 = V2",
+    "Control streams $PK: CL_TIME = EXP(EMAX*TIME**HILL/(T50**HILL+TIME**HILL))",
+    "Main text Eq. for F_i (recovered via pdftotext -layout); control streams $PK LOGITF1 block",
+    "Control streams $PK: BBWT_R = 80 kg, BGFR_R = 90 mL/min"
+  ),
+  check.names = FALSE
+) |>
+  knitr::kable(caption = "Source trace for every parameter and equation.")
+```
+
+# Virtual cohort
+
+The paper resampled real RCC patients from the pooled dataset. RCC-specific
+baseline statistics are not published, so the cohort below is drawn from
+the Table 1 **overall** marginal distributions, with both tumour-type
+indicators set to 0 for RCC. 200 subjects per arm, and the same cohort
+and seed are reused across arms so the s.c./i.v. comparison uses common
+random numbers.
+
+```{r cohort}
+n_sub <- 200L
+
+make_cohort <- function(seed = 2024L) {
+  set.seed(seed)
+  data.frame(
+    id       = seq_len(n_sub),
+    WT       = pmin(pmax(rnorm(n_sub, 78.3, 19.2), 40), 160),
+    CRCL     = pmin(pmax(rnorm(n_sub, 81.9, 23.0), 20), 190),
+    SEXF     = rbinom(n_sub, 1, 0.328),
+    ECOG_GE1 = rbinom(n_sub, 1, 0.564),
+    TUMTP_GASTRIC = 0,
+    TUMTP_HODGKIN_CLASSICAL = 0
+  )
+}
+cohort <- make_cohort()
+
+summary(cohort[, c("WT", "CRCL")])
+c(female_pct = mean(cohort$SEXF) * 100, ecog_ge1_pct = mean(cohort$ECOG_GE1) * 100)
+```
+
+# Simulation of the CheckMate 67T arms
+
+Arm A is subcutaneous nivolumab 1200 mg every 4 weeks; arm B is
+intravenous nivolumab 3 mg/kg every 2 weeks given as a 1-hour infusion.
+Both run to day 364 so that the day-336 steady-state landmark used by the
+paper ("concentrations achieved at cycle 12 following administration on
+study day 336") is covered with a full dosing interval after it.
+
+The observation grid carries a point `1e-4` days **before** each landmark
+dose time, because a record placed exactly on a dose time is read
+post-dose -- so a naive minimum over an interval that ends on a dose day
+is not the trough.
+
+```{r simulate}
+day336 <- 336
+regimens <- list(
+  `s.c. 1200 mg q4w` = list(amt = NA, tau = 28, n = 13L, cmt = "depot",   dur = 0),
+  `i.v. 3 mg/kg q2w` = list(amt = NA, tau = 14, n = 26L, cmt = "central", dur = 1 / 24)
+)
+
+# The grid resolves the end of each 1-hour infusion (and the early
+# distribution phase after it); a grid coarse enough to miss that peak
+# biases the AUC of the intravenous arm by several percent.
+obs_grid <- sort(unique(c(
+  seq(0, 364, by = 0.5),
+  rep(seq(0, 364, by = 14), each = 3) + c(1 / 24, 0.1, 0.25),
+  28 - 1e-4, day336 - 1e-4, 364 - 1e-4
+)))
+
+simulate_arm <- function(arm, mgkg = NULL, flat = NULL, label = arm) {
+  r <- regimens[[arm]]
+  co <- make_cohort()
+  rxode2::rxSetSeed(4242)          # common random numbers across arms
+  ev <- do.call(rbind, lapply(seq_len(nrow(co)), function(i) {
+    amt_i <- if (is.null(flat)) mgkg * co$WT[i] else flat
+    dose <- data.frame(
+      id = co$id[i], time = seq(0, by = r$tau, length.out = r$n),
+      amt = amt_i, rate = if (r$dur > 0) amt_i / r$dur else 0,
+      evid = 1, cmt = r$cmt
+    )
+    obs <- data.frame(
+      id = co$id[i], time = obs_grid, amt = 0, rate = 0,
+      evid = 0, cmt = r$cmt
+    )
+    rbind(dose, obs)
+  }))
+  rxode2::rxSolve(mod, ev, co, returnType = "data.frame", addDosing = FALSE) |>
+    dplyr::mutate(treatment = label)
+}
+
+sim <- dplyr::bind_rows(
+  simulate_arm("s.c. 1200 mg q4w", flat = 1200),
+  simulate_arm("i.v. 3 mg/kg q2w", mgkg = 3)
+)
+nrow(sim)
+```
+
+## Replicating Figure 2: geometric mean profiles by route
+
+Replicates Figure 2 of Zhao 2025 -- the median and 90% interval of the
+simulated geometric-mean concentration-time profile by route of
+administration. The dashed reference line at 352 ug/mL is the value the
+Figure 2 legend quotes for the steady-state peak concentration after
+intravenous nivolumab 10 mg/kg q2w, "a dosing regimen that has been shown
+to be safe and tolerable".
+
+```{r figure2, fig.cap = "Replicates Figure 2 of Zhao 2025: geometric mean (90% interval across subjects) concentration-time profiles for subcutaneous and intravenous nivolumab."}
+gm <- function(x) exp(mean(log(x[x > 0])))
+
+prof <- sim |>
+  dplyr::filter(time %in% seq(0, 364, by = 0.5)) |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(
+    gmean = gm(Cc),
+    lo    = quantile(Cc, 0.05),
+    hi    = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(prof, aes(time, gmean, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.18, colour = NA) +
+  geom_line(linewidth = 0.7) +
+  geom_hline(yintercept = 352, linetype = "dashed") +
+  annotate("text", x = 10, y = 372, hjust = 0, size = 3,
+           label = "352 ug/mL: Cmaxss at i.v. 10 mg/kg q2w (Fig. 2 legend)") +
+  scale_x_continuous(breaks = seq(0, 364, by = 56)) +
+  labs(x = "Time since first dose (days)", y = "Nivolumab serum concentration (ug/mL)",
+       colour = NULL, fill = NULL) +
+  theme_bw() +
+  theme(legend.position = "top")
+```
+
+The qualitative features of Figure 2 are reproduced: the subcutaneous
+profile has visibly wider spread than the intravenous profile (the paper
+attributes this to the extra variability in `ka` and `F`, whose omegas are
+the two largest in Table S2), both profiles accumulate over roughly the
+first 100-150 days as time-varying clearance declines, and the
+subcutaneous peak sits well below the 352 ug/mL safety reference.
+
+## Exposure measures and the co-primary endpoints
+
+The paper's exposure definitions: `Cavgd28` is the AUC over the first 28
+days divided by 28 days; `Cmax1` is the peak after the first dose;
+`Cmind28` is the trough at day 28; steady-state measures are taken at the
+day-336 dose.
+
+```{r exposures}
+tau_of <- c(`s.c. 1200 mg q4w` = 28, `i.v. 3 mg/kg q2w` = 14)
+
+trap <- function(tm, cc) sum(diff(tm) * (head(cc, -1) + tail(cc, -1)) / 2)
+
+expo <- sim |>
+  dplyr::group_by(treatment, id) |>
+  dplyr::group_modify(function(d, key) {
+    tau <- tau_of[[key$treatment]]
+    d <- dplyr::arrange(d, time)
+    w28 <- d$time <= 28
+    wss <- d$time >= day336 & d$time <= day336 + tau
+    data.frame(
+      Cavgd28 = trap(d$time[w28], d$Cc[w28]) / 28,
+      Cmax1   = max(d$Cc[d$time <= tau]),
+      Cmind28 = d$Cc[which.min(abs(d$time - (28 - 1e-4)))],
+      Cavgss  = trap(d$time[wss], d$Cc[wss]) / tau,
+      Cminss  = d$Cc[which.min(abs(d$time - (day336 - 1e-4)))],
+      Cmaxss  = max(d$Cc[wss])
+    )
+  }) |>
+  dplyr::ungroup()
+
+expo_long <- expo |>
+  tidyr::pivot_longer(-c(treatment, id), names_to = "measure", values_to = "value")
+
+expo_long |>
+  dplyr::group_by(measure, treatment) |>
+  dplyr::summarise(gmean = gm(value), cv_pct = sd(value) / mean(value) * 100, .groups = "drop") |>
+  tidyr::pivot_wider(names_from = treatment, values_from = c(gmean, cv_pct)) |>
+  dplyr::mutate(dplyr::across(-measure, \(x) round(x, 1))) |>
+  dplyr::rename(
+    "Exposure measure"    = measure,
+    "s.c. GM (ug/mL)"     = `gmean_s.c. 1200 mg q4w`,
+    "i.v. GM (ug/mL)"     = `gmean_i.v. 3 mg/kg q2w`,
+    "s.c. CV%"            = `cv_pct_s.c. 1200 mg q4w`,
+    "i.v. CV%"            = `cv_pct_i.v. 3 mg/kg q2w`
+  ) |>
+  knitr::kable(caption = "Simulated nivolumab exposures by route (200 subjects per arm).")
+```
+
+Replicates Figure 3 of Zhao 2025 (distribution of `Cavgd28`, `Cmax1` and
+`Cmind28` by administration route):
+
+```{r figure3, fig.cap = "Replicates Figure 3 of Zhao 2025: distribution of Cavgd28, Cmax1 and Cmind28 by administration route.", fig.height = 3.6}
+expo_long |>
+  dplyr::filter(measure %in% c("Cavgd28", "Cmax1", "Cmind28")) |>
+  ggplot(aes(treatment, value, fill = treatment)) +
+  geom_boxplot(outlier.size = 0.5, width = 0.55) +
+  facet_wrap(~measure, scales = "free_y") +
+  labs(x = NULL, y = "Concentration (ug/mL)") +
+  theme_bw() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 20, hjust = 1))
+```
+
+The two **co-primary endpoints** of CheckMate 67T were `Cavgd28` and
+`Cminss`. Dose selection required the lower bound of the 90% CI of the
+subcutaneous/intravenous geometric mean ratio (GMR) to be **not less than
+0.8**, i.e. subcutaneous exposures "equivalent to or higher than"
+intravenous. Replicates Figure 5 of Zhao 2025:
+
+```{r gmr}
+gmr_tab <- expo_long |>
+  tidyr::pivot_wider(names_from = treatment, values_from = value) |>
+  dplyr::group_by(measure) |>
+  dplyr::summarise({
+    lr <- log(`s.c. 1200 mg q4w`) - log(`i.v. 3 mg/kg q2w`)
+    se <- sd(lr) / sqrt(length(lr))
+    data.frame(
+      GMR    = exp(mean(lr)),
+      lower  = exp(mean(lr) - qt(0.95, length(lr) - 1) * se),
+      upper  = exp(mean(lr) + qt(0.95, length(lr) - 1) * se)
+    )
+  }, .groups = "drop") |>
+  dplyr::mutate(
+    `Co-primary endpoint` = ifelse(measure %in% c("Cavgd28", "Cminss"), "yes", ""),
+    dplyr::across(c(GMR, lower, upper), \(x) round(x, 2))
+  )
+
+gmr_tab |>
+  dplyr::rename("Exposure measure" = measure,
+                "GMR (s.c./i.v.)" = GMR,
+                "90% CI lower" = lower, "90% CI upper" = upper) |>
+  knitr::kable(caption = "Simulated geometric mean ratios (subcutaneous / intravenous). The CheckMate 67T non-inferiority criterion is a 90% CI lower bound not less than 0.8.")
+```
+
+```{r gmr-gate}
+coprimary <- gmr_tab[gmr_tab$measure %in% c("Cavgd28", "Cminss"), ]
+
+stopifnot(
+  # The paper's own pre-specified non-inferiority criterion: the lower bound
+  # of the 90% CI of each co-primary GMR must be at least 0.8. Asserted on
+  # the cohort-level CI, not on any individual subject.
+  all(coprimary$lower >= 0.8),
+  # And the design intent that s.c. exposures are "equivalent to or higher":
+  # both co-primary GMRs exceed 1 with a wide margin.
+  all(coprimary$GMR > 1.2),
+  # Cavgd28 shows a larger s.c./i.v. ratio than Cminss, because the q4w
+  # subcutaneous regimen front-loads a 1200 mg flat dose into the first
+  # 28 days while the q2w intravenous arm delivers 2 x 3 mg/kg over the
+  # same window; the ordering is a structural consequence of the regimens.
+  gmr_tab$GMR[gmr_tab$measure == "Cavgd28"] >
+    gmr_tab$GMR[gmr_tab$measure == "Cminss"]
+)
+```
+
+Both co-primary endpoints clear the pre-specified 0.8 lower bound by a
+wide margin, reproducing the conclusion the model was built to support.
+
+# PKNCA validation
+
+NCA is run with PKNCA over two intervals per arm: the first 28 days
+(which yields `Cavgd28` as PKNCA's `cav`) and one steady-state dosing
+interval beginning at the day-336 dose. The concentration frame is
+filtered only on `!is.na(Cc)` and a `time = 0` record is guaranteed, so
+PKNCA never back-extrapolates from a missing first measurement.
+
+```{r pknca}
+# Restricted to the two windows PKNCA is asked about, but at the FULL grid
+# resolution used for the manual exposure table above, so the cross-check
+# below compares integration methods rather than grid resolutions.
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::filter(time <= 28 | time >= day336) |>
+  dplyr::select(id, time, Cc, treatment)
+
+# Guarantee a time-zero record (pre-dose Cc = 0 for both routes; the
+# intravenous arm is an infusion, not a bolus, so its t = 0 value is 0 too).
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+dose_nca <- dplyr::bind_rows(lapply(names(regimens), function(arm) {
+  r <- regimens[[arm]]
+  co <- make_cohort()
+  do.call(rbind, lapply(seq_len(nrow(co)), function(i) {
+    data.frame(
+      treatment = arm, id = co$id[i],
+      time = seq(0, by = r$tau, length.out = r$n),
+      dose = if (arm == "s.c. 1200 mg q4w") 1200 else 3 * co$WT[i]
+    )
+  }))
+}))
+
+# Grouping puts treatment BEFORE id so per-arm results stay interpretable,
+# and units are declared so the AUC / Cav output is not unit-blind.
+o_conc <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                           concu = "ug/mL", timeu = "day")
+o_dose <- PKNCA::PKNCAdose(as.data.frame(dose_nca), dose ~ time | treatment + id,
+                           doseu = "mg")
+
+intervals <- dplyr::bind_rows(
+  data.frame(treatment = "s.c. 1200 mg q4w", start = 0,      end = 28),
+  data.frame(treatment = "s.c. 1200 mg q4w", start = day336, end = day336 + 28),
+  data.frame(treatment = "i.v. 3 mg/kg q2w", start = 0,      end = 28),
+  data.frame(treatment = "i.v. 3 mg/kg q2w", start = day336, end = day336 + 14)
+) |>
+  dplyr::mutate(cmax = TRUE, tmax = TRUE, auclast = TRUE, cav = TRUE, tlast = TRUE)
+
+res_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+
+nca_summary <- as.data.frame(res_nca) |>
+  dplyr::mutate(window = ifelse(start == 0, "Days 0-28", "Steady state (from day 336)")) |>
+  dplyr::group_by(treatment, window, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+
+nca_summary |>
+  dplyr::mutate(dplyr::across(where(is.numeric), \(x) signif(x, 4))) |>
+  knitr::kable(caption = "PKNCA results (per-subject medians) by arm and window. cav over days 0-28 is the paper's Cavgd28.")
+```
+
+```{r pknca-crosscheck}
+# PKNCA's cav over days 0-28 must agree with the independently computed
+# Cavgd28 above. Both read the same solved profile on the same grid, so
+# this compares PKNCA's integration against the hand-rolled trapezoid and
+# nothing else -- a tight bound is the correct assertion here.
+cav_pknca <- as.data.frame(res_nca) |>
+  dplyr::filter(PPTESTCD == "cav", start == 0) |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(cav = gm(PPORRES), .groups = "drop")
+
+cav_manual <- expo |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(cav = gm(Cavgd28), .groups = "drop")
+
+chk <- dplyr::inner_join(cav_pknca, cav_manual, by = "treatment",
+                         suffix = c("_pknca", "_manual")) |>
+  dplyr::mutate(pct_diff = 100 * (cav_pknca - cav_manual) / cav_manual)
+chk
+
+stopifnot(all(abs(chk$pct_diff) < 2))
+```
+
+# Comparison against the published value
+
+The paper reports no NCA point estimates for the two CheckMate 67T arms
+in its text or tables (Figures 3-5 present them graphically only). The
+one printed exposure value that can be compared is the Figure 2 legend's
+steady-state peak concentration for intravenous nivolumab 10 mg/kg q2w:
+**352 ug/mL**.
+
+Simulating that regimen shows the printed value is reproduced by a
+concentration sampled a couple of days after the steady-state dose --
+not by the model's true end-of-infusion peak, which is about 25% higher.
+That is exactly the NCA sampling bias this paper is about: a conventional
+schedule has no end-of-infusion sample at steady state, so an
+observed-data peak underestimates the model peak.
+
+```{r anchor}
+# Same q2w schedule and 1-hour infusion, 10 mg/kg instead of 3 mg/kg.
+sim10 <- simulate_arm("i.v. 3 mg/kg q2w", mgkg = 10, label = "i.v. 10 mg/kg q2w")
+
+peak_basis <- sim10 |>
+  dplyr::filter(time %in% c(day336 + 1 / 24, day336 + 2)) |>
+  dplyr::mutate(basis = ifelse(
+    time == day336 + 1 / 24,
+    "End of infusion (model peak)",
+    "Conventional sample, 2 d post-dose"
+  )) |>
+  dplyr::group_by(basis) |>
+  dplyr::summarise(cmax = gm(Cc), .groups = "drop")
+
+simulated_ref <- peak_basis |>
+  dplyr::transmute(basis, PPTESTCD = "cmax", PPORRES = cmax)
+
+reference_ref <- data.frame(
+  basis = peak_basis$basis,
+  cmax  = 352
+)
+
+tbl <- nlmixr2lib::ncaComparisonTable(
+  simulated_ref, reference_ref,
+  by = "basis",
+  units = c(cmax = "ug/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(tbl, caption = "Steady-state peak concentration after i.v. nivolumab 10 mg/kg q2w: Zhao 2025 Figure 2 legend (352 ug/mL) vs this model, under two sampling definitions.")
+attr(tbl, "footnote")
+```
+
+```{r anchor-gate}
+conv <- peak_basis$cmax[peak_basis$basis == "Conventional sample, 2 d post-dose"]
+sc_cmaxss <- gm(expo$Cmaxss[expo$treatment == "s.c. 1200 mg q4w"])
+
+stopifnot(
+  # The printed 352 ug/mL is recovered to within 10% by a conventionally
+  # timed post-dose sample at steady state.
+  abs(100 * (conv - 352) / 352) < 10,
+  # The paper's explicit qualitative claim: predicted s.c. Cmaxss is "well
+  # below" the 10 mg/kg i.v. safety reference of 352 ug/mL.
+  sc_cmaxss < 352 * 0.8
+)
+```
+
+# Covariate effects reproduce Table S2
+
+Each covariate coefficient is checked by perturbing one covariate at a
+time in a typical-value (`zeroRe`) solve and comparing the resulting
+clearance ratio against the **literal coefficient printed in Table S2**,
+not against a model variable. This also exercises the two tumour-type
+code paths, which the RCC cohort above leaves at 0.
+
+```{r covariate-check}
+mod_tv <- rxode2::zeroRe(mod)
+ref_cov <- data.frame(
+  id = 1, WT = 80, CRCL = 90, SEXF = 0, ECOG_GE1 = 0,
+  TUMTP_GASTRIC = 0, TUMTP_HODGKIN_CLASSICAL = 0
+)
+
+cl_at_t0 <- function(cov) {
+  ev <- data.frame(id = 1, time = c(0, 1e-6), amt = 0, rate = 0,
+                   evid = 0, cmt = "central")
+  rxode2::rxSolve(mod_tv, ev, cov, returnType = "data.frame",
+                  addDosing = FALSE)$cl[1]
+}
+
+cl_ref <- cl_at_t0(ref_cov)
+
+perturb <- function(field, value) {
+  cov <- ref_cov
+  cov[[field]] <- value
+  cl_at_t0(cov) / cl_ref
+}
+
+cov_chk <- data.frame(
+  Covariate = c("WT 160 vs 80 kg", "eGFR 180 vs 90", "Female vs male",
+                "ECOG >= 1 vs 0", "Gastric cancer", "Classical Hodgkin lymphoma"),
+  expected = c(2^0.622, 2^0.139, exp(-0.158), exp(0.174),
+               exp(0.180), exp(-0.330)),
+  observed = c(perturb("WT", 160), perturb("CRCL", 180), perturb("SEXF", 1),
+               perturb("ECOG_GE1", 1), perturb("TUMTP_GASTRIC", 1),
+               perturb("TUMTP_HODGKIN_CLASSICAL", 1))
+) |>
+  dplyr::mutate(pct_diff = 100 * (observed - expected) / expected)
+
+cov_chk |>
+  dplyr::mutate(dplyr::across(c(expected, observed), \(x) round(x, 4)),
+                pct_diff = signif(pct_diff, 3)) |>
+  dplyr::rename("CL ratio expected (Table S2)" = expected,
+                "CL ratio from model" = observed, "% diff" = pct_diff) |>
+  knitr::kable(caption = "Covariate effects on clearance versus the coefficients printed in Table S2.")
+
+stopifnot(all(abs(cov_chk$pct_diff) < 1e-6))
+```
+
+The bioavailability covariate factors are checked the same way. They act
+multiplicatively on the natural fraction scale before the logit
+transform, so the typical `F` for each covariate cell is a plain product
+of the Table S2 values.
+
+```{r fdepot-check}
+f_cell <- function(sexf, ecog) {
+  cov <- ref_cov
+  cov$SEXF <- sexf
+  cov$ECOG_GE1 <- ecog
+  ev <- data.frame(id = 1, time = c(0, 1e-6), amt = 0, rate = 0,
+                   evid = 0, cmt = "depot")
+  rxode2::rxSolve(mod_tv, ev, cov, returnType = "data.frame",
+                  addDosing = FALSE)$fdepot[1]
+}
+
+f_chk <- data.frame(
+  Cell = c("male, ECOG 0", "female, ECOG 0", "male, ECOG >= 1", "female, ECOG >= 1"),
+  expected = c(0.752, 0.752 * 0.859, 0.752 * 1.07, 0.752 * 0.859 * 1.07),
+  observed = c(f_cell(0, 0), f_cell(1, 0), f_cell(0, 1), f_cell(1, 1))
+) |>
+  dplyr::mutate(pct_diff = 100 * (observed - expected) / expected)
+
+f_chk |>
+  dplyr::mutate(dplyr::across(c(expected, observed), \(x) round(x, 4)),
+                pct_diff = signif(pct_diff, 3)) |>
+  dplyr::rename("F expected (Table S2)" = expected,
+                "F from model" = observed, "% diff" = pct_diff) |>
+  knitr::kable(caption = "Typical subcutaneous bioavailability by covariate cell versus Table S2.")
+
+stopifnot(
+  all(abs(f_chk$pct_diff) < 1e-6),
+  # Every covariate cell stays strictly inside (0, 1), so the logit is finite.
+  all(f_chk$observed > 0 & f_chk$observed < 1)
+)
+```
+
+# Mass-balance check
+
+With a time-varying clearance the usual `AUC * CL = dose` identity does
+not apply, so mass balance is checked in its general form: for a
+subcutaneous course, the absorbed dose minus the amount still in the body
+must equal the cumulative eliminated amount, `integral of CL(t) * Cc(t) dt`.
+Both sides come from the same dense solve, so the residual is pure
+numerical integration error and a tight bound is appropriate.
+
+```{r mass-balance}
+ev_mb <- rbind(
+  data.frame(id = 1, time = seq(0, by = 28, length.out = 7), amt = 1200,
+             rate = 0, evid = 1, cmt = "depot"),
+  data.frame(id = 1, time = seq(0, 196, by = 0.02), amt = 0, rate = 0,
+             evid = 0, cmt = "depot")
+)
+mb <- rxode2::rxSolve(mod_tv, ev_mb, ref_cov, returnType = "data.frame",
+                      addDosing = FALSE) |>
+  dplyr::arrange(time) |>
+  dplyr::filter(!duplicated(time))
+
+absorbed  <- 7 * 1200 * mb$fdepot[1]
+remaining <- with(mb[nrow(mb), ], depot + central + peripheral1)
+eliminated <- trap(mb$time, mb$cl * mb$Cc)
+
+c(absorbed = absorbed, remaining = remaining, eliminated = eliminated,
+  residual_pct = 100 * (absorbed - remaining - eliminated) / absorbed)
+
+stopifnot(abs(absorbed - remaining - eliminated) / absorbed < 0.001)
+```
+
+# Assumptions and deviations
+
+## Errata and readings that required arbitration
+
+1. **Table S2 mislabels the units of CL and Q.** The table heads both
+   `CL0_REF` and `Q_REF` with `[mL/hr]` but prints 0.0109 and 0.0327.
+   Those values are **L/h**. Three independent proofs: both control
+   streams annotate the same `$THETA` entries `CL [L/h]` and `Q [L/h]`;
+   Table S3 reports the same two parameters as 10.6-11.0 and 32.4-32.5
+   under an `mL/hr` label, i.e. 1000-fold larger; and 10.9 mL/h is the
+   physiologically expected clearance of an IgG4 antibody. The model uses
+   0.0109 L/h and 0.0327 L/h, converted to L/day.
+
+2. **Reference body weight: 80 kg, not 75 kg.** The explanatory note
+   under Table S2 describes the reference subject as "60-year old white
+   male, weighing 75 kg". Both control streams instead set
+   `BBWT_R = 80 ; refernce value, kg` [sic] and `BGFR_R = 90`. The
+   control-stream value governs, because it is what the estimation
+   actually used to produce the Table S2 estimates. The note also cites
+   age and race, neither of which is in the final covariate model (the
+   stream header reads `[No LDH/Albumin/Hepa/Age]` and both race THETAs
+   are commented out), which indicates the note is stale text carried
+   from an earlier nivolumab analysis.
+
+3. **The residual error 0.204 is a standard deviation, not a variance.**
+   Table S2's footnote b says random-effect *and residual-error* values
+   are shown as "variance (standard deviation)", but the residual row
+   carries no parenthetical. The control streams settle it: `$SIGMA 1 FIX`
+   with `REWT = F*PERR + AERR`, `AERR = 0` and `Y = IPRED + REWT*EPS(1)`
+   means `THETA(5) = PERR` multiplies the prediction directly, so 0.204 is
+   the proportional SD (20.4% CV). Encoded as `propSd <- 0.204`.
+
+4. **`Ka_REF` is printed per day while the model runs per hour.** Table S2
+   reports `Ka_REF (day-1) = 0.307`; the `$THETAP` prior gives `KA = 0.013`
+   on the stream's native hourly scale. `0.307 / 24 = 0.0128`, confirming
+   both the value and the printed time unit. This model keeps time in days
+   and so uses 0.307 /day directly.
+
+5. **Study count.** Table 1 footnote b states 18 intravenous studies;
+   Table S1 lists 19 (plus CheckMate 8KX for the subcutaneous arm). The
+   model metadata records 20 studies in total and notes the discrepancy.
+
+6. **RCC subject count.** Methods section 2.3 states "all patients with
+   RCC (N = 715)" while Table 1's RCC row sums to 713 (17 subcutaneous +
+   696 intravenous). Not load-bearing for the model.
+
+7. **Simulation duration.** Methods section 2.3 says profiles were
+   simulated "over a period of 16 weeks (12 doses for nivolumab s.c. and
+   25 doses for nivolumab i.v.)". Those dose counts span roughly 48
+   weeks, not 16, and the steady-state landmark is day 336 (= 48 weeks),
+   so "16 weeks" appears to be an error. This vignette simulates to day
+   364.
+
+8. **The 352 ug/mL Figure 2 reference is not reproduced as an
+   end-of-infusion peak.** The model's true steady-state peak for i.v.
+   10 mg/kg q2w is about 438 ug/mL (geometric mean); the printed 352
+   ug/mL is matched to within 2% by a sample taken about 2 days after the
+   steady-state dose. The legend describes the value as "simulated" but
+   attaches it to a regimen whose safety margins come from a separate
+   published analysis (reference 17, Agrawal 2016), which is not on disk,
+   so whether the number came from this model under a coarse sampling
+   grid or from that earlier analysis cannot be settled from the sources
+   available. No parameter was adjusted to close the gap.
+
+## Assumptions made because the paper does not say
+
+* **RCC-specific baseline demographics are unpublished.** Table 1 reports
+  the pooled cohort only, so the virtual cohort is drawn from those
+  overall marginals with both tumour-type indicators set to 0. The paper
+  instead bootstrap-resampled real RCC patients, which preserves the
+  observed correlations between weight, sex, eGFR and performance status;
+  the independent marginals used here do not.
+* **eGFR estimating equation is not named.** Table 1 gives eGFR in
+  mL/min/1.73 m^2 while the control-stream comment abbreviates the unit
+  to mL/min. The column is treated as BSA-normalised and stored under the
+  canonical `CRCL`. The sibling nivolumab analysis (Bajaj 2017) used
+  CKD-EPI.
+* **Intravenous infusion duration.** Table S1 records 1-hour infusions
+  for nearly all pooled studies (60 minutes for MDX1106-01), and
+  CheckMate 67T used 30-minute infusions. This vignette uses 1 hour. The
+  choice affects only the peak immediately after the infusion, not
+  `Cavgd28` or trough measures.
+* **Uncertainty in the parameter estimates is not propagated.** The paper
+  sampled 100 parameter sets from the variance-covariance matrix of the
+  estimates (87 of which had a positive-definite OMEGA) to generate its
+  90% prediction intervals. The full matrix is not published -- Table S2
+  gives only standard errors and `$THETAPV` gives a diagonal prior
+  variance block -- so the intervals here reflect inter-individual
+  variability at the point estimate only, and are narrower than the
+  paper's.
+
+## Documented convention deviations
+
+* `cl_time_max`, `cl_t50` and `cl_time_hill` are not log-transformed,
+  which `checkModelConventions()` flags as a warning for fixed-effect PK
+  parameters. This is deliberate and matches the sibling
+  `Bajaj_2017_nivolumab.R`, which carries the identical three warnings on
+  `main`: `cl_time_max` is negative (-0.303) and therefore cannot be held
+  on the log scale, and it carries an **additive** random effect
+  (`EMAX = AEMAX + ZEMAX` in the source), so a log parameterisation would
+  misrepresent both the sign and the IIV structure.
+* The model carries no `ROUTE_IV` covariate even though the source gates
+  `ka` and `F` on a `ROUTEN` column. Those two parameters only ever act on
+  depot doses, so gating them is redundant once the route is expressed by
+  the dosing compartment -- which is what the `ROUTE_IV` register entry
+  itself recommends ("When simulating, set `ROUTE_IV = 1` for IV cohorts
+  and dose into the central compartment; set `ROUTE_IV = 0` for SC cohorts
+  and dose into the depot"). The source's `IF (ROUTEN.EQ.0) TVKA = 1` and
+  `TVF1 = 0.4` branches are inert placeholders for intravenous records,
+  which `ADVAN4` doses into compartment 2 where `F1` does not apply.
+* Covariates screened but not retained (age, albumin, LDH, hepatic
+  function, Asian and Black race, and weight/sex/PS effects on `ka`) are
+  recorded in `covariatesDataExcluded` rather than `covariateData`,
+  because the source reports no point estimate for any of them.
+
+# Session info
+
+```{r session}
+sessionInfo()
+```

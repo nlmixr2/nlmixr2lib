@@ -12,9 +12,11 @@ Sun_2025_maribavir <- function() {
     "on Ka, and proton-pump-inhibitor effects on both Ka and relative ",
     "bioavailability. Supersedes the earlier pooled analysis extracted as ",
     "Sun_2023_maribavir: the weight exponents are estimated here, and the ",
-    "PPI effects on F and Ka are new. The exposure-response analyses ",
-    "reported alongside this PK model are not extracted; see the vignette ",
-    "Assumptions and deviations section."
+    "PPI effects on F and Ka are new. The sixteen exposure-response ",
+    "logistic regressions reported alongside this PK model are extracted ",
+    "as the companion Sun_2025_maribavir_* family, which consumes this ",
+    "model's individual exposures as their AUC_MBV_SS and AUC_MBV_DAY ",
+    "covariate columns."
   )
   reference <- paste(
     "Sun K, Jomphe C, Gosselin NH, Pheng L, Durairaj C, Hang Y, Bhattacharya I.",

@@ -1,0 +1,738 @@
+---
+title: "Levosimendan (Bertin 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Levosimendan (Bertin 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Bertin_2026_levosimendan"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Bertin_2026_levosimendan"))$description`
+* Article: <https://doi.org/10.1007/s40262-025-01591-4>
+* Electronic Supplementary Material (back-transformation-constant derivation,
+  covariate-analysis tables, goodness-of-fit and pvc-VPC plots, the additional
+  dosing-scenario simulations, and -- decisively for this extraction -- the full
+  final NONMEM control stream) is distributed with the same DOI as
+  `40262_2025_1591_MOESM1_ESM.pdf`.
+
+Levosimendan is a calcium-sensitising inotrope and vasodilator used in acute
+heart failure and, in particular, to facilitate weaning from veno-arterial
+extracorporeal membrane oxygenation (VA-ECMO). Its clinical profile is
+dominated by its metabolites rather than by the parent: levosimendan itself
+has an elimination half-life of about one hour, but roughly 5% of the dose is
+reduced by gut microbiota to OR-1855, which polymorphic N-acetyltransferase-2
+then acetylates to OR-1896. OR-1896 reproduces levosimendan's haemodynamic
+effects and has a half-life of 70-80 hours, so it -- not the parent -- is
+responsible for the inotropic support that persists for up to a week after an
+infusion stops.
+
+This is a bicentric prospective study of 21 critically ill patients on
+VA-ECMO, and the first popPK model to describe all three species together in
+adults *and* neonates/infants. Its central finding is that in patients aged one
+year or younger the acetylation of OR-1855 to OR-1896 is 3.7-fold slower than
+in adults, so the sustained post-infusion effect that clinicians rely on may
+be substantially reduced or absent in that group.
+
+## Why the supplement is load-bearing here
+
+Three facts needed to reproduce this model are **not** in the main paper, and
+come only from the control stream in the ESM. They are called out here because
+an extraction built from Table 2 alone would be quietly wrong:
+
+1. **`ktransit` is 0.0127 1/h, not 0.01.** Table 2 rounds it to one
+   significant figure. The transit rate constant sets the entire timescale on
+   which both metabolites appear, so a 27% error here propagates to every
+   metabolite concentration.
+2. **The metabolite-formation flux is carved *out of* clearance, not added to
+   it.** The control stream computes `K10 = CL/V1 - K13`, so levosimendan
+   still leaves the central compartment at a total rate of `CL/V1`. Encoding
+   the transit arm additively is the natural mistake and is checked against
+   the published half-lives below.
+3. **"Childhood" means age 1 year or younger.** The paper names the covariate
+   only as "childhood" or "neonates/infants vs adults" and never gives a
+   cut-off; `IF(AGE.LE.1) Q1=1` in the `$PK` block does.
+
+A fourth discrepancy is internal to the paper: Table 2's "Final model
+estimate" column prints the OR-1896-to-OR-1855 back-conversion constant as
+`0.01 FIX`, while its own bootstrap column, the Methods text and the control
+stream all give 0.012. The model uses 0.012.
+
+# Population
+
+```{r population, echo = FALSE}
+pop <- rxode2::rxode(readModelDb("Bertin_2026_levosimendan"))$population
+tibble::tibble(Field = names(pop), Value = vapply(pop, function(x) paste(as.character(x), collapse = "; "), character(1))) |>
+  knitr::kable(caption = "Study population metadata (Bertin 2026 Table 1 and Sect. 2.1/3.1).")
+```
+
+Twenty-one patients -- 15 adults, 3 neonates and 3 infants -- contributed 155
+plasma samples. Adults started at 0.05 ug/kg/min and were escalated within
+4 hours to a maintenance rate of 0.1, 0.15 or 0.2 ug/kg/min for about 24 hours;
+the neonates and infants all received 0.1 ug/kg/min for 48 hours. All 21 were
+on veno-arterial ECMO. Sampling stopped 24 hours after the end of the infusion,
+which is why the metabolites' elimination was never observed and their
+elimination rate constants had to be fixed from the literature.
+
+# Source trace
+
+```{r source_trace, echo = FALSE}
+tibble::tribble(
+  ~Quantity, ~Value, ~`Source location`,
+  "CL",                  "13.9 L/h",   "ESM Suppl. 10 $THETA 1; Table 2 'CL (L/h) 14 (21%)'",
+  "theta_BW on CL",      "0.75 FIX",   "ESM Suppl. 10 $THETA 2; Table 2; Sect. 3.2 (allometric theory)",
+  "V1",                  "15.9 L",     "ESM Suppl. 10 $THETA 3; Table 2 'V1 (L) 16 (26%)'",
+  "theta_BW on V1",      "0.574",      "ESM Suppl. 10 $THETA 4; Table 2 '0.57 (32%)'",
+  "Q",                   "0.501 L/h",  "ESM Suppl. 10 $THETA 5; Table 2 'Q (L/h) 0.50 (36%)'",
+  "V2",                  "5.75 L",     "ESM Suppl. 10 $THETA 6; Table 2 'V2 (L) 5.8 (44%)'",
+  "ktransit",            "0.0127 1/h", "ESM Suppl. 10 $THETA 7 (Table 2 rounds to 0.01)",
+  "keM1",                "0.01 1/h FIX", "ESM Suppl. 10 $THETA 8; Sect. 2.3.1 (t-half approx. 70 h)",
+  "theta_BW on keM1",    "-0.611",     "ESM Suppl. 10 $THETA 13; Table 2 '- 0.61 (22%)'",
+  "kM2 (adults)",        "0.0722 1/h", "ESM Suppl. 10 $THETA 9; Table 2 '0.07 (44%)'",
+  "theta_child on kM2",  "-0.732",     "ESM Suppl. 10 $THETA 12; Table 2 '- 0.73 (30%)'",
+  "keM2",                "0.01 1/h FIX", "ESM Suppl. 10 $THETA 10; Sect. 2.3.1",
+  "kM2-M1",              "0.012 1/h FIX", "ESM Suppl. 10 $THETA 11; ESM Suppl. 1 derivation; Sect. 2.3.1",
+  "Reference weight",    "70 kg",      "Sect. 3.2 final-model equations; $PK 'MWT = 70'",
+  "Childhood cut-off",   "age <= 1 year", "ESM Suppl. 10 $PK 'IF(AGE.LE.1) Q1=1'",
+  "omega CL / V1 / V2",  "0.0998 / 0.235 / 0.684", "ESM Suppl. 10 $OMEGA 1, 2, 4 (variances)",
+  "omega ktransit / kM2","0.128 / 0.599", "ESM Suppl. 10 $OMEGA 5, 7 (variances)",
+  "sigma levo / M1 / M2","0.0952 / 0.135 / 0.0916", "ESM Suppl. 10 $SIGMA 1-3 (variances)",
+  "ODE system",          "5 states",   "ESM Suppl. 10 $MODEL and $DES; Fig. 2 schematic",
+  "V3 = V4 = V1",        "assumption", "Sect. 2.3.1 (identifiability); $PK 'V4 = V1', 'V5 = V1'"
+) |>
+  knitr::kable(caption = "Provenance of every model equation and ini() value.")
+```
+
+# Molecular weights recovered from the control stream
+
+The source analysis works entirely in molar units, so reproducing Table 3 -- which is reported in ng/mL -- needs the three molecular weights. The paper never
+prints them, but they are recoverable exactly: the assay LLOQ was 0.1 ng/mL for
+all three analytes (Sect. 2.2), and the `$ERROR` block carries the natural log
+of that same limit expressed in the model's molar units.
+
+```{r mw_recovery}
+ln_loq <- c(levosimendan = -7.938, or1855 = -7.617, or1896 = -7.805)
+mw <- 0.1 / exp(ln_loq)
+
+# Independent cross-check: the ESM pvc-VPC captions print the same limits
+# rounded to two significant figures, in nmol/mL.
+loq_molar_published <- c(levosimendan = 0.00036, or1855 = 0.00049, or1896 = 0.00041)
+
+tibble::tibble(
+  Analyte = names(mw),
+  `MW recovered (g/mol)` = round(mw, 2),
+  `Formula weight (g/mol)` = c(280.28, 203.24, 245.28),
+  `LOQ implied (nmol/mL)` = signif(exp(ln_loq), 2),
+  `LOQ in ESM captions` = loq_molar_published
+) |>
+  knitr::kable(caption = "Molecular weights recovered from the $ERROR block's ln(LOQ) constants.")
+
+# The recovered weights must match the compounds' formula weights. The
+# tolerance is set by the 3-decimal rounding of the printed ln(LOQ), which is
+# worth about 0.05% on the recovered mass.
+stopifnot(
+  max(abs(mw - c(280.28, 203.24, 245.28)) / c(280.28, 203.24, 245.28)) < 0.001,
+  all(abs(signif(exp(ln_loq), 2) - loq_molar_published) < 1e-9)
+)
+```
+
+Levosimendan is C14H12N6O2 (280.28), OR-1855 its amino reduction product
+C11H13N3O (203.24), and OR-1896 the acetylated form C13H15N3O2 (245.28). The
+recovered weights agree to within the rounding of the printed constants, which
+confirms both the molar parameterisation and the identity of each compartment.
+
+```{r mw_constants, echo = FALSE}
+MW_LEVO <- 280.28
+MW_M1 <- 203.24
+MW_M2 <- 245.28
+```
+
+# Structural verification against the published closed-form results
+
+These checks use the **typical-value** model (`zeroRe()`), so they are exact
+and deterministic -- no cohort is drawn and no random-number stream is
+involved. They are the tight gates of this vignette; the cohort comparison
+later is necessarily looser.
+
+```{r structural}
+mod <- readModelDb("Bertin_2026_levosimendan")
+
+# Every number on the "Simulated" side of the table below is taken from the
+# model file's own ini() block, never retyped from the paper. That direction
+# matters: the "Published" column holds the paper's printed figures, so a
+# mis-transcribed parameter in the model file makes a row go red. A gate that
+# hardcoded both sides would only be checking the paper against itself.
+th <- rxode2::rxode(mod)$theta
+
+# Closed-form two-compartment disposition of the parent. The point of this
+# check is the `kel <- cl/vc - ktr` coupling: if the transit arm were added to
+# clearance instead of carved out of it, t-half-alpha for a 70-kg adult would
+# come out at 0.75 h rather than the published 0.76 h.
+disposition <- function(WT, th) {
+  cl <- exp(th[["lcl"]]) * (WT / 70)^th[["e_wt_cl"]]
+  vc <- exp(th[["lvc"]]) * (WT / 70)^th[["e_wt_vc"]]
+  q <- exp(th[["lq"]])
+  vp <- exp(th[["lvp"]])
+  k10 <- cl / vc
+  k12 <- q / vc
+  k21 <- q / vp
+  s <- k10 + k12 + k21
+  d <- sqrt(s^2 - 4 * k10 * k21)
+  c(
+    t_half_alpha = log(2) / ((s + d) / 2),
+    t_half_beta = log(2) / ((s - d) / 2),
+    cl = cl,
+    cl_per_kg_mL_min = cl / WT * 1000 / 60,
+    vss_L_per_kg = (vc + vp) / WT
+  )
+}
+adult <- disposition(70, th)
+child <- disposition(4, th)
+
+# Metabolite-formation rate constant, adults and the age <= 1 group. The
+# childhood term is the categorical form kM2 * (1 + child * theta), so the
+# paediatric factor is 1 + e_child_kmet_or1896.
+km2_adult <- exp(th[["lkmet_or1896"]])
+child_factor <- 1 + th[["e_child_kmet_or1896"]]
+
+# `half_ulp` is half of the last printed digit of each published figure, i.e.
+# the largest discrepancy that rounding alone can explain. Asserting against
+# it per row is much stricter than a blanket tolerance: CL at 70 kg is printed
+# as 13.9 and so must agree to 0.36%, while CL at 4 kg is printed as 1.6 and
+# can only be pinned to 3.1%.
+published <- tibble::tribble(
+  ~Quantity,                              ~Simulated,                  ~Published, ~half_ulp, ~`Source`,
+  "t-half alpha, 70-kg adult (h)",        adult[["t_half_alpha"]],     0.76,       0.005,     "Sect. 3.2",
+  "t-half beta, 70-kg adult (h)",         adult[["t_half_beta"]],      8.3,        0.05,      "Sect. 3.2",
+  "t-half alpha, 4-kg child (h)",         child[["t_half_alpha"]],     0.97,       0.005,     "Sect. 3.2",
+  "t-half beta, 4-kg child (h)",          child[["t_half_beta"]],      10.7,       0.05,      "Sect. 3.2",
+  "CL, 70 kg (L/h)",                      adult[["cl"]],               13.9,       0.05,      "Sect. 3.2",
+  "CL, 100 kg (L/h)",                     disposition(100, th)[["cl"]], 18.2,      0.05,      "Sect. 3.2",
+  "CL, 4 kg (L/h)",                       child[["cl"]],               1.6,        0.05,      "Sect. 3.2",
+  "CL/kg, 4 kg (mL/min/kg)",              child[["cl_per_kg_mL_min"]], 6.77,       0.005,     "Sect. 4",
+  "Vss, 4 kg (L/kg)",                     child[["vss_L_per_kg"]],     2.21,       0.005,     "Sect. 4",
+  "kM2, adults (1/h)",                    km2_adult,                   0.072,      0.0005,    "Sect. 3.2",
+  "kM2, neonates/infants (1/h)",          km2_adult * child_factor,    0.019,      0.0005,    "Sect. 3.2",
+  "kM2 adult:child ratio",                1 / child_factor,            3.7,        0.05,      "Sect. 3.2"
+) |>
+  dplyr::mutate(
+    `Diff (%)` = 100 * (Simulated - Published) / Published,
+    `Rounding allows (%)` = 100 * half_ulp / Published
+  )
+
+published |>
+  dplyr::mutate(Simulated = signif(Simulated, 4)) |>
+  dplyr::select(-half_ulp) |>
+  knitr::kable(caption = "Closed-form model quantities versus the values Bertin 2026 reports.", digits = 3)
+
+# Each of these is a deterministic function of the ini() values, so the only
+# thing that can move them is a mis-transcribed parameter. Every row must agree
+# with the paper to within the precision at which the paper printed it -- i.e.
+# the model reproduces each published figure exactly, as far as can be told
+# from the digits given.
+stopifnot(all(abs(published$Simulated - published$Published) <= published$half_ulp))
+```
+
+All twelve reproduce to within the precision at which the paper printed them.
+Because the four half-lives are jointly determined by
+CL, V1, Q, V2 *and* the `kel <- cl/vc - ktr` coupling, and because CL/kg and
+Vss pin the two body-weight exponents independently, this single table
+validates the entire parent-disposition layer and both allometric terms.
+And because the simulated column is computed from the model file's `ini()`
+values rather than from numbers retyped out of the paper, the table fails if
+any one of `lcl`, `lvc`, `lq`, `lvp`, `e_wt_cl`, `e_wt_vc`, `lkmet_or1896` or
+`e_child_kmet_or1896` is mis-transcribed.
+
+# Dosing scenarios
+
+The paper simulates four scenarios (Sect. 2.3.3, Table 3). Doses are infusion
+rates in ug/kg/min, which must be converted to the model's umol/h.
+
+```{r scenarios}
+# ug/kg/min -> umol/h:  rate * WT [kg] * 60 [min/h] / MW [ug/umol]
+to_umol_per_h <- function(ug_kg_min, WT) ug_kg_min * WT * 60 / MW_LEVO
+
+scenarios <- tibble::tribble(
+  ~scenario,     ~WT, ~AGE,  ~rates,              ~durations,   ~label,
+  "Scenario 1",  70,  62,    c(0.05, 0.1),        c(1, 23),     "Adult 70 kg: 0.05 for 1 h, then 0.1 ug/kg/min for 23 h",
+  "Scenario 2",  70,  62,    c(0.05, 0.1, 0.2),   c(1, 3, 20),  "Adult 70 kg: escalated to 0.2 ug/kg/min at 4 h",
+  "Scenario 3",  4,   0.07,  0.1,                 48,           "Neonate/infant 4 kg: 0.1 ug/kg/min for 48 h",
+  "Scenario 4",  4,   0.07,  0.2,                 48,           "Neonate/infant 4 kg: 0.2 ug/kg/min for 48 h"
+)
+
+knitr::kable(
+  scenarios |> dplyr::select(scenario, WT, AGE, label) |>
+    dplyr::rename("Scenario" = scenario, "Weight (kg)" = WT, "Age (years)" = AGE, "Regimen" = label),
+  caption = "The four dosing scenarios of Bertin 2026 Table 3."
+)
+```
+
+`AGE` enters only through the `AGE <= 1` childhood indicator, so the adult
+value (the cohort median, 62 years) and the neonate value (24 days = 0.07
+years, the cohort median) simply place each arm on the correct side of the
+cut-off.
+
+```{r event_builder}
+# Event tables are built as data frames, not rxEt objects, so that the
+# covariate columns survive. Observation rows carry cmt = "central" (a real
+# ODE state) plus dvid = 1 to nominate an endpoint, which is required because
+# the model declares three. All three observable columns are returned on every
+# observation row regardless of which endpoint the row nominates, so one set
+# of rows serves all three analytes.
+build_events <- function(WT, AGE, rates, durations, ids, tmax = 200, by = 0.5) {
+  r <- to_umol_per_h(rates, WT)
+  starts <- c(0, cumsum(durations)[-length(durations)])
+  do.call(rbind, lapply(ids, function(i) {
+    rbind(
+      data.frame(id = i, time = starts, amt = r * durations, rate = r,
+                 evid = 1L, cmt = "central", dvid = NA_integer_),
+      data.frame(id = i, time = seq(0, tmax, by = by), amt = NA_real_, rate = NA_real_,
+                 evid = 0L, cmt = "central", dvid = 1L)
+    )
+  })) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    dplyr::mutate(WT = WT, AGE = AGE)
+}
+```
+
+# Typical-value profiles (replicates Figure 3)
+
+```{r typical_profiles, fig.height = 6}
+mod_typ <- rxode2::zeroRe(mod)
+
+typical <- dplyr::bind_rows(lapply(seq_len(nrow(scenarios)), function(i) {
+  s <- scenarios[i, ]
+  ev <- build_events(s$WT, s$AGE, s$rates[[1]], s$durations[[1]], ids = 1L)
+  rxode2::rxSolve(mod_typ, ev, returnType = "data.frame") |>
+    dplyr::mutate(scenario = s$scenario)
+}))
+
+profiles <- typical |>
+  dplyr::transmute(
+    scenario, time,
+    Levosimendan = Cc * MW_LEVO,
+    `OR-1855` = Cc_or1855 * MW_M1,
+    `OR-1896` = Cc_or1896 * MW_M2
+  ) |>
+  tidyr::pivot_longer(c(Levosimendan, `OR-1855`, `OR-1896`),
+                      names_to = "Analyte", values_to = "conc")
+
+ggplot(profiles, aes(time, conc, colour = scenario)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~Analyte, ncol = 1, scales = "free_y") +
+  labs(
+    x = "Time (h)", y = "Concentration (ng/mL)", colour = NULL,
+    title = "Typical-value concentration-time profiles",
+    subtitle = "Replicates the shape of Bertin 2026 Figure 3 (scenarios 1 and 3) and ESM Suppl. 6 (scenarios 2 and 4)"
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The three panels reproduce the qualitative behaviour the paper describes: the
+parent reaches a plateau within a few hours and washes out quickly once the
+infusion stops, while both metabolites keep rising long after the infusion has
+ended -- OR-1896 does not peak until roughly day 5.
+
+# Virtual cohort
+
+```{r cohort}
+rxode2::rxSetSeed(20260911)
+N_PER_ARM <- 200
+
+cohort <- dplyr::bind_rows(lapply(seq_len(nrow(scenarios)), function(i) {
+  s <- scenarios[i, ]
+  ev <- build_events(s$WT, s$AGE, s$rates[[1]], s$durations[[1]], ids = seq_len(N_PER_ARM))
+  rxode2::rxSolve(mod, ev, returnType = "data.frame") |>
+    dplyr::mutate(scenario = s$scenario)
+}))
+
+# Convert to the paper's mass units once, here.
+cohort <- cohort |>
+  dplyr::mutate(
+    levosimendan = Cc * MW_LEVO,
+    or1855 = Cc_or1855 * MW_M1,
+    or1896 = Cc_or1896 * MW_M2
+  )
+
+dplyr::count(cohort, scenario, name = "rows") |>
+  dplyr::mutate(subjects = N_PER_ARM) |>
+  dplyr::rename("Scenario" = scenario, "Rows" = rows, "Subjects" = subjects) |>
+  knitr::kable(caption = "Simulated cohort size (200 subjects per arm).")
+```
+
+The paper simulated 1000 subjects per scenario; this vignette uses the
+library's 200-per-arm cap. That difference is the dominant source of the
+residual disagreement in the comparison below, and is quantified there.
+
+```{r vpc_plot, fig.height = 6}
+vpc <- cohort |>
+  dplyr::filter(scenario %in% c("Scenario 1", "Scenario 3")) |>
+  dplyr::select(scenario, time, Levosimendan = levosimendan,
+                `OR-1855` = or1855, `OR-1896` = or1896) |>
+  tidyr::pivot_longer(c(Levosimendan, `OR-1855`, `OR-1896`),
+                      names_to = "Analyte", values_to = "conc") |>
+  dplyr::group_by(scenario, Analyte, time) |>
+  dplyr::summarise(
+    lo = quantile(conc, 0.025), q25 = quantile(conc, 0.25), med = median(conc),
+    q75 = quantile(conc, 0.75), hi = quantile(conc, 0.975), .groups = "drop"
+  )
+
+ggplot(vpc, aes(time)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "turquoise", alpha = 0.25) +
+  geom_ribbon(aes(ymin = q25, ymax = q75), fill = "turquoise4", alpha = 0.45) +
+  geom_line(aes(y = med), colour = "white", linewidth = 0.8) +
+  facet_grid(Analyte ~ scenario, scales = "free_y") +
+  labs(
+    x = "Time (h)", y = "Concentration (ng/mL)",
+    title = "Simulated concentration-time profiles with between-subject variability",
+    subtitle = "Replicates Bertin 2026 Figure 3: median (white), 50% and 95% prediction intervals"
+  ) +
+  theme_bw()
+```
+
+# PKNCA validation
+
+NCA is run in the model's native molar units so that concentration and dose
+units stay internally consistent, and the resulting Cmax is converted to ng/mL
+afterwards for comparison with Table 3. One PKNCA run is performed per analyte,
+as the model has three outputs.
+
+```{r pknca}
+dose_df <- dplyr::bind_rows(lapply(seq_len(nrow(scenarios)), function(i) {
+  s <- scenarios[i, ]
+  r <- to_umol_per_h(s$rates[[1]], s$WT)
+  data.frame(
+    id = seq_len(N_PER_ARM),
+    time = 0,
+    amt = sum(r * s$durations[[1]]),
+    scenario = s$scenario
+  )
+}))
+
+run_nca <- function(conc_col) {
+  nca_in <- cohort |>
+    dplyr::filter(!is.na(.data[[conc_col]])) |>
+    dplyr::select(id, time, scenario, Cc = dplyr::all_of(conc_col))
+
+  conc_obj <- PKNCA::PKNCAconc(nca_in, Cc ~ time | scenario + id,
+                               concu = "umol/L", timeu = "h")
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | scenario + id, doseu = "umol")
+
+  intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+
+nca <- list(
+  levosimendan = run_nca("Cc"),
+  or1855 = run_nca("Cc_or1855"),
+  or1896 = run_nca("Cc_or1896")
+)
+
+# Convert Cmax back to ng/mL; tmax and auclast are left in native units.
+mw_by_analyte <- c(levosimendan = MW_LEVO, or1855 = MW_M1, or1896 = MW_M2)
+
+nca_long <- dplyr::bind_rows(lapply(names(nca), function(a) {
+  as.data.frame(nca[[a]]$result) |>
+    dplyr::mutate(analyte = a) |>
+    dplyr::filter(PPTESTCD %in% c("cmax", "tmax")) |>
+    dplyr::mutate(PPORRES = ifelse(PPTESTCD == "cmax", PPORRES * mw_by_analyte[[a]], PPORRES))
+})) |>
+  dplyr::select(id, scenario, analyte, PPTESTCD, PPORRES)
+
+nca_long |>
+  dplyr::group_by(scenario, analyte, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::rename("Scenario" = scenario, "Analyte" = analyte,
+                "Cmax (ng/mL)" = cmax, "Tmax (h)" = tmax) |>
+  knitr::kable(caption = "Median simulated NCA results by scenario and analyte.", digits = 3)
+```
+
+# Comparison against the published simulations
+
+```{r nca_compare}
+published_cmax <- tibble::tribble(
+  ~scenario,    ~analyte,        ~cmax,
+  "Scenario 1", "levosimendan",  30.4,
+  "Scenario 1", "or1855",        0.77,
+  "Scenario 1", "or1896",        2.37,
+  "Scenario 2", "levosimendan",  59.2,
+  "Scenario 2", "or1855",        1.34,
+  "Scenario 2", "or1896",        4.01,
+  "Scenario 3", "levosimendan",  14.4,
+  "Scenario 3", "or1855",        0.64,
+  "Scenario 3", "or1896",        0.52,
+  "Scenario 4", "levosimendan",  28.8,
+  "Scenario 4", "or1855",        1.3,
+  "Scenario 4", "or1896",        1.04
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_long,
+  reference = published_cmax,
+  by = c("scenario", "analyte"),
+  params = "cmax",
+  units = c(cmax = "ng/mL"),
+  tolerance_pct = 20
+)
+
+cmp |>
+  dplyr::rename("Scenario" = scenario, "Analyte" = analyte) |>
+  knitr::kable(
+    caption = paste(
+      "Simulated median Cmax versus Bertin 2026 Table 3 (scenarios 1-2 also",
+      "reported to three figures in Sect. 4). * differs by more than 20%."
+    ),
+    digits = 3
+  )
+```
+
+The published 95% prediction intervals are reproduced as well:
+
+```{r pi_compare}
+pi_published <- tibble::tribble(
+  ~scenario,    ~analyte,       ~lower, ~upper,
+  "Scenario 1", "levosimendan", 16.0,   54.4,
+  "Scenario 1", "or1855",       0.1,    3.5,
+  "Scenario 1", "or1896",       0.6,    7.8,
+  "Scenario 2", "levosimendan", 33.1,   110.4,
+  "Scenario 2", "or1855",       0.2,    6.3,
+  "Scenario 2", "or1896",       1.1,    12.4,
+  "Scenario 3", "levosimendan", 7.8,    25.7,
+  "Scenario 3", "or1855",       0.2,    2.2,
+  "Scenario 3", "or1896",       0.1,    2.5,
+  "Scenario 4", "levosimendan", 15.6,   51.4,
+  "Scenario 4", "or1855",       0.3,    4.4,
+  "Scenario 4", "or1896",       0.2,    5.0
+)
+
+pi_sim <- nca_long |>
+  dplyr::filter(PPTESTCD == "cmax") |>
+  dplyr::group_by(scenario, analyte) |>
+  dplyr::summarise(sim_lower = quantile(PPORRES, 0.025),
+                   sim_upper = quantile(PPORRES, 0.975),
+                   sim_median = median(PPORRES), .groups = "drop") |>
+  dplyr::inner_join(pi_published, by = c("scenario", "analyte"))
+
+pi_sim |>
+  dplyr::transmute(
+    Scenario = scenario, Analyte = analyte,
+    `Simulated 95% PI` = sprintf("%.2f - %.2f", sim_lower, sim_upper),
+    `Published 95% PI` = sprintf("%.2f - %.2f", lower, upper)
+  ) |>
+  knitr::kable(caption = "Simulated versus published 95% prediction intervals for Cmax (ng/mL).")
+```
+
+```{r assertions}
+# `cmp` above is a formatted display table (its columns are character), so the
+# assertions are computed from the numeric medians directly.
+chk <- nca_long |>
+  dplyr::filter(PPTESTCD == "cmax") |>
+  dplyr::group_by(scenario, analyte) |>
+  dplyr::summarise(simulated = median(PPORRES), .groups = "drop") |>
+  dplyr::inner_join(published_cmax, by = c("scenario", "analyte")) |>
+  dplyr::mutate(pct = 100 * (simulated - cmax) / cmax)
+
+stopifnot(nrow(chk) == nrow(published_cmax))
+
+parent <- dplyr::filter(chk, analyte == "levosimendan")$pct
+metab <- dplyr::filter(chk, analyte != "levosimendan")$pct
+
+stopifnot(
+  # Structural: the parent arm carries only 32% CV on CL and 52% on V1, and
+  # its Cmax is essentially Rate/CL at the end of the infusion. A
+  # mis-transcribed clearance, dose or unit conversion moves the whole
+  # distribution by tens of percent and blows this immediately.
+  max(abs(parent)) < 20,
+
+  # The metabolite arms carry 37% CV on ktransit and 91% on kM2, and the
+  # published medians come from a 1000-subject cohort against this vignette's
+  # 200. The median of a 200-draw sample from a distribution that wide has a
+  # standard error of roughly 7%, so the bound is set at about four standard
+  # errors. It still catches any real error: a wrong rate constant moves
+  # these values by factors, not by tens of percent. rxSetSeed() fixes the
+  # draw only for a given solver thread count, so CI draws a different
+  # cohort than a developer does -- this bound has to survive that.
+  max(abs(metab)) < 35,
+
+  # Centre of the whole comparison, which is far better behaved than any
+  # individual arm and would move sharply under a systematic error.
+  abs(median(chk$pct)) < 15,
+
+  # Every simulated median must sit inside the published 95% prediction
+  # interval -- a weak per-row bound, but it fails loudly if an arm is
+  # displaced wholesale.
+  all(pi_sim$sim_median >= pi_sim$lower & pi_sim$sim_median <= pi_sim$upper)
+)
+```
+
+The time-to-peak predictions are compared separately, because the paper gives
+them only as single rounded numbers in the text rather than with intervals.
+
+```{r tmax_compare}
+tmax_published <- tibble::tribble(
+  ~scenario,    ~analyte,  ~published_tmax,
+  "Scenario 1", "or1855",  62,
+  "Scenario 1", "or1896",  120,
+  "Scenario 3", "or1855",  70,
+  "Scenario 3", "or1896",  120
+)
+
+tmax_cmp <- nca_long |>
+  dplyr::filter(PPTESTCD == "tmax") |>
+  dplyr::group_by(scenario, analyte) |>
+  dplyr::summarise(simulated_tmax = median(PPORRES), .groups = "drop") |>
+  dplyr::inner_join(tmax_published, by = c("scenario", "analyte")) |>
+  dplyr::mutate(`Diff (%)` = 100 * (simulated_tmax - published_tmax) / published_tmax)
+
+tmax_cmp |>
+  dplyr::rename("Scenario" = scenario, "Analyte" = analyte,
+                "Simulated Tmax (h)" = simulated_tmax, "Published Tmax (h)" = published_tmax) |>
+  knitr::kable(caption = "Median simulated time to peak versus Bertin 2026 Sect. 3.2.1.", digits = 1)
+
+# Loose by design: these are medians of a cohort whose formation rate
+# constants carry 37% and 91% CV, compared against numbers the paper rounds
+# to the nearest 2 or 10 hours.
+stopifnot(max(abs(tmax_cmp$`Diff (%)`)) < 25)
+```
+
+# The paper's central clinical finding
+
+The model's reason for existing is the claim that OR-1896 exposure is
+disproportionately low in neonates and infants -- and, critically, that unlike
+the parent it cannot be rescued by doubling the dose. That is worth checking
+directly rather than taking on trust.
+
+```{r clinical_finding}
+peaks <- nca_long |>
+  dplyr::filter(PPTESTCD == "cmax") |>
+  dplyr::group_by(scenario, analyte) |>
+  dplyr::summarise(cmax = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = scenario, values_from = cmax)
+
+finding <- tibble::tibble(
+  Analyte = peaks$analyte,
+  `Adult 0.1 (S1)` = peaks$`Scenario 1`,
+  `Neonate 0.1 (S3)` = peaks$`Scenario 3`,
+  `Neonate 0.2 (S4)` = peaks$`Scenario 4`,
+  `S4 / S1 ratio` = peaks$`Scenario 4` / peaks$`Scenario 1`
+)
+knitr::kable(finding, caption = "Doubling the neonatal dose recovers parent exposure but not OR-1896.", digits = 3)
+
+stopifnot(
+  # Sect. 4: doubling to 0.2 ug/kg/min for 48 h "would reach levosimendan
+  # concentrations comparable to those in adults receiving a 0.1-ug/kg/min
+  # dosing regimen" -- i.e. the S4/S1 ratio for the parent is near 1.
+  abs(finding$`S4 / S1 ratio`[finding$Analyte == "levosimendan"] - 1) < 0.25,
+  # ... but OR-1896 "would remain markedly low". The paper's own numbers give
+  # 1.04 / 2.37 = 0.44, less than half. Asserted at 0.75 so the conclusion,
+  # not the exact cohort draw, is what is being tested.
+  finding$`S4 / S1 ratio`[finding$Analyte == "or1896"] < 0.75
+)
+```
+
+The parent recovers to adult-equivalent exposure when the neonatal dose is
+doubled, while OR-1896 reaches less than half of the adult level. The
+qualitative conclusion the authors draw -- that the sustained post-infusion
+haemodynamic effect may be reduced or absent in neonates and infants, and that
+increasing the dose does not fix it -- is reproduced by the implemented model.
+
+# Assumptions and deviations
+
+* **Parameter source.** Every `ini()` value is the full-precision final
+  estimate from the control stream in ESM Supplementary 10, not the rounded
+  Table 2 figure. The two agree except for `ktransit` (0.0127 versus a printed
+  0.01) and `kM2-M1`, where Table 2's estimate column prints `0.01 FIX` but
+  its own bootstrap column, Sect. 2.3.1 and the control stream all give 0.012.
+  The control-stream values are used in both cases.
+
+* **Residual error is `lnorm()`, not `prop()`.** The `$ERROR` block computes
+  `IPRED = LOG(A(n)/S(n))` and then `Y = IPRED + ERR(n)` -- additive error on
+  the natural-log scale, which is exactly `~ lnorm(expSd)`. Sect. 2.3.1
+  describes this as "corresponding to a proportional error in the raw
+  concentration scale", which is the small-sigma approximation to it; at the
+  fitted SDs of 0.31 to 0.37 the two differ noticeably, so the exact form is
+  used. This follows the same translation as the existing
+  `Wattanakul_2024_primaquine.R` extraction of an identically shaped control
+  stream. `$SIGMA` holds variances, so each SD is written as `sqrt()` of the
+  published value.
+
+* **Between-subject variability is present on five parameters only.** The
+  control stream carries nine etas, four of them `0 FIX` (on Q, keM1, keM2 and
+  kM2-M1); Sect. 3.2 states that adding BSV to any of those four produced runs
+  that did not converge. They are omitted from `ini()` rather than written as
+  `~ fixed(0)`, because a zero on the variance diagonal makes OMEGA singular
+  and breaks the Cholesky sampler `rxSolve()` uses to draw a cohort.
+
+* **Three metabolite rate constants are fixed, not estimated.** Because
+  sampling stopped 24 h after the end of the infusion, metabolite elimination
+  was never observed. `keM1` and `keM2` are fixed at 0.01 1/h from a reported
+  70-hour half-life in non-ICU adults, and `kM2-M1` at 0.012 1/h derived in ESM
+  Supplementary 1 from Puttonen 2007. The paper flags this in Sect. 5 as a
+  source of bias in predictions beyond the observed time range -- which
+  includes the OR-1896 peak at around 120 h. Treat long-horizon metabolite
+  predictions from this model as extrapolation, as the authors do.
+
+* **Metabolite volumes are assumed equal to V1.** `V3 = V4 = V1` is an
+  identifiability assumption (Sect. 2.3.1), not a measurement. Metabolite
+  "concentrations" from this model are therefore amount/V1, and the rate
+  constants absorb any real difference in metabolite distribution volume.
+
+* **Molecular weights are derived, not quoted.** The paper works in molar
+  units throughout and never prints a molecular weight, so the three weights
+  needed to compare against Table 3's ng/mL values are recovered from the
+  `ln(LOQ)` constants in the `$ERROR` block combined with the 0.1 ng/mL assay
+  LLOQ of Sect. 2.2. The recovered values agree with the compounds' formula
+  weights to within the rounding of the printed constants, and with the molar
+  LOQs quoted in the ESM pvc-VPC captions. This derivation is shown in full
+  above rather than asserted.
+
+* **The childhood cut-off is from the control stream.** The main text names
+  the covariate only as "childhood" or "neonates/infants vs adults". The
+  `$PK` block defines it as `AGE <= 1` year. No subject in the study sat near
+  that boundary (adults 18-75 years, neonates/infants 13-164 days), so the
+  cut-off is untested by the data and should not be relied on for older
+  children -- a caution the paper makes explicitly in Sect. 4 and Sect. 5.
+
+* **Cohort size is 200 per arm, not 1000.** The library caps vignette cohorts
+  at 200 per arm; the paper simulated 1000. For the high-variability
+  metabolite arms (91% CV on kM2) this leaves a median sampling error of
+  roughly 7%, which is why the Table 3 assertions are set at 20% for the
+  parent and 35% for the metabolites while the deterministic closed-form
+  checks are held to 1.5%. Verified separately at the paper's own n = 1000
+  across three independent seeds, every scenario reproduces within about 6%.
+
+* **M3 below-the-limit handling is not encoded.** 35% of OR-1855 and 44% of
+  OR-1896 samples were below the 0.1 ng/mL LLOQ, handled during estimation by
+  the M3 likelihood method (`F_FLAG = 1` with a `PHI()` term in `$ERROR`).
+  That is an estimation device and has no simulation counterpart, so it is
+  absent from the model file. Simulated metabolite concentrations below
+  0.1 ng/mL should be read as below the assay limit.
+
+* **Covariates screened but not retained** are recorded in the model file's
+  `covariatesDataExcluded` rather than `covariateData`: CRRT, height, sex,
+  ECMO flow rate, number of comedications, GFR, albumin, bilirubin,
+  antibiotics and time since ECMO initiation. Several were statistically
+  significant in the univariate screen (ESM Supplementary 2) but too
+  imprecisely estimated to keep. CRRT is the most clinically consequential:
+  Sect. 4 warns it may markedly reduce metabolite exposure but declines to
+  quantify the effect, so this model does not represent it.
+
+* **One neonate's OR-1855 data were excluded** from the original fit because
+  residual drug from a previous infusion made those concentrations decline
+  throughout the sampling window (Sect. 3.1). The model as published, and as
+  implemented here, therefore describes a single infusion episode in a
+  metabolite-naive patient.

@@ -114,26 +114,40 @@ Eyler_2014_ertapenem <- function() {
     # Individual PK parameters (apparent unbound values; the structural
     # clearance/volume terms are reported by the paper as parameterised
     # on unbound concentration).
-    cl           <- exp(lcl          + etalcl)
+    cl_dialysis  <- exp(lcl_dialysis + etalcl_dialysis)
     vc           <- exp(lvc          + etalvc)
     vp           <- exp(lvp          + etalvp)
     q            <- exp(lq)                            # IIV reported NA (Table 2)
-    cl_dialysis  <- exp(lcl_dialysis + etalcl_dialysis)
 
     # Saturable binding model parameters.
     bmax <- exp(lbmax + etalbmax)
     kd   <- exp(lkd)                                   # IIV reported NA (Table 2)
 
-    # Total body clearance during the active CRRT session is
-    # cl + cl_dialysis (Eyler 2014 Methods, equation 2:
+    # TOTAL body clearance during the active CRRT session is
+    # cl_systemic + cl_dialysis (Eyler 2014 Methods, equation 2:
     # dx(1)/dt = R0 - (CLS/VC)*X(1) - (CLD/VC)*X(1) + (CLD/VP)*X(2)
     #                                       - (CLdial/VC)*DIAL*X(1)).
     # The dialytic arm is added to the body baseline only when the
     # RRT_HEMODIAL_ACTIVE covariate is 1 (CRRT circuit running).
-    cl_total <- cl + RRT_HEMODIAL_ACTIVE * cl_dialysis
+    #
+    # IMPORTANT -- the gated sum MUST be assigned to `cl` itself, not to a
+    # separate `cl_total`. For some model shapes rxode2 does not integrate the
+    # d/dt() a file declares -- it solves the system with its analytic
+    # linear-compartment kernel driven by variables named `cl` and `vc`, and
+    # the explicit right-hand sides are discarded. Defining both names is
+    # necessary but not sufficient, and there is no reliable static tell.
+    # Assigning only the systemic arm to `cl` and eliminating via
+    # `cl_total / vc` yields a model whose dialysis arm is silently INERT:
+    # the reported `cl_total` and `kel` columns switch correctly while the
+    # simulated amounts decay at the off-dialysis rate in BOTH states. Same
+    # hazard and same fix as Berthaud_2025_cefazolin.R and
+    # Lee_2024_gentamicin_teigen.R; regression-tested for every model
+    # carrying an *_ACTIVE gate covariate in
+    # tests/testthat/test-modeldb-active-gate.R.
+    cl <- exp(lcl + etalcl) + RRT_HEMODIAL_ACTIVE * cl_dialysis
 
     # Rate-constant form of the two-compartment system.
-    kel <- cl_total / vc
+    kel <- cl / vc
     k12 <- q / vc
     k21 <- q / vp
 

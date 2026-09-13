@@ -1,0 +1,1052 @@
+---
+title: "Ritonavir as a protease-inhibitor booster in children (Tsirizani 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ritonavir as a protease-inhibitor booster in children (Tsirizani 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+set.seed(20250926)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Tsirizani_2025_ritonavir"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Tsirizani_2025_ritonavir"))$description`
+* Article: <https://doi.org/10.1128/aac.00771-25>
+
+Ritonavir is no longer used as an antiretroviral in its own right. At the low
+doses used here it is a pharmacokinetic booster: it inhibits gut and hepatic
+CYP3A4 and P-glycoprotein, so a companion protease inhibitor (PI) can be given
+at a lower dose and less often. Boosted PIs carry much of second- and
+third-line paediatric antiretroviral therapy, yet ritonavir's own PK in
+children was barely described before this analysis.
+
+Tsirizani 2025 is the PK sub-study of CHAPAS-4 (ISRCTN22964075), a 4x2
+randomised trial in Zambia, Uganda and Zimbabwe. The design is what makes the
+paper unusual: 170 children were randomised to twice-daily
+lopinavir/ritonavir, once-daily atazanavir/ritonavir or once-daily
+darunavir/ritonavir, with identical sampling schedules, assay, sites and food
+intake across arms. That gives a within-study comparison of ritonavir exposure
+across three companion PIs -- something no previous study had, because there is
+no ritonavir-alone control arm anywhere in the paediatric literature.
+
+The consequence for the model is that **relative bioavailability is fixed to 1
+on the darunavir arm**, so every clearance and volume below is apparent
+(`CL/F`, `Vc/F`, `Q/F`, `Vp/F`) *on that reference*, and the companion-PI
+effects are read as relative bioavailability. The authors are explicit that
+they cannot rule out darunavir or lopinavir themselves depressing ritonavir
+bioavailability rather than atazanavir raising it.
+
+```{r load-model}
+mod <- readModelDb("Tsirizani_2025_ritonavir")
+mod
+```
+
+# Population
+
+170 children were enrolled between January 2019 and March 2021 into the three
+ritonavir-boosted arms (lopinavir N = 51, atazanavir N = 60, darunavir
+N = 59). Median age was 10.5 years (range 3.16-15.6), median weight 26.0 kg
+(14.2-64.2) and median height 131 cm (97.0-169); 51.2% were female
+(Tsirizani 2025 Table 1). The cohort is substantially stunted and underweight
+relative to WHO references -- median weight-for-age Z-score -1.4 (-4.5 to 1.7)
+and height-for-age Z-score -1.3 (-4.4 to 3.6) -- which is worth keeping in mind
+when reading a fat-free-mass-scaled model.
+
+All children were failing first-line ART by WHO virological, CD4 or clinical
+criteria and were starting a boosted PI as second-line therapy, with an NRTI
+backbone of tenofovir alafenamide/emtricitabine (54.7%), abacavir/lamivudine
+(25.3%) or zidovudine/lamivudine (20.0%). No NRTI effect on ritonavir PK was
+found.
+
+Intensive sampling was done after week 6 of study treatment, at pre-dose, 0.5 h
+(TAF/FTC arms only), 1, 2, 4, 6, 8, 12 and 24 h post-dose. Study drugs were
+given under direct observation with a low-fat breakfast (5% fat, ~250 kCal), and
+all non-ART co-medications were deferred at least 2 hours. Of 1,254 ritonavir
+concentrations, 6.9% were below the 0.045 mg/L LLOQ and 3.7% undetectable; these
+were handled by a modified Beal M6 method. One profile was excluded for
+implausibly low concentrations throughout, and all 24 h samples in the lopinavir
+arm were excluded because the 12 h dosing times were insufficiently documented.
+
+```{r population}
+str(readModelDb("Tsirizani_2025_ritonavir")()$population)
+```
+
+# Source trace
+
+Every `ini()` value and every non-obvious `model()` construct, with the place it
+came from. Table 3 typical values apply to the darunavir arm at FFM 21.0 kg on a
+witnessed morning dose. "Data S1" is the supplemental NONMEM control stream
+(`AAC00771-25-s0001.docx`), retrieved from the Europe PMC supplementary-files
+endpoint for PMC12587601.
+
+```{r source-trace, echo = FALSE}
+tibble::tribble(
+  ~Quantity,                        ~Value,       ~Source,
+  "CL/F",                           "10.5 L/h",   "Table 3 'Clearance (L/h)' 10.5 (9.22-11.9)",
+  "Vc/F",                           "54.5 L",     "Table 3 'Central volume of distribution (L)' 54.5 (48.9-60.4)",
+  "Q/F",                            "1.19 L/h",   "Table 3 'Intercompartmental clearance (L/h)' 1.19 (0.851-1.58)",
+  "Vp/F",                           "134 L",      "Table 3 'Peripheral volume of distribution (L)' 134 (38.8-330)",
+  "Relative bioavailability",       "1 FIXED",    "Table 3 'Bioavailability'; Data S1 '$THETA 1 FIX ; 4 BIO'",
+  "Absorption lag",                 "0.981 h",    "Table 3 'Lag time (h)' 0.981 (0.934-1.06)",
+  "Zero-order duration D1",         "2.45 h",     "Table 3 'Zero-order absorption duration (h)' 2.45 (2.05-2.80)",
+  "ka",                             "1.16 1/h",   "Table 3 'First-order absorption rate constant (1/h)' 1.16 (0.893-1.89)",
+  "FFM exponent on CL/F, Q/F",      "0.75 fixed", "Methods 'allometric scaling ... with a fixed exponent of 0.75 and 1'; Data S1 'ALLMCL_FFM = (FFM/TVFFM)**0.75'",
+  "FFM exponent on Vc/F, Vp/F",     "1 fixed",    "Methods, same sentence; Data S1 'ALLMV_FFM = (FFM/TVFFM)'",
+  "FFM reference",                  "21.0 kg",    "Data S1 '$PK: TVFFM = 21.0 ;MEDIAN'; Table 3 footnote b ties it to a 26 kg child",
+  "Atazanavir on rel. F",           "+137%",      "Table 3 'Atazanavir on relative bioavailability (%)' 137 (107-190)",
+  "Lopinavir on rel. F",            "-23.4%",     "Table 3 'Lopinavir on relative bioavailability (%)' -23.4 (-8.20 to -34.4)",
+  "Atazanavir on CL/F",             "+20.7%",     "Table 3 'Atazanavir on clearance (%)' +20.7 (+11.3 to +31.3)",
+  "Evening-dose lag multiplier",    "3.61 fold",  "Table 3 'Night dose additional lag time (Fold)' 3.61 (2.57-4.56); Data S1 gates it on 'PI_BCK_BONE.EQ.3.AND.OCC.EQ.1'",
+  "Occasion-1 F BOV SD inflation",  "2.14 fold",  "Table 3 'Extra variability for unobserved doses' 2.14 (1.53-2.42) + footnote c; Data S1 'IF(OCC.EQ.1)BOVBIO = ETA(9)*EBOV'",
+  "BSV on CL",                      "13.1%",      "Table 3 'Between-subject variability / Clearance (%)' 13.1 (10.2-15.8)",
+  "BOV on rel. F",                  "40.1%",      "Table 3 'Between-occasion variability / Bioavailability (%)' 40.1 (35.2-46.0)",
+  "BOV on lag",                     "62.0%",      "Table 3 'Lag time (%)' 62.0 (54.5-70.2)",
+  "BOV on D1",                      "52.5%",      "Table 3 'Zero-order rate of absorption (%)' 52.5 (42.7-63.0)",
+  "BOV on ka",                      "114%",       "Table 3 'First-order absorption rate constant (%)' 114 (90.0-141)",
+  "Proportional error",             "14.7%",      "Table 3 'Proportional error (%)' 14.7 (13.4-16.1)",
+  "Additive error",                 "0.0152 mg/L","Table 3 'Additive error (mg/L)' 0.0152 (0.0121-0.0184); Data S1 'ADD = THETA(6)+(LLOQ*0.2)'",
+  "Two-compartment disposition",    "structure",  "Results: dOFV = -110 vs one compartment; Data S1 '$SUBROUTINE ADVAN4 TRANS1'",
+  "Lag + zero- then first-order",   "structure",  "Results: dOFV = -488 vs no absorption delay; Data S1 'ALAG1=LAG', 'D1=TVD1*EXP(BOVD1)'",
+  "Dosing by WHO weight band",      "50-200 mg/d","Table 2",
+  "Trial-arm sizes and band counts","Table 1",    "Table 1"
+) |>
+  knitr::kable(caption = "Source trace for Tsirizani_2025_ritonavir.")
+```
+
+## How the variability percentages were read
+
+Table 3 reports every variance component as a percentage. Two readings are
+possible for a log-normal random effect: the raw log-scale standard deviation
+(`omega`), or the log-normal coefficient of variation
+`sqrt(exp(omega^2) - 1)`. The supplemental `$OMEGA` initial estimates settle it
+decisively on the first reading, and the BOV on `ka` is the discriminating row.
+
+```{r omega-convention, echo = FALSE}
+tibble::tribble(
+  ~Component,       ~`Data S1 initial omega^2`, ~`Table 3 (%)`,
+  "BSV CL",         0.0154914,                  13.1,
+  "BOV rel. F",     0.159089,                   40.1,
+  "BOV ka",         1.25373,                    114,
+  "BOV lag",        0.372121,                   62.0,
+  "BOV D1",         0.289698,                   52.5
+) |>
+  dplyr::mutate(
+    `sqrt(omega^2) (%)`            = round(100 * sqrt(`Data S1 initial omega^2`), 1),
+    `sqrt(exp(omega^2)-1) (%)`     = round(100 * sqrt(exp(`Data S1 initial omega^2`) - 1), 1)
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Table 3's percentages are the raw log-scale omega SD, not the",
+      "log-normal CV. The BOV on ka is decisive: 114% printed against",
+      "112% for sqrt(omega^2) and 158% for the CV reading. The Data S1",
+      "values are initial estimates, so agreement to a few percent is",
+      "the most that can be expected."
+    )
+  )
+```
+
+Accordingly the model encodes `omega^2` as the square of Table 3's percentage
+divided by 100 -- for example `etalcl ~ 0.131^2 = 0.017161`.
+
+The five between-subject random effects that the supplement fixes to zero
+(`$OMEGA BLOCK(1) FIX 0` on Vc, ka, F, Vp and Q, plus BOV on CL) are omitted
+rather than written as `~ fixed(0)`. Table 3 lists no such rows, and adding
+zero-variance etas would make OMEGA singular.
+
+# Virtual cohort
+
+The cohort reproduces the CHAPAS-4 design: three arms, WHO weight bands, and the
+Table 2 ritonavir dose for each arm and band.
+
+One deliberate departure: the **same weight distribution is used in all three
+arms**, drawn from Table 1's *pooled* weight-band counts (35 / 45 / 48 / 42 for
+14-19.9, 20-24.9, 25-34.9 and 35+ kg) rather than each arm's own counts. Table 1
+reports a median weight of 26.0 kg in every arm, and uniform sampling within
+bands under the pooled counts reproduces that (the pooled median falls at the
+5th-6th of the 48 children in the 25-34.9 kg band, i.e. about 26.0 kg). Using
+each arm's own band counts instead makes the arm medians drift apart -- 25.0 kg
+for darunavir against 27.1 kg for atazanavir on a first pass -- which biases the
+two arms in *opposite* directions through the allometric term and confounds the
+companion-PI comparison with cohort composition. Weight-matching the arms keeps
+the size covariate as a common random number across arms, so any arm-to-arm
+difference below is attributable to the model rather than to who was sampled.
+
+Each arm therefore holds 170 children, inside the 200-per-arm cap.
+
+```{r cohort-spec}
+# Table 2: ritonavir dose per administration, by arm and WHO weight band.
+# Lopinavir/ritonavir is the only twice-daily arm.
+regimen <- tibble::tribble(
+  ~arm,           ~band,        ~am_mg, ~pm_mg, ~daily_mg,
+  "Lopinavir",    "14-19.9 kg",  50,     50,     100,
+  "Lopinavir",    "20-24.9 kg",  50,     50,     100,
+  "Lopinavir",    "25-34.9 kg", 100,     50,     150,
+  "Lopinavir",    "35+ kg",     100,    100,     200,
+  "Atazanavir",   "14-19.9 kg",  75,      0,      75,
+  "Atazanavir",   "20-24.9 kg",  75,      0,      75,
+  "Atazanavir",   "25-34.9 kg", 100,      0,     100,
+  "Atazanavir",   "35+ kg",     100,      0,     100,
+  "Darunavir",    "14-19.9 kg", 100,      0,     100,
+  "Darunavir",    "20-24.9 kg", 100,      0,     100,
+  "Darunavir",    "25-34.9 kg", 100,      0,     100,
+  "Darunavir",    "35+ kg",     100,      0,     100
+)
+
+# Table 1 POOLED weight-band counts (all 170 children), applied to every arm.
+band_n <- tibble::tribble(
+  ~band,        ~n,
+  "14-19.9 kg", 35L,
+  "20-24.9 kg", 45L,
+  "25-34.9 kg", 48L,
+  "35+ kg",     42L
+)
+
+band_wt <- tibble::tribble(
+  ~band,        ~wt_lo, ~wt_hi,
+  "14-19.9 kg", 14.2,   19.9,
+  "20-24.9 kg", 20.0,   24.9,
+  "25-34.9 kg", 25.0,   34.9,
+  "35+ kg",     35.0,   50.0
+)
+
+# The paper never reports the equation that produced its FFM data column, so
+# FFM is scaled from weight using the paper's own anchor: FFM 21.0 kg (Data S1)
+# for a 26 kg child (Table 3 footnote b). See "Assumptions and deviations".
+FFM_PER_KG <- 21.0 / 26.0
+
+rxode2::rxSetSeed(20250926)
+set.seed(20250926)
+
+# One weight sample, shared by all three arms (weight-matched design).
+weights <-
+  band_n |>
+  dplyr::left_join(band_wt, by = "band") |>
+  dplyr::rowwise() |>
+  dplyr::mutate(WT = list(stats::runif(n, wt_lo, wt_hi))) |>
+  dplyr::ungroup() |>
+  tidyr::unnest(WT) |>
+  dplyr::mutate(subject = dplyr::row_number()) |>
+  dplyr::select(subject, band, WT)
+
+cohort <-
+  weights |>
+  tidyr::crossing(arm = c("Lopinavir", "Atazanavir", "Darunavir")) |>
+  dplyr::left_join(regimen, by = c("arm", "band")) |>
+  dplyr::arrange(arm, subject) |>
+  dplyr::mutate(
+    id                = dplyr::row_number(),
+    FFM               = WT * FFM_PER_KG,
+    CONMED_LOPINAVIR  = as.integer(arm == "Lopinavir"),
+    CONMED_ATAZANAVIR = as.integer(arm == "Atazanavir")
+  ) |>
+  dplyr::select(id, subject, arm, band, WT, FFM,
+                CONMED_LOPINAVIR, CONMED_ATAZANAVIR, am_mg, pm_mg, daily_mg)
+
+cohort |>
+  dplyr::count(arm, name = "n_subjects") |>
+  knitr::kable(caption = "Simulated cohort size by arm (200-per-arm cap respected).")
+```
+
+```{r cohort-demog, echo = FALSE}
+cohort |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    `Median WT (kg)`  = round(stats::median(WT), 1),
+    `Min WT (kg)`     = round(min(WT), 1),
+    `Max WT (kg)`     = round(max(WT), 1),
+    `Median FFM (kg)` = round(stats::median(FFM), 1),
+    .groups = "drop"
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Simulated weight distribution by arm; identical across arms by design.",
+      "Compare Tsirizani 2025 Table 1: median weight 26.0 kg in every arm",
+      "(range 14.2-64.2 kg overall). The model's allometric reference is",
+      "FFM 21.0 kg, so the simulated cohort sits essentially on it."
+    )
+  )
+```
+
+# Simulation
+
+Concentrations were sampled at week 6 of therapy, so the target is steady
+state. The terminal half-life of this model is long -- the peripheral
+compartment is a deep, low-flux sink (`Q/F` 1.19 L/h against `CL/F` 10.5 L/h,
+into `Vp/F` 134 L) -- so a run-in of 35 days is used and only the final 24 h
+interval is observed.
+
+```{r halflife, echo = FALSE}
+kel <- 10.5 / 54.5
+k12 <- 1.19 / 54.5
+k21 <- 1.19 / 134
+s   <- kel + k12 + k21
+p   <- kel * k21
+lam1 <- (s + sqrt(s^2 - 4 * p)) / 2
+lam2 <- (s - sqrt(s^2 - 4 * p)) / 2
+tibble::tibble(
+  Phase          = c("Distribution", "Terminal"),
+  `Rate (1/h)`   = round(c(lam1, lam2), 5),
+  `Half-life (h)`= round(log(2) / c(lam1, lam2), 1)
+) |>
+  knitr::kable(
+    caption = paste0(
+      "Eigenvalues of the Table 3 typical two-compartment system at FFM ",
+      "21.0 kg. The 35-day run-in reaches ",
+      round(100 * (1 - exp(-lam2 * 35 * 24)), 2),
+      "% of the terminal-phase steady state."
+    )
+  )
+```
+
+Dose records carry `rate = -2` so `rxode2` honours the modelled zero-order
+duration `dur(depot)`; a plain bolus would collapse the zero-order phase and
+bias Cmax upward. Observations are placed on `central`, the ODE state, never on
+the algebraic observable `Cc`.
+
+`OCC` does double duty in this model: it selects the between-occasion eta *and*
+identifies the evening dose in the twice-daily arm. Over a long run-in the
+semantically-correct label for every unwitnessed run-in dose would be `OCC = 1`,
+but that would also apply the evening-dose absorption lag to run-in *morning*
+doses. Absorption lag changes the shape of a dose's input, not the amount
+absorbed, so the steady-state AUC over the final interval is identical either
+way; occasions are therefore assigned by time of day (morning `OCC = 2`, evening
+`OCC = 1`) so each run-in dose gets its correct lag, and the final witnessed
+morning dose is `OCC = 2`.
+
+```{r events}
+RUN_IN_DAYS <- 35
+T0          <- RUN_IN_DAYS * 24   # time of the witnessed morning dose
+
+covs <- c("FFM", "CONMED_LOPINAVIR", "CONMED_ATAZANAVIR")
+
+# Morning doses: every 24 h through the witnessed dose at T0. OCC = 2.
+dose_am <-
+  cohort |>
+  dplyr::select(id, dplyr::all_of(covs), am_mg) |>
+  tidyr::crossing(time = seq(0, T0, by = 24)) |>
+  dplyr::mutate(amt = am_mg, OCC = 2L) |>
+  dplyr::select(-am_mg)
+
+# Evening doses (lopinavir arm only): 12 h after each morning dose, including
+# the one inside the observation window at T0 + 12. OCC = 1, so these carry the
+# 3.61-fold longer absorption lag and the 2.14-fold inflated bioavailability BOV.
+dose_pm <-
+  cohort |>
+  dplyr::filter(pm_mg > 0) |>
+  dplyr::select(id, dplyr::all_of(covs), pm_mg) |>
+  tidyr::crossing(time = seq(12, T0 + 12, by = 24)) |>
+  dplyr::mutate(amt = pm_mg, OCC = 1L) |>
+  dplyr::select(-pm_mg)
+
+doses <-
+  dplyr::bind_rows(dose_am, dose_pm) |>
+  dplyr::mutate(evid = 1L, cmt = "depot", rate = -2)
+
+# Dense observation grid over the final dosing interval, on the ODE state.
+obs <-
+  cohort |>
+  dplyr::select(id, dplyr::all_of(covs)) |>
+  tidyr::crossing(time = T0 + seq(0, 24, by = 0.25)) |>
+  dplyr::mutate(amt = 0, evid = 0L, cmt = "central", rate = 0, OCC = 2L)
+
+events <-
+  dplyr::bind_rows(doses, obs) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+nrow(events)
+```
+
+```{r simulate}
+rxode2::rxSetSeed(20250926)
+sim <-
+  rxode2::rxSolve(mod, events, addDosing = FALSE) |>
+  as.data.frame() |>
+  dplyr::mutate(tnca = time - T0) |>
+  dplyr::left_join(dplyr::select(cohort, id, arm, band, WT, daily_mg), by = "id")
+
+dplyr::glimpse(dplyr::select(sim, id, arm, band, tnca, Cc, cl, vc, fdepot))
+```
+
+# Replicating the published figures
+
+## Figure 1 -- concentration-time profiles by boosted PI
+
+Tsirizani 2025 Figure 1 is a visual predictive check stratified by companion PI,
+showing the 5th, 50th and 95th percentiles. The lopinavir panel spans 0-12 h
+because the 24 h samples in that arm were excluded; the once-daily arms span
+0-24 h.
+
+```{r fig1, fig.height = 4}
+vpc_bands <-
+  sim |>
+  dplyr::filter(!(arm == "Lopinavir" & tnca > 12)) |>
+  dplyr::group_by(arm, tnca) |>
+  dplyr::summarise(
+    p05 = stats::quantile(Cc, 0.05),
+    p50 = stats::median(Cc),
+    p95 = stats::quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot2::ggplot(vpc_bands, ggplot2::aes(x = tnca)) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = p05, ymax = p95), alpha = 0.25,
+                       fill = "steelblue") +
+  ggplot2::geom_line(ggplot2::aes(y = p50), linewidth = 0.9) +
+  ggplot2::geom_hline(yintercept = 0.045, linetype = "dotted") +
+  ggplot2::facet_wrap(~arm) +
+  ggplot2::labs(
+    title = "Replicates Figure 1 of Tsirizani 2025",
+    subtitle = "Median (line) and 5th-95th percentile band; dotted line is the 0.045 mg/L LLOQ",
+    x = "Time after the witnessed morning dose (h)",
+    y = "Ritonavir concentration (mg/L)"
+  ) +
+  ggplot2::theme_bw()
+```
+
+The ordering and separation of the arms is the paper's headline result:
+atazanavir well above darunavir, lopinavir below it and flatter -- the lopinavir
+profile is damped both by the 23.4% lower relative bioavailability and by the
+split of the daily dose across two administrations.
+
+## Figure 2 -- covariate effects on AUC(0-24 h)
+
+Figure 2 is a forest plot of AUC(0-24 h) ratios against a reference child of
+26 kg on 100 mg ritonavir with 800 mg darunavir, with every weight category also
+held at 100 mg ritonavir. Its printed ratios are the sharpest validation target
+in the paper, because they are ratios of typical values and so are free of
+residual error and of between-subject variability.
+
+Two of the three are also **free of the fat-free-mass assumption**: the
+companion-PI ratios compare arms at the same weight, so the FFM term cancels
+exactly. The weight ratios depend only on FFM being proportional to weight, not
+on the value of the constant.
+
+```{r fig2-setup}
+# Typical-value (deterministic) solves: zero all random effects.
+mod_typ <- rxode2::zeroRe(mod)
+
+fig2_cases <- tibble::tribble(
+  ~label,     ~facet,      ~WT,   ~CONMED_LOPINAVIR, ~CONMED_ATAZANAVIR, ~published,
+  "REF",      "Reference", 26.0,  0L,                0L,                 1.00,
+  "17 kg",    "Weight",    17.0,  0L,                0L,                 1.41,
+  "22.5 kg",  "Weight",    22.5,  0L,                0L,                 1.18,
+  "26 kg",    "Weight",    26.0,  0L,                0L,                 1.00,
+  "30 kg",    "Weight",    30.0,  0L,                0L,                 0.931,
+  "35 kg",    "Weight",    35.0,  0L,                0L,                 0.845,
+  "DRV",      "Boosted PI", 26.0, 0L,                0L,                 1.00,
+  "LPV",      "Boosted PI", 26.0, 1L,                0L,                 0.762,
+  "ATV",      "Boosted PI", 26.0, 0L,                1L,                 1.99
+) |>
+  dplyr::mutate(id = dplyr::row_number(), FFM = WT * FFM_PER_KG)
+
+# All Figure 2 cases hold the ritonavir dose at 100 mg/day. The lopinavir case
+# is twice daily (50 mg AM + 50 mg PM) because that is how the arm is dosed;
+# steady-state AUC over 24 h is unaffected by the split, which the check below
+# confirms.
+f2_am <-
+  fig2_cases |>
+  dplyr::select(id, FFM, CONMED_LOPINAVIR, CONMED_ATAZANAVIR) |>
+  tidyr::crossing(time = seq(0, T0, by = 24)) |>
+  dplyr::mutate(amt = ifelse(CONMED_LOPINAVIR == 1L, 50, 100), OCC = 2L)
+
+f2_pm <-
+  fig2_cases |>
+  dplyr::filter(CONMED_LOPINAVIR == 1L) |>
+  dplyr::select(id, FFM, CONMED_LOPINAVIR, CONMED_ATAZANAVIR) |>
+  tidyr::crossing(time = seq(12, T0 + 12, by = 24)) |>
+  dplyr::mutate(amt = 50, OCC = 1L)
+
+f2_obs <-
+  fig2_cases |>
+  dplyr::select(id, FFM, CONMED_LOPINAVIR, CONMED_ATAZANAVIR) |>
+  tidyr::crossing(time = T0 + seq(0, 24, by = 0.05)) |>
+  dplyr::mutate(amt = 0, evid = 0L, cmt = "central", rate = 0, OCC = 2L)
+
+f2_events <-
+  dplyr::bind_rows(
+    dplyr::mutate(dplyr::bind_rows(f2_am, f2_pm), evid = 1L, cmt = "depot", rate = -2),
+    f2_obs
+  ) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+f2_sim <-
+  rxode2::rxSolve(mod_typ, f2_events, addDosing = FALSE) |>
+  as.data.frame() |>
+  dplyr::mutate(tnca = time - T0)
+```
+
+`AUC(0-24 h)` over the final interval is obtained analytically with the
+trapezoidal rule on the 0.05 h grid, which is dense enough that the numerical
+error is far below the comparison tolerance.
+
+```{r fig2-auc}
+auc24 <- function(t, c) sum(diff(t) * (utils::head(c, -1) + utils::tail(c, -1)) / 2)
+
+fig2_obs <-
+  f2_sim |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(auc = auc24(tnca, Cc), .groups = "drop")
+
+fig2 <-
+  fig2_cases |>
+  dplyr::left_join(fig2_obs, by = "id") |>
+  dplyr::group_by(facet) |>
+  dplyr::mutate(
+    # Within each facet the reference row is the 26 kg darunavir case.
+    ref_auc   = auc[abs(WT - 26) < 1e-9 & CONMED_LOPINAVIR == 0L & CONMED_ATAZANAVIR == 0L][1],
+    simulated = auc / ref_auc
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(pct_diff = 100 * (simulated / published - 1))
+
+fig2 |>
+  dplyr::select(facet, label, published, simulated, pct_diff) |>
+  dplyr::rename(
+    "Covariate group" = facet,
+    "Level"           = label,
+    "Published ratio" = published,
+    "Simulated ratio" = simulated,
+    "% diff"          = pct_diff
+  ) |>
+  knitr::kable(
+    caption = "Simulated AUC(0-24 h) ratios against the values printed beside Tsirizani 2025 Figure 2.",
+    digits = 3
+  )
+```
+
+```{r fig2-plot, fig.height = 4}
+ggplot2::ggplot(fig2, ggplot2::aes(x = simulated, y = factor(label, levels = rev(label)))) +
+  ggplot2::geom_vline(xintercept = 1, linetype = "dashed") +
+  ggplot2::geom_point(ggplot2::aes(colour = "Simulated"), size = 2.5) +
+  ggplot2::geom_point(ggplot2::aes(x = published, colour = "Published"), size = 2.5,
+                      shape = 4, stroke = 1.2) +
+  ggplot2::facet_grid(facet ~ ., scales = "free_y", space = "free_y") +
+  ggplot2::scale_colour_manual(values = c(Simulated = "steelblue", Published = "firebrick")) +
+  ggplot2::labs(
+    title = "Replicates Figure 2 of Tsirizani 2025",
+    subtitle = "Ritonavir AUC(0-24 h) relative to a 26 kg child on 100 mg ritonavir with darunavir",
+    x = "Ratio to reference", y = NULL, colour = NULL
+  ) +
+  ggplot2::theme_bw()
+```
+
+```{r fig2-gate}
+pi_rows <- dplyr::filter(fig2, facet == "Boosted PI")
+wt_rows <- dplyr::filter(fig2, facet == "Weight")
+
+stopifnot(
+  # The companion-PI ratios are exact properties of the encoded covariate
+  # model -- the FFM term cancels because both arms sit at 26 kg -- so they
+  # are held to a tight bound. A sign error, a percent-vs-fraction slip, or a
+  # swapped reference category would blow this immediately.
+  max(abs(pi_rows$pct_diff)) < 3,
+  # The weight ratios additionally assume FFM is proportional to weight. The
+  # residual gap is the curvature of the real (unreported) FFM equation across
+  # 17-35 kg, which is why this bound is looser than the one above.
+  max(abs(wt_rows$pct_diff)) < 8
+)
+```
+
+The companion-PI ratios land within `r sprintf("%.1f%%", max(abs(pi_rows$pct_diff)))`
+of the published values. The weight ratios are within
+`r sprintf("%.1f%%", max(abs(wt_rows$pct_diff)))`, and every simulated weight
+ratio is *further from 1* than the published one -- exactly the signature of a
+real FFM equation in which fat-free mass grows more slowly than total weight, so
+that the true clearance trend across the weight bands is shallower than a
+constant FFM/weight ratio predicts.
+
+## Closed-form steady-state check
+
+For a linear model at steady state, the AUC over one dosing interval is
+`F_rel * daily dose / (CL/F)` exactly, whatever the absorption model does. That
+identity is computed here from the **printed Table 3 numbers**, not from the
+model object, so it is a genuine check on the encoded ODE rather than a
+tautology.
+
+```{r closed-form}
+closed_form <- tibble::tribble(
+  ~arm,         ~f_rel,           ~cl_mult,     ~daily_mg,
+  "Darunavir",  1,                1,            100,
+  "Lopinavir",  1 - 0.234,        1,            100,
+  "Atazanavir", 1 + 1.37,         1 + 0.207,    100
+) |>
+  dplyr::mutate(
+    # CL/F = 10.5 L/h at FFM 21.0 kg (Table 3 + Data S1 TVFFM), the reference
+    # 26 kg child. Table 3 fixes the FFM exponent on clearance at 0.75.
+    cl_ref     = 10.5 * cl_mult,
+    auc_closed = f_rel * daily_mg / cl_ref
+  )
+
+ode_auc <-
+  fig2 |>
+  dplyr::filter(facet == "Boosted PI") |>
+  dplyr::transmute(
+    arm = c(DRV = "Darunavir", LPV = "Lopinavir", ATV = "Atazanavir")[label],
+    auc_ode = auc
+  )
+
+cf <-
+  closed_form |>
+  dplyr::left_join(ode_auc, by = "arm") |>
+  dplyr::mutate(pct_diff = 100 * (auc_ode / auc_closed - 1))
+
+cf |>
+  dplyr::select(arm, auc_closed, auc_ode, pct_diff) |>
+  dplyr::rename(
+    "Arm"                       = arm,
+    "Closed form (mg*h/L)"      = auc_closed,
+    "ODE solve (mg*h/L)"        = auc_ode,
+    "% diff"                    = pct_diff
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Steady-state AUC(0-24 h) for a 26 kg child on 100 mg/day ritonavir:",
+      "F_rel * dose / (CL/F) from Table 3 against the numerical ODE solve.",
+      "Both sides of the comparison use the same drawn parameters, so the",
+      "residual is pure numerical error (finite run-in plus trapezoidal",
+      "integration) and a tight bound is the correct assertion."
+    ),
+    digits = 4
+  )
+
+stopifnot(max(abs(cf$pct_diff)) < 1)
+```
+
+The lopinavir row is the informative one: it is dosed 50 mg twice daily against
+100 mg once daily for the other two arms, yet reproduces the same closed form,
+confirming that the evening-dose lag and the split dosing redistribute exposure
+within the interval without changing its integral.
+
+# PKNCA validation
+
+Non-compartmental analysis is run on the stochastic cohort with `PKNCA`, over
+the single steady-state dosing interval. Two grids are used, because they answer
+different questions:
+
+* the **dense** 0.25 h grid, which estimates the true AUC of the simulated
+  profile;
+* the **paper's sparse grid** (0, 0.5, 1, 2, 4, 6, 8, 12 and 24 h post-dose),
+  which is what Tsirizani 2025 actually had available when it computed the
+  "model-based AUC(0-24 h)" of Table 4.
+
+```{r pknca}
+nca_conc_dense <-
+  sim |>
+  dplyr::select(id, arm, band, tnca, Cc) |>
+  dplyr::filter(!is.na(Cc))
+
+paper_times <- c(0, 0.5, 1, 2, 4, 6, 8, 12, 24)
+nca_conc_sparse <- dplyr::filter(nca_conc_dense, tnca %in% paper_times)
+
+nca_dose <-
+  dplyr::bind_rows(
+    dplyr::transmute(cohort, id, arm, band, tnca = 0,  dose = am_mg),
+    dplyr::transmute(dplyr::filter(cohort, pm_mg > 0), id, arm, band,
+                     tnca = 12, dose = pm_mg)
+  )
+
+intervals <- data.frame(
+  start = 0, end = 24,
+  auclast = TRUE, cmax = TRUE, tmax = TRUE, cav = TRUE, cmin = TRUE
+)
+
+run_nca <- function(conc) {
+  o_conc <- PKNCA::PKNCAconc(
+    as.data.frame(conc), Cc ~ tnca | arm + id,
+    concu = "mg/L", timeu = "h"
+  )
+  o_dose <- PKNCA::PKNCAdose(
+    as.data.frame(nca_dose), dose ~ tnca | arm + id,
+    doseu = "mg"
+  )
+  PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals),
+                verbose = FALSE)
+}
+
+res_dense  <- run_nca(nca_conc_dense)
+res_sparse <- run_nca(nca_conc_sparse)
+
+long_of <- function(res) {
+  as.data.frame(res) |>
+    dplyr::filter(PPTESTCD %in% c("auclast", "cmax", "tmax", "cav", "cmin")) |>
+    dplyr::left_join(dplyr::select(cohort, id, band), by = "id") |>
+    dplyr::select(id, arm, band, PPTESTCD, PPORRES)
+}
+
+sim_dense  <- long_of(res_dense)
+sim_sparse <- long_of(res_sparse)
+
+sim_dense |>
+  dplyr::group_by(arm, PPTESTCD) |>
+  dplyr::summarise(
+    median = stats::median(PPORRES),
+    q25    = stats::quantile(PPORRES, 0.25),
+    q75    = stats::quantile(PPORRES, 0.75),
+    .groups = "drop"
+  ) |>
+  tidyr::pivot_wider(names_from = PPTESTCD,
+                     values_from = c(median, q25, q75)) |>
+  knitr::kable(caption = "Dense-grid NCA summary by arm.", digits = 3)
+```
+
+```{r pknca-grid-effect}
+grid_effect <-
+  dplyr::inner_join(
+    dplyr::filter(sim_dense,  PPTESTCD == "auclast") |>
+      dplyr::rename(dense = PPORRES),
+    dplyr::filter(sim_sparse, PPTESTCD == "auclast") |>
+      dplyr::rename(sparse = PPORRES),
+    by = c("id", "arm", "band", "PPTESTCD")
+  ) |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    `Dense grid`  = stats::median(dense),
+    `Paper grid`  = stats::median(sparse),
+    `Sparse/dense` = stats::median(sparse) / stats::median(dense),
+    .groups = "drop"
+  )
+
+grid_effect |>
+  knitr::kable(
+    caption = paste(
+      "Median AUC(0-24 h) on the dense 0.25 h grid versus the paper's nine",
+      "sampling times, by arm."
+    ),
+    digits = 3
+  )
+```
+
+The sparse grid turns out to matter little, and not in one direction: the
+sparse/dense ratio spans
+`r sprintf("%.3f", min(grid_effect[["Sparse/dense"]]))`-`r sprintf("%.3f", max(grid_effect[["Sparse/dense"]]))`.
+Two errors of opposite sign roughly cancel -- linear interpolation across the
+12-24 h gap over-reads a convex declining curve, while the 0-4 h absorption
+phase is under-sampled -- and the lopinavir arm, whose second dose lands at
+12 h, is the only one with a visible (about 5% low) bias. The sparse-grid
+results are carried into the next section anyway, because they are the closest
+match to what Tsirizani 2025 actually had in hand, but nothing below turns on
+the choice of grid.
+
+# Comparison against the published NCA
+
+Tsirizani 2025 Table 4 reports model-based AUC(0-24 h) and *observed* Cmax,
+stratified by companion PI. The two columns are not equally comparable, and the
+distinction matters for reading the table below:
+
+* **AUC(0-24 h) is model-based** -- a model output, so simulating it is a
+  model-versus-model comparison and disagreement points at the encoding.
+* **Cmax is observed** -- the largest of nine measured samples in real children.
+  The paper never claims its model reproduces those maxima except through the
+  Figure 1 VPC. With between-occasion variability of 114% on `ka`, 62% on the
+  lag and 52% on the zero-order duration, individual peaks are enormously
+  variable in both height and timing, and a nine-point grid catches the true
+  peak only sometimes. Cmax is therefore the weakest of the checks in this
+  vignette, not the strongest.
+
+The pooled per-arm rows are the primary comparison; band-level rows are shown
+descriptively because each rests on only 11-18 children in the paper.
+
+```{r nca-comparison}
+published_arm <- tibble::tribble(
+  ~arm,          ~auclast, ~cmax,
+  "Lopinavir",    9.83,    0.66,
+  "Atazanavir",  17.6,     2.38,
+  "Darunavir",    8.31,    1.12
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = dplyr::filter(sim_sparse, PPTESTCD %in% c("auclast", "cmax")),
+  reference     = published_arm,
+  by            = "arm",
+  units         = c(auclast = "mg*h/L", cmax = "mg/L"),
+  tolerance_pct = 20
+)
+
+cmp |>
+  dplyr::rename("Boosted PI" = arm) |>
+  knitr::kable(
+    caption = paste(
+      "Simulated steady-state NCA on the paper's sampling grid versus",
+      "Tsirizani 2025 Table 4 medians (AUC model-based, Cmax observed).",
+      "* differs from the published median by more than 20%."
+    ),
+    digits = 3
+  )
+```
+
+Before asserting anything, the Monte-Carlo error of these medians has to be
+known. `rxode2::rxSetSeed()` fixes the random stream per solver thread but not
+across thread counts, so a different machine -- or the same machine with a
+different core count -- draws a different cohort. An assertion with less
+headroom than the Monte-Carlo error would be a coin flip, not a check.
+
+```{r mcse}
+mcse <-
+  sim_sparse |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmax")) |>
+  dplyr::group_by(arm, PPTESTCD) |>
+  dplyr::summarise(
+    median = stats::median(PPORRES),
+    # Bootstrap standard error of the median, expressed as a percentage of it.
+    mcse_pct = 100 * stats::sd(replicate(
+      500, stats::median(sample(PPORRES, length(PPORRES), replace = TRUE))
+    )) / stats::median(PPORRES),
+    .groups = "drop"
+  )
+
+mcse |>
+  dplyr::mutate(PPTESTCD = nlmixr2lib::ncaParamLabel(PPTESTCD)) |>
+  dplyr::rename(
+    "Boosted PI"        = arm,
+    "NCA parameter"     = PPTESTCD,
+    "Simulated median"  = median,
+    "MC-SE (% of median)" = mcse_pct
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Bootstrap Monte-Carlo standard error of each simulated median",
+      "(170 children per arm). Cmax is roughly twice as noisy as AUC,",
+      "because the 114% between-occasion variability on ka scatters both the",
+      "height and the timing of individual peaks."
+    ),
+    digits = 2
+  )
+```
+
+```{r nca-comparison-gate}
+gate <-
+  cmp |>
+  dplyr::mutate(pct = suppressWarnings(as.numeric(gsub("[^0-9.-]", "", `% diff`))))
+
+auc_gate <- dplyr::filter(gate, grepl("AUC", gate[[1]], fixed = TRUE))
+
+# The structural gate on this model is NOT this comparison -- it is the
+# deterministic pair above: the Figure 2 companion-PI ratios (held to 3%) and
+# the closed-form steady-state identity (held to 1%). Those are exact,
+# thread-count-independent, and strictly better at catching a mis-transcription:
+# a percent-versus-fraction slip on the atazanavir clearance effect would move
+# the Figure 2 atazanavir ratio by 17% and blow its 3% bound instantly, while
+# barely moving a cohort median.
+#
+# This comparison is against published medians of 51-60 real children, filtered
+# through an unreported FFM equation and an unknown within-band weight
+# distribution, and its own Monte-Carlo error is 4-7% (above). It is therefore
+# asserted on the CENTRE, with headroom of at least twice the Monte-Carlo error,
+# so that a re-draw on a machine with a different core count cannot flip it.
+stopifnot(
+  nrow(auc_gate) == 3L,
+  stats::median(abs(gate$pct)) < 20,
+  all(abs(gate$pct) < 30)
+)
+```
+
+```{r nca-comparison-bands, echo = FALSE}
+published_band <- tibble::tribble(
+  ~arm,          ~band,        ~auclast, ~cmax,
+  "Lopinavir",   "14-19.9 kg",  8.57,    0.54,
+  "Lopinavir",   "20-24.9 kg", 10.3,     0.52,
+  "Lopinavir",   "25-34.9 kg", 11.3,     1.04,
+  "Lopinavir",   "35+ kg",      9.83,    0.80,
+  "Atazanavir",  "14-19.9 kg", 19.8,     2.68,
+  "Atazanavir",  "20-24.9 kg", 14.7,     2.30,
+  "Atazanavir",  "25-34.9 kg", 20.3,     2.76,
+  "Atazanavir",  "35+ kg",     14.2,     1.76,
+  "Darunavir",   "14-19.9 kg", 11.8,     1.63,
+  "Darunavir",   "20-24.9 kg",  9.68,    1.27,
+  "Darunavir",   "25-34.9 kg",  7.86,    1.14,
+  "Darunavir",   "35+ kg",      6.95,    0.81
+)
+
+sim_band <-
+  sim_sparse |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmax")) |>
+  dplyr::group_by(arm, band, PPTESTCD) |>
+  dplyr::summarise(simulated = stats::median(PPORRES), .groups = "drop")
+
+published_band |>
+  tidyr::pivot_longer(c(auclast, cmax), names_to = "PPTESTCD",
+                      values_to = "published") |>
+  dplyr::left_join(sim_band, by = c("arm", "band", "PPTESTCD")) |>
+  dplyr::mutate(
+    PPTESTCD = nlmixr2lib::ncaParamLabel(PPTESTCD),
+    pct_diff = 100 * (simulated / published - 1)
+  ) |>
+  dplyr::rename(
+    "Boosted PI"  = arm,
+    "Weight band" = band,
+    "Parameter"   = PPTESTCD,
+    "Published"   = published,
+    "Simulated"   = simulated,
+    "% diff"      = pct_diff
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Descriptive band-level comparison against Tsirizani 2025 Table 4.",
+      "Band medians in the paper rest on 11-18 children each, so scatter of",
+      "this size in both directions is expected and no assertion is made on",
+      "individual rows."
+    ),
+    digits = 3
+  )
+```
+
+The pooled per-arm agreement is within
+`r sprintf("%.0f%%", max(abs(auc_gate$pct)))` on the model-based AUC in all
+three arms and within `r sprintf("%.0f%%", max(abs(gate$pct)))` on the observed
+Cmax, and it reproduces the paper's central finding quantitatively: atazanavir
+roughly doubles ritonavir exposure relative to darunavir, and lopinavir sits
+slightly below it.
+
+The band-level rows scatter in both directions without a systematic trend, which
+is what a comparison of 11-18-child published medians against a simulated cohort
+should look like. The one row that stands out is atazanavir at 25-34.9 kg
+(published AUC 20.3 mg*h/L, simulated 15.2), and it is worth noting that the
+published value is *not* monotone across the atazanavir bands -- 19.8, 14.7,
+20.3, 14.2 -- while the model, whose only weight-related term is a monotone
+allometric one, cannot reproduce a zig-zag of that shape at any parameter values.
+The alternation is most likely small-sample noise in bands of 12-18 children,
+compounded by the footnoted children who received 100 mg instead of 75 mg in the
+two lightest bands.
+
+```{r cmin-note, echo = FALSE}
+sim_sparse |>
+  dplyr::filter(PPTESTCD == "cmin") |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    `Median Cmin (mg/L)` = round(stats::median(PPORRES), 3),
+    `Fraction below LLOQ 0.045 mg/L` = round(mean(PPORRES < 0.045), 3),
+    .groups = "drop"
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Simulated end-of-interval concentrations. Tsirizani 2025 reports that",
+      "6.9% of the 1,254 measured concentrations were below the 0.045 mg/L",
+      "LLOQ and 3.7% undetectable; troughs are where those records come from."
+    )
+  )
+```
+
+# Assumptions and deviations
+
+## Values not stated in the paper
+
+* **The fat-free-mass equation is not reported.** `FFM` entered the analysis as
+  a pre-computed data column (`$INPUT ... FFM`), and the Methods cite only
+  Holford & Anderson 2017 (reference 21) for the allometric-size *theory*, not
+  a prediction equation. Neither the main text nor the supplement gives the
+  formula, so no equation is imported here. Instead FFM is scaled from weight
+  using the paper's own anchor: `TVFFM = 21.0` kg (Data S1) for the 26 kg child
+  that Table 3 footnote b names as the reference, i.e. `FFM = 0.808 * WT`. This
+  is an approximation -- fat-free mass does not grow in strict proportion to
+  weight across 14-64 kg in children -- and the Figure 2 weight-ratio
+  comparison above quantifies the resulting error at under 6%, with a
+  consistent sign. A user with measured weight, height, age and sex should
+  supply `FFM` directly rather than rely on this scaling.
+* **The FFM reference value 21.0 kg is recoverable only from the supplement.**
+  The main text gives the 26 kg weight anchor but never the corresponding
+  fat-free mass. Without Data S1 the allometric term could not be reproduced at
+  all.
+
+## Reconciling the additive residual error
+
+Data S1 builds the additive error as `ADD = THETA(6) + (LLOQ * 0.2)` with
+`LLOQ = 0.045`, so the total additive standard deviation at an uncensored record
+is `THETA(6) + 0.009`. Table 3's printed 0.0152 mg/L is that **total**, not
+`THETA(6)`: the control-stream initial estimate is `THETA(6) = 0.00647`, and
+`0.0152 - 0.009 = 0.0062` is a 4% move from it, in line with every other
+parameter's initial-to-final drift (1-8%, except the night-lag term at 23%).
+Reading 0.0152 as `THETA(6)` itself would require a 135% move, far outside that
+pattern. The model therefore encodes `addSd = 0.0152` mg/L, which is both the
+printed value and the additive SD that actually applies to a measurable
+concentration.
+
+The censoring machinery in Data S1 -- the further `CENS_THR * 0.5` inflation on
+M6-censored records, and the `ADD = 1e10` blanking of trailing undetectable
+values -- is data-handling for estimation, not part of the predictive model, and
+is deliberately not encoded.
+
+## Internal inconsistencies in the source
+
+* **Table 1's lopinavir dose row is per administration, not per day.** Table 1
+  reports "RTV total daily dose (mg)" for the lopinavir arm as 100 [50.0-100],
+  but Table 2 gives that arm 100-200 mg of ritonavir per *day* (up to 2 + 2
+  tablets of 200/50 mg lopinavir/ritonavir). The accompanying mg/kg row settles
+  it: 2.65 mg/kg [2.02-4.00] against a 26 kg median implies about 69 mg, and the
+  smallest weight band on a true 100 mg/day would already exceed 5 mg/kg. The
+  once-daily arms have no such ambiguity, and their ranges reconcile exactly
+  (atazanavir 100/64.2 = 1.56 and 100/14.5 = 6.90; darunavir 100/47.0 = 2.13 and
+  100/14.5 = 6.90). Simulation therefore uses the Table 2 daily doses.
+* **The atazanavir clearance effect is +20.7% in Table 3 and 20.0% in the
+  Results text.** Table 3, the final-parameter table, is used; the control
+  stream's initial estimate (1.20875) corroborates 20.7% over 20.0%.
+* **The Discussion states lopinavir lowers AUC(0-24 h) by 34.8%.** The ratio
+  printed beside Figure 2 is 0.762 (95% CI 0.698-0.847), i.e. -23.8%, which
+  matches Table 3's -23.4% bioavailability effect and the closed-form
+  calculation above. The 34.8% figure is not reproducible from any combination
+  of the published parameters and is treated as an error in the Discussion;
+  the paired atazanavir figure in the same sentence (+99.0%) does match
+  Figure 2's 1.99 and is used as published.
+* **The Discussion's summary paragraph says atazanavir "slightly reduced
+  clearance".** Table 3, the Results text and a later Discussion paragraph all
+  say clearance is *higher* with atazanavir. The increase is encoded.
+* **Table 3's between-occasion row for the zero-order phase is labelled
+  "Zero-order rate of absorption (%)", but the parameter is a duration.** The
+  control stream carries that random effect on `D1` (`D1 = TVD1*EXP(BOVD1)`),
+  and Table 3's own structural row two lines above is "Zero-order absorption
+  duration (h)". The 52.5% is therefore variability in the *duration*, which is
+  how it is encoded (`etaiov_d1_*`); the word "rate" in that one label is loose.
+
+## Modelling choices
+
+* **Zero-variance random effects are omitted, not encoded as `fixed(0)`.** Data
+  S1 fixes between-subject variability on Vc, ka, F, Vp and Q, and
+  between-occasion variability on CL, to zero. Writing them as `~ fixed(0)`
+  would make OMEGA singular; Table 3 lists no such rows either.
+* **Occasion assignment during the simulated run-in.** `OCC` both selects the
+  BOV eta and identifies the evening dose. Run-in doses are labelled by time of
+  day so each gets its correct absorption lag; the steady-state AUC of the final
+  interval is unaffected, since absorption lag changes a dose's input shape and
+  not the amount absorbed. The witnessed dose is `OCC = 2`, matching the Table 3
+  reference condition.
+* **Weight is sampled uniformly within each WHO band, and matched across
+  arms.** Table 1 reports band counts and a per-arm median weight of 26.0 kg but
+  not the within-band distribution, so uniform sampling is the least-assumption
+  choice; it reproduces the reported 26.0 kg median when the *pooled* band
+  counts are used (the simulated median is 26.3 kg). The same weight vector is
+  given to all three arms so that arm-to-arm differences in the comparison
+  tables are attributable to the model rather than to cohort composition -- an
+  earlier draft using each arm's own band counts produced medians of 25.0 kg
+  (darunavir) against 27.1 kg (atazanavir), which shifted the two arms in
+  opposite directions through the allometric term and inflated every
+  discrepancy by roughly 8 percentage points.
+* **Weight sampling in the top band.** The `35+ kg` band is sampled from
+  35-50 kg. The cohort's single heaviest child (64.2 kg, in the atazanavir arm)
+  is not represented; per-arm maxima in Table 1 are 49.5 kg (lopinavir),
+  64.2 kg (atazanavir) and 47.0 kg (darunavir).
+* **Race and ethnicity are not modelled.** Tsirizani 2025 does not report them
+  by category; all participants were enrolled in Zambia, Uganda and Zimbabwe.
+
+## Scope limit stated by the authors
+
+The authors are explicit that this model **should not be used to simulate
+ritonavir doses above 100 mg per administration**. Ritonavir shows
+dose-dependent saturable pharmacokinetics at the 200-500 mg doses once used
+therapeutically, and this dataset -- confined to boosting doses, with dose
+changes confounded by companion PI, formulation and weight -- could not
+characterise that saturation. A saturable liver-elimination model was tested and
+rejected (dOFV = -0.390), with the estimated Michaelis constant close to the
+maximum observed concentration, which is itself evidence that the data carry no
+information about saturation.

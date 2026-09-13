@@ -1,0 +1,582 @@
+---
+title: "Osimertinib and AZ5104 (Yang 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Osimertinib and AZ5104 (Yang 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", error = FALSE,
+                      fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(ggplot2)
+```
+
+# Model
+
+`Yang_2025_osimertinib` is the FLAURA2 update of the osimertinib
+parent-metabolite population PK model. Yang 2025 pooled 52,338 plasma samples
+from 2,196 patients with EGFR-mutated advanced NSCLC across six studies (AURA
+and its extension, AURA2, AURA3, FLAURA, ADAURA and FLAURA2) and re-estimated
+the structure first published by Brown 2017: first-order oral absorption into a
+one-compartment parent disposition, feeding a one-compartment metabolite
+(AZ5104) in series, with first-order elimination from both.
+
+The analysis exists to answer one question -- does adding pemetrexed plus
+platinum chemotherapy change osimertinib PK? -- and its answer is no. "Addition
+of chemotherapy" was tested by forward inclusion on both parent and metabolite
+clearance and was not significant on either (Table S2), so it does not appear in
+the model at all. The covariates that were retained (weight, albumin, race) were
+all judged to have no clinically meaningful effect on exposure.
+
+```{r model}
+mod <- nlmixr2lib::readModelDb("Yang_2025_osimertinib")
+mod
+```
+
+# Population
+
+Yang 2025 Table 1, overall pooled column (N = 2,196):
+
+| Characteristic | Value |
+|----|----|
+| Age (years) | median 62.0 (range 25.0-91.0); mean 61.5, SD 10.7 |
+| Weight (kg) | median 62.0 (range 29.0-128); mean 63.5, SD 14.1 |
+| Body mass index (kg/m2) | median 23.4 (range 12.9-42.6) |
+| Creatinine clearance (mL/min) | median 82.1 (range 20.5-196) |
+| Serum albumin (g/L) | median 40.0 (range 17.0-53.3); mean 39.7, SD 4.92 |
+| Sex | 1,416 female (64.5%), 780 male (35.5%) |
+| Race | White 584 (26.6%), Asian excluding Chinese and Japanese 502 (22.9%), Chinese 501 (22.8%), Japanese 384 (17.5%), Other 225 (10.2%) |
+| WHO performance status | 0: 896 (40.8%); 1: 1,300 (59.2%) |
+| Line of therapy | first 38.5%, second 21.3%, third or later 25.4%, adjuvant 14.8% |
+
+Dosing is osimertinib 80 mg once daily, with a permitted reduction to 40 mg once
+daily for toxicity. In the FLAURA2 combination arm this was given with
+pemetrexed 500 mg/m2 plus either cisplatin 75 mg/m2 or carboplatin AUC 5
+mg/mL/min on Day 1 of 21-day cycles for four cycles, then pemetrexed
+maintenance every three weeks.
+
+The reference ("typical") patient used throughout Yang 2025, and used for every
+typical-value check below, is a **White patient of 62 kg with serum albumin
+40 g/L** -- the Table 1 medians and the denominators written into Eqs 2-5.
+
+# Source trace
+
+Every value in `ini()` and every equation in `model()`, with its location in the
+source. The supplementary NONMEM control stream (`$PROBLEM FINAL MODEL`) carries
+the same values at full precision as the rounded Table 2 entries, so it is the
+quoted source where the extra digits matter.
+
+| Model element | Value | Source |
+|----|----|----|
+| `lka` | 0.260946 1/h | Table 2 (0.26); Eq 1; `$THETA(3)` |
+| `lcl` (CLptot/F) | 14.3452 L/h | Table 2 (14.35); Eq 2; `$THETA(1)` |
+| `lvc` (Vp/F) | 1151.11 L | Table 2 (1,151); Eq 3; `$THETA(4)` |
+| `lcl_az5104` (CLm/F) | 32.0484 L/h | Table 2 (32.05); Eq 4; `$THETA(2)` |
+| `lvc_az5104` (Vm/F) | 151.014 L | Table 2 (151); Eq 5; `$THETA(6)` |
+| `fm` | 0.25, fixed | Table 2 "0.25 (Fixed)"; Methods; `$THETA(5) 0.25 FIX` |
+| `e_wt_cl` | 0.359774 | Table 2 (0.36); Eq 2; `$THETA(7)` |
+| `e_alb_cl` | 0.674479 | Table 2 (0.67); Eq 2; `$THETA(8)` |
+| `e_wt_vc` | 0.640227 | Table 2 (0.64); Eq 3; `$THETA(9)` |
+| `e_alb_vc` | 1.56611 | Table 2 (1.57); Eq 3; `$THETA(10)` |
+| `e_wt_cl_az5104` | 0.740376 | Table 2 (0.74); Eq 4; `$THETA(11)` |
+| `e_alb_cl_az5104` | 0.722460 | Table 2 (0.72); Eq 4; `$THETA(12)` |
+| `e_alb_vc_az5104` | **-0.652465** | Eq 5 exponent `-0.65`; `$THETA(13)`. Table 2 prints the magnitude only |
+| `e_race_asian_oth_cl_az5104` | 0.161274 | Table 2 (0.16); Eq 4 factor 1.16; `$THETA(14)`, `ETHL = 1` |
+| `e_race_japanese_cl_az5104` | 0.181966 | Table 2 (0.18); Eq 4 factor 1.18; `$THETA(16)`, `ETHL = 3` |
+| `e_race_chinese_cl_az5104` | 0, fixed | `$THETA(15) 0 FIX`, `ETHL = 2`; Table S2 "not significant" |
+| `e_race_other_cl_az5104` | 0, fixed | `$THETA(17) 0 FIX`, `ETHL = 99`; Table S2 "not significant" |
+| IIV block CL/CLm | var 0.191276, cov 0.186815, var 0.237930 | `$OMEGA BLOCK(2)`; Table 2 (0.19 / 0.19 / 0.24) |
+| `etalka`, `etalvc`, `etalvc_az5104` | 0.699828, 0.542208, 0.512184 | `$OMEGA`; Table 2 (0.70, 0.54, 0.51) |
+| `propSd`, `addSd` | 0.219108, 29.5202 nM | Table 2 (0.22, 29.52); `$THETA(19)`, `$THETA(18)` |
+| `propSd_az5104`, `addSd_az5104` | 0.231740, 0.358422 nM | Table 2 (0.23, 0.36); `$THETA(21)`, `$THETA(20)` |
+| ODE rate constants | `K12 = KA`, `K20 = CL(1-FM)/V1`, `K23 = CL*FM/V1`, `K30 = CLM1/VM1` | `$PK` block of the control stream |
+| Concentration scaling | `S2 = V1*499.61/1e6`, `S3 = VM1*485.59/1e6` | `$PK` block; gives nM |
+| Reference WT / ALB | 62 kg, 40 g/L | Eqs 2-5 denominators; Table 1 medians; Figure 3 caption |
+
+## Two things the parameter table alone would have got wrong
+
+**The albumin exponent on AZ5104 volume is negative.** Table 2 lists "ALB on
+Vm/F: 0.65" with no sign. Equation 5 writes `(ALB/40)^-0.65` and `$THETA(13)` is
+`-0.652465`. Reading the table alone would invert this covariate. (Table 2's
+bootstrap CI for this row is also printed reversed, "0.68 (1.28-0.42)".)
+
+**Table 2's variability column is on the variance scale, not SD or CV.** The
+paper separately reports %CV of 46, 52, 101, 85 and 82% for CLptot/F, CLm/F, Ka,
+Vp/F and Vm/F. Back-transforming the tabulated values as variances via
+`sqrt(exp(w) - 1)` reproduces all five; reading them as SDs does not:
+
+```{r omega_scale}
+w   <- c(CLptot = 0.191276, CLm = 0.237930, Ka = 0.699828, Vp = 0.542208, Vm = 0.512184)
+pub <- c(46, 52, 101, 85, 82)
+tibble::tibble(
+  Parameter          = names(w),
+  `Published %CV`    = pub,
+  `If variance (%)`  = round(100 * sqrt(exp(w) - 1), 1),
+  `If SD (%)`        = round(100 * sqrt(exp(w^2) - 1), 1)
+)
+```
+
+```{r omega_scale_gate}
+# The variance reading must reproduce every published %CV to within 1 point;
+# the SD reading must not. Deterministic arithmetic, so this bound is exact.
+stopifnot(
+  all(abs(100 * sqrt(exp(w) - 1) - pub) < 1),
+  any(abs(100 * sqrt(exp(w^2) - 1) - pub) > 10)
+)
+```
+
+The `$OMEGA BLOCK(2)` off-diagonal is likewise a covariance, not the correlation
+coefficient that Table 2's "Correlation" row label suggests; it implies a
+CLptot/F--CLm/F correlation of `r round(0.186815 / sqrt(0.191276 * 0.237930), 2)`.
+That is mechanistically sensible, because both parameters are apparent (`/F`)
+and so share the same unknown bioavailability.
+
+# Virtual cohort
+
+200 patients, with weight and albumin drawn to match the Table 1 overall
+marginal distributions (truncated to the reported ranges) and race sampled at
+the Table 1 proportions. Covariates are drawn with R's own RNG, so the cohort is
+identical across rxode2 versions.
+
+```{r cohort}
+set.seed(20250501)
+n_sub <- 200
+
+rtrunc_norm <- function(n, mean, sd, lo, hi) {
+  x <- rnorm(n, mean, sd)
+  while (any(bad <- x < lo | x > hi)) x[bad] <- rnorm(sum(bad), mean, sd)
+  x
+}
+
+race_levels <- c("White", "Asian other", "Chinese", "Japanese", "Other")
+race_probs  <- c(26.6, 22.9, 22.8, 17.5, 10.2) / 100
+
+cohort <- tibble::tibble(
+  id  = seq_len(n_sub),
+  WT  = rtrunc_norm(n_sub, 63.5, 14.1, 29, 128),
+  ALB = rtrunc_norm(n_sub, 39.7, 4.92, 17, 53.3),
+  race_label = sample(race_levels, n_sub, replace = TRUE, prob = race_probs)
+) |>
+  dplyr::mutate(
+    RACE_ASIAN_OTH = as.integer(race_label == "Asian other"),
+    RACE_JAPANESE  = as.integer(race_label == "Japanese"),
+    RACE_CHINESE   = as.integer(race_label == "Chinese"),
+    RACE_OTHER     = as.integer(race_label == "Other")
+  )
+
+summary(cohort[, c("WT", "ALB")])
+table(cohort$race_label)
+```
+
+```{r events}
+dose_amt <- 80    # mg once daily
+dose_int <- 24    # h
+n_doses  <- 30    # 720 h; about 13 typical parent half-lives
+ss_start <- (n_doses - 1) * dose_int
+
+dose_rows <- tidyr::expand_grid(id = cohort$id, dose_idx = seq_len(n_doses)) |>
+  dplyr::mutate(time = (dose_idx - 1) * dose_int, evid = 1L, amt = dose_amt,
+                cmt = "depot", dvid = NA_integer_) |>
+  dplyr::select(id, time, evid, amt, cmt, dvid)
+
+# Dense over the first and the final (steady-state) interval, one trough per
+# day in between. Both interval edges are present so PKNCA can anchor its
+# window and resolve Ctrough without extrapolation.
+obs_times <- sort(unique(c(
+  c(0, 0.5, 1, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24),
+  seq(48, ss_start - dose_int, by = 24),
+  ss_start + seq(0, 24, by = 0.5)
+)))
+
+# This model has exactly two endpoints (Cc, Cc_az5104), so observation records
+# nominate their endpoint with dvid rather than cmt. rxode2 returns BOTH
+# analyte columns at every observation row, so a single dvid = 1 grid is enough
+# to read both. Naming an algebraic observable as though it were a compartment
+# would instead inject a slot for it and renumber the ODE states.
+obs_rows <- tidyr::expand_grid(id = cohort$id, time = obs_times) |>
+  dplyr::mutate(evid = 0L, amt = 0, cmt = NA_character_, dvid = 1L)
+
+events <- dplyr::bind_rows(dose_rows, obs_rows) |>
+  dplyr::left_join(cohort, by = "id") |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+```
+
+# Simulation
+
+```{r simulate}
+rxode2::rxSetSeed(20250501)
+sim <- rxode2::rxSolve(mod, events = events,
+                       keep = c("WT", "ALB", "race_label"))
+
+# Typical-value replication (no IIV) at the paper's reference patient.
+mod_typical <- rxode2::zeroRe(mod)
+ref_events <- events |>
+  dplyr::filter(id == 1) |>
+  dplyr::mutate(WT = 62, ALB = 40, RACE_ASIAN_OTH = 0, RACE_JAPANESE = 0,
+                RACE_CHINESE = 0, RACE_OTHER = 0)
+sim_ref <- rxode2::rxSolve(mod_typical, events = ref_events)
+```
+
+```{r profile_plot, fig.cap = "Simulated steady-state osimertinib and AZ5104 concentration-time profiles over the final 24 h dosing interval (200 virtual patients; median and 5th-95th percentile band). Compare with Yang 2025 Figure 2, which plots the observed concentrations across the six pooled studies."}
+band <- sim |>
+  dplyr::filter(time >= ss_start) |>
+  dplyr::mutate(tad = time - ss_start) |>
+  dplyr::select(tad, Osimertinib = Cc, AZ5104 = Cc_az5104) |>
+  tidyr::pivot_longer(-tad, names_to = "Analyte", values_to = "conc") |>
+  dplyr::summarise(
+    med = median(conc), lo = quantile(conc, 0.05), hi = quantile(conc, 0.95),
+    .by = c(tad, Analyte)
+  )
+
+ggplot2::ggplot(band, ggplot2::aes(tad, med)) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  ggplot2::geom_line(linewidth = 0.8) +
+  ggplot2::facet_wrap(~Analyte, scales = "free_y") +
+  ggplot2::labs(x = "Time after dose (h)", y = "Concentration (nM)") +
+  ggplot2::theme_bw()
+```
+
+# Structural verification
+
+## Closed-form mass balance
+
+At steady state the AUC over one dosing interval must equal dose divided by
+apparent clearance, with the dose converted to nmol using each analyte's own
+molecular weight -- exactly the convention the control stream's `S2` and `S3`
+encode. Both sides use the same parameters here, so the only difference is
+numerical integration error and the bound is tight.
+
+```{r mass_balance}
+MW_parent <- 499.61
+MW_az5104 <- 485.59
+
+trapz <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+
+ref_ss <- sim_ref |> dplyr::filter(time >= ss_start) |> dplyr::arrange(time)
+auc_parent_solved <- trapz(ref_ss$time, ref_ss$Cc)
+auc_metab_solved  <- trapz(ref_ss$time, ref_ss$Cc_az5104)
+
+auc_parent_closed <- (dose_amt * 1e-3 / MW_parent * 1e9) / 14.3452
+auc_metab_closed  <- (0.25 * dose_amt * 1e-3 / MW_az5104 * 1e9) / 32.0484
+
+tibble::tibble(
+  Analyte       = c("Osimertinib", "AZ5104"),
+  `Solved AUCtau (nM*h)` = round(c(auc_parent_solved, auc_metab_solved), 1),
+  `Closed form (nM*h)`   = round(c(auc_parent_closed, auc_metab_closed), 1),
+  `Difference (%)`       = round(100 * c(auc_parent_solved / auc_parent_closed,
+                                         auc_metab_solved  / auc_metab_closed) - 100, 3)
+)
+```
+
+```{r mass_balance_gate}
+stopifnot(
+  abs(auc_parent_solved / auc_parent_closed - 1) < 0.005,
+  abs(auc_metab_solved  / auc_metab_closed  - 1) < 0.005
+)
+```
+
+This gate is what proves the metabolite transfer convention. The control stream
+moves amount from the central to the metabolite compartment 1:1, with **no molar
+stoichiometric correction**, and only then forms the metabolite concentration
+using the AZ5104 molecular weight. Inserting a molar correction would scale
+AZ5104 exposure by `r round(485.59/499.61, 4)` and break this identity.
+
+## Time to peak
+
+Yang 2025 Results reports model-derived steady-state tmax medians of 6.7 h
+(IQR 5.9-7.4) for osimertinib and 11.3 h (IQR 9.9-12.5) for AZ5104. These are
+model-derived, so the typical-value profile should land on them. Note this is
+*not* the same quantity as the Table S5 observed NCA tmax (4.50 h and 4.00 h),
+which is bounded by a sparse sampling grid that stopped at 6 h post-dose.
+
+```{r tmax}
+tmax_parent <- ref_ss$time[which.max(ref_ss$Cc)] - ss_start
+tmax_metab  <- ref_ss$time[which.max(ref_ss$Cc_az5104)] - ss_start
+
+tibble::tibble(
+  Analyte             = c("Osimertinib", "AZ5104"),
+  `Typical tmax (h)`  = c(tmax_parent, tmax_metab),
+  `Yang 2025 median`  = c(6.7, 11.3),
+  `Yang 2025 IQR`     = c("5.9-7.4", "9.9-12.5")
+)
+```
+
+```{r tmax_gate}
+# Deterministic typical-value profile; must fall inside the published IQR.
+stopifnot(
+  tmax_parent >= 5.9, tmax_parent <= 7.4,
+  tmax_metab  >= 9.9, tmax_metab  <= 12.5
+)
+```
+
+## Half-lives
+
+```{r halflife}
+thalf_parent <- log(2) * 1151.11 / 14.3452
+thalf_metab  <- log(2) * 151.014 / 32.0484
+tibble::tibble(
+  Analyte              = c("Osimertinib", "AZ5104"),
+  `Typical t1/2 (h)`   = round(c(thalf_parent, thalf_metab), 1),
+  `Yang 2025 median`   = c(47.7, 3.1),
+  `Yang 2025 IQR`      = c("31.8-69.0", "2.2-4.5")
+)
+stopifnot(
+  thalf_parent > 31.8, thalf_parent < 69.0,
+  thalf_metab  >  2.2, thalf_metab  <  4.5
+)
+```
+
+AZ5104's own elimination half-life is far shorter than the parent's, so the
+metabolite is formation-rate limited and its observed decline tracks
+osimertinib.
+
+# Replicating Figure 3 (covariate forest plot)
+
+Yang 2025 Results quotes two exact numbers off its own forest plot: "The ratio
+of AZ5104 exposures for high body weight (89 kg) and for low body weight
+(43 kg) vs. the reference population was 0.76 and 1.31, respectively" (the
+published sentence has a typographical "AZ5102"). Because AZ5104 steady-state
+AUC is inversely proportional to CLm/F, and weight enters CLm/F only through the
+0.740376 power term, these are a closed-form two-point test of that exponent.
+
+```{r forest}
+wt_ratio <- function(wt) (wt / 62)^-0.740376
+fp <- tibble::tibble(
+  `Body weight (kg)`        = c(89, 43),
+  Percentile                = c("95th", "5th"),
+  `Model AZ5104 AUCss ratio` = round(wt_ratio(c(89, 43)), 3),
+  `Yang 2025 Results`        = c(0.76, 1.31)
+)
+fp
+```
+
+```{r forest_gate}
+# Closed-form against a printed number: exact to the paper's 2 decimal places.
+stopifnot(all(abs(wt_ratio(c(89, 43)) - c(0.76, 1.31)) < 0.01))
+```
+
+The full simulated forest plot, over each retained covariate at the 5th and 95th
+percentile (or against the White reference for race), reproduces the shape of
+Figure 3 -- every effect sits inside or close to the 0.8-1.25 bioequivalence
+band, which is the paper's basis for calling none of them clinically meaningful:
+
+```{r forest_plot, fig.cap = "Covariate effects on steady-state exposure relative to the reference patient (White, 62 kg, albumin 40 g/L). Replicates Yang 2025 Figure 3. The shaded band is the 0.80-1.25 bioequivalence reference range."}
+q05_wt <- 43; q95_wt <- 89; q05_alb <- 31; q95_alb <- 47
+
+# AUCss ratios are inverse-clearance ratios; Cmaxss additionally moves with volume.
+eff <- tibble::tribble(
+  ~Covariate,                  ~Analyte,      ~ratio,
+  "Weight 43 kg (5th)",        "Osimertinib", (q05_wt/62)^-0.359774,
+  "Weight 89 kg (95th)",       "Osimertinib", (q95_wt/62)^-0.359774,
+  "Albumin 31 g/L (5th)",      "Osimertinib", (q05_alb/40)^-0.674479,
+  "Albumin 47 g/L (95th)",     "Osimertinib", (q95_alb/40)^-0.674479,
+  "Weight 43 kg (5th)",        "AZ5104",      (q05_wt/62)^-0.740376,
+  "Weight 89 kg (95th)",       "AZ5104",      (q95_wt/62)^-0.740376,
+  "Albumin 31 g/L (5th)",      "AZ5104",      (q05_alb/40)^-0.722460,
+  "Albumin 47 g/L (95th)",     "AZ5104",      (q95_alb/40)^-0.722460,
+  "Asian other vs White",      "AZ5104",      1 / (1 + 0.161274),
+  "Japanese vs White",         "AZ5104",      1 / (1 + 0.181966)
+)
+
+ggplot2::ggplot(eff, ggplot2::aes(ratio, Covariate)) +
+  ggplot2::annotate("rect", xmin = 0.8, xmax = 1.25, ymin = -Inf, ymax = Inf,
+                    alpha = 0.15, fill = "darkred") +
+  ggplot2::geom_vline(xintercept = 1, linetype = "dashed") +
+  ggplot2::geom_point(size = 2.5) +
+  ggplot2::facet_wrap(~Analyte, scales = "free_y") +
+  ggplot2::labs(x = "AUCss ratio vs reference patient", y = NULL) +
+  ggplot2::theme_bw()
+```
+
+```{r forest_direction_gate}
+# Directional content of Figure 3: heavier patients and higher albumin both
+# clear faster, so both reduce exposure; the two retained race effects raise
+# metabolite clearance and so reduce AZ5104 exposure.
+stopifnot(
+  (q95_wt/62)^-0.359774  < 1, (q05_wt/62)^-0.359774  > 1,
+  (q95_alb/40)^-0.674479 < 1, (q05_alb/40)^-0.674479 > 1,
+  1 / (1 + 0.161274) < 1, 1 / (1 + 0.181966) < 1
+)
+```
+
+# PKNCA validation
+
+Steady-state NCA over the final 24 h dosing interval, for both analytes, in nM.
+
+```{r pknca}
+nca_frame <- function(conc_col) {
+  sim |>
+    dplyr::filter(time >= ss_start, !is.na(.data[[conc_col]])) |>
+    dplyr::transmute(id, time = time - ss_start, conc = .data[[conc_col]],
+                     treatment = "Osimertinib 80 mg QD")
+}
+
+conc_parent <- nca_frame("Cc")
+conc_metab  <- nca_frame("Cc_az5104")
+
+dose_df <- tibble::tibble(id = unique(conc_parent$id), time = 0,
+                          amt = dose_amt, treatment = "Osimertinib 80 mg QD")
+
+intervals <- data.frame(start = 0, end = 24,
+                        cmax = TRUE, tmax = TRUE, cmin = TRUE,
+                        auclast = TRUE, cav = TRUE)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "mg")
+
+nca_parent <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_parent, conc ~ time | treatment + id,
+                   concu = "nmol/L", timeu = "h"),
+  dose_obj, intervals = intervals))
+
+nca_metab <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_metab, conc ~ time | treatment + id,
+                   concu = "nmol/L", timeu = "h"),
+  dose_obj, intervals = intervals))
+```
+
+## Comparison against published NCA
+
+Yang 2025 Table S5 reports observed steady-state NCA for the FLAURA2
+osimertinib-plus-chemotherapy arm (N = 244), as geometric means.
+
+```{r nca_compare}
+simulated <- dplyr::bind_rows(
+  as.data.frame(nca_parent$result) |> dplyr::mutate(analyte = "Osimertinib"),
+  as.data.frame(nca_metab$result)  |> dplyr::mutate(analyte = "AZ5104")
+)
+
+reference <- tibble::tribble(
+  ~analyte,      ~auclast, ~cmax,  ~cmin,
+  "Osimertinib",    11840, 587.5,  392.5,
+  "AZ5104",          1277,  59.07,  45.51
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = simulated,
+  reference     = reference,
+  by            = "analyte",
+  params        = c("auclast", "cmax", "cmin"),
+  units         = c(auclast = "nmol*h/L", cmax = "nmol/L", cmin = "nmol/L"),
+  tolerance_pct = 20
+)
+
+knitr::kable(cmp, caption = paste(
+  "Simulated steady-state NCA vs Yang 2025 Table S5 observed geometric means",
+  "(FLAURA2 osimertinib plus chemotherapy arm, N = 244).",
+  "* marks a difference greater than 20%."
+))
+```
+
+```{r nca_gate}
+# Structural gate on the centre of the distribution. A mis-transcribed
+# clearance, dose or molecular weight moves these by tens of percent.
+auc_p <- simulated |> dplyr::filter(analyte == "Osimertinib", PPTESTCD == "auclast")
+auc_m <- simulated |> dplyr::filter(analyte == "AZ5104",      PPTESTCD == "auclast")
+stopifnot(
+  abs(median(auc_p$PPORRES) / 11840 - 1) < 0.25,
+  abs(median(auc_m$PPORRES) /  1277 - 1) < 0.25
+)
+```
+
+The metabolite-to-parent exposure ratio is an internally consistent check that
+does not depend on either analyte's absolute calibration:
+
+```{r mr_ratio}
+mr_auc <- median(auc_m$PPORRES) / median(auc_p$PPORRES)
+tibble::tibble(
+  Metric               = "MRAUCss (AZ5104 / osimertinib)",
+  Simulated            = round(mr_auc, 4),
+  `Yang 2025 Table S5` = 0.1078
+)
+stopifnot(abs(mr_auc / 0.1078 - 1) < 0.30)
+```
+
+# Assumptions and deviations
+
+* **The albumin effect on AZ5104 volume is negative.** Table 2 prints its
+  magnitude (0.65) without a sign, and prints its bootstrap CI with the bounds
+  reversed ("0.68 (1.28-0.42)"). Equation 5 and `$THETA(13) = -0.652465` both
+  carry the negative sign and are taken as authoritative.
+
+* **Table 2's between-subject-variability column is on the variance scale.**
+  This is confirmed by the control stream's `$OMEGA` values and, independently,
+  by back-transforming to the paper's own published %CV figures (chunk
+  `omega_scale` above). The `$OMEGA BLOCK(2)` off-diagonal is a covariance, not
+  the correlation coefficient its Table 2 row label implies.
+
+* **Race coefficients are on a `(1 + theta)` fractional-deviation form**, not a
+  power or exponential form. Table 2 lists 0.16 and 0.18; Equation 4 writes the
+  corresponding multipliers as 1.16 and 1.18; the control stream's `CLM1ETHL`
+  block computes `1 + THETA(n)`. Note this differs from the sibling
+  `Brown_2017_osimertinib` model only in the estimated values, not the form.
+
+* **Chinese and Other race indicators are retained with coefficients fixed at
+  zero.** Backward elimination found both non-significant (Table S2) and the
+  final control stream holds `$THETA(15)` and `$THETA(17)` at `0 FIX`. They are
+  kept in the model file so the covariate screen stays auditable; they have no
+  numerical effect.
+
+* **The parent-to-metabolite transfer carries no molar stoichiometric
+  correction.** Amount moves 1:1 and each analyte's concentration is then formed
+  with its own molecular weight, per `S2` and `S3`. This is a deliberate
+  departure from `Brown_2017_osimertinib`, which applies an explicit
+  `mw_az5104 / mw_parent` factor in its ODE. Yang 2025's convention is what its
+  own control stream fits, and it is what reproduces the Table S5 AZ5104
+  exposure (to 0.6%, versus about 3% low with a molar correction).
+
+* **Concentrations are in nM, not mg/L**, following the source throughout
+  (assay ranges, additive residual errors, AUCss quartiles and Table S5 are all
+  nM). `Brown_2017_osimertinib` uses mg/L and converts in its vignette; the two
+  models are therefore not directly comparable without unit conversion.
+
+* **Missing-covariate handling is not reproduced.** The control stream maps a
+  missing weight or albumin (coded `-999`) onto a covariate factor of 1. This
+  model expects observed values; Table 1 reports missingness of 0.4% for weight
+  and 1.1% for albumin, so the effect on any simulation is negligible.
+
+* **The cohort's covariate marginals are drawn independently.** Yang 2025 does
+  not report the weight-albumin correlation or the joint distribution by race,
+  so weight, albumin and race are sampled independently from the Table 1
+  marginals. This widens the simulated exposure spread slightly relative to the
+  real population.
+
+* **Cmax is compared on `Cc` (without residual error).** Table S5's Cmax is an
+  observed geometric mean from a sparse grid (pre-dose and 1, 2, 4 and 6 h at
+  C3D1) that cannot resolve the model's 6.7 h median tmax, so the observed and
+  model-derived peak quantities are not strictly the same measurement. The
+  parent Cmax accordingly sits below the Table S5 value; AUC, which is far less
+  sensitive to grid density, agrees closely.
+
+## Not extracted: the exposure-response analyses
+
+Yang 2025's second half is an exposure-response assessment of the FLAURA2
+combination arm. It is deliberately **not** part of this model file, for two
+reasons.
+
+The efficacy analysis is a **Cox proportional-hazards model of
+progression-free survival**. A Cox model is semi-parametric: it estimates
+covariate coefficients against an unspecified baseline hazard that is never
+estimated or published. Tables S3 and S4 report only minimum -2LL, likelihood
+differences and p-values -- no hazard-ratio coefficients and no baseline hazard
+-- so there is nothing that could be encoded as a simulable time-to-event model
+without inventing a baseline hazard function.
+
+The safety analysis is a set of logistic regressions of adverse-event
+occurrence against exposure quartiles, reported graphically in Figure 5 with no
+tabulated intercepts or slopes.
+
+In any case both analyses are negative findings. No osimertinib or AZ5104
+exposure metric (AUCss, Cmaxss, Cminss) was significant for PFS; the only
+retained covariate was the number of pemetrexed cycles, which the authors
+themselves caution is confounded by survivorship bias. No exposure-safety
+relationship was found either, apart from an *inverse* association with AEs
+leading to dose reduction that the paper interprets as non-causal. There is
+therefore no drug-effect relationship to encode.
