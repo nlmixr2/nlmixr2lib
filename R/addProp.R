@@ -32,6 +32,14 @@
 #'
 #' readModelDb("PK_3cmt_des") |> addIni(depot)
 #'
+#' # bioavailability bounded to (0,1) with a logit parameterization
+#' readModelDb("PK_1cmt_des") |> addBioavailability(depot, scale = "logit")
+#'
+#' # dose split between two absorption paths, fraction named for depot
+#' readModelDb("PK_1cmt_des") |>
+#'   addDepot(depot = "depot2", ka = "ka2") |>
+#'   addBioavailability(depot, depot2, scale = "logit")
+#'
 addCmtProp <- function(ui, prop = c("f", "lag", "dur", "rate", "ini"),
                        cmt) {
   .ui <- rxode2::assertRxUi(ui)
@@ -85,40 +93,68 @@ addCmtProp <- function(ui, prop = c("f", "lag", "dur", "rate", "ini"),
 addBioavailability <- function(ui, cmt, scale = c("log", "logit"),
                                cmt2 = NULL, f = 0.8) {
   scale <- match.arg(scale)
-  if (scale == "logit") {
-    # resolve both compartment arguments in this frame: the inner
-    # function receives them as the symbols cmt/cmt2, so forwarding
-    # them unevaluated would lose the caller's spelling; values
-    # (quoted or computed) pass through force() unchanged.  Note that
-    # force(cmt2) on an unbound compartment symbol raises (which the
-    # try() converts into the spelling) while is.null(cmt2) on the
-    # same symbol raises too, so the spelling fallback must come
-    # first
-    .cmt <- as.character(substitute(cmt))
-    cmt <- try(force(cmt), silent = TRUE)
-    if (inherits(cmt, "try-error")) {
-      cmt <- .cmt
-    }
-    .cmt2 <- as.character(substitute(cmt2))
-    .cmt2v <- try(force(cmt2), silent = TRUE)
-    if (inherits(.cmt2v, "try-error")) {
-      cmt2 <- .cmt2
-    } else if (!is.null(.cmt2v)) {
-      cmt2 <- .cmt2v
-    }
-    return(addBioavailabilityLogit(ui, cmt, cmt2, f))
-  }
+  # resolve both compartment arguments in this frame: the inner
+  # function receives them as the symbols cmt/cmt2, so forwarding
+  # them unevaluated would lose the caller's spelling; values
+  # (quoted or computed) pass through force() unchanged.  Note that
+  # force(cmt2) on an unbound compartment symbol raises (which the
+  # try() converts into the spelling) while is.null(cmt2) on the
+  # same symbol raises too, so the spelling fallback must come
+  # first
   .cmt <- as.character(substitute(cmt))
   cmt <- try(force(cmt), silent = TRUE)
   if (inherits(cmt, "try-error")) {
     cmt <- .cmt
   }
-  addCmtProp(ui, prop = "f", cmt = cmt)
+  .cmt2 <- as.character(substitute(cmt2))
+  .cmt2v <- try(force(cmt2), silent = TRUE)
+  if (inherits(.cmt2v, "try-error")) {
+    cmt2 <- .cmt2
+  } else if (!is.null(.cmt2v)) {
+    cmt2 <- .cmt2v
+  }
+  if (scale == "logit") {
+    return(addBioavailabilityLogit(ui, cmt, cmt2, f))
+  }
+  if (!is.null(cmt2)) {
+    stop("a dose split (cmt2) needs scale = \"logit\": on the log scale f is ",
+      "unbounded above, so the complement 1 - f given to cmt2 is not ",
+      "confined to (0, 1) and can go negative",
+      call. = FALSE
+    )
+  }
+  addBioavailabilityLog(ui, cmt, f)
 }
 
-#' @describeIn addCmtProp Adds the bioavailability to a compartment in the model
-#' @export
-addBioavailabilityLog <- addBioavailability
+#' Add a log-parameterized bioavailability to a compartment
+#'
+#' The implementation behind `addBioavailability(scale = "log")`.  The
+#' fraction is estimated unboundedly as `f<Cmt> <- exp(lf<Cmt>)`, so it
+#' can leave (0,1); [addBioavailabilityLogit()] is the bounded form.
+#'
+#' @param ui rxode2 ui object
+#' @param cmt compartment to apply the bioavailability to
+#' @param f initial bioavailability fraction, or NULL to leave the
+#'   initial estimate at the package default
+#' @return rxode2 ui object with the log bioavailability applied
+#' @noRd
+addBioavailabilityLog <- function(ui, cmt, f = 0.8) {
+  # assertNumeric's bounds are inclusive and log() is undefined at 0, so
+  # the open lower bound needs its own check.  There is no upper bound:
+  # the whole point of the log scale is that f may exceed 1.
+  checkmate::assertNumeric(f, len = 1L, any.missing = FALSE, null.ok = TRUE)
+  if (!is.null(f) && f <= 0) {
+    stop("f must be > 0", call. = FALSE)
+  }
+  # addCmtProp() first, so a missing compartment keeps reporting itself in
+  # its own words rather than through the assertion below
+  .ui <- addCmtProp(ui, prop = "f", cmt = cmt)
+  if (is.null(f)) {
+    return(.ui)
+  }
+  .cmt <- rxode2::assertCompartmentExists(rxode2::assertRxUi(ui), cmt)
+  .iniAddTheta(.ui, paste0("l", defaultCombine("f", .cmt)), est = log(f))
+}
 
 #' Assert compartments do not already have a bioavailability
 #'
@@ -179,18 +215,8 @@ addBioavailabilityLog <- addBioavailability
 #' @param f initial bioavailability fraction, in (0,1), or NULL to
 #'   leave the initial estimate unset
 #' @return rxode2 ui object with the logit bioavailability applied
-#' @export
-#' @family absorption
 #' @author Matthew L. Fidler
-#' @examples
-#'
-#' readModelDb("PK_1cmt_des") |> addBioavailability(depot, scale = "logit")
-#'
-#' # dose split between two absorption paths, fraction named for depot
-#' readModelDb("PK_1cmt_des") |>
-#'   addDepot(depot = "depot2", ka = "ka2") |>
-#'   addBioavailability(depot, depot2, scale = "logit")
-#'
+#' @noRd
 addBioavailabilityLogit <- function(ui, cmt, cmt2 = NULL, f = 0.8) {
   # the logit is undefined at the 0/1 boundaries, so only the open
   # interval is accepted (assertNumeric's bounds are inclusive)
@@ -265,23 +291,26 @@ addBioavailabilityLogit <- function(ui, cmt, cmt2 = NULL, f = 0.8) {
   if (is.null(f)) {
     return(.ui)
   }
-  # ini() can only set an estimate for a variable the model defines,
-  # so the expit() line above must be in place before this call; it
-  # appends the theta when missing and overwrites it when present; the
-  # call is built with bquote() (not do.call()) because ini() needs
-  # the compartment-derived name as an unevaluated `<-` expression
-  # whose right-hand side is itself an unevaluated call
-  .iniCall <- bquote(rxode2::ini(.ui, .(.name) <- rxode2::logit(.(f2))),
-    list(.name = as.name(.lvar), f2 = f)
+  # ini() can only set an estimate for a variable the model defines, so
+  # the expit() line above must be in place before this call; it appends
+  # the theta when missing and overwrites it when present
+  # the estimate and the label go in through the same ini() call rather
+  # than by writing into iniDf: that data frame's columns belong to
+  # lotri and do change (see R/iniPiping.R).  bquote() (not do.call())
+  # because ini() needs the compartment-derived name as an unevaluated
+  # `<-` expression whose right-hand side is itself an unevaluated
+  # call -- which also keeps the block reading `logit(0.8)`, the
+  # spelling the PK_double_sim seeds use, rather than its value
+  .iniCall <- bquote(
+    rxode2::ini(.ui,
+      .(.name) <- rxode2::logit(.(f2)),
+      .(.name) <- label(.(lbl))
+    ),
+    list(.name = as.name(.lvar), f2 = f, lbl = .label)
   )
-  .ui <- suppressMessages(eval(.iniCall, envir = environment()))
-  .ui$iniDf$label[.ui$iniDf$name == .lvar] <- .label
-  .ui
+  suppressMessages(eval(.iniCall, envir = environment()))
 }
 
-#' @describeIn addCmtProp Deprecated alias of [addBioavailabilityLogit()]
-#' @export
-addLogitBioavailability <- addBioavailabilityLogit
 
 #' @describeIn addCmtProp Adds the lag-time to a compartment in the model
 #' @export

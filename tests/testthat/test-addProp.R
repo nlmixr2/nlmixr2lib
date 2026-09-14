@@ -319,16 +319,10 @@ test_that("addBioavailability logit removes the description", {
 test_that("addBioavailabilityLogit matches the dispatcher", {
 
   res <- res0 |> addBioavailability(depot, scale = "logit")
-  res2 <- res0 |> addBioavailabilityLogit(depot)
+  res2 <- res0 |> nlmixr2lib:::addBioavailabilityLogit(depot)
 
   expect_equal(rxode2::modelExtract(res), rxode2::modelExtract(res2))
   expect_equal(res$iniDf, res2$iniDf)
-
-})
-
-test_that("addLogitBioavailability is a deprecated alias", {
-
-  expect_identical(addLogitBioavailability, addBioavailabilityLogit)
 
 })
 
@@ -401,8 +395,57 @@ test_that("addBioavailability fails when the compartment doesn't exist", {
   )
 
   # and through the internal function directly
-  expect_error(res0 |> addBioavailabilityLogit(matt),
+  expect_error(res0 |> nlmixr2lib:::addBioavailabilityLogit(matt),
     regexp = "not in the model"
   )
 
+})
+
+test_that("addBioavailability log scale honours f", {
+
+  # f was accepted and silently discarded on the log path, so the estimate
+  # stayed at the package default whatever the caller asked for
+  res <- res0 |> addBioavailability(depot, f = 0.5)
+
+  expect_equal(res$iniDf$est[res$iniDf$name == "lfDepot"], log(0.5))
+  expect_equal(rxode2::modelExtract(res, "fDepot"), "fDepot <- exp(lfDepot)")
+
+  # the default is still 0.8, not the old 0.1
+  expect_equal(
+    (res0 |> addBioavailability(depot))$iniDf$est[
+      (res0 |> addBioavailability(depot))$iniDf$name == "lfDepot"],
+    log(0.8)
+  )
+
+  # and f = NULL leaves whatever addCmtProp set
+  expect_equal(sum((res0 |> addBioavailability(depot, f = NULL))$iniDf$name ==
+                     "lfDepot"), 1L)
+})
+
+test_that("addBioavailability log scale rejects f outside (0, Inf)", {
+
+  # no upper bound: on the log scale f may exceed 1
+  expect_silent(suppressMessages(res0 |> addBioavailability(depot, f = 1.5)))
+  expect_error(res0 |> addBioavailability(depot, f = 0), "f must be > 0")
+  expect_error(res0 |> addBioavailability(depot, f = -1), "f must be > 0")
+})
+
+test_that("addBioavailability refuses a dose split on the log scale", {
+
+  # cmt2 used to be accepted and silently dropped: no f(cmt2) line was
+  # emitted at all, so the model quietly lost the second absorption path
+  expect_error(
+    res0 |>
+      addDepot(depot = "depot2", ka = "ka2") |>
+      addBioavailability(depot, cmt2 = depot2),
+    regexp = 'needs scale = "logit"'
+  )
+})
+
+test_that("the logit fraction carries its label", {
+
+  res <- res0 |> addBioavailability(depot, scale = "logit")
+
+  expect_equal(res$iniDf$label[res$iniDf$name == "logitfDepot"],
+    "Bioavailability fraction (fDepot)")
 })

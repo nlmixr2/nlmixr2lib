@@ -2,6 +2,17 @@
 
 # development version
 
+- `addBioavailability()` gains a `scale` argument. `scale = "logit"`
+  constrains the fraction to (0,1) as `f<Cmt> <- expit(logitf<Cmt>)`, which is
+  the Monolix-style oral/SC `F` and the form the `PK_double_sim_*` seeds
+  hand-code; `scale = "log"` is the previous unbounded behavior and stays the
+  default, so existing calls are unaffected. With a second compartment
+  (`cmt2`) one fraction drives both paths, `f(cmt) <- f<Cmt>` and
+  `f(cmt2) <- 1 - f<Cmt>`, the double-absorption `F1` dose split. `f` sets the
+  initial estimate on either scale, or leaves it unset when `NULL`. A dose
+  split is refused on the log scale, where `f` is unbounded above and the
+  complement can go negative.
+
 - Drop the redundant "fixed" from the `Kim_2024_meropenem` IIV labels on
   `etalq` and `etalvp`. `fixed()` already states it, so the labels were an
   error-severity convention violation; the provenance (`footnote b`, and the

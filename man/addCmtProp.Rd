@@ -3,8 +3,6 @@
 \name{addCmtProp}
 \alias{addCmtProp}
 \alias{addBioavailability}
-\alias{addBioavailabilityLog}
-\alias{addLogitBioavailability}
 \alias{addLag}
 \alias{addDur}
 \alias{addRate}
@@ -14,10 +12,6 @@
 addCmtProp(ui, prop = c("f", "lag", "dur", "rate", "ini"), cmt)
 
 addBioavailability(ui, cmt, scale = c("log", "logit"), cmt2 = NULL, f = 0.8)
-
-addBioavailabilityLog(ui, cmt, scale = c("log", "logit"), cmt2 = NULL, f = 0.8)
-
-addLogitBioavailability(ui, cmt, cmt2 = NULL, f = 0.8)
 
 addLag(ui, cmt)
 
@@ -65,10 +59,6 @@ Add a property to a compartment
 \itemize{
 \item \code{addBioavailability()}: Adds the bioavailability to a compartment in the model
 
-\item \code{addBioavailabilityLog()}: Adds the bioavailability to a compartment in the model
-
-\item \code{addLogitBioavailability()}: Deprecated alias of [addBioavailabilityLogit()]
-
 \item \code{addLag()}: Adds the lag-time to a compartment in the model
 
 \item \code{addDur()}: Adds the modeled duration to a compartment in the model
@@ -91,6 +81,14 @@ readModelDb("PK_3cmt_des") |> addDur(depot)
 readModelDb("PK_3cmt_des") |> addRate(depot)
 
 readModelDb("PK_3cmt_des") |> addIni(depot)
+
+# bioavailability bounded to (0,1) with a logit parameterization
+readModelDb("PK_1cmt_des") |> addBioavailability(depot, scale = "logit")
+
+# dose split between two absorption paths, fraction named for depot
+readModelDb("PK_1cmt_des") |>
+  addDepot(depot = "depot2", ka = "ka2") |>
+  addBioavailability(depot, depot2, scale = "logit")
 
 }
 \author{
