@@ -24,10 +24,9 @@ convertKinR0 <- function(ui,
   kin <- rxode2::assertVariableExists(.ui, kin)
   rxode2::assertVariableNew(.ui, R0)
   R <- rxode2::assertCompartmentExists(.ui, R)
-  .tmp <- .getEtaThetaTheta1(.ui)
+  .tmp <- .getEtaTheta(.ui)
   .iniDf <- .tmp$iniDf
   .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
   .eta <- .tmp$eta
   if (length(.theta$ntheta) == 0) {
     .ntheta <- 0
@@ -68,17 +67,15 @@ convertKinR0 <- function(ui,
   .theta <- .tmp$theta
   .eta <- .tmp$eta
 
-  .thetaR0 <- .get1theta(R0, .theta1, .ntheta,
-    name = paste0("u", R0),
-    label = paste0("untransformed baseline (",
-      R0, ")"))
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .thetaR0,
-    .eta)
+  # .theta/.eta here are subsets of this model's own iniDf (kin dropped), so
+  # binding them carries no assumption about its columns; the new parameter
+  # goes in through ini() rather than as a hand-built row.
+  .ui$iniDf <- rbind(.theta, .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui
+  .iniAddTheta(.ui, paste0("u", R0),
+    label = paste0("untransformed baseline (", R0, ")"))
 }

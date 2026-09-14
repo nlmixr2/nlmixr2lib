@@ -2,6 +2,24 @@
 
 # development version
 
+- Add parameters through `rxode2::model()` and `rxode2::ini()` instead of
+  building an `iniDf` row and `rbind()`ing it on. The initial-estimate data
+  frame's columns belong to lotri and they change, so a hand-built row is a
+  latent break waiting on the next upstream release -- which is exactly what
+  happened. Two internal helpers, `.iniAddTheta()` and `.modelAppend()`,
+  replace the 19 sites that did this; residual-error parameters are now
+  created by appending the endpoint line on its own, letting rxode2 decide
+  their `condition`, `err` and lower bound. `.get1theta()` is deleted: it
+  seeded each new parameter from an existing theta row, so a `backTransform`,
+  `condition` or `prior` on that row leaked onto every parameter added after
+  it. What remains of `.getEtaThetaTheta1()` -- renamed `.getEtaTheta()` --
+  only row-subsets `iniDf` and asserts nothing about its columns. Behavior is
+  unchanged: 43 model pipelines produce byte-identical `iniDf` and model
+  blocks.
+
+- Fix the `addWeibullAbs()` beta label, which named the alpha parameter
+  (`Weibull absorption beta (wa)`).
+
 - Require `rxode2 (>= 5.1.7)`. lotri 1.0.5 added a `prior` column to the
   initial-estimates data frame, which rxode2 5.1.6 does not know about: it
   `rbind()`s a hand-built row of its own column set onto `$iniDf`, so every
