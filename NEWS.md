@@ -2,6 +2,16 @@
 
 # development version
 
+- Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
+  `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
+  `ordinal`. No register's type vocabulary has an `ordinal` member: an
+  ordinal-valued covariate records its scale in `Units:` and takes the type its
+  covariate model implies, which is what `SMOKE_TTFC_SCORE` -- the precedent
+  those entries cite in their own Notes -- already did. Each register's
+  `## Entry schema` `type:` line is now machine-read and checked against the
+  entries it describes, in both directions, so a type outside a file's own
+  documented vocabulary fails the test suite rather than reaching a release.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.

@@ -207,3 +207,49 @@ test_that("the covariate register's documented case exceptions are complete", {
   canonicals <- unlist(lapply(real, `[[`, "names"))
   expect_setequal(canonicals[canonicals != toupper(canonicals)], exempt)
 })
+
+test_that("each register's documented type vocabulary matches the types it uses", {
+  # `.knownTypes` is the UNION over all three registers, so it cannot tell a
+  # covariate entry typed `compartment` from a legitimate one, and it reports a
+  # bad type by listing all nine -- which reads as though any of them would do.
+  # Each register also documents its own, much narrower vocabulary in the
+  # `type:` line of its `## Entry schema` block, and that line was prose that
+  # nothing read. `ordinal` shipped on `DIS_COPD_GOLD` and `DIS_COPD_GOLD_LOW`
+  # (2026-09-12 bulk merge) even though the covariate register's schema names
+  # only `continuous | binary | categorical | count`; both are now `categorical`
+  # with the ordinal scale recorded in `Units:`, following `SMOKE_TTFC_SCORE`.
+  #
+  # Enumerates the registers rather than sampling them, and checks BOTH
+  # directions -- the drift that motivates this is a documented list falling
+  # behind the file as much as a bad type being added -- which is the same
+  # reason `.caseExemptions()` is read from the file in both directions.
+  root <- normalizePath(testthat::test_path("..", ".."), mustWork = FALSE)
+  dir <- file.path(root, "inst", "references")
+  skip_if(!dir.exists(dir), "registers not present in an installed package")
+
+  registers <- c("covariate-columns.md", "parameter-names.md",
+                 "compartment-names.md")
+  for (reg in registers) {
+    path <- file.path(dir, reg)
+    documented <- nlmixr2lib:::.schemaTypes(path)
+    # A register whose schema block stopped parsing would silently exempt the
+    # whole file, so the vocabulary being non-empty is itself an assertion.
+    expect_true(length(documented) > 0L, info = reg)
+
+    entries <- nlmixr2lib:::.parseRegister(path)
+    typed <- Filter(
+      function(e) isTRUE(e$hasTypeField) && !is.na(e$type) && nzchar(e$type),
+      entries)
+    used <- unique(vapply(typed, `[[`, character(1), "type"))
+    expect_equal(sort(used), sort(documented), info = reg)
+  }
+
+  # The checker enforces the union, so the union of what the files document and
+  # what the code accepts must not drift apart either: a type added to one
+  # schema block but not to `.knownTypes` would be reported as unknown despite
+  # being documented, and one dropped from every block but left in the vector
+  # would stay silently accepted.
+  documentedAll <- unique(unlist(lapply(file.path(dir, registers),
+                                        nlmixr2lib:::.schemaTypes)))
+  expect_setequal(documentedAll, nlmixr2lib:::.knownTypes)
+})
