@@ -710,7 +710,7 @@ nca_gate |>
 #> # A tibble: 1 × 2
 #>   max_abs_cl_pct_diff max_abs_hl_pct_diff
 #>                 <dbl>               <dbl>
-#> 1             0.00251            1.77e-13
+#> 1             0.00251            2.03e-13
 
 # Both sides are built from the same parameter values, so the residual is
 # trapezoidal / log-linear-regression error only and a tight bound is correct.

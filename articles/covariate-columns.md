@@ -64501,7 +64501,7 @@ recur in any combined-evidence model; the rest are COPD-specific.
   1 = mild, 2 = moderate, 3 = severe, 4 = very severe, assigned from
   FEV1 percent predicted. Per-patient and time-fixed at screening.
 - **Units:** (ordinal stage 1-4)
-- **Type:** ordinal
+- **Type:** categorical
 - **Scope:** specific
 - **Reference category:** n/a – enters as a centred linear deviation
   `1 + e_gold_<param> * (DIS_COPD_GOLD - ref)` or a piecewise-linear
@@ -64534,7 +64534,13 @@ recur in any combined-evidence model; the rest are COPD-specific.
   two founding models show the same covariate fitted with different
   functional forms in the same paper, so always read the per-model
   `covariateData[[DIS_COPD_GOLD]]$notes` for the form and centring
-  rather than assuming.
+  rather than assuming. Typed `categorical` rather than `ordinal`: this
+  file’s `## Entry schema` vocabulary is
+  `continuous | binary | categorical | count` and has no ordinal member,
+  and `SMOKE_TTFC_SCORE` – the precedent this entry follows – records
+  its own ordinal-ness in the `Units:` slot (`(ordinal score 0-3)`)
+  while typing itself `categorical`. The `Units:` line above does the
+  same here.
 
 ### DIS_COPD_GOLD_LOW, DIS_COPD_GOLD_HIGH (**canonical for the lowest and highest GOLD spirometric stage admitted by a trial’s inclusion criteria**)
 
@@ -64543,7 +64549,7 @@ recur in any combined-evidence model; the rest are COPD-specific.
   Study-level design covariates that stand in for a per-patient severity
   distribution when only aggregated data are available.
 - **Units:** (ordinal stage 1-4)
-- **Type:** ordinal
+- **Type:** categorical
 - **Scope:** specific
 - **Reference category:** n/a – typically combined into the arm’s mean
   stage as `(DIS_COPD_GOLD_LOW + DIS_COPD_GOLD_HIGH) / 2` and then
@@ -64567,7 +64573,10 @@ recur in any combined-evidence model; the rest are COPD-specific.
   keep the aggregated and individual covariate models on the same scale
   and thereby avoid aggregation bias (Section 2.3.1). Registered as a
   pair rather than as a single range-width column because the two bounds
-  enter the imputation regressions with different centrings.
+  enter the imputation regressions with different centrings. Typed
+  `categorical` for the same reason as `DIS_COPD_GOLD`: the ordinal-ness
+  is recorded in the `Units:` slot, this file’s schema vocabulary having
+  no `ordinal` member.
 
 ### CONMED_ACLIDINIUM_DOSE, CONMED_ARFORMOTEROL_DOSE, CONMED_AZD9668_DOSE, CONMED_BATEFENTEROL_DOSE, CONMED_BEA2180_DOSE, CONMED_BECLOMETHASONE_DOSE, CONMED_BUDESONIDE_DOSE, CONMED_CILOMILAST_DOSE, CONMED_FLUTICASONEFUROATE_DOSE, CONMED_FLUTICASONEPROPIONATE_DOSE, CONMED_FORMOTEROL_DOSE, CONMED_GLYCOPYRRONIUM_DOSE, CONMED_GSK233705_DOSE, CONMED_INDACATEROL_DOSE, CONMED_MOMETASONE_DOSE, CONMED_OLODATEROL_DOSE, CONMED_PH797804_DOSE, CONMED_REVEFENACIN_DOSE, CONMED_ROFLUMILAST_DOSE, CONMED_SALMETEROL_DOSE, CONMED_TIOTROPIUM_DOSE, CONMED_UMECLIDINIUM_DOSE, CONMED_VILANTEROL_DOSE (**canonical for the per-arm total daily dose of a named respiratory agent in a COPD dose-response meta-analysis**)
 

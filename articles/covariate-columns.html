@@ -98453,7 +98453,7 @@ screening.</li>
 <li>
 <strong>Units:</strong> (ordinal stage 1-4)</li>
 <li>
-<strong>Type:</strong> ordinal</li>
+<strong>Type:</strong> categorical</li>
 <li>
 <strong>Scope:</strong> specific</li>
 <li>
@@ -98498,7 +98498,14 @@ register a separate canonical if a model needs it. The two founding
 models show the same covariate fitted with different functional forms in
 the same paper, so always read the per-model
 <code>covariateData[[DIS_COPD_GOLD]]$notes</code> for the form and
-centring rather than assuming.</li>
+centring rather than assuming. Typed <code>categorical</code> rather
+than <code>ordinal</code>: this file’s <code>## Entry schema</code>
+vocabulary is <code>continuous | binary | categorical | count</code> and
+has no ordinal member, and <code>SMOKE_TTFC_SCORE</code> – the precedent
+this entry follows – records its own ordinal-ness in the
+<code>Units:</code> slot (<code>(ordinal score 0-3)</code>) while typing
+itself <code>categorical</code>. The <code>Units:</code> line above does
+the same here.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -98515,7 +98522,7 @@ severity distribution when only aggregated data are available.</li>
 <li>
 <strong>Units:</strong> (ordinal stage 1-4)</li>
 <li>
-<strong>Type:</strong> ordinal</li>
+<strong>Type:</strong> categorical</li>
 <li>
 <strong>Scope:</strong> specific</li>
 <li>
@@ -98551,7 +98558,10 @@ explicitly to keep the aggregated and individual covariate models on the
 same scale and thereby avoid aggregation bias (Section 2.3.1).
 Registered as a pair rather than as a single range-width column because
 the two bounds enter the imputation regressions with different
-centrings.</li>
+centrings. Typed <code>categorical</code> for the same reason as
+<code>DIS_COPD_GOLD</code>: the ordinal-ness is recorded in the
+<code>Units:</code> slot, this file’s schema vocabulary having no
+<code>ordinal</code> member.</li>
 </ul>
 </div>
 <div class="section level3">
