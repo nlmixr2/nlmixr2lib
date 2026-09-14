@@ -2,6 +2,11 @@
 
 # development version
 
+- Drop the redundant "fixed" from the `Kim_2024_meropenem` IIV labels on
+  `etalq` and `etalvp`. `fixed()` already states it, so the labels were an
+  error-severity convention violation; the provenance (`footnote b`, and the
+  reported shrinkage) is kept.
+
 - Add parameters through `rxode2::model()` and `rxode2::ini()` instead of
   building an `iniDf` row and `rbind()`ing it on. The initial-estimate data
   frame's columns belong to lotri and they change, so a hand-built row is a

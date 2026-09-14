@@ -6,6 +6,11 @@
 # are formed and why they interleave rather than follow modeldb's directories.
 
 test_that("shard 3 of the model database satisfies the naming conventions", {
+  # Building every model in the shard is far too slow for CRAN, but this is
+  # the enumerating check that a convention violation cannot reach a release,
+  # so it must run in CI. skip_on_cran() does exactly that: it skips unless
+  # NOT_CRAN=true, which the check workflow sets.
+  skip_on_cran()
   res <- .conventionShardCheck(3L)
   expect_s3_class(res, "data.frame")
   expect_named(
@@ -14,4 +19,8 @@ test_that("shard 3 of the model database satisfies the naming conventions", {
     ignore.order = TRUE
   )
   expect_true(all(res$severity %in% c("error", "warning", "info")))
+  # No model ships with an error-severity violation. buildModelDb() gates on
+  # this, but its gate runs at build time only; asserting it here means a
+  # model edited after the last rebuild cannot slip through.
+  expect_equal(sum(res$severity == "error"), 0L)
 })
