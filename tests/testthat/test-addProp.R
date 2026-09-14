@@ -294,7 +294,7 @@ test_that("addLogitBioavailability refuses to double-define f", {
   # solved model would silently reflect neither
   expect_error(
     res0 |> addBioavailability(depot) |> addLogitBioavailability(depot),
-    regexp = "already present"
+    regexp = "bioavailability already present for compartment 'depot'"
   )
 
   expect_error(
@@ -302,7 +302,26 @@ test_that("addLogitBioavailability refuses to double-define f", {
       addDepot(depot = "depot2", ka = "ka2") |>
       addLogitBioavailability(depot) |>
       addLogitBioavailability(depot, depot2),
-    regexp = "already present"
+    regexp = "bioavailability already present for compartment 'depot'"
+  )
+
+  # the guard reads the model's own state properties, so it also sees
+  # an f() written directly in a library seed model
+  .da <- rxode2::rxode2(readModelDb("PK_double_sim_01"))
+
+  expect_error(.da |> addLogitBioavailability("depot1"),
+    regexp = "bioavailability already present for compartment 'depot1'"
+  )
+
+  # and it sees the f() this function itself added to both paths
+  .split <- res0 |>
+    addDepot(depot = "depot2", ka = "ka2") |>
+    addLogitBioavailability(depot, depot2)
+
+  expect_equal(.split$props$cmtProp$Property, c("f", "f"))
+
+  expect_error(.split |> addLogitBioavailability(depot2),
+    regexp = "bioavailability already present for compartment 'depot2'"
   )
 
 })
