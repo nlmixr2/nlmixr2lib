@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Yang 2026 pixavir ([doi:10.3390/pharmaceutics18050550](https://doi.org/10.3390/pharmaceutics18050550)) -- Chinese adults and adolescents aged 12 years and older with acute influenza, plus healthy volunteers.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.
