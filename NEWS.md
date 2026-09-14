@@ -2,6 +2,16 @@
 
 # development version
 
+- Require `rxode2 (>= 5.1.7)`. lotri 1.0.5 added a `prior` column to the
+  initial-estimates data frame, which rxode2 5.1.6 does not know about: it
+  `rbind()`s a hand-built row of its own column set onto `$iniDf`, so every
+  piping function that adds a parameter (`addEta()`, `addResErr()`,
+  `addDepot()`, ...) failed with "numbers of columns of arguments do not
+  match". rxode2 5.1.6 declares only `lotri (>= 1.0.4)`, so the broken pair
+  resolved happily and the failure reached CI rather than the dependency
+  solver. rxode2 5.1.7 is the fix; requiring it here makes that pair
+  unresolvable instead of merely documented.
+
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
   `ordinal`. No register's type vocabulary has an `ordinal` member: an
