@@ -126,8 +126,16 @@ test_that("addDepot works when d/dt(central) is the first model line (#77)", {
 test_that("addDepot preserves the relative order of interleaved residual-error and assignment lines", {
   # User-stated constraint from issue #77 review: multiple residual-error
   # blocks interleaved with assignments must keep their source-order
-  # semantics. Using a non-state variable name so rxode2 accepts the
-  # repeated assignment form.
+  # semantics.
+  #
+  # Each endpoint is its own variable and is defined from a model quantity
+  # rather than a constant. The previous form used one variable for both
+  # endpoints, assigned twice from constants (`obs <- 1` ... `obs <- 2`):
+  # rxode2 folds a constant away, so an endpoint defined from one is "not
+  # defined in the model" and as.rxUi() rejects it -- unless a second
+  # assignment happens to defeat the folding, which is what made that model
+  # parse at all. It relied on that accident and stopped parsing on macOS and
+  # Windows under rxode2 5.1.7 while Linux still tolerated it.
   m <- function() {
     ini({
       lcl <- 1
@@ -136,11 +144,11 @@ test_that("addDepot preserves the relative order of interleaved residual-error a
       propSd <- 0.5
     })
     model({
-      obs <- 1
+      obs <- central
       obs ~ add(addSd)
-      obs <- 2
+      eff <- central * 2
       d / dt(central) <- -exp(lcl) / exp(lvc) * central
-      obs ~ prop(propSd)
+      eff ~ prop(propSd)
     })
   }
   res <- addDepot(m)
@@ -150,10 +158,10 @@ test_that("addDepot preserves the relative order of interleaved residual-error a
   # Every input line (except the modified d/dt(central)) appears verbatim and
   # in its original relative order.
   original <- c(
-    "obs <- 1",
+    "obs <- central",
     "obs ~ add(addSd)",
-    "obs <- 2",
-    "obs ~ prop(propSd)"
+    "eff <- central * 2",
+    "eff ~ prop(propSd)"
   )
   normalized <- gsub("\\s+", " ", trimws(lines))
   expect_true(.isSubseq(normalized, original))
