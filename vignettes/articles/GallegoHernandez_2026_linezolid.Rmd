@@ -371,6 +371,36 @@ cat(sprintf(
 ))
 ```
 
+Finally, assert rather than merely assert in prose that the interval minimum is
+attained at an endpoint. An interior minimum would mean `cmin` is not the
+trough at all, and it would be wrong by orders of magnitude rather than by a
+solver tolerance -- so this check can genuinely go red.
+
+```{r cmin-is-an-endpoint}
+endpoint_min <- sim |>
+  dplyr::filter(time %in% c(t_last, t_last + tau)) |>
+  dplyr::group_by(scenario, id) |>
+  dplyr::summarise(endpoint_min = min(Cc), .groups = "drop")
+
+cmin_check <- nca |>
+  dplyr::select(scenario, id, cmin) |>
+  dplyr::left_join(endpoint_min, by = c("scenario", "id")) |>
+  dplyr::mutate(rel_diff = abs(cmin - endpoint_min) / endpoint_min)
+
+stopifnot(
+  nrow(cmin_check) == n_per_arm * nrow(scenarios),
+  !anyNA(cmin_check$rel_diff),
+  # Relative, not absolute: the terminal decline is flat enough that solver
+  # tolerance can put the numerical minimum one grid point off an endpoint.
+  max(cmin_check$rel_diff) < 1e-3
+)
+
+cat(sprintf(
+  "cmin is an interval endpoint for all %d subjects (max relative difference %.2e)\n",
+  nrow(cmin_check), max(cmin_check$rel_diff)
+))
+```
+
 ### Mass balance
 
 At steady state the AUC over one dosing interval must equal `Dose / CL`
