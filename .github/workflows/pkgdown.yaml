@@ -67,13 +67,11 @@ jobs:
 
       - uses: r-lib/actions/setup-r@v2
         with:
-          # rxode2 5.1.6 (the current CRAN/RSPM build) is broken by lotri 1.0.5,
-          # released 2026-09-11: rxode2:::.addVariableToIniDf() rbind()s an iniDf row
-          # whose column count no longer matches, so any ini() edit dies with
-          # "numbers of columns of arguments do not match". 5.1.6 declares only
-          # lotri (>= 1.0.4), so the broken pair resolves happily. rxode2 5.1.7 is
-          # the fix (it requires lotri >= 1.0.5) but is not on CRAN yet, so take it
-          # from the nlmixr2 r-universe. Drop this once 5.1.7 reaches CRAN.
+          # DESCRIPTION requires rxode2 (>= 5.1.7): it is the first release that
+          # works with lotri 1.0.5, and 5.1.6 + lotri 1.0.5 breaks every ini()
+          # edit with "numbers of columns of arguments do not match". 5.1.7 is on
+          # CRAN, but RSPM's snapshot lags it, so keep r-universe as a source
+          # until RSPM serves 5.1.7; then drop these two lines.
           extra-repositories: https://nlmixr2.r-universe.dev
 
       - uses: r-lib/actions/setup-r-dependencies@v2
