@@ -286,3 +286,46 @@ test_that("addLogitBioavailability removes the description", {
   expect_null(res$meta$description)
 
 })
+
+test_that("addLogitBioavailability refuses to double-define f", {
+
+  # addBioavailability() leaves fDepot <- exp(lfDepot); applying the
+  # logit form on top would leave two fDepot definitions and the
+  # solved model would silently reflect neither
+  expect_error(
+    res0 |> addBioavailability(depot) |> addLogitBioavailability(depot),
+    regexp = "already present"
+  )
+
+  expect_error(
+    res0 |>
+      addDepot(depot = "depot2", ka = "ka2") |>
+      addLogitBioavailability(depot) |>
+      addLogitBioavailability(depot, depot2),
+    regexp = "already present"
+  )
+
+})
+
+test_that("addLogitBioavailability treats a 'NULL' string cmt2 as a compartment name", {
+
+  # a quoted "NULL" is not the NULL default; it must fail as an
+  # unknown compartment instead of silently becoming a single-path call
+  expect_error(res0 |> addLogitBioavailability(depot, "NULL"),
+    regexp = "not in the model"
+  )
+
+})
+
+test_that("addLogitBioavailability does not inherit template backTransform", {
+
+  res <- res0 |> addLogitBioavailability(depot)
+
+  .id <- res$iniDf
+  .w <- which(.id$name == "lgfDepot")
+
+  expect_true(is.na(.id$backTransform[.w]))
+  expect_true(is.na(.id$condition[.w]))
+  expect_true(is.na(.id$prior[.w]))
+
+})

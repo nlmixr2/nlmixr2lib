@@ -82,6 +82,31 @@ addBioavailability <- function(ui, cmt) {
   addCmtProp(ui, prop = "f", cmt = cmt)
 }
 
+#' Assert compartments do not already have a bioavailability
+#'
+#' Applying a bioavailability twice leaves two definitions of the same
+#' `f<Depot>` variable in the model block, and the solved model then
+#' silently reflects neither intended parameterization.
+#'
+#' @param ui rxode2 ui object
+#' @param cmt compartments to check
+#' @return invisible NULL; raises an error when `f` is already present
+#' @noRd
+.assertNoBioavailability <- function(ui, cmt) {
+  .cp <- ui$props$cmtProp
+  if (is.null(.cp) || nrow(.cp) == 0) {
+    return(invisible(NULL))
+  }
+  .w <- which(.cp$Compartment %in% cmt & .cp$Property == "f")
+  if (length(.w) > 0) {
+    stop("bioavailability already present for compartment '",
+      paste(unique(.cp$Compartment[.w]), collapse = "', '"), "'",
+      call. = FALSE
+    )
+  }
+  invisible(NULL)
+}
+
 #' Add a logit-parameterized bioavailability to a compartment
 #'
 #' Adds a bioavailability fraction constrained to (0,1) with a
@@ -129,9 +154,6 @@ addLogitBioavailability <- function(ui, cmt, cmt2 = NULL, f = 0.8) {
   if (inherits(cmt2, "try-error")) {
     cmt2 <- .cmt2
   }
-  if (is.character(cmt2) && identical(cmt2, "NULL")) {
-    cmt2 <- NULL
-  }
   .ui <- rxode2::assertRxUi(ui)
   .cmt1 <- rxode2::assertCompartmentExists(.ui, cmt)
   .split <- !is.null(cmt2)
@@ -141,6 +163,7 @@ addLogitBioavailability <- function(ui, cmt, cmt2 = NULL, f = 0.8) {
       stop("cmt and cmt2 must be different compartments", call. = FALSE)
     }
   }
+  .assertNoBioavailability(.ui, if (.split) c(.cmt1, .cmt2) else .cmt1)
   .var <- defaultCombine("f", .cmt1)
   .lvar <- paste0("lg", .var)
   .label <- if (.split) {
@@ -157,12 +180,18 @@ addLogitBioavailability <- function(ui, cmt, cmt2 = NULL, f = 0.8) {
   } else {
     .ntheta <- max(.theta$ntheta)
   }
-  .theta <- rbind(.theta,
-    .get1theta(.var, .theta1, .ntheta,
-      est = logit(f),
-      label = .label,
-      name = .lvar
-    ))
+  .newTheta <- .get1theta(.var, .theta1, .ntheta,
+    est = logit(f),
+    label = .label,
+    name = .lvar
+  )
+  # .get1theta copies the .theta1 template row, which can carry a
+  # backTransform/condition/prior from an unrelated parameter; the
+  # logit scale is expressed by the expit() model line instead
+  .newTheta$backTransform <- NA_character_
+  .newTheta$condition <- NA_character_
+  .newTheta$prior <- NA_character_
+  .theta <- rbind(.theta, .newTheta)
   .modelLines <- .ui$lstExpr
   .w1 <- .whichDdt(.modelLines, .cmt1)
   .f1 <- str2lang(paste0("f(", .cmt1, ") <- ", .var))
