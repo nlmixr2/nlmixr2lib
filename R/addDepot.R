@@ -67,7 +67,13 @@ addDepot <- function(ui,
 
 
 #' To convert from first order oral absorption to IV/Intravenous
-
+#'
+#' Any compartment property lines for the depot (\code{f()},
+#' \code{lag()}, \code{dur()}, \code{rate()} or an initial condition)
+#' are removed with its differential equation; the variables that
+#' defined them are left in place (use [removeLinesAndInis()] to drop
+#' them as well).
+#'
 #' @inheritParams addDepot
 #' @return Returns a model with the depot from a first order absorption model removed
 #' @export
@@ -82,6 +88,7 @@ removeDepot <- function(ui, central = "central", depot = "depot",
   assertCompartmentExists(.ui, depot)
   assertVariableName(ka)
   .modelLines <- .rmDdt(.ui$lstExpr, depot)
+  .modelLines <- .rmCmtPropLines(.modelLines, depot)
   .w <- .whichDdt(.modelLines, central)
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   .tmp$w <- .dropDotAddExpr(.replaceMult(.tmp$w, ka, depot, "."))

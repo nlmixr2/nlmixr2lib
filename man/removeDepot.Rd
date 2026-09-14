@@ -23,7 +23,11 @@ instead of \code{ui} still works but emits a deprecation warning.}
 Returns a model with the depot from a first order absorption model removed
 }
 \description{
-To convert from first order oral absorption to IV/Intravenous
+Any compartment property lines for the depot (\code{f()},
+\code{lag()}, \code{dur()}, \code{rate()} or an initial condition)
+are removed with its differential equation; the variables that
+defined them are left in place (use [removeLinesAndInis()] to drop
+them as well).
 }
 \examples{
 readModelDb("PK_1cmt_des") |> removeDepot()

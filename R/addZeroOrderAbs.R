@@ -1,3 +1,45 @@
+#' Does a variable have an assignment line in the model
+#'
+#' @param modelLines list of model lines
+#' @param var variable name
+#' @return logical indicating an assignment line exists
+#' @noRd
+.hasVarAssignmentLine <- function(modelLines, var) {
+  .exprs <- list(str2lang(paste0(var, "<- .")),
+                 str2lang(paste0(var, "= .")))
+  any(vapply(seq_along(modelLines),
+    function(i) {
+      .cur <- modelLines[[i]]
+      any(vapply(.exprs,
+        function(e) {
+          rxode2::.matchesLangTemplate(.cur, e)
+        }, logical(1), USE.NAMES = FALSE))
+    }, logical(1), USE.NAMES = FALSE))
+}
+
+#' Collect every symbol used by the model lines
+#'
+#' Walks the parse trees instead of reparsing the deparsed text, so
+#' endpoint lines (\code{Cc ~ prop(propSd)}) are handled too.  Function
+#' position names (rxode2 builtins and operators) are dropped; argument
+#' position symbols are kept.
+#'
+#' @param modelLines list of model lines
+#' @return character vector of unique symbol names
+#' @noRd
+.lineSymbols <- function(modelLines) {
+  .f <- function(e) {
+    if (is.symbol(e)) {
+      as.character(e)
+    } else if (length(e) > 1) {
+      unlist(lapply(as.list(e)[-1], .f), use.names = FALSE)
+    } else {
+      character(0)
+    }
+  }
+  unique(unlist(lapply(modelLines, .f), use.names = FALSE))
+}
+
 #' Convert a model to zero-order absorption (Monolix \code{Tk0})
 #'
 #' Zero-order absorption releases the dose into the central compartment
@@ -7,7 +49,8 @@
 #' the central compartment (\code{dur(central) <- tk0}), so a depot
 #' compartment (and its \code{ka}) is removed first.  Dosing records
 #' for the zero-order route must request the modeled duration in the
-#' event table (\code{RATE = -2}; see \code{et(rate=-2)}).
+#' event table (\code{RATE = -2}; see \code{et(rate=-2)}); ordinary
+#' bolus records bypass the modeled duration.
 #'
 #' Lag time and bioavailability can be combined with [addLag()] and
 #' [addLogitBioavailability()].
@@ -34,6 +77,7 @@ addZeroOrderAbs <- function(ui, central = "central", depot = "depot",
   assertCompartmentName(depot)
   assertVariableName(tk0)
   rxode2::assertVariableNew(.ui, tk0)
+  rxode2::assertVariableNew(.ui, paste0("l", tk0))
   .cp <- .ui$props$cmtProp
   if (!is.null(.cp) &&
         any(.cp$Compartment == central & .cp$Property == "dur")) {
@@ -71,13 +115,17 @@ addZeroOrderAbs <- function(ui, central = "central", depot = "depot",
 
 #' Remove zero-order absorption from a model
 #'
-#' Removes the modeled duration added by [addZeroOrderAbs()] and the
-#' \code{tk0} parameter, leaving the dose as an intravenous bolus into
-#' the central compartment.  First-order absorption can be restored
-#' with [addDepot()].
+#' Removes the modeled duration on the central compartment, leaving the
+#' dose as an intravenous bolus input.  The duration variable is taken
+#' from the right hand side of the \code{dur(central)} line: when it is
+#' defined by an assignment in the model (the \code{tk0 <- exp(ltk0)}
+#' added by [addZeroOrderAbs()] or the \code{durCentral} added by
+#' [addDur()]) the variable and its initial estimate are dropped too; a
+#' bare estimated parameter that is not used elsewhere in the model is
+#' dropped from the initial estimates.  First-order absorption can be
+#' restored with [addDepot()].
 #'
 #' @inheritParams addDepot
-#' @param tk0 zero-order absorption duration parameter name
 #' @return a model where the zero-order absorption is removed
 #' @family absorption
 #' @export
@@ -85,21 +133,39 @@ addZeroOrderAbs <- function(ui, central = "central", depot = "depot",
 #' @examples
 #'
 #' readModelDb("PK_1cmt_des") |> addZeroOrderAbs() |> removeZeroOrderAbs()
-removeZeroOrderAbs <- function(ui, central = "central", tk0 = "tk0") {
+removeZeroOrderAbs <- function(ui, central = "central") {
   .ui <- rxode2::assertRxUi(ui)
   central <- rxode2::assertCompartmentExists(.ui, central)
-  assertVariableName(tk0)
   .modelLines <- .ui$lstExpr
   .w <- .whichDdt(.modelLines, central, start = "dur(", end = ")")
+  .rhs <- .modelLines[[.w]][[3]]
   .modelLines <- .modelLines[-.w]
+  .var <- NULL
+  .dropIni <- FALSE
+  if (is.name(.rhs)) {
+    .var <- as.character(.rhs)
+    if (!.hasVarAssignmentLine(.modelLines, .var)) {
+      # a bare parameter (monolix2rx style `dur(central) <- Tk0`); it
+      # can only be dropped when nothing else in the model uses it
+      if (.var %in% .lineSymbols(.modelLines)) {
+        .var <- NULL
+      } else {
+        .dropIni <- TRUE
+      }
+    }
+  }
   .ui <- rxode2::rxUiDecompress(.ui)
+  if (.dropIni) {
+    .tmp <- .getEtaThetaTheta1(.ui)
+    .ui$iniDf <- rbind(.dropTheta(.tmp$theta, .var), .tmp$eta)
+  }
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
   .ui <- rxode2::rxUiCompress(.ui)
-  if (rxode2::testVariableExists(.ui, tk0)) {
-    .ui <- removeLinesAndInis(.ui, tk0)
+  if (!is.null(.var) && !.dropIni) {
+    .ui <- rxode2::rxUiCompress(removeLinesAndInis(.ui, .var))
   }
-  rxode2::rxUiCompress(.ui)
+  .ui
 }

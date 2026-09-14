@@ -4,24 +4,27 @@
 \alias{removeZeroOrderAbs}
 \title{Remove zero-order absorption from a model}
 \usage{
-removeZeroOrderAbs(ui, central = "central", tk0 = "tk0")
+removeZeroOrderAbs(ui, central = "central")
 }
 \arguments{
 \item{ui}{The model as a function (or something convertible to an rxUi
 object)}
 
 \item{central}{central compartment name}
-
-\item{tk0}{zero-order absorption duration parameter name}
 }
 \value{
 a model where the zero-order absorption is removed
 }
 \description{
-Removes the modeled duration added by [addZeroOrderAbs()] and the
-\code{tk0} parameter, leaving the dose as an intravenous bolus into
-the central compartment.  First-order absorption can be restored
-with [addDepot()].
+Removes the modeled duration on the central compartment, leaving the
+dose as an intravenous bolus input.  The duration variable is taken
+from the right hand side of the \code{dur(central)} line: when it is
+defined by an assignment in the model (the \code{tk0 <- exp(ltk0)}
+added by [addZeroOrderAbs()] or the \code{durCentral} added by
+[addDur()]) the variable and its initial estimate are dropped too; a
+bare estimated parameter that is not used elsewhere in the model is
+dropped from the initial estimates.  First-order absorption can be
+restored with [addDepot()].
 }
 \examples{
 

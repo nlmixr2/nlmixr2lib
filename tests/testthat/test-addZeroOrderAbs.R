@@ -82,7 +82,7 @@ test_that("removeZeroOrderAbs round-trips to an IV model", {
 
   expect_equal(rxode2::modelExtract(res), rxode2::modelExtract(iv))
   expect_false("ltk0" %in% res$iniDf$name)
-  expect_false("tk0" %in% names(rxode2::rxModelVars(res)$lhs))
+  expect_false("tk0" %in% rxode2::rxModelVars(res)$lhs)
 
 })
 
@@ -135,5 +135,150 @@ test_that("addZeroOrderAbs works on multi-compartment IV models", {
     "dur(central) <- tk0"
   )
   expect_true("peripheral1" %in% res$state)
+
+})
+
+test_that("addZeroOrderAbs rejects a colliding log parameter name", {
+
+  f <- function() {
+    ini({
+      ltk0 <- 0.5
+      lcl <- 1
+      lvc <- 3.45
+      propSd <- 0.5
+    })
+    model({
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      kel <- cl / vc
+      d/dt(depot) <- -ltk0 * depot
+      d/dt(central) <- ltk0 * depot - kel * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+
+  expect_error(rxode2::rxode2(f) |> addZeroOrderAbs(),
+    regexp = "ltk0"
+  )
+
+})
+
+test_that("addZeroOrderAbs drops depot property lines with the depot", {
+
+  # a modeled duration on the depot becomes a syntax error once
+  # d/dt(depot) is gone, so removeDepot() has to drop it too
+  res <- suppressWarnings(
+    res0 |> addDur(depot) |> addBioavailability(depot) |> addZeroOrderAbs()
+  )
+
+  expect_equal(rxode2::modelExtract(res, "dur(depot)"), character(0))
+  expect_equal(rxode2::modelExtract(res, "f(depot)"), character(0))
+  expect_equal(rxode2::modelExtract(res, "dur(central)"),
+    "dur(central) <- tk0"
+  )
+  expect_no_error(rxode2::rxSolve(res,
+    rxode2::et(rate = -2, amt = 100),
+    params = c(lcl = log(0.1), lvc = log(10), ltk0 = log(4),
+      propSd = 0.1, ldurDepot = log(2), lfDepot = 0)
+  ))
+
+})
+
+test_that("removeZeroOrderAbs drops a duration added by addDur", {
+
+  res <- res0 |> removeDepot() |> addDur(central) |> removeZeroOrderAbs()
+
+  expect_equal(rxode2::modelExtract(res, "dur(central)"), character(0))
+  expect_false("ldurCentral" %in% res$iniDf$name)
+  expect_false("durCentral" %in% rxode2::rxModelVars(res)$lhs)
+
+})
+
+test_that("removeZeroOrderAbs drops a bare duration parameter", {
+
+  # monolix2rx emits dur(central) <- Tk0 with Tk0 estimated directly,
+  # so there is no assignment line to find
+  f <- function() {
+    ini({
+      tk0 <- 4
+      lcl <- 1
+      lvc <- 3.45
+      propSd <- 0.5
+    })
+    model({
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      kel <- cl / vc
+      dur(central) <- tk0
+      d/dt(central) <- -kel * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+
+  res <- rxode2::rxode2(f) |> removeZeroOrderAbs()
+
+  expect_equal(rxode2::modelExtract(res, "dur(central)"), character(0))
+  expect_false("tk0" %in% res$iniDf$name)
+  # the rest of the model survives
+  expect_true("d/dt(central) <- -kel * central" %in%
+    rxode2::modelExtract(res))
+  expect_true("lcl" %in% res$iniDf$name)
+
+})
+
+test_that("removeZeroOrderAbs keeps a duration parameter used elsewhere", {
+
+  f <- function() {
+    ini({
+      tk0 <- 4
+      lcl <- 1
+      lvc <- 3.45
+      propSd <- 0.5
+    })
+    model({
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      kel <- cl / vc
+      dur(central) <- tk0
+      half <- tk0 / 2
+      d/dt(central) <- -kel * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+
+  res <- rxode2::rxode2(f) |> removeZeroOrderAbs()
+
+  expect_equal(rxode2::modelExtract(res, "dur(central)"), character(0))
+  expect_true("tk0" %in% res$iniDf$name)
+  expect_true("half" %in% rxode2::rxModelVars(res)$lhs)
+
+})
+
+test_that("a plain bolus record bypasses the modeled duration", {
+
+  res <- suppressWarnings(res0 |> addZeroOrderAbs())
+
+  ev <- data.frame(
+    ID = 1,
+    time = c(0, 0, 4),
+    evid = c(1, 0, 0),
+    cmt = 1,
+    amt = c(100, 0, 0),
+    rate = c(0, 0, 0)
+  )
+
+  s <- as.data.frame(rxode2::rxSolve(
+    res, ev,
+    params = c(lcl = log(0.1), lvc = log(10), ltk0 = log(4), propSd = 0.1)
+  ))
+
+  # RATE=0 is an ordinary bolus: the whole amount lands at once
+  expect_equal(s$central[s$time == 0], 100)
+  expect_equal(s$central[s$time == 4], 100 * exp(-0.01 * 4),
+    tolerance = 1e-6
+  )
 
 })

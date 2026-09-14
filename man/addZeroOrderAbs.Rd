@@ -42,7 +42,8 @@ monolix2rx's translation, this is expressed as a modeled duration on
 the central compartment (\code{dur(central) <- tk0}), so a depot
 compartment (and its \code{ka}) is removed first.  Dosing records
 for the zero-order route must request the modeled duration in the
-event table (\code{RATE = -2}; see \code{et(rate=-2)}).
+event table (\code{RATE = -2}; see \code{et(rate=-2)}); ordinary
+bolus records bypass the modeled duration.
 }
 \details{
 Lag time and bioavailability can be combined with [addLag()] and

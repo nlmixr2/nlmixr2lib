@@ -37,3 +37,35 @@ test_that("removeDepot removes lka in ini block", {
   mv <- rxode2::rxModelVars(temp)
   expect_equal("lka" %in% mv$params, FALSE)
 })
+
+test_that("removeDepot removes depot compartment property lines", {
+  modelTest <- readModelDb("PK_1cmt_des") |>
+    addDur(depot) |>
+    addLag(depot) |>
+    addBioavailability(depot) |>
+    addIni(depot)
+  modelUpdate <- suppressMessages(
+    removeDepot(modelTest, central = "central", depot = "depot")
+  )
+  mv <- rxode2::rxModelVars(modelUpdate)
+  # leaving these behind is a syntax error: the property references a
+  # compartment that no longer has a differential equation
+  expect_false("depot" %in% mv$state)
+  for (.p in c("dur(depot)", "lag(depot)", "f(depot)", "depot(0)")) {
+    expect_equal(rxode2::modelExtract(modelUpdate, .p), character(0))
+  }
+  expect_no_error(rxode2::rxSolve(modelUpdate, rxode2::et(amt = 100)))
+})
+
+test_that("removeDepot leaves other compartment properties intact", {
+  modelTest <- readModelDb("PK_1cmt_des") |>
+    addDur(depot) |>
+    addDur(central)
+  modelUpdate <- suppressMessages(
+    removeDepot(modelTest, central = "central", depot = "depot")
+  )
+  expect_equal(rxode2::modelExtract(modelUpdate, "dur(depot)"), character(0))
+  expect_equal(rxode2::modelExtract(modelUpdate, "dur(central)"),
+    "dur(central) <- durCentral"
+  )
+})
