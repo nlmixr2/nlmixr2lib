@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Li 2015 pomalidomide ([doi:10.1002/jcph.455](https://doi.org/10.1002/jcph.455)) -- healthy adults and patients with relapsed and refractory multiple myeloma.
+
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
   `ordinal`. No register's type vocabulary has an `ordinal` member: an
