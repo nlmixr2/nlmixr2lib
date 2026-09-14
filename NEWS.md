@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Lee 2026 oxacillin ([doi:10.1128/aac.01777-25](https://doi.org/10.1128/aac.01777-25)) -- preterm and term neonates and infants up to 90 days old on continuous infusion.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.

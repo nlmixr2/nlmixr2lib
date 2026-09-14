@@ -3336,6 +3336,8 @@ navbar:
         href: articles/vanderGaag_2025_osimertinib_pbpk.html
       - text: "Osimertinib qsp (Liang 2024)"
         href: articles/Liang_2024_osimertinib.html
+      - text: "Oxacillin (Lee 2026)"
+        href: articles/Lee_2026_oxacillin.html
       - text: "Oxaliplatin (Valenzuela 2011)"
         href: articles/Valenzuela_2011_oxaliplatin.html
       - text: "Oxaliplatin (Yamada 2025)"
@@ -6334,6 +6336,7 @@ articles:
   - articles/Lee_2024_topiramate
   - articles/Lee_2025_levofloxacin
   - articles/Lee_2025_piperacillin_tazobactam
+  - articles/Lee_2026_oxacillin
   - articles/Leeds_2013_tecovirimat
   - articles/Leegwater_2025_cotrimoxazole
   - articles/Leger_2004_topotecan
