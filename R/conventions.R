@@ -725,9 +725,16 @@
 #' ending in `.R`; the `.R` suffix is stripped so the value matches the
 #' bare model function name used throughout the rest of the package.
 #'
+#' A `Type` written with a trailing parenthetical is split: the leading token
+#' becomes `type` and the parenthetical text becomes `typeQualifier`. This
+#' matches how `checkNamingRegisters.R::.parseRegister()` reads the same
+#' field, so the two parsers cannot drift apart on it.
+#'
 #' @param path Path to the markdown file.
 #' @return A named list keyed by canonical name. Each entry is a list with
-#'   `units`, `type`, `scope` (one of `"general"` / `"specific"` / `NA`),
+#'   `units`, `type` (a bare routing token such as `"continuous"`),
+#'   `typeQualifier` (the trailing parenthetical of the `Type` field, or `""`
+#'   when there is none), `scope` (one of `"general"` / `"specific"` / `NA`),
 #'   `aliases` (character vector of alias names), and `example_models`
 #'   (character vector of model function names).
 #' @keywords internal
@@ -750,6 +757,7 @@
       acc$entries[[nm]] <- list(
         units = current$units %||% "",
         type = current$type %||% "",
+        typeQualifier = current$typeQualifier %||% "",
         scope = current$scope %||% NA_character_,
         aliases = current$aliases %||% character(),
         example_models = current$example_models %||% character()
@@ -801,7 +809,19 @@
     }
     m <- regmatches(line, regexec("^- \\*\\*Type:\\*\\*\\s*(.*)$", line))[[1]]
     if (length(m) == 2) {
-      current$type <- trimws(m[[2]])
+      # A trailing parenthetical QUALIFIES the type; the leading token is the
+      # type itself. `WHO_PS` is written `continuous (semantically ordinal but
+      # treated as continuous in the covariate model)` and is a `continuous`
+      # covariate. Splitting the two keeps the routing tag a bare token from
+      # the register's documented `continuous | binary | categorical | count`
+      # vocabulary, which is what checkNamingRegisters.R::.parseRegister() has
+      # always stored -- before this split the two parsers disagreed about
+      # that one entry, so the first code to filter covariates by type would
+      # have silently missed it.
+      raw <- trimws(m[[2]])
+      current$type <- trimws(sub("\\s*\\(.*$", "", raw))
+      qual <- regmatches(raw, regexec("\\((.*)\\)\\s*$", raw))[[1]]
+      current$typeQualifier <- if (length(qual) == 2) trimws(qual[[2]]) else ""
       state <- "header"
       next
     }
@@ -966,6 +986,24 @@
 
     m <- regmatches(line, regexec("^- \\*\\*Type:\\*\\*\\s*(.*)$", line))[[1]]
     if (length(m) == 2) {
+      # NOTE: unlike .parseCovariateColumns() and .parseRegister(), this
+      # parser deliberately does NOT strip a trailing parenthetical, and the
+      # difference is load-bearing. .namesByType() matches with identical(),
+      # so `metabolite-suffix (deprecated)` -- carried by exactly the two
+      # retired paracetamol suffixes `as` and `ag` -- fails to match
+      # "metabolite-suffix" and is thereby kept OUT of
+      # conventions$registeredMetabolites. Stripping here would silently
+      # re-admit both as active suffixes, so .endsWithMetabolite() would once
+      # again accept `central_as` / `lcl_ag`, the R-reserved-word and
+      # chemistry-symbol collisions the 2026-06-19 deprecation removed.
+      #
+      # That exclusion is the RIGHT outcome reached by the WRONG mechanism: it
+      # rests on a string match rather than on an explicit flag, and the H3
+      # heading's `(**DEPRECATED -- ...**)` marker -- which .parseRegister()
+      # does record, as `deprecated` -- is discarded here. Replacing this with
+      # a `deprecated` field honoured by .namesByType() is the intended fix and
+      # is tracked separately; test-conventions.R pins the current behaviour so
+      # the inconsistency cannot be "tidied" into a regression in the meantime.
       current$type <- trimws(m[[2]])
       state <- "header"
       next

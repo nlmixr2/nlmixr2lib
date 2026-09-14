@@ -2,6 +2,26 @@
 
 # development version
 
+- Read the registers' `- **Type:**` field the same way in every parser. Three
+  readers of that one field disagreed about a trailing parenthetical
+  qualifier: `checkNamingRegisters.R::.parseRegister()` has always treated it
+  as a qualifier and stored the bare leading token, but
+  `conventions.R::.parseCovariateColumns()` stored the whole line. `WHO_PS`
+  therefore carried `"continuous (semantically ordinal but treated as
+  continuous in the covariate model)"` as its type where every other covariate
+  with a `Type:` line carried a bare token. Nothing branches on a covariate's
+  type yet, so this was a latent trap rather than a live bug -- the first code
+  to filter covariates by type would have silently missed that entry. The bare
+  token now lands in `type` and the parenthetical in a new `typeQualifier`
+  field, and a new `tests/testthat/test-conventions.R` enumerates the whole
+  register, plus checks the two parsers against each other name by name, so
+  they cannot drift apart again. `.parseTypedNamesMd()` is deliberately NOT
+  changed: it alone keeps the parenthetical, and that is what holds the
+  deprecated `as` / `ag` paracetamol suffixes out of `registeredMetabolites`.
+  That exclusion is correct but rests on a string-match accident rather than an
+  explicit `deprecated` flag; the new tests pin it, and replacing the mechanism
+  is left as its own change.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.
