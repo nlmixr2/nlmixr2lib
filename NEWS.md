@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Jin 2026 colistin sulfate ([doi:10.2147/IDR.S611711](https://doi.org/10.2147/IDR.S611711)) -- critically ill adults with carbapenem-resistant Gram-negative pneumonia.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.
