@@ -5393,11 +5393,13 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
   - `DACT` -- used in `Ahsman_2010_cefotaxime.R` (paper notation).
 - **Example models:** `Ahsman_2010_cefotaxime.R`.
 
-### tam (**canonical tamoxifen tracking-species suffix**)
+### tam (**canonical ticagrelor-active-metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Tamoxifen tracking species suffix (documented as the ticagrelor-paired tracking species in Almquist 2016).
-- **Source aliases:** none.
-- **Example models:** `Almquist_2016_ticagrelor.R`.
+- **Role:** Ticagrelor active metabolite AR-C124910XX, abbreviated TAM (ticagrelor active metabolite) by both registering papers. Note the acronym collision: `tam` here is NOT tamoxifen -- tamoxifen's own tracking species is registered separately (see `TerHeine_2014_tamoxifen.R` and the `endoxifen` entry).
+- **Source aliases:**
+  - `TAM` -- Almquist 2016 notation for the tracking species paired with ticagrelor.
+  - `AR-C124910XX` -- the compound code used throughout Kang 2026 (main text, Table 2, Figure 1).
+- **Example models:** `Almquist_2016_ticagrelor.R` (preclinical mouse interaction model; `central_tam` / `peripheral1_tam` / `peripheral2_tam` states plus a `complex_tam` MEDI2452-bound species), `Kang_2026_ticagrelor.R` (clinical joint parent-metabolite popPK during VA-ECMO; single `central_tam` state with `lcl_tam` / `lvc_tam` / `etalcl_tam` / `addSd_tam` and the `Cc_tam` output).
 
 ### vact (**canonical vascular-active lesion-state suffix**)
 - **Type:** metabolite-suffix
