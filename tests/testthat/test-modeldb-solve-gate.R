@@ -84,9 +84,18 @@ probeUnsupportedModels <- character(0)
 # full sweep runs when NLMIXR2LIB_SOLVE_GATE=full and the at-risk subset runs
 # otherwise. The subset is NOT a hand-written list: it is computed by
 # linCmtRiskCandidates() below, which walks every model file in the registry,
-# so a model added next week is screened automatically. What the default path
-# gives up is the ability to catch a model that solves to zero for some reason
-# unrelated to the linCmt conversion; the full sweep covers that.
+# so a model added next week is screened automatically.
+#
+# STATING THE CAP RATHER THAN LETTING IT READ AS FULL COVERAGE. On the default
+# path both gates below run over the screened candidates only. The screen's
+# three preconditions are specific to this defect class -- it looks for an
+# exogenous input term, which is the thing the conversion drops -- so what the
+# default path gives up is (a) a model that solves to zero for some reason
+# unrelated to the conversion, and (b) a model the conversion changes for some
+# reason other than a dropped input term. Under `full` both gates widen to the
+# entire registry, which covers every model rxode2 would convert (2912 of 2912
+# screened, 802 actually convertible as of 2026-09-13) rather than only the
+# 289 the cheap screen flags.
 .solveGateScope <- function() {
   if (identical(tolower(Sys.getenv("NLMIXR2LIB_SOLVE_GATE", "")), "full")) "full" else "screened"
 }
@@ -164,12 +173,24 @@ test_that("rxode2's linCmt() optimisation never changes a model's solution", {
   # the ODE solve, or it is not an optimisation but a different model. This
   # catches both failure modes of the conversion -- the dead model and the
   # silently-wrong one that drops a transit chain but still produces plausible
-  # concentrations.
+  # concentrations. The quiet one is the larger exposure, because a plausible
+  # profile is invisible to every other check in this package.
+  #
+  # Under `full` this runs over the WHOLE registry rather than the screened
+  # subset. That is deliberate: the screen looks for an exogenous input term,
+  # so it covers the models this defect is known to hit, but the invariant
+  # being asserted -- the optimisation does not change the answer -- belongs to
+  # every model rxode2 is willing to convert, and enumerating the registry is
+  # the only way to say that without re-implementing rxode2's detector here.
   skip_on_cran()
   skip_if_not_installed("rxode2")
 
   db <- nlmixr2lib::modeldb
-  names_ <- intersect(db$name, linCmtRiskCandidates())
+  names_ <- if (.solveGateScope() == "full") {
+    db$name
+  } else {
+    intersect(db$name, linCmtRiskCandidates())
+  }
   expect_gt(length(names_), 0)
 
   divergent <- character(0)
