@@ -4794,6 +4794,8 @@ navbar:
         href: articles/Bender_2014_trastuzumabEmtansine_mechanistic.html
       - text: "TrastuzumabEmtansine reduced (Bender 2014)"
         href: articles/Bender_2014_trastuzumabEmtansine_reduced.html
+      - text: "TrastuzumabRezetecan (Gao 2026)"
+        href: articles/Gao_2026_trastuzumabRezetecan.html
       - text: "Trastuzumabemtansine (Lu 2014)"
         href: articles/Lu_2014_trastuzumabemtansine.html
       - text: "Tremelimumab (Hwang 2022)"
@@ -5893,6 +5895,7 @@ articles:
   - articles/Ganesan_2023_tebipenem
   - articles/Gao_2012_exenatide
   - articles/Gao_2025_cefquinome
+  - articles/Gao_2026_trastuzumabRezetecan
   - articles/Gaohua_2012_pregnancy_pbpk
   - articles/Gaohua_2015_lung_pbpk
   - articles/Gaohua_2023_permeabilityLimited_pbpk

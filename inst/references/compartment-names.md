@@ -4285,6 +4285,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** ADC popPK extractions with Me-DM4 metabolite.
 
+### rez (**canonical rezetecan payload suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Rezetecan (topoisomerase-I-inhibitor, exatecan-derivative) ADC payload species suffix.
+- **Source aliases:** none.
+- **Example models:** `Gao_2026_trastuzumabRezetecan.R` (released payload of trastuzumab rezetecan / SHR-A1811, drug-to-antibody ratio approximately 6.0).
+- **Notes:** Named for the released payload, not for the conjugate. The parent ADC's INN is *trastuzumab rezetecan*, so the unsuffixed states (`central`, `peripheral1`) hold the INTACT ADC and `_rez` marks the free payload -- the same orientation as `dxd` in `Lu_2022_patritumab.R`, where the ADC is *patritumab deruxtecan* and `_dxd` marks the released DXd. Distinct from `dxd`: rezetecan and DXd are different exatecan derivatives with different linkers, and Gao 2026 reports rezetecan as more membrane-permeable and more potently cell-killing than the deruxtecan payload.
+
 - **Type:** metabolite-suffix
 - **Source aliases:** none.
 
