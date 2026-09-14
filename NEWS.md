@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Ooi 2026 elafibranor ([doi:10.1002/psp4.70247](https://doi.org/10.1002/psp4.70247)) -- pooled healthy volunteers and patients with renal or hepatic impairment, MASH or primary biliary cholangitis, plus the GFT1007 active-metabolite PK model and the joint alkaline-phosphatase / total-bilirubin exposure-response model.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.

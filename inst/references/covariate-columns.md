@@ -1520,6 +1520,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Ollier_2015_ropivacaine.R` (multiplicative exponential effect on free-ropivacaine clearance: `Cl = exp(lcl + etalcl) * exp(beta_NSH * LIVER_RESECT_MAJOR)` with `beta_NSH = log(620/1310) = -0.7480`; Cl drops from 1310 L/h at LIVER_RESECT_MAJOR = 0 to 620 L/h at LIVER_RESECT_MAJOR = 1, a 53% reduction).
 - **Notes:** Specific scope pending a second liver-resection-popPK model to ratify the name. The dichotomisation at >= 3 segments reflects the Ollier 2015 analytical choice; a future model that parameterises resection extent as a continuous count of segments should introduce a separate canonical rather than repurpose LIVER_RESECT_MAJOR. Do not confuse with the `HEPIMP_*` family: `HEPIMP_MILD` / `HEPIMP_MOD` / `HEPIMP_SEV` etc. describe chronic hepatic impairment classified from labs (bilirubin, AST) or Child-Pugh scores, whereas LIVER_RESECT_MAJOR is a surgical-exposure covariate that acts on drug clearance for the transient postoperative window.
 
+### LSM (**canonical for liver stiffness measured by transient elastography**)
+- **Description:** Baseline liver stiffness measurement (LSM) obtained by vibration-controlled transient elastography (FibroScan-type), the standard non-invasive surrogate for hepatic fibrosis stage in chronic liver disease. Time-fixed per subject.
+- **Units:** kPa
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- typically enters as a power term normalised to a cohort reference, `(LSM / ref)^exponent`. Reference value observed: 8.1 kPa (Ooi 2026 Supplementary Datafile S6 and the Figure S4 forest plots).
+- **Source aliases:**
+  - `LIVSTBL` (baseline liver stiffness) -- the NONMEM `$INPUT` column in Ooi 2026 Supplementary Datafiles S5 and S6; same quantity in kPa, no value transformation.
+- **Example models:** `Ooi_2026_elafibranor_alptb.R` (power exponent 0.333 on the typical baseline total bilirubin of the joint ALP / total-bilirubin indirect-response model; Ooi 2026 Table 2).
+- **Notes:** A bare clinical-measurement abbreviation in the same group as `ALB`, `ALT`, `ALP`, `TBILI` and `CRCL`, and registered at general scope because liver stiffness is a standard hepatology measurement rather than a paper-defined construct. Distinct from the categorical fibrosis-stage and hepatic-impairment indicators (`HEPIMP`, `HEPIMP_MILD`, ...), which classify rather than measure. When a source imputes a missing LSM by setting the covariate factor to 1 (as Ooi 2026 does), supply the reference value instead so the power term evaluates to 1.
+
 ### RENALIMP (**canonical for renal-impairment indicator (any degree)**)
 - **Description:** 1 = renal impairment of any degree (mild, moderate, severe, or kidney failure / ESRD), 0 = normal renal function. Pooled parent of the `RENALIMP_*` severity family, for source papers that carry renal impairment as a single binary covariate rather than resolving the individual strata. The threshold separating "normal" from "impaired" is paper-specific and must be documented in per-model `covariateData[[RENALIMP]]$notes`; a common scheme (used by Zhang 2025 and mirrored in FDA / EMA renal-impairment labeling guidance) is eGFR < 90 mL/min/1.73 m^2 as impaired.
 - **Units:** (binary)
@@ -3178,6 +3189,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Chen_2024_combinedOralContraceptives_btb_mbma.R` (model-based meta-analysis of breakthrough bleeding across four progestin/EE combinations; EE dose is the only covariate retained on the second-phase intercept and is the paper's central dose-response finding).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings: [[DOSE_EMPA_MGD]], [[DOSE_LOR_MGD]], [[DOSE_TPM_MGD]], [[DOSE_SEMAGLUTIDE_MG]]). Ethinyl estradiol is dosed in flat ug/day in every marketed COC, so the ug unit rather than mg is the label-native scale and the one every source table prints. Dose-as-covariate rather than an rxode2 `amt` / `EVID = 1` event because the founding model is purely algebraic with no PK compartment, following the [[DOSE_AGT_UG]] / [[DOSE_ISOPROTERENOL_UG]] precedent. Pairs with [[DOSE_PROGESTIN_UMOL]], which carries the progestin component of the same regimen; a COC arm is fully described by the two columns together. Distinct from [[CONMED_BIRTHCONTROL]], which is a binary "is this subject on hormonal contraception" flag used when contraception is a co-medication rather than the modelled drug. A future model needing the EE dose of a non-oral route (patch, vaginal ring) should register a route-qualified sibling rather than overload this name, since the delivered daily EE differs from the nominal tablet strength.
 
+### DOSE_ELA_MG (**canonical for the administered elafibranor dose in milligrams**)
+- **Description:** Milligram dose of elafibranor on the dose record, carried as a covariate because relative bioavailability rises with dose through a sigmoidal Emax function of the dose itself. Time-varying across study periods in dose-escalation trials.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as `1 + Emax * DOSE_ELA_MG^gamma / (ED50^gamma + DOSE_ELA_MG^gamma)`. Reference values observed: Emax = 0.800, ED50 = 11.0 mg, gamma = 2.31 (Ooi 2026 Table S3), so the factor is 1.11 at 5 mg, 1.78 at 50 mg and 1.79 at 80 mg -- it saturates near 1.8 above roughly 50 mg, which reproduces the less-than-proportional exposure the authors report below 50 mg.
+- **Source aliases:**
+  - `DOSEN` -- the NONMEM `$INPUT` column in Ooi 2026 Supplementary Datafile S1, used in `$PK` as `DOSE_FREL`.
+- **Example models:** `Ooi_2026_elafibranor.R` (doses 5-360 mg pooled over 17 studies, Table S1).
+- **Notes:** Member of the `DOSE_<drug>_<units>` family. MUST carry the MILLIGRAM dose even when event-table amounts are in umol, because ED50 is reported on the milligram scale. Only the parent model carries this covariate; the GFT1007 model has no dose effect on bioavailability.
+
 ### DOSE_PROGESTIN_UMOL (**canonical for daily progestin dose on a molar basis**)
 - **Description:** Daily dose of the progestin component of a combined oral contraceptive expressed on a MOLAR basis, in umol. Constant within a treatment arm / subject for a conventional 21/7 monophasic regimen. The molar scale is what makes a single column meaningful across chemically distinct progestins: it is the column that carries progestin identity in models that do not fit a separate per-progestin effect.
 - **Units:** umol (per day)
@@ -3682,6 +3704,28 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
   - `G` (NONMEM `$INPUT` column in DDMODEL00000217 / DDMODEL00000218) -- used in `Zecchin_2016_tumorovarian.R` and `Zecchin_2016_survival.R`. The DDMORE bundles ship the simulated datasets with the column re-labelled `AUC1`; downstream consumers should map `AUC1` -> `AUC_GEM`.
 - **Example models:** `Zecchin_2016_tumorovarian.R` (Zecchin 2016 SLD model for advanced ovarian cancer, DDMODEL00000217), `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
 - **Notes:** Specific scope. The Zecchin 2016 SLD and OS models use the value directly in the death-rate term `kd1 * AUC_GEM * tumorSize`, with an internal `/100` numerical scaling carried verbatim from the source `$DES` block.
+
+### AUC_ELA (**canonical for steady-state dosing-interval AUC of elafibranor**)
+- **Description:** Per-subject (time-fixed) area under the elafibranor plasma concentration-time curve over the once-daily dosing interval at steady state, supplied as a static drug-exposure column to the sequentially fitted exposure-response model, which carries no PK compartments. Ooi 2026 Supplementary Datafile S6 `$PK` computes it as `F * dose_mg / CL * 1e6 / 384.49` (CL in mL/h, elafibranor molecular weight 384.49 g/mol).
+- **Units:** `umol*h/L`. Document per-model via `covariateData[[AUC_ELA]]$units`. Must be on the same scale as the AUC50 the consuming model carries.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters only through the sum `AUC_ELA + AUC_GFT1007`, which drives an inhibitory Emax term for alkaline phosphatase and a linear term for total bilirubin. Set to 0 for placebo arms; both drug terms then vanish exactly. Reference value observed: AUC50 = 24.1 umol*h/L for the summed metric (Ooi 2026 Table 2); the summed metric had median 32.3 umol*h/L on 80 mg/day and 39.3 umol*h/L on 120 mg/day (Figure 5 legend).
+- **Source aliases:**
+  - `AUCSSP` -- the variable name in Ooi 2026 Supplementary Datafile S6 `$PK`; printed in the paper as AUC tau,ss of elafibranor. Same units and orientation as the canonical.
+- **Example models:** `Ooi_2026_elafibranor_alptb.R` (joint ALP / total-bilirubin indirect-response model).
+- **Notes:** Member of the `AUC_<DRUG>` family; sibling of `AUC_GFT1007`, the active metabolite. Compute it from `modellib('Ooi_2026_elafibranor')` as individual `fdepot * dose_umol / cl`, or equivalently from the milligram dose with the 384.49 g/mol conversion. Elafibranor contributes only about one sixth of the summed exposure metric at 80 mg/day.
+
+### AUC_GFT1007 (**canonical for steady-state dosing-interval AUC of GFT1007, the active elafibranor metabolite**)
+- **Description:** Per-subject (time-fixed) area under the GFT1007 plasma concentration-time curve over the once-daily elafibranor dosing interval at steady state, supplied as a static drug-exposure column to the sequentially fitted exposure-response model. Ooi 2026 Supplementary Datafile S6 `$PK` computes it as `F * dose_mg / CL * 1e6 / 386.51` (CL in mL/h, GFT1007 molecular weight 386.51 g/mol).
+- **Units:** `umol*h/L`. Document per-model via `covariateData[[AUC_GFT1007]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters only through the sum `AUC_ELA + AUC_GFT1007`. Set to 0 for placebo arms.
+- **Source aliases:**
+  - `AUCSSM` -- the variable name in Ooi 2026 Supplementary Datafile S6 `$PK`.
+- **Example models:** `Ooi_2026_elafibranor_alptb.R` (joint ALP / total-bilirubin indirect-response model).
+- **Notes:** Member of the `AUC_<DRUG>` family; sibling of `AUC_ELA`. The two enter only as a sum because elafibranor and GFT1007 were shown to be equipotent (Ooi 2026 Methods 2.3.2). Compute it from `modellib('Ooi_2026_elafibranor_gft1007')`. Note that the source converts the milligram dose to moles with the METABOLITE molecular weight here and with the PARENT molecular weight for `AUC_ELA`, a 0.5% difference that is reproduced as published rather than harmonised.
 
 ### AUC_GCV (**canonical for per-q12h-interval AUC of ganciclovir**)
 - **Description:** Time-varying ganciclovir AUC over a q12h dosing interval (AUC_0-12), used as the drug-exposure input to indirect-response viral-turnover PK/PD models of cytomegalovirus (CMV) viral load decline under (val)ganciclovir treatment. The Koloskoff 2025 source computes individual AUC_0-12 from an upstream popPK model (Franck 2021) and feeds it to the PD model as a Monolix "varying input"; the PD model itself does not integrate a PK ODE, so AUC_GCV is supplied to nlmixr2 as a time-varying data column.
@@ -6826,7 +6870,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Scope:** specific
 - **Reference category:** 0 (non-PBC subject; complement reference is paper-defined -- for Zuo 2016 the reference is the pooled healthy-adult cohort from Xiang 2011 / Dilger 2012 / Hess 2004).
 - **Source aliases:** paper narrative "patient with PBC" / "healthy" subgroup labels in Zuo 2016.
-- **Example models:** `Zuo_2016_UDCA.R` (multiplicative scaling on liver-to-biliary rate constants when DIS_PBC = 1: K_LB,0 scaled by 0.10 -- 90% reduction; K_LB,1 scaled by 0.30 -- 70% reduction; K_LB,2 scaled by 0.10 -- 90% reduction; reproduces the Zuo 2016 Figure 3 PBC simulation).
+- **Example models:** `Ooi_2026_elafibranor.R` and `Ooi_2026_elafibranor_gft1007.R` (fractional difference in the PBC population: apparent peripheral volume 28.4% lower for the parent, apparent inter-compartmental clearance 21.4% higher for the metabolite; Ooi 2026 Table S3), `Zuo_2016_UDCA.R` (multiplicative scaling on liver-to-biliary rate constants when DIS_PBC = 1: K_LB,0 scaled by 0.10 -- 90% reduction; K_LB,1 scaled by 0.30 -- 70% reduction; K_LB,2 scaled by 0.10 -- 90% reduction; reproduces the Zuo 2016 Figure 3 PBC simulation).
 - **Notes:** Used when a systems / popPK model adapts a healthy-state structural model to a PBC population via fixed disease-state scaling on hepatic-excretion rate constants. Scope: specific because the structural adaptation form (which K parameters are scaled, by how much) is paper-defined; future PBC extractions that re-estimate or alter the scaling pattern can extend the example-models list. Distinct from `DIS_HEPATIMP` (hepatic-impairment severity categorical), `DBIL` (direct bilirubin biomarker), and `ALP` (cholestasis biomarker), which describe pathophysiology rather than the disease label itself.
 
 ### DIS_DMD (**canonical for Duchenne muscular dystrophy patient indicator**)
@@ -13407,6 +13451,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Rich_2026_momelotinib.R` (selects the residual-error model only, for both the momelotinib and the M21 output: proportional-only in the phase III trials SIMPLIFY-1 / SIMPLIFY-2 / MOMENTUM, proportional-plus-additive in the phase I clinical-pharmacology studies and the phase II study; it touches no structural or covariate parameter).
 - **Notes:** Sibling of the trial-named `STUDY_<id>` members, but the id names a development *phase stratum* rather than one trial, which is what makes the column reusable across papers (hence general rather than specific scope). Prefer the trial-named indicators when the source estimates a genuinely per-trial effect; use this one only when the source itself pools by phase. Distinct from `STUDY_PHASE2A` / `STUDY_PHASE2B`, which despite their names are indicators for two *specific* vupanorsen trials rather than phase strata. A model using this column should state in `covariateData[[STUDY_PHASE3]]$notes` which value a user should set when simulating, since the choice changes only the residual error and not the typical-value prediction.
 
+### STUDY_PHASE2 (**canonical for pooled phase II study-stratum indicator**)
+- **Description:** 1 = record from a phase II study in the pooled analysis, 0 = record from a study of another phase. Per-record (study-fixed) binary indicator. Sibling of `STUDY_PHASE3`, completing the three-way development-phase stratification that a pooled phase I / II / III analysis needs: phase I is the reference when `STUDY_PHASE2` and `STUDY_PHASE3` are both 0.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0. Together with `STUDY_PHASE3` = 0 this selects the pooled phase I studies.
+- **Source aliases:**
+  - `PHASEN` -- the NONMEM `$INPUT` column in Ooi 2026 Supplementary Datafiles S1 and S2, an integer study-phase code branched in `$ERROR` as `IF(PHASEN.EQ.2)` / `IF(PHASEN.EQ.3)`. Derive `STUDY_PHASE2 = as.integer(PHASEN == 2)`.
+- **Example models:** `Ooi_2026_elafibranor.R`, `Ooi_2026_elafibranor_gft1007.R` (selects the residual-error magnitudes only; Table S3 tabulates the residual-error rows per study phase).
+- **Notes:** Introduced because `STUDY_PHASE3` alone can only express a two-way phase III versus everything-else split, which is what its founding example `Rich_2026_momelotinib.R` needed. `STUDY_PHASE2A` / `STUDY_PHASE2B` are vupanorsen-specific single-study indicators and are not substitutes for this pooled-stratum column.
+
+### STUDY_GFT505B_319_1 (**canonical for the ELATIVE phase III elafibranor study indicator**)
+- **Description:** 1 = record from study GFT505B-319-1 (ELATIVE, NCT04526665), the phase III efficacy and safety trial of elafibranor in primary biliary cholangitis; 0 = record from any other pooled study. Per-record (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any other of the 17 pooled studies listed in Table S1).
+- **Source aliases:**
+  - `STUDYIDN` -- Ooi 2026 Supplementary Datafiles S1 and S2 `$INPUT`; the study carries code 20, branched as `IF(STUDYIDN.EQ.20)`. Derive `STUDY_GFT505B_319_1 = as.integer(STUDYIDN == 20)`.
+- **Example models:** `Ooi_2026_elafibranor.R`, `Ooi_2026_elafibranor_gft1007.R` (selects a study-specific absorption lag time, fixed to 0 h, for both analytes; Table S3 row 'Lag-time for Study GFT505B-319-1 (h)').
+- **Notes:** Member of the `STUDY_<id>` family. Distinct from `STUDY_PHASE3`, which is 1 for every phase III study in the pool; the elafibranor analysis included two phase III trials (GFT505B-319-1 in PBC and GFT505-315-1 in MASH) and only the former carries the lag-time override.
+
 ### STUDY_ODYSSEY (**canonical for ODYSSEY trial study indicator**)
 - **Description:** 1 = record from the ODYSSEY trial (a multicentre randomised trial of antiretroviral regimens in children and adolescents living with HIV-1), 0 = record from the comparator study pooled into the analysis. Per-record (study-fixed) binary indicator.
 - **Units:** (binary)
@@ -13994,6 +14060,57 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **The sibling `FED` effect is NOT gated on this indicator.** The control stream forms `F1 = 1 * THETA(4)**SFLAG * THETA(9)**FFLAG`, so the 1.10 food ratio multiplies the 1.53 formulation ratio; Chandasana 2023 Table S1 tabulates the product as `F, without regards to food, DT/Granules = 1.68`. Chandasana 2023 Table 2 lists a fed estimate on the FCT row only because the FCT is the reference level, not because the effect is FCT-specific.
 - **Notes:** A dispersible tablet is a solid dosage form dispersed in water immediately before administration, so it is pharmaceutically distinct from the bedside-improvised `FORM_SUSPENSION` (crushed tablets), from `FORM_SOLUTION` (a manufactured oral liquid), and from `FORM_GRANULE` (sachet granules alone) -- but the source model pools the dispersible tablet with the granules against the film-coated tablet, which is why this is a single drug-scoped indicator rather than a combination of the general siblings. Dispersible tablets are ubiquitous in pediatric antiretroviral, antimalarial and antitubercular development, so a general `FORM_DISPERSIBLE_TABLET` canonical is the natural promotion target: promote when a second paper ratifies a dispersible-tablet-vs-solid contrast that is not pooled with granules.
 
+### FORM_ELA_F1 (**canonical for the elafibranor clinical formulation 1 indicator**)
+- **Description:** 1 = the dose was given as elafibranor clinical formulation 1, 0 = any other formulation. Per-dose-record indicator (formulation can change within a subject across study periods).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. All six `FORM_ELA_*` indicators equal to 0 selects formulation 5, the phase II/III formulation and the model reference; there is deliberately no `FORM_ELA_F5` column (see Notes).
+- **Source aliases:**
+  - `FORMN` / `FORM1`..`FORM6` -- Ooi 2026 Supplementary Datafiles S1 and S2 `$INPUT`. The binarised `FORM<k>` columns of the control streams are NOT in the paper's formulation numbering: stream `FORM1`..`FORM6` map to Table S1 / Table S3 formulations 5, 6, 1, 2, 3, 4 respectively. The canonical columns use the PAPER's numbering, which is what Table S1 and Table S3 print.
+- **Example models:** `Ooi_2026_elafibranor.R`, `Ooi_2026_elafibranor_gft1007.R` (formulation-specific relative bioavailability, zero-order input duration D1, mean absorption time and absorption lag time, for both the parent and the metabolite).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family. Used in the phase I studies GFT505-106-1, GFT505-106-2, GFT505-108-4 and GFT505-108-3 (Table S1).
+
+### FORM_ELA_F2 (**canonical for the elafibranor clinical formulation 2 indicator**)
+- **Description:** 1 = the dose was given as elafibranor clinical formulation 2, 0 = any other formulation. Per-dose-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (formulation 5 when all six `FORM_ELA_*` indicators are 0).
+- **Source aliases:** `FORMN` -- see `FORM_ELA_F1` for the stream-versus-paper numbering caveat.
+- **Example models:** `Ooi_2026_elafibranor.R`, `Ooi_2026_elafibranor_gft1007.R`.
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family.
+
+### FORM_ELA_F3 (**canonical for the elafibranor clinical formulation 3 indicator**)
+- **Description:** 1 = the dose was given as elafibranor clinical formulation 3, 0 = any other formulation. Per-dose-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (formulation 5 when all six `FORM_ELA_*` indicators are 0).
+- **Source aliases:** `FORMN` -- see `FORM_ELA_F1` for the stream-versus-paper numbering caveat.
+- **Example models:** `Ooi_2026_elafibranor.R`, `Ooi_2026_elafibranor_gft1007.R`.
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family. In the GFT1007 model the relative bioavailability of formulation 3 is also fixed to 1.00, so formulations 3 and 5 share a bioavailability but differ in D1, MAT and lag time (Table S3).
+
+### FORM_ELA_F4 (**canonical for the elafibranor clinical formulation 4 indicator**)
+- **Description:** 1 = the dose was given as elafibranor clinical formulation 4, 0 = any other formulation. Per-dose-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (formulation 5 when all six `FORM_ELA_*` indicators are 0).
+- **Source aliases:** `FORMN` -- see `FORM_ELA_F1` for the stream-versus-paper numbering caveat.
+- **Example models:** `Ooi_2026_elafibranor.R`, `Ooi_2026_elafibranor_gft1007.R`.
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family. The phase IIb MASH formulation (study GFT505-212-7, Table S1).
+
+### FORM_ELA_F6 (**canonical for the elafibranor clinical formulation 6 indicator**)
+- **Description:** 1 = the dose was given as elafibranor clinical formulation 6, 0 = any other formulation. Per-dose-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (formulation 5 when all six `FORM_ELA_*` indicators are 0).
+- **Source aliases:** `FORMN` -- see `FORM_ELA_F1` for the stream-versus-paper numbering caveat.
+- **Example models:** `Ooi_2026_elafibranor.R`, `Ooi_2026_elafibranor_gft1007.R`.
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family. Used in the formulation-comparison study GFT505-119-17 (Table S1).
+
 ### FORM_POWDER (**canonical for oral powder formulation indicator**)
 - **Description:** 1 = subject received the oral powder formulation of the modelled drug; 0 = subject received the comparator solid oral formulation (typically a tablet, but document the per-paper comparator in `covariateData[[FORM_POWDER]]$notes`).
 - **Units:** (binary)
@@ -14108,6 +14225,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `METH2` -- used in `Abrantes_2017_moroctocog.R` (Abrantes 2017 Table 2 footnote g: OSA-local indicator on the bioavailability multiplier; only one study in the Abrantes 2017 13-study pool, B1831003, used a local laboratory).
 - **Example models:** `Abrantes_2017_moroctocog.R` (multiplicative effect on F: `(1 - 0.146 * ASSAY_OSA_LOCAL)` so OSA-local-laboratory observations have an additional 14.6% F reduction beyond the central-laboratory OSA effect captured by `ASSAY_OSA`).
 - **Notes:** Specific scope because OSA inter-laboratory variability is a FVIII-domain phenomenon. Paired with `ASSAY_OSA`. When the pooled dataset contains no local-laboratory observations, set `ASSAY_OSA_LOCAL = 0` for every row and the corresponding F multiplier collapses to 1.
+
+### ASSAY_SEPIP (**canonical for the separation-of-interfering-peak bioanalytical-method indicator**)
+- **Description:** 1 = the concentration was measured by a liquid-chromatography method in which an interfering chromatographic peak was separated from the analyte peak, WITHOUT addition of formic acid to the mobile phase; 0 = neither modification was applied. Per-observation indicator used to shift the predicted concentration and to select the residual-error magnitudes between bioanalytical method versions. Mutually exclusive with `ASSAY_SEPIP_FA`, which carries the peak separation AND the formic-acid modification; both 0 selects the unmodified reference method.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (the unmodified method: no peak separation and no formic acid).
+- **Source aliases:**
+  - `BIOANN` -- the NONMEM `$INPUT` column in Ooi 2026 Supplementary Datafile S1, a four-level code read in `$PK` / `$ERROR` as 1 = neither modification, 2 = separation of the interfering peak only, 3 and 4 = separation plus formic acid. Derive `ASSAY_SEPIP = as.integer(BIOANN == 2)`.
+- **Example models:** `Ooi_2026_elafibranor.R` (founding example; multiplies the predicted elafibranor concentration by `exp(-0.182)` and selects four of the twelve residual-error magnitudes).
+- **Notes:** Distinct from `ASSAY_CMIA` / `ASSAY_OSA` / `ELISA`, which contrast two named assay PLATFORMS. This pair names two chromatographic SAMPLE-PREPARATION / mobile-phase modifications of one LC-MS/MS method, which is why the indicator is named after the modification rather than after a platform. A paper that reports only one modification uses `ASSAY_SEPIP` alone.
+
+### ASSAY_SEPIP_FA (**canonical for the separation-of-interfering-peak-plus-formic-acid bioanalytical-method indicator**)
+- **Description:** 1 = the concentration was measured by a liquid-chromatography method in which an interfering chromatographic peak was separated from the analyte peak AND formic acid was added; 0 otherwise. Per-observation indicator. Mutually exclusive with `ASSAY_SEPIP`; both 0 selects the unmodified reference method.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (the unmodified method: no peak separation and no formic acid).
+- **Source aliases:**
+  - `BIOANN` -- Ooi 2026 Supplementary Datafile S1 `$INPUT`; levels 3 and 4 both select this stratum, so `ASSAY_SEPIP_FA = as.integer(BIOANN %in% c(3, 4))`.
+- **Example models:** `Ooi_2026_elafibranor.R` (founding example; multiplies the predicted elafibranor concentration by `exp(-0.760)` and selects two of the twelve residual-error magnitudes).
+- **Notes:** Sibling of `ASSAY_SEPIP`; see that entry's Notes for why this pair is named after the sample-preparation modification rather than after an assay platform.
 
 ### ASSAY_IFX (**canonical for the commercial infliximab ELISA identity stratum**)
 - **Description:** Integer code naming which commercial infliximab immunoassay measured a serum infliximab concentration, used to select a per-assay residual-error magnitude. Canonical code mapping: `1` = Sanquin (Amsterdam), `2` = Immundiagnostik AG (Germany), `3` = Caltag Laboratories, `4` = Matrix Biotek, `5` = the in-house assay developed at Sheba Medical Center and referred to in the literature by its developer's name, Shomron Ben-Horin, `6` = Promonitor (Grifols / Progenika). Per-observation (per-row) code. A dataset that uses a vendor not yet in the mapping extends it with the next unused integer and records the addition here; `7` is the next free code (the obvious first claimant being apDIA, which appears in Zhao 2026 Supplementary Table 1 but contributed no fitted observations).
