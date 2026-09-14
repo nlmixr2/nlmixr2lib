@@ -45,22 +45,15 @@
   (`compartments`, `registeredMetabolites`, `pkParams`, `pkBareParams`,
   `paperNamedParams`) is byte-identical to before.
 
-- Retype `DIS_COPD_GOLD` and `DIS_COPD_GOLD_LOW` / `_HIGH` from `ordinal` to
-  `continuous (semantically ordinal but treated as continuous in the covariate
-  model)`. `ordinal` was never in the register's documented
-  `continuous | binary | categorical | count` vocabulary nor in
-  `checkNamingRegisters.R::.knownTypes`, so `checkNamingRegisters()` had been
-  reporting two `unknown-type` issues and
-  `tests/testthat/test-checkNamingRegisters.R` had been failing since the Yang
-  2026 COPD models were added. `continuous` is the routing tag that matches how
-  the column is used -- it enters as a centred linear or piecewise-linear term
-  in the raw stage number, and the aggregated-data pair is averaged as
-  `(LOW + HIGH) / 2`, arithmetic that presumes a numeric scale -- and it
-  follows the register's settled treatment of the other numerically-entered
-  ordinal scores (`WHO_PS`, which carries the identical qualifier, plus
-  `APACHE_II` and `SAPS_II`). The alternative, ratifying `ordinal` as a fifth
-  type, was rejected because it would have left four different types in use for
-  the same measurement scale. `checkNamingRegisters()` now reports zero issues.
+- Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
+  `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
+  `ordinal`. No register's type vocabulary has an `ordinal` member: an
+  ordinal-valued covariate records its scale in `Units:` and takes the type its
+  covariate model implies, which is what `SMOKE_TTFC_SCORE` -- the precedent
+  those entries cite in their own Notes -- already did. Each register's
+  `## Entry schema` `type:` line is now machine-read and checked against the
+  entries it describes, in both directions, so a type outside a file's own
+  documented vocabulary fails the test suite rather than reaching a release.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
