@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Mulford 2026 vonoprazan ([doi:10.1002/psp4.70291](https://doi.org/10.1002/psp4.70291)) -- healthy adults and children and adolescents aged 6 to 17 years with gastroesophageal reflux disease.
+
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
   `ordinal`. No register's type vocabulary has an `ordinal` member: an
