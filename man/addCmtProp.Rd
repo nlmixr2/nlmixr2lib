@@ -3,6 +3,8 @@
 \name{addCmtProp}
 \alias{addCmtProp}
 \alias{addBioavailability}
+\alias{addBioavailabilityLog}
+\alias{addLogitBioavailability}
 \alias{addLag}
 \alias{addDur}
 \alias{addRate}
@@ -11,7 +13,11 @@
 \usage{
 addCmtProp(ui, prop = c("f", "lag", "dur", "rate", "ini"), cmt)
 
-addBioavailability(ui, cmt)
+addBioavailability(ui, cmt, scale = c("log", "logit"), cmt2 = NULL, f = 0.8)
+
+addBioavailabilityLog(ui, cmt, scale = c("log", "logit"), cmt2 = NULL, f = 0.8)
+
+addLogitBioavailability(ui, cmt, cmt2 = NULL, f = 0.8)
 
 addLag(ui, cmt)
 
@@ -37,6 +43,17 @@ addIni(ui, cmt)
 - \code{ini}: initial value of the compartment}
 
 \item{cmt}{compartment to apply the property to}
+
+\item{scale}{parameterization of the bioavailability: \code{"log"}
+(default) estimates it unboundedly on the log scale, while
+\code{"logit"} constrains it to (0,1) with a logit/expit
+parameterization (Monolix-style \code{F}, oral or subcutaneous)}
+
+\item{cmt2}{optional second compartment for the logit dose-split
+form; see [addBioavailabilityLogit()]}
+
+\item{f}{initial bioavailability fraction, in (0,1), for the logit
+form, or NULL to leave the initial estimate unset}
 }
 \value{
 rxode2 ui object with property applied
@@ -47,6 +64,10 @@ Add a property to a compartment
 \section{Functions}{
 \itemize{
 \item \code{addBioavailability()}: Adds the bioavailability to a compartment in the model
+
+\item \code{addBioavailabilityLog()}: Adds the bioavailability to a compartment in the model
+
+\item \code{addLogitBioavailability()}: Deprecated alias of [addBioavailabilityLogit()]
 
 \item \code{addLag()}: Adds the lag-time to a compartment in the model
 

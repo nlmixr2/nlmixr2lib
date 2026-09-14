@@ -169,59 +169,77 @@ test_that("addCmtProp test for ini", {
 
 })
 
-test_that("addLogitBioavailability for a single compartment", {
+test_that("addBioavailability logit scale for a single compartment", {
 
-  res <- res0 |> addLogitBioavailability("depot")
+  res <- res0 |> addBioavailability("depot", scale = "logit")
 
   expect_equal(rxode2::modelExtract(res, "f(depot)"),
     "f(depot) <- fDepot")
 
-  res <- res0 |> addLogitBioavailability(depot)
+  res <- res0 |> addBioavailability(depot, scale = "logit")
 
   expect_equal(rxode2::modelExtract(res, "f(depot)"),
     "f(depot) <- fDepot")
 
   expect_equal(rxode2::modelExtract(res, "fDepot"),
-    "fDepot <- expit(lgfDepot, 0, 1)")
+    "fDepot <- expit(logitfDepot, 0, 1)")
 
-  expect_error(res0 |> addLogitBioavailability(matt))
+  expect_error(res0 |> addBioavailability(matt, scale = "logit"))
 
-  expect_error(addLogitBioavailability())
+  expect_error(addBioavailability(scale = "logit"))
+
+  # quoted and computed compartment names work as well
+  expect_equal(
+    rxode2::modelExtract(
+      res0 |> addBioavailability("depot", scale = "logit"), "f(depot)"
+    ),
+    "f(depot) <- fDepot"
+  )
+
+  .v <- "depot"
+  expect_equal(
+    rxode2::modelExtract(
+      res0 |> addBioavailability(.v, scale = "logit"), "f(depot)"
+    ),
+    "f(depot) <- fDepot"
+  )
 
 })
 
-test_that("addLogitBioavailability keeps f bounded and mu-referenced", {
+test_that("addBioavailability logit keeps f bounded and mu-referenced", {
 
-  res <- res0 |> addLogitBioavailability(depot)
+  res <- res0 |> addBioavailability(depot, scale = "logit")
 
   .id <- res$iniDf
-  .w <- which(.id$name == "lgfDepot")
+  .w <- which(.id$name == "logitfDepot")
 
   expect_equal(length(.w), 1L)
   # est is on the logit scale of the default f=0.8
   expect_equal(.id$est[.w], logit(0.8))
   expect_false(.id$fix[.w])
+  expect_equal(.id$label[.w],
+    "Bioavailability fraction (fDepot)")
 
   .cur <- res$muRefCurEval
-  .w2 <- which(.cur$parameter == "lgfDepot")
+  .w2 <- which(.cur$parameter == "logitfDepot")
 
   expect_equal(length(.w2), 1L)
   expect_equal(.cur$curEval[.w2], "expit")
   expect_equal(.cur$low[.w2], 0)
   expect_equal(.cur$hi[.w2], 1)
 
-  res2 <- res0 |> addLogitBioavailability(depot, f = 0.25)
+  res2 <- res0 |> addBioavailability(depot, scale = "logit", f = 0.25)
 
-  expect_equal(res2$iniDf$est[which(res2$iniDf$name == "lgfDepot")],
+  expect_equal(res2$iniDf$est[which(res2$iniDf$name == "logitfDepot")],
     logit(0.25))
 
 })
 
-test_that("addLogitBioavailability splits the dose between two paths", {
+test_that("addBioavailability logit splits the dose between two paths", {
 
   res <- res0 |>
     addDepot(depot = "depot2", ka = "ka2") |>
-    addLogitBioavailability(depot, depot2)
+    addBioavailability(depot, depot2, scale = "logit")
 
   expect_equal(rxode2::modelExtract(res, "f(depot)"),
     "f(depot) <- fDepot")
@@ -229,27 +247,27 @@ test_that("addLogitBioavailability splits the dose between two paths", {
   expect_equal(rxode2::modelExtract(res, "f(depot2)"),
     "f(depot2) <- 1 - fDepot")
 
-  # a single fraction drives both paths
-  expect_equal(sum(res$iniDf$name == "lgfDepot"), 1L)
-  expect_equal(sum(grepl("^lgfDepot", res$iniDf$name)), 1L)
+  # a single fraction drives both paths, named for the first
+  expect_equal(sum(res$iniDf$name == "logitfDepot"), 1L)
+  expect_equal(sum(grepl("^logitfDepot", res$iniDf$name)), 1L)
 
-  expect_error(res0 |> addLogitBioavailability(depot, depot))
+  expect_error(res0 |> addBioavailability(depot, depot, scale = "logit"))
 
-  expect_error(res0 |> addLogitBioavailability(depot, matt))
+  expect_error(res0 |> addBioavailability(depot, matt, scale = "logit"))
 
 })
 
-test_that("addLogitBioavailability dose split solves with the expected ratio", {
+test_that("addBioavailability logit dose split solves with the expected ratio", {
 
   res <- res0 |>
     addDepot(depot = "depot2", ka = "ka2") |>
-    addLogitBioavailability(depot, depot2, f = 0.7)
+    addBioavailability(depot, depot2, scale = "logit", f = 0.7)
 
   .mkEv <- function(.cmt) {
     data.frame(ID = 1, time = 0, evid = 1, cmt = .cmt, amt = 100)
   }
   .p <- c(lka = log(1.2), lka2 = log(1.2), lcl = log(0.1),
-    lvc = log(10), lgfDepot = logit(0.7))
+    lvc = log(10), logitfDepot = logit(0.7))
 
   .sA <- as.data.frame(rxode2::rxSolve(res, .mkEv("depot"), params = .p))
   .sB <- as.data.frame(rxode2::rxSolve(res, .mkEv("depot2"), params = .p))
@@ -263,45 +281,72 @@ test_that("addLogitBioavailability dose split solves with the expected ratio", {
 
 })
 
-test_that("addLogitBioavailability rejects f outside (0,1)", {
+test_that("addBioavailability logit rejects f outside (0,1)", {
 
-  expect_error(res0 |> addLogitBioavailability(depot, f = 0),
+  expect_error(res0 |> addBioavailability(depot, scale = "logit", f = 0),
     regexp = "f must be in")
 
-  expect_error(res0 |> addLogitBioavailability(depot, f = 1),
+  expect_error(res0 |> addBioavailability(depot, scale = "logit", f = 1),
     regexp = "f must be in")
 
-  expect_error(res0 |> addLogitBioavailability(depot, f = 1.5),
+  expect_error(res0 |> addBioavailability(depot, scale = "logit", f = 1.5),
     regexp = "f must be in")
 
-  expect_error(res0 |> addLogitBioavailability(depot, f = -0.2),
+  expect_error(res0 |> addBioavailability(depot, scale = "logit", f = -0.2),
     regexp = "f must be in")
 
 })
 
-test_that("addLogitBioavailability removes the description", {
+test_that("addBioavailability logit leaves the estimate unset with f = NULL", {
 
-  res <- res0 |> addLogitBioavailability(depot)
+  res <- res0 |> addBioavailability(depot, scale = "logit", f = NULL)
+
+  # the expit()/f() lines are in the model, but no theta is added
+  expect_equal(rxode2::modelExtract(res, "f(depot)"),
+    "f(depot) <- fDepot")
+  expect_equal(sum(res$iniDf$name == "logitfDepot"), 0L)
+
+})
+
+test_that("addBioavailability logit removes the description", {
+
+  res <- res0 |> addBioavailability(depot, scale = "logit")
 
   expect_null(res$meta$description)
 
 })
 
-test_that("addLogitBioavailability refuses to double-define f", {
+test_that("addBioavailabilityLogit matches the dispatcher", {
+
+  res <- res0 |> addBioavailability(depot, scale = "logit")
+  res2 <- res0 |> addBioavailabilityLogit(depot)
+
+  expect_equal(rxode2::modelExtract(res), rxode2::modelExtract(res2))
+  expect_equal(res$iniDf, res2$iniDf)
+
+})
+
+test_that("addLogitBioavailability is a deprecated alias", {
+
+  expect_identical(addLogitBioavailability, addBioavailabilityLogit)
+
+})
+
+test_that("addBioavailability logit refuses to double-define f", {
 
   # addBioavailability() leaves fDepot <- exp(lfDepot); applying the
   # logit form on top would leave two fDepot definitions and the
   # solved model would silently reflect neither
   expect_error(
-    res0 |> addBioavailability(depot) |> addLogitBioavailability(depot),
+    res0 |> addBioavailability(depot) |> addBioavailability(depot, scale = "logit"),
     regexp = "bioavailability already present for compartment 'depot'"
   )
 
   expect_error(
     res0 |>
       addDepot(depot = "depot2", ka = "ka2") |>
-      addLogitBioavailability(depot) |>
-      addLogitBioavailability(depot, depot2),
+      addBioavailability(depot, scale = "logit") |>
+      addBioavailability(depot, depot2, scale = "logit"),
     regexp = "bioavailability already present for compartment 'depot'"
   )
 
@@ -309,42 +354,55 @@ test_that("addLogitBioavailability refuses to double-define f", {
   # an f() written directly in a library seed model
   .da <- rxode2::rxode2(readModelDb("PK_double_sim_01"))
 
-  expect_error(.da |> addLogitBioavailability("depot1"),
+  expect_error(.da |> addBioavailability("depot1", scale = "logit"),
     regexp = "bioavailability already present for compartment 'depot1'"
   )
 
   # and it sees the f() this function itself added to both paths
   .split <- res0 |>
     addDepot(depot = "depot2", ka = "ka2") |>
-    addLogitBioavailability(depot, depot2)
+    addBioavailability(depot, depot2, scale = "logit")
 
   expect_equal(.split$props$cmtProp$Property, c("f", "f"))
 
-  expect_error(.split |> addLogitBioavailability(depot2),
+  expect_error(.split |> addBioavailability(depot2, scale = "logit"),
     regexp = "bioavailability already present for compartment 'depot2'"
   )
 
 })
 
-test_that("addLogitBioavailability treats a 'NULL' string cmt2 as a compartment name", {
+test_that("addBioavailability logit treats a 'NULL' string cmt2 as a compartment name", {
 
   # a quoted "NULL" is not the NULL default; it must fail as an
   # unknown compartment instead of silently becoming a single-path call
-  expect_error(res0 |> addLogitBioavailability(depot, "NULL"),
+  expect_error(res0 |> addBioavailability(depot, "NULL", scale = "logit"),
     regexp = "not in the model"
   )
 
 })
 
-test_that("addLogitBioavailability does not inherit template backTransform", {
+test_that("addBioavailability fails when the compartment doesn't exist", {
 
-  res <- res0 |> addLogitBioavailability(depot)
+  # single compartment, both scales
+  expect_error(res0 |> addBioavailability(matt),
+    regexp = "does not exist"
+  )
 
-  .id <- res$iniDf
-  .w <- which(.id$name == "lgfDepot")
+  expect_error(res0 |> addBioavailability(matt, scale = "logit"),
+    regexp = "not in the model"
+  )
 
-  expect_true(is.na(.id$backTransform[.w]))
-  expect_true(is.na(.id$condition[.w]))
-  expect_true(is.na(.id$prior[.w]))
+  # second compartment of the split
+  expect_error(
+    res0 |>
+      addDepot(depot = "depot2", ka = "ka2") |>
+      addBioavailability(depot, matt, scale = "logit"),
+    regexp = "not in the model"
+  )
+
+  # and through the internal function directly
+  expect_error(res0 |> addBioavailabilityLogit(matt),
+    regexp = "not in the model"
+  )
 
 })
