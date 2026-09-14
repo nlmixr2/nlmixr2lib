@@ -4608,6 +4608,10 @@ navbar:
         href: articles/Yu_2026_tenofovir.html
       - text: "Tenofovir alafenamide (Thoueille 2023)"
         href: articles/Thoueille_2023_tenofovir_ckd.html
+      - text: "Tenofovir alafenamide implant (Beliveau 2026)"
+        href: articles/Beliveau_2026_tenofovir_alafenamide_implant.html
+      - text: "Tenofovir alafenamide implant weibull (Beliveau 2026)"
+        href: articles/Beliveau_2026_tenofovir_alafenamide_implant.html
       - text: "Tenofovir combined (Lu 2016)"
         href: articles/Lu_2016_tenofovir.html
       - text: "Tenofovir emtricitabine (Chen 2016)"
@@ -5468,6 +5472,7 @@ articles:
   - articles/Beal_2001_iv1cmt_bql
   - articles/Beguin_2024_carboplatin_dog
   - articles/Beijer_2026_cloxacillin
+  - articles/Beliveau_2026_tenofovir_alafenamide_implant
   - articles/Bellanti_2014_deferiprone
   - articles/Bellanti_2015_deferoxamine
   - articles/Bellanti_2017_deferiprone
