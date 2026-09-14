@@ -27,17 +27,17 @@
 #' @param modelLines list of model lines
 #' @return character vector of unique symbol names
 #' @noRd
-.lineSymbols <- function(modelLines) {
-  .f <- function(e) {
+.modelLineSymbols <- function(modelLines) {
+  .collect <- function(e) {
     if (is.symbol(e)) {
       as.character(e)
     } else if (length(e) > 1) {
-      unlist(lapply(as.list(e)[-1], .f), use.names = FALSE)
+      unlist(lapply(as.list(e)[-1], .collect), use.names = FALSE)
     } else {
       character(0)
     }
   }
-  unique(unlist(lapply(modelLines, .f), use.names = FALSE))
+  unique(unlist(lapply(modelLines, .collect), use.names = FALSE))
 }
 
 #' Convert a model to zero-order absorption (Monolix \code{Tk0})
@@ -147,7 +147,7 @@ removeZeroOrderAbs <- function(ui, central = "central") {
     if (!.hasVarAssignmentLine(.modelLines, .var)) {
       # a bare parameter (monolix2rx style `dur(central) <- Tk0`); it
       # can only be dropped when nothing else in the model uses it
-      if (.var %in% .lineSymbols(.modelLines)) {
+      if (.var %in% .modelLineSymbols(.modelLines)) {
         .var <- NULL
       } else {
         .dropIni <- TRUE

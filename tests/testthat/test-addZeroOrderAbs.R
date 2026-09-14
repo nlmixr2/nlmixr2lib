@@ -151,8 +151,11 @@ test_that("addZeroOrderAbs rejects a colliding log parameter name", {
       cl <- exp(lcl)
       vc <- exp(lvc)
       kel <- cl / vc
+      # nolint start: infix_spaces_linter. `d/dt()` is the idiomatic
+      # rxode2 differential-equation operator, not division
       d/dt(depot) <- -ltk0 * depot
       d/dt(central) <- ltk0 * depot - kel * central
+      # nolint end
       Cc <- central / vc
       Cc ~ prop(propSd)
     })
@@ -211,7 +214,10 @@ test_that("removeZeroOrderAbs drops a bare duration parameter", {
       vc <- exp(lvc)
       kel <- cl / vc
       dur(central) <- tk0
+      # nolint start: infix_spaces_linter. `d/dt()` is the idiomatic
+      # rxode2 differential-equation operator, not division
       d/dt(central) <- -kel * central
+      # nolint end
       Cc <- central / vc
       Cc ~ prop(propSd)
     })
@@ -243,7 +249,10 @@ test_that("removeZeroOrderAbs keeps a duration parameter used elsewhere", {
       kel <- cl / vc
       dur(central) <- tk0
       half <- tk0 / 2
+      # nolint start: infix_spaces_linter. `d/dt()` is the idiomatic
+      # rxode2 differential-equation operator, not division
       d/dt(central) <- -kel * central
+      # nolint end
       Cc <- central / vc
       Cc ~ prop(propSd)
     })
