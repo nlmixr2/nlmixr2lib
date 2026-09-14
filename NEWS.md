@@ -2,6 +2,49 @@
 
 # development version
 
+- Drop the redundant "fixed" from the `Kim_2024_meropenem` IIV labels on
+  `etalq` and `etalvp`. `fixed()` already states it, so the labels were an
+  error-severity convention violation; the provenance (`footnote b`, and the
+  reported shrinkage) is kept.
+
+- Add parameters through `rxode2::model()` and `rxode2::ini()` instead of
+  building an `iniDf` row and `rbind()`ing it on. The initial-estimate data
+  frame's columns belong to lotri and they change, so a hand-built row is a
+  latent break waiting on the next upstream release -- which is exactly what
+  happened. Two internal helpers, `.iniAddTheta()` and `.modelAppend()`,
+  replace the 19 sites that did this; residual-error parameters are now
+  created by appending the endpoint line on its own, letting rxode2 decide
+  their `condition`, `err` and lower bound. `.get1theta()` is deleted: it
+  seeded each new parameter from an existing theta row, so a `backTransform`,
+  `condition` or `prior` on that row leaked onto every parameter added after
+  it. What remains of `.getEtaThetaTheta1()` -- renamed `.getEtaTheta()` --
+  only row-subsets `iniDf` and asserts nothing about its columns. Behavior is
+  unchanged: 43 model pipelines produce byte-identical `iniDf` and model
+  blocks.
+
+- Fix the `addWeibullAbs()` beta label, which named the alpha parameter
+  (`Weibull absorption beta (wa)`).
+
+- Require `rxode2 (>= 5.1.7)`. lotri 1.0.5 added a `prior` column to the
+  initial-estimates data frame, which rxode2 5.1.6 does not know about: it
+  `rbind()`s a hand-built row of its own column set onto `$iniDf`, so every
+  piping function that adds a parameter (`addEta()`, `addResErr()`,
+  `addDepot()`, ...) failed with "numbers of columns of arguments do not
+  match". rxode2 5.1.6 declares only `lotri (>= 1.0.4)`, so the broken pair
+  resolved happily and the failure reached CI rather than the dependency
+  solver. rxode2 5.1.7 is the fix; requiring it here makes that pair
+  unresolvable instead of merely documented.
+
+- Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
+  `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
+  `ordinal`. No register's type vocabulary has an `ordinal` member: an
+  ordinal-valued covariate records its scale in `Units:` and takes the type its
+  covariate model implies, which is what `SMOKE_TTFC_SCORE` -- the precedent
+  those entries cite in their own Notes -- already did. Each register's
+  `## Entry schema` `type:` line is now machine-read and checked against the
+  entries it describes, in both directions, so a type outside a file's own
+  documented vocabulary fails the test suite rather than reaching a release.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.

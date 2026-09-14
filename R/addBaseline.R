@@ -39,28 +39,12 @@ addBaselineConst <- function(ui, effect = "effect", eb = "Eb") {
   .modelLines <- c(list(str2lang(paste0(eb, "<- u", eb))),
     .addBaseline(.ui, effect = effect, eb = eb))
 
-  .tmp <- .getEtaThetaTheta1(.ui)
-  .iniDf <- .tmp$iniDf
-  .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
-  .eta <- .tmp$eta
-  if (length(.theta$ntheta) == 0) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.theta$ntheta)
-  }
-  .thetaEb <- .get1theta(eb, .theta1, .ntheta,
-    name = paste0("u", eb),
-    label = paste0("untransformed constant baseline (",
-      eb, ")"))
-  .ui$iniDf <- rbind(.theta,
-    .thetaEb,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui
+  .iniAddTheta(.ui, paste0("u", eb),
+    label = paste0("untransformed constant baseline (", eb, ")"))
 }
 #' Add baseline that decays exponential with time
 #'
@@ -91,36 +75,14 @@ addBaselineExp <- function(ui, effect = "effect", eb = "Eb",
       time,
       ")")))
 
-  .tmp <- .getEtaThetaTheta1(.ui)
-  .iniDf <- .tmp$iniDf
-  .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
-  .eta <- .tmp$eta
-  if (length(.theta$ntheta) == 0) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.theta$ntheta)
-  }
-  .thetaEb <- .get1theta(eb, .theta1, .ntheta,
-    name = paste0("u", eb),
-    label = paste0("untransformed constant baseline (",
-      eb, ")"))
-  .ntheta <- .ntheta + 1
-
-  .thetaKb <- .get1theta(kb, .theta1, .ntheta,
-    label = paste0("baseline time-decay constant (",
-      kb, ")"))
-  .ntheta <- .ntheta + 1
-
-  .ui$iniDf <- rbind(.theta,
-    .thetaEb,
-    .thetaKb,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui
+  .ui <- .iniAddTheta(.ui, paste0("u", eb),
+    label = paste0("untransformed constant baseline (", eb, ")"))
+  .iniAddTheta(.ui, paste0("l", kb),
+    label = paste0("baseline time-decay constant (", kb, ")"))
 }
 
 #' Add baseline that decays exponential with time
@@ -152,36 +114,14 @@ addBaseline1exp <- function(ui, effect = "effect", eb = "Eb",
       time,
       "))")))
 
-  .tmp <- .getEtaThetaTheta1(.ui)
-  .iniDf <- .tmp$iniDf
-  .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
-  .eta <- .tmp$eta
-  if (length(.theta$ntheta) == 0) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.theta$ntheta)
-  }
-  .thetaEb <- .get1theta(eb, .theta1, .ntheta,
-    name = paste0("u", eb),
-    label = paste0("untransformed constant baseline (",
-      eb, ")"))
-  .ntheta <- .ntheta + 1
-
-  .thetaKb <- .get1theta(kb, .theta1, .ntheta,
-    label = paste0("baseline time-decay constant (",
-      kb, ")"))
-  .ntheta <- .ntheta + 1
-
-  .ui$iniDf <- rbind(.theta,
-    .thetaEb,
-    .thetaKb,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui
+  .ui <- .iniAddTheta(.ui, paste0("u", eb),
+    label = paste0("untransformed constant baseline (", eb, ")"))
+  .iniAddTheta(.ui, paste0("l", kb),
+    label = paste0("baseline time-decay constant (", kb, ")"))
 }
 
 #' Add an estimated baseline linear constant
@@ -204,26 +144,10 @@ addBaselineLin <- function(ui, effect = "effect", eb = "Eb",
   rxode2::assertVariableNew(.ui, eb)
   .modelLines <- c(list(str2lang(paste0(eb, "<- u", eb))),
     .addBaseline(.ui, effect = effect, eb = paste0(eb, "*", time)))
-  .tmp <- .getEtaThetaTheta1(.ui)
-  .iniDf <- .tmp$iniDf
-  .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
-  .eta <- .tmp$eta
-  if (length(.theta$ntheta) == 0) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.theta$ntheta)
-  }
-  .thetaEb <- .get1theta(eb, .theta1, .ntheta,
-    name = paste0("u", eb),
-    label = paste0("untransformed constant baseline (",
-      eb, ")"))
-  .ui$iniDf <- rbind(.theta,
-    .thetaEb,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui
+  .iniAddTheta(.ui, paste0("u", eb),
+    label = paste0("untransformed constant baseline (", eb, ")"))
 }
