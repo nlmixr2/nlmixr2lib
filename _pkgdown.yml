@@ -2194,6 +2194,30 @@ navbar:
         href: articles/Pardridge_2023_brain_plasma_protein_binding.html
       - text: "Immunoglobulin (Cheng 2026)"
         href: articles/Cheng_2026_immunoglobulin.html
+      - text: "Immunoglobulin (Dumas 2019)"
+        href: articles/vanderZeeuw_2026_immunoglobulin.html
+      - text: "Immunoglobulin (Landersdorfer 2013)"
+        href: articles/vanderZeeuw_2026_immunoglobulin.html
+      - text: "Immunoglobulin (Lee 2021)"
+        href: articles/vanderZeeuw_2026_immunoglobulin.html
+      - text: "Immunoglobulin (Li 2022)"
+        href: articles/vanderZeeuw_2026_immunoglobulin.html
+      - text: "Immunoglobulin (Li 2024a)"
+        href: articles/vanderZeeuw_2026_immunoglobulin.html
+      - text: "Immunoglobulin (Li 2024b)"
+        href: articles/vanderZeeuw_2026_immunoglobulin.html
+      - text: "Immunoglobulin (Luo 2020)"
+        href: articles/vanderZeeuw_2026_immunoglobulin.html
+      - text: "Immunoglobulin (NavarroMora 2022)"
+        href: articles/vanderZeeuw_2026_immunoglobulin.html
+      - text: "Immunoglobulin (Tegenge 2020)"
+        href: articles/vanderZeeuw_2026_immunoglobulin.html
+      - text: "Immunoglobulin (Tortorici 2019)"
+        href: articles/vanderZeeuw_2026_immunoglobulin.html
+      - text: "Immunoglobulin (Tortorici 2021)"
+        href: articles/vanderZeeuw_2026_immunoglobulin.html
+      - text: "Immunoglobulin (Zhang 2020)"
+        href: articles/vanderZeeuw_2026_immunoglobulin.html
       - text: "Imr687 (Byrne 2022)"
         href: articles/Byrne_2022_imr687.html
       - text: "Indacaterol (Renard 2011)"
@@ -7438,6 +7462,7 @@ articles:
   - articles/vandenMaagdenberg_2025_a2ar_tme_qsp
   - articles/vanderGaag_2025_osimertinib_pbpk
   - articles/vanderWalt_2013_dapagliflozin
+  - articles/vanderZeeuw_2026_immunoglobulin
   - articles/vonHentig_2009_saquinavir
   internal: true
 # AUTOGEN:articles:END

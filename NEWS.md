@@ -2,6 +2,8 @@
 
 # development version
 
+- Add twelve polyclonal immunoglobulin (IVIg/SCIg) popPK models transcribed from the van der Zeeuw 2026 systematic review ([doi:10.1007/s40262-026-01641-5](https://doi.org/10.1007/s40262-026-01641-5)) -- primary and secondary immunodeficiency, very low birth-weight neonates, CIDP and multifocal motor neuropathy, one with a grip-strength PD layer.
+
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 
 - Add Beguin 2024 carboplatin ([doi:10.1186/s12917-024-04404-1](https://doi.org/10.1186/s12917-024-04404-1)) -- client-owned dogs with solid tumours, plus a thrombocyte-toxicity Emax model.
