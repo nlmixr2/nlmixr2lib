@@ -55,6 +55,7 @@ readModelDb("PK_1cmt_des") |> addTransit(3)
 }
 \seealso{
 Other absorption:
+\code{\link[=addLogitBioavailability]{addLogitBioavailability()}},
 \code{\link[=addWeibullAbs]{addWeibullAbs()}},
 \code{\link[=removeTransit]{removeTransit()}}
 }
