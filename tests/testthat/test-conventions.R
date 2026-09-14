@@ -50,6 +50,13 @@ test_that("covariate types stay inside the register's documented vocabulary", {
   # .knownTypes is a closed set precisely so a new value has to be ratified
   # rather than minted in passing. Every covariate type must now be in it --
   # no allowance list, so there is nothing here to rot.
+  #
+  # test-checkNamingRegisters.R has a stronger per-file version of this via
+  # .schemaTypes(), but it reads the register through .parseRegister() only.
+  # This one reads it through .parseCovariateColumns(), which is the parser
+  # that actually feeds conventions$canonicalCovariates -- so the two cover
+  # the same register through different readers, which is the whole point
+  # given those two readers once disagreed.
   expect_equal(setdiff(types, nlmixr2lib:::.knownTypes), character())
 })
 
