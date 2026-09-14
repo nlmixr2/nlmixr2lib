@@ -1,14 +1,36 @@
 # Tests for the `- **Type:**` field of the inst/references/*.md registers.
 #
-# Four places in the package read that one field, and they used to disagree
-# about a trailing parenthetical qualifier. `.parseRegister()` strips it;
-# `.parseCovariateColumns()` did not, so `WHO_PS` -- written `continuous
-# (semantically ordinal but treated as continuous in the covariate model)` --
-# stored the whole sentence where every other covariate stored a bare token.
-# Nothing branched on a covariate's type at the time, which is exactly why it
-# went unnoticed: the first code to filter covariates by type would have
-# silently dropped that entry. These tests are the mechanical gate that keeps
-# the parsers reading the field the same way.
+# Four places in the package read that one field and they used to disagree
+# about a trailing parenthetical qualifier. Only
+# checkNamingRegisters.R::.parseRegister() split it off; the three others kept
+# it, so `WHO_PS` -- written `continuous (semantically ordinal but treated as
+# continuous in the covariate model)` -- stored that whole sentence as its
+# routing tag where every other covariate stored a bare token. Nothing
+# branched on a covariate's type at the time, which is exactly why it went
+# unnoticed: the first code to filter covariates by type would have silently
+# dropped that entry.
+#
+# The tag is matched with identical() wherever it IS consumed
+# (.namesByType(), and the `name \r type` duplicate key in
+# checkModelConventions.R), so a qualifier left on it drops an entry out of
+# the canonical lists with no warning anywhere. These tests are the mechanical
+# gate that keeps all four readers splitting the field the same way.
+
+test_that(".splitRegisterType splits a tag from its qualifier", {
+  f <- nlmixr2lib:::.splitRegisterType
+  expect_equal(f("continuous"), list(type = "continuous", qualifier = ""))
+  expect_equal(f("  metabolite-suffix  "),
+               list(type = "metabolite-suffix", qualifier = ""))
+  expect_equal(f("binary (only ever 0 or 1)"),
+               list(type = "binary", qualifier = "only ever 0 or 1"))
+  # Greedy to the LAST close paren, so a nested parenthetical stays whole.
+  expect_equal(f("count (integer sum of items (see Notes))"),
+               list(type = "count", qualifier = "integer sum of items (see Notes)"))
+  # A missing Type line reaches this as NA and must stay NA rather than
+  # becoming the empty string, which .parseRegister() treats as "declared".
+  expect_equal(f(NA_character_), list(type = NA_character_, qualifier = ""))
+  expect_equal(f(character()), list(type = NA_character_, qualifier = ""))
+})
 
 test_that("every covariate entry's type is a bare routing token", {
   canon <- nlmixr2lib:::.loadCanonicalCovariates()
@@ -25,18 +47,10 @@ test_that("every covariate entry's type is a bare routing token", {
 test_that("covariate types stay inside the register's documented vocabulary", {
   canon <- nlmixr2lib:::.loadCanonicalCovariates()
   types <- unique(vapply(canon, function(e) e$type %||% "", character(1)))
-  # Checked in BOTH directions, the way .caseExemptions() is: an unexpected
-  # new value fails, and so does the disappearance of a known deviation, so
-  # the allowance below cannot rot into a lie after the deviation is resolved.
-  #
-  # `""` is the DEPRECATED tombstone `DIAL`, which has no `Type:` line.
-  # `"ordinal"` is a real, separate, pre-existing defect: it is absent from
-  # checkNamingRegisters.R::.knownTypes, so checkNamingRegisters() reports it
-  # today (DIS_COPD_GOLD, DIS_COPD_GOLD_LOW / _HIGH). It is listed here rather
-  # than silently tolerated -- either ratify `ordinal` into .knownTypes or
-  # retype those three entries, then delete it from this vector.
-  expect_setequal(setdiff(types, nlmixr2lib:::.knownTypes),
-                  c("", "ordinal"))
+  # .knownTypes is a closed set precisely so a new value has to be ratified
+  # rather than minted in passing. Every covariate type must now be in it --
+  # no allowance list, so there is nothing here to rot.
+  expect_equal(setdiff(types, nlmixr2lib:::.knownTypes), character())
 })
 
 test_that("the covariate and register parsers agree on every shared type", {
@@ -111,37 +125,65 @@ test_that("the parenthetical split is driven by the file, not by WHO_PS", {
                "integer sum of per-domain items (see Notes)")
 })
 
-# Deprecated metabolite suffixes ---------------------------------------------
-#
-# .parseTypedNamesMd() deliberately does NOT strip the parenthetical, and the
-# difference from the two parsers above is load-bearing rather than cosmetic.
-# See the NOTE beside the `Type:` branch in R/conventions.R. These tests pin
-# the behaviour AND the mechanism, so that "make the parsers consistent" done
-# without reading that note fails here instead of silently re-admitting two
-# retired suffixes.
+# Every register, every reader ------------------------------------------------
 
-test_that("deprecated metabolite suffixes stay out of registeredMetabolites", {
-  conv <- nlmixr2lib:::.nlmixr2libConventions()
-  # `as` and `ag` were retired on 2026-06-19 (R-reserved-word and
-  # chemistry-symbol collisions) in favour of `apaps` / `apapg`.
-  expect_false("as" %in% conv$registeredMetabolites)
-  expect_false("ag" %in% conv$registeredMetabolites)
-  # The replacements are live, so this is an exclusion of the retired spelling
-  # rather than of the chemical species.
-  expect_true("apaps" %in% conv$registeredMetabolites)
-  expect_true("apapg" %in% conv$registeredMetabolites)
+test_that("no parser stores a parenthetical in the routing tag", {
+  paths <- list.files(system.file("references", package = "nlmixr2lib"),
+                      pattern = "\\.md$", full.names = TRUE)
+  # Several files under references/ are follow-up notes rather than registers
+  # and carry no `Type:` field; discovering the registers by content rather
+  # than by name means a NEW register is covered the day it is added.
+  hasType <- function(path) {
+    any(grepl("^- \\*\\*Type:\\*\\*", readLines(path, warn = FALSE)))
+  }
+  registers <- Filter(hasType, paths)
+  expect_gte(length(registers), 3L)
+  for (path in registers) {
+    # .parseRegister() reads every register; .parseTypedNamesMd() reads the
+    # compartment and parameter ones; .parseCovariateColumns() the covariate
+    # one. Run all three over each -- a parser that owns a different file
+    # still parses the shared `### name` / `- **Type:**` shape, so all three
+    # readings of every register get checked.
+    got <- c(
+      lapply(nlmixr2lib:::.parseRegister(path), `[[`, "type"),
+      lapply(nlmixr2lib:::.parseTypedNamesMd(path), `[[`, "type"),
+      lapply(nlmixr2lib:::.parseCovariateColumns(path), `[[`, "type")
+    )
+    got <- as.character(unlist(got[!vapply(got, is.null, logical(1))]))
+    got <- got[!is.na(got) & nzchar(got)]
+    expect_gt(length(got), 0L)
+    bad <- as.character(unique(got[!grepl("^[a-z]+(-[a-z]+)*$", got)]))
+    expect_equal(bad, character(),
+                 info = paste("parenthetical left on a routing tag in",
+                              basename(path)))
+  }
 })
 
-test_that("the deprecated exclusion rests on the unstripped Type qualifier", {
-  comp <- nlmixr2lib:::.loadCanonicalCompartments()
-  byName <- function(nm) Filter(function(e) identical(e$name, nm), comp)
-  for (nm in c("as", "ag")) {
-    entries <- byName(nm)
-    expect_equal(length(entries), 1L)
-    # This is the exact string .namesByType() fails to match. If a future
-    # change strips it, this test goes red first and points at the NOTE
-    # explaining that an explicit `deprecated` flag is the intended fix.
-    expect_equal(entries[[1]]$type, "metabolite-suffix (deprecated)")
-  }
-  expect_false("metabolite-suffix (deprecated)" %in% nlmixr2lib:::.knownTypes)
+test_that("registered metabolite suffixes are all bare tokens", {
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  # .namesByType() matches with identical(), so any compartment entry whose
+  # Type still carried a qualifier would be missing from these vectors
+  # entirely rather than merely misspelled.
+  expect_gt(length(conv$registeredMetabolites), 200L)
+  expect_gt(length(conv$compartments), 500L)
+  expect_true(all(nzchar(conv$registeredMetabolites)))
+  # The Zurlinden paracetamol suffixes were migrated to the Cook 2016 forms
+  # before 0.3.2 shipped, so only the canonical spellings exist now.
+  expect_true(all(c("apaps", "apapg") %in% conv$registeredMetabolites))
+  expect_false(any(c("as", "ag") %in% conv$registeredMetabolites))
+})
+
+test_that("the removed deprecation tombstones are gone from the registers", {
+  # `as`, `ag` and `DIAL` were deprecated and replaced entirely within the
+  # 0.3.2.9000 development cycle, so no released version ever carried them and
+  # a tombstone pointing at the replacement had no audience. `DIAL` survives
+  # where it is actually useful -- as a source alias recording what the source
+  # papers called the column.
+  expect_false(any(c("as", "ag") %in%
+                     vapply(nlmixr2lib:::.loadCanonicalCompartments(),
+                            `[[`, character(1), "name")))
+  canon <- nlmixr2lib:::.loadCanonicalCovariates()
+  expect_false("DIAL" %in% names(canon))
+  expect_true("DIAL" %in% canon$RRT_HEMODIAL_ACTIVE$aliases)
+  expect_true("DIAL" %in% canon$RRT_HEMODIAL_STATUS$aliases)
 })

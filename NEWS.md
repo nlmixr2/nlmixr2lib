@@ -2,25 +2,65 @@
 
 # development version
 
-- Read the registers' `- **Type:**` field the same way in every parser. Three
-  readers of that one field disagreed about a trailing parenthetical
-  qualifier: `checkNamingRegisters.R::.parseRegister()` has always treated it
-  as a qualifier and stored the bare leading token, but
-  `conventions.R::.parseCovariateColumns()` stored the whole line. `WHO_PS`
-  therefore carried `"continuous (semantically ordinal but treated as
-  continuous in the covariate model)"` as its type where every other covariate
-  with a `Type:` line carried a bare token. Nothing branches on a covariate's
-  type yet, so this was a latent trap rather than a live bug -- the first code
-  to filter covariates by type would have silently missed that entry. The bare
-  token now lands in `type` and the parenthetical in a new `typeQualifier`
-  field, and a new `tests/testthat/test-conventions.R` enumerates the whole
-  register, plus checks the two parsers against each other name by name, so
-  they cannot drift apart again. `.parseTypedNamesMd()` is deliberately NOT
-  changed: it alone keeps the parenthetical, and that is what holds the
-  deprecated `as` / `ag` paracetamol suffixes out of `registeredMetabolites`.
-  That exclusion is correct but rests on a string-match accident rather than an
-  explicit `deprecated` flag; the new tests pin it, and replacing the mechanism
-  is left as its own change.
+- Read the registers' `- **Type:**` field the same way in every parser. Four
+  places read that one field and only `checkNamingRegisters.R::.parseRegister()`
+  split off a trailing parenthetical qualifier; the other three kept it. So
+  `WHO_PS` -- written `continuous (semantically ordinal but treated as
+  continuous in the covariate model)` -- carried that whole sentence as its
+  routing tag where every other covariate with a `Type:` line carried a bare
+  token. Nothing branches on a covariate's type yet, so this was a latent trap
+  rather than a live bug -- the first code to filter covariates by type would
+  have silently missed that entry. `conventions.R::.parseCovariateColumns()`,
+  `conventions.R::.parseTypedNamesMd()` and
+  `checkModelConventions.R::.referenceRegisterBlocks()` now all split the
+  field: the bare token lands in `type` and the parenthetical in a new
+  `typeQualifier` field. The tag is matched with `identical()` wherever it is
+  consumed (`.namesByType()`, and the `name` + `type` duplicate key), so a
+  qualifier left on it drops an entry out of the canonical lists with no
+  warning anywhere. All four now call one splitter,
+  `conventions.R::.splitRegisterType()`, so they cannot diverge by
+  construction rather than only by four copies of a regex happening to agree;
+  a new `tests/testthat/test-conventions.R` covers the splitter directly and
+  enumerates every entry of every register on top of that.
+
+- Remove the `as`, `ag` and `DIAL` deprecation tombstones from the naming
+  registers. All three names were introduced, deprecated and replaced entirely
+  within the 0.3.2.9000 development cycle -- `inst/references/` did not exist at
+  the 0.3.2 release, no released model ever used the `_as` / `_ag` paracetamol
+  suffixes, and no model has ever carried `DIAL` as a covariate column -- so
+  none of them ever reached a user and a tombstone pointing at the replacement
+  had no audience. The canonical replacements (`apaps`, `apapg`,
+  `RRT_HEMODIAL_ACTIVE` / `RRT_HEMODIAL_STATUS`) are unaffected, and `DIAL`
+  survives as a source alias on both `RRT_HEMODIAL_*` canonicals, which is what
+  actually records that the source papers named the column that way. The `BFR`
+  and `DFR` entries now gate on `RRT_HEMODIAL_ACTIVE` rather than on the
+  removed name.
+
+  Removing the tombstones also dissolves a trap: `metabolite-suffix
+  (deprecated)` was the only thing keeping `as` and `ag` out of
+  `registeredMetabolites`, and it did so by failing an `identical()` match
+  rather than by an explicit flag, so making the parsers consistent would have
+  silently re-admitted both. With the entries gone there is nothing left to
+  re-admit. Verified that every canonical list
+  (`compartments`, `registeredMetabolites`, `pkParams`, `pkBareParams`,
+  `paperNamedParams`) is byte-identical to before.
+
+- Retype `DIS_COPD_GOLD` and `DIS_COPD_GOLD_LOW` / `_HIGH` from `ordinal` to
+  `continuous (semantically ordinal but treated as continuous in the covariate
+  model)`. `ordinal` was never in the register's documented
+  `continuous | binary | categorical | count` vocabulary nor in
+  `checkNamingRegisters.R::.knownTypes`, so `checkNamingRegisters()` had been
+  reporting two `unknown-type` issues and
+  `tests/testthat/test-checkNamingRegisters.R` had been failing since the Yang
+  2026 COPD models were added. `continuous` is the routing tag that matches how
+  the column is used -- it enters as a centred linear or piecewise-linear term
+  in the raw stage number, and the aggregated-data pair is averaged as
+  `(LOW + HIGH) / 2`, arithmetic that presumes a numeric scale -- and it
+  follows the register's settled treatment of the other numerically-entered
+  ordinal scores (`WHO_PS`, which carries the identical qualifier, plus
+  `APACHE_II` and `SAPS_II`). The alternative, ratifying `ordinal` as a fifth
+  type, was rejected because it would have left four different types in use for
+  the same measurement scale. `checkNamingRegisters()` now reports zero issues.
 
 - Add Padavia 2024 paracetamol and metabolites ([doi:10.1007/s40262-024-01439-3](https://doi.org/10.1007/s40262-024-01439-3)) -- extreme preterm neonates of 23-26 weeks' gestational age.
 

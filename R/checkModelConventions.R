@@ -1772,6 +1772,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
     body <- if (end >= i + 1L) lines[(i + 1L):end] else character()
     tl <- grep(.referenceTypePattern, body, value = TRUE)
     ty <- if (length(tl)) sub(.referenceTypePattern, "\\1", tl[[1]]) else NA_character_
+    # The duplicate key below is `name \r type`, so a qualifier left on the
+    # tag would let a qualified entry and a bare one share a name and a
+    # routing tag and still slip past this check -- the exact silent clobber
+    # this function exists to catch. Split it the one shared way; see
+    # conventions.R::.splitRegisterType().
+    ty <- .splitRegisterType(ty)$type
     data.frame(name = nm, type = ty, line = i, stringsAsFactors = FALSE)
   })
   do.call(rbind, rows)
