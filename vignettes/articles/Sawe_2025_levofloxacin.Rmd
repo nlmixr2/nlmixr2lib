@@ -886,7 +886,10 @@ recorded here.
 * **Tmax has no published counterpart.** The paper reports no NCA Tmax. The
   reference value of 2 h in the comparison table is the first post-dose
   sampling time in both studies, so the observed Tmax could not have been
-  earlier than that; the row is informational and is not asserted on.
+  earlier than that -- it is a lower bound, not a measurement. The simulated
+  Tmax of about 3.25 h is consistent with it and carries a `*` only because
+  `ncaComparisonTable()` flags every row exceeding 20%; the row is
+  informational and is not asserted on.
 * **Simulated versus observed exposure.** The pooled simulated median AUC0-24
   and Cmax are asserted to fall inside the published observed interquartile
   ranges rather than to match the published medians, because the observed
