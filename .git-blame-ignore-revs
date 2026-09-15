@@ -1,0 +1,5 @@
+# Mechanical reformats; skip in `git blame` with
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Reformat R code with air 0.11.0
+884b0a92a6bed0709eaa503558b9e58fbf334268
