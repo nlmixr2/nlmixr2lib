@@ -9,6 +9,21 @@ name: lint.yaml
 
 permissions: read-all
 
+# One in-flight run per workflow per ref. A new push to a pull request -- a
+# fresh commit, or `main` merged in -- CANCELS the run it superseded instead of
+# leaving two answers to the same question racing each other for runners.
+#
+# Unlike pkgdown.yaml this cancels on `main` too: nothing here deploys, so an
+# interrupted run leaves nothing half-written, and the newer push that caused
+# the cancellation always runs the same checks to completion.
+#
+# This only covers runs superseded by a LATER PUSH. Merging a pull request
+# pushes nothing to refs/pull/N/merge, so its checks are not superseded and run
+# on regardless; cancel-on-merge.yaml handles that case.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     runs-on: ubuntu-latest

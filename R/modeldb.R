@@ -95,7 +95,7 @@ buildModelDb <- function() {
   # The canonical-name registers are checked against the tree being built, not
   # the installed copy, so a duplicate cannot ride in on a stale install.
   refIssues <- .referenceDuplicateIssues(
-    Sys.glob(file.path(packageDirectory, "inst/references/*.md"))
+    .collateGlob(file.path(packageDirectory, "inst/references/*.md"))
   )
   if (nrow(refIssues)) {
     .conventionErrorsAdd("inst/references", refIssues)
@@ -171,7 +171,7 @@ buildModelDb <- function() {
 #' @export
 addDirToModelDb <- function(dir, modeldb = data.frame()) {
   filesToLoad <-
-    list.files(
+    .collateListFiles(
       path = dir,
       pattern = "\\.R$",
       ignore.case = TRUE,
@@ -329,7 +329,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
 # by virtue of iterating only over live files.
 .addDirToModelDbCached <- function(dir, entries) {
   filesToLoad <-
-    list.files(
+    .collateListFiles(
       path = dir,
       pattern = "\\.R$",
       ignore.case = TRUE,
@@ -503,7 +503,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
     if (nrow(rows) == 0) {
       return(character())
     }
-    ord <- order(rows$label)
+    ord <- .collateOrder(rows$label)
     rows <- rows[ord, , drop = FALSE]
     unlist(lapply(seq_len(nrow(rows)), function(i) {
       c(
@@ -519,14 +519,18 @@ addFileToModelDb <- function(dir, file, modeldb) {
   vignDir <- file.path(packageDirectory, "vignettes")
   topNames <- character()
   articleNames <- character()
+  # The names are ordered after the extension is stripped, because stripping it
+  # can reorder them ("a-b.Rmd" < "a.Rmd", but "a" < "a-b"), and that is the
+  # order the file carries. The enumeration is collated too, so that no
+  # ordering in this file is left to a judgement call about whether it matters.
   if (dir.exists(vignDir)) {
-    topNames <- sort(tools::file_path_sans_ext(
-      list.files(vignDir, pattern = "\\.Rmd$")
+    topNames <- .collateSort(tools::file_path_sans_ext(
+      .collateListFiles(vignDir, pattern = "\\.Rmd$")
     ))
     articleDir <- file.path(vignDir, "articles")
     if (dir.exists(articleDir)) {
-      articleNames <- sort(tools::file_path_sans_ext(
-        list.files(articleDir, pattern = "\\.Rmd$")
+      articleNames <- .collateSort(tools::file_path_sans_ext(
+        .collateListFiles(articleDir, pattern = "\\.Rmd$")
       ))
     }
   }
