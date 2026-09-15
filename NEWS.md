@@ -2,6 +2,8 @@
 
 # development version
 
+- Add van Rongen 2015 midazolam ([doi:10.1002/psp4.12007](https://doi.org/10.1002/psp4.12007)) -- healthy adult male volunteers, 24-hour variation in oral and intravenous PK.
+
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
   `ordinal`. No register's type vocabulary has an `ordinal` member: an

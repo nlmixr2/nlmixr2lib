@@ -2920,6 +2920,8 @@ navbar:
         href: articles/vanRongen_2017_midazolam.html
       - text: "Midazolam children adolescents (Cella 2012)"
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
+      - text: "Midazolam circadian (vanRongen 2015)"
+        href: articles/vanRongen_2015_midazolam_circadian.html
       - text: "Midazolam crrt (McKnite 2026)"
         href: articles/McKnite_2026_midazolam_crrt.html
       - text: "Midazolam ecmo (Kim 2026)"
@@ -7425,6 +7427,7 @@ articles:
   - articles/vanMaanen_2025_amyloid
   - articles/vanOs_2024_temocillin
   - articles/vanRongen_2015_midazolam
+  - articles/vanRongen_2015_midazolam_circadian
   - articles/vanRongen_2016_acetaminophen
   - articles/vanRongen_2017_midazolam
   - articles/vanRongen_2018_metformin
