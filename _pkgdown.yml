@@ -592,6 +592,16 @@ navbar:
         href: articles/Rognas_2025_bitopertin.html
       - text: "Bivalirudin (Zhang 2012)"
         href: articles/Zhang_2012_bivalirudin.html
+      - text: "Bms911543 cyp1a2 tdi (Zhou 2015)"
+        href: articles/Zhou_2015_bms911543_invitro.html
+      - text: "Bms911543 hlm (Zhou 2015)"
+        href: articles/Zhou_2015_bms911543_invitro.html
+      - text: "Bms911543 rcyp1a2 (Zhou 2015)"
+        href: articles/Zhou_2015_bms911543_invitro.html
+      - text: "Bms911543 rcyp2j2 (Zhou 2015)"
+        href: articles/Zhou_2015_bms911543_invitro.html
+      - text: "Bms911543 rcyp3a4 (Zhou 2015)"
+        href: articles/Zhou_2015_bms911543_invitro.html
       - text: "Bnt162b2 molecular qsp (Dasti 2025)"
         href: articles/Dasti_2025_mrna_vaccines.html
       - text: "Bnt162b2 over60 qsp (Dasti 2025)"
@@ -7375,6 +7385,7 @@ articles:
   - articles/Zhi_2018_cefathiamidine
   - articles/Zhong_2026_abatacept
   - articles/Zhou_2010_digoxin
+  - articles/Zhou_2015_bms911543_invitro
   - articles/Zhou_2016_warfarin_vk2
   - articles/Zhou_2021_belimumab
   - articles/Zhou_2024_HER2breastCancer_qsp
