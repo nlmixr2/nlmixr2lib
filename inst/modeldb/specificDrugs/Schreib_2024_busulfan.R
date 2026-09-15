@@ -22,14 +22,16 @@ Schreib_2024_busulfan <- function() {
     "lymphoblastic leukemia indicator, and the infusion duration. Total body",
     "water and the maturation function are derived inside model() from",
     "weight, height, age, and sex, so no separate columns are required.",
-    "IMPORTANT: simulate this model with rxSolve(..., useLinCmt = FALSE).",
-    "It is a one-compartment linear-elimination model, so rxSolve()'s default",
-    "ODE-to-linCmt() auto-conversion replaces the ODE with a closed-form",
-    "solution that holds the elimination rate constant at its t = 0 value and",
-    "therefore silently discards the time dependence that is the entire point",
-    "of this paper. The error is large and one-sided: exposure per dosing",
-    "interval is under-predicted by about 17% at steady state (45% in the",
-    "HLH/XLP group). See the validation vignette for the demonstration."
+    "On rxode2 5.1.6 and earlier, simulate this model with",
+    "rxSolve(..., useLinCmt = FALSE). It is a one-compartment",
+    "linear-elimination model, so those versions' ODE-to-linCmt()",
+    "auto-conversion replaced the ODE with a closed-form solution that holds",
+    "the elimination rate constant at its t = 0 value and therefore silently",
+    "discarded the time dependence that is the entire point of this paper.",
+    "The error was large and one-sided: exposure per dosing interval",
+    "under-predicted by about 17% at steady state (45% in the HLH/XLP group).",
+    "rxode2 5.1.7 refuses the conversion (rxode2 issue 1370) and the flag is",
+    "no longer required. See the validation vignette for the demonstration."
   )
   reference <- paste(
     "Schreib KM, Braem DS, Zeilhofer UB, Mueller D, Guengoer T, Kraemer SD,",
@@ -367,17 +369,19 @@ Schreib_2024_busulfan <- function() {
     # 4. ODE system. One compartment with intravenous infusion; the infusion
     # duration comes from the event table (see the TINF covariate note).
     #
-    # SOLVE THIS WITH rxSolve(..., useLinCmt = FALSE). This is a
-    # one-compartment linear-elimination system, so rxSolve()'s default
-    # useLinCmt = TRUE rewrites it as a closed-form linCmt() solution, which
-    # can only carry a CONSTANT rate constant and silently substitutes
-    # kel_exp_total's t = 0 value for all time. Verified against a hand
-    # integration: with the default flag, the AUC of every dosing interval
-    # collapses to exactly Dose / (kel(0) * vc) and the entire time
-    # dependence disappears. No way of writing the ODE avoids the
-    # conversion -- an explicit rate variable and a clearance-form
-    # denominator were both tested and are converted identically -- so the
-    # solve-time flag is the only mitigation.
+    # ON rxode2 5.1.6 AND EARLIER, SOLVE THIS WITH
+    # rxSolve(..., useLinCmt = FALSE). This is a one-compartment
+    # linear-elimination system, so those versions' default useLinCmt = TRUE
+    # rewrote it as a closed-form linCmt() solution, which can only carry a
+    # CONSTANT rate constant and silently substituted kel_exp_total's t = 0
+    # value for all time. Verified against a hand integration: with the
+    # default flag, the AUC of every dosing interval collapsed to exactly
+    # Dose / (kel(0) * vc) and the entire time dependence disappeared. No way
+    # of writing the ODE avoided the conversion -- an explicit rate variable
+    # and a clearance-form denominator were both tested and were converted
+    # identically -- so the solve-time flag was the only mitigation. rxode2
+    # 5.1.7 refuses the conversion when it would change the model (rxode2
+    # issue 1370), so the flag is no longer required.
     # ------------------------------------------------------------------
     d/dt(central) <- -kel_exp_total * central
 
