@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Franke 2015 oxycodone and acetaminophen ([doi:10.2147/DDDT.S79499](https://doi.org/10.2147/DDDT.S79499)) -- healthy adults and nondependent recreational opioid users given single oral doses of biphasic IR/ER oxycodone/acetaminophen tablets, fasted and with a meal.
+
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
   `ordinal`. No register's type vocabulary has an `ordinal` member: an

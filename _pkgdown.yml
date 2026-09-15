@@ -80,6 +80,8 @@ navbar:
         href: articles/Wickramasinghe_2025_spatial_cns_pbpk.html
       - text: "Abemaciclib qsp (Zhang 2025)"
         href: articles/Zhang_2025_abemaciclib.html
+      - text: "Acetaminophen (Franke 2015)"
+        href: articles/Franke_2015_oxycodone_acetaminophen.html
       - text: "Acetaminophen (vanRongen 2016)"
         href: articles/vanRongen_2016_acetaminophen.html
       - text: "Acetaminophen diclofenac mbma (Sethi 2024)"
@@ -3348,6 +3350,10 @@ navbar:
         href: articles/Rodrigues_2017_oxcarbazepine.html
       - text: "Oxcarbazepine (Sinha 2026)"
         href: articles/Sinha_2026_oxcarbazepine.html
+      - text: "Oxycodone (Franke 2015)"
+        href: articles/Franke_2015_oxycodone_acetaminophen.html
+      - text: "Oxycodone food (Franke 2015)"
+        href: articles/Franke_2015_oxycodone_acetaminophen.html
       - text: "Oxyfluorfen human (Decrane 2023)"
         href: articles/Decrane_2023_oxyfluorfen.html
       - text: "Oxyfluorfen rat (Decrane 2023)"
@@ -5863,6 +5869,7 @@ articles:
   - articles/Fostvedt_2021_glasdegib
   - articles/Fournier_2018_amoxicillin
   - articles/Francke_2025_tacrolimus
+  - articles/Franke_2015_oxycodone_acetaminophen
   - articles/Franken_2015_morphine
   - articles/Franken_2017_haloperidol
   - articles/Franken_2017_midazolam
