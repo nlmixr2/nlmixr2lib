@@ -24,50 +24,50 @@ Patel_2025_radamts13 <- function() {
   units <- list(time = "h", dosing = "IU", concentration = "IU/L")
 
   compartmentData <- list(
-    central     = list(analyte = "ADAMTS13 activity", units = "IU", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "ADAMTS13 activity", units = "IU", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ADAMTS13 activity", units = "IU", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject in this extraction. Carried a priori (not by covariate selection) as a power function centred on the 68.7 kg population median body weight, with allometric exponents fixed at 0.75 on clearance and intercompartmental clearance and 1.0 on both volumes (paper Methods, 'body weight was incorporated a priori in the model using a power function centered to the median body weight (68.7 kg). Fixed allometric exponents were used'; Table 1 rows 'x (WT/68.7)^0.75' and 'x (WT/68.7)^1.0'). Body weight also sets the administered amount, because both rADAMTS13 (40 IU/kg) and PBT (10 IU/kg) are dosed per kilogram. Observed range 18.3-130.0 kg (Table 2).",
-      source_name        = "WT"
+      notes = "Time-fixed per subject in this extraction. Carried a priori (not by covariate selection) as a power function centred on the 68.7 kg population median body weight, with allometric exponents fixed at 0.75 on clearance and intercompartmental clearance and 1.0 on both volumes (paper Methods, 'body weight was incorporated a priori in the model using a power function centered to the median body weight (68.7 kg). Fixed allometric exponents were used'; Table 1 rows 'x (WT/68.7)^0.75' and 'x (WT/68.7)^1.0'). Body weight also sets the administered amount, because both rADAMTS13 (40 IU/kg) and PBT (10 IU/kg) are dosed per kilogram. Observed range 18.3-130.0 kg (Table 2).",
+      source_name = "WT"
     ),
     TRT_PBT = list(
-      description        = "Plasma / solvent-detergent-treated-plasma treatment-arm indicator (1 = the infusion on this dose record is fresh frozen plasma, solvent/detergent-treated plasma or an equivalent plasma infusion; 0 = it is not).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Plasma / solvent-detergent-treated-plasma treatment-arm indicator (1 = the infusion on this dose record is fresh frozen plasma, solvent/detergent-treated plasma or an equivalent plasma infusion; 0 = it is not).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = rADAMTS13 (the reference treatment, whose relative ADAMTS13 activity is fixed to 1)",
-      notes              = "Required input. Per-dose-record covariate, not a subject-level one: the pivotal phase III trial is a crossover in which each patient receives rADAMTS13 in one period and PBT in another, so the indicator changes within a subject. Mutually exclusive with TRT_PDFVIII_VWF; both are 0 on an rADAMTS13 record. Enters as a relative-ADAMTS13-activity (relative bioavailability) multiplier on the delivered dose, not as an effect on clearance or volume.",
-      source_name        = "PBT"
+      notes = "Required input. Per-dose-record covariate, not a subject-level one: the pivotal phase III trial is a crossover in which each patient receives rADAMTS13 in one period and PBT in another, so the indicator changes within a subject. Mutually exclusive with TRT_PDFVIII_VWF; both are 0 on an rADAMTS13 record. Enters as a relative-ADAMTS13-activity (relative bioavailability) multiplier on the delivered dose, not as an effect on clearance or volume.",
+      source_name = "PBT"
     ),
     TRT_PDFVIII_VWF = list(
-      description        = "Plasma-derived factor VIII / von Willebrand factor concentrate treatment-arm indicator (1 = the infusion on this dose record is a pdFVIII:VWF concentrate; 0 = it is not).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Plasma-derived factor VIII / von Willebrand factor concentrate treatment-arm indicator (1 = the infusion on this dose record is a pdFVIII:VWF concentrate; 0 = it is not).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = rADAMTS13 (the reference treatment, whose relative ADAMTS13 activity is fixed to 1)",
-      notes              = "Required input. Per-dose-record covariate; mutually exclusive with TRT_PBT. Separated from TRT_PBT because pdFVIII:VWF concentrates carry far less ADAMTS13 than plasma itself (93.3% vs 39.0% lower than rADAMTS13), which the paper attributes to the variable ADAMTS13 content across PBT preparations (paper Methods, 'the type of PBT (fresh frozen plasma, solvent/detergent-treated plasma, or pdFVIII:VWF concentrates) as different PBTs can have highly variable rADAMTS13 content').",
-      source_name        = "FVIII:VWF concentrates"
+      notes = "Required input. Per-dose-record covariate; mutually exclusive with TRT_PBT. Separated from TRT_PBT because pdFVIII:VWF concentrates carry far less ADAMTS13 than plasma itself (93.3% vs 39.0% lower than rADAMTS13), which the paper attributes to the variable ADAMTS13 content across PBT preparations (paper Methods, 'the type of PBT (fresh frozen plasma, solvent/detergent-treated plasma, or pdFVIII:VWF concentrates) as different PBTs can have highly variable rADAMTS13 content').",
+      source_name = "FVIII:VWF concentrates"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 65L,
-    n_studies      = 3L,
-    age_range      = "0-70 years at enrolment (both phase III trials enrolled ages 0-70). Age-group split of the 65-patient PK analysis set (Table 2): <6 years 4 (6.2%), 6 to <12 years 4 (6.2%), 12 to <18 years 6 (9.2%), >=18 years 51 (78.5%).",
-    weight_range   = "18.3-130.0 kg (Table 2, overall)",
-    weight_median  = "68.7 kg (Table 2, overall median; also the allometric reference weight)",
+    species = "human",
+    n_subjects = 65L,
+    n_studies = 3L,
+    age_range = "0-70 years at enrolment (both phase III trials enrolled ages 0-70). Age-group split of the 65-patient PK analysis set (Table 2): <6 years 4 (6.2%), 6 to <12 years 4 (6.2%), 12 to <18 years 6 (9.2%), >=18 years 51 (78.5%).",
+    weight_range = "18.3-130.0 kg (Table 2, overall)",
+    weight_median = "68.7 kg (Table 2, overall median; also the allometric reference weight)",
     sex_female_pct = 60.0,
     race_ethnicity = c(White = 61.5, Black_African_American = 3.1, Asian = 16.9, Multiple = 1.5, Missing = 16.9),
-    disease_state  = "Congenital thrombotic thrombocytopenic purpura (cTTP), an ultra-rare hereditary ADAMTS13 deficiency diagnosed by ADAMTS13 activity <10% of normal in the absence of an acquired inhibitor.",
-    dose_range     = "rADAMTS13 40 IU/kg IV once weekly (Q1W) or once every 2 weeks (Q2W) for prophylaxis (the phase I dose-escalation study also studied 5, 20 and 40 IU/kg); PBT approximately 10 IU/kg IV.",
-    regions        = "Multinational (NCT02216084 phase I; NCT03393975 phase III crossover; NCT04683003 phase IIIb continuation). Per-region breakdown not reported; country of origin is reported only as Chinese 3 (4.6%) and Japanese 7 (10.8%).",
-    notes          = "Baseline characteristics are in Table 2 of the paper. The PopPK analysis set is 65 unique patients contributing 2,462 samples with measurable ADAMTS13 activity across the three trials (paper Results, 'PopPK analysis'). ADAMTS13 activity was measured with the FRETS-VWF73 assay; samples below the limit of quantitation were set to missing rather than imputed, so the model carries no BLQ handling and no endogenous ADAMTS13 baseline term. Number of PK samples was very limited in patients aged <12 years (paper Discussion, limitations)."
+    disease_state = "Congenital thrombotic thrombocytopenic purpura (cTTP), an ultra-rare hereditary ADAMTS13 deficiency diagnosed by ADAMTS13 activity <10% of normal in the absence of an acquired inhibitor.",
+    dose_range = "rADAMTS13 40 IU/kg IV once weekly (Q1W) or once every 2 weeks (Q2W) for prophylaxis (the phase I dose-escalation study also studied 5, 20 and 40 IU/kg); PBT approximately 10 IU/kg IV.",
+    regions = "Multinational (NCT02216084 phase I; NCT03393975 phase III crossover; NCT04683003 phase IIIb continuation). Per-region breakdown not reported; country of origin is reported only as Chinese 3 (4.6%) and Japanese 7 (10.8%).",
+    notes = "Baseline characteristics are in Table 2 of the paper. The PopPK analysis set is 65 unique patients contributing 2,462 samples with measurable ADAMTS13 activity across the three trials (paper Results, 'PopPK analysis'). ADAMTS13 activity was measured with the FRETS-VWF73 assay; samples below the limit of quantitation were set to missing rather than imputed, so the model carries no BLQ handling and no endogenous ADAMTS13 baseline term. Number of PK samples was very limited in patients aged <12 years (paper Discussion, limitations)."
   )
 
   ini({

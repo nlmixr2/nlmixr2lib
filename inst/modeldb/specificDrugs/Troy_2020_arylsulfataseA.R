@@ -25,19 +25,24 @@ Troy_2020_arylsulfataseA <- function() {
   # of 1000, mirroring the source control stream's S1 = VCSF/1000 and
   # S2 = VCENT/1000 scaling (Troy 2020 Data S1 $PK).
   compartmentData <- list(
-    csf        = list(analyte = "arylsulfatase A (TAK-611)", units = "mg", specimen = "CSF", verified = TRUE),
-    central    = list(analyte = "arylsulfatase A (TAK-611)", units = "mg", specimen = "serum", verified = TRUE),
-    transit1   = list(analyte = "arylsulfatase A (TAK-611)", units = "mg", specimen = "administration site", verified = TRUE),
+    csf = list(analyte = "arylsulfatase A (TAK-611)", units = "mg", specimen = "CSF", verified = TRUE),
+    central = list(analyte = "arylsulfatase A (TAK-611)", units = "mg", specimen = "serum", verified = TRUE),
+    transit1 = list(
+      analyte = "arylsulfatase A (TAK-611)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
     cns_tissue = list(analyte = "arylsulfatase A (TAK-611)", units = "mg", specimen = "CSF", verified = TRUE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Chronological age at the first intrathecal dose",
-      units              = "years",
-      type               = "continuous",
+      description = "Chronological age at the first intrathecal dose",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Troy 2020 Data S1 ($PK) carries age in MONTHS and advances it over the study:",
         "AGEC = AGE + TAFD/24/30. This model file keeps the register-canonical AGE in YEARS",
         "and converts inside model() (agec <- 12 * AGE + t / (24 * 30)), so the event table",
@@ -46,14 +51,14 @@ Troy_2020_arylsulfataseA <- function() {
         "CSF, white-matter and gray-matter volumes, which in turn set V_CSF and V_CNS.",
         "Cohort baseline age: median 36.5 months (range 19.0-107), i.e. 3.04 years (1.58-8.92)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight, allometrically scaling the systemic components only:",
         "TV_CL = theta_CL * (WT/15)^0.75 and TV_Vcentral = theta_Vcentral * (WT/15)",
         "(Troy 2020 Methods display equations; Data S1 $PK CLscale / Vscale).",
@@ -61,7 +66,7 @@ Troy_2020_arylsulfataseA <- function() {
         "(OFV increased by 3.649; Troy 2020 Results, Covariate analysis), so this column is",
         "baseline-only. Cohort median baseline weight 14.1 kg (range 10.5-24.8)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
@@ -70,10 +75,10 @@ Troy_2020_arylsulfataseA <- function() {
   covariatesDataExcluded <- list(
     FORM_arylsulfataseA_processB = list(
       description = "Indicator for TAK-611 manufactured by the revised process B (raised mannose-6-phosphate and sialic acid) versus the original process A",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (process A)",
-      notes       = paste(
+      notes = paste(
         "Troy 2020 Results, Covariate analysis: relative bioavailability of process-B material",
         "was estimated at 0.948 (95% CI 0.546, 1.350), 'not significantly different from that of",
         "TAK-611 produced using process A (reference value of 1)'. Not carried in the final model",
@@ -83,10 +88,10 @@ Troy_2020_arylsulfataseA <- function() {
     ),
     WT_TIMEVARYING = list(
       description = "Time-varying body weight, linearly interpolated between quarterly measurements",
-      units       = "kg",
-      type        = "continuous",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes       = paste(
+      notes = paste(
         "Troy 2020 Results, Covariate analysis: replacing baseline weight with continuously",
         "interpolated weight 'did not improve the fit of the data (objective function value",
         "increased by 3.649)'. The final model uses baseline WT only."
@@ -94,10 +99,10 @@ Troy_2020_arylsulfataseA <- function() {
     ),
     ADA_TITER = list(
       description = "Anti-drug antibody titer in serum and in CSF",
-      units       = "titer",
-      type        = "continuous",
+      units = "titer",
+      type = "continuous",
       reference_category = NULL,
-      notes       = paste(
+      notes = paste(
         "Troy 2020 Results, Covariate analysis and Figure S1: ADA titer and neutralizing activity",
         "were assessed GRAPHICALLY ONLY and were never entered as formal covariates ('Although ADA",
         "titers were not included formally as covariates in the model...', Discussion). Five subjects",
@@ -109,19 +114,19 @@ Troy_2020_arylsulfataseA <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    studies        = "NCT01510028, phase I/II multicenter open-label dose-escalation",
-    age_range      = "19.0-107 months (1.58-8.92 years) at baseline",
-    age_median     = "36.5 months (3.04 years)",
-    weight_range   = "10.5-24.8 kg",
-    weight_median  = "14.1 kg",
-    disease_state  = "Children with metachromatic leukodystrophy (late-infantile onset; first symptoms at or before 30 months of age, ambulatory at screening)",
-    dose_range     = "10, 30 or 100 mg intrathecal every other week for 38 weeks (up to 20 doses); cohort 4 received 100 mg of process-B material",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    studies = "NCT01510028, phase I/II multicenter open-label dose-escalation",
+    age_range = "19.0-107 months (1.58-8.92 years) at baseline",
+    age_median = "36.5 months (3.04 years)",
+    weight_range = "10.5-24.8 kg",
+    weight_median = "14.1 kg",
+    disease_state = "Children with metachromatic leukodystrophy (late-infantile onset; first symptoms at or before 30 months of age, ambulatory at screening)",
+    dose_range = "10, 30 or 100 mg intrathecal every other week for 38 weeks (up to 20 doses); cohort 4 received 100 mg of process-B material",
     administration_routes = "Intrathecal, via a surgically implanted intrathecal drug delivery device (or lumbar puncture when the device was unusable)",
-    regions        = "Multicenter (North America and Europe)",
-    notes          = paste(
+    regions = "Multicenter (North America and Europe)",
+    notes = paste(
       "Four dose cohorts of n = 6 (Troy 2020 Results). Model built on 321 CSF samples",
       "(median 11 per subject, range 5-19) and 387 serum samples (median 11.5, range 1-17);",
       "60 CSF (18.7%) and 117 serum (30.2%) samples were below the limit of quantification and",

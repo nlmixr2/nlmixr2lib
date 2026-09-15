@@ -27,7 +27,8 @@ Kastrissios_2012_managlinatDialanetil_linked <- function() {
     "separate, independently fitted model for R-125338 data alone that the",
     "paper develops for comparison. See the vignette Assumptions and",
     "deviations for the variance-versus-SD reading of Table III, the",
-    "unprinted age reference value, and two Table III typos.")
+    "unprinted age reference value, and two Table III typos."
+  )
   reference <- "Kastrissios H, Walker JR, Carrothers TJ, Kshirsagar S, Khariton T, Habtemariam B, Mager DE, Rohatagi S. Population pharmacokinetic model for a novel oral hypoglycemic formed in vivo: comparing the use of active metabolite data alone versus using data of upstream and downstream metabolites. J Clin Pharmacol. 2012;52(3):404-415. doi:10.1177/0091270010396373"
   vignette <- "Kastrissios_2012_managlinatDialanetil"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
@@ -36,63 +37,88 @@ Kastrissios_2012_managlinatDialanetil_linked <- function() {
   # biological matrix. verified = TRUE: checked against Kastrissios 2012
   # Figure 1 (metabolism pathways) and Results p. 408.
   compartmentData <- list(
-    depot                 = list(analyte = "CS-917 (managlinat dialanetil)", units = "mg", specimen = "administration site", verified = TRUE),
-    central               = list(analyte = "CS-917 (managlinat dialanetil)", units = "mg", specimen = "plasma", verified = TRUE),
-    central_r134450       = list(analyte = "R-134450 (inactive metabolite)", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_r134450   = list(analyte = "R-134450 (inactive metabolite)", units = "mg", specimen = "plasma", verified = TRUE),
-    central_r125338       = list(analyte = "R-125338 (active moiety)", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_r125338   = list(analyte = "R-125338 (active moiety)", units = "mg", specimen = "plasma", verified = TRUE),
-    central_r143047       = list(analyte = "R-143047 (inactive N-acetyl metabolite)", units = "mg", specimen = "plasma", verified = TRUE)
+    depot = list(
+      analyte = "CS-917 (managlinat dialanetil)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central = list(analyte = "CS-917 (managlinat dialanetil)", units = "mg", specimen = "plasma", verified = TRUE),
+    central_r134450 = list(
+      analyte = "R-134450 (inactive metabolite)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    peripheral1_r134450 = list(
+      analyte = "R-134450 (inactive metabolite)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    central_r125338 = list(analyte = "R-125338 (active moiety)", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_r125338 = list(
+      analyte = "R-125338 (active moiety)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    central_r143047 = list(
+      analyte = "R-143047 (inactive N-acetyl metabolite)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Subject body weight recorded at the screening visit.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Subject body weight recorded at the screening visit.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CS-917 CL/F and Vc/F and on R-143047 CL/F. Reference 86 kg, printed verbatim in the Kastrissios 2012 Table III footnote equations (`Cl/F = 85.1*(WT/86)^0.95`), consistent with the Table II cohort mean of 87 +/- 16 kg.",
-      source_name        = "WT"
+      notes = "Power scaling on CS-917 CL/F and Vc/F and on R-143047 CL/F. Reference 86 kg, printed verbatim in the Kastrissios 2012 Table III footnote equations (`Cl/F = 85.1*(WT/86)^0.95`), consistent with the Table II cohort mean of 87 +/- 16 kg.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age recorded at the screening visit.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age recorded at the screening visit.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on R-134450 CL/F. The reference (median) age is NOT printed anywhere in Kastrissios 2012; 58 years is assumed from the Table II cohort mean of 58 +/- 9 years, consistent with the two medians that ARE printed sitting just below their means (WT 86 vs mean 87; CLCR 70 vs mean 73). See vignette Errata.",
-      source_name        = "AGE"
+      notes = "Power scaling on R-134450 CL/F. The reference (median) age is NOT printed anywhere in Kastrissios 2012; 58 years is assumed from the Table II cohort mean of 58 +/- 9 years, consistent with the two medians that ARE printed sitting just below their means (WT 86 vs mean 87; CLCR 70 vs mean 73). See vignette Errata.",
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "Creatinine clearance computed with the Cockcroft-Gault equation, RAW and NOT BSA-normalized.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance computed with the Cockcroft-Gault equation, RAW and NOT BSA-normalized.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Kastrissios 2012 Methods p. 406: `Creatinine clearance (CLCR) was computed using the Cockcroft-Gault equation`. No BSA normalization is applied, so values are raw mL/min -- the same convention as the registered precedents Delattre_2010_amikacin.R, Chen_2023_nemonoxacin.R and Wada_2023_sparsentan.R, and NOT the mL/min/1.73 m^2 canonical default. Power scaling on R-125338 CL/F with reference 70 mL/min, printed verbatim in the Table III footnote (`Cl/F = 30.9*(ClCR/70)^0.36*exp(-0.22*KFood)`); Table II cohort mean 73 +/- 20 mL/min.",
-      source_name        = "CLCR"
+      notes = "Kastrissios 2012 Methods p. 406: `Creatinine clearance (CLCR) was computed using the Cockcroft-Gault equation`. No BSA normalization is applied, so values are raw mL/min -- the same convention as the registered precedents Delattre_2010_amikacin.R, Chen_2023_nemonoxacin.R and Wada_2023_sparsentan.R, and NOT the mL/min/1.73 m^2 canonical default. Power scaling on R-125338 CL/F with reference 70 mL/min, printed verbatim in the Table III footnote (`Cl/F = 30.9*(ClCR/70)^0.36*exp(-0.22*KFood)`); Table II cohort mean 73 +/- 20 mL/min.",
+      source_name = "CLCR"
     ),
     SEXF = list(
-      description        = "Female sex indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Exponential effect on R-143047 Vc/F. Orientation matches the source exactly: Kastrissios 2012 Eq. (4) gives the worked coding `men coded as 0 and women as 1`, so the -0.28 coefficient transfers with no sign flip. Cohort 90 men / 51 women (Table II). NOTE: Table III labels this row `Female sex on CL/F`; the body text states Vc/F three times and exp(-0.28) = 0.756 reproduces its quoted `25% lower apparent volume of distribution`, so the effect is placed on Vc/F -- see vignette Errata.",
-      source_name        = "sex"
+      notes = "Exponential effect on R-143047 Vc/F. Orientation matches the source exactly: Kastrissios 2012 Eq. (4) gives the worked coding `men coded as 0 and women as 1`, so the -0.28 coefficient transfers with no sign flip. Cohort 90 men / 51 women (Table II). NOTE: Table III labels this row `Female sex on CL/F`; the body text states Vc/F three times and exp(-0.28) = 0.756 reproduces its quoted `25% lower apparent volume of distribution`, so the effect is placed on Vc/F -- see vignette Errata.",
+      source_name = "sex"
     ),
     RACE_BLACK = list(
-      description        = "Black race indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black race indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black; White or Hispanic in this cohort)",
-      notes              = "Exponential effect on R-134450 CL/F and on R-125338 Vc/F. Source indicator is `KBlack = 1 for black race` per the Kastrissios 2012 Table III footnote. Cohort 87 White / 19 Black / 35 Hispanic (Table II), so Black race is only 13% of subjects; the paper flags the Vc/F effect as remaining to be confirmed in a larger data set.",
-      source_name        = "KBlack"
+      notes = "Exponential effect on R-134450 CL/F and on R-125338 Vc/F. Source indicator is `KBlack = 1 for black race` per the Kastrissios 2012 Table III footnote. Cohort 87 White / 19 Black / 35 Hispanic (Table II), so Black race is only 13% of subjects; the paper flags the Vc/F effect as remaining to be confirmed in a larger data set.",
+      source_name = "KBlack"
     ),
     FED = list(
-      description        = "Fed-state indicator for the dose record: 1 = tablet taken with food, 0 = capsule taken fasted.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-state indicator for the dose record: 1 = tablet taken with food, 0 = capsule taken fasted.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted capsule)",
-      notes              = "Exponential effect on CS-917 relative bioavailability and on R-125338 CL/F. Source indicator is `KFood = 1 for tablet with food` per the Kastrissios 2012 Table III footnote. Cohort 109 tablet-with-food / 32 fasted-capsule (Table II). The contrast is confounded with formulation, but the authors state that `food status but not formulation was evaluated since capsule and tablet were shown to be bioequivalent (data on file: CTR-917-101)`, so this is a food covariate rather than a formulation covariate. The paper also notes the fed-lower-bioavailability direction conflicts with two phase I crossover studies not included in the analysis.",
-      source_name        = "KFood"
+      notes = "Exponential effect on CS-917 relative bioavailability and on R-125338 CL/F. Source indicator is `KFood = 1 for tablet with food` per the Kastrissios 2012 Table III footnote. Cohort 109 tablet-with-food / 32 fasted-capsule (Table II). The contrast is confounded with formulation, but the authors state that `food status but not formulation was evaluated since capsule and tablet were shown to be bioequivalent (data on file: CTR-917-101)`, so this is a food covariate rather than a formulation covariate. The paper also notes the fed-lower-bioavailability direction conflicts with two phase I crossover studies not included in the analysis.",
+      source_name = "KFood"
     )
   )
 
@@ -103,42 +129,42 @@ Kastrissios_2012_managlinatDialanetil_linked <- function() {
   covariatesDataExcluded <- list(
     BMI = list(
       description = "Body mass index at screening (Table II: 31 +/- 5 kg/m^2).",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Significant for R-125338 CL/F and Vc/F on univariate screening (P < .05) and carried into the full model, but dropped in backward elimination; body weight was preferred over BMI for consistency across CL/F and Vc/F."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Significant for R-125338 CL/F and Vc/F on univariate screening (P < .05) and carried into the full model, but dropped in backward elimination; body weight was preferred over BMI for consistency across CL/F and Vc/F."
     ),
     ALT = list(
       description = "Serum alanine aminotransferase at baseline (Table II: 27 +/- 12 IU/L).",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened as a marker of hepatic function. Kastrissios 2012 Results: `There were no effects of liver function tests detected on the pharmacokinetics of any of the 4 moieties`, with the caveat that all patients were within the normal liver-function range."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened as a marker of hepatic function. Kastrissios 2012 Results: `There were no effects of liver function tests detected on the pharmacokinetics of any of the 4 moieties`, with the caveat that all patients were within the normal liver-function range."
     ),
     AST = list(
       description = "Serum aspartate aminotransferase at baseline (Table II: 21 +/- 7 IU/L).",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened as a marker of hepatic function; not retained. See ALT."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened as a marker of hepatic function; not retained. See ALT."
     ),
     TBILI = list(
       description = "Total bilirubin at baseline (Table II: 0.69 +/- 0.26 mg/dL).",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Significant for CS-917 CL/F on univariate screening and carried into the full model, but dropped in backward elimination. See ALT for the liver-function caveat."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Significant for CS-917 CL/F on univariate screening and carried into the full model, but dropped in backward elimination. See ALT for the liver-function caveat."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 141L,
-    n_studies      = 6L,
+    species = "human",
+    n_subjects = 141L,
+    n_studies = 6L,
     n_observations = 8961L,
-    age_range      = "mean 58 +/- 9 years (range not reported)",
-    weight_range   = "mean 87 +/- 16 kg (range not reported)",
+    age_range = "mean 58 +/- 9 years (range not reported)",
+    weight_range = "mean 87 +/- 16 kg (range not reported)",
     sex_female_pct = 36.2,
     race_ethnicity = c(White = 61.7, Black = 13.5, Hispanic = 24.8),
-    disease_state  = "Type 2 diabetes mellitus; entry required hemoglobin A1c >= 6.5% and fasting plasma glucose 160-300 mg/dL at baseline. Renal and hepatic function were primarily normal with little variation within the cohort (creatinine clearance 73 +/- 20 mL/min).",
-    dose_range     = "Multiple oral CS-917 50-400 mg, QD / BID / TID, over 10-28 days (or 14 days per period in the two crossover studies). All subjects received multiple doses; all but study C were dosed with food.",
-    notes          = "Four phase I studies (A, B, E, F) and two phase IIa studies (C, D) per Table I. Only monotherapy observations were used for structural model development; combination-therapy records and records that were zero, below the limit of detection, or missing were excluded, as were 14 observations with absolute weighted residuals greater than 6. Assay range 5-2000 ng/mL for CS-917, R-134450 and R-125338 and 10-2000 ng/mL for R-143047; interbatch accuracy and precision were < 11.5% and < 12% for all analytes. Fitted in NONMEM 5.1.1 with the first-order (FO) method."
+    disease_state = "Type 2 diabetes mellitus; entry required hemoglobin A1c >= 6.5% and fasting plasma glucose 160-300 mg/dL at baseline. Renal and hepatic function were primarily normal with little variation within the cohort (creatinine clearance 73 +/- 20 mL/min).",
+    dose_range = "Multiple oral CS-917 50-400 mg, QD / BID / TID, over 10-28 days (or 14 days per period in the two crossover studies). All subjects received multiple doses; all but study C were dosed with food.",
+    notes = "Four phase I studies (A, B, E, F) and two phase IIa studies (C, D) per Table I. Only monotherapy observations were used for structural model development; combination-therapy records and records that were zero, below the limit of detection, or missing were excluded, as were 14 observations with absolute weighted residuals greater than 6. Assay range 5-2000 ng/mL for CS-917, R-134450 and R-125338 and 10-2000 ng/mL for R-143047; interbatch accuracy and precision were < 11.5% and < 12% for all analytes. Fitted in NONMEM 5.1.1 with the first-order (FO) method."
   )
 
   ini({

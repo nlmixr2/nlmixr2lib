@@ -41,68 +41,68 @@ Crass_2025_pegcetacoplan_ga_exposureresponse <- function() {
   vignette <- "Crass_2025_pegcetacoplan_geographic_atrophy"
 
   units <- list(
-    time          = "day",
-    dosing        = "(none; pegcetacoplan exposure enters as the CEFFECT vitreous-concentration covariate, not as a dose record)",
+    time = "day",
+    dosing = "(none; pegcetacoplan exposure enters as the CEFFECT vitreous-concentration covariate, not as a dose record)",
     concentration = "(GA lesion area, mm^2; observations lesionStudy and lesionFellow. The CEFFECT drug-concentration covariate is in ug/mL.)"
   )
 
   covariateData <- list(
     DIS_GA_UNILATERAL = list(
-      description        = "1 = unilateral geographic atrophy at baseline (GA present in the study eye only); 0 = bilateral GA. Time-fixed per subject. Prespecified structural covariate on both the study-eye initial lesion area and the study-eye time slope.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = unilateral geographic atrophy at baseline (GA present in the study eye only); 0 = bilateral GA. Time-fixed per subject. Prespecified structural covariate on both the study-eye initial lesion area and the study-eye time slope.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (bilateral GA). 81% of the pooled population had bilateral disease at baseline (paper Table 1).",
-      notes              = "Fellow-eye observations were excluded by the authors for patients with unilateral GA at baseline who converted to bilateral disease during the study. The covariate does not act on either fellow-eye parameter.",
-      source_name        = "UNILATGA"
+      notes = "Fellow-eye observations were excluded by the authors for patients with unilateral GA at baseline who converted to bilateral disease during the study. The covariate does not act on either fellow-eye parameter.",
+      source_name = "UNILATGA"
     ),
     DIS_GA_NONSUBFOVEAL = list(
-      description        = "1 = the study-eye GA lesion does not involve the fovea (nonsubfoveal); 0 = subfoveal involvement. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the study-eye GA lesion does not involve the fovea (nonsubfoveal); 0 = subfoveal involvement. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (subfoveal involvement). 63% of study eyes had subfoveal lesions at baseline (paper Table 1).",
-      notes              = "Encoded in the source paper's direction (NOFOV = 1 for the nonsubfoveal group) so the published positive coefficient applies directly. Acts on the study-eye time slope only. The paper's Figure 2 forest-plot fold-effects are 1 + theta from this table, e.g. 1 + 0.118 = 1.12 for nonsubfoveal involvement.",
-      source_name        = "NOFOV"
+      notes = "Encoded in the source paper's direction (NOFOV = 1 for the nonsubfoveal group) so the published positive coefficient applies directly. Acts on the study-eye time slope only. The paper's Figure 2 forest-plot fold-effects are 1 + theta from this table, e.g. 1 + 0.118 = 1.12 for nonsubfoveal involvement.",
+      source_name = "NOFOV"
     ),
     DIS_GA_UNIFOCAL = list(
-      description        = "1 = unifocal study-eye GA lesion; 0 = multifocal lesion. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = unifocal study-eye GA lesion; 0 = multifocal lesion. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (multifocal). 70% of study eyes were multifocal at baseline (paper Table 1).",
-      notes              = "Acts on the study-eye time slope only.",
-      source_name        = "UNIFOC"
+      notes = "Acts on the study-eye time slope only.",
+      source_name = "UNIFOC"
     ),
     DRUSEN_GT20 = list(
-      description        = "1 = more than 20 intermediate or large drusen groups (diameter >= 63 micrometres, AREDS simplified severity scale) in the study eye at baseline; 0 = 20 or fewer.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = more than 20 intermediate or large drusen groups (diameter >= 63 micrometres, AREDS simplified severity scale) in the study eye at baseline; 0 = 20 or fewer.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (20 or fewer intermediate or large drusen groups). 45% of study eyes had more than 20 at baseline (paper Table 1).",
-      notes              = "The source paper supplies the already-dichotomised indicator rather than the raw drusen-group count. Acts on the study-eye time slope only.",
-      source_name        = "MOREDR"
+      notes = "The source paper supplies the already-dichotomised indicator rather than the raw drusen-group count. Acts on the study-eye time slope only.",
+      source_name = "MOREDR"
     ),
     CEFFECT = list(
-      description        = "Instantaneous individual-predicted pegcetacoplan concentration in the vitreous humour of the study eye, supplied per event record as a time-varying covariate and consumed directly as the pharmacodynamic driver. Set to 0 for sham-treated study eyes, for untreated fellow eyes, and before the first pegcetacoplan injection.",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Instantaneous individual-predicted pegcetacoplan concentration in the vitreous humour of the study eye, supplied per event record as a time-varying covariate and consumed directly as the pharmacodynamic driver. Set to 0 for sham-treated study eyes, for untreated fellow eyes, and before the first pegcetacoplan injection.",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = "n/a -- enters as log(CEFFECT + 1); CEFFECT = 0 gives log(1) = 0 and recovers the untreated progression rate. Reference values: an intravitreal 15 mg dose into the assumed 4 mL vitreous volume gives an immediate post-dose concentration of about 3750 ug/mL, for which 1 + (-0.026) * log(3751) = 0.786 -- consistent with the 0.80-fold monthly effect estimated by the companion dose-response model.",
-      notes              = "The source analysis generated this trajectory from an external pegcetacoplan population PK model (conference presentation, not on disk) using each patient's actual dosing history and the empirical Bayes estimate of the vitreous-to-serum absorption rate constant, with the vitreous volume assumed to be 4 mL (paper Methods, 'Pegcetacoplan exposure' and 'PK/PD model'). That PK model is NOT reproduced in this file; the user must supply CEFFECT. Lesion area was assessed at dosing visits, so the source observations pair each lesion measurement with a near-trough vitreous concentration. Member of the general 'effect-site PD driver' CEFFECT family; here the biophase is the vitreous humour of an intravitreally dosed eye rather than an IV-anaesthetic biophase.",
-      source_name        = "Cv(t)"
+      notes = "The source analysis generated this trajectory from an external pegcetacoplan population PK model (conference presentation, not on disk) using each patient's actual dosing history and the empirical Bayes estimate of the vitreous-to-serum absorption rate constant, with the vitreous volume assumed to be 4 mL (paper Methods, 'Pegcetacoplan exposure' and 'PK/PD model'). That PK model is NOT reproduced in this file; the user must supply CEFFECT. Lesion area was assessed at dosing visits, so the source observations pair each lesion measurement with a near-trough vitreous concentration. Member of the general 'effect-site PD driver' CEFFECT family; here the biophase is the vitreous humour of an intravitreally dosed eye rather than an IV-anaesthetic biophase.",
+      source_name = "Cv(t)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1501L,
-    n_studies      = 3L,
-    age_range      = "60-100 years (pooled); FILLY enrolled patients aged >= 50 years, OAKS and DERBY >= 60 years",
-    age_median     = "79 years",
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = 1501L,
+    n_studies = 3L,
+    age_range = "60-100 years (pooled); FILLY enrolled patients aged >= 50 years, OAKS and DERBY >= 60 years",
+    age_median = "79 years",
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 62,
     race_ethnicity = c(White = 94, Black = 0.4, Asian = 0.5, Other = 0.2, Missing = 5),
-    disease_state  = "Geographic atrophy secondary to age-related macular degeneration. Baseline total GA lesion area 2.5-17.5 mm^2 in the study eye with at least one lesion >= 1.25 mm^2 if multifocal; best-corrected visual acuity 24 ETDRS letters or better. 81% bilateral GA, 63% subfoveal, 70% multifocal, 45% with more than 20 intermediate or large drusen groups.",
-    dose_range     = "Intravitreal pegcetacoplan 15 mg (0.1 mL of 150 mg/mL) monthly (n = 505) or every other month (n = 498), or sham monthly / every other month (n = 498), for up to 24 months.",
-    regions        = "(not reported in Crass 2025)",
-    notes          = "Pooled from the 12-month phase II FILLY trial (NCT02503332, n = 246) and the 24-month phase III OAKS (NCT03525613, n = 636) and DERBY (NCT03525600, n = 620) trials; paper Table 1 reports n = 1502 including one patient without quantifiable PK samples who was excluded from the PK/PD modelling analyses. A linear-in-log-concentration form was selected over a nonlinear Emax form because no Emax parameterisation could be precisely estimated (Data S1 Table S3 run 3: EC50 95% CI 0.000878 to 261000). Prespecified post hoc analyses on this model found no clinically meaningful effect of concomitant anti-vascular endothelial growth factor medication or of anti-polyethylene-glycol antidrug antibodies (paper Figures 5 and 6)."
+    disease_state = "Geographic atrophy secondary to age-related macular degeneration. Baseline total GA lesion area 2.5-17.5 mm^2 in the study eye with at least one lesion >= 1.25 mm^2 if multifocal; best-corrected visual acuity 24 ETDRS letters or better. 81% bilateral GA, 63% subfoveal, 70% multifocal, 45% with more than 20 intermediate or large drusen groups.",
+    dose_range = "Intravitreal pegcetacoplan 15 mg (0.1 mL of 150 mg/mL) monthly (n = 505) or every other month (n = 498), or sham monthly / every other month (n = 498), for up to 24 months.",
+    regions = "(not reported in Crass 2025)",
+    notes = "Pooled from the 12-month phase II FILLY trial (NCT02503332, n = 246) and the 24-month phase III OAKS (NCT03525613, n = 636) and DERBY (NCT03525600, n = 620) trials; paper Table 1 reports n = 1502 including one patient without quantifiable PK samples who was excluded from the PK/PD modelling analyses. A linear-in-log-concentration form was selected over a nonlinear Emax form because no Emax parameterisation could be precisely estimated (Data S1 Table S3 run 3: EC50 95% CI 0.000878 to 261000). Prespecified post hoc analyses on this model found no clinically meaningful effect of concomitant anti-vascular endothelial growth factor medication or of anti-polyethylene-glycol antidrug antibodies (paper Figures 5 and 6)."
   )
 
   ini({

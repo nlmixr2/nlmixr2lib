@@ -5,54 +5,54 @@ Chen_2024_biapenem <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "biapenem", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "biapenem", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "biapenem", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCr. Computed by the Cockcroft-Gault equation (Chen 2024 Methods 2.1) in raw mL/min, NOT BSA-normalized to mL/min/1.73 m^2; the paper reports a separate MDRD eGFR column in mL/min/1.73 m^2 that was screened but did not enter the final model. Stored under the canonical CRCL column. The CRCL register entry's headline describes BSA-normalized renal function, but its documented `CLCR` source alias and many of its example models are raw, non-BSA-normalized Cockcroft-Gault mL/min (Delattre_2010_amikacin.R, Chen_2023_nemonoxacin.R, Wada_2023_sparsentan.R, Lee_2025_levofloxacin.R, Ma_2026_colistinSulfate.R among others), with the instruction to document the assay form per model -- which is what this note does. Enters CL as a linear centered term TVCL = 8.33 * (1 + 0.0046 * (CRCL - 78.2)) with reference 78.2 mL/min (Chen 2024 Table 2; the Discussion confirms 'the mean CL of BPM in patients with sepsis was 8.33 L/h for CLCr of 78.2 mL/min'). Modeling-cohort CLCr median 84.92 mL/min (range 3.5-295.5). The covariate factor stays positive across all attainable CLCr: it would reach zero only at CLCr = -139 mL/min, so no guard is needed.",
-      source_name        = "CLCr"
+      notes = "Source column CLCr. Computed by the Cockcroft-Gault equation (Chen 2024 Methods 2.1) in raw mL/min, NOT BSA-normalized to mL/min/1.73 m^2; the paper reports a separate MDRD eGFR column in mL/min/1.73 m^2 that was screened but did not enter the final model. Stored under the canonical CRCL column. The CRCL register entry's headline describes BSA-normalized renal function, but its documented `CLCR` source alias and many of its example models are raw, non-BSA-normalized Cockcroft-Gault mL/min (Delattre_2010_amikacin.R, Chen_2023_nemonoxacin.R, Wada_2023_sparsentan.R, Lee_2025_levofloxacin.R, Ma_2026_colistinSulfate.R among others), with the instruction to document the assay form per model -- which is what this note does. Enters CL as a linear centered term TVCL = 8.33 * (1 + 0.0046 * (CRCL - 78.2)) with reference 78.2 mL/min (Chen 2024 Table 2; the Discussion confirms 'the mean CL of BPM in patients with sepsis was 8.33 L/h for CLCr of 78.2 mL/min'). Modeling-cohort CLCr median 84.92 mL/min (range 3.5-295.5). The covariate factor stays positive across all attainable CLCr: it would reach zero only at CLCr = -139 mL/min, so no guard is needed.",
+      source_name = "CLCr"
     ),
     BUN = list(
-      description        = "Blood urea nitrogen",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Blood urea nitrogen",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters intercompartmental clearance as a linear centered term TVQ = 3.75 * (1 + 0.112 * (BUN - 6.8)) with reference 6.8 mmol/L (Chen 2024 Table 2). Reported in SI units (mmol/L), not mg/dL; 1 mmol/L urea ~= 2.80 mg/dL BUN. Modeling-cohort BUN median 6.2 mmol/L (range 0.4-66.9). This is the first registered model to place BUN on Q rather than on a clearance or absorption parameter; the authors interpret it (Discussion) as a marker of sepsis-associated catabolism and neurohormonal activation rather than of filtration per se. The covariate factor stays positive across all attainable BUN: it would reach zero only at BUN = -2.1 mmol/L, so no guard is needed.",
-      source_name        = "BUN"
+      notes = "Enters intercompartmental clearance as a linear centered term TVQ = 3.75 * (1 + 0.112 * (BUN - 6.8)) with reference 6.8 mmol/L (Chen 2024 Table 2). Reported in SI units (mmol/L), not mg/dL; 1 mmol/L urea ~= 2.80 mg/dL BUN. Modeling-cohort BUN median 6.2 mmol/L (range 0.4-66.9). This is the first registered model to place BUN on Q rather than on a clearance or absorption parameter; the authors interpret it (Discussion) as a marker of sepsis-associated catabolism and neurohormonal activation rather than of filtration per se. The covariate factor stays positive across all attainable BUN: it would reach zero only at BUN = -2.1 mmol/L, so no guard is needed.",
+      source_name = "BUN"
     )
   )
 
   covariatesDataExcluded <- list(
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Reached significance on CL during forward inclusion but was removed during backward elimination and is NOT in the final model (Chen 2024 Results 3.2). No point estimate for its effect is reported anywhere in the paper, so it cannot be encoded. Retained here to preserve the provenance of the covariate screen; hypoalbuminemia is separately reported as a risk factor for clinical failure (Table 5, OR 0.33)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Reached significance on CL during forward inclusion but was removed during backward elimination and is NOT in the final model (Chen 2024 Results 3.2). No point estimate for its effect is reported anywhere in the paper, so it cannot be encoded. Retained here to preserve the provenance of the covariate screen; hypoalbuminemia is separately reported as a risk factor for clinical failure (Table 5, OR 0.33)."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 245L,
-    n_studies        = 1L,
-    age_range        = "18-97 years",
-    age_median       = "63 years",
-    weight_range     = "36.8-100 kg",
-    weight_median    = "62 kg",
-    sex_female_pct   = 36.3,
-    race_ethnicity   = "Not reported (single-center Chinese cohort, Nanjing Drum Tower Hospital)",
-    disease_state    = "Adults with sepsis as defined by the Third International Consensus Definitions (Sepsis-3). Septic shock in 26.9%, immunocompromised in 13.9%. Primary infection site respiratory 44.1%, intra-abdominal 48.6%, other 7.3%. Patients receiving renal replacement therapy or extracorporeal membrane oxygenation during biapenem therapy were excluded, as were patients treated for less than 48 h and those without therapeutic drug monitoring.",
-    dose_range       = "Biapenem 300-600 mg per administration, 2-4 times daily (product-label maximum 1.2 g/day), given as a 1-hour intravenous infusion in 100 mL sodium chloride or glucose.",
-    regions          = "China (single center: Nanjing Drum Tower Hospital, Nanjing). Admissions January 2018 to May 2022.",
-    renal_function   = "Cockcroft-Gault creatinine clearance median 84.92 mL/min (range 3.5-295.5), raw mL/min and not BSA-normalized. MDRD eGFR median 108.1 mL/min/1.73 m^2 (range 2.6-332.9). Serum creatinine median 66 umol/L (range 28-1655). Renal replacement therapy was an exclusion criterion.",
+    species = "human",
+    n_subjects = 245L,
+    n_studies = 1L,
+    age_range = "18-97 years",
+    age_median = "63 years",
+    weight_range = "36.8-100 kg",
+    weight_median = "62 kg",
+    sex_female_pct = 36.3,
+    race_ethnicity = "Not reported (single-center Chinese cohort, Nanjing Drum Tower Hospital)",
+    disease_state = "Adults with sepsis as defined by the Third International Consensus Definitions (Sepsis-3). Septic shock in 26.9%, immunocompromised in 13.9%. Primary infection site respiratory 44.1%, intra-abdominal 48.6%, other 7.3%. Patients receiving renal replacement therapy or extracorporeal membrane oxygenation during biapenem therapy were excluded, as were patients treated for less than 48 h and those without therapeutic drug monitoring.",
+    dose_range = "Biapenem 300-600 mg per administration, 2-4 times daily (product-label maximum 1.2 g/day), given as a 1-hour intravenous infusion in 100 mL sodium chloride or glucose.",
+    regions = "China (single center: Nanjing Drum Tower Hospital, Nanjing). Admissions January 2018 to May 2022.",
+    renal_function = "Cockcroft-Gault creatinine clearance median 84.92 mL/min (range 3.5-295.5), raw mL/min and not BSA-normalized. MDRD eGFR median 108.1 mL/min/1.73 m^2 (range 2.6-332.9). Serum creatinine median 66 umol/L (range 28-1655). Renal replacement therapy was an exclusion criterion.",
     n_concentrations = 351L,
-    notes            = "Retrospective single-center therapeutic-drug-monitoring study. 466 biapenem measurements from 317 adults were split 3:1 into a modeling cohort (351 samples from 245 patients, the data this model was fit to) and an external evaluation cohort (115 samples from 72 patients). Sparse sampling: on average 1.5 samples per participant, usually drawn after the third dosing interval; median time after the last dose 6 h (range 0.5-20.73). Median trough concentration 2.1 mg/L (modeling) and 1.8 mg/L (external). Assay HPLC-UV at 300 nm, linear 0.3-30 mg/L with a 0.3 mg/L lower limit of quantitation. Estimation in NONMEM 7.3 with the first-order (FO) method; final-model OFV 550.508 versus 683.499 for the base model. Validated by 1000-replicate nonparametric bootstrap (Table 2) and prediction-corrected VPC (Figure 2); external evaluation gave MDPE 6.75%, MAPE 26.25%, F20 42.61%, F30 53.04%. Baseline demographics per Chen 2024 Table 1 (modeling cohort column)."
+    notes = "Retrospective single-center therapeutic-drug-monitoring study. 466 biapenem measurements from 317 adults were split 3:1 into a modeling cohort (351 samples from 245 patients, the data this model was fit to) and an external evaluation cohort (115 samples from 72 patients). Sparse sampling: on average 1.5 samples per participant, usually drawn after the third dosing interval; median time after the last dose 6 h (range 0.5-20.73). Median trough concentration 2.1 mg/L (modeling) and 1.8 mg/L (external). Assay HPLC-UV at 300 nm, linear 0.3-30 mg/L with a 0.3 mg/L lower limit of quantitation. Estimation in NONMEM 7.3 with the first-order (FO) method; final-model OFV 550.508 versus 683.499 for the base model. Validated by 1000-replicate nonparametric bootstrap (Table 2) and prediction-corrected VPC (Figure 2); external evaluation gave MDPE 6.75%, MAPE 26.25%, F20 42.61%, F30 53.04%. Baseline demographics per Chen 2024 Table 1 (modeling cohort column)."
   )
 
   ini({

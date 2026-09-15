@@ -14,11 +14,11 @@ Hughes_2022_brepocitinib <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline body weight entered as an allometric power",
         "function referenced to 70 kg, with exponents fixed to literature",
         "values of 0.75 on CL/Frel and 1.0 on Vc/Frel (Hughes 2022 Table 3",
@@ -33,14 +33,14 @@ Hughes_2022_brepocitinib <- function() {
         "87.4 kg in the remainder, so part of the observed Asian exposure",
         "difference is already absorbed by this allometric term."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian; the pooled White, African American and Other race groups)",
-      notes              = paste(
+      notes = paste(
         "1 = Asian, 0 = otherwise. Enters CL/Frel as a fractional shift,",
         "CL/Frel = 18.7 * (BWT/70)^0.75 * (1 - 0.243 * Asian) (Hughes 2022",
         "Equation 9; Table 3 row 'Effect of Asian subjects on CL/F' =",
@@ -54,14 +54,14 @@ Hughes_2022_brepocitinib <- function() {
         "White male patient with psoriasis aged 42 years taking 30 mg once",
         "daily."
       ),
-      source_name        = "Asian"
+      source_name = "Asian"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat-meal-at-dosing indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat-meal-at-dosing indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (dosed without regard to food, the modal condition in the pooled phase 2 studies)",
-      notes              = paste(
+      notes = paste(
         "1 = the dose was administered with a high-fat meal (800-1000",
         "calories, 500-600 of them from fat, per the NCT02310750 food-effect",
         "arm described in Methods / Study Data), 0 = any other meal",
@@ -76,14 +76,14 @@ Hughes_2022_brepocitinib <- function() {
         "explicitly fasted subjects from subjects dosed without regard for",
         "food, so the reference level pools those two conditions."
       ),
-      source_name        = "Fed"
+      source_name = "Fed"
     ),
     FORM_TABLET = list(
-      description        = "Tablet-versus-oral-suspension formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tablet-versus-oral-suspension formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral suspension, used in the first-in-human study NCT02310750)",
-      notes              = paste(
+      notes = paste(
         "1 = oral tablet, 0 = oral suspension. Hughes 2022 Equation 6 is",
         "written on the complementary suspension indicator, Alag = 0.24 *",
         "(1 - 1 * Suspension), with the coefficient fixed at -1.00 (Table 3",
@@ -100,14 +100,14 @@ Hughes_2022_brepocitinib <- function() {
         "into the final model because the resulting ka estimates were not",
         "meaningfully different from the population value."
       ),
-      source_name        = "Suspension"
+      source_name = "Suspension"
     ),
     DOSE_HIGH = list(
-      description        = "Indicator for administered brepocitinib doses of 175 mg and above",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for administered brepocitinib doses of 175 mg and above",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (administered dose below 175 mg; the 100 mg cohort sits in the reference group)",
-      notes              = paste(
+      notes = paste(
         "1 = administered brepocitinib dose of 175 mg or more, which in this",
         "analysis is the 175 mg once-daily multiple-dose arm and the 200 mg",
         "single-dose arms of NCT02310750 and NCT03656952; 0 otherwise. Gates",
@@ -125,14 +125,14 @@ Hughes_2022_brepocitinib <- function() {
         "100 mg/day; both papers flag the same 175 and 200 mg arms, so the",
         "two encodings select the same subjects in practice."
       ),
-      source_name        = "Dose>=175mg"
+      source_name = "Dose>=175mg"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient; the pooled plaque psoriasis and alopecia areata cohorts)",
-      notes              = paste(
+      notes = paste(
         "1 = healthy participant enrolled in one of the three phase 1",
         "studies (NCT02310750, NCT03236493, NCT03656952), 0 = patient",
         "enrolled in one of the two phase 2 studies (NCT02969018 plaque",
@@ -154,7 +154,7 @@ Hughes_2022_brepocitinib <- function() {
         "populations with plaque psoriasis or alopecia areata' in apparent",
         "clearance."
       ),
-      source_name        = "Patient type"
+      source_name = "Patient type"
     )
   )
 
@@ -163,36 +163,36 @@ Hughes_2022_brepocitinib <- function() {
   # not referenced in model().
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on CL/F and on Vc/F (Hughes 2022 Table 1) and not retained",
         "in the full or final model. Table 2 reports mean 41.9 years (SD",
         "12.9), median 42, range 18-75. The Figure 1 reference populations",
         "are quoted at 42 years."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Screened on CL/F and on Vc/F (Hughes 2022 Table 1) and not retained",
         "in the full or final model. Table 2 reports 263 male (69%) and 116",
         "female (31%) subjects. The Figure 1 reference populations are male."
       ),
-      source_name        = "Sex"
+      source_name = "Sex"
     ),
     CRCL = list(
-      description        = "Creatinine clearance at baseline",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance at baseline",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reported in the Hughes 2022 Table 2 demographic summary (mean",
         "132.7 mL/min, SD 38.7; median 124, range 58-279) but not listed",
         "among the covariates evaluated in Table 1 and not present in the",
@@ -200,40 +200,40 @@ Hughes_2022_brepocitinib <- function() {
         "(urinary recovery <16%, Introduction), so a renal covariate would",
         "not be expected to be informative."
       ),
-      source_name        = "Creatinine clearance"
+      source_name = "Creatinine clearance"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "brepocitinib", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "brepocitinib", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "brepocitinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 379,
-    n_studies      = 5,
+    species = "human",
+    n_subjects = 379,
+    n_studies = 5,
     n_observations = 5541,
-    age_range      = "18-75 years",
-    age_median     = "42 years",
-    weight_range   = "45-204 kg",
-    weight_median  = "83 kg",
+    age_range = "18-75 years",
+    age_median = "42 years",
+    weight_range = "45-204 kg",
+    weight_median = "83 kg",
     sex_female_pct = 31,
     race_ethnicity = c(White = 82, `African American` = 5, Asian = 8, Other = 6),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy participants (24%) pooled with patients with plaque psoriasis",
       "(55%) and alopecia areata (20%)"
     ),
     renal_function = "Creatinine clearance median 124 mL/min (range 58-279); no renal-impairment cohort",
-    dose_range     = paste(
+    dose_range = paste(
       "1-200 mg oral. Phase 1: single doses of 1, 3, 10, 30, 100 and 200 mg,",
       "multiple doses of 10, 30, 100 and 175 mg once daily or 50 mg twice",
       "daily for 10 days, and 100 mg once daily for 10 days in Japanese",
       "participants. Phase 2: 30 or 60 mg once-daily induction followed by 10",
       "or 30 mg once-daily maintenance. Tablet (83%) or oral suspension (17%)"
     ),
-    regions        = "Not reported by region; includes a dedicated phase 1 study in healthy Japanese participants (NCT03236493)",
-    notes          = paste(
+    regions = "Not reported by region; includes a dedicated phase 1 study in healthy Japanese participants (NCT03236493)",
+    notes = paste(
       "Baseline demographics from Hughes 2022 Table 2; study descriptions",
       "from Methods / Study Data. Three phase 1 studies (NCT02310750,",
       "NCT03236493, NCT03656952) and two phase 2 studies (NCT02969018 plaque",

@@ -8,109 +8,109 @@ Oishi_2014_fesoterodine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "fesoterodine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "fesoterodine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "fesoterodine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, NOT BSA-normalised)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, NOT BSA-normalised)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts both BSA-normalised and raw Cockcroft-Gault values; per-model units are documented here). Precedent for using raw Cockcroft-Gault in mL/min under CRCL: Delattre 2010 amikacin. Oishi 2014 Methods 'Covariate Model' derived CRCL from the Cockcroft-Gault equation using serum creatinine, age, body weight, and sex; for study #3 CRCL was measured from serum and urine creatinine over a 24 h urine-collection interval. Reference value is 80 mL/min (Oishi 2014 final equation and typical-subject definition on p. 931). Continuous power effect on CL/F: (CRCL/80)^0.303. Cohort mean (SD) 87.0 (30.3) mL/min, range 19.8-273.1 (Table 2 (b)).",
-      source_name        = "CLCR"
+      notes = "Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts both BSA-normalised and raw Cockcroft-Gault values; per-model units are documented here). Precedent for using raw Cockcroft-Gault in mL/min under CRCL: Delattre 2010 amikacin. Oishi 2014 Methods 'Covariate Model' derived CRCL from the Cockcroft-Gault equation using serum creatinine, age, body weight, and sex; for study #3 CRCL was measured from serum and urine creatinine over a 24 h urine-collection interval. Reference value is 80 mL/min (Oishi 2014 final equation and typical-subject definition on p. 931). Continuous power effect on CL/F: (CRCL/80)^0.303. Cohort mean (SD) 87.0 (30.3) mL/min, range 19.8-273.1 (Table 2 (b)).",
+      source_name = "CLCR"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment indicator (1 = Child-Pugh Class B, 0 = healthy or non-moderate)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment indicator (1 = Child-Pugh Class B, 0 = healthy or non-moderate)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy or non-moderate hepatic function)",
-      notes              = "Classification scheme: Child-Pugh Class B (composite score 7-9). Only Child-Pugh B patients from Oishi 2014 study #4 were flagged as HEPIMP_MOD = 1; severe hepatic impairment (Child-Pugh C) subjects were excluded from all contributing studies (Oishi 2014 Methods 'Covariate Model'). Multiplicative effect on CL/F: exp(e_hepimp_mod_cl) = 0.422 (Table 3 theta_6). Cohort count: 8 subjects (0.5%) had Child-Pugh B, all from study #4 (Table 2 (a)).",
-      source_name        = "HEP"
+      notes = "Classification scheme: Child-Pugh Class B (composite score 7-9). Only Child-Pugh B patients from Oishi 2014 study #4 were flagged as HEPIMP_MOD = 1; severe hepatic impairment (Child-Pugh C) subjects were excluded from all contributing studies (Oishi 2014 Methods 'Covariate Model'). Multiplicative effect on CL/F: exp(e_hepimp_mod_cl) = 0.422 (Table 3 theta_6). Cohort count: 8 subjects (0.5%) had Child-Pugh B, all from study #4 (Table 2 (a)).",
+      source_name = "HEP"
     ),
     CYP2D6_PM = list(
-      description        = "CYP2D6 poor-metaboliser phenotype indicator (1 = poor metaboliser, 0 = extensive metaboliser)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 poor-metaboliser phenotype indicator (1 = poor metaboliser, 0 = extensive metaboliser)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive metaboliser)",
-      notes              = "Phenotype assigned from genotype: homozygous non-functional CYP2D6*3 or CYP2D6*4 -> poor metaboliser (PM); all other genotypes -> extensive metaboliser (EM). Study #10 (Japanese single-dose healthy male) and study #13 (Phase 2 Asian OAB) did not genotype CYP2D6; per Oishi 2014 Methods 'Covariate Model' those subjects were classified as EM based on the reported ~1-2% PM frequency in East Asian populations. Multiplicative effect on CL/F: exp(e_cyp2d6_pm_cl) = 0.626 (Table 3 theta_7). Cohort count: 71 PM (4.6%), 1475 EM (95.4%) (Table 2 (a)).",
-      source_name        = "CYP2D6 genotype"
+      notes = "Phenotype assigned from genotype: homozygous non-functional CYP2D6*3 or CYP2D6*4 -> poor metaboliser (PM); all other genotypes -> extensive metaboliser (EM). Study #10 (Japanese single-dose healthy male) and study #13 (Phase 2 Asian OAB) did not genotype CYP2D6; per Oishi 2014 Methods 'Covariate Model' those subjects were classified as EM based on the reported ~1-2% PM frequency in East Asian populations. Multiplicative effect on CL/F: exp(e_cyp2d6_pm_cl) = 0.626 (Table 3 theta_7). Cohort count: 71 PM (4.6%), 1475 EM (95.4%) (Table 2 (a)).",
+      source_name = "CYP2D6 genotype"
     ),
     CONMED_CYP3A4_INH = list(
-      description        = "Concomitant CYP3A4 inhibitor indicator (1 = coadministered with a CYP3A4 inhibitor, 0 = no inhibitor)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A4 inhibitor indicator (1 = coadministered with a CYP3A4 inhibitor, 0 = no inhibitor)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP3A4 inhibitor coadministration)",
-      notes              = "Pooled indicator captures ketoconazole coadministration only in the Oishi 2014 cohort (Methods 'Study Design': studies #1 and #6 investigated 200 mg ketoconazole QD or BID for 6 days with a fesoterodine single dose). Multiplicative effect on CL/F: exp(e_cyp3a4_inh_cl) = 0.504 (Table 3 theta_8). Cohort count: 118 subjects (7.4%) coadministered a CYP3A4 inhibitor (Table 2 (a)).",
-      source_name        = "CYP3A inhibitor"
+      notes = "Pooled indicator captures ketoconazole coadministration only in the Oishi 2014 cohort (Methods 'Study Design': studies #1 and #6 investigated 200 mg ketoconazole QD or BID for 6 days with a fesoterodine single dose). Multiplicative effect on CL/F: exp(e_cyp3a4_inh_cl) = 0.504 (Table 3 theta_8). Cohort count: 118 subjects (7.4%) coadministered a CYP3A4 inhibitor (Table 2 (a)).",
+      source_name = "CYP3A inhibitor"
     ),
     CONMED_CYP3A4_IND = list(
-      description        = "Concomitant CYP3A4 inducer indicator (1 = coadministered with a CYP3A4 inducer, 0 = no inducer)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A4 inducer indicator (1 = coadministered with a CYP3A4 inducer, 0 = no inducer)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP3A4 inducer coadministration)",
-      notes              = "Pooled indicator captures rifampicin coadministration only in the Oishi 2014 cohort (Methods 'Study Design': study #5 investigated 600 mg rifampicin QD for 8 days with a fesoterodine single dose). Multiplicative effect on CL/F: exp(e_cyp3a4_ind_cl) = 3.90 (Table 3 theta_9). Cohort count: 12 subjects (0.8%) coadministered a CYP3A4 inducer (Table 2 (a)).",
-      source_name        = "CYP3A inducer"
+      notes = "Pooled indicator captures rifampicin coadministration only in the Oishi 2014 cohort (Methods 'Study Design': study #5 investigated 600 mg rifampicin QD for 8 days with a fesoterodine single dose). Multiplicative effect on CL/F: exp(e_cyp3a4_ind_cl) = 3.90 (Table 3 theta_9). Cohort count: 12 subjects (0.8%) coadministered a CYP3A4 inducer (Table 2 (a)).",
+      source_name = "CYP3A inducer"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplicative effect on CL/F: exp(e_sexf_cl) = 0.903, i.e. females have ~10% lower typical CL/F than males (Table 3 theta_11; Discussion 'about 10% decrease in females'). The magnitude was considered not clinically significant by the authors (bootstrap 90% CI within 0.8-1.25 bioequivalence range). Cohort split: 1085 female (70.2%), 461 male (29.8%) (Table 2 (a)).",
-      source_name        = "Sex"
+      notes = "Multiplicative effect on CL/F: exp(e_sexf_cl) = 0.903, i.e. females have ~10% lower typical CL/F than males (Table 3 theta_11; Discussion 'about 10% decrease in females'). The magnitude was considered not clinically significant by the authors (bootstrap 90% CI within 0.8-1.25 bioequivalence range). Cohort split: 1085 female (70.2%), 461 male (29.8%) (Table 2 (a)).",
+      source_name = "Sex"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese ethnicity indicator (1 = Japanese, 0 = non-Japanese)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese ethnicity indicator (1 = Japanese, 0 = non-Japanese)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese; the modelled cohort combines Westerners, Koreans, and other Asians into the reference)",
-      notes              = "Multiplicative effect on CL/F: exp(e_race_japanese_cl) = 1.12, i.e. Japanese subjects have ~12% higher typical CL/F than non-Japanese (Table 3 theta_13; Discussion 'about 10% increase in Japanese'). The magnitude was considered not clinically significant by the authors (bootstrap 90% CI within 0.8-1.25 bioequivalence range). Cohort composition (Table 2 (a)): Westerners 878 (56.8%), Japanese 522 (33.8%), Korean 105 (6.8%), Other Asians 41 (2.7%).",
-      source_name        = "Japanese"
+      notes = "Multiplicative effect on CL/F: exp(e_race_japanese_cl) = 1.12, i.e. Japanese subjects have ~12% higher typical CL/F than non-Japanese (Table 3 theta_13; Discussion 'about 10% increase in Japanese'). The magnitude was considered not clinically significant by the authors (bootstrap 90% CI within 0.8-1.25 bioequivalence range). Cohort composition (Table 2 (a)): Westerners 878 (56.8%), Japanese 522 (33.8%), Korean 105 (6.8%), Other Asians 41 (2.7%).",
+      source_name = "Japanese"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at study entry",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Oishi 2014 Methods 'Covariate Model' tested age on CL/F but it was not retained in the final model (not selected in forward inclusion). Cohort mean (SD) 55.5 (14.6) years, range 19-91 (Table 2 (b))."
+      units = "years",
+      type = "continuous",
+      notes = "Oishi 2014 Methods 'Covariate Model' tested age on CL/F but it was not retained in the final model (not selected in forward inclusion). Cohort mean (SD) 55.5 (14.6) years, range 19-91 (Table 2 (b))."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Oishi 2014 Methods 'Covariate Model' tested body weight on both CL/F and V/F. Not retained in the final model on either parameter. Cohort mean (SD) 70.2 (18.8) kg, range 31.2-192.8 (Table 2 (b))."
+      units = "kg",
+      type = "continuous",
+      notes = "Oishi 2014 Methods 'Covariate Model' tested body weight on both CL/F and V/F. Not retained in the final model on either parameter. Cohort mean (SD) 70.2 (18.8) kg, range 31.2-192.8 (Table 2 (b))."
     ),
     RACE_KOREAN = list(
       description = "Korean ethnicity indicator (1 = Korean, 0 = non-Korean)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Oishi 2014 Results 'Population Pharmacokinetic Modeling Results' selected Korean on V/F in forward analysis but excluded it in backward analysis based on Delta-OFV < 10.8. Cohort count 105 Korean subjects (6.8%) (Table 2 (a))."
+      units = "(binary)",
+      type = "binary",
+      notes = "Oishi 2014 Results 'Population Pharmacokinetic Modeling Results' selected Korean on V/F in forward analysis but excluded it in backward analysis based on Delta-OFV < 10.8. Cohort count 105 Korean subjects (6.8%) (Table 2 (a))."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1546L,
-    n_studies      = 13L,
+    species = "human",
+    n_subjects = 1546L,
+    n_studies = 13L,
     n_observations = 10922L,
-    age_range      = "19-91 years",
-    age_median     = "56 years",
-    weight_range   = "31.2-192.8 kg",
-    weight_median  = "67.0 kg",
+    age_range = "19-91 years",
+    age_median = "56 years",
+    weight_range = "31.2-192.8 kg",
+    weight_median = "67.0 kg",
     sex_female_pct = 70.2,
     race_ethnicity = c(Westerner = 56.8, Japanese = 33.8, Korean = 6.8, `Other Asian` = 2.7),
-    disease_state  = "Pooled cohort of adult healthy volunteers and patients with overactive bladder (OAB). Contributing studies included dedicated renal-impairment (study #3), hepatic-impairment (study #4), and CYP3A inhibitor/inducer drug-drug interaction (studies #1, #5, #6) pharmacokinetic sub-studies alongside Phase 2 and Phase 3 OAB efficacy/safety studies (see Table 1).",
-    dose_range     = "4-28 mg fesoterodine (as fesoterodine fumarate; molecular weight 527.65 g/mol) once daily as sustained-release oral tablets; single-dose and multiple-dose regimens. Clinically recommended doses are 4 and 8 mg QD.",
-    regions        = "Multi-regional pool: North America and Europe (7 Western PK studies + 2 Western OAB efficacy/safety studies); Japan (2 Japanese healthy-volunteer PK studies); Korea (1 Korean healthy-volunteer PK study); Japan / Korea / Taiwan / Hong Kong (1 Asian OAB Phase 2 study).",
+    disease_state = "Pooled cohort of adult healthy volunteers and patients with overactive bladder (OAB). Contributing studies included dedicated renal-impairment (study #3), hepatic-impairment (study #4), and CYP3A inhibitor/inducer drug-drug interaction (studies #1, #5, #6) pharmacokinetic sub-studies alongside Phase 2 and Phase 3 OAB efficacy/safety studies (see Table 1).",
+    dose_range = "4-28 mg fesoterodine (as fesoterodine fumarate; molecular weight 527.65 g/mol) once daily as sustained-release oral tablets; single-dose and multiple-dose regimens. Clinically recommended doses are 4 and 8 mg QD.",
+    regions = "Multi-regional pool: North America and Europe (7 Western PK studies + 2 Western OAB efficacy/safety studies); Japan (2 Japanese healthy-volunteer PK studies); Korea (1 Korean healthy-volunteer PK study); Japan / Korea / Taiwan / Hong Kong (1 Asian OAB Phase 2 study).",
     renal_function = "Cockcroft-Gault CRCL 19.8-273.1 mL/min (mean 87.0, SD 30.3); one dedicated renal-impairment study (#3) with 24 patients across the renal-function spectrum.",
     hepatic_function = "Only Child-Pugh Class B moderate hepatic impairment enrolled (n = 8, all from study #4); severe hepatic impairment excluded from all contributing studies.",
     cyp2d6_distribution = "Extensive metaboliser 1475 (95.4%); Poor metaboliser 71 (4.6%) (Table 2 (a)).",
     conmed_distribution = "CYP3A inhibitor coadministration 118 (7.4%); CYP3A inducer coadministration 12 (0.8%) (Table 2 (a)).",
-    notes          = "NONMEM version V, level 1.1 with FOCEI. Structural model ADVAN2 / TRANS2 (1-cpt, first-order absorption). Preliminary 2-compartment model was unstable with the sparse Phase 2/3 sampling and abandoned in favour of the 1-cpt structural form. 5-HMT concentrations below the analytical LOQ (0.02 ng/mL for most studies) were excluded. Predictive check by VPC (1000 Monte Carlo simulations) and nonparametric bootstrap (1000 replicates, 56.7% converged) reported in Results."
+    notes = "NONMEM version V, level 1.1 with FOCEI. Structural model ADVAN2 / TRANS2 (1-cpt, first-order absorption). Preliminary 2-compartment model was unstable with the sparse Phase 2/3 sampling and abandoned in favour of the 1-cpt structural form. 5-HMT concentrations below the analytical LOQ (0.02 ng/mL for most studies) were excluded. Predictive check by VPC (1000 Monte Carlo simulations) and nonparametric bootstrap (1000 replicates, 56.7% converged) reported in Results."
   )
 
   ini({

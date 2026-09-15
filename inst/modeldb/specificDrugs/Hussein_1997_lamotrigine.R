@@ -9,68 +9,68 @@ Hussein_1997_lamotrigine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lamotrigine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lamotrigine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lamotrigine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian)",
-      notes              = "Time-fixed per subject. Multiplicative effect on apparent oral clearance: CL_o (Asian) = CL_o (Caucasian) x (1 + theta_ASIANS_CL). Hussein 1997 Table 4 reports theta_ASIANS_CL = -0.287 (5 Asian / 158 Caucasian patients).",
-      source_name        = "RACE"
+      notes = "Time-fixed per subject. Multiplicative effect on apparent oral clearance: CL_o (Asian) = CL_o (Caucasian) x (1 + theta_ASIANS_CL). Hussein 1997 Table 4 reports theta_ASIANS_CL = -0.287 (5 Asian / 158 Caucasian patients).",
+      source_name = "RACE"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened univariately on CL_o (Table 1; continuous and power forms, DOBJF 8.9 / 9.0) and V/F (Table 1; DOBJF 4.7 / 4.2 / 3.7); only the power form on CL_o reached statistical significance, but the effect did not survive multivariate elimination once duration of therapy and Asians were in the model (Table 3 power-of-WT on CL_o: 0.231, DOBJF 6.55, not retained). Not in the final model."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened univariately on CL_o (Table 1; continuous and power forms, DOBJF 8.9 / 9.0) and V/F (Table 1; DOBJF 4.7 / 4.2 / 3.7); only the power form on CL_o reached statistical significance, but the effect did not survive multivariate elimination once duration of therapy and Asians were in the model (Table 3 power-of-WT on CL_o: 0.231, DOBJF 6.55, not retained). Not in the final model."
     ),
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened univariately on CL_o (Table 2 DOBJF 4.08) and V/F (Table 2 DOBJF 0.10); neither reached statistical significance and AGE is not in the final model."
+      units = "years",
+      type = "continuous",
+      notes = "Screened univariately on CL_o (Table 2 DOBJF 4.08) and V/F (Table 2 DOBJF 0.10); neither reached statistical significance and AGE is not in the final model."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened univariately on CL_o (Table 2 DOBJF 8.48, P<0.005 univariate) and V/F (Table 2 DOBJF 5.34); the female effect on CL_o did not survive multivariate elimination once duration of therapy and Asians were in the model (Table 3 females-on-CL_o: -0.088, DOBJF 7.67, not retained). Not in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened univariately on CL_o (Table 2 DOBJF 8.48, P<0.005 univariate) and V/F (Table 2 DOBJF 5.34); the female effect on CL_o did not survive multivariate elimination once duration of therapy and Asians were in the model (Table 3 females-on-CL_o: -0.088, DOBJF 7.67, not retained). Not in the final model."
     ),
     CONMED_BIRTHCONTROL = list(
       description = "Concomitant oral-contraceptive use indicator",
       source_name = "OC",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened univariately on CL_o (Table 2 DOBJF 2.95); did not reach statistical significance and is not in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened univariately on CL_o (Table 2 DOBJF 2.95); did not reach statistical significance and is not in the final model."
     ),
     DOSE = list(
       description = "Total daily lamotrigine dose",
-      units       = "mg",
-      type        = "continuous",
-      notes       = "Screened univariately as an exponential decay form on CL_o (Table 2 DOBJF 7.35, theta_DOSE1 = 5.39, theta_DOSE2 = 0.0014); did not reach the 2-DF significance threshold (10.6) and is not in the final model."
+      units = "mg",
+      type = "continuous",
+      notes = "Screened univariately as an exponential decay form on CL_o (Table 2 DOBJF 7.35, theta_DOSE1 = 5.39, theta_DOSE2 = 0.0014); did not reach the 2-DF significance threshold (10.6) and is not in the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 163L,
-    n_studies      = 3L,
-    age_range      = "14-76 years",
-    weight_range   = "40.5-106.5 kg",
+    species = "human",
+    n_subjects = 163L,
+    n_studies = 3L,
+    age_range = "14-76 years",
+    weight_range = "40.5-106.5 kg",
     weight_typical = "approximately 68 kg (population average per Discussion)",
     sex_female_pct = 50.3,
     race_ethnicity = c(Caucasian = 96.9, Asian = 3.1),
-    disease_state  = "Newly diagnosed epilepsy (partial or generalised tonic-clonic seizures); not previously treated with antiepileptic drugs; normal hepatic and renal function.",
-    dose_range     = "50-200 mg/day oral lamotrigine monotherapy; dosing frequency once, twice, or three times daily (24, 12, or 8 h interval) over 48 weeks; common dose-escalation 50 mg QD week 1 -> 50 mg BID week 2 -> 50 mg AM + 100 mg PM weeks 3-48, with investigator-led titration on efficacy/safety.",
-    regions        = "Three multicentre Phase II/III trials sponsored by GlaxoWellcome (UK); regions not stated in the paper.",
-    notes          = "Population per Hussein 1997 Results 'Demographic characteristics' (page 459) and Figure 1: 158 Caucasians + 5 Asians; 81 males + 82 females; 20 Caucasian females received concomitant oral contraceptives. Concentration data are retrospective routine monitoring samples from three Phase II/III trials. Dosing times were not captured in the case report forms except for the last dose pre-visit, so dosing intervals of 24/12/8 h were assumed for once/twice/thrice daily regimens (Methods 'Database construction')."
+    disease_state = "Newly diagnosed epilepsy (partial or generalised tonic-clonic seizures); not previously treated with antiepileptic drugs; normal hepatic and renal function.",
+    dose_range = "50-200 mg/day oral lamotrigine monotherapy; dosing frequency once, twice, or three times daily (24, 12, or 8 h interval) over 48 weeks; common dose-escalation 50 mg QD week 1 -> 50 mg BID week 2 -> 50 mg AM + 100 mg PM weeks 3-48, with investigator-led titration on efficacy/safety.",
+    regions = "Three multicentre Phase II/III trials sponsored by GlaxoWellcome (UK); regions not stated in the paper.",
+    notes = "Population per Hussein 1997 Results 'Demographic characteristics' (page 459) and Figure 1: 158 Caucasians + 5 Asians; 81 males + 82 females; 20 Caucasian females received concomitant oral contraceptives. Concentration data are retrospective routine monitoring samples from three Phase II/III trials. Dosing times were not captured in the case report forms except for the last dose pre-visit, so dosing intervals of 24/12/8 h were assumed for once/twice/thrice daily regimens (Methods 'Database construction')."
   )
 
   ini({

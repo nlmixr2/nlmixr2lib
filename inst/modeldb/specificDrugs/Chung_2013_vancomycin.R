@@ -13,63 +13,63 @@ Chung_2013_vancomycin <- function() {
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Chung 2013 Table 1: median 57 years (range 18-96). Centered at 57 in the structural model (Table 2 footnote: CL = CL_POP * (1 + theta_CLage * (AGE - 57)) * ...; V = V_POP * (1 + theta_Vage * (AGE - 57)) * ...). Linear-deviation form for both CL and V.",
-      source_name        = "AGE"
+      notes = "Chung 2013 Table 1: median 57 years (range 18-96). Centered at 57 in the structural model (Table 2 footnote: CL = CL_POP * (1 + theta_CLage * (AGE - 57)) * ...; V = V_POP * (1 + theta_Vage * (AGE - 57)) * ...). Linear-deviation form for both CL and V.",
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Chung 2013 Table 1: median 60.8 kg (range 27-140). Source paper symbol TBW (total body weight); stored under the canonical WT column. Centered at 60.8 in the structural model (Table 2 footnote: CL = ... * (1 + theta_CLTBW * (TBW - 60.8)) * ...; V = ... * (1 + theta_VTBW * (TBW - 60.8)) * ...). Linear-deviation form for both CL and V. Chung 2013 Discussion notes ideal/lean body weight did not improve fit and actual TBW is recommended for vancomycin TDM.",
-      source_name        = "TBW"
+      notes = "Chung 2013 Table 1: median 60.8 kg (range 27-140). Source paper symbol TBW (total body weight); stored under the canonical WT column. Centered at 60.8 in the structural model (Table 2 footnote: CL = ... * (1 + theta_CLTBW * (TBW - 60.8)) * ...; V = ... * (1 + theta_VTBW * (TBW - 60.8)) * ...). Linear-deviation form for both CL and V. Chung 2013 Discussion notes ideal/lean body weight did not improve fit and actual TBW is recommended for vancomycin TDM.",
+      source_name = "TBW"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration (Jaffe kinetic method, Hitachi 7600)",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine concentration (Jaffe kinetic method, Hitachi 7600)",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Chung 2013 Table 1: median 0.9 mg/dL (mean 0.80, range 0.39-1.2). Inclusion criterion SCr <= 1.2 mg/dL. Centered at 0.8 mg/dL in the structural model (Table 2 footnote: CL = ... * (1 + theta_CLSCr * (SCr - 0.8)) * ...). Linear-deviation form on CL only (no SCr effect on V). Source paper symbol SCr; stored under canonical CREAT (mg/dL).",
-      source_name        = "SCr"
+      notes = "Chung 2013 Table 1: median 0.9 mg/dL (mean 0.80, range 0.39-1.2). Inclusion criterion SCr <= 1.2 mg/dL. Centered at 0.8 mg/dL in the structural model (Table 2 footnote: CL = ... * (1 + theta_CLSCr * (SCr - 0.8)) * ...). Linear-deviation form on CL only (no SCr effect on V). Source paper symbol SCr; stored under canonical CREAT (mg/dL).",
+      source_name = "SCr"
     ),
     CYSC = list(
-      description        = "Serum cystatin C concentration (particle-enhanced immunoturbidimetric assay, Roche Cobas 6000)",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Serum cystatin C concentration (particle-enhanced immunoturbidimetric assay, Roche Cobas 6000)",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Chung 2013 Table 1: median 0.91 mg/L (mean 1.01, range 0.38-3.1). Reference ranges 0.57-0.97 mg/L (female) / 0.65-1.10 mg/L (male). Enters CL with a power-law form (Table 2 footnote: CL = ... * (Cystatin C / 0.91)^theta_CLcystatin) with reference 0.91 mg/L and exponent -0.780; described in Chung 2013 Results as the most influential covariate, reducing OFV by 428.3 and accounting for ~62% of the CL variability. No effect on V.",
-      source_name        = "Cystatin C"
+      notes = "Chung 2013 Table 1: median 0.91 mg/L (mean 1.01, range 0.38-3.1). Reference ranges 0.57-0.97 mg/L (female) / 0.65-1.10 mg/L (male). Enters CL with a power-law form (Table 2 footnote: CL = ... * (Cystatin C / 0.91)^theta_CLcystatin) with reference 0.91 mg/L and exponent -0.780; described in Chung 2013 Results as the most influential covariate, reducing OFV by 428.3 and accounting for ~62% of the CL variability. No effect on V.",
+      source_name = "Cystatin C"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Chung 2013 Table 1: 400 male / 278 female (41% female). Enters both CL and V as a female-only additive multiplicative shift (Table 2 footnote: 'if female, apply 1 + theta_CLsex' on CL and '1 + theta_Vsex' on V), encoded as (1 + e * SEXF) so SEXF = 0 (male) recovers the typical-value reference. Chung 2013 Discussion: 'Females have 15% lower clearance, which is in line with the Cockcroft and Gault equation.'",
-      source_name        = "SEX"
+      notes = "Chung 2013 Table 1: 400 male / 278 female (41% female). Enters both CL and V as a female-only additive multiplicative shift (Table 2 footnote: 'if female, apply 1 + theta_CLsex' on CL and '1 + theta_Vsex' on V), encoded as (1 + e * SEXF) so SEXF = 0 (male) recovers the typical-value reference. Chung 2013 Discussion: 'Females have 15% lower clearance, which is in line with the Cockcroft and Gault equation.'",
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 678L,
-    n_studies        = 1L,
-    age_range        = "18-96 years",
-    age_median       = "57 years",
-    weight_range     = "27-140 kg",
-    weight_median    = "60.8 kg",
-    sex_female_pct   = 41.0,
-    race_ethnicity   = "Korean (single-center cohort at Gangnam Severance Hospital, Seoul)",
-    disease_state    = "Adult inpatients receiving intravenous vancomycin therapy with serum creatinine <= 1.2 mg/dL. 73% had ICU admission; 7% co-administered amikacin; 17% co-administered furosemide. Vancomycin concentrations measured for therapeutic drug monitoring after at least three doses (steady-state in most subjects).",
-    dose_range       = "Intravenous vancomycin 250-4,500 mg/day (median 2,000 mg/day; 89% in 1,000-2,000 mg/day range); 1,000 mg dose dissolved in 100 mL saline and infused over 1 hour.",
-    regions          = "Korea (Gangnam Severance Hospital, Seoul)",
-    renal_function   = "Cystatin C median 0.91 mg/L (range 0.38-3.1); serum creatinine median 0.9 mg/dL (range 0.39-1.2 by inclusion criterion); BUN median 12.9 mg/dL (range 0-80).",
+    species = "human",
+    n_subjects = 678L,
+    n_studies = 1L,
+    age_range = "18-96 years",
+    age_median = "57 years",
+    weight_range = "27-140 kg",
+    weight_median = "60.8 kg",
+    sex_female_pct = 41.0,
+    race_ethnicity = "Korean (single-center cohort at Gangnam Severance Hospital, Seoul)",
+    disease_state = "Adult inpatients receiving intravenous vancomycin therapy with serum creatinine <= 1.2 mg/dL. 73% had ICU admission; 7% co-administered amikacin; 17% co-administered furosemide. Vancomycin concentrations measured for therapeutic drug monitoring after at least three doses (steady-state in most subjects).",
+    dose_range = "Intravenous vancomycin 250-4,500 mg/day (median 2,000 mg/day; 89% in 1,000-2,000 mg/day range); 1,000 mg dose dissolved in 100 mL saline and infused over 1 hour.",
+    regions = "Korea (Gangnam Severance Hospital, Seoul)",
+    renal_function = "Cystatin C median 0.91 mg/L (range 0.38-3.1); serum creatinine median 0.9 mg/dL (range 0.39-1.2 by inclusion criterion); BUN median 12.9 mg/dL (range 0-80).",
     n_concentrations = 1373L,
-    notes            = "Patient characteristics from Chung 2013 Table 1 (June 2006 to May 2010). Sampling design: trough just before next infusion and peak 1 h after end of infusion. 2,000 mg/day was the median daily dose. Modeling done in NONMEM 7.1.0 with FOCE-INTER. Final model retained age, TBW, cystatin C, SCr, and sex on CL and age, TBW, and sex on V; the Cockcroft-Gault CLcr was rejected as redundant. Shrinkage: EBE_CL 5.8%, EBE_V 17.3%, IWRES 48.3%. Bootstrap (1000 replicates) confirmed parameter robustness."
+    notes = "Patient characteristics from Chung 2013 Table 1 (June 2006 to May 2010). Sampling design: trough just before next infusion and peak 1 h after end of infusion. 2,000 mg/day was the median daily dose. Modeling done in NONMEM 7.1.0 with FOCE-INTER. Final model retained age, TBW, cystatin C, SCr, and sex on CL and age, TBW, and sex on V; the Cockcroft-Gault CLcr was rejected as redundant. Shrinkage: EBE_CL 5.8%, EBE_V 17.3%, IWRES 48.3%. Bootstrap (1000 replicates) confirmed parameter robustness."
   )
 
   ini({

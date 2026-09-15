@@ -35,13 +35,15 @@ Vaddady_2024_quizartinib <- function() {
     "whose eta is Box-Cox transformed, and non-AML subjects) and on AC886",
     "CL (separate variances for AML patients and non-AML subjects) and Vc.",
     "Residual error is additive on the log scale, i.e. proportional on the",
-    "linear concentration scale, separately for each moiety.")
+    "linear concentration scale, separately for each moiety."
+  )
   reference <- paste(
     "Vaddady P, Glatard A, Smania G, Nakayama S, Inoue H, Kurumaddali A,",
     "Abutarif M, Zheng M. Population pharmacokinetic analysis of",
     "quizartinib in patients with newly diagnosed",
     "FLT3-internal-tandem-duplication-positive acute myeloid leukemia.",
-    "Clin Transl Sci. 2024;17:e70074. doi:10.1111/cts.70074")
+    "Clin Transl Sci. 2024;17:e70074. doi:10.1111/cts.70074"
+  )
   vignette <- "Vaddady_2024_quizartinib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
@@ -52,153 +54,153 @@ Vaddady_2024_quizartinib <- function() {
   # model() and Vaddady 2024 Methods, "Model development": molecular weights
   # 560.68 g/mol for quizartinib and 576.67 g/mol for AC886).
   compartmentData <- list(
-    depot              = list(analyte = "quizartinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central            = list(analyte = "quizartinib", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1        = list(analyte = "quizartinib", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral2        = list(analyte = "quizartinib", units = "mg", specimen = "plasma", verified = TRUE),
-    central_ac886      = list(analyte = "AC886", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_ac886  = list(analyte = "AC886", units = "mg", specimen = "plasma", verified = TRUE)
+    depot = list(analyte = "quizartinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "quizartinib", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "quizartinib", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral2 = list(analyte = "quizartinib", units = "mg", specimen = "plasma", verified = TRUE),
+    central_ac886 = list(analyte = "AC886", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_ac886 = list(analyte = "AC886", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Mechanistic (allometric) covariate included without statistical testing. Vaddady 2024 Equation 6: COVEff_WT = (WT/75)^theta_WT with theta_WT FIXED to 0.75 for all clearances (CL_quiz, Q1_quiz, Q2_quiz, CL_AC886, Q_AC886) and to 1 for all volumes (Vc_quiz, Vp1_quiz, Vp2_quiz, Vc_AC886, Vp_AC886). The reference weight of 75 kg is printed in Equation 6 itself and repeated in the Figure 4 reference subject; note that the Table 2 median weight is 72.0 kg, so 75 kg is a rounded reference rather than the cohort median.",
-      source_name        = "WTKGBL"
+      notes = "Mechanistic (allometric) covariate included without statistical testing. Vaddady 2024 Equation 6: COVEff_WT = (WT/75)^theta_WT with theta_WT FIXED to 0.75 for all clearances (CL_quiz, Q1_quiz, Q2_quiz, CL_AC886, Q_AC886) and to 1 for all volumes (Vc_quiz, Vp1_quiz, Vp2_quiz, Vc_AC886, Vp_AC886). The reference weight of 75 kg is printed in Equation 6 itself and repeated in the Figure 4 reference subject; note that the Table 2 median weight is 72.0 kg, so 75 kg is a rounded reference rather than the cohort median.",
+      source_name = "WTKGBL"
     ),
     AGE = list(
-      description        = "Subject age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Exponential (log-linear) effect on the first peripheral volume of quizartinib only. Vaddady 2024 Equation 13: Vp1_quiz = 312 * (WT/75)^1 * exp(0.0152 * (AGE - 47)). The centering value of 47 years is printed in Equation 13 and in the Figure 4 reference subject; the Table 2 median age is 50.0 years, so 47 years is the model's centering constant rather than the cohort median. Selected by the stepwise covariate model (SCM) procedure.",
-      source_name        = "AGEYBL"
+      notes = "Exponential (log-linear) effect on the first peripheral volume of quizartinib only. Vaddady 2024 Equation 13: Vp1_quiz = 312 * (WT/75)^1 * exp(0.0152 * (AGE - 47)). The centering value of 47 years is printed in Equation 13 and in the Figure 4 reference subject; the Table 2 median age is 50.0 years, so 47 years is the model's centering constant rather than the cohort median. Selected by the stepwise covariate model (SCM) procedure.",
+      source_name = "AGEYBL"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; the most common category, 495/932 = 53.1% per Table 2).",
-      notes              = "Fractional change of -0.169 on the quizartinib central volume for females relative to the male reference (Vaddady 2024 Table 3 and Equation 11: Vc_quiz = 371 * (WT/75)^1 * (1 - 0.169 for females)). The source NONMEM column SEXN is coded 1 = male (reference) and 2 = female; the canonical SEXF column carries the female indicator directly, so no sign inversion is needed. Selected by the SCM procedure.",
-      source_name        = "SEXN"
+      notes = "Fractional change of -0.169 on the quizartinib central volume for females relative to the male reference (Vaddady 2024 Table 3 and Equation 11: Vc_quiz = 371 * (WT/75)^1 * (1 - 0.169 for females)). The source NONMEM column SEXN is coded 1 = male (reference) and 2 = female; the canonical SEXF column carries the female indicator directly, so no sign inversion is needed. Selected by the SCM procedure.",
+      source_name = "SEXN"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator, 1 = Black or African American, 0 = any other race.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator, 1 = Black or African American, 0 = any other race.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 ('rest of the population' per Vaddady 2024 Equations 8 and 17; White 65.4%, Asian 18.1%, Other 4.8%, Black 8.5% per Table 2).",
-      notes              = "Fractional change of -0.261 on quizartinib CL (Equation 8) and +0.488 on AC886 CL (Equation 17). Both were selected by the SCM procedure. The quizartinib CL effect carries the largest uncertainty of any retained effect in the model (RSE 38.0%, the only RSE above 30%), and Vaddady 2024 Results notes the Black-race effect 'was associated with large uncertainty'; the effect on total (quizartinib + AC886) exposure largely cancels between the two moieties (Figure 4c). Missing race (29/932 = 3.1%) was imputed to the most common category, i.e. RACE_BLACK = 0 (source stream: IF(RACE3N.EQ.-99) CLRACE3N = 1).",
-      source_name        = "RACE3N"
+      notes = "Fractional change of -0.261 on quizartinib CL (Equation 8) and +0.488 on AC886 CL (Equation 17). Both were selected by the SCM procedure. The quizartinib CL effect carries the largest uncertainty of any retained effect in the model (RSE 38.0%, the only RSE above 30%), and Vaddady 2024 Results notes the Black-race effect 'was associated with large uncertainty'; the effect on total (quizartinib + AC886) exposure largely cancels between the two moieties (Figure 4c). Missing race (29/932 = 3.1%) was imputed to the most common category, i.e. RACE_BLACK = 0 (source stream: IF(RACE3N.EQ.-99) CLRACE3N = 1).",
+      source_name = "RACE3N"
     ),
     DIS_AML = list(
-      description        = "Acute myeloid leukemia patient indicator, 1 = AML patient (either relapsed/refractory or newly diagnosed), 0 = non-AML subject (healthy volunteer or subject with hepatic impairment).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Acute myeloid leukemia patient indicator, 1 = AML patient (either relapsed/refractory or newly diagnosed), 0 = non-AML subject (healthy volunteer or subject with hepatic impairment).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (AML patients) -- NOTE the reference is the AML group, which is the inverse of this canonical column's usual 0-is-reference convention. Vaddady 2024 Methods: 'The AML patient group was set as the reference category versus which the effect of non-AML subjects was estimated.' AML patients are 659/932 (70.7%: 365 R/R + 294 newly diagnosed) and non-AML subjects 273/932 (29.3%) per Table 2.",
-      notes              = "The source NONMEM column AML3 is the NON-AML indicator (AML3 = 1 for healthy volunteers and hepatic-impairment subjects). The canonical DIS_AML column carries the AML indicator, so every effect below is applied via the complement (1 - DIS_AML); this is a pure relabelling with no sign change to any reported coefficient, following the (1 - SEXF) precedent in Lahu_2010_roflumilast.R. Effects: Frel = 1.73 for non-AML subjects (Equation 9, a direct multiplier rather than a fractional change), fractional change -0.188 on ka (Equation 10), and +0.843 on AC886 CL (Equation 17). This column ALSO selects which stratum-specific interindividual-variability term applies: AML patients take etalfdepot_aml (Box-Cox transformed) and etalcl_ac886_aml, while non-AML subjects take etalfdepot_nonaml and etalcl_ac886_nonaml. Vaddady 2024 additionally reports separate residual-error magnitudes for the two groups which nlmixr2 cannot express as a covariate-switched residual (see vignette Errata).",
-      source_name        = "AML3"
+      notes = "The source NONMEM column AML3 is the NON-AML indicator (AML3 = 1 for healthy volunteers and hepatic-impairment subjects). The canonical DIS_AML column carries the AML indicator, so every effect below is applied via the complement (1 - DIS_AML); this is a pure relabelling with no sign change to any reported coefficient, following the (1 - SEXF) precedent in Lahu_2010_roflumilast.R. Effects: Frel = 1.73 for non-AML subjects (Equation 9, a direct multiplier rather than a fractional change), fractional change -0.188 on ka (Equation 10), and +0.843 on AC886 CL (Equation 17). This column ALSO selects which stratum-specific interindividual-variability term applies: AML patients take etalfdepot_aml (Box-Cox transformed) and etalcl_ac886_aml, while non-AML subjects take etalfdepot_nonaml and etalcl_ac886_nonaml. Vaddady 2024 additionally reports separate residual-error magnitudes for the two groups which nlmixr2 cannot express as a covariate-switched residual (see vignette Errata).",
+      source_name = "AML3"
     ),
     CONMED_CYP3A4_INH_STRONG = list(
-      description        = "Concomitant strong CYP3A inhibitor coadministration indicator, 1 = a strong CYP3A inhibitor is coadministered over the record, 0 = not coadministered.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant strong CYP3A inhibitor coadministration indicator, 1 = a strong CYP3A inhibitor is coadministered over the record, 0 = not coadministered.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no strong CYP3A inhibitor; 487/932 = 52.3% of subjects received no CYP3A inhibitor and 184/932 = 19.7% received a strong inhibitor per Table 2).",
-      notes              = "Mechanistic covariate included without statistical testing. Time-varying: Vaddady 2024 Methods states 'concomitant medications were evaluated as covariates varying over time'. Fractional changes: -0.301 on quizartinib CL and +0.273 on quizartinib Frel (Equations 8 and 9), +0.298 on AC886 CL and +2.79 on AC886 Vc (Equations 17 and 18). This is the covariate with the largest impact on quizartinib exposure, increasing steady-state AUC roughly 1.8-fold, and is the basis for the labelled dose adjustment during strong CYP3A inhibitor coadministration.",
-      source_name        = "CYPINH3"
+      notes = "Mechanistic covariate included without statistical testing. Time-varying: Vaddady 2024 Methods states 'concomitant medications were evaluated as covariates varying over time'. Fractional changes: -0.301 on quizartinib CL and +0.273 on quizartinib Frel (Equations 8 and 9), +0.298 on AC886 CL and +2.79 on AC886 Vc (Equations 17 and 18). This is the covariate with the largest impact on quizartinib exposure, increasing steady-state AUC roughly 1.8-fold, and is the basis for the labelled dose adjustment during strong CYP3A inhibitor coadministration.",
+      source_name = "CYPINH3"
     ),
     CONMED_CYP3A4_INH_MOD = list(
-      description        = "Concomitant moderate CYP3A inhibitor coadministration indicator, 1 = a moderate CYP3A inhibitor is coadministered over the record, 0 = not coadministered.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant moderate CYP3A inhibitor coadministration indicator, 1 = a moderate CYP3A inhibitor is coadministered over the record, 0 = not coadministered.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no moderate CYP3A inhibitor; 176/932 = 18.9% of subjects received a moderate inhibitor per Table 2).",
-      notes              = "Time-varying, as for the strong-inhibitor column. Fractional change of +0.116 on quizartinib relative bioavailability only (Vaddady 2024 Equation 9); selected by the SCM procedure. No moderate-inhibitor effect was retained on quizartinib CL or on either AC886 parameter.",
-      source_name        = "CYPINH2"
+      notes = "Time-varying, as for the strong-inhibitor column. Fractional change of +0.116 on quizartinib relative bioavailability only (Vaddady 2024 Equation 9); selected by the SCM procedure. No moderate-inhibitor effect was retained on quizartinib CL or on either AC886 parameter.",
+      source_name = "CYPINH2"
     ),
     TRTPH_INDUCTION = list(
-      description        = "QuANTUM-First induction treatment-phase indicator, 1 = the record falls in the induction phase of a newly diagnosed AML patient, 0 = any other phase or population. Member of the TRTPH_<phase> canonical family.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "QuANTUM-First induction treatment-phase indicator, 1 = the record falls in the induction phase of a newly diagnosed AML patient, 0 = any other phase or population. Member of the TRTPH_<phase> canonical family.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0. All three TRTPH_ indicators are 0 for the reference group, which is R/R AML patients (and, for the fMET effect, non-AML subjects as well) -- NOT the induction phase. See notes.",
-      notes              = "Protocol: QuANTUM-First (AC220-A-U302), a Phase 3 trial in newly diagnosed FLT3-ITD-positive AML. Induction = quizartinib/placebo plus intravenous cytarabine and anthracycline (daunorubicin or idarubicin). Phase-to-column mapping: induction -> TRTPH_INDUCTION, consolidation (high-dose cytarabine plus quizartinib/placebo) -> TRTPH_CONSOLIDATION, continuation (single-agent quizartinib/placebo for up to 3 years) -> TRTPH_CONTINUATION. This differs from the TRTPH_ family default in one respect: the family preamble makes the protocol's own induction phase the all-indicators-0 reference, but Vaddady 2024 sets the reference to R/R AML patients receiving quizartinib monotherapy, 'for whom no distinct treatment phases were reported'. All three phases therefore need their own indicator. Time-varying per record. Fractional change -0.419 on quizartinib Frel (Equation 9) and +0.715 on fMET (Equation 16). The Frel and fMET phase effects act in opposite directions by construction: the parent Frel effect is carried over to the metabolite in parent-metabolite modelling, and the fMET phase effect exists to counterbalance that spurious carry-over (Vaddady 2024 Discussion).",
-      source_name        = "PHASE == 1"
+      notes = "Protocol: QuANTUM-First (AC220-A-U302), a Phase 3 trial in newly diagnosed FLT3-ITD-positive AML. Induction = quizartinib/placebo plus intravenous cytarabine and anthracycline (daunorubicin or idarubicin). Phase-to-column mapping: induction -> TRTPH_INDUCTION, consolidation (high-dose cytarabine plus quizartinib/placebo) -> TRTPH_CONSOLIDATION, continuation (single-agent quizartinib/placebo for up to 3 years) -> TRTPH_CONTINUATION. This differs from the TRTPH_ family default in one respect: the family preamble makes the protocol's own induction phase the all-indicators-0 reference, but Vaddady 2024 sets the reference to R/R AML patients receiving quizartinib monotherapy, 'for whom no distinct treatment phases were reported'. All three phases therefore need their own indicator. Time-varying per record. Fractional change -0.419 on quizartinib Frel (Equation 9) and +0.715 on fMET (Equation 16). The Frel and fMET phase effects act in opposite directions by construction: the parent Frel effect is carried over to the metabolite in parent-metabolite modelling, and the fMET phase effect exists to counterbalance that spurious carry-over (Vaddady 2024 Discussion).",
+      source_name = "PHASE == 1"
     ),
     TRTPH_CONSOLIDATION = list(
-      description        = "QuANTUM-First consolidation treatment-phase indicator, 1 = the record falls in the consolidation phase of a newly diagnosed AML patient, 0 = any other phase or population. Member of the TRTPH_<phase> canonical family.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "QuANTUM-First consolidation treatment-phase indicator, 1 = the record falls in the consolidation phase of a newly diagnosed AML patient, 0 = any other phase or population. Member of the TRTPH_<phase> canonical family.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (reference = R/R AML patients; see TRTPH_INDUCTION notes).",
-      notes              = "Protocol: QuANTUM-First (AC220-A-U302). Consolidation = standard high-dose cytarabine consolidation plus quizartinib/placebo, allogeneic hematopoietic cell transplantation, or both, in patients achieving remission. Fractional change -0.192 on quizartinib Frel (Equation 9) and +0.272 on fMET (Equation 16). Vaddady 2024 Discussion notes consolidation is the phase in which newly diagnosed patients behaved most similarly to the R/R reference, because the time elapsed since initiation of chemotherapy is comparable between the two groups.",
-      source_name        = "PHASE == 2"
+      notes = "Protocol: QuANTUM-First (AC220-A-U302). Consolidation = standard high-dose cytarabine consolidation plus quizartinib/placebo, allogeneic hematopoietic cell transplantation, or both, in patients achieving remission. Fractional change -0.192 on quizartinib Frel (Equation 9) and +0.272 on fMET (Equation 16). Vaddady 2024 Discussion notes consolidation is the phase in which newly diagnosed patients behaved most similarly to the R/R reference, because the time elapsed since initiation of chemotherapy is comparable between the two groups.",
+      source_name = "PHASE == 2"
     ),
     TRTPH_CONTINUATION = list(
-      description        = "QuANTUM-First continuation treatment-phase indicator, 1 = the record falls in the continuation phase of a newly diagnosed AML patient, 0 = any other phase or population. Member of the TRTPH_<phase> canonical family.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "QuANTUM-First continuation treatment-phase indicator, 1 = the record falls in the continuation phase of a newly diagnosed AML patient, 0 = any other phase or population. Member of the TRTPH_<phase> canonical family.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (reference = R/R AML patients; see TRTPH_INDUCTION notes).",
-      notes              = "Protocol: QuANTUM-First (AC220-A-U302). Continuation = single-agent quizartinib/placebo for up to 3 years in patients with blood count recovery, i.e. no background chemotherapy. Fractional change +0.418 on quizartinib Frel (Equation 9) and -0.249 on fMET (Equation 16). This is the phase with the highest dose-normalised quizartinib exposure (about 1.4-fold the R/R reference); Vaddady 2024 confirmed by a VPC restricted to patients who entered continuation that the effect is phase-related rather than driven by selection of subjects who survived to that phase.",
-      source_name        = "PHASE == 3"
+      notes = "Protocol: QuANTUM-First (AC220-A-U302). Continuation = single-agent quizartinib/placebo for up to 3 years in patients with blood count recovery, i.e. no background chemotherapy. Fractional change +0.418 on quizartinib Frel (Equation 9) and -0.249 on fMET (Equation 16). This is the phase with the highest dose-normalised quizartinib exposure (about 1.4-fold the R/R reference); Vaddady 2024 confirmed by a VPC restricted to patients who entered continuation that the effect is phase-related rather than driven by selection of subjects who survived to that phase.",
+      source_name = "PHASE == 3"
     )
   )
 
   covariatesDataExcluded <- list(
     RACE_JAPANESE = list(
       description = "Japanese-heritage race indicator, 1 = Japanese, 0 = otherwise.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as a structural covariate on quizartinib CL, Vc, Vp and Frel (Table 2). A Frel effect was carried in the final NONMEM control stream as THETA(17) but is FIXED to exactly 0 there (`0 FIX ; 17_F1JAP1`), i.e. the multiplier is identically 1 and the covariate has no effect in the final model; it is correspondingly absent from Table 3. Documented here so the provenance of the screen is preserved without carrying an inert covariate into model()."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as a structural covariate on quizartinib CL, Vc, Vp and Frel (Table 2). A Frel effect was carried in the final NONMEM control stream as THETA(17) but is FIXED to exactly 0 there (`0 FIX ; 17_F1JAP1`), i.e. the multiplier is identically 1 and the covariate has no effect in the final model; it is correspondingly absent from Table 3. Documented here so the provenance of the screen is preserved without carrying an inert covariate into model()."
     ),
     ALB = list(
       description = "Serum albumin at baseline.",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Tested on AC886 Vc (structural) and on quizartinib and AC886 CL (exploratory) per Table 2. Carried in the final AC886 control stream as THETA(33) centred on 4.1 g/dL but FIXED to 0 (`0 FIX ; 33_V5ALBUBL1`), so it has no effect in the final model and is absent from Table 3."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Tested on AC886 Vc (structural) and on quizartinib and AC886 CL (exploratory) per Table 2. Carried in the final AC886 control stream as THETA(33) centred on 4.1 g/dL but FIXED to 0 (`0 FIX ; 33_V5ALBUBL1`), so it has no effect in the final model and is absent from Table 3."
     ),
     CONMED_CYP3A4_IND = list(
       description = "Concomitant CYP3A inducer coadministration indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Weak (36/932) and moderate (1/932) CYP3A inducer use was tested on quizartinib CL and Frel (Table 2) but not retained in the final model. The final model's predictive performance in inducer-treated subjects was nevertheless confirmed by a stratified pcVPC (Vaddady 2024 Figure 3b)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Weak (36/932) and moderate (1/932) CYP3A inducer use was tested on quizartinib CL and Frel (Table 2) but not retained in the final model. The final model's predictive performance in inducer-treated subjects was nevertheless confirmed by a stratified pcVPC (Vaddady 2024 Figure 3b)."
     ),
     CRCL = list(
       description = "Creatinine clearance at baseline.",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Tested as an exploratory covariate on AC886 CL only (Table 2); not retained. Quizartinib and AC886 are eliminated by hepatic metabolism, and Vaddady 2024 Conclusions state no dose adjustment is needed by renal function."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Tested as an exploratory covariate on AC886 CL only (Table 2); not retained. Quizartinib and AC886 are eliminated by hepatic metabolism, and Vaddady 2024 Conclusions state no dose adjustment is needed by renal function."
     ),
     NCI_ODWG = list(
       description = "National Cancer Institute Organ Dysfunction Working Group hepatic-function grade (normal / mild / moderate).",
-      units       = "(category)",
-      type        = "categorical",
-      notes       = "Tested as an exploratory covariate on quizartinib and AC886 CL (Table 2); not retained. Liver function tests (alkaline phosphatase, alanine aminotransferase, aspartate aminotransferase, total bilirubin) were likewise tested on CL and not retained, despite the analysis pooling a dedicated hepatic-impairment study (AC220-016 and AC220-A-U105)."
+      units = "(category)",
+      type = "categorical",
+      notes = "Tested as an exploratory covariate on quizartinib and AC886 CL (Table 2); not retained. Liver function tests (alkaline phosphatase, alanine aminotransferase, aspartate aminotransferase, total bilirubin) were likewise tested on CL and not retained, despite the analysis pooling a dedicated hepatic-impairment study (AC220-016 and AC220-A-U105)."
     ),
     FORM_QUIZ_SOLUTION = list(
       description = "Oral-solution formulation indicator, 1 = oral solution, 0 = tablet.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as a structural covariate on quizartinib ka and Frel (Table 2; tablet 805/932 = 86.4%, solution 127/932 = 13.6%); not retained in the final model. Antacid and proton-pump-inhibitor coadministration were also tested on ka and Frel and not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as a structural covariate on quizartinib ka and Frel (Table 2; tablet 805/932 = 86.4%, solution 127/932 = 13.6%); not retained in the final model. Antacid and proton-pump-inhibitor coadministration were also tested on ka and Frel and not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 932L,
-    n_studies      = 13L,
-    age_range      = "18-91 years (median 50.0); the QuANTUM-First subset enrolled patients aged 20-75 years",
-    age_median     = "50.0 years",
-    weight_range   = "36.8-153 kg (median 72.0)",
-    weight_median  = "72.0 kg",
+    species = "human",
+    n_subjects = 932L,
+    n_studies = 13L,
+    age_range = "18-91 years (median 50.0); the QuANTUM-First subset enrolled patients aged 20-75 years",
+    age_median = "50.0 years",
+    weight_range = "36.8-153 kg (median 72.0)",
+    weight_median = "72.0 kg",
     sex_female_pct = 46.9,
     race_ethnicity = c(White = 65.4, Black = 8.5, Asian = 18.1, Other = 4.8),
-    disease_state  = "Pooled: 294 newly diagnosed FLT3-ITD-positive AML patients (31.5%), 365 relapsed/refractory FLT3-ITD-positive AML patients (39.2%), and 273 non-AML subjects (29.3%) comprising healthy volunteers and subjects with hepatic impairment.",
-    dose_range     = "20-90 mg/day oral quizartinib as tablet (805/932 subjects) or oral solution (127/932), given as single doses (30-90 mg) or multiple daily doses (20-90 mg)",
-    regions        = "Multinational; three of the 13 studies enrolled Japanese patients (AC220-A-J101, AC220-A-J102, AC220-A-J201) and 75/932 subjects (8.0%) were Japanese.",
+    disease_state = "Pooled: 294 newly diagnosed FLT3-ITD-positive AML patients (31.5%), 365 relapsed/refractory FLT3-ITD-positive AML patients (39.2%), and 273 non-AML subjects (29.3%) comprising healthy volunteers and subjects with hepatic impairment.",
+    dose_range = "20-90 mg/day oral quizartinib as tablet (805/932 subjects) or oral solution (127/932), given as single doses (30-90 mg) or multiple daily doses (20-90 mg)",
+    regions = "Multinational; three of the 13 studies enrolled Japanese patients (AC220-A-J101, AC220-A-J102, AC220-A-J201) and 75/932 subjects (8.0%) were Japanese.",
     n_observations = "14,160 quizartinib and 13,399 AC886 plasma concentrations. Quantified by two cross-validated LC-MS/MS methods with lower limits of quantification of 2 ng/mL and 0.5 ng/mL.",
     hepatic_function = "Includes a dedicated Child-Pugh hepatic-impairment study (AC220-016, 30 subjects) and an NCI-ODWG-criteria hepatic-impairment study (AC220-A-U105, 12 subjects). NCI-ODWG grade in the pooled analysis set: normal 763/932 (81.9%), mild 139/932 (14.9%), moderate 16/932 (1.7%).",
-    co_medication  = "CYP3A inhibitors: none 487/932 (52.3%), weak 85/932 (9.1%), moderate 176/932 (18.9%), strong 184/932 (19.7%). CYP3A inducers: none 895/932 (96.0%), weak 36/932 (3.9%), moderate 1/932 (0.1%). Antacids 90/932 (9.7%); proton-pump inhibitors 327/932 (35.1%). Newly diagnosed patients received background cytarabine plus daunorubicin or idarubicin during induction and high-dose cytarabine during consolidation.",
-    notes          = "Baseline demographics are Vaddady 2024 Table 2; the study inventory (13 studies: nine Phase 1, two Phase 2, two Phase 3, including the Phase 3 QuANTUM-First trial AC220-A-U302 and the Phase 3 R/R trial QuANTUM-R / AC220-007) is Table 1. Seven of the 13 studies were also used in the earlier healthy-volunteer / R/R AML analysis. Missing covariates were imputed with the median (continuous) or most common category (categorical). Fitted in NONMEM 7.4.4 with FOCE+I; the quizartinib model used ADVAN12 TRANS4 and the AC886 model a six-compartment ADVAN13. The AC886 model was fitted sequentially, with individual quizartinib parameters fixed to their empirical Bayes estimates from the final quizartinib model; this model file expresses the two moieties as one joint hierarchical model so that both can be simulated together."
+    co_medication = "CYP3A inhibitors: none 487/932 (52.3%), weak 85/932 (9.1%), moderate 176/932 (18.9%), strong 184/932 (19.7%). CYP3A inducers: none 895/932 (96.0%), weak 36/932 (3.9%), moderate 1/932 (0.1%). Antacids 90/932 (9.7%); proton-pump inhibitors 327/932 (35.1%). Newly diagnosed patients received background cytarabine plus daunorubicin or idarubicin during induction and high-dose cytarabine during consolidation.",
+    notes = "Baseline demographics are Vaddady 2024 Table 2; the study inventory (13 studies: nine Phase 1, two Phase 2, two Phase 3, including the Phase 3 QuANTUM-First trial AC220-A-U302 and the Phase 3 R/R trial QuANTUM-R / AC220-007) is Table 1. Seven of the 13 studies were also used in the earlier healthy-volunteer / R/R AML analysis. Missing covariates were imputed with the median (continuous) or most common category (categorical). Fitted in NONMEM 7.4.4 with FOCE+I; the quizartinib model used ADVAN12 TRANS4 and the AC886 model a six-compartment ADVAN13. The AC886 model was fitted sequentially, with individual quizartinib parameters fixed to their empirical Bayes estimates from the final quizartinib model; this model file expresses the two moieties as one joint hierarchical model so that both can be simulated together."
   )
 
   ini({

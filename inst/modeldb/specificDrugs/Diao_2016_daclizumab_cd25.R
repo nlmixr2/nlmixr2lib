@@ -11,42 +11,44 @@ Diao_2016_daclizumab_cd25 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "daclizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "daclizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "daclizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "daclizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "daclizumab", units = "mg", specimen = "plasma", verified = FALSE),
-    occ_cd25    = list(analyte = "CD25 receptor occupancy", units = "mg", specimen = "tissue", verified = FALSE)
+    occ_cd25 = list(analyte = "CD25 receptor occupancy", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling of the inherited Othman 2014 PK parameters (CL, Q, Vc, Vp) with reference 70 kg; exponents 0.54 on CL/Q and 0.64 on Vc/Vp. CD25 PD parameters do not carry weight covariates in Diao 2016.",
-      source_name        = "WT"
+      notes = "Used for allometric scaling of the inherited Othman 2014 PK parameters (CL, Q, Vc, Vp) with reference 70 kg; exponents 0.54 on CL/Q and 0.64 on Vc/Vp. CD25 PD parameters do not carry weight covariates in Diao 2016.",
+      source_name = "WT"
     ),
     DOSE_50MG = list(
-      description        = "Record-level indicator for the 50 mg SC dose (1 = 50 mg SC, 0 = any other SC dose or any IV dose)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Record-level indicator for the 50 mg SC dose (1 = 50 mg SC, 0 = any other SC dose or any IV dose)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (100, 150, 200, or 300 mg SC dose, or any IV dose)",
-      notes              = "Inherited from the Othman 2014 PK backbone for the dose-dependent bioavailability term. The Diao 2016 RRMS regimens are 150 or 300 mg SC every 4 weeks, so leave DOSE_50MG = 0 in clinical simulations. See Othman_2014_daclizumab.R for the full rationale.",
-      source_name        = "(derived from AMT)"
+      notes = "Inherited from the Othman 2014 PK backbone for the dose-dependent bioavailability term. The Diao 2016 RRMS regimens are 150 or 300 mg SC every 4 weeks, so leave DOSE_50MG = 0 in clinical simulations. See Othman_2014_daclizumab.R for the full rationale.",
+      source_name = "(derived from AMT)"
     )
   )
 
   population <- list(
-    n_subjects     = 1459L,
-    n_records      = 7622L,
-    n_studies      = 4L,
-    study_names    = c("205MS201 / SELECT (Phase 2, RRMS)",
-                       "205MS202 / SELECTION (Phase 2 extension with washout cohort)",
-                       "205MS302 / OBSERVE (immunogenicity / PK / PD with intensive substudy)",
-                       "205MS301 / DECIDE (Phase 3 vs IFN beta-1a)"),
-    disease_state  = "Relapsing-remitting multiple sclerosis (RRMS)",
-    dose_range     = "Daclizumab HYP 150 or 300 mg SC every 4 weeks",
-    notes          = paste0(
+    n_subjects = 1459L,
+    n_records = 7622L,
+    n_studies = 4L,
+    study_names = c(
+      "205MS201 / SELECT (Phase 2, RRMS)",
+      "205MS202 / SELECTION (Phase 2 extension with washout cohort)",
+      "205MS302 / OBSERVE (immunogenicity / PK / PD with intensive substudy)",
+      "205MS301 / DECIDE (Phase 3 vs IFN beta-1a)"
+    ),
+    disease_state = "Relapsing-remitting multiple sclerosis (RRMS)",
+    dose_range = "Daclizumab HYP 150 or 300 mg SC every 4 weeks",
+    notes = paste0(
       "Pooled PK/PD dataset of 1459 RRMS subjects with 7622 CD25 occupancy ",
       "records from four daclizumab HYP clinical studies (Diao 2016 Table 2). ",
       "Subject-level demographics are reported in the companion population PK ",
@@ -55,9 +57,8 @@ Diao_2016_daclizumab_cd25 <- function() {
     ),
     pd_subgroups = list(
       `205MS201/202 (SELECT/SELECTION)` = list(subjects = 580L, records = 5123L),
-      `205MS302 (OBSERVE)`              = list(subjects = 113L, records =  974L,
-                                                intensive_PK_PD_subgroup = 25L),
-      `205MS301 (DECIDE)`                = list(subjects = 766L, records = 1525L)
+      `205MS302 (OBSERVE)` = list(subjects = 113L, records = 974L, intensive_PK_PD_subgroup = 25L),
+      `205MS301 (DECIDE)` = list(subjects = 766L, records = 1525L)
     )
   )
 

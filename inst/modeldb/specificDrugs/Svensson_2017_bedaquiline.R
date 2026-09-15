@@ -34,52 +34,52 @@ Svensson_2017_bedaquiline <- function() {
 
   covariateData <- list(
     CAV = list(
-      description        = "Bedaquiline weekly-average plasma concentration (Cav,W in the source). Time-varying covariate updated weekly to reflect the loading-vs-maintenance dose schedule and the slow tissue accumulation of bedaquiline over the treatment period. Set to 0 for placebo periods.",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Bedaquiline weekly-average plasma concentration (Cav,W in the source). Time-varying covariate updated weekly to reflect the loading-vs-maintenance dose schedule and the slow tissue accumulation of bedaquiline over the treatment period. Set to 0 for placebo periods.",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used in the Emax effect on MBL half-life: `bdq_factor = 1 - emax_bdq * CAV / (ec50_bdq + CAV)`. Set to 0 for placebo subjects; the Emax term then evaluates to 1 and HL is unchanged from the typical placebo half-life of 0.81 weeks. Svensson 2017 obtains individual CAV values as empirical-Bayes secondary metrics from the upstream Svensson 2016 (CPT PSP) population PK model for bedaquiline; users can supply CAV from any popPK source (e.g., by post-processing a `modellib('Svensson_2016_bedaquiline')` simulation into a 7-day rolling mean of central-compartment concentration in mg/L) or as a constant scalar representative of a target exposure scenario. The bedaquiline maximum effect on HL is fixed at -100% (emax_bdq = 1 FIX in `ini()`), so as CAV grows without bound, bdq_factor approaches 0 and HL approaches 0 -- biologically the model extrapolates poorly above the observed exposure range and Svensson 2017 cautions against simulation at markedly higher bedaquiline doses (Discussion paragraph 7).",
-      source_name        = "Cav,W"
+      notes = "Used in the Emax effect on MBL half-life: `bdq_factor = 1 - emax_bdq * CAV / (ec50_bdq + CAV)`. Set to 0 for placebo subjects; the Emax term then evaluates to 1 and HL is unchanged from the typical placebo half-life of 0.81 weeks. Svensson 2017 obtains individual CAV values as empirical-Bayes secondary metrics from the upstream Svensson 2016 (CPT PSP) population PK model for bedaquiline; users can supply CAV from any popPK source (e.g., by post-processing a `modellib('Svensson_2016_bedaquiline')` simulation into a 7-day rolling mean of central-compartment concentration in mg/L) or as a constant scalar representative of a target exposure scenario. The bedaquiline maximum effect on HL is fixed at -100% (emax_bdq = 1 FIX in `ini()`), so as CAV grows without bound, bdq_factor approaches 0 and HL approaches 0 -- biologically the model extrapolates poorly above the observed exposure range and Svensson 2017 cautions against simulation at markedly higher bedaquiline doses (Discussion paragraph 7).",
+      source_name = "Cav,W"
     ),
     DIS_TB_XDR = list(
-      description        = "Pre-XDR or XDR tuberculosis drug-resistance indicator. 1 = subject's Mycobacterium tuberculosis isolate is classified as pre-extensively-drug-resistant (pre-XDR; resistant to isoniazid + rifampicin plus a second-line fluoroquinolone OR an injectable, but not both) or extensively-drug-resistant (XDR; resistant to isoniazid + rifampicin plus a second-line fluoroquinolone AND an injectable); 0 = multidrug-resistant (MDR; resistant to isoniazid + rifampicin only), drug-susceptible, or unclassified TB. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pre-XDR or XDR tuberculosis drug-resistance indicator. 1 = subject's Mycobacterium tuberculosis isolate is classified as pre-extensively-drug-resistant (pre-XDR; resistant to isoniazid + rifampicin plus a second-line fluoroquinolone OR an injectable, but not both) or extensively-drug-resistant (XDR; resistant to isoniazid + rifampicin plus a second-line fluoroquinolone AND an injectable); 0 = multidrug-resistant (MDR; resistant to isoniazid + rifampicin only), drug-susceptible, or unclassified TB. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (MDR / susceptible / missing-treated-as-MDR; the typical-value reference). Per Svensson 2017 Results paragraph 4, the 19% of subjects with missing TB-type information were assigned to the reference (MDR) group after testing that the missing group did not differ significantly from MDR.",
-      notes              = "Multiplicative effect on the MBL half-life: `xdr_factor = 1 + e_xdr_hl * DIS_TB_XDR` with `e_xdr_hl = 0.281` (Svensson 2017 Table 2 (pre-)XDR effect on half-life MBL = 28.1% (95% CI 9.1-51.5%)). Pre-XDR/XDR patients have a 28.1% longer MBL half-life than MDR/susceptible patients; per Svensson 2017 Table 3 this translates into a 2-4 weeks longer median time-to-sputum-culture-conversion and a notably lower SCC rate at week 20 under matched bedaquiline exposure.",
-      source_name        = "(pre-)XDR"
+      notes = "Multiplicative effect on the MBL half-life: `xdr_factor = 1 + e_xdr_hl * DIS_TB_XDR` with `e_xdr_hl = 0.281` (Svensson 2017 Table 2 (pre-)XDR effect on half-life MBL = 28.1% (95% CI 9.1-51.5%)). Pre-XDR/XDR patients have a 28.1% longer MBL half-life than MDR/susceptible patients; per Svensson 2017 Table 3 this translates into a 2-4 weeks longer median time-to-sputum-culture-conversion and a notably lower SCC rate at week 20 under matched bedaquiline exposure.",
+      source_name = "(pre-)XDR"
     ),
     TTP_MGIT_BASE = list(
-      description        = "Baseline (pre-treatment) mean time-to-positivity in the mycobacterial growth indicator tube (MGIT) liquid culture system, in days. Computed in the source as the mean of three replicate spot-sputum-sample TTP values collected the day before the start of treatment. Time-fixed per subject.",
-      units              = "days",
-      type               = "continuous",
+      description = "Baseline (pre-treatment) mean time-to-positivity in the mycobacterial growth indicator tube (MGIT) liquid culture system, in days. Computed in the source as the mean of three replicate spot-sputum-sample TTP values collected the day before the start of treatment. Time-fixed per subject.",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form covariate on the starting mycobacterial load: `mbl0_i = exp(lmbl0) * (TTP_MGIT_BASE / 6.8)^e_ttp_mbl0` with reference 6.8 days (Svensson 2017 Table 1 cohort median, n = 191) and `e_ttp_mbl0 = -3.69` (Svensson 2017 Table 2 baseline TTP effect on MBL_0). The exponent is negative because longer baseline TTP corresponds to fewer viable bacteria in the inoculum and a lower starting MBL. Per Svensson 2017 Discussion paragraph 3, the estimated effect predicts a four-times longer median time-to-sputum-culture-conversion in patients with the lowest baseline TTP versus the highest.",
-      source_name        = "mTTP0"
+      notes = "Power-form covariate on the starting mycobacterial load: `mbl0_i = exp(lmbl0) * (TTP_MGIT_BASE / 6.8)^e_ttp_mbl0` with reference 6.8 days (Svensson 2017 Table 1 cohort median, n = 191) and `e_ttp_mbl0 = -3.69` (Svensson 2017 Table 2 baseline TTP effect on MBL_0). The exponent is negative because longer baseline TTP corresponds to fewer viable bacteria in the inoculum and a lower starting MBL. Per Svensson 2017 Discussion paragraph 3, the estimated effect predicts a four-times longer median time-to-sputum-culture-conversion in patients with the lowest baseline TTP versus the highest.",
+      source_name = "mTTP0"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 189L,
-    n_studies      = 1L,
-    age_range      = "18-63 years (Table 1; trial enrolment criterion 18-65 years)",
-    age_median     = "33 years",
-    weight_range   = "35-83 kg (Table 1)",
-    weight_median  = "54 kg",
+    species = "human",
+    n_subjects = 189L,
+    n_studies = 1L,
+    age_range = "18-63 years (Table 1; trial enrolment criterion 18-65 years)",
+    age_median = "33 years",
+    weight_range = "35-83 kg (Table 1)",
+    weight_median = "54 kg",
     sex_female_pct = 34.5,
     race_ethnicity = c(
       Caucasian = 10.2,
-      Black     = 39.8,
-      Hispanic  = 13.6,
-      Asian     = 7.3,
-      Other     = 28.6,
-      Missing   = 0.5
+      Black = 39.8,
+      Hispanic = 13.6,
+      Asian = 7.3,
+      Other = 28.6,
+      Missing = 0.5
     ),
-    disease_state  = "Adult patients with newly diagnosed multidrug-resistant pulmonary tuberculosis (MDR-TB), with pre-XDR (25.1%) and XDR (5.31%) strata pooled into the DIS_TB_XDR = 1 group and drug-susceptible (3.86%) + MDR (46.4%) + missing (18.9%, assigned to MDR) pooled into the DIS_TB_XDR = 0 reference group. Lung cavitation prevalence 91.7%. HIV co-infection allowed if CD4+ T-cell count >= 300 cells/mm3 and patient not on antiretroviral therapy; HIV-positive rate 14.6%.",
-    dose_range     = "Open-label oral bedaquiline 400 mg once daily for the first 2 weeks (loading), then 200 mg three times weekly for 22 weeks in the active arm; placebo equivalent in the placebo arm; both arms received an optimized background regimen of five second-line anti-TB drugs (kanamycin, ofloxacin, ethionamide, pyrazinamide, terizidone, with a few predefined substitutions allowed) for 18-24 months under directly observed therapy. The PD model is fitted to TTP observations through week 8 (stage 1) or week 24 (stage 2) and does not contain a dosing compartment itself; bedaquiline exposure enters via the time-varying CAV covariate.",
-    regions        = "Multicenter international (TMC207-C208 phase IIb registration trial; specific regional breakdown not reported in the main text).",
-    notes          = "Baseline demographics from Svensson 2017 Table 1 (full enrolled cohort n = 206 with TTP data; n = 189 included in the final model fit after exclusions described in the Supplementary data). Trial: TMC207-C208 (ClinicalTrials.gov NCT00449644), Janssen Pharmaceuticals, shared with the authors through the PreDiCT-TB consortium (http://www.predict-tb.eu). The cohort was originally enrolled in two stages: stage 1 (47 subjects; 23 on bedaquiline) received the randomized intervention for 8 weeks, stage 2 (159 subjects; 79 on bedaquiline) received the randomized intervention for 24 weeks; both stages contributed to the model dataset. Baseline TTP values from before initiation of treatment were used as a covariate (TTP_MGIT_BASE) and not as observations. The dataset used for model building included 5833 TTP observations (56.6% positive) from 189 individuals (98 in the placebo arm and 91 in the bedaquiline arm)."
+    disease_state = "Adult patients with newly diagnosed multidrug-resistant pulmonary tuberculosis (MDR-TB), with pre-XDR (25.1%) and XDR (5.31%) strata pooled into the DIS_TB_XDR = 1 group and drug-susceptible (3.86%) + MDR (46.4%) + missing (18.9%, assigned to MDR) pooled into the DIS_TB_XDR = 0 reference group. Lung cavitation prevalence 91.7%. HIV co-infection allowed if CD4+ T-cell count >= 300 cells/mm3 and patient not on antiretroviral therapy; HIV-positive rate 14.6%.",
+    dose_range = "Open-label oral bedaquiline 400 mg once daily for the first 2 weeks (loading), then 200 mg three times weekly for 22 weeks in the active arm; placebo equivalent in the placebo arm; both arms received an optimized background regimen of five second-line anti-TB drugs (kanamycin, ofloxacin, ethionamide, pyrazinamide, terizidone, with a few predefined substitutions allowed) for 18-24 months under directly observed therapy. The PD model is fitted to TTP observations through week 8 (stage 1) or week 24 (stage 2) and does not contain a dosing compartment itself; bedaquiline exposure enters via the time-varying CAV covariate.",
+    regions = "Multicenter international (TMC207-C208 phase IIb registration trial; specific regional breakdown not reported in the main text).",
+    notes = "Baseline demographics from Svensson 2017 Table 1 (full enrolled cohort n = 206 with TTP data; n = 189 included in the final model fit after exclusions described in the Supplementary data). Trial: TMC207-C208 (ClinicalTrials.gov NCT00449644), Janssen Pharmaceuticals, shared with the authors through the PreDiCT-TB consortium (http://www.predict-tb.eu). The cohort was originally enrolled in two stages: stage 1 (47 subjects; 23 on bedaquiline) received the randomized intervention for 8 weeks, stage 2 (159 subjects; 79 on bedaquiline) received the randomized intervention for 24 weeks; both stages contributed to the model dataset. Baseline TTP values from before initiation of treatment were used as a covariate (TTP_MGIT_BASE) and not as observations. The dataset used for model building included 5833 TTP observations (56.6% positive) from 189 individuals (98 in the placebo arm and 91 in the bedaquiline arm)."
   )
 
   ini({

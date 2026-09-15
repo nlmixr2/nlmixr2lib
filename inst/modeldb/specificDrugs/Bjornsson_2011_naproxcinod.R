@@ -36,8 +36,8 @@ Bjornsson_2011_naproxcinod <- function() {
   paper_specific_compartments <- c("depot_naproxcinod", "depot_naproxen", "cumhaz")
 
   units <- list(
-    time          = "h",
-    dosing        = paste(
+    time = "h",
+    dosing = paste(
       "umol of the parent compound dosed (naproxcinod or naproxen).",
       "Convert mg to umol using MW(naproxcinod) = 317.30 g/mol or",
       "MW(naproxen) = 230.26 g/mol. Naproxcinod doses must target",
@@ -53,59 +53,69 @@ Bjornsson_2011_naproxcinod <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot_naproxcinod = list(analyte = "naproxcinod", units = NA_character_, specimen = "administration site", verified = FALSE),
-    depot_naproxen    = list(analyte = "naproxen", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central           = list(analyte = "unbound naproxen", units = NA_character_, specimen = "plasma", verified = FALSE),
-    cumhaz            = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    depot_naproxcinod = list(
+      analyte = "naproxcinod",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot_naproxen = list(
+      analyte = "naproxen",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "unbound naproxen", units = NA_character_, specimen = "plasma", verified = FALSE),
+    cumhaz = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age at enrolment (years).",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at enrolment (years).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline demographic captured in the trial (range 19-38 years, Bjornsson 2011 Table 1) but not retained in the final PK / PI / TTE model.",
-      source_name        = "AGE"
+      notes = "Baseline demographic captured in the trial (range 19-38 years, Bjornsson 2011 Table 1) but not retained in the final PK / PI / TTE model.",
+      source_name = "AGE"
     ),
     BMI = list(
-      description        = "Body mass index (kg/m^2).",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index (kg/m^2).",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline demographic captured in the trial (range 18-31 kg/m^2, Bjornsson 2011 Table 1) but not retained in the final PK / PI / TTE model. Body weight itself was not transcribed in the publication.",
-      source_name        = "BMI"
+      notes = "Baseline demographic captured in the trial (range 18-31 kg/m^2, Bjornsson 2011 Table 1) but not retained in the final PK / PI / TTE model. Body weight itself was not transcribed in the publication.",
+      source_name = "BMI"
     ),
     SEXF = list(
-      description        = "Sex indicator: 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator: 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Trial cohort was 48% male / 52% female (Bjornsson 2011 Table 1). Sex was not retained in the final PK / PI / TTE model.",
-      source_name        = "SEX"
+      notes = "Trial cohort was 48% male / 52% female (Bjornsson 2011 Table 1). Sex was not retained in the final PK / PI / TTE model.",
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 242L,
-    n_studies      = 1L,
-    age_range      = "19-38 years",
-    age_median     = "~25 years (per-arm means in Bjornsson 2011 Table 1 ranged 24.0-25.6 years)",
-    weight_range   = "not transcribed in the publication (BMI 18-31 kg/m^2 reported in Table 1)",
+    species = "human",
+    n_subjects = 242L,
+    n_studies = 1L,
+    age_range = "19-38 years",
+    age_median = "~25 years (per-arm means in Bjornsson 2011 Table 1 ranged 24.0-25.6 years)",
+    weight_range = "not transcribed in the publication (BMI 18-31 kg/m^2 reported in Table 1)",
     sex_female_pct = 52,
     race_ethnicity = NULL,
-    disease_state  = "Healthy adults undergoing surgical removal of mandibular wisdom teeth under local anaesthesia, with moderate-to-severe post-surgical dental pain (entry criterion PI >= 40 mm on 100-mm VAS within 6 h after local anaesthetic).",
-    dose_range     = paste(
+    disease_state = "Healthy adults undergoing surgical removal of mandibular wisdom teeth under local anaesthesia, with moderate-to-severe post-surgical dental pain (entry criterion PI >= 40 mm on 100-mm VAS within 6 h after local anaesthetic).",
+    dose_range = paste(
       "Single oral dose: naproxcinod 375 mg (1182 umol), 750 mg (2364 umol),",
       "1500 mg (4728 umol), or 2250 mg (7092 umol); naproxen 500 mg (2172 umol);",
       "or placebo (0 umol). Rescue medication (ibuprofen 400 mg) was available",
       "from 1.5 h onward."
     ),
-    regions        = "United Kingdom (Eastman International Centre for Excellence in Dentistry, London)",
-    notes          = paste(
+    regions = "United Kingdom (Eastman International Centre for Excellence in Dentistry, London)",
+    notes = paste(
       "PI measured on a 100-mm visual analogue scale (VAS) immediately before",
       "drug administration (baseline) and at 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6,",
       "7, and 8 h after drug administration (or until rescue-medication request,",

@@ -25,18 +25,18 @@ Song_2013_amlodipine <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "amlodipine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "amlodipine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "amlodipine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "amlodipine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "amlodipine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters apparent clearance in power form",
         "(CL/F) = 23.4 * (AGE / 50.9)^-0.349 (Song 2013 Equation 9), i.e. amlodipine clearance falls with age.",
         "The centering value 50.9 years is printed in the equation itself and is the median of the amlodipine",
@@ -45,14 +45,14 @@ Song_2013_amlodipine <- function() {
         "weight (see covariateData[['WT']]$notes). The dataset is strongly bimodal in age -- young healthy",
         "phase I volunteers (mean 31 years) pooled with older hypertensive phase III patients (mean 55 years)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters the apparent central volume in power form (WT / 91.5)^0.285 (Song 2013",
         "Supplemental Table S4 row 'Vc,WTKG', with the median-normalized power form specified by main-text",
         "Equation 6). Table S4 reports NO weight effect on the peripheral volume, in contrast to the olmesartan",
@@ -60,25 +60,25 @@ Song_2013_amlodipine <- function() {
         "N-weighted MEAN body weight of the amlodipine population PK dataset computed from Supplemental Table S1",
         "(the same dataset as olmesartan), used as a proxy for the unreported median."
       ),
-      source_name        = "WTKG"
+      source_name = "WTKG"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1927L,
-    n_studies      = 12L,
-    age_range      = "phase I mean 30.9 (SD 7.9) years; phase III mean 55.4 (SD 11) years",
-    weight_range   = "phase I mean 77 (SD 13) kg; phase III mean 95.2 (SD 22) kg",
+    species = "human",
+    n_subjects = 1927L,
+    n_studies = 12L,
+    age_range = "phase I mean 30.9 (SD 7.9) years; phase III mean 55.4 (SD 11) years",
+    weight_range = "phase I mean 77 (SD 13) kg; phase III mean 95.2 (SD 22) kg",
     sex_female_pct = 37.0,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy volunteers (phase I clinical pharmacology studies) plus adults with hypertension",
       "(phase III sparse-sampling subsets of CS8663-A-U301 (COACH) and CS8635-A-U301 (TRINITY))"
     ),
-    dose_range     = "amlodipine 5-10 mg once daily",
-    regions        = "United States and Europe",
-    notes          = paste(
+    dose_range = "amlodipine 5-10 mg once daily",
+    regions = "United States and Europe",
+    notes = paste(
       "The amlodipine population PK dataset is the same union of CS-8663 and CS-8635 program studies as the",
       "olmesartan model (Song 2013 Supplemental Table S1), n = 1927: 415 phase I subjects plus the phase III PK",
       "subsets CS8663-A-U301 (n = 556) and CS8635-A-U301 (n = 956). Estimation used FOCE in NONMEM VI level 1."

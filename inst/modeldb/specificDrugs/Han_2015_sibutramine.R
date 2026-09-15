@@ -17,62 +17,62 @@ Han_2015_sibutramine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "sibutramine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "M1", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sibutramine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "M1", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "M1", units = "mg", specimen = "plasma", verified = FALSE),
-    central_m2  = list(analyte = "M2", units = "mg", specimen = "plasma", verified = FALSE),
-    bw          = list(analyte = "weight", units = "mg", specimen = "not applicable", verified = FALSE)
+    central_m2 = list(analyte = "M2", units = "mg", specimen = "plasma", verified = FALSE),
+    bw = list(analyte = "weight", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear deviation around a reference of 35 years applied to M1 clearance: `cl = cl_typ * (1 + e_age_cl * (AGE - 35))` with estimated coefficient 0.0120 1/year (Han 2015 Methods, CL_M1 equation; Table 2 C_AGE = 0.0120 yr^-1). Older patients have higher CL_M1 (i.e., faster M1-to-M2 metabolism), consistent with Hind et al. 2007 finding that the M1/M2 AUC ratio rises with age (Han 2015 Discussion).",
-      source_name        = "AGE"
+      notes = "Linear deviation around a reference of 35 years applied to M1 clearance: `cl = cl_typ * (1 + e_age_cl * (AGE - 35))` with estimated coefficient 0.0120 1/year (Han 2015 Methods, CL_M1 equation; Table 2 C_AGE = 0.0120 yr^-1). Older patients have higher CL_M1 (i.e., faster M1-to-M2 metabolism), consistent with Hind et al. 2007 finding that the M1/M2 AUC ratio rises with age (Han 2015 Discussion).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male).",
-      notes              = "Han 2015 codes SEX as 0 for males and 1 for females, which matches the nlmixr2lib canonical SEXF. SEXF enters the PD model in two places: (1) baseline body weight `base = mw - SEXF * fwc` (Table 2 BASE = MW - SEX * FWC, with MW = 89.1 kg the typical male baseline and FWC = 11.4 kg the female correction), and (2) the placebo effect gate `p_max = (p_fem + etap_fem) * SEXF * (BMI/30.1)^bex`, which makes the placebo effect identically zero for males (Han 2015 Results: 'placebo effect was acknowledged only in female subjects').",
-      source_name        = "SEX"
+      notes = "Han 2015 codes SEX as 0 for males and 1 for females, which matches the nlmixr2lib canonical SEXF. SEXF enters the PD model in two places: (1) baseline body weight `base = mw - SEXF * fwc` (Table 2 BASE = MW - SEX * FWC, with MW = 89.1 kg the typical male baseline and FWC = 11.4 kg the female correction), and (2) the placebo effect gate `p_max = (p_fem + etap_fem) * SEXF * (BMI/30.1)^bex`, which makes the placebo effect identically zero for males (Han 2015 Results: 'placebo effect was acknowledged only in female subjects').",
+      source_name = "SEX"
     ),
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on the female placebo response: `p_max = (p_fem + etap_fem) * SEXF * (BMI/30.1)^bex` with reference BMI = 30.1 kg/m^2 (the cohort overall mean per Han 2015 Table 1) and estimated exponent bex = -4.74 (Table 2). Because bex < 0, less-obese females (BMI < 30.1) have a larger placebo effect than more-obese females, matching Han 2015 Results: 'placebo effect was more pronounced in female and relatively less obese patients'. Assumed time-fixed at baseline value.",
-      source_name        = "BMI"
+      notes = "Power-form effect on the female placebo response: `p_max = (p_fem + etap_fem) * SEXF * (BMI/30.1)^bex` with reference BMI = 30.1 kg/m^2 (the cohort overall mean per Han 2015 Table 1) and estimated exponent bex = -4.74 (Table 2). Because bex < 0, less-obese females (BMI < 30.1) have a larger placebo effect than more-obese females, matching Han 2015 Results: 'placebo effect was more pronounced in female and relatively less obese patients'. Assumed time-fixed at baseline value.",
+      source_name = "BMI"
     ),
     DOSE = list(
-      description        = "Current daily oral sibutramine-base dose (time-varying per subject)",
-      units              = "mg (sibutramine base equivalent)",
-      type               = "continuous",
+      description = "Current daily oral sibutramine-base dose (time-varying per subject)",
+      units = "mg (sibutramine base equivalent)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Use case (b) of the canonical DOSE: time-varying current daily dose driving a derived exposure metric inside the PD layer. Han 2015's published PD model drives the body-weight ODE from the steady-state sum AUC of the two active metabolites, AUC_ss,sum = AUC_M1 + AUC_M2 = Dose/CL_M1 + Dose/CL_M2 (paper equation 1, assuming complete sibutramine -> M1 -> M2 conversion). nlmixr2lib reproduces this by deriving AUC_ss,sum inside model() from the user-supplied current daily dose DOSE together with the individual M1 and M2 clearances (in L/h, derived from the day-based cl and cl_m2 by dividing by 24). Per-subject daily dose in Han 2015: 0 mg/day for placebo; 8.37 mg/day sibutramine base initially in the active arm, escalated to 12.55 mg/day at week 4 if weight loss was less than 2 kg. Update DOSE over time in the user dataset to encode dose escalations. The DOSE covariate is supplied alongside (not in place of) any rxode2 AMT dose events that drive the depot compartment for PK simulation; the two channels are deliberately decoupled so the PD AUC_ss,sum reflects the steady-state assumption underlying Han 2015's exposure-response analysis.",
-      source_name        = "DOSE"
+      notes = "Use case (b) of the canonical DOSE: time-varying current daily dose driving a derived exposure metric inside the PD layer. Han 2015's published PD model drives the body-weight ODE from the steady-state sum AUC of the two active metabolites, AUC_ss,sum = AUC_M1 + AUC_M2 = Dose/CL_M1 + Dose/CL_M2 (paper equation 1, assuming complete sibutramine -> M1 -> M2 conversion). nlmixr2lib reproduces this by deriving AUC_ss,sum inside model() from the user-supplied current daily dose DOSE together with the individual M1 and M2 clearances (in L/h, derived from the day-based cl and cl_m2 by dividing by 24). Per-subject daily dose in Han 2015: 0 mg/day for placebo; 8.37 mg/day sibutramine base initially in the active arm, escalated to 12.55 mg/day at week 4 if weight loss was less than 2 kg. Update DOSE over time in the user dataset to encode dose escalations. The DOSE covariate is supplied alongside (not in place of) any rxode2 AMT dose events that drive the depot compartment for PK simulation; the two channels are deliberately decoupled so the PD AUC_ss,sum reflects the steady-state assumption underlying Han 2015's exposure-response analysis.",
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 120L,
-    n_studies      = 2L,
-    age_range      = "18-65 years (inclusion criterion); enrolled cohort 38.7 +/- 8.39 years (Table 1)",
-    age_median     = "38.7 years (overall mean per Table 1)",
-    weight_range   = "82.2 +/- 12.11 kg overall (Table 1)",
-    weight_median  = "82.2 kg (overall mean per Table 1)",
+    species = "human",
+    n_subjects = 120L,
+    n_studies = 2L,
+    age_range = "18-65 years (inclusion criterion); enrolled cohort 38.7 +/- 8.39 years (Table 1)",
+    age_median = "38.7 years (overall mean per Table 1)",
+    weight_range = "82.2 +/- 12.11 kg overall (Table 1)",
+    weight_median = "82.2 kg (overall mean per Table 1)",
     sex_female_pct = 67.5,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Korean abdominally obese adults (waist circumference >= 90 cm in men or >= 85 cm in women per the Korean Society for the Study of Obesity) with metabolic syndrome per the adult treatment panel (ATP) III definition, without clinically significant hypertension, diabetes, or any other underlying disease causing obesity. Subjects taking any drugs that could affect body weight or sibutramine PK/PD were excluded.",
-    dose_range     = "Oral sibutramine 8.37 mg base/day (= 11.51 mg sibutramine mesylate; same active content as Reductil 10 mg = 10 mg sibutramine hydrochloride monohydrate) for the first 4 weeks; escalated to 12.55 mg base/day (= 17.26 mg sibutramine mesylate, equivalent to 15 mg sibutramine hydrochloride monohydrate) for weeks 4-24 if weight loss was less than 2 kg at week 4. The placebo arm followed the same titration scheme with matching placebo tablets.",
-    regions        = "Republic of Korea (eight hospitals: Seoul St Mary's, Yeouido St Mary's, St Paul's, Uijeongbu St Mary's, St Vincent's, Daejeon St Mary's, Bucheon St Mary's, Incheon St Mary's).",
-    notes          = "120 abdominally obese adults with metabolic syndrome were enrolled (60 sibutramine, 57 placebo, 3 excluded from PK; Table 1). To address the sparseness of patient PK samples (sparse 4-point sampling at predose, week 4 single sample, week 8 single sample, and week 24 predose), data from a separate full-PK study in 16 healthy young Korean male subjects (208 observations per metabolite) were merged into the PK dataset, giving 422 patient + 416 healthy = 838 PK observations total. A patient-vs-healthy indicator (ISP) was tested as a covariate and was not significant on any PK or PD parameter; ISP is therefore not included in this model file. Body-weight measurements (the PD endpoint) come from the patient cohort only (every 4 weeks for 24 weeks, n = 120 subjects). All subjects maintained their usual exercise and physical activity; dietary guidelines of 500-600 kcal/day deficit were provided and dietary intake was recorded by 24-hour recall. Cohort details per Han 2015 Table 1 and Study procedures section."
+    disease_state = "Korean abdominally obese adults (waist circumference >= 90 cm in men or >= 85 cm in women per the Korean Society for the Study of Obesity) with metabolic syndrome per the adult treatment panel (ATP) III definition, without clinically significant hypertension, diabetes, or any other underlying disease causing obesity. Subjects taking any drugs that could affect body weight or sibutramine PK/PD were excluded.",
+    dose_range = "Oral sibutramine 8.37 mg base/day (= 11.51 mg sibutramine mesylate; same active content as Reductil 10 mg = 10 mg sibutramine hydrochloride monohydrate) for the first 4 weeks; escalated to 12.55 mg base/day (= 17.26 mg sibutramine mesylate, equivalent to 15 mg sibutramine hydrochloride monohydrate) for weeks 4-24 if weight loss was less than 2 kg at week 4. The placebo arm followed the same titration scheme with matching placebo tablets.",
+    regions = "Republic of Korea (eight hospitals: Seoul St Mary's, Yeouido St Mary's, St Paul's, Uijeongbu St Mary's, St Vincent's, Daejeon St Mary's, Bucheon St Mary's, Incheon St Mary's).",
+    notes = "120 abdominally obese adults with metabolic syndrome were enrolled (60 sibutramine, 57 placebo, 3 excluded from PK; Table 1). To address the sparseness of patient PK samples (sparse 4-point sampling at predose, week 4 single sample, week 8 single sample, and week 24 predose), data from a separate full-PK study in 16 healthy young Korean male subjects (208 observations per metabolite) were merged into the PK dataset, giving 422 patient + 416 healthy = 838 PK observations total. A patient-vs-healthy indicator (ISP) was tested as a covariate and was not significant on any PK or PD parameter; ISP is therefore not included in this model file. Body-weight measurements (the PD endpoint) come from the patient cohort only (every 4 weeks for 24 weeks, n = 120 subjects). All subjects maintained their usual exercise and physical activity; dietary guidelines of 500-600 kcal/day deficit were provided and dietary intake was recorded by 24-hour recall. Cohort details per Han 2015 Table 1 and Study procedures section."
   )
 
   ini({

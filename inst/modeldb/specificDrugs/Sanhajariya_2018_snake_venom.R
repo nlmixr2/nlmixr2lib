@@ -13,27 +13,27 @@ Sanhajariya_2018_snake_venom <- function() {
 
   covariateData <- list(
     SNAKEFAMILY_ELAPID = list(
-      description        = "Snake-family categorical indicator for venom-source classification: 1 = Elapidae family (front-fanged elapids: cobras, kraits, mambas, sea snakes, Australian terrestrial elapids); 0 = Viperidae family (true vipers and pit vipers).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Snake-family categorical indicator for venom-source classification: 1 = Elapidae family (front-fanged elapids: cobras, kraits, mambas, sea snakes, Australian terrestrial elapids); 0 = Viperidae family (true vipers and pit vipers).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Viperidae)",
-      notes              = "Per-bite covariate (property of the snake that delivered the dose, not of the patient). Sanhajariya 2018 Table A1 covariate model: F1(Viperidae) = 1 (fixed reference), F1(Elapidae) = 0.569 (RSE 43%). The two-family split was the deepest stratification the sparse meta-analysis data could support; per-species or per-genus effects could not be estimated (Section 2.2.3 prose).",
-      source_name        = "Elapidae / Viperidae family label (no NONMEM column name disclosed in Appendix Table A1)"
+      notes = "Per-bite covariate (property of the snake that delivered the dose, not of the patient). Sanhajariya 2018 Table A1 covariate model: F1(Viperidae) = 1 (fixed reference), F1(Elapidae) = 0.569 (RSE 43%). The two-family split was the deepest stratification the sparse meta-analysis data could support; per-species or per-genus effects could not be estimated (Section 2.2.3 prose).",
+      source_name = "Elapidae / Viperidae family label (no NONMEM column name disclosed in Appendix Table A1)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 145,
-    n_studies      = 24,
-    age_range      = "Not reported in the main text; the underlying 24 primary studies are case reports / series of snake-envenoming patients (Table 6).",
-    weight_range   = "Not reported in the main text.",
+    species = "human",
+    n_subjects = 145,
+    n_studies = 24,
+    age_range = "Not reported in the main text; the underlying 24 primary studies are case reports / series of snake-envenoming patients (Table 6).",
+    weight_range = "Not reported in the main text.",
     sex_female_pct = "Not reported in the main text.",
     race_ethnicity = "Not reported in the main text.",
-    disease_state  = "Snake envenoming, pre-antivenom samples only. Elapid bites (cobras, kraits, sea snakes, Australian elapids, taipans) and viperid bites (Bothrops, Crotalus, Daboia / Vipera russelli, Vipera aspis / berus / ammodytes, Bitis, Hypnale, Cerastes).",
-    dose_range     = "Single snakebite; the venom mass per bite is not directly measured. The model treats the dose as a nominal unit and F1 absorbs the per-bite relative venom amount (CV 275%) on top of the snake-family multiplier (0.569 for Elapidae vs 1 for Viperidae). For simulation, supply a representative venom mass in mcg.",
-    regions        = "Australia, Brazil, France, Slovenia, Thailand, Taiwan, Sri Lanka, Myanmar, UK, Switzerland and UK (Cerastes), Martinique, Papua New Guinea.",
-    notes          = "Data extracted from text or digitised from concentration-time figures (WebPlotDigitizer v3.12) of 24 published reports listed in Sanhajariya 2018 Table 6; pre-antivenom observations only. 218 timed concentrations total. Most subjects contributed a single sample; only five primary studies reported serial concentrations. The authors describe the model as a preliminary prior for future, richer snake-venom PK datasets (Section 2.2.3 and Section 4)."
+    disease_state = "Snake envenoming, pre-antivenom samples only. Elapid bites (cobras, kraits, sea snakes, Australian elapids, taipans) and viperid bites (Bothrops, Crotalus, Daboia / Vipera russelli, Vipera aspis / berus / ammodytes, Bitis, Hypnale, Cerastes).",
+    dose_range = "Single snakebite; the venom mass per bite is not directly measured. The model treats the dose as a nominal unit and F1 absorbs the per-bite relative venom amount (CV 275%) on top of the snake-family multiplier (0.569 for Elapidae vs 1 for Viperidae). For simulation, supply a representative venom mass in mcg.",
+    regions = "Australia, Brazil, France, Slovenia, Thailand, Taiwan, Sri Lanka, Myanmar, UK, Switzerland and UK (Cerastes), Martinique, Papua New Guinea.",
+    notes = "Data extracted from text or digitised from concentration-time figures (WebPlotDigitizer v3.12) of 24 published reports listed in Sanhajariya 2018 Table 6; pre-antivenom observations only. 218 timed concentrations total. Most subjects contributed a single sample; only five primary studies reported serial concentrations. The authors describe the model as a preliminary prior for future, richer snake-venom PK datasets (Section 2.2.3 and Section 4)."
   )
 
   ini({

@@ -66,7 +66,9 @@ test_that(".addDirToModelDbCached parses on cold run and reuses cache on warm ru
   on.exit(unlink(fixtureDir, recursive = TRUE), add = TRUE)
 
   srcFile <- system.file("modeldb/PK_1cmt.R", package = "nlmixr2lib")
-  if (!nzchar(srcFile)) skip("PK_1cmt fixture not installed")
+  if (!nzchar(srcFile)) {
+    skip("PK_1cmt fixture not installed")
+  }
   file.copy(srcFile, file.path(fixtureDir, "PK_1cmt.R"))
 
   # Spy on addFileToModelDb so we can assert cache hits avoid re-parsing.
@@ -108,7 +110,9 @@ test_that(".addDirToModelDbCached re-parses a file whose content changes", {
   on.exit(unlink(fixtureDir, recursive = TRUE), add = TRUE)
 
   srcFile <- system.file("modeldb/PK_1cmt.R", package = "nlmixr2lib")
-  if (!nzchar(srcFile)) skip("PK_1cmt fixture not installed")
+  if (!nzchar(srcFile)) {
+    skip("PK_1cmt fixture not installed")
+  }
   fixturePath <- file.path(fixtureDir, "PK_1cmt.R")
   file.copy(srcFile, fixturePath)
 
@@ -129,7 +133,9 @@ test_that(".addDirToModelDbCached drops stale entries for files not on disk", {
   on.exit(unlink(fixtureDir, recursive = TRUE), add = TRUE)
 
   srcFile <- system.file("modeldb/PK_1cmt.R", package = "nlmixr2lib")
-  if (!nzchar(srcFile)) skip("PK_1cmt fixture not installed")
+  if (!nzchar(srcFile)) {
+    skip("PK_1cmt fixture not installed")
+  }
   file.copy(srcFile, file.path(fixtureDir, "PK_1cmt.R"))
 
   staleEntries <- list(

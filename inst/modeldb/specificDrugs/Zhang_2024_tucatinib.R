@@ -22,18 +22,18 @@ Zhang_2024_tucatinib <- function() {
   # compartment 3 = peripheral) and against the paper's Methods description of
   # tucatinib plasma PK.
   compartmentData <- list(
-    depot       = list(analyte = "tucatinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "tucatinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "tucatinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "tucatinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tucatinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     TUMTP_BREAST = list(
-      description        = "HER2-positive metastatic breast cancer indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HER2-positive metastatic breast cancer indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not mBC; a healthy participant is the typical-value reference when paired with TUMTP_CRC = 0)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed. Multiplicative fractional effect on CL only:",
         "-0.519, i.e. 51.9% lower clearance than a healthy participant",
         "(Zhang 2024 Table 1). No effect on relative bioavailability was",
@@ -46,14 +46,14 @@ Zhang_2024_tucatinib <- function() {
         "pooled cohort (studies ONT-380-004 and ONT-380-005; Table S2).",
         sep = " "
       ),
-      source_name        = "TUM"
+      source_name = "TUM"
     ),
     TUMTP_CRC = list(
-      description        = "HER2-positive metastatic colorectal cancer indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HER2-positive metastatic colorectal cancer indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not mCRC; a healthy participant is the typical-value reference when paired with TUMTP_BREAST = 0)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed. Multiplicative fractional effects on BOTH CL (-0.705,",
         "i.e. 70.5% lower clearance) and relative bioavailability",
         "(-0.637, i.e. 63.7% lower Frel) versus a healthy participant",
@@ -65,7 +65,7 @@ Zhang_2024_tucatinib <- function() {
         "SGNTUC-017 / MOUNTAINEER; Table S2).",
         sep = " "
       ),
-      source_name        = "TUM"
+      source_name = "TUM"
     )
   )
 
@@ -77,85 +77,87 @@ Zhang_2024_tucatinib <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Baseline body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested on CL/F and Vc/F in the univariable screen; not retained (Zhang 2024 section 3.3). Cohort median 75.9 kg [40.7, 146] (Table S3)."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested on CL/F and Vc/F in the univariable screen; not retained (Zhang 2024 section 3.3). Cohort median 75.9 kg [40.7, 146] (Table S3)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL/F, Frel and Ka. Sex on CL/F was added during primary forward addition but dropped during backward elimination (Zhang 2024 section 3.3). Cohort 39.9% female (Table S2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL/F, Frel and Ka. Sex on CL/F was added during primary forward addition but dropped during backward elimination (Zhang 2024 section 3.3). Cohort 39.9% female (Table S2)."
     ),
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested on CL/F and Vc/F; not retained (Zhang 2024 section 3.3). Cohort median 48 years [18, 77] (Table S3)."
+      units = "years",
+      type = "continuous",
+      notes = "Tested on CL/F and Vc/F; not retained (Zhang 2024 section 3.3). Cohort median 48 years [18, 77] (Table S3)."
     ),
     ALB = list(
       description = "Baseline serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Tested on CL/F and Vc/F. Albumin on Vc/F was added during primary forward addition but dropped during backward elimination (Zhang 2024 section 3.3). Cohort median 4.30 g/dL [1.87, 5.20] (Table S3), reported in US convention rather than the canonical g/L."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Tested on CL/F and Vc/F. Albumin on Vc/F was added during primary forward addition but dropped during backward elimination (Zhang 2024 section 3.3). Cohort median 4.30 g/dL [1.87, 5.20] (Table S3), reported in US convention rather than the canonical g/L."
     ),
     RACE_BLACK = list(
       description = "Black / African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL/F and Vc/F. Race on CL/F was added during primary forward addition but dropped during backward elimination (Zhang 2024 section 3.3). Cohort 13.1% Black (Table S2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL/F and Vc/F. Race on CL/F was added during primary forward addition but dropped during backward elimination (Zhang 2024 section 3.3). Cohort 13.1% Black (Table S2)."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL/F and Vc/F; not retained (Zhang 2024 section 3.3). Cohort 8.8% Asian (Table S2). Study SGNTUC-015 specifically compared Japanese and Caucasian participants and found similar tucatinib PK."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL/F and Vc/F; not retained (Zhang 2024 section 3.3). Cohort 8.8% Asian (Table S2). Study SGNTUC-015 specifically compared Japanese and Caucasian participants and found similar tucatinib PK."
     ),
     CRCL = list(
       description = "Baseline creatinine clearance (Cockcroft-Gault)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Tested on CL/F; not retained (Zhang 2024 section 3.3). Only BASELINE creatinine was used, because tucatinib inhibits OCT2/MATE-mediated tubular creatinine secretion and therefore raises on-treatment serum creatinine without renal impairment (Methods section 2.2.2). Cohort median 111 mL/min [45.5, 280] (Table S3). Mild renal impairment had no effect; moderate/severe could not be evaluated."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Tested on CL/F; not retained (Zhang 2024 section 3.3). Only BASELINE creatinine was used, because tucatinib inhibits OCT2/MATE-mediated tubular creatinine secretion and therefore raises on-treatment serum creatinine without renal impairment (Methods section 2.2.2). Cohort median 111 mL/min [45.5, 280] (Table S3). Mild renal impairment had no effect; moderate/severe could not be evaluated."
     ),
     NCI_HEPATIC = list(
       description = "National Cancer Institute liver dysfunction category",
-      units       = "(categorical: normal / mild)",
-      type        = "categorical",
-      notes       = "Tested on CL/F. Added during primary forward addition but dropped during backward elimination (Zhang 2024 section 3.3). Only normal (84.5%) and mild (14.8%) categories were represented (Table S2); moderate/severe hepatic impairment could not be evaluated. Not a canonical register column - this model does not reference it in model()."
+      units = "(categorical: normal / mild)",
+      type = "categorical",
+      notes = "Tested on CL/F. Added during primary forward addition but dropped during backward elimination (Zhang 2024 section 3.3). Only normal (84.5%) and mild (14.8%) categories were represented (Table S2); moderate/severe hepatic impairment could not be evaluated. Not a canonical register column - this model does not reference it in model()."
     ),
     ECOG = list(
       description = "Eastern Cooperative Oncology Group performance status",
-      units       = "(categorical: 0 / 1 / 2)",
-      type        = "categorical",
-      notes       = "Tested on CL/F. Added during primary forward addition but dropped during backward elimination (Zhang 2024 section 3.3). Cohort 80.6% ECOG 0, 0.7% ECOG 1, 18.7% ECOG 2 (Table S2)."
+      units = "(categorical: 0 / 1 / 2)",
+      type = "categorical",
+      notes = "Tested on CL/F. Added during primary forward addition but dropped during backward elimination (Zhang 2024 section 3.3). Cohort 80.6% ECOG 0, 0.7% ECOG 1, 18.7% ECOG 2 (Table S2)."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 283L,
-    n_observations   = 3942L,
-    n_studies        = 7L,
-    age_range        = "18-77 years",
-    age_median       = "48 years (pooled across the seven studies)",
-    weight_range     = "40.7-146 kg",
-    weight_median    = "75.9 kg (pooled across the seven studies)",
-    sex_female_pct   = 39.9,
-    race_ethnicity   = "White 72.4%, Black 13.1%, Asian 8.8%, American Indian 0.4%, Native Hawaiian 0.4%, missing 4.9% (Zhang 2024 Table S2)",
-    disease_state    = "Pooled population: healthy participants (151 / 283 = 53.4%); HER2+ metastatic breast cancer (63 / 283 = 22.3%); HER2+ metastatic colorectal cancer (69 / 283 = 24.4%).",
-    dose_range       = "Oral tucatinib tablet: 300 mg single dose and 300 mg BID in healthy participants; 50, 150 and 300 mg BID in the Japanese/Caucasian study SGNTUC-015; 300 mg BID (a minority at 350 mg BID) in the patient studies.",
-    regions          = "Multinational; SGNTUC-015 enrolled matched Japanese and Caucasian cohorts. Regional breakdown otherwise not reported.",
-    renal_function   = "Mild renal impairment represented; moderate and severe renal impairment not evaluable (insufficient data).",
+    species = "human",
+    n_subjects = 283L,
+    n_observations = 3942L,
+    n_studies = 7L,
+    age_range = "18-77 years",
+    age_median = "48 years (pooled across the seven studies)",
+    weight_range = "40.7-146 kg",
+    weight_median = "75.9 kg (pooled across the seven studies)",
+    sex_female_pct = 39.9,
+    race_ethnicity = "White 72.4%, Black 13.1%, Asian 8.8%, American Indian 0.4%, Native Hawaiian 0.4%, missing 4.9% (Zhang 2024 Table S2)",
+    disease_state = "Pooled population: healthy participants (151 / 283 = 53.4%); HER2+ metastatic breast cancer (63 / 283 = 22.3%); HER2+ metastatic colorectal cancer (69 / 283 = 24.4%).",
+    dose_range = "Oral tucatinib tablet: 300 mg single dose and 300 mg BID in healthy participants; 50, 150 and 300 mg BID in the Japanese/Caucasian study SGNTUC-015; 300 mg BID (a minority at 350 mg BID) in the patient studies.",
+    regions = "Multinational; SGNTUC-015 enrolled matched Japanese and Caucasian cohorts. Regional breakdown otherwise not reported.",
+    renal_function = "Mild renal impairment represented; moderate and severe renal impairment not evaluable (insufficient data).",
     hepatic_function = "Normal (84.5%) and NCI mild (14.8%) liver dysfunction only; moderate and severe hepatic impairment not evaluable.",
-    co_medication    = "Patients received tucatinib in combination with trastuzumab (SGNTUC-017), T-DM1 (ONT-380-004), or capecitabine +/- trastuzumab (ONT-380-005). CYP2C8-modifying drugs were prohibited across the tucatinib studies and were therefore not tested as covariates.",
-    studies          = c("ARRAY-380-103 (healthy, 300 mg single dose, n=12)",
-                         "ONT-380-012 / NCT03723395 (healthy DDI, 300 mg SD and BID, n=86)",
-                         "SGNTUC-015 / NCT03914755 (healthy Japanese vs Caucasian, 50/150/300 mg BID, n=36)",
-                         "SGNTUC-020 / NCT03826602 (healthy metformin DDI, 300 mg BID, n=17)",
-                         "SGNTUC-017 / NCT03043313 MOUNTAINEER (HER2+ mCRC, 300 mg BID, n=69)",
-                         "ONT-380-004 / NCT01983501 (HER2+ mBC + T-DM1, 300-350 mg BID, n=39)",
-                         "ONT-380-005 / NCT02025192 (HER2+ mBC + capecitabine, 300-350 mg BID, n=24)"),
-    notes            = paste(
+    co_medication = "Patients received tucatinib in combination with trastuzumab (SGNTUC-017), T-DM1 (ONT-380-004), or capecitabine +/- trastuzumab (ONT-380-005). CYP2C8-modifying drugs were prohibited across the tucatinib studies and were therefore not tested as covariates.",
+    studies = c(
+      "ARRAY-380-103 (healthy, 300 mg single dose, n=12)",
+      "ONT-380-012 / NCT03723395 (healthy DDI, 300 mg SD and BID, n=86)",
+      "SGNTUC-015 / NCT03914755 (healthy Japanese vs Caucasian, 50/150/300 mg BID, n=36)",
+      "SGNTUC-020 / NCT03826602 (healthy metformin DDI, 300 mg BID, n=17)",
+      "SGNTUC-017 / NCT03043313 MOUNTAINEER (HER2+ mCRC, 300 mg BID, n=69)",
+      "ONT-380-004 / NCT01983501 (HER2+ mBC + T-DM1, 300-350 mg BID, n=39)",
+      "ONT-380-005 / NCT02025192 (HER2+ mBC + capecitabine, 300-350 mg BID, n=24)"
+    ),
+    notes = paste(
       "Baseline demographics from Zhang 2024 Tables S2 and S3. Only fasted",
       "marketed-tablet data were included from the healthy-participant",
       "studies; the fed arm of ARRAY-380-103 (n = 11) was too small to support",

@@ -29,21 +29,26 @@ Li_2025_doxycycline_duck_ff40 <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot     = list(analyte = "doxycycline", units = "mg/kg", specimen = "administration site", verified = TRUE),
-    central   = list(analyte = "doxycycline", units = "mg/kg", specimen = "plasma", verified = TRUE),
-    auc_dox   = list(analyte = "doxycycline", units = "ug*h/mL", specimen = "plasma", verified = TRUE),
-    t_gt_mic  = list(analyte = "doxycycline", units = "h", specimen = "plasma", verified = TRUE),
-    dlog10cfu = list(analyte = "Riemerella anatipestifer", units = "log10 CFU/mL", specimen = "not applicable", verified = TRUE)
+    depot = list(analyte = "doxycycline", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "doxycycline", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    auc_dox = list(analyte = "doxycycline", units = "ug*h/mL", specimen = "plasma", verified = TRUE),
+    t_gt_mic = list(analyte = "doxycycline", units = "h", specimen = "plasma", verified = TRUE),
+    dlog10cfu = list(
+      analyte = "Riemerella anatipestifer",
+      units = "log10 CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "duck (common shelduck, Tadorna tadorna), 7 days old",
-    n_subjects     = 360L,
-    n_studies      = 1L,
-    age_median     = "7 days at the start of the study",
-    weight_range   = "130-150 g",
+    species = "duck (common shelduck, Tadorna tadorna), 7 days old",
+    n_subjects = 360L,
+    n_studies = 1L,
+    age_median = "7 days at the start of the study",
+    weight_range = "130-150 g",
     sex_female_pct = NA_real_,
-    organism       = paste(
+    organism = paste(
       "Riemerella anatipestifer strain CVCC3857 (Chinese Veterinary Microorganism",
       "Culture Collection Center, Beijing). Li 2025 Results, 'MIC and MPC of FF and",
       "DOX against RA': doxycycline MIC 1 ug/mL and MPC 8 ug/mL; florfenicol MIC",
@@ -55,26 +60,26 @@ Li_2025_doxycycline_duck_ff40 <- function() {
       "2 ug/mL) was used only for the twice-daily dosing experiment, for which no",
       "exposure-response model was fitted."
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Experimental systemic Riemerella anatipestifer infection established by",
       "intraperitoneal injection of 10^9 CFU/mL; the target bacterial load was",
       "reached 12 h after inoculation and drug was given at that point"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Doxycycline 1, 2.5, 5, 10 and 20 mg/kg as a single intramuscular injection",
       "into the thigh (PK, five groups of 72 ducks). Pharmacodynamics: florfenicol",
       "20 or 40 mg/kg combined with doxycycline 1, 2.5, 5, 10 or 20 mg/kg, plus",
       "florfenicol 20 and 40 mg/kg and doxycycline 10 and 20 mg/kg monotherapy",
       "arms and an untreated model group (eight ducks per group)"
     ),
-    sampling       = paste(
+    sampling = paste(
       "PK: blood, lung and liver at 0.5, 1, 2, 4, 6, 8, 12, 24 and 36 h after",
       "dosing, assayed by HPLC-MS/MS (LLOQ 0.005 ug/mL in plasma and lung,",
       "0.01 ug/g in liver). PD: bacterial load in blood, heart, liver, spleen,",
       "lung, kidney and brain counted 24 h after administration"
     ),
-    regions        = "China (Fuyang Normal University, Anhui; South China Agricultural University, Guangzhou)",
-    notes          = paste(
+    regions = "China (Fuyang Normal University, Anhui; South China Agricultural University, Guangzhou)",
+    notes = paste(
       "Ducks were obtained from a commercial farm in Guangxi, China. The 360",
       "subjects counted here are the PK cohort (five dose groups of 72); a further",
       "120 ducks (15 groups of 8) entered the single-dose PD study and 72 ducks",

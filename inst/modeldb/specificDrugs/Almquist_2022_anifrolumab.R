@@ -9,48 +9,48 @@ Almquist_2022_anifrolumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "anifrolumab", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "anifrolumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "anifrolumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "anifrolumab", units = "mg", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "IFNAR1 receptor", units = "mg", specimen = "retina", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline). Used for allometric scaling of CL and Vc with reference weight 69.1 kg (median of pooled population, Almquist 2022 Table S2).",
-      source_name        = "BLWGHT"
+      notes = "Time-fixed (baseline). Used for allometric scaling of CL and Vc with reference weight 69.1 kg (median of pooled population, Almquist 2022 Table S2).",
+      source_name = "BLWGHT"
     ),
     BGENE21_HIGH = list(
-      description        = "Baseline 21-gene type I interferon signature status (IFNGS-high vs IFNGS-low)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline 21-gene type I interferon signature status (IFNGS-high vs IFNGS-low)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (IFNGS-high)",
-      notes              = "1 = baseline 21-gene IFN signature score >= 4-gene-test cut-off (IFNGS-high; reference category, factor on CL = 1); 0 = IFNGS-low (factor on CL = e_ifngslow_cl < 1, so CL is reduced for IFNGS-low subjects). The 4-gene IFNGS test (IFI27, IFI44, IFI44L, RSAD2) classifies high vs low using an analytically validated cut-off; >=75% of patients across the SLE studies were IFNGS-high (Almquist 2022 Methods, 21-Gene IFNGS PD Assay section).",
-      source_name        = "BGENEFLG"
+      notes = "1 = baseline 21-gene IFN signature score >= 4-gene-test cut-off (IFNGS-high; reference category, factor on CL = 1); 0 = IFNGS-low (factor on CL = e_ifngslow_cl < 1, so CL is reduced for IFNGS-low subjects). The 4-gene IFNGS test (IFI27, IFI44, IFI44L, RSAD2) classifies high vs low using an analytically validated cut-off; >=75% of patients across the SLE studies were IFNGS-high (Almquist 2022 Methods, 21-Gene IFNGS PD Assay section).",
+      source_name = "BGENEFLG"
     )
   )
 
   population <- list(
-    n_subjects     = 670L,
-    n_sle          = 664L,
-    n_healthy      = 6L,
-    n_studies      = 5L,
-    studies        = "Phase 1 healthy-volunteer SAD (NCT02601625), Phase 2 study in Japanese patients (NCT01559090), Phase 2b MUSE (NCT01438489), Phase 3 TULIP-1 (NCT02446912), Phase 3 TULIP-2 (NCT02446899).",
-    age_range      = "18-69 years (pooled)",
-    age_median     = "41 years (pooled, Table S2)",
-    weight_range   = "42.0-144.8 kg (pooled)",
-    weight_median  = "68.6 kg (pooled, Table S2)",
+    n_subjects = 670L,
+    n_sle = 664L,
+    n_healthy = 6L,
+    n_studies = 5L,
+    studies = "Phase 1 healthy-volunteer SAD (NCT02601625), Phase 2 study in Japanese patients (NCT01559090), Phase 2b MUSE (NCT01438489), Phase 3 TULIP-1 (NCT02446912), Phase 3 TULIP-2 (NCT02446899).",
+    age_range = "18-69 years (pooled)",
+    age_median = "41 years (pooled, Table S2)",
+    weight_range = "42.0-144.8 kg (pooled)",
+    weight_median = "68.6 kg (pooled, Table S2)",
     sex_female_pct = 92.5,
     race_ethnicity = c(White = 57.2, Black = 13.6, Asian = 11.0, Other = 17.0),
-    disease_state  = "Moderate-to-severe systemic lupus erythematosus (664 SLE patients) plus 6 healthy adult volunteers (single-dose phase 1).",
-    dose_range     = "100-1000 mg IV every 4 weeks across SLE studies; single-dose 30 mg SC, 300 mg IV/SC, 600 mg SC in the phase 1 study (subcutaneous arms excluded from popPK).",
-    regions        = "Global (North America, Europe, Asia including Japan).",
+    disease_state = "Moderate-to-severe systemic lupus erythematosus (664 SLE patients) plus 6 healthy adult volunteers (single-dose phase 1).",
+    dose_range = "100-1000 mg IV every 4 weeks across SLE studies; single-dose 30 mg SC, 300 mg IV/SC, 600 mg SC in the phase 1 study (subcutaneous arms excluded from popPK).",
+    regions = "Global (North America, Europe, Asia including Japan).",
     ifngs_high_pct = "75.5-88.2% across SLE studies",
-    ada_status     = "ADA prevalence (any visit) 6.9% (46/670) overall; no significant impact on PK in pooled TULIP analysis.",
-    notes          = "Demographics and dosing summarised in Almquist 2022 Tables S1-S2. The popPK analysis dataset comprises 6049 anifrolumab serum concentrations; PK from SC arms in phase 1 was excluded."
+    ada_status = "ADA prevalence (any visit) 6.9% (46/670) overall; no significant impact on PK in pooled TULIP analysis.",
+    notes = "Demographics and dosing summarised in Almquist 2022 Tables S1-S2. The popPK analysis dataset comprises 6049 anifrolumab serum concentrations; PK from SC arms in phase 1 was excluded."
   )
 
   ini({

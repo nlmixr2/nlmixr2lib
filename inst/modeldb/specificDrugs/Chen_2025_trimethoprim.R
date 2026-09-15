@@ -37,15 +37,15 @@ Chen_2025_trimethoprim <- function() {
     sep = " "
   )
   vignette <- "Chen_2025_cotrimoxazole"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters BOTH clearance and volume LINEARLY (exponent exactly 1),",
         "because Table 6 reports the typical values per kilogram: tv V in",
         "L/kg and tv CL in L/kg/h. Weight is therefore not visible as a",
@@ -59,17 +59,17 @@ Chen_2025_trimethoprim <- function() {
         "same weight.",
         "Cohort median 60.0 kg (Table 2)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance calculated with the Cockcroft-Gault equation.",
         "RAW mL/min, NOT normalized to 1.73 m^2 body surface area."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power term (CRCL / 75.7)^0.29 on clearance (Eq. 4). The text after",
         "the equations states explicitly that '75.7 represents the median",
         "CrCL value', matching the cohort median in Table 2 (75.7 mL/min,",
@@ -83,16 +83,16 @@ Chen_2025_trimethoprim <- function() {
         "30-49, 50-79 and 80-120 mL/min (Table 7).",
         sep = " "
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     )
   )
 
   covariatesDataExcluded <- list(
     RRT_CRRT_STATUS = list(
-      description        = "Continuous renal replacement therapy during co-trimoxazole treatment",
-      units              = "(binary)",
-      type               = "binary",
-      notes              = paste(
+      description = "Continuous renal replacement therapy during co-trimoxazole treatment",
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened and NOT carried into the final trimethoprim model. Table 4",
         "shows CRRT entering the forward chain as model 8 (dOFV -4.12,",
         "P < 0.05) and its removal costing 3.92 (P < 0.05) in the backward",
@@ -111,13 +111,13 @@ Chen_2025_trimethoprim <- function() {
         "covariate; see modellib('Chen_2025_sulfamethoxazole').",
         sep = " "
       ),
-      source_name        = "CRRT"
+      source_name = "CRRT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
-      notes              = paste(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened and NOT carried into the final trimethoprim model, despite",
         "surviving the search chain. Table 4 shows age entering as model 7",
         "(dOFV -7.19, P < 0.01) and its removal costing 5.91 (P < 0.01), yet",
@@ -133,43 +133,43 @@ Chen_2025_trimethoprim <- function() {
         "have captured.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     HT = list(
-      description        = "Height",
-      units              = "cm",
-      type               = "continuous",
-      notes              = "Screened but not retained (Methods covariate list). Cohort median 170.0 cm (Table 2)."
+      description = "Height",
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained (Methods covariate list). Cohort median 170.0 cm (Table 2)."
     ),
     SEXF = list(
-      description        = "Female sex",
-      units              = "(binary)",
-      type               = "binary",
-      notes              = "Screened as 'gender' but not retained (Methods covariate list). 18 of 79 patients female (Table 2)."
+      description = "Female sex",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as 'gender' but not retained (Methods covariate list). 18 of 79 patients female (Table 2)."
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
-      notes              = "Screened but not retained (Methods covariate list). Cohort median 34.4 g/L (Table 2)."
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained (Methods covariate list). Cohort median 34.4 g/L (Table 2)."
     ),
     TBILI = list(
-      description        = "Total bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
-      notes              = "Screened but not retained (Methods covariate list). Cohort median 21.7 umol/L (Table 2)."
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Methods covariate list). Cohort median 21.7 umol/L (Table 2)."
     ),
     DBIL = list(
-      description        = "Direct bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
-      notes              = "Screened but not retained (Methods covariate list). Cohort median 10.9 umol/L (Table 2)."
+      description = "Direct bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Methods covariate list). Cohort median 10.9 umol/L (Table 2)."
     ),
     HEPIMP_SEV = list(
-      description        = "Hepatic impairment severity (Child-Pugh class)",
-      units              = "(categorical)",
-      type               = "categorical",
-      notes              = "Screened as the Child-Pugh classification (A/B/C) but not retained (Methods covariate list; Results 'Liver function ... did not exhibit statistically significant effects'). Child-Pugh A 54, B 18, C 7 (Table 2). Total protein, ALT, AST, GGT and ALP were screened alongside it and are likewise absent from the final model; NAT2 acetylator phenotype and CYP2C9 metabolizer phenotype were genotyped and screened with no significant effect. None carries a reported point estimate, so none can be encoded."
+      description = "Hepatic impairment severity (Child-Pugh class)",
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened as the Child-Pugh classification (A/B/C) but not retained (Methods covariate list; Results 'Liver function ... did not exhibit statistically significant effects'). Child-Pugh A 54, B 18, C 7 (Table 2). Total protein, ALT, AST, GGT and ALP were screened alongside it and are likewise absent from the final model; NAT2 acetylator phenotype and CYP2C9 metabolizer phenotype were genotyped and screened with no significant effect. None carries a reported point estimate, so none can be encoded."
     )
   )
 
@@ -178,15 +178,15 @@ Chen_2025_trimethoprim <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 79,
-    n_studies      = 1,
-    age_median     = "64 years (54-73)",
-    height_median  = "170.0 cm (165-175)",
-    weight_median  = "60.0 kg (55-70)",
+    species = "human",
+    n_subjects = 79,
+    n_studies = 1,
+    age_median = "64 years (54-73)",
+    height_median = "170.0 cm (165-175)",
+    weight_median = "60.0 kg (55-70)",
     sex_female_pct = 22.8,
     race_ethnicity = "Not reported; single-center Chinese cohort.",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults (>= 18 years) with a confirmed diagnosis of Pneumocystis",
       "jirovecii pneumonia receiving intravenous co-trimoxazole, in intensive",
       "care units and general inpatient wards. Patients taking hepatic enzyme",
@@ -206,14 +206,14 @@ Chen_2025_trimethoprim <- function() {
       "median 21.7 umol/L, albumin 34.4 g/L, ALT 34.5 U/L, AST 32.0 U/L.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Routine care rather than protocol-assigned; intravenous infusions of",
       "approximately 1 h given every 6, 8 or 12 h. The Monte Carlo",
       "simulations explore co-trimoxazole 50, 55, 65, 70 and 90 mg/kg/day",
       "given twice, three times or four times daily.",
       sep = " "
     ),
-    regions        = "China (Fujian Medical University Union Hospital, Fuzhou), March 2023 to October 2024.",
+    regions = "China (Fujian Medical University Union Hospital, Fuzhou), March 2023 to October 2024.",
     n_observations = paste(
       "232 post-dose plasma concentrations from 79 patients: two to three",
       "samples per patient (an end-of-infusion peak, a pre-dose trough and/or",
@@ -221,7 +221,7 @@ Chen_2025_trimethoprim <- function() {
       "over a calibrated range of 0.20-25.0 mg/L.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Prospective single-center study; demographics from Table 2. Estimation",
       "was by first-order conditional estimation with extended least squares",
       "in Phoenix NLME 8.0, and the reported parameter precision comes from",

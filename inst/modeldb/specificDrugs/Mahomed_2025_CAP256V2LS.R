@@ -5,18 +5,18 @@ Mahomed_2025_CAP256V2LS <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "CAP256V2LS", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "CAP256V2LS", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "CAP256V2LS", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "CAP256V2LS", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "CAP256V2LS", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CONMED_HYALURONIDASE = list(
-      description        = "Coadministration of recombinant human hyaluronidase (rHuPH20; ENHANZE drug product, EDP) with the subcutaneous CAP256V2LS injection",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Coadministration of recombinant human hyaluronidase (rHuPH20; ENHANZE drug product, EDP) with the subcutaneous CAP256V2LS injection",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no EDP)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per dosing occasion. EDP was used to permit the full weight-based dose",
         "to be delivered as a single subcutaneous injection (Mahomed 2025 Methods, Trial design;",
         "Table S1 marks the EDP arms with an asterisk). 28/52 (53.8%) of the PK population",
@@ -29,14 +29,14 @@ Mahomed_2025_CAP256V2LS <- function() {
         "The trial administered EDP only with subcutaneous doses, so IV +EDP is a simulated",
         "hypothetical scenario rather than an observed one."
       ),
-      source_name        = "EDP"
+      source_name = "EDP"
     ),
     OCC = list(
-      description        = "Integer-valued dosing-occasion index (1 = first dose, 2 = second dose)",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued dosing-occasion index (1 = first dose, 2 = second dose)",
+      units = "(count)",
+      type = "categorical",
       reference_category = "1 (first dose)",
-      notes              = paste(
+      notes = paste(
         "Time-varying; constant within a dosing occasion. Only groups 2d and 2f received a",
         "second CAP256V2LS dose (16 or 24 weeks after the first; Table S1), so OCC = 2 exists",
         "only for those participants. Inter-occasion variability on F1 was tested and then",
@@ -44,16 +44,16 @@ Mahomed_2025_CAP256V2LS <- function() {
         "substantially (Supplementary Methods, Structural model). Supply OCC >= 1 on every",
         "record; records with OCC >= 2 take relative bioavailability of 1."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened in the stepwise covariate analysis and NOT retained in the final model.",
         "Mahomed 2025 Discussion: 'body weight did not significantly impact the PK parameters",
         "of CAP256V2LS, despite the expected allometric relationship ... likely due to the",
@@ -64,41 +64,41 @@ Mahomed_2025_CAP256V2LS <- function() {
     ),
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate analysis and not retained; Supplementary Results states 'No significant individual residual effects of covariates were observed on PK parameters, indicating that no additional covariate was required.'"
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate analysis and not retained; Supplementary Results states 'No significant individual residual effects of covariates were observed on PK parameters, indicating that no additional covariate was required.'"
     ),
     CREAT = list(
       description = "Baseline serum creatinine concentration",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Reported as a baseline PK-population characteristic (Table 3, median 58.0 umol/L) and screened but not retained in the final model."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Reported as a baseline PK-population characteristic (Table 3, median 58.0 umol/L) and screened but not retained in the final model."
     ),
     ALT = list(
       description = "Baseline alanine aminotransferase activity",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Reported as a baseline PK-population characteristic (Table 3, median 16.0 IU/L) and screened but not retained in the final model."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Reported as a baseline PK-population characteristic (Table 3, median 16.0 IU/L) and screened but not retained in the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 52L,
-    n_studies      = 1L,
-    age_range      = "18-43 years",
-    age_median     = "24.5 years",
-    weight_range   = "45.3-93.6 kg",
-    weight_median  = "64.9 kg",
+    species = "human",
+    n_subjects = 52L,
+    n_studies = 1L,
+    age_range = "18-43 years",
+    age_median = "24.5 years",
+    weight_range = "45.3-93.6 kg",
+    weight_median = "64.9 kg",
     sex_female_pct = 100.0,
     race_ethnicity = "Not reported by the source; the CAPRISA 012B trial enrolled young women recruited in Durban and the surrounding KwaZulu-Natal Province, South Africa.",
-    disease_state  = "Healthy HIV-negative young women enrolled in the CAPRISA 012B first-in-human Phase 1 dose-escalation trial of the broadly neutralizing antibody CAP256V2LS for HIV prevention (PACTR202003767867253)",
-    dose_range     = "5, 10 and 20 mg/kg IV or SC (weight-based, n = 44; two of the SC groups received a second dose at 16 or 24 weeks) and 1200 mg SC fixed dose (n = 8), given alone or sequentially with VRC07-523LS",
-    regions        = "South Africa (CAPRISA eThekwini Clinical Research Site, Durban, KwaZulu-Natal)",
-    route_split    = "IV 8 (15.4%); SC 44 (84.6%)",
-    edp_split      = "EDP coadministered in 28 (53.8%); no EDP in 24 (46.2%)",
-    sampling       = "767 CAP256V2LS PK sampling records, of which 119 were below the limit of quantitation and excluded, leaving 648 measurable observations. Plasma concentrations were measured by an electrochemiluminescence sandwich immunoassay on the Meso Scale Discovery platform.",
-    notes          = "Demographics from Mahomed 2025 Table 3 (Participant characteristics, Overall N = 52 column). Groups 1c and 1d (HIV-positive participants dosed IV at 20 mg/kg) were still in follow-up and are not represented in this analysis (Table S1 footnote). No PK model was developed for VRC07-523LS in this paper."
+    disease_state = "Healthy HIV-negative young women enrolled in the CAPRISA 012B first-in-human Phase 1 dose-escalation trial of the broadly neutralizing antibody CAP256V2LS for HIV prevention (PACTR202003767867253)",
+    dose_range = "5, 10 and 20 mg/kg IV or SC (weight-based, n = 44; two of the SC groups received a second dose at 16 or 24 weeks) and 1200 mg SC fixed dose (n = 8), given alone or sequentially with VRC07-523LS",
+    regions = "South Africa (CAPRISA eThekwini Clinical Research Site, Durban, KwaZulu-Natal)",
+    route_split = "IV 8 (15.4%); SC 44 (84.6%)",
+    edp_split = "EDP coadministered in 28 (53.8%); no EDP in 24 (46.2%)",
+    sampling = "767 CAP256V2LS PK sampling records, of which 119 were below the limit of quantitation and excluded, leaving 648 measurable observations. Plasma concentrations were measured by an electrochemiluminescence sandwich immunoassay on the Meso Scale Discovery platform.",
+    notes = "Demographics from Mahomed 2025 Table 3 (Participant characteristics, Overall N = 52 column). Groups 1c and 1d (HIV-positive participants dosed IV at 20 mg/kg) were still in follow-up and are not represented in this analysis (Table S1 footnote). No PK model was developed for VRC07-523LS in this paper."
   )
 
   ini({

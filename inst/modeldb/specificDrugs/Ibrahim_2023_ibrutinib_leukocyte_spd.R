@@ -30,11 +30,15 @@ Ibrahim_2023_ibrutinib_leukocyte_spd <- function() {
   )
   vignette <- "Ibrahim_2023_ibrutinib"
   paper_specific_compartments <- c(
-    "pbtk", "cll_subpop1", "cll_subpop2", "cll_subpop3", "cll_bld"
+    "pbtk",
+    "cll_subpop1",
+    "cll_subpop2",
+    "cll_subpop3",
+    "cll_bld"
   )
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; ibrutinib exposure enters as the time-varying covariate AUC_IBRU)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; ibrutinib exposure enters as the time-varying covariate AUC_IBRU)",
     concentration = "leukocyte count in 10^9 cells/L; SPD in cm^2 (neither output is a drug concentration)"
   )
 
@@ -43,20 +47,40 @@ Ibrahim_2023_ibrutinib_leukocyte_spd <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    pbtk        = list(analyte = "phosphorylated Bruton tyrosine kinase (pBtk)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    cll_subpop1 = list(analyte = "CLL cell subpopulation 1", units = NA_character_, specimen = "lymph", verified = FALSE),
-    cll_subpop2 = list(analyte = "CLL cell subpopulation 2", units = NA_character_, specimen = "lymph", verified = FALSE),
-    cll_subpop3 = list(analyte = "CLL cell subpopulation 3", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    cll_bld     = list(analyte = "CLL cells in blood", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    pbtk = list(
+      analyte = "phosphorylated Bruton tyrosine kinase (pBtk)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    cll_subpop1 = list(
+      analyte = "CLL cell subpopulation 1",
+      units = NA_character_,
+      specimen = "lymph",
+      verified = FALSE
+    ),
+    cll_subpop2 = list(
+      analyte = "CLL cell subpopulation 2",
+      units = NA_character_,
+      specimen = "lymph",
+      verified = FALSE
+    ),
+    cll_subpop3 = list(
+      analyte = "CLL cell subpopulation 3",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    cll_bld = list(analyte = "CLL cells in blood", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     AUC_IBRU = list(
-      description        = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",
-      units              = "h*ng/mL",
-      type               = "continuous",
+      description = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",
+      units = "h*ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying: the value tracks the patient's current daily ibrutinib dose level (420, 280, or 140 mg/day in",
         "the schedules simulated by the paper; 420 and 840 mg/day in the PCYC-1102 study itself) and drops to 0",
         "during treatment interruptions. Ibrutinib enters this model ONLY through this column -- the model contains",
@@ -67,14 +91,14 @@ Ibrahim_2023_ibrutinib_leukocyte_spd <- function() {
         "Enters the pBtk production-inhibition Imax function as AUC_IBRU / (IAUC50 + AUC_IBRU) with",
         "IAUC50 = 34.1 h*ng/mL (Ibrahim 2023 Table 1)."
       ),
-      source_name        = "DAILYAUC"
+      source_name = "DAILYAUC"
     ),
     TUM_IGHV_MUT = list(
-      description        = "Immunoglobulin heavy-chain variable region (IGHV) mutational status of the CLL clone: 1 = IGHV-mutated, 0 = IGHV-unmutated.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Immunoglobulin heavy-chain variable region (IGHV) mutational status of the CLL clone: 1 = IGHV-mutated, 0 = IGHV-unmutated.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (IGHV-unmutated)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Selects the baseline SPD typical value:",
         "spdbase = spdbase_unm * (1 - TUM_IGHV_MUT) + spdbase_m * TUM_IGHV_MUT.",
         "IGHV-unmutated patients were estimated to have a 2.5-fold higher baseline SPD than IGHV-mutated patients",
@@ -84,14 +108,14 @@ Ibrahim_2023_ibrutinib_leukocyte_spd <- function() {
         "(Ibrahim 2023 Appendix S1 section 2), which is why the source column is named IMPIGVHMS ('imputed IGHV",
         "mutational status')."
       ),
-      source_name        = "IMPIGVHMS"
+      source_name = "IMPIGVHMS"
     ),
     LINE_1L = list(
-      description        = "First-line-therapy indicator: 1 = treatment-naive (TN) at baseline, 0 = relapsed/refractory (R/R).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "First-line-therapy indicator: 1 = treatment-naive (TN) at baseline, 0 = relapsed/refractory (R/R).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (relapsed/refractory)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Selects the normal (non-leukaemic) peripheral-blood leukocyte number:",
         "nrmbld = nrmbld_tn * LINE_1L + nrmbld_rr * (1 - LINE_1L). Treatment-naive patients were estimated to have",
         "a 1.9-fold higher normal leukocyte number than relapsed/refractory patients (32.9 vs 17.3 x10^9 cells;",
@@ -100,22 +124,22 @@ Ibrahim_2023_ibrutinib_leukocyte_spd <- function() {
         "bldnrm = bldnrm_tn*(1-iarm) + bldnrm_rr*iarm with iarm = TRTARM, i.e. TRTARM = 0 is treatment-naive.",
         "Convert on ingestion with LINE_1L = 1 - TRTARM."
       ),
-      source_name        = "TRTARM"
+      source_name = "TRTARM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 120L,
-    n_studies      = 1L,
-    age_range      = "mean 62.4 (SD 9.9) years",
-    weight_range   = "mean 82.3 (SD 17) kg",
+    species = "human",
+    n_subjects = 120L,
+    n_studies = 1L,
+    age_range = "mean 62.4 (SD 9.9) years",
+    weight_range = "mean 82.3 (SD 17) kg",
     sex_female_pct = 24.2,
     race_ethnicity = NULL,
-    disease_state  = "Chronic lymphocytic leukemia (CLL); 20.8% treatment-naive, 79.2% relapsed/refractory",
-    dose_range     = "ibrutinib 420 mg once daily (n = 94) or 840 mg once daily (n = 38) in PCYC-1102; only the 120 patients with both leukocyte count and SPD measurements were analysed",
-    regions        = "United States (PCYC-1102, phase Ib/II)",
-    notes          = paste(
+    disease_state = "Chronic lymphocytic leukemia (CLL); 20.8% treatment-naive, 79.2% relapsed/refractory",
+    dose_range = "ibrutinib 420 mg once daily (n = 94) or 840 mg once daily (n = 38) in PCYC-1102; only the 120 patients with both leukocyte count and SPD measurements were analysed",
+    regions = "United States (PCYC-1102, phase Ib/II)",
+    notes = paste(
       "Baseline demographics from Ibrahim 2023 Supplementary Table S1. Follow-up to a maximum of 2.4 years",
       "(median 1.7 years), with periods of treatment interruption and dose reduction for adverse events.",
       "The analysis dataset contained 2374 ibrutinib plasma concentrations, 2434 leukocyte counts, 507 SPD",

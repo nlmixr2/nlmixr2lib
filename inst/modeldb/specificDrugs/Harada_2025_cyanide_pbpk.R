@@ -16,12 +16,12 @@ Harada_2025_cyanide_pbpk <- function() {
 
   covariateData <- list(
     CONC_HCN_PPM = list(
-      description        = "Inhaled hydrogen cyanide gas concentration in ambient air",
-      units              = "ppm",
-      type               = "continuous",
+      description = "Inhaled hydrogen cyanide gas concentration in ambient air",
+      units = "ppm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The sole exposure driver; the model has no dosing events. Converted inside model() to umol/L by dividing by 24 (the authors' conversion, Supplemental Material 1 header comment: 1 umol/L = 24 ppm = 0.027 ug/mL). Held constant from t = 0 in the published analysis, which is how Fig. 3 and the Table 2 estimates were generated; supplied as a covariate column so a user can instead pass a time-varying fire-scene profile, the fluctuation the paper's Discussion names as an unaddressed limitation. Harada 2025 estimated this quantity per case over a 0-18,000 ppm grid in 12 ppm steps.",
-      source_name        = "Ca"
+      notes = "The sole exposure driver; the model has no dosing events. Converted inside model() to umol/L by dividing by 24 (the authors' conversion, Supplemental Material 1 header comment: 1 umol/L = 24 ppm = 0.027 ug/mL). Held constant from t = 0 in the published analysis, which is how Fig. 3 and the Table 2 estimates were generated; supplied as a covariate column so a user can instead pass a time-varying fire-scene profile, the fluctuation the paper's Discussion names as an unaddressed limitation. Harada 2025 estimated this quantity per case over a 0-18,000 ppm grid in 12 ppm steps.",
+      source_name = "Ca"
     )
   )
 
@@ -31,25 +31,30 @@ Harada_2025_cyanide_pbpk <- function() {
   # concentration state. verified = TRUE: analyte and matrix were read off the
   # Supplemental Material 1 variable-definition comments.
   compartmentData <- list(
-    plasma       = list(analyte = "cyanide", units = "umol/L", specimen = "plasma", verified = TRUE),
+    plasma = list(analyte = "cyanide", units = "umol/L", specimen = "plasma", verified = TRUE),
     erythrocytes = list(analyte = "cyanide", units = "umol/L", specimen = "blood cell", verified = TRUE),
-    liver        = list(analyte = "cyanide", units = "umol/L", specimen = "tissue", verified = TRUE),
-    sulfur_donor = list(analyte = "endogenous sulfane-sulfur donors", units = "umol/L", specimen = "tissue", verified = TRUE),
-    muscle       = list(analyte = "cyanide", units = "umol/L", specimen = "tissue", verified = TRUE),
-    other        = list(analyte = "cyanide", units = "umol/L", specimen = "tissue", verified = TRUE)
+    liver = list(analyte = "cyanide", units = "umol/L", specimen = "tissue", verified = TRUE),
+    sulfur_donor = list(
+      analyte = "endogenous sulfane-sulfur donors",
+      units = "umol/L",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    muscle = list(analyte = "cyanide", units = "umol/L", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "cyanide", units = "umol/L", specimen = "tissue", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 29L,
-    n_studies      = 1L,
-    age_range      = "31-89 years",
-    age_median     = "70 years",
+    species = "human",
+    n_subjects = 29L,
+    n_studies = 1L,
+    age_range = "31-89 years",
+    age_median = "70 years",
     sex_female_pct = 37.9,
-    disease_state  = "Fire-related deaths examined at forensic autopsy. No resuscitation was attempted before death was confirmed. Carboxyhaemoglobin exceeded the 2.0% non-smoker reference in every case (range 5.4-100%); cyanide was above the 0.2 ug/mL detection limit in the left or right cardiac blood of 23 of 29 cases (79.3%), and thiocyanate was detectable in all 29 (0.92-8.5 ug/mL).",
-    dose_range     = "Estimated inhaled HCN air concentrations 84-16,632 ppm with estimated exposure durations 0.05-13.65 min across the 13 cases that had usable paired left/right cardiac cyanide measurements (Table 2).",
-    regions        = "Osaka, Japan (Department of Legal Medicine, Osaka University; autopsies April 2014 - March 2020)",
-    notes          = "Baseline demographics, paired left/right cardiac cyanide and thiocyanate concentrations, and carboxyhaemoglobin percentages are in Harada 2025 Table 1; the per-case exposure reconstructions are in Table 2. IMPORTANT: the 29 autopsy cases are the APPLICATION dataset, not the estimation dataset. No parameter in this model was fitted to them - every structural and physiological value is inherited unchanged from Stamyr et al. 2015, whose PBPK model was built for healthy adult humans in a controlled HCN-in-breath study. Harada 2025 estimated only two per-case quantities (inhaled air concentration and exposure duration) by grid search against the paired cardiac measurements. The paper's own Discussion flags that the Stamyr physiological parameters may need adjustment for individual decedents (body weight, body-fat percentage, lung capacity) and that post-mortem redistribution of cyanide from lung into left cardiac blood is only implicitly accommodated by treating the arterial compartment as lung + arterial blood combined."
+    disease_state = "Fire-related deaths examined at forensic autopsy. No resuscitation was attempted before death was confirmed. Carboxyhaemoglobin exceeded the 2.0% non-smoker reference in every case (range 5.4-100%); cyanide was above the 0.2 ug/mL detection limit in the left or right cardiac blood of 23 of 29 cases (79.3%), and thiocyanate was detectable in all 29 (0.92-8.5 ug/mL).",
+    dose_range = "Estimated inhaled HCN air concentrations 84-16,632 ppm with estimated exposure durations 0.05-13.65 min across the 13 cases that had usable paired left/right cardiac cyanide measurements (Table 2).",
+    regions = "Osaka, Japan (Department of Legal Medicine, Osaka University; autopsies April 2014 - March 2020)",
+    notes = "Baseline demographics, paired left/right cardiac cyanide and thiocyanate concentrations, and carboxyhaemoglobin percentages are in Harada 2025 Table 1; the per-case exposure reconstructions are in Table 2. IMPORTANT: the 29 autopsy cases are the APPLICATION dataset, not the estimation dataset. No parameter in this model was fitted to them - every structural and physiological value is inherited unchanged from Stamyr et al. 2015, whose PBPK model was built for healthy adult humans in a controlled HCN-in-breath study. Harada 2025 estimated only two per-case quantities (inhaled air concentration and exposure duration) by grid search against the paired cardiac measurements. The paper's own Discussion flags that the Stamyr physiological parameters may need adjustment for individual decedents (body weight, body-fat percentage, lung capacity) and that post-mortem redistribution of cyanide from lung into left cardiac blood is only implicitly accommodated by treating the arterial compartment as lung + arterial blood combined."
   )
 
   ini({

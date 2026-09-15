@@ -29,26 +29,26 @@ Reinecke_2018_levonorgestrel_lngIus8 <- function() {
   )
   vignette <- "Reinecke_2018_levonorgestrel_contraceptives"
   units <- list(
-    time          = "h",
-    dosing        = "mg (levonorgestrel loaded in the intrauterine reservoir)",
+    time = "h",
+    dosing = "mg (levonorgestrel loaded in the intrauterine reservoir)",
     concentration = "ng/L (total and unbound LNG in serum); SHBG in nmol/L; residual device content in mg"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "levonorgestrel", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "levonorgestrel", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
-    effect      = list(analyte = "levonorgestrel", units = "nmol/L", specimen = "not applicable", verified = TRUE),
-    shbg        = list(analyte = "SHBG", units = "nmol/L", specimen = "serum", verified = TRUE)
+    effect = list(analyte = "levonorgestrel", units = "nmol/L", specimen = "not applicable", verified = TRUE),
+    shbg = list(analyte = "SHBG", units = "nmol/L", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (kg). Power-function covariate on clearance of unbound levonorgestrel (increasing with weight) and on the SHBG baseline concentration (decreasing with weight).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (kg). Power-function covariate on clearance of unbound levonorgestrel (increasing with weight) and on the SHBG baseline concentration (decreasing with weight).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight, centred on 66 kg: the median of the pooled",
         "intrauterine-system data (Table 1 footnote a), the value Table S2",
         "attaches to every F_LNG-IUS row ('median[WGHT]=66kg, IUS data') and",
@@ -56,16 +56,16 @@ Reinecke_2018_levonorgestrel_lngIus8 <- function() {
         "CL exponent 0.823 is close to the three-quarter power expected from",
         "allometry (Discussion)."
       ),
-      source_name        = "WGHT"
+      source_name = "WGHT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline (years). Screened as a power-function covariate on levonorgestrel clearance and on the SHBG baseline concentration.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened in the comprehensive covariate step but not retained; only",
         "body weight reached the P <= .001 forward-inclusion criterion",
         "(Results, 'Comprehensive Model'). No point estimate is reported."
@@ -74,16 +74,16 @@ Reinecke_2018_levonorgestrel_lngIus8 <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1245L,
-    n_studies      = 1L,
-    studies        = "Phase 3 study 310442 (levonorgestrel and SHBG concentrations plus residual-content measurements over the full 3 years of intended treatment)",
-    age_range      = "18-35 years (median 28 years)",
-    weight_range   = "39-137 kg (median 66 kg)",
+    species = "human",
+    n_subjects = 1245L,
+    n_studies = 1L,
+    studies = "Phase 3 study 310442 (levonorgestrel and SHBG concentrations plus residual-content measurements over the full 3 years of intended treatment)",
+    age_range = "18-35 years (median 28 years)",
+    weight_range = "39-137 kg (median 66 kg)",
     sex_female_pct = 100,
-    disease_state  = "Healthy premenopausal women using a levonorgestrel-releasing intrauterine system for contraception",
-    dose_range     = "Single insertion of one LNG-IUS 8 (Jaydess/Skyla) device; nominal release 8 ug/day, indicated for up to 3 years",
-    notes          = paste(
+    disease_state = "Healthy premenopausal women using a levonorgestrel-releasing intrauterine system for contraception",
+    dose_range = "Single insertion of one LNG-IUS 8 (Jaydess/Skyla) device; nominal release 8 ug/day, indicated for up to 3 years",
+    notes = paste(
       "Demographics and observation counts from Table 1. Contributing",
       "observations: 1457 LNG concentrations, 1612 SHBG concentrations and",
       "763 residual-content measurements. LNG-IUS 8 and LNG-IUS 12 were",

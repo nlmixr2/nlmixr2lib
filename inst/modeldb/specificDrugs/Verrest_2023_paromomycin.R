@@ -30,25 +30,25 @@ Verrest_2023_paromomycin <- function() {
     sep = " "
   )
   vignette <- "Verrest_2023_miltefosine_paromomycin"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Amounts are mg of paromomycin BASE, matching the
   # trial dataset's AMT column ("PM: mg PM base (DOSE*375 mg/ml)",
   # supplementary NONMEM control stream $INPUT dataset description).
   compartmentData <- list(
-    depot       = list(analyte = "paromomycin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "paromomycin", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "paromomycin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "paromomycin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "paromomycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT_BASE = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric power scaling on CL/F and Q/F (exponent fixed 0.75)",
         "and on Vc/F and Vp/F (exponent fixed 1.00), normalized to the",
         "cohort median of 27.5 kg (Verrest 2023 Table 3 legend: 'WTmed,",
@@ -63,14 +63,14 @@ Verrest_2023_paromomycin <- function() {
         "(range 11.0-71.0) in the sparsely sampled group and 33.6 kg",
         "(20.5-54.0) in the intensively sampled group (Table 1)."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     NEUT = list(
-      description        = "Absolute neutrophil count",
-      units              = "cells/uL",
-      type               = "continuous",
+      description = "Absolute neutrophil count",
+      units = "cells/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TIME-VARYING, and the mechanism by which this model captures the",
         "decrease in paromomycin clearance over the treatment course.",
         "Enters CL/F as the centred linear term",
@@ -86,17 +86,17 @@ Verrest_2023_paromomycin <- function() {
         "treatment (Results, 'Patients and data'; Figure S3, where",
         "levels are interpolated between Day 0 and Day 28)."
       ),
-      source_name        = "NEUTR"
+      source_name = "NEUTR"
     )
   )
 
   covariatesDataExcluded <- list(
     EGFR_ABS = list(
-      description        = "Absolute (non-BSA-normalized) estimated glomerular filtration rate",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Absolute (non-BSA-normalized) estimated glomerular filtration rate",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on paromomycin clearance because paromomycin is",
         "cleared mainly renally, both as a fraction of eGFRabs and in",
         "combination with a non-renal clearance route, and NOT retained:",
@@ -108,14 +108,14 @@ Verrest_2023_paromomycin <- function() {
         "overestimating renal function in a malnourished, low-muscle-mass",
         "population. Cohort value 68.9 mL/min mean (range 14.9-288.1)."
       ),
-      source_name        = "EGFRA"
+      source_name = "EGFRA"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened for an inverse correlation with paromomycin volume of",
         "distribution, by analogy with other aminoglycosides in patients",
         "with haematological malignancies, and not retained in the final",
@@ -124,14 +124,14 @@ Verrest_2023_paromomycin <- function() {
         "levels were low at treatment start (IQR 23.4-32.4 g/L) and rose",
         "during treatment."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained: 'Age or country of origin could not",
         "explain remaining variability in any of the pharmacokinetic",
         "parameters on top of the identified covariates' (Verrest 2023",
@@ -140,14 +140,14 @@ Verrest_2023_paromomycin <- function() {
         "defines; both are inert (= 1) in the final model printed in",
         "Table 3. Cohort age 13.6 years mean (range 4-45)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CNTRY = list(
-      description        = "Country of enrolment (Ethiopia, Kenya, Sudan, Uganda)",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Country of enrolment (Ethiopia, Kenya, Sudan, Uganda)",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "A remaining population difference between countries was",
         "evaluated on paromomycin bioavailability, absorption rate,",
         "volume of distribution and clearance, and none was retained:",
@@ -157,21 +157,21 @@ Verrest_2023_paromomycin <- function() {
         "differences between populations or other covariates' (Verrest",
         "2023 Discussion)."
       ),
-      source_name        = "CNTRY"
+      source_name = "CNTRY"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 265L,
-    n_studies      = 1L,
-    age_range      = "4-45 years",
-    age_mean       = "13.6 years (sparse sampling group); 13.8 years (intensive sampling group)",
-    weight_range   = "11.0-71.0 kg",
-    weight_mean    = "32.9 kg (sparse sampling group); 33.6 kg (intensive sampling group)",
+    species = "human",
+    n_subjects = 265L,
+    n_studies = 1L,
+    age_range = "4-45 years",
+    age_mean = "13.6 years (sparse sampling group); 13.8 years (intensive sampling group)",
+    weight_range = "11.0-71.0 kg",
+    weight_mean = "32.9 kg (sparse sampling group); 33.6 kg (intensive sampling group)",
     sex_female_pct = 19.2,
     race_ethnicity = "Eastern African (Kenyan, Sudanese, Ethiopian and Ugandan cohorts; no further breakdown reported)",
-    disease_state  = paste(
+    disease_state = paste(
       "Eastern African children and adults with symptomatic,",
       "parasitologically confirmed visceral leishmaniasis; 59% were",
       "paediatric (<=12 years). Patients with relapse, severe",
@@ -187,15 +187,15 @@ Verrest_2023_paromomycin <- function() {
       "creatinine of 10.8 mg/dL by Day 14 and an AUC0-24 of 2388",
       "ug*h/mL, causing bilateral deafness."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Paromomycin sulphate 20 mg/kg/day as a once-daily intramuscular",
       "injection, equivalent to 15 mg/kg/day paromomycin base, for 14",
       "days. Amounts in this model are mg of paromomycin BASE, matching",
       "the trial dataset. All patients also received oral miltefosine",
       "(allometric dose) twice daily for 14 or 28 days."
     ),
-    regions        = "Eastern Africa (Kenya: Kacheliba; Uganda: Amudat; Sudan: Doka, Um El Kher; Ethiopia: Gondar, Abdurafi)",
-    co_medication  = paste(
+    regions = "Eastern Africa (Kenya: Kacheliba; Uganda: Amudat; Sudan: Doka, Um El Kher; Ethiopia: Gondar, Abdurafi)",
+    co_medication = paste(
       "Oral miltefosine given simultaneously in every patient, for 14",
       "days (PM+MF14D arm) or 28 days (PM+MF28D arm). The exposures",
       "achieved for both drugs matched previous monotherapy studies,",
@@ -203,7 +203,7 @@ Verrest_2023_paromomycin <- function() {
       "interaction; no interaction term is present in this model. The",
       "companion miltefosine model is Verrest_2023_miltefosine."
     ),
-    samples        = paste(
+    samples = paste(
       "229 paromomycin plasma concentrations from the 26 patients in the",
       "intensive-sampling cohort (Kenya and Sudan), sampled at 0, 1, 2,",
       "4 and 24 h or 0, 1, 2, 8 and 24 h on Day 1 and Day 14. Three",
@@ -213,7 +213,7 @@ Verrest_2023_paromomycin <- function() {
       "Patients outside the intensive cohort contributed no paromomycin",
       "samples."
     ),
-    notes          = paste(
+    notes = paste(
       "NONMEM 7.5, ADVAN13, FOCE-I with interaction; parameter precision",
       "by sampling importance resampling. The starting point was the",
       "earlier paromomycin model in Kenyan and Sudanese VL patients",

@@ -29,7 +29,7 @@ Luo_2024_benazepril_pbpk <- function() {
     sep = " "
   )
   vignette <- "Luo_2024_CES1_cirrhosis"
-  units    <- list(time = "min", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "min", dosing = "mg", concentration = "ug/mL")
 
   # Segment-resolved gut-WALL states. The gut LUMEN segments use the
   # canonical stomach / duodenum / jejunum / ileum names; the tissue (wall)
@@ -38,16 +38,25 @@ Luo_2024_benazepril_pbpk <- function() {
   # PBPK to ratify a canonical trio. portal_vein follows
   # vandenBerg_2021_uprifosbuvir_pbpk.R.
   paper_specific_compartments <- c(
-    "wall_duodenum", "wall_jejunum", "wall_ileum", "portal_vein", "wall_duodenum_benat", "wall_jejunum_benat", "wall_ileum_benat", "portal_vein_benat", "liver_benat", "kidney_benat"
+    "wall_duodenum",
+    "wall_jejunum",
+    "wall_ileum",
+    "portal_vein",
+    "wall_duodenum_benat",
+    "wall_jejunum_benat",
+    "wall_ileum_benat",
+    "portal_vein_benat",
+    "liver_benat",
+    "kidney_benat"
   )
 
   covariateData <- list(
     HEPIMP_MILD = list(
-      description        = "Mild hepatic impairment indicator (1 = Child-Pugh class A).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild hepatic impairment indicator (1 = Child-Pugh class A).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy hepatic function when HEPIMP_MOD and HEPIMP_SEV are also 0)",
-      notes              = paste(
+      notes = paste(
         "Classification scheme is Child-Pugh, NOT NCI ODWG: HEPIMP_MILD = 1",
         "selects the Child-Pugh A column of Luo 2024 Table 1. The three",
         "HEPIMP_* indicators are mutually exclusive; all three 0 selects the",
@@ -56,72 +65,72 @@ Luo_2024_benazepril_pbpk <- function() {
         "reduced to 81% of normal, so the CP-A effect is driven by liver",
         "volume, blood-flow redistribution, GFR, albumin and GI transit."
       ),
-      source_name        = "Child-Pugh A"
+      source_name = "Child-Pugh A"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment indicator (1 = Child-Pugh class B).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment indicator (1 = Child-Pugh class B).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy hepatic function when HEPIMP_MILD and HEPIMP_SEV are also 0)",
-      notes              = paste(
+      notes = paste(
         "Classification scheme is Child-Pugh, NOT NCI ODWG: HEPIMP_MOD = 1",
         "selects the Child-Pugh B column of Luo 2024 Table 1 (hepatic CES1",
         "content 1.715 mg/g liver = 70% of healthy; functional liver volume",
         "65% of normal)."
       ),
-      source_name        = "Child-Pugh B"
+      source_name = "Child-Pugh B"
     ),
     HEPIMP_SEV = list(
-      description        = "Severe hepatic impairment indicator (1 = Child-Pugh class C).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Severe hepatic impairment indicator (1 = Child-Pugh class C).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy hepatic function when HEPIMP_MILD and HEPIMP_MOD are also 0)",
-      notes              = paste(
+      notes = paste(
         "Classification scheme is Child-Pugh, NOT NCI ODWG: HEPIMP_SEV = 1",
         "selects the Child-Pugh C column of Luo 2024 Table 1 (hepatic CES1",
         "content 0.735 mg/g liver = 30% of healthy; functional liver volume",
         "53% of normal; hepatic arterial flow raised to 1020 mL/min)."
       ),
-      source_name        = "Child-Pugh C"
+      source_name = "Child-Pugh C"
     )
   )
 
   compartmentData <- list(
-    stomach                  = list(analyte = "benazepril", units = "mg", specimen = "administration site", verified = TRUE),
-    duodenum                 = list(analyte = "benazepril", units = "mg", specimen = "administration site", verified = TRUE),
-    jejunum                  = list(analyte = "benazepril", units = "mg", specimen = "administration site", verified = TRUE),
-    ileum                    = list(analyte = "benazepril", units = "mg", specimen = "administration site", verified = TRUE),
-    wall_duodenum            = list(analyte = "benazepril", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_jejunum             = list(analyte = "benazepril", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_ileum               = list(analyte = "benazepril", units = "mg", specimen = "tissue", verified = TRUE),
-    portal_vein              = list(analyte = "benazepril", units = "mg", specimen = "plasma", verified = TRUE),
-    liver                    = list(analyte = "benazepril", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney                   = list(analyte = "benazepril", units = "mg", specimen = "tissue", verified = TRUE),
-    central                  = list(analyte = "benazepril", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1              = list(analyte = "benazepril", units = "mg", specimen = "plasma", verified = TRUE),
-    wall_duodenum_benat      = list(analyte = "benazeprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_jejunum_benat       = list(analyte = "benazeprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_ileum_benat         = list(analyte = "benazeprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    portal_vein_benat        = list(analyte = "benazeprilat", units = "mg", specimen = "plasma", verified = TRUE),
-    liver_benat              = list(analyte = "benazeprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney_benat             = list(analyte = "benazeprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    central_benat            = list(analyte = "benazeprilat", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_benat        = list(analyte = "benazeprilat", units = "mg", specimen = "plasma", verified = TRUE)
+    stomach = list(analyte = "benazepril", units = "mg", specimen = "administration site", verified = TRUE),
+    duodenum = list(analyte = "benazepril", units = "mg", specimen = "administration site", verified = TRUE),
+    jejunum = list(analyte = "benazepril", units = "mg", specimen = "administration site", verified = TRUE),
+    ileum = list(analyte = "benazepril", units = "mg", specimen = "administration site", verified = TRUE),
+    wall_duodenum = list(analyte = "benazepril", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_jejunum = list(analyte = "benazepril", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_ileum = list(analyte = "benazepril", units = "mg", specimen = "tissue", verified = TRUE),
+    portal_vein = list(analyte = "benazepril", units = "mg", specimen = "plasma", verified = TRUE),
+    liver = list(analyte = "benazepril", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "benazepril", units = "mg", specimen = "tissue", verified = TRUE),
+    central = list(analyte = "benazepril", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "benazepril", units = "mg", specimen = "plasma", verified = TRUE),
+    wall_duodenum_benat = list(analyte = "benazeprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_jejunum_benat = list(analyte = "benazeprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_ileum_benat = list(analyte = "benazeprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    portal_vein_benat = list(analyte = "benazeprilat", units = "mg", specimen = "plasma", verified = TRUE),
+    liver_benat = list(analyte = "benazeprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney_benat = list(analyte = "benazeprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    central_benat = list(analyte = "benazeprilat", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_benat = list(analyte = "benazeprilat", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 128L,
-    n_studies      = 6L,
-    age_range      = "adults",
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 128L,
+    n_studies = 6L,
+    age_range = "adults",
+    disease_state = paste(
       "Pooled healthy volunteers and liver cirrhosis patients. Healthy: Kaiser",
       "1989 (n = 59), Schweizer 1993 (n = 11), Sioufi 1994 (n = 24), Waldmeier",
       "1991 (n = 4), Macdonald 1993 (n = 18). Cirrhosis: Kaiser 1990",
       "Child-Pugh B (n = 12)."
     ),
-    dose_range     = "Benazepril hydrochloride 10 and 20 mg single oral doses",
-    notes          = paste(
+    dose_range = "Benazepril hydrochloride 10 and 20 mg single oral doses",
+    notes = paste(
       "Luo 2024 Table 3. Literature-digitised clinical data; the authors",
       "simulated 1000 virtual individuals per population by drawing CLint,",
       "CLint,K, fu,b, Vsys, Peff, ka, KL:P, KG:P and KK:P uniformly over",
@@ -351,4 +360,3 @@ Luo_2024_benazepril_pbpk <- function() {
     Cc_benat ~ prop(propSd_benat)
   })
 }
-

@@ -27,11 +27,11 @@ Krishna_2011_anacetrapib_hdlc <- function() {
 
   covariateData <- list(
     CSS_ANACETRAPIB = list(
-      description        = "Population-predicted anacetrapib steady-state trough (24 h post-dose) plasma concentration",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Population-predicted anacetrapib steady-state trough (24 h post-dose) plasma concentration",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "The sole driver of the model, entering Eq. 8 as ",
         "Emax * CSS_ANACETRAPIB / (EC50 + CSS_ANACETRAPIB). Krishna 2011 ",
         "screened trough and 24 h average CETP inhibition, trough and 24 h ",
@@ -55,20 +55,20 @@ Krishna_2011_anacetrapib_hdlc <- function() {
         "troughs above 400 ng/mL only in six normal volunteers given 400 mg ",
         "with a high-fat meal, where the model shows some lack of fit."
       ),
-      source_name        = "C_trough (C24h)"
+      source_name = "C_trough (C24h)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 545L,
-    n_observations   = 3089L,
-    n_studies        = 5L,
-    disease_state    = "Combined phase I and phase IIb dataset of 474 patients with dyslipidemia and 72 normal healthy volunteers (546 subjects); the HDL-C model converged on 545 subjects and 3,089 observations (Table II, integrated dataset).",
-    hdlc_baseline    = "Typical baseline HDL-C 50.8 mg/dL (SE 0.5) with 11.7 mg/dL between-subject SD, i.e. a 23% coefficient of variation. Phase I alone gave 53.8 mg/dL and phase IIb alone 50.6 mg/dL, so the pooled estimate is dominated by the much larger phase IIb patient cohort.",
-    dose_range       = "Anacetrapib doses across the pooled phase I and phase IIb studies; the model was exercised over simulated arms of placebo and 10, 50, 100, 150, 250 and 300 mg once daily. 100 mg once daily as the hot-melt-extruded tablet was selected for phase III.",
-    co_medication    = "Both statin-treated and statin-free participants contributed. No effect of statin administration on baseline HDL-C or on Emax was identified, so atorvastatin does not appear in this model (contrast the LDL-C arm, where it does).",
-    notes            = paste0(
+    species = "human",
+    n_subjects = 545L,
+    n_observations = 3089L,
+    n_studies = 5L,
+    disease_state = "Combined phase I and phase IIb dataset of 474 patients with dyslipidemia and 72 normal healthy volunteers (546 subjects); the HDL-C model converged on 545 subjects and 3,089 observations (Table II, integrated dataset).",
+    hdlc_baseline = "Typical baseline HDL-C 50.8 mg/dL (SE 0.5) with 11.7 mg/dL between-subject SD, i.e. a 23% coefficient of variation. Phase I alone gave 53.8 mg/dL and phase IIb alone 50.6 mg/dL, so the pooled estimate is dominated by the much larger phase IIb patient cohort.",
+    dose_range = "Anacetrapib doses across the pooled phase I and phase IIb studies; the model was exercised over simulated arms of placebo and 10, 50, 100, 150, 250 and 300 mg once daily. 100 mg once daily as the hot-melt-extruded tablet was selected for phase III.",
+    co_medication = "Both statin-treated and statin-free participants contributed. No effect of statin administration on baseline HDL-C or on Emax was identified, so atorvastatin does not appear in this model (contrast the LDL-C arm, where it does).",
+    notes = paste0(
       "Per-study designs are in Table IB of the Electronic Supplementary ",
       "Material, which is not on disk (see the vignette Errata). Krishna ",
       "2011 publishes no age, weight, sex or race distribution for the ",

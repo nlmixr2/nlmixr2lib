@@ -32,8 +32,8 @@ Ribba_2022_ctdna <- function() {
   vignette <- "Ribba_2022_ctdna_tumor_size"
 
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no PK input; treatment effect is absorbed into the empirical growth and decay rate constants of the atezolizumab arm)",
+    time = "day",
+    dosing = "n/a (no PK input; treatment effect is absorbed into the empirical growth and decay rate constants of the atezolizumab arm)",
     concentration = "log10(MMPM) -- the observable `ctdna` is base-10 log-transformed average mutant molecules per mL of plasma, matching the scale on which Ribba 2022 fit the model; the residual-error parameter addSd is therefore in log10 units"
   )
 
@@ -49,10 +49,10 @@ Ribba_2022_ctdna <- function() {
   covariateData <- list(
     CTDNA = list(
       description = "Observed baseline (cycle 1 day 1) circulating tumor DNA burden, used as the Stein baseline regressor y0 after base-10 log transformation.",
-      units       = "MMPM (mutant molecules per mL of plasma)",
-      type        = "continuous",
+      units = "MMPM (mutant molecules per mL of plasma)",
+      type = "continuous",
       source_name = "y0",
-      notes       = paste(
+      notes = paste(
         "Ribba 2022 Eq. 1 and Supplementary Data: 'The baseline value was used as a regressor (not estimated).'",
         "Assayed with the Roche AVENIO panel in the OAK cohort.",
         "Enters model() as rbase_ctdna <- log10(CTDNA) and initialises both Stein sub-states, so ctdna(0) = log10(CTDNA) exactly.",
@@ -63,17 +63,17 @@ Ribba_2022_ctdna <- function() {
   )
 
   population <- list(
-    species         = "human (adults with advanced non-small cell lung cancer)",
-    n_subjects      = 46L,
-    n_studies       = 1L,
-    age_range       = "not reported in this paper (see Rittmeyer 2017 for the OAK cohort demographics)",
-    weight_range    = "not reported in this paper",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = "not reported in this paper",
-    disease_state   = "previously treated locally advanced or metastatic NSCLC (OAK study)",
-    dose_range      = "atezolizumab 1200 mg IV every 3 weeks (OAK protocol dose; not a model input)",
-    regions         = "multiregional (OAK was conducted across 31 countries; per-region counts not reported in this paper)",
-    notes           = paste(
+    species = "human (adults with advanced non-small cell lung cancer)",
+    n_subjects = 46L,
+    n_studies = 1L,
+    age_range = "not reported in this paper (see Rittmeyer 2017 for the OAK cohort demographics)",
+    weight_range = "not reported in this paper",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "not reported in this paper",
+    disease_state = "previously treated locally advanced or metastatic NSCLC (OAK study)",
+    dose_range = "atezolizumab 1200 mg IV every 3 weeks (OAK protocol dose; not a model input)",
+    regions = "multiregional (OAK was conducted across 31 countries; per-region counts not reported in this paper)",
+    notes = paste(
       "The ctDNA sub-cohort is the 46 atezolizumab-arm OAK participants with serial ctDNA measurements, out of 613 atezolizumab-arm participants and 1,225 randomised overall (Ribba 2022 Figure 1B).",
       "ctDNA sampling times: cycle 1 (baseline), cycle 2 (~21 days), cycle 3 (~42 days), cycle 4 (~63 days).",
       "Estimation was performed in Monolix 2021R1 (Lixoft) with a constant residual-error model on the log10 scale.",

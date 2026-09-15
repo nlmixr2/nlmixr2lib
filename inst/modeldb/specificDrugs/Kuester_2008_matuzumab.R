@@ -8,35 +8,35 @@ Kuester_2008_matuzumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "matuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "matuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "matuzumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear additive-offset effect on linear CL (CLL) and central volume (V1) per Kuester 2008 footnotes c and d (Table 3, p902): V1,individual = V1 * (1 + V1_WT * (WT - WTmedian)) * exp(eta_V1) and CLL,individual = CLL * (1 + CLL_WT * (WT - WTmedian)) * exp(eta_CLL + kappa_CLL). WTmedian = 71 kg (pooled cohort median, Kuester 2008 Table 2, p902). The paper does not state whether weight is time-varying; for a typical 90-patient phase I cohort with treatment durations up to ~1 year, baseline-fixed weight is the standard assumption.",
-      source_name        = "WT"
+      notes = "Linear additive-offset effect on linear CL (CLL) and central volume (V1) per Kuester 2008 footnotes c and d (Table 3, p902): V1,individual = V1 * (1 + V1_WT * (WT - WTmedian)) * exp(eta_V1) and CLL,individual = CLL * (1 + CLL_WT * (WT - WTmedian)) * exp(eta_CLL + kappa_CLL). WTmedian = 71 kg (pooled cohort median, Kuester 2008 Table 2, p902). The paper does not state whether weight is time-varying; for a typical 90-patient phase I cohort with treatment durations up to ~1 year, baseline-fixed weight is the standard assumption.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 90L,
+    species = "human",
+    n_subjects = 90L,
     n_observations = 1256L,
-    n_studies      = 3L,
-    age_range      = "29-82 years",
-    age_median     = "60 years",
-    weight_range   = "44-125 kg",
-    weight_median  = "71 kg",
+    n_studies = 3L,
+    age_range = "29-82 years",
+    age_median = "60 years",
+    weight_range = "44-125 kg",
+    weight_median = "71 kg",
     sex_female_pct = 41.1,
-    disease_state  = "Patients with advanced, non-resectable and/or metastatic histologically proven carcinoma (predominantly colorectal carcinoma in studies 2 and 3; advanced pancreatic cancer in study 1). Karnofsky performance status >= 60%, life expectancy >= 12 weeks (study 1: >= 8 weeks), no prior chemotherapy or radiotherapy within 3-4 weeks of study start, adequate renal, haematological, and hepatic function, age >= 18 years.",
-    dose_range     = "Matuzumab 400-2000 mg by 1-hour intravenous infusion in 11 different regimens spanning q1w, q2w, and q3w schedules. Study 1: 400 mg q1w; 800 mg q2w; 800 mg q1w in combination with fixed-dose gemcitabine 1000 mg/m^2. Study 2: 1200 mg q1w/q2w/q3w; 400, 800, 1600 mg q3w. Study 3: 400, 800, 1200, 1600 mg q1w; 2000 mg q1w (reduced to 1600 mg from week 2). Some patients treated for ~1 year.",
-    regions        = "Three phase I, open-label, non-randomised, uncontrolled, multicentre studies (4 study sites).",
-    notes          = paste(
+    disease_state = "Patients with advanced, non-resectable and/or metastatic histologically proven carcinoma (predominantly colorectal carcinoma in studies 2 and 3; advanced pancreatic cancer in study 1). Karnofsky performance status >= 60%, life expectancy >= 12 weeks (study 1: >= 8 weeks), no prior chemotherapy or radiotherapy within 3-4 weeks of study start, adequate renal, haematological, and hepatic function, age >= 18 years.",
+    dose_range = "Matuzumab 400-2000 mg by 1-hour intravenous infusion in 11 different regimens spanning q1w, q2w, and q3w schedules. Study 1: 400 mg q1w; 800 mg q2w; 800 mg q1w in combination with fixed-dose gemcitabine 1000 mg/m^2. Study 2: 1200 mg q1w/q2w/q3w; 400, 800, 1600 mg q3w. Study 3: 400, 800, 1200, 1600 mg q1w; 2000 mg q1w (reduced to 1600 mg from week 2). Some patients treated for ~1 year.",
+    regions = "Three phase I, open-label, non-randomised, uncontrolled, multicentre studies (4 study sites).",
+    notes = paste(
       "Baseline demographics from Kuester 2008 Table 2 (p902). Pooled cohort: 53 male / 37 female across 3 studies.",
       "Body surface area median 1.82 m^2 (range 1.34-2.59); body mass index median 24.9 kg/m^2 (range 15.9-37.0).",
       "Creatinine clearance median 91 mL/min (range 41-480); alkaline phosphatase median 171 U/L; lactate dehydrogenase median 426 U/L (Table 2).",

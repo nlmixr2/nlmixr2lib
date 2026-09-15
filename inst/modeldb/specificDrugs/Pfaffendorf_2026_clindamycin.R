@@ -36,11 +36,11 @@ Pfaffendorf_2026_clindamycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject at admission. Pfaffendorf 2026 Table 1",
         "reports mean (SD) 37.5 (20.2) kg and median [min, max]",
         "29.1 [12.0, 86.0] kg across the 40-patient cohort. Applied as",
@@ -59,14 +59,14 @@ Pfaffendorf_2026_clindamycin <- function() {
         "to three significant figures.",
         sep = " "
       ),
-      source_name        = "WGT"
+      source_name = "WGT"
     ),
     OCC = list(
-      description        = "Dosing-occasion index for inter-occasion variability on CL/F",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Dosing-occasion index for inter-occasion variability on CL/F",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Values 1-6 identify which of the six 12-hourly doses a record",
         "belongs to. The final control stream (Additional file 1 S3)",
         "decomposes OCC into six binary flags and multiplexes six IOV",
@@ -85,25 +85,25 @@ Pfaffendorf_2026_clindamycin <- function() {
         "applies.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "clindamycin", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "clindamycin", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "clindamycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 40L,
-    n_studies       = 1L,
-    age_range       = "3.50-57.2 years (Table 1)",
-    age_median      = "10.8 years (Table 1)",
-    weight_range    = "12.0-86.0 kg (Table 1)",
-    weight_median   = "29.1 kg (Table 1)",
-    sex_female_pct  = 42.5,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 1L,
+    age_range = "3.50-57.2 years (Table 1)",
+    age_median = "10.8 years (Table 1)",
+    weight_range = "12.0-86.0 kg (Table 1)",
+    weight_median = "29.1 kg (Table 1)",
+    sex_female_pct = 42.5,
+    disease_state = paste(
       "Microscopically confirmed uncomplicated Plasmodium falciparum",
       "mono-infection with admission parasitaemia 1000-100,000 asexual",
       "parasites per microlitre and a history of fever within the",
@@ -114,7 +114,7 @@ Pfaffendorf_2026_clindamycin <- function() {
       "126 (34.9) mL/min/1.73m2, haematocrit 32.7 (3.96) %,",
       "haemoglobin 10.9 (1.39) g/dL, albumin 36.0 (5.49) g/L."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Oral clindamycin 10 mg/kg every 12 h for three days (six doses",
       "total), co-administered with fosmidomycin 30 mg/kg and",
       "artesunate 2 mg/kg on the same schedule. Doses were rounded to",
@@ -128,9 +128,9 @@ Pfaffendorf_2026_clindamycin <- function() {
       "31.2-52.5 kg, 600 mg for 52.5-67.5 kg, 750 mg for 67.5-82.5 kg",
       "and 900 mg for 82.5-97.5 kg."
     ),
-    regions         = "Gabon (Centre de Recherches Medicales de Lambarene)",
+    regions = "Gabon (Centre de Recherches Medicales de Lambarene)",
     trial_registration = "PACTR202008909968293 (pactr.samrc.ac.za)",
-    notes           = paste(
+    notes = paste(
       "Recruitment was stratified into three age groups: 20 patients",
       "aged 6 months-10 years, 10 aged 11-17 years, and 10 aged",
       "18-65 years. A total of 274 clindamycin plasma samples entered",

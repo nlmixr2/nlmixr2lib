@@ -9,7 +9,7 @@ Friberg_2002_paclitaxel <- function() {
   )
   vignette <- "Friberg_2002_paclitaxel"
   units <- list(time = "h", dosing = "umol", concentration = "umol/L", leukocyte = "10^9/L")
-  ddmore_id    <- "DDMODEL00000186"
+  ddmore_id <- "DDMODEL00000186"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -17,52 +17,52 @@ Friberg_2002_paclitaxel <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "paclitaxel", units = "umol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "paclitaxel", units = "umol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "paclitaxel", units = "umol", specimen = "plasma", verified = FALSE),
-    circ        = list(analyte = "leukocytes", units = "umol", specimen = "whole blood", verified = FALSE),
-    precursor1  = list(analyte = "progenitor cells", units = "umol", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "progenitor cells", units = "umol", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "progenitor cells", units = "umol", specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "progenitor cells", units = "umol", specimen = "not applicable", verified = FALSE)
+    circ = list(analyte = "leukocytes", units = "umol", specimen = "whole blood", verified = FALSE),
+    precursor1 = list(analyte = "progenitor cells", units = "umol", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "progenitor cells", units = "umol", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "progenitor cells", units = "umol", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "progenitor cells", units = "umol", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     CL_INDIV = list(
-      description        = "Per-subject empirical-Bayes paclitaxel clearance",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Per-subject empirical-Bayes paclitaxel clearance",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Individual paclitaxel clearance EBE supplied per-subject as a data column. Friberg 2002 fixed the paclitaxel popPK structure (3-h IV infusion 2-compartment model) and parameters from a previously-published popPK analysis and used POSTHOC EBEs as inputs to the myelosuppression model rather than re-estimating the PK and PD jointly. The DDMORE bundle's NM-TRAN data file ships these as column `CLI`. Reference values: median ~285 L/h, range ~160-540 L/h across the 46 virtual subjects in `Simulated_WBC_pacl_ddmore.csv`.",
-      source_name        = "CLI"
+      notes = "Individual paclitaxel clearance EBE supplied per-subject as a data column. Friberg 2002 fixed the paclitaxel popPK structure (3-h IV infusion 2-compartment model) and parameters from a previously-published popPK analysis and used POSTHOC EBEs as inputs to the myelosuppression model rather than re-estimating the PK and PD jointly. The DDMORE bundle's NM-TRAN data file ships these as column `CLI`. Reference values: median ~285 L/h, range ~160-540 L/h across the 46 virtual subjects in `Simulated_WBC_pacl_ddmore.csv`.",
+      source_name = "CLI"
     ),
     VC_INDIV = list(
-      description        = "Per-subject empirical-Bayes paclitaxel central volume of distribution",
-      units              = "L",
-      type               = "continuous",
+      description = "Per-subject empirical-Bayes paclitaxel central volume of distribution",
+      units = "L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Individual paclitaxel central volume EBE supplied per-subject as a data column. Bundle column `V1I`. Reference values: median ~290 L in the bundle's simulated dataset.",
-      source_name        = "V1I"
+      notes = "Individual paclitaxel central volume EBE supplied per-subject as a data column. Bundle column `V1I`. Reference values: median ~290 L in the bundle's simulated dataset.",
+      source_name = "V1I"
     ),
     VP_INDIV = list(
-      description        = "Per-subject empirical-Bayes paclitaxel peripheral volume of distribution",
-      units              = "L",
-      type               = "continuous",
+      description = "Per-subject empirical-Bayes paclitaxel peripheral volume of distribution",
+      units = "L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Individual paclitaxel peripheral volume EBE supplied per-subject as a data column. Bundle column `V2I`. Reference values: median ~995 L in the bundle's simulated dataset.",
-      source_name        = "V2I"
+      notes = "Individual paclitaxel peripheral volume EBE supplied per-subject as a data column. Bundle column `V2I`. Reference values: median ~995 L in the bundle's simulated dataset.",
+      source_name = "V2I"
     )
   )
 
   population <- list(
-    n_subjects     = 46L,
-    n_studies      = NA_integer_,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    n_subjects = 46L,
+    n_studies = NA_integer_,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Adult cancer patients receiving paclitaxel chemotherapy. Friberg 2002 develops the myelosuppression model on six anticancer drugs (docetaxel, paclitaxel, etoposide, DMDC, CPT-11, vinflunine) for both neutrophils and leukocytes; the DDMORE bundle for DDMODEL00000186 implements only the paclitaxel + leukocyte fit on a subset of the paclitaxel cohort.",
-    dose_range     = "Intravenous paclitaxel as a 3-hour infusion. The bundle's `Simulated_WBC_pacl_ddmore.csv` records doses ~190-530 umol per cycle (~160-450 mg of paclitaxel using MW 853.9 g/mol) with multiple cycles per subject over up to ~360 days follow-up.",
-    regions        = NA_character_,
-    notes          = "Population demographic detail (age, weight, sex, race) is not reproduced in the DDMORE bundle for DDMODEL00000186, and the original Friberg 2002 publication is not on disk in this worktree. n_subjects = 46 is the count of distinct IDs in the bundle's simulated dataset (`Simulated_WBC_pacl_ddmore.csv`); the bundle's NMTRAN re-fit on those data reports 45 individuals contributing to the eta shrinkage statistics, consistent with one subject having no usable observations after EVID filtering. The Friberg 2002 paper itself characterises the model on six drugs for both neutrophils and leukocytes; this DDMORE entry implements only the paclitaxel + leukocyte fit. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
+    disease_state = "Adult cancer patients receiving paclitaxel chemotherapy. Friberg 2002 develops the myelosuppression model on six anticancer drugs (docetaxel, paclitaxel, etoposide, DMDC, CPT-11, vinflunine) for both neutrophils and leukocytes; the DDMORE bundle for DDMODEL00000186 implements only the paclitaxel + leukocyte fit on a subset of the paclitaxel cohort.",
+    dose_range = "Intravenous paclitaxel as a 3-hour infusion. The bundle's `Simulated_WBC_pacl_ddmore.csv` records doses ~190-530 umol per cycle (~160-450 mg of paclitaxel using MW 853.9 g/mol) with multiple cycles per subject over up to ~360 days follow-up.",
+    regions = NA_character_,
+    notes = "Population demographic detail (age, weight, sex, race) is not reproduced in the DDMORE bundle for DDMODEL00000186, and the original Friberg 2002 publication is not on disk in this worktree. n_subjects = 46 is the count of distinct IDs in the bundle's simulated dataset (`Simulated_WBC_pacl_ddmore.csv`); the bundle's NMTRAN re-fit on those data reports 45 individuals contributing to the eta shrinkage statistics, consistent with one subject having no usable observations after EVID filtering. The Friberg 2002 paper itself characterises the model on six drugs for both neutrophils and leukocytes; this DDMORE entry implements only the paclitaxel + leukocyte fit. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
   )
 
   ini({

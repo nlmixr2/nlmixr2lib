@@ -28,50 +28,50 @@ Tarning_2012_artemether <- function() {
     sep = " "
   )
   vignette <- "Tarning_2012_artemether"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot              = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1           = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2           = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3           = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4           = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
-    transit5           = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
-    transit6           = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
-    central            = list(analyte = "Artemether", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit6 = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "Artemether", units = "mg", specimen = "plasma", verified = FALSE),
     central_dihydroart = list(analyte = "DHA", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species         = "human",
-    n_subjects      = 21L,
-    n_studies       = 1L,
-    n_observations  = 316L,
-    age_range       = "16-35 years (median 21; Table 1)",
-    weight_range    = "49-88 kg (median 55; Table 1)",
-    sex_female_pct  = 100,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
+    n_observations = 316L,
+    age_range = "16-35 years (median 21; Table 1)",
+    weight_range = "49-88 kg (median 55; Table 1)",
+    sex_female_pct = 100,
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria in the second or third",
       "trimester of pregnancy (estimated gestational age 13-36 weeks,",
       "median 27 weeks; Table 1)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Coartem (Novartis): 20 mg artemether + 120 mg lumefantrine per tablet;",
       "four tablets per dose (80 mg artemether) given twice daily for 3 days",
       "(oral; dose times 0, 8, 24, 36, 48, 60 hours) with 200 mL milk tea to",
       "optimise oral bioavailability of lumefantrine. The PK analysis used",
       "dense post-last-dose samples only (Methods)."
     ),
-    regions         = "Uganda (Mbarara National Referral Hospital antenatal clinic)",
+    regions = "Uganda (Mbarara National Referral Hospital antenatal clinic)",
     trial_registration = "ClinicalTrials.gov NCT00495508",
     gestational_age_range = "13-36 weeks (median 27 weeks; Table 1)",
-    notes           = paste(
+    notes = paste(
       "Demographics from Tarning 2012 Table 1. No statistically significant",
       "covariates retained in the final model; a full-covariate model with",
       "estimated gestational age on CL_ARM, V_ARM, CL_DHA, V_DHA, and MTT",

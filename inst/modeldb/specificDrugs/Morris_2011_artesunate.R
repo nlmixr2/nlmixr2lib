@@ -27,18 +27,18 @@ Morris_2011_artesunate <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot              = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
-    central            = list(analyte = "artesunate", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "artesunate", units = "nmol", specimen = "plasma", verified = FALSE),
     central_dihydroart = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     PREG = list(
-      description        = "Pregnancy status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = pregnant (second trimester 22-26 weeks gestation or third trimester",
         "32-36 weeks); 0 = non-pregnant control. Time-fixed per subject. Acts as",
         "a proportional effect on DHA apparent clearance via cl_dihydroart = cl_dihydroart_typ",
@@ -48,22 +48,22 @@ Morris_2011_artesunate <- function() {
         "characterised by any tested structural model (Results, p.123 of the",
         "trimmed source) and are not represented in this final model."
       ),
-      source_name        = "PREG"
+      source_name = "PREG"
     )
   )
 
   population <- list(
-    species           = "human",
-    n_subjects        = 51L,
-    n_pregnant        = 26L,
-    n_nonpregnant     = 25L,
-    n_studies         = 1L,
-    n_observations    = "300 AS + 498 DHA quantifiable plasma concentrations used in the final fit (~41% of AS and ~2% of DHA samples were below the 1 ng/mL LLQ and excluded prior to model building; 1 AS and 1 DHA outlier additionally excluded)",
-    age_range         = "18-38 years (median 23 years pregnant, 24 years non-pregnant; Table 1)",
-    weight_range      = "40-84 kg (pregnant median 63 kg, non-pregnant median 52 kg; Table 1)",
-    sex_female_pct    = 100,
-    race_ethnicity    = "African (Democratic Republic of Congo, Kingasani Maternity Clinic, Kinshasa)",
-    disease_state     = paste(
+    species = "human",
+    n_subjects = 51L,
+    n_pregnant = 26L,
+    n_nonpregnant = 25L,
+    n_studies = 1L,
+    n_observations = "300 AS + 498 DHA quantifiable plasma concentrations used in the final fit (~41% of AS and ~2% of DHA samples were below the 1 ng/mL LLQ and excluded prior to model building; 1 AS and 1 DHA outlier additionally excluded)",
+    age_range = "18-38 years (median 23 years pregnant, 24 years non-pregnant; Table 1)",
+    weight_range = "40-84 kg (pregnant median 63 kg, non-pregnant median 52 kg; Table 1)",
+    sex_female_pct = 100,
+    race_ethnicity = "African (Democratic Republic of Congo, Kingasani Maternity Clinic, Kinshasa)",
+    disease_state = paste(
       "Asymptomatic Plasmodium falciparum parasitaemia (parasite density",
       "200-300,000 parasites/microlitre at enrollment, slide- and PCR-positive;",
       "HIV seronegative; haematocrit > 30%; no chronic hypertension or",
@@ -73,10 +73,10 @@ Morris_2011_artesunate <- function() {
       "three months postpartum but the postpartum data are excluded from the",
       "final structural model."
     ),
-    dose_range        = "Single 200 mg oral artesunate (four 50 mg tablets, Guilin Pharmaceutical Co. Ltd) at the start of an inpatient stay. The 200 mg dose was converted to molar units (~520,200 nmol using artesunate MW = 384.42 g/mol) before modelling; concentrations were similarly modelled on a molar basis in nmol/L.",
-    sampling          = "Pre-dose plus 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, and 8 h after AS administration (11 nominal samples per subject).",
-    regions           = "Democratic Republic of Congo (Kingasani Maternity Clinic, Kinshasa). ClinicalTrials.gov NCT00538382.",
-    notes             = "Demographics and modelling cohort from Morris 2011 Table 1 (median (interquartile range))."
+    dose_range = "Single 200 mg oral artesunate (four 50 mg tablets, Guilin Pharmaceutical Co. Ltd) at the start of an inpatient stay. The 200 mg dose was converted to molar units (~520,200 nmol using artesunate MW = 384.42 g/mol) before modelling; concentrations were similarly modelled on a molar basis in nmol/L.",
+    sampling = "Pre-dose plus 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, and 8 h after AS administration (11 nominal samples per subject).",
+    regions = "Democratic Republic of Congo (Kingasani Maternity Clinic, Kinshasa). ClinicalTrials.gov NCT00538382.",
+    notes = "Demographics and modelling cohort from Morris 2011 Table 1 (median (interquartile range))."
   )
 
   ini({

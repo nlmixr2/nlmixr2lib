@@ -30,7 +30,7 @@ Jia_2026_rivaroxaban <- function() {
   # drug in plasma by a validated LC-MS/MS assay with a 1-1000 ug/L calibration
   # range (Methods "Laboratory analysis").
   compartmentData <- list(
-    depot   = list(analyte = "rivaroxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "rivaroxaban", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
@@ -58,279 +58,279 @@ Jia_2026_rivaroxaban <- function() {
   # referenced in `model()`.
   covariatesDataExcluded <- list(
     ALT = list(
-        description = "Alanine aminotransferase",
-        units       = "U/L",
-        type        = "continuous",
-        notes       = paste(
-          "THE NEAR MISS, and the only covariate the paper singles out. Significant on",
-          "CL/F in the univariate screen at p < 0.01, dropping the CL/F variance",
-          "component to 0.0091, but it failed to clear the forward-inclusion threshold",
-          "(dOFV < 6.63) and was not retained (Results 'Covariate analysis'). No",
-          "coefficient is printed, so the effect cannot be encoded. Median 36 U/L",
-          "(range 7-289), Table 1."
-        )
-      ),
-      CRCL = list(
-        description = "Cockcroft-Gault creatinine clearance",
-        units       = "mL/min",
-        type        = "continuous",
-        notes       = paste(
-          "THE NOTABLE NEGATIVE. Creatinine clearance is a retained covariate on CL/F in",
-          "essentially every non-TIPS rivaroxaban popPK model, and its absence here is",
-          "discussed at length: 'Whereas prior PopPK studies in non-shunted populations",
-          "have consistently observed creatinine clearance (CrCl) as an important",
-          "predictor of rivaroxaban clearance, no such effect was noted among our",
-          "post-TIPS subjects'. The authors give three reasons: the CrCl range was narrow",
-          "(no patient below 40 mL/min), creatinine-based estimates overstate renal",
-          "function in cirrhosis because sarcopenia lowers creatinine production, and",
-          "portosystemic shunting raises F so that a rise in intrinsic clearance is",
-          "offset when clearance is expressed as CL/F. Computed with the",
-          "Cockcroft-Gault equation from serum creatinine in umol/L (Methods 'Data",
-          "collection'). Median 127.1 mL/min (range 50.5-341.0), Table 1 -- note this is",
-          "RAW mL/min, not BSA-normalized.",
-          "Compare the retained CRCL power effect in `modellib('Lai_2026_rivaroxaban')`."
-        )
-      ),
-      ASCITES = list(
-        description        = "Baseline ascites severity (none / mild / moderate-to-severe)",
-        units              = "(categorical)",
-        type               = "categorical",
-        reference_category = "None",
-        notes              = paste(
-          "Explicitly explored on V/F and explicitly rejected, which matters because the",
-          "paper's headline finding is a 78-95% reduction in V/F: 'Regarding ascites, we",
-          "explored baseline ascites status (none/mild/moderate-severe; see Table 1) as a",
-          "covariate on Vd/F. Ascites was not supported as a significant covariate",
-          "(p > 0.05) and was therefore not retained in the final model, suggesting that,",
-          "within the range of ascites severity represented in our cohort, ascites alone",
-          "did not explain the lower Vd/F.' The authors reason that rivaroxaban is highly",
-          "protein-bound and not primarily distributed into extracellular fluid, so",
-          "ascites may proxy broader decompensation rather than add distribution volume,",
-          "while cautioning that power was limited. None 11 (28.9%), mild 16 (42.1%),",
-          "moderate-to-severe 11 (28.9%), Table 1. Not a register canonical; the",
-          "deposited dataset carries no ascites column at all."
-        )
-      ),
-      AGE = list(
-        description = "Age",
-        units       = "years",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 57 years (range 32-76), Table 1; eligibility was 18-70 years (Methods)."
-      ),
-      WT = list(
-        description = "Actual body weight",
-        units       = "kg",
-        type        = "continuous",
-        notes       = paste(
-          "Screened, not retained; the covariate list names it 'weight (actual body",
-          "weight)' (Methods 'Covariate model'). No allometric term appears in the final",
-          "model. Median 62 kg (range 47.5-100), Table 1. Still needed indirectly as an",
-          "input to the Cockcroft-Gault CrCl."
-        )
-      ),
-      HT = list(
-        description = "Body height",
-        units       = "cm",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 168 cm (range 155-190), Table 1."
-      ),
-      SEXF = list(
-        description        = "Female sex indicator",
-        units              = "(binary)",
-        type               = "binary",
-        reference_category = "0 (male)",
-        notes              = paste(
-          "Screened as a categorical covariate by analysis of variance (Methods",
-          "'Covariate model'), not retained. 14 of 38 female (36.8%), Table 1. The",
-          "deposited dataset codes SEX with 1 = female for the two subjects shown, so a",
-          "user mapping that column must confirm the direction before use."
-        )
-      ),
-      EGFR = list(
-        description = "Estimated glomerular filtration rate",
-        units       = "mL/min/1.73 m^2",
-        type        = "continuous",
-        notes       = paste(
-          "Screened alongside CrCl as the second renal descriptor, not retained. Median",
-          "108.8 (range 62.9-148.5), Table 1. Table 1 mislabels the unit as 'mL/min/L';",
-          "eGFR is conventionally BSA-normalized to mL/min/1.73 m^2, which is the unit",
-          "recorded here. See the CRCL entry for why no renal effect was detectable."
-        )
-      ),
-      AST = list(
-        description = "Aspartate aminotransferase",
-        units       = "U/L",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 35 U/L (range 9-230), Table 1."
-      ),
-      GGT = list(
-        description = "Gamma-glutamyl transpeptidase",
-        units       = "U/L",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 34 U/L (range 11-144), Table 1."
-      ),
-      ALP = list(
-        description = "Alkaline phosphatase",
-        units       = "U/L",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 88 U/L (range 31-291), Table 1."
-      ),
-      TBA = list(
-        description = "Total bile acids",
-        units       = "umol/L",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 61.2 umol/L (range 17.5-237.9), Table 1."
-      ),
-      TBILI = list(
-        description = "Total bilirubin",
-        units       = "umol/L",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 25.1 umol/L (range 10.6-65), Table 1."
-      ),
-      DBIL = list(
-        description = "Direct (conjugated) bilirubin",
-        units       = "umol/L",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 11.9 umol/L (range 5.7-45.9), Table 1."
-      ),
-      TPRO = list(
-        description = "Total serum protein",
-        units       = "g/L",
-        type        = "continuous",
-        notes       = "Screened, not retained; the paper's column is 'TP'. Median 56.9 g/L (range 37.6-76.8), Table 1."
-      ),
-      ALB = list(
-        description = "Serum albumin",
-        units       = "g/L",
-        type        = "continuous",
-        notes       = paste(
-          "Screened, not retained. Median 29.7 g/L (range 25.2-38.7), Table 1 -- uniformly",
-          "low, which the Discussion uses as evidence of advanced liver disease and hence",
-          "of why creatinine-based renal markers mislead in this cohort."
-        )
-      ),
-      GLB = list(
-        description = "Serum globulin",
-        units       = "g/L",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 26.1 g/L (range 10.7-45.7), Table 1. Not a register canonical; source column 'GLB'."
-      ),
-      PT_SEC = list(
-        description = "Prothrombin time",
-        units       = "s",
-        type        = "continuous",
-        notes       = "Screened, not retained; the paper's column is 'PT'. Median 11.2 s (range 8.9-15.4), Table 1."
-      ),
-      PTA = list(
-        description = "Prothrombin activity",
-        units       = "%",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 65.4% (range 41.6-89.6), Table 1. Not a register canonical; source column 'PTA'."
-      ),
-      PTR = list(
-        description = "Prothrombin time ratio",
-        units       = "(ratio)",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 1.23 (range 0.98-1.69), Table 1."
-      ),
-      INR = list(
-        description = "International Normalized Ratio",
-        units       = "(ratio)",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 1.2 (range 0.98-1.59), Table 1. Not a register canonical; source column 'INR'."
-      ),
-      APTT = list(
-        description = "Activated partial thromboplastin time",
-        units       = "s",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 43.1 s (range 30.7-71.1), Table 1. Not a register canonical; source column 'APTT'."
-      ),
-      APTTR = list(
-        description = "Activated partial thromboplastin time ratio",
-        units       = "(ratio)",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 1.35 (range 0.96-2.22), Table 1. Not a register canonical; source column 'APTTR'."
-      ),
-      FIB = list(
-        description = "Plasma fibrinogen",
-        units       = "g/L",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 2.1 g/L (range 1.02-3.99), Table 1."
-      ),
-      TT = list(
-        description = "Thrombin time",
-        units       = "s",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 20.3 s (range 17.1-23.7), Table 1. Not a register canonical; source column 'TT'."
-      ),
-      DDIMER = list(
-        description = "Plasma D-dimer",
-        units       = "ug/L",
-        type        = "continuous",
-        notes       = paste(
-          "Screened, not retained; the paper's column is 'DD'. Median 3.1 (range 0.3-8.9),",
-          "Table 1. Table 1 gives the unit as ug/L, but values of 0.3-8.9 are far below any",
-          "plausible ug/L D-dimer and match the mg/L FEU scale used clinically in China, so",
-          "the tabulated unit is very likely mis-stated; a user supplying this column",
-          "should confirm the scale against their own assay."
-        )
-      ),
-      FDP = list(
-        description = "Fibrin degradation products",
-        units       = "mg/L",
-        type        = "continuous",
-        notes       = "Screened, not retained. Median 13.4 mg/L (range 1.07-39.2), Table 1. Not a register canonical; source column 'FDP'."
-      ),
-      ATA = list(
-        description = "Antithrombin activity",
-        units       = "%",
-        type        = "continuous",
-        notes       = paste(
-          "Screened, not retained. Median 52.2% (range 29.1-95.4), Table 1. Not a register",
-          "canonical; source column 'ATA'. Distinct from the registered AT_BL_UDL, which is",
-          "a per-subject BASELINE antithrombin activity on a U/dL scale."
-        )
-      ),
-      CTP = list(
-        description        = "Child-Turcotte-Pugh classification (A or B)",
-        units              = "(categorical)",
-        type               = "categorical",
-        reference_category = "A",
-        notes              = paste(
-          "Screened as a categorical covariate, not retained. A 15 (39.5%), B 23 (60.5%),",
-          "Table 1. NO patient was class C -- a stated limitation ('The cohort lacked",
-          "representation of patients with advanced hepatic dysfunction (CTP class C),",
-          "limiting our ability to characterize pharmacokinetics in this most severely",
-          "impaired subgroup'), so the model carries no information about decompensated",
-          "class-C disease. Not a register canonical; the deposited dataset codes CTP as",
-          "1 = A, 2 = B."
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
+        "THE NEAR MISS, and the only covariate the paper singles out. Significant on",
+        "CL/F in the univariate screen at p < 0.01, dropping the CL/F variance",
+        "component to 0.0091, but it failed to clear the forward-inclusion threshold",
+        "(dOFV < 6.63) and was not retained (Results 'Covariate analysis'). No",
+        "coefficient is printed, so the effect cannot be encoded. Median 36 U/L",
+        "(range 7-289), Table 1."
+      )
+    ),
+    CRCL = list(
+      description = "Cockcroft-Gault creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
+        "THE NOTABLE NEGATIVE. Creatinine clearance is a retained covariate on CL/F in",
+        "essentially every non-TIPS rivaroxaban popPK model, and its absence here is",
+        "discussed at length: 'Whereas prior PopPK studies in non-shunted populations",
+        "have consistently observed creatinine clearance (CrCl) as an important",
+        "predictor of rivaroxaban clearance, no such effect was noted among our",
+        "post-TIPS subjects'. The authors give three reasons: the CrCl range was narrow",
+        "(no patient below 40 mL/min), creatinine-based estimates overstate renal",
+        "function in cirrhosis because sarcopenia lowers creatinine production, and",
+        "portosystemic shunting raises F so that a rise in intrinsic clearance is",
+        "offset when clearance is expressed as CL/F. Computed with the",
+        "Cockcroft-Gault equation from serum creatinine in umol/L (Methods 'Data",
+        "collection'). Median 127.1 mL/min (range 50.5-341.0), Table 1 -- note this is",
+        "RAW mL/min, not BSA-normalized.",
+        "Compare the retained CRCL power effect in `modellib('Lai_2026_rivaroxaban')`."
+      )
+    ),
+    ASCITES = list(
+      description = "Baseline ascites severity (none / mild / moderate-to-severe)",
+      units = "(categorical)",
+      type = "categorical",
+      reference_category = "None",
+      notes = paste(
+        "Explicitly explored on V/F and explicitly rejected, which matters because the",
+        "paper's headline finding is a 78-95% reduction in V/F: 'Regarding ascites, we",
+        "explored baseline ascites status (none/mild/moderate-severe; see Table 1) as a",
+        "covariate on Vd/F. Ascites was not supported as a significant covariate",
+        "(p > 0.05) and was therefore not retained in the final model, suggesting that,",
+        "within the range of ascites severity represented in our cohort, ascites alone",
+        "did not explain the lower Vd/F.' The authors reason that rivaroxaban is highly",
+        "protein-bound and not primarily distributed into extracellular fluid, so",
+        "ascites may proxy broader decompensation rather than add distribution volume,",
+        "while cautioning that power was limited. None 11 (28.9%), mild 16 (42.1%),",
+        "moderate-to-severe 11 (28.9%), Table 1. Not a register canonical; the",
+        "deposited dataset carries no ascites column at all."
+      )
+    ),
+    AGE = list(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Screened, not retained. Median 57 years (range 32-76), Table 1; eligibility was 18-70 years (Methods)."
+    ),
+    WT = list(
+      description = "Actual body weight",
+      units = "kg",
+      type = "continuous",
+      notes = paste(
+        "Screened, not retained; the covariate list names it 'weight (actual body",
+        "weight)' (Methods 'Covariate model'). No allometric term appears in the final",
+        "model. Median 62 kg (range 47.5-100), Table 1. Still needed indirectly as an",
+        "input to the Cockcroft-Gault CrCl."
+      )
+    ),
+    HT = list(
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
+      notes = "Screened, not retained. Median 168 cm (range 155-190), Table 1."
+    ),
+    SEXF = list(
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
+      reference_category = "0 (male)",
+      notes = paste(
+        "Screened as a categorical covariate by analysis of variance (Methods",
+        "'Covariate model'), not retained. 14 of 38 female (36.8%), Table 1. The",
+        "deposited dataset codes SEX with 1 = female for the two subjects shown, so a",
+        "user mapping that column must confirm the direction before use."
+      )
+    ),
+    EGFR = list(
+      description = "Estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = paste(
+        "Screened alongside CrCl as the second renal descriptor, not retained. Median",
+        "108.8 (range 62.9-148.5), Table 1. Table 1 mislabels the unit as 'mL/min/L';",
+        "eGFR is conventionally BSA-normalized to mL/min/1.73 m^2, which is the unit",
+        "recorded here. See the CRCL entry for why no renal effect was detectable."
+      )
+    ),
+    AST = list(
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened, not retained. Median 35 U/L (range 9-230), Table 1."
+    ),
+    GGT = list(
+      description = "Gamma-glutamyl transpeptidase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened, not retained. Median 34 U/L (range 11-144), Table 1."
+    ),
+    ALP = list(
+      description = "Alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened, not retained. Median 88 U/L (range 31-291), Table 1."
+    ),
+    TBA = list(
+      description = "Total bile acids",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened, not retained. Median 61.2 umol/L (range 17.5-237.9), Table 1."
+    ),
+    TBILI = list(
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened, not retained. Median 25.1 umol/L (range 10.6-65), Table 1."
+    ),
+    DBIL = list(
+      description = "Direct (conjugated) bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened, not retained. Median 11.9 umol/L (range 5.7-45.9), Table 1."
+    ),
+    TPRO = list(
+      description = "Total serum protein",
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened, not retained; the paper's column is 'TP'. Median 56.9 g/L (range 37.6-76.8), Table 1."
+    ),
+    ALB = list(
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
+        "Screened, not retained. Median 29.7 g/L (range 25.2-38.7), Table 1 -- uniformly",
+        "low, which the Discussion uses as evidence of advanced liver disease and hence",
+        "of why creatinine-based renal markers mislead in this cohort."
+      )
+    ),
+    GLB = list(
+      description = "Serum globulin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened, not retained. Median 26.1 g/L (range 10.7-45.7), Table 1. Not a register canonical; source column 'GLB'."
+    ),
+    PT_SEC = list(
+      description = "Prothrombin time",
+      units = "s",
+      type = "continuous",
+      notes = "Screened, not retained; the paper's column is 'PT'. Median 11.2 s (range 8.9-15.4), Table 1."
+    ),
+    PTA = list(
+      description = "Prothrombin activity",
+      units = "%",
+      type = "continuous",
+      notes = "Screened, not retained. Median 65.4% (range 41.6-89.6), Table 1. Not a register canonical; source column 'PTA'."
+    ),
+    PTR = list(
+      description = "Prothrombin time ratio",
+      units = "(ratio)",
+      type = "continuous",
+      notes = "Screened, not retained. Median 1.23 (range 0.98-1.69), Table 1."
+    ),
+    INR = list(
+      description = "International Normalized Ratio",
+      units = "(ratio)",
+      type = "continuous",
+      notes = "Screened, not retained. Median 1.2 (range 0.98-1.59), Table 1. Not a register canonical; source column 'INR'."
+    ),
+    APTT = list(
+      description = "Activated partial thromboplastin time",
+      units = "s",
+      type = "continuous",
+      notes = "Screened, not retained. Median 43.1 s (range 30.7-71.1), Table 1. Not a register canonical; source column 'APTT'."
+    ),
+    APTTR = list(
+      description = "Activated partial thromboplastin time ratio",
+      units = "(ratio)",
+      type = "continuous",
+      notes = "Screened, not retained. Median 1.35 (range 0.96-2.22), Table 1. Not a register canonical; source column 'APTTR'."
+    ),
+    FIB = list(
+      description = "Plasma fibrinogen",
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened, not retained. Median 2.1 g/L (range 1.02-3.99), Table 1."
+    ),
+    TT = list(
+      description = "Thrombin time",
+      units = "s",
+      type = "continuous",
+      notes = "Screened, not retained. Median 20.3 s (range 17.1-23.7), Table 1. Not a register canonical; source column 'TT'."
+    ),
+    DDIMER = list(
+      description = "Plasma D-dimer",
+      units = "ug/L",
+      type = "continuous",
+      notes = paste(
+        "Screened, not retained; the paper's column is 'DD'. Median 3.1 (range 0.3-8.9),",
+        "Table 1. Table 1 gives the unit as ug/L, but values of 0.3-8.9 are far below any",
+        "plausible ug/L D-dimer and match the mg/L FEU scale used clinically in China, so",
+        "the tabulated unit is very likely mis-stated; a user supplying this column",
+        "should confirm the scale against their own assay."
+      )
+    ),
+    FDP = list(
+      description = "Fibrin degradation products",
+      units = "mg/L",
+      type = "continuous",
+      notes = "Screened, not retained. Median 13.4 mg/L (range 1.07-39.2), Table 1. Not a register canonical; source column 'FDP'."
+    ),
+    ATA = list(
+      description = "Antithrombin activity",
+      units = "%",
+      type = "continuous",
+      notes = paste(
+        "Screened, not retained. Median 52.2% (range 29.1-95.4), Table 1. Not a register",
+        "canonical; source column 'ATA'. Distinct from the registered AT_BL_UDL, which is",
+        "a per-subject BASELINE antithrombin activity on a U/dL scale."
+      )
+    ),
+    CTP = list(
+      description = "Child-Turcotte-Pugh classification (A or B)",
+      units = "(categorical)",
+      type = "categorical",
+      reference_category = "A",
+      notes = paste(
+        "Screened as a categorical covariate, not retained. A 15 (39.5%), B 23 (60.5%),",
+        "Table 1. NO patient was class C -- a stated limitation ('The cohort lacked",
+        "representation of patients with advanced hepatic dysfunction (CTP class C),",
+        "limiting our ability to characterize pharmacokinetics in this most severely",
+        "impaired subgroup'), so the model carries no information about decompensated",
+        "class-C disease. Not a register canonical; the deposited dataset codes CTP as",
+        "1 = A, 2 = B."
       )
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 38,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 38,
+    n_studies = 1,
     n_observations = 131,
-    age_range      = "32-76 years (Table 1 median 57); eligibility 18-70 years",
-    age_median     = "57 years",
-    weight_range   = "47.5-100 kg",
-    weight_median  = "62 kg",
+    age_range = "32-76 years (Table 1 median 57); eligibility 18-70 years",
+    age_median = "57 years",
+    weight_range = "47.5-100 kg",
+    weight_median = "62 kg",
     sex_female_pct = 36.8,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Portal hypertension treated by transjugular intrahepatic portosystemic",
       "shunt (TIPS), receiving post-operative rivaroxaban for stent-thrombosis",
       "prophylaxis. Child-Turcotte-Pugh class A 39.5% / B 60.5%, no class C.",
       "Ascites: none 28.9%, mild 42.1%, moderate-to-severe 28.9%."
     ),
-    dose_range     = "5 mg once daily (30 patients) or 10 mg once daily (8 patients), orally, from post-operative day 3",
-    regions        = "China (single center: Beijing Youan Hospital, Capital Medical University, Beijing)",
+    dose_range = "5 mg once daily (30 patients) or 10 mg once daily (8 patients), orally, from post-operative day 3",
+    regions = "China (single center: Beijing Youan Hospital, Capital Medical University, Beijing)",
     renal_function = "Cockcroft-Gault CrCl median 127.1 mL/min (range 50.5-341.0); eGFR median 108.8 (62.9-148.5). No patient had CrCl below 40 mL/min, which the Discussion cites as the reason no renal effect on CL/F was detectable.",
     hepatic_function = "Cirrhotic, Child-Turcotte-Pugh A/B only. Albumin median 29.7 g/L, total bilirubin median 25.1 umol/L, ALT median 36 U/L.",
-    co_medication  = "None relevant: 'No co-administered medications acting on P450 enzymes or P-gp inducing/inhibiting drugs were identified among the enrolled patients' (Methods 'Covariate model').",
-    notes          = paste(
+    co_medication = "None relevant: 'No co-administered medications acting on P450 enzymes or P-gp inducing/inhibiting drugs were identified among the enrolled patients' (Methods 'Covariate model').",
+    notes = paste(
       "Prospective single-center study run July 2023 to March 2025; Chinese",
       "Clinical Trial Registry ChiCTR2300073784. Table 1 baseline demographics.",
       "39 patients enrolled and 136 samples collected; 3 samples were invalid",

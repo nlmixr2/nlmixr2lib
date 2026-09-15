@@ -15,52 +15,52 @@ Yang_2010_rosuvastatin_mbma <- function() {
   )
   vignette <- "Yang_2010_rosuvastatin_mbma"
   units <- list(
-    time          = "week (placeholder; the model is a steady-state dose-response and time-independent -- the paper restricts to arms with at least 4 weeks of treatment)",
-    dosing        = "mg/day (per-arm daily rosuvastatin dose supplied as the DOSE covariate column; the model is an MBMA dose-response and does not consume rxode2 dose events)",
+    time = "week (placeholder; the model is a steady-state dose-response and time-independent -- the paper restricts to arms with at least 4 weeks of treatment)",
+    dosing = "mg/day (per-arm daily rosuvastatin dose supplied as the DOSE covariate column; the model is an MBMA dose-response and does not consume rxode2 dose events)",
     concentration = "%/arm (study-arm-mean unsigned percent LDL-C reduction from baseline; e.g. Cc = 50 means a 50 percent reduction. Output Cc is NOT a drug concentration; the slash in the unit string is to satisfy checkModelConventions parsing)"
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Per-arm daily rosuvastatin dose (mg/day; 0 for placebo arms).",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm daily rosuvastatin dose (mg/day; 0 for placebo arms).",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "MBMA study-arm-level covariate (study-arm mean daily dose, time-invariant within the dose-ranging arm). Dose-ranging arms used 0 (placebo), 1, 2, 2.5, 4, 5, 10, 20, 40, and 80 mg/day across the 14 trials (Yang 2010 Tables 1-2). Source paper uses 'Dose' as the independent variable in Eq 1.",
-      source_name        = "Dose (Yang 2010 Eq 1, Tables 1-2)"
+      notes = "MBMA study-arm-level covariate (study-arm mean daily dose, time-invariant within the dose-ranging arm). Dose-ranging arms used 0 (placebo), 1, 2, 2.5, 4, 5, 10, 20, 40, and 80 mg/day across the 14 trials (Yang 2010 Tables 1-2). Source paper uses 'Dose' as the independent variable in Eq 1.",
+      source_name = "Dose (Yang 2010 Eq 1, Tables 1-2)"
     ),
     RACE_ASIAN = list(
-      description        = "Indicator that the study-arm population is Asian (1) versus Western (0).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the study-arm population is Asian (1) versus Western (0).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = Western (predominantly White / Caucasian) -- the reference category in the source paper (RACE=0 in Yang 2010 covariate-modeling equation).",
-      notes              = "MBMA study-arm-level indicator (a property of the trial cohort, not of an individual subject). Yang 2010 defines RACE=0 for Westerners (predominantly Whites / Caucasians) and RACE=1 for Asians (Chinese, Japanese, and South Asian subjects). The covariate enters as a multiplicative factor on ED50: ED50_arm = ED50_Western * e_asian_ed50^RACE_ASIAN, so RACE_ASIAN=1 multiplies ED50 by 0.564 (twofold-lower ED50, i.e. greater LDL-C sensitivity per mg of rosuvastatin) and RACE_ASIAN=0 leaves ED50 at the Western reference. This mirrors the canonical RACE_ASIAN entry in inst/references/covariate-columns.md; the MBMA application aggregates per arm rather than per subject.",
-      source_name        = "RACE (Yang 2010 Eq for P = TVP * theta_RACE^RACE)"
+      notes = "MBMA study-arm-level indicator (a property of the trial cohort, not of an individual subject). Yang 2010 defines RACE=0 for Westerners (predominantly Whites / Caucasians) and RACE=1 for Asians (Chinese, Japanese, and South Asian subjects). The covariate enters as a multiplicative factor on ED50: ED50_arm = ED50_Western * e_asian_ed50^RACE_ASIAN, so RACE_ASIAN=1 multiplies ED50 by 0.564 (twofold-lower ED50, i.e. greater LDL-C sensitivity per mg of rosuvastatin) and RACE_ASIAN=0 leaves ED50 at the Western reference. This mirrors the canonical RACE_ASIAN entry in inst/references/covariate-columns.md; the MBMA application aggregates per arm rather than per subject.",
+      source_name = "RACE (Yang 2010 Eq for P = TVP * theta_RACE^RACE)"
     )
   )
 
   covariatesDataExcluded <- list(
     LDLC = list(
-      description        = "Per-arm baseline LDL-C concentration. Tested in the Yang 2010 forward-inclusion covariate screen but NOT retained in the final model.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Per-arm baseline LDL-C concentration. Tested in the Yang 2010 forward-inclusion covariate screen but NOT retained in the final model.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yang 2010 Methods describes screening baseline LDL-C as a continuous covariate alongside race. Only race-on-ED50 produced a significant OFV reduction (delta OFV = 7.095); baseline LDL-C did not reach significance and was dropped before the backward-elimination step. Recorded here for source-trace completeness; no effect parameter is included in ini() because the paper reports no point estimate for the dropped covariate.",
-      source_name        = "Baseline LDL-C (Yang 2010 Methods / Tables 1-2)"
+      notes = "Yang 2010 Methods describes screening baseline LDL-C as a continuous covariate alongside race. Only race-on-ED50 produced a significant OFV reduction (delta OFV = 7.095); baseline LDL-C did not reach significance and was dropped before the backward-elimination step. Recorded here for source-trace completeness; no effect parameter is included in ini() because the paper reports no point estimate for the dropped covariate.",
+      source_name = "Baseline LDL-C (Yang 2010 Methods / Tables 1-2)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_studies       = 14L,
-    n_data_points   = 46L,
-    age_range       = "adult hypercholesterolemia patients (per-trial age distributions not tabulated in the main paper; Yang 2010 Tables 1-2 list reference/year/duration/dose/N/baseline LDL-C and percent reduction per arm)",
-    disease_state   = "adults with primary hypercholesterolemia (heterogeneous: includes some trials in patients with concomitant cardiovascular disease, switched-from-other-statin arms excluded). All arms restricted to at least 4 weeks of treatment to capture the steady-state LDL-C-lowering effect.",
-    dose_range      = "rosuvastatin 0-80 mg/day (placebo, 1, 2, 2.5, 4, 5, 10, 20, 40, and 80 mg/day across the 14 dose-ranging trials per Yang 2010 Tables 1-2)",
-    race_ethnicity  = "9 Western dose-ranging trials (predominantly Whites / Caucasians) and 5 Asian dose-ranging trials (Chinese, Japanese, and South Asian subjects, including 2 unpublished trials from the authors department). 22 additional one-dose trials (18 Western, 4 Asian) used for external visual-predictive-check validation rather than parameter estimation.",
-    baseline_ldlc   = "Per-arm baseline LDL-C ranged about 153-219 mg/dL across the 14 dose-ranging trials (Yang 2010 Tables 1-2). Baseline LDL-C was screened as a covariate but not retained in the final model.",
-    regions         = "International (Western: predominantly Whites / Caucasians; Asian: Chinese, Japanese, South Asian). Some trials multicenter, the majority double-blind, three placebo-controlled.",
-    notes           = "MBMA at the study-arm level: each modeled data point is the mean percent LDL-C reduction in a group of patients at the steady-state timepoint in a single dose-ranging trial arm. The model is intended for simulating study-arm-mean percent LDL-C reductions and is NOT suitable for individual-subject simulation. Inter-trial variability eta on the predicted output is reported as a standard deviation (3.0 percent) -- variance is 9.0. Residual error is reported as a standard deviation (3.1 percent) on the same unsigned percent-reduction scale. The final model was developed against the 14 dose-ranging trials only; the 22 one-dose trials served as an independent visual-predictive-check holdout (Yang 2010 Figure 6)."
+    species = "human",
+    n_studies = 14L,
+    n_data_points = 46L,
+    age_range = "adult hypercholesterolemia patients (per-trial age distributions not tabulated in the main paper; Yang 2010 Tables 1-2 list reference/year/duration/dose/N/baseline LDL-C and percent reduction per arm)",
+    disease_state = "adults with primary hypercholesterolemia (heterogeneous: includes some trials in patients with concomitant cardiovascular disease, switched-from-other-statin arms excluded). All arms restricted to at least 4 weeks of treatment to capture the steady-state LDL-C-lowering effect.",
+    dose_range = "rosuvastatin 0-80 mg/day (placebo, 1, 2, 2.5, 4, 5, 10, 20, 40, and 80 mg/day across the 14 dose-ranging trials per Yang 2010 Tables 1-2)",
+    race_ethnicity = "9 Western dose-ranging trials (predominantly Whites / Caucasians) and 5 Asian dose-ranging trials (Chinese, Japanese, and South Asian subjects, including 2 unpublished trials from the authors department). 22 additional one-dose trials (18 Western, 4 Asian) used for external visual-predictive-check validation rather than parameter estimation.",
+    baseline_ldlc = "Per-arm baseline LDL-C ranged about 153-219 mg/dL across the 14 dose-ranging trials (Yang 2010 Tables 1-2). Baseline LDL-C was screened as a covariate but not retained in the final model.",
+    regions = "International (Western: predominantly Whites / Caucasians; Asian: Chinese, Japanese, South Asian). Some trials multicenter, the majority double-blind, three placebo-controlled.",
+    notes = "MBMA at the study-arm level: each modeled data point is the mean percent LDL-C reduction in a group of patients at the steady-state timepoint in a single dose-ranging trial arm. The model is intended for simulating study-arm-mean percent LDL-C reductions and is NOT suitable for individual-subject simulation. Inter-trial variability eta on the predicted output is reported as a standard deviation (3.0 percent) -- variance is 9.0. Residual error is reported as a standard deviation (3.1 percent) on the same unsigned percent-reduction scale. The final model was developed against the 14 dose-ranging trials only; the 22 one-dose trials served as an independent visual-predictive-check holdout (Yang 2010 Figure 6)."
   )
 
   ini({

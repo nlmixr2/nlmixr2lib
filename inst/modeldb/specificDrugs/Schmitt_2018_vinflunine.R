@@ -17,64 +17,64 @@ Schmitt_2018_vinflunine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "vinflunine", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "vinflunine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "vinflunine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "vinflunine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral3 = list(analyte = "vinflunine", units = "mg", specimen = "plasma", verified = FALSE),
-    circ        = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE),
-    precursor1  = list(analyte = "neutrophil precursors", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "neutrophil precursors", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "neutrophil precursors", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "neutrophil precursors", units = "mg", specimen = "not applicable", verified = FALSE)
+    circ = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE),
+    precursor1 = list(analyte = "neutrophil precursors", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "neutrophil precursors", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "neutrophil precursors", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "neutrophil precursors", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance (Cockcroft-Gault, raw mL/min, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (Cockcroft-Gault, raw mL/min, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cockcroft-Gault creatinine clearance in raw mL/min (no BSA normalization). Reference value 82 mL/min (population median per Schmitt 2018 Table 1). Used as power scaling (CRCL / 82)^0.134 on vinflunine CL.",
-      source_name        = "CLCR"
+      notes = "Cockcroft-Gault creatinine clearance in raw mL/min (no BSA normalization). Reference value 82 mL/min (population median per Schmitt 2018 Table 1). Used as power scaling (CRCL / 82)^0.134 on vinflunine CL.",
+      source_name = "CLCR"
     ),
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference value 1.8 m^2 (population median per Schmitt 2018 Table 1). Used as power scaling (BSA / 1.8)^0.542 on vinflunine CL.",
-      source_name        = "BSA"
+      notes = "Reference value 1.8 m^2 (population median per Schmitt 2018 Table 1). Used as power scaling (BSA / 1.8)^0.542 on vinflunine CL.",
+      source_name = "BSA"
     ),
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference value 69 kg (population median per Schmitt 2018 Table 1). Used as power scaling (WT / 69)^0.498 on V3 (peripheral2 volume) and (WT / 69)^0.650 on V4 (peripheral3 volume). The 69 kg reference is paper-consistent (the CL formula in the publication uses Table 1 population medians for CRCL and BSA); see vignette Assumptions and deviations.",
-      source_name        = "WT"
+      notes = "Reference value 69 kg (population median per Schmitt 2018 Table 1). Used as power scaling (WT / 69)^0.498 on V3 (peripheral2 volume) and (WT / 69)^0.650 on V4 (peripheral3 volume). The 69 kg reference is paper-consistent (the CL formula in the publication uses Table 1 population medians for CRCL and BSA); see vignette Assumptions and deviations.",
+      source_name = "WT"
     ),
     CONMED_PLDH = list(
-      description        = "PEGylated liposomal doxorubicin (PLDH) combination indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "PEGylated liposomal doxorubicin (PLDH) combination indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant PLDH)",
-      notes              = "1 if subject is receiving vinflunine in combination with PEGylated liposomal doxorubicin (PLDH; Doxil / Caelyx); 0 otherwise. Used as power-form factor 0.865^CONMED_PLDH on vinflunine CL (i.e. CL is 86.5% of single-agent value under PLDH co-administration).",
-      source_name        = "PLDH"
+      notes = "1 if subject is receiving vinflunine in combination with PEGylated liposomal doxorubicin (PLDH; Doxil / Caelyx); 0 otherwise. Used as power-form factor 0.865^CONMED_PLDH on vinflunine CL (i.e. CL is 86.5% of single-agent value under PLDH co-administration).",
+      source_name = "PLDH"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 372L,
-    n_studies      = 18L,
-    age_range      = "19-82 years",
-    age_median     = "59 years",
-    weight_range   = "42-114 kg",
-    weight_median  = "69 kg",
+    species = "human",
+    n_subjects = 372L,
+    n_studies = 18L,
+    age_range = "19-82 years",
+    age_median = "59 years",
+    weight_range = "42-114 kg",
+    weight_median = "69 kg",
     sex_female_pct = 44.4,
-    disease_state  = "Adult cancer patients across multiple solid tumour indications (bladder, breast, NSCLC and others) enrolled in 8 phase I, 2 phase I/II, 6 phase II and 2 phase I special-population studies (renal impairment, liver dysfunction). 141 of 372 patients had liver metastases. 43% received vinflunine in combination with one of: cisplatin, gemcitabine, carboplatin, PEGylated liposomal doxorubicin (PLDH), capecitabine, epirubicin, or doxorubicin.",
-    dose_range     = "Intravenous vinflunine (Javlor) administered as a short zero-order infusion. SPC doses: 320 mg/m^2 once every 3 weeks (q3w) for normal renal function; 280 mg/m^2 q3w for moderate renal impairment (CrCl 40-60 mL/min); 250 mg/m^2 q3w for severe renal impairment (CrCl 20-<40 mL/min). 4980 vinflunine concentrations across 656 PK profiles after outlier handling (4154 concentrations retained).",
-    notes          = "PK analysis: 372 subjects, 4154 vinflunine concentrations (after outlier handling), 656 PK profiles across the 18 studies. PK/PD analysis: 210 vinflunine-monotherapy subjects, 423 administrations, 1871 absolute neutrophil count (ANC) observations from 5 phase I and 6 phase II studies. Cockcroft-Gault CrCl median 82 mL/min (range 29-199). See Schmitt 2018 Table 1 for the full baseline covariate distribution."
+    disease_state = "Adult cancer patients across multiple solid tumour indications (bladder, breast, NSCLC and others) enrolled in 8 phase I, 2 phase I/II, 6 phase II and 2 phase I special-population studies (renal impairment, liver dysfunction). 141 of 372 patients had liver metastases. 43% received vinflunine in combination with one of: cisplatin, gemcitabine, carboplatin, PEGylated liposomal doxorubicin (PLDH), capecitabine, epirubicin, or doxorubicin.",
+    dose_range = "Intravenous vinflunine (Javlor) administered as a short zero-order infusion. SPC doses: 320 mg/m^2 once every 3 weeks (q3w) for normal renal function; 280 mg/m^2 q3w for moderate renal impairment (CrCl 40-60 mL/min); 250 mg/m^2 q3w for severe renal impairment (CrCl 20-<40 mL/min). 4980 vinflunine concentrations across 656 PK profiles after outlier handling (4154 concentrations retained).",
+    notes = "PK analysis: 372 subjects, 4154 vinflunine concentrations (after outlier handling), 656 PK profiles across the 18 studies. PK/PD analysis: 210 vinflunine-monotherapy subjects, 423 administrations, 1871 absolute neutrophil count (ANC) observations from 5 phase I and 6 phase II studies. Cockcroft-Gault CrCl median 82 mL/min (range 29-199). See Schmitt 2018 Table 1 for the full baseline covariate distribution."
   )
 
   ini({

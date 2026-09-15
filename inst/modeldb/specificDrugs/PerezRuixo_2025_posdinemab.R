@@ -11,48 +11,48 @@ PerezRuixo_2025_posdinemab <- function() {
   # Issue #482: what molecule each compartment holds, in what units, in what
   # biological matrix. Verified against Perez-Ruixo 2025 Methods / Figure 1.
   compartmentData <- list(
-    central      = list(analyte = "posdinemab",             units = "pmol", specimen = "serum",    verified = TRUE),
-    peripheral1  = list(analyte = "posdinemab",             units = "pmol", specimen = "serum",    verified = TRUE),
-    csf          = list(analyte = "posdinemab",             units = "pmol", specimen = "CSF",      verified = TRUE),
-    isf          = list(analyte = "posdinemab",             units = "pmol", specimen = "brain ISF", verified = TRUE),
-    target       = list(analyte = "p217+tau (free)",        units = "pmol", specimen = "CSF",      verified = TRUE),
-    complex      = list(analyte = "posdinemab-p217+tau complex", units = "pmol", specimen = "CSF", verified = TRUE),
-    target_isf   = list(analyte = "tau seeds (free)",       units = "pmol", specimen = "brain ISF", verified = TRUE),
-    complex_isf  = list(analyte = "posdinemab-tau-seed complex", units = "pmol", specimen = "brain ISF", verified = TRUE)
+    central = list(analyte = "posdinemab", units = "pmol", specimen = "serum", verified = TRUE),
+    peripheral1 = list(analyte = "posdinemab", units = "pmol", specimen = "serum", verified = TRUE),
+    csf = list(analyte = "posdinemab", units = "pmol", specimen = "CSF", verified = TRUE),
+    isf = list(analyte = "posdinemab", units = "pmol", specimen = "brain ISF", verified = TRUE),
+    target = list(analyte = "p217+tau (free)", units = "pmol", specimen = "CSF", verified = TRUE),
+    complex = list(analyte = "posdinemab-p217+tau complex", units = "pmol", specimen = "CSF", verified = TRUE),
+    target_isf = list(analyte = "tau seeds (free)", units = "pmol", specimen = "brain ISF", verified = TRUE),
+    complex_isf = list(analyte = "posdinemab-tau-seed complex", units = "pmol", specimen = "brain ISF", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Allometric scaling exponents fixed at 0.75 for clearances (CL, Q, QCSF, QISF) and 1.00 for volumes (V1, V2, VCSF, VISF), normalised to 70 kg.",
-      source_name        = "WT"
+      notes = "Time-fixed per subject. Allometric scaling exponents fixed at 0.75 for clearances (CL, Q, QCSF, QISF) and 1.00 for volumes (V1, V2, VCSF, VISF), normalised to 70 kg.",
+      source_name = "WT"
     ),
     DIS_AD = list(
-      description        = "Alzheimer's disease patient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Alzheimer's disease patient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy participant)",
-      notes              = "Multiplicative log-shift on baseline free p217+tau in CSF (R0): exp(e_ad_rbase) = 5.995 / 0.793 = 7.56-fold higher in AD vs healthy. No PK-parameter effects.",
-      source_name        = "STATUS"
+      notes = "Multiplicative log-shift on baseline free p217+tau in CSF (R0): exp(e_ad_rbase) = 5.995 / 0.793 = 7.56-fold higher in AD vs healthy. No PK-parameter effects.",
+      source_name = "STATUS"
     )
   )
 
   population <- list(
-    n_subjects     = 69L,
-    n_studies      = 1L,
-    study          = "Phase 1 first-in-human dose-escalation, NCT03375697 (Galpern 2024)",
-    age_range      = "55-78 years (median 67)",
-    height_range   = "150-192 cm (median 169)",
-    weight_range   = "51-106 kg (median 75)",
+    n_subjects = 69L,
+    n_studies = 1L,
+    study = "Phase 1 first-in-human dose-escalation, NCT03375697 (Galpern 2024)",
+    age_range = "55-78 years (median 67)",
+    height_range = "150-192 cm (median 169)",
+    weight_range = "51-106 kg (median 75)",
     sex_female_pct = 46.4,
     race_ethnicity = "98.6% White (98.5% Caucasian, 1.5% Hispanic of White), 1.4% Asian (Table 1)",
-    disease_state  = "Healthy adults (n = 56, 81.2%) and adults with Alzheimer's disease (n = 13, 18.8%)",
-    dose_range     = "Single ascending dose 1, 3, 10, 30, 60 mg/kg IV (healthy); multiple ascending dose 5, 15, 30, or 50 mg/kg IV every 28 days for 13 weeks (5 and 50 mg/kg in healthy; 15 and 30 mg/kg in AD); placebo n = 16",
-    regions        = "Multinational Phase 1 (Galpern 2024)",
-    notes          = "53 active-treatment participants contributed 907 serum and 169 CSF posdinemab concentration observations; all 69 contributed 294 CSF p217+tau observations (free + total combined). Analysis used FOCE in NONMEM 7.3.0."
+    disease_state = "Healthy adults (n = 56, 81.2%) and adults with Alzheimer's disease (n = 13, 18.8%)",
+    dose_range = "Single ascending dose 1, 3, 10, 30, 60 mg/kg IV (healthy); multiple ascending dose 5, 15, 30, or 50 mg/kg IV every 28 days for 13 weeks (5 and 50 mg/kg in healthy; 15 and 30 mg/kg in AD); placebo n = 16",
+    regions = "Multinational Phase 1 (Galpern 2024)",
+    notes = "53 active-treatment participants contributed 907 serum and 169 CSF posdinemab concentration observations; all 69 contributed 294 CSF p217+tau observations (free + total combined). Analysis used FOCE in NONMEM 7.3.0."
   )
 
   ini({

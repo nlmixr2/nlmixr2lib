@@ -21,11 +21,11 @@ Zhu_2026_denosumab_reference <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters linear clearance as a normalised power term, CL = CL_TV * (WT/55.5)^1.16, printed in",
         "the footnote to Zhu 2026 Supplementary Table 5. The centering constant is 55.5 kg, which is",
         "the mean body weight of the KN012 arm rather than this arm's own mean of 56.3 kg",
@@ -33,7 +33,7 @@ Zhu_2026_denosumab_reference <- function() {
         "and is reproduced here as printed. Body weight was the only covariate retained by the stepwise",
         "forward-addition / backward-elimination covariate search."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
@@ -43,32 +43,36 @@ Zhu_2026_denosumab_reference <- function() {
   # leaving 'Central').
   compartmentData <- list(
     depot = list(
-      analyte = "denosumab (US reference product)", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "denosumab (US reference product)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "denosumab (US reference product)", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "denosumab (US reference product)",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 138L,
+    species = "human",
+    n_subjects = 138L,
     n_observations = 925L,
-    n_studies      = 1L,
-    age_range      = "50.0-80.0 years",
-    age_mean       = "65.3 years",
-    weight_range   = "38.0-77.0 kg",
-    weight_mean    = "56.3 kg",
+    n_studies = 1L,
+    age_range = "50.0-80.0 years",
+    age_mean = "65.3 years",
+    weight_range = "38.0-77.0 kg",
+    weight_mean = "56.3 kg",
     sex_female_pct = 100,
     race_ethnicity = c(`Han Chinese` = 98.6, Other = 1.4),
-    disease_state  = "Postmenopausal osteoporosis at high risk of fracture",
-    dose_range     = "60 mg subcutaneously at month 0 and month 6",
-    regions        = "China (25 centres)",
+    disease_state = "Postmenopausal osteoporosis at high risk of fracture",
+    dose_range = "60 mg subcutaneously at month 0 and month 6",
+    regions = "China (25 centres)",
     renal_function = "Creatinine clearance mean 75.1 mL/min (range 36.6-131); 23.2% normal (CrCL >= 90), 53.6% mild (60 <= CrCL < 90), 23.2% moderate (30 <= CrCL < 60) impairment",
-    co_medication  = "Daily calcium carbonate D3 600 mg and vitamin D 800 IU from screening to end of study",
-    notes          = paste(
+    co_medication = "Daily calcium carbonate D3 600 mg and vitamin D 800 IU from screening to end of study",
+    notes = paste(
       "US-denosumab arm of the population-PK analysis set (Zhu 2026 Results 3.5 and Supplementary",
       "Table 3). Twelve of the 138 participants were intensively sampled and the remainder sparsely",
       "sampled (Supplementary Table 1). Serum concentrations were measured by electrochemiluminescence",

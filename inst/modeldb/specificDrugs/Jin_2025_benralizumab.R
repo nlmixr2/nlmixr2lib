@@ -15,18 +15,18 @@ Jin_2025_benralizumab <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot       = list(analyte = "benralizumab", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "benralizumab", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "benralizumab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "benralizumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "benralizumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power (multiplicative) effects normalised to 70 kg on all three disposition parameters:",
         "(WT/70)^0.849 on CL, (WT/70)^0.799 on V2 and (WT/70)^0.639 on V3 (Jin 2025 Resource 10,",
         "'Parameter-covariate relationships'; the 70 kg centering is stated in the Resource 10",
@@ -34,14 +34,14 @@ Jin_2025_benralizumab <- function() {
         "per subject. Jin 2025 Table 2 gives 77.5 +/- 18.9 kg (40.3-204) in adults and",
         "60.6 +/- 20.6 kg (40-155) in adolescents. Source column BWGT."
       ),
-      source_name        = "BWGT"
+      source_name = "BWGT"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator, 1 = Asian (all self-reported Asian participants, including all Chinese participants), 0 = non-Asian",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator, 1 = Asian (all self-reported Asian participants, including all Chinese participants), 0 = non-Asian",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = paste(
+      notes = paste(
         "Log-scale multiplicative effect on clearance, CL * exp(0.0952 * RACE_ASIAN), i.e. a 9.99%",
         "higher CL in Asian participants (Jin 2025 Resource 10 row 'Beta_CL, ASIAN_1'; the +9.99%",
         "transformed value follows the Resource 10 footnote a convention",
@@ -54,14 +54,14 @@ Jin_2025_benralizumab <- function() {
         "selected the ASIAN variant as final -- see covariatesDataExcluded$RACE_CHINESE.",
         "Source column ASIAN."
       ),
-      source_name        = "ASIAN"
+      source_name = "ASIAN"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody status, 1 = positive ADA titer, 0 = no ADA",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody status, 1 = positive ADA titer, 0 = no ADA",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no anti-drug antibody detected)",
-      notes              = paste(
+      notes = paste(
         "Log-scale multiplicative effect on clearance, CL * exp(0.762 * ADA_POS), i.e. a 114% higher",
         "CL (2.14-fold) in ADA-positive participants (Jin 2025 Resource 10 row 'RCLADA', transformed",
         "value +114% under the footnote a convention). Carries its own small NORMALLY distributed",
@@ -72,14 +72,14 @@ Jin_2025_benralizumab <- function() {
         "modellib('Wang_2017_benralizumab') uses a HIGH-TITER (>=400) ADA definition instead;",
         "the two are not interchangeable. Source column ADA."
       ),
-      source_name        = "ADA"
+      source_name = "ADA"
     ),
     STUDY_MICP220 = list(
-      description        = "Study MI-CP220 indicator, 1 = participant enrolled in the phase II MI-CP220 benralizumab study, 0 = any other study",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study MI-CP220 indicator, 1 = participant enrolled in the phase II MI-CP220 benralizumab study, 0 = any other study",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any of the other 11 pooled studies)",
-      notes              = paste(
+      notes = paste(
         "Selects a study-specific absolute subcutaneous bioavailability of 0.457 in place of the",
         "reference 0.539 (Jin 2025 Resource 10 row 'Fa1S220 (fraction)'; the Resource 10 footnote",
         "defines 'Fa1S220 absolute SC bioavailability for study 220'). Fa1S220 carries its own",
@@ -88,14 +88,14 @@ Jin_2025_benralizumab <- function() {
         "the other early studies), encoded here as the separate Cc_micp220 endpoint. Time-fixed per",
         "subject. Derived from the source STUDYN column."
       ),
-      source_name        = "STUDYN"
+      source_name = "STUDYN"
     ),
     STUDY_AMES = list(
-      description        = "AMES study indicator, 1 = participant enrolled in the phase I AMES autoinjector-versus-prefilled-syringe study (NCT02968914), 0 = any other study",
-      units              = "(binary)",
-      type               = "binary",
+      description = "AMES study indicator, 1 = participant enrolled in the phase I AMES autoinjector-versus-prefilled-syringe study (NCT02968914), 0 = any other study",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any of the other 11 pooled studies)",
-      notes              = paste(
+      notes = paste(
         "Selects a study-specific absolute subcutaneous bioavailability of 0.688 in place of the",
         "reference 0.539 (Jin 2025 Resource 10 row 'FaslS30 (fraction)'; the Resource 10 footnote",
         "defines 'Fa1S30 absolute SC bioavailability for AMES study'). Fa1S30 carries its own",
@@ -106,14 +106,14 @@ Jin_2025_benralizumab <- function() {
         "modeling step'. AMES enrolled 180 healthy volunteers receiving a single 30 mg SC dose",
         "(Jin 2025 Table 1). Time-fixed per subject. Derived from the source STUDYN column."
       ),
-      source_name        = "STUDYN"
+      source_name = "STUDYN"
     ),
     DOSE_HIGH = list(
-      description        = "Highest-dose-cohort indicator, 1 = participant received the 200 mg subcutaneous benralizumab dose, 0 = any lower dose",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Highest-dose-cohort indicator, 1 = participant received the 200 mg subcutaneous benralizumab dose, 0 = any lower dose",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any subcutaneous dose below 200 mg)",
-      notes              = paste(
+      notes = paste(
         "Step-function reduction of absolute subcutaneous bioavailability at the top of the dose range:",
         "Fa1 * exp(-0.554 * DOSE_HIGH), a 42.5% reduction (Jin 2025 Resource 10 row 'Rfa1Dose',",
         "transformed value -42.5% under the footnote a convention; the Resource 10 footnote defines",
@@ -127,7 +127,7 @@ Jin_2025_benralizumab <- function() {
         "modellib('Maleki_2024_brepocitinib') and modellib('Hughes_2022_brepocitinib'), except that",
         "the step here is downward. Time-fixed per subject. Derived from the assigned dose level."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
@@ -138,9 +138,9 @@ Jin_2025_benralizumab <- function() {
   covariatesDataExcluded <- list(
     STUDY_PHASE3 = list(
       description = "Phase III study indicator, 1 = participant enrolled in SIROCCO, CALIMA, ZONDA, BISE or MIRACLE, 0 = participant enrolled in one of the phase I/II studies",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "DATASET-CONSTRUCTION GUIDANCE, not a model covariate. It records which of the three",
         "study-stratified residual-error magnitudes applies to a concentration record, and therefore",
         "which of the three model endpoints the record belongs to. Jin 2025 Resource 10 reports three",
@@ -157,9 +157,9 @@ Jin_2025_benralizumab <- function() {
     ),
     RACE_CHINESE = list(
       description = "Chinese-heritage race indicator (all participants from mainland China and Taiwan)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Fitted as an alternative to RACE_ASIAN on clearance (beta 0.115, RSE 20%, Jin 2025",
         "Resource 11 third column, giving exp(0.115) - 1 = +12.2% CL) but NOT retained in the final",
         "popPK model. Jin 2025 Results 3.2: covariate-selection results 'were similar between the",
@@ -175,9 +175,9 @@ Jin_2025_benralizumab <- function() {
     ),
     AGE = list(
       description = "Baseline subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened (Jin 2025 Resource 1 and Resource 2; the legacy covariate set included age and an",
         "adult/adolescent age-group flag) and not retained. Jin 2025 Discussion reports 'the absence",
         "of age-dependent differences in pharmacokinetics'; the adults-only model extrapolated to",
@@ -188,21 +188,21 @@ Jin_2025_benralizumab <- function() {
     ),
     SEXF = list(
       description = "Biological sex indicator, 1 = female, 0 = male",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on CL and V2 (Jin 2025 Resource 1, column SEXF) and not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on CL and V2 (Jin 2025 Resource 1, column SEXF) and not retained in the final model."
     ),
     ALB = list(
       description = "Baseline serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened (Jin 2025 Resource 1 / Resource 2 legacy covariate list) and not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened (Jin 2025 Resource 1 / Resource 2 legacy covariate list) and not retained."
     ),
     CRCL = list(
       description = "Baseline creatinine clearance (Cockcroft-Gault)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened (Jin 2025 Resource 1, column CRCL) and not retained -- expected for a 150 kDa IgG1",
         "monoclonal antibody, which is not renally eliminated. Jin 2025 Table 2 reports",
         "109 +/- 34 mL/min (2.41-349) in adults."
@@ -210,27 +210,27 @@ Jin_2025_benralizumab <- function() {
     ),
     ALT = list(
       description = "Baseline alanine aminotransferase",
-      units       = "ukat/L",
-      type        = "continuous",
-      notes       = "Hepatic marker screened (Jin 2025 Resource 1 / Resource 2) and not retained."
+      units = "ukat/L",
+      type = "continuous",
+      notes = "Hepatic marker screened (Jin 2025 Resource 1 / Resource 2) and not retained."
     ),
     AST = list(
       description = "Baseline aspartate aminotransferase",
-      units       = "ukat/L",
-      type        = "continuous",
-      notes       = "Hepatic marker screened (Jin 2025 Resource 1 / Resource 2) and not retained."
+      units = "ukat/L",
+      type = "continuous",
+      notes = "Hepatic marker screened (Jin 2025 Resource 1 / Resource 2) and not retained."
     ),
     TBIL = list(
       description = "Baseline total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Hepatic marker screened (Jin 2025 Resource 1, column TBL) and not retained."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Hepatic marker screened (Jin 2025 Resource 1, column TBL) and not retained."
     ),
     EOS = list(
       description = "Baseline blood eosinophil count",
-      units       = "cells/uL",
-      type        = "continuous",
-      notes       = paste(
+      units = "cells/uL",
+      type = "continuous",
+      notes = paste(
         "Screened on the PK parameters (Jin 2025 Resource 1, column BEOSL) and not retained. Baseline",
         "eosinophil count IS a retained covariate in the FEV1 exposure-response layer -- see",
         "modellib('Jin_2025_benralizumab_fev1')."
@@ -238,15 +238,15 @@ Jin_2025_benralizumab <- function() {
     ),
     SMOKE = list(
       description = "Smoking history (0 = never, 1 = current, 2 = former)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened (Jin 2025 Resource 1, column TSH) and not retained."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened (Jin 2025 Resource 1, column TSH) and not retained."
     ),
     ILOC = list(
       description = "Subcutaneous injection location (0 = arm, 1 = stomach, 2 = thigh)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Screened on absolute subcutaneous bioavailability while diagnosing the AMES under-prediction.",
         "Jin 2025 Discussion: 'Although the injection site covariate reduced the objective function",
         "value, it did not significantly improve the predictive performance for AMES.' Not retained;",
@@ -255,9 +255,9 @@ Jin_2025_benralizumab <- function() {
     ),
     HEALTHY = list(
       description = "Healthy-volunteer indicator, 1 = healthy subject, 0 = patient with asthma",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on Fa1, CL and V2 while diagnosing the AMES under-prediction and not retained.",
         "Jin 2025 Discussion: the healthy-status effect, 'likely driven by the larger sample size of",
         "AMES (180 subjects) compared with the D3250C00034 study (36 subjects), improved the",
@@ -267,9 +267,9 @@ Jin_2025_benralizumab <- function() {
     ),
     ASSAY = list(
       description = "Bioanalytical assay used (1 = Meso Scale Discovery, 2 = ELISA)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Screened (Jin 2025 Resource 1, column Assay). Not retained as a parameter covariate; assay /",
         "study-era differences are instead absorbed by the three study-stratified residual-error",
         "magnitudes (see STUDY_PHASE3). The three new studies used Meso Scale Discovery with an LLOQ",
@@ -278,39 +278,39 @@ Jin_2025_benralizumab <- function() {
     ),
     SPECIMEN = list(
       description = "Matrix the PK sample was measured in (1 = serum, 2 = plasma)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened (Jin 2025 Resource 1, column Medium) and not retained."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened (Jin 2025 Resource 1, column Medium) and not retained."
     ),
     CONMED_MACROLIDE = list(
       description = "Concomitant macrolide use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (Jin 2025 Resource 1, column CMACR; Resource 2 legacy covariate list) and not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (Jin 2025 Resource 1, column CMACR; Resource 2 legacy covariate list) and not retained."
     ),
     CONMED_MONTELUKAST = list(
       description = "Concomitant montelukast use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (Jin 2025 Resource 1, column CMONT; Resource 2 legacy covariate list) and not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (Jin 2025 Resource 1, column CMONT; Resource 2 legacy covariate list) and not retained."
     ),
     CONMED_PARACETAMOL = list(
       description = "Concomitant paracetamol (acetaminophen) use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (Jin 2025 Resource 1, column CPARA; Resource 2 legacy covariate list) and not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (Jin 2025 Resource 1, column CPARA; Resource 2 legacy covariate list) and not retained."
     ),
     CONMED_PPI = list(
       description = "Concomitant proton-pump-inhibitor use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (Jin 2025 Resource 1, column CPPI; Resource 2 legacy covariate list) and not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (Jin 2025 Resource 1, column CPPI; Resource 2 legacy covariate list) and not retained."
     ),
     CONMED_THEOPHYLLINE = list(
       description = "Concomitant theophylline / aminophylline use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on the PK parameters (Jin 2025 Resource 1, column CTHEO) and not retained.",
         "Theophylline co-medication IS a retained covariate on baseline FEV1 in the FEV1",
         "exposure-response layer -- see modellib('Jin_2025_benralizumab_fev1')."
@@ -319,32 +319,32 @@ Jin_2025_benralizumab <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2855L,
-    n_studies      = 12L,
-    age_range      = "12-75 years (adults 18-75; adolescents 12-17; no participants aged <12 years were enrolled)",
-    age_median     = "48.7 +/- 13 years (mean +/- SD) in adults and 14.4 +/- 1.74 years in adolescents; median not published",
-    weight_range   = "40-204 kg",
-    weight_median  = "77.5 +/- 18.9 kg (mean +/- SD) in adults and 60.6 +/- 20.6 kg in adolescents; median not published",
+    species = "human",
+    n_subjects = 2855L,
+    n_studies = 12L,
+    age_range = "12-75 years (adults 18-75; adolescents 12-17; no participants aged <12 years were enrolled)",
+    age_median = "48.7 +/- 13 years (mean +/- SD) in adults and 14.4 +/- 1.74 years in adolescents; median not published",
+    weight_range = "40-204 kg",
+    weight_median = "77.5 +/- 18.9 kg (mean +/- SD) in adults and 60.6 +/- 20.6 kg in adolescents; median not published",
     sex_female_pct = 60.5,
     race_ethnicity = c(Asian = 20.7, `Asian (Chinese subset)` = 9.8, `non-Asian` = 79.3),
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled: severe, uncontrolled eosinophilic asthma (phase II/III patients) and healthy",
       "volunteers (phase I). Benralizumab is given as add-on maintenance therapy."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "0.0003-3 mg/kg intravenously as a single dose (two phase I and one phase II study);",
       "2-200 mg subcutaneously Q4W or Q8W, with the first three doses Q4W (two phase II studies);",
       "10-100 mg subcutaneously as a single dose (two phase I studies); and 30 mg subcutaneously",
       "Q4W or Q8W (five phase III studies)."
     ),
-    regions        = paste(
+    regions = paste(
       "Multi-regional. 12 pooled phase I-III studies, including the phase III MIRACLE study",
       "(NCT03186209) in 695 Asian patients aged 12-75 years, a phase I study (NCT03928262) in 36",
       "healthy Han Chinese volunteers, and the phase I AMES study (NCT02968914) in 180 healthy",
       "volunteers. Asian participants were mostly East Asian."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Jin 2025 Table 2 (non-Chinese n = 2574, Chinese n = 281, adults",
       "n = 2797, adolescents n = 58). 17,465 serum/plasma benralizumab concentrations from 2855",
       "participants; the nine legacy studies contributed 14,918 observations from 2317 participants.",

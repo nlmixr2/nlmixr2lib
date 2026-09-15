@@ -1,14 +1,13 @@
 test_that("addResErr with each expected residual distribution and combinations", {
-
   model <- readModelDb("PK_1cmt")
 
-  suppressMessages(modelUpdateAdd   <- as.function(addResErr(model, reserr = "addSd")))
-  suppressMessages(modelUpdateProp  <- as.function(addResErr(model, reserr = "propSd")))
+  suppressMessages(modelUpdateAdd <- as.function(addResErr(model, reserr = "addSd")))
+  suppressMessages(modelUpdateProp <- as.function(addResErr(model, reserr = "propSd")))
   suppressMessages(modelUpdateLnorm <- as.function(addResErr(model, reserr = "lnormSd")))
-  suppressMessages(modelUpdateAll   <- as.function(addResErr(model, reserr = c("addSd", "propSd", "lnormSd"))))
+  suppressMessages(modelUpdateAll <- as.function(addResErr(model, reserr = c("addSd", "propSd", "lnormSd"))))
 
-  expect_equal(findBlock(modelUpdateAdd,   "model")[[6]], str2lang("Cc ~ add(CcAddSd)"))
-  expect_equal(findBlock(modelUpdateProp,  "model")[[6]], str2lang("Cc ~ prop(CcPropSd)"))
+  expect_equal(findBlock(modelUpdateAdd, "model")[[6]], str2lang("Cc ~ add(CcAddSd)"))
+  expect_equal(findBlock(modelUpdateProp, "model")[[6]], str2lang("Cc ~ prop(CcPropSd)"))
   expect_equal(findBlock(modelUpdateLnorm, "model")[[6]], str2lang("Cc ~ lnorm(CcLnormSd)"))
   expect_equal(
     findBlock(modelUpdateAll, "model")[[6]],
@@ -47,7 +46,7 @@ test_that("addResErr with des model, changing to additive error", {
   model <- readModelDb("PK_1cmt_des")
   suppressMessages(modelUpdate <- as.function(addResErr(model, reserr = "addSd")))
   # initial conditions are added
-  expect_equal(findBlock(modelUpdate, "ini")[[8]],   str2lang("CcAddSd <- c(0, 1)"))
+  expect_equal(findBlock(modelUpdate, "ini")[[8]], str2lang("CcAddSd <- c(0, 1)"))
   # residual error model is added
   expect_equal(findBlock(modelUpdate, "model")[[9]], str2lang("Cc ~ add(CcAddSd)"))
 })
@@ -56,7 +55,7 @@ test_that("addResErr with linCmt model, changing to additive error", {
   model <- readModelDb("PK_1cmt")
   suppressMessages(modelUpdate <- as.function(addResErr(model, reserr = "addSd")))
   # initial conditions are added
-  expect_equal(findBlock(modelUpdate, "ini")[[8]],   str2lang("CcAddSd <- c(0, 1)"))
+  expect_equal(findBlock(modelUpdate, "ini")[[8]], str2lang("CcAddSd <- c(0, 1)"))
   # residual error model is added
   expect_equal(findBlock(modelUpdate, "model")[[6]], str2lang("Cc ~ add(CcAddSd)"))
 })
@@ -136,7 +135,7 @@ test_that("addResErr with multiple endpoints", {
   )
   addSdE <- suppressMessages(addResErr(model, reserr = "addSd", endpoint = "e"))
   f <- as.function(addSdE)
-  expect_equal(findBlock(f, "ini")[[5]],   str2lang("eAddSd <- c(0, 1)"))
+  expect_equal(findBlock(f, "ini")[[5]], str2lang("eAddSd <- c(0, 1)"))
   expect_equal(findBlock(f, "model")[[4]], str2lang("e ~ add(eAddSd)"))
   # The other endpoint is untouched
   expect_equal(findBlock(f, "model")[[5]], str2lang("f ~ add(d)"))

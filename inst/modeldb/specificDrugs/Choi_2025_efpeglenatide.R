@@ -13,18 +13,18 @@ Choi_2025_efpeglenatide <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot       = list(analyte = "efpeglenatide", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "efpeglenatide", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "efpeglenatide", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "efpeglenatide", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "efpeglenatide", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect normalized to 92 kg on ka (exponent -0.927) and on CL/F",
         "(exponent 0.964) per Choi 2025 Table 3 and the Discussion. The 92 kg",
         "reference is the 'approximate median of the population' called for by",
@@ -32,14 +32,14 @@ Choi_2025_efpeglenatide <- function() {
         "time-varying) weight was used -- Choi 2025 lists the absence of",
         "longitudinal weight as a study limitation."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DIS_DIAB = list(
-      description        = "Type 2 diabetes disease status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Type 2 diabetes disease status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-diabetic obesity, the HM-EXC-205 cohort)",
-      notes              = paste(
+      notes = paste(
         "1 = participant with type 2 diabetes mellitus (n = 293; studies",
         "HM-EXC-102, -201, -202, -203, -204); 0 = non-diabetic participant with",
         "obesity (n = 205; study HM-EXC-205) per Choi 2025 Table 2. Choi 2025",
@@ -54,7 +54,7 @@ Choi_2025_efpeglenatide <- function() {
         "confounded with study in this dataset and the effect cannot be",
         "separated from a study effect."
       ),
-      source_name        = "Obesity status / disease status (T2DM vs obese)"
+      source_name = "Obesity status / disease status (T2DM vs obese)"
     )
   )
 
@@ -63,60 +63,60 @@ Choi_2025_efpeglenatide <- function() {
   # the provenance of the covariate screen survives; not referenced in model().
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age at baseline. Screened on all PK parameters in the SCM forward-inclusion step (Methods 2.6) and not retained in the final model (Table 3).",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline. Screened on all PK parameters in the SCM forward-inclusion step (Methods 2.6) and not retained in the final model (Table 3).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Simulated age subgroups (<=34, 34-52, >=52 years) showed exposure GMRs within 0.80-1.25 of the reference (Figure 6), i.e. no clinically meaningful effect."
+      notes = "Simulated age subgroups (<=34, 34-52, >=52 years) showed exposure GMRs within 0.80-1.25 of the reference (Figure 6), i.e. no clinically meaningful effect."
     ),
     SEXF = list(
-      description        = "Sex. Screened on all PK parameters (Methods 2.6) and not retained in the final model (Table 3).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex. Screened on all PK parameters (Methods 2.6) and not retained in the final model (Table 3).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Cohort was 275/498 female (55.22%, Table 2). Simulated male/female exposure GMRs fell within 0.80-1.25 (Figure 6)."
+      notes = "Cohort was 275/498 female (55.22%, Table 2). Simulated male/female exposure GMRs fell within 0.80-1.25 (Figure 6)."
     ),
     BMI = list(
-      description        = "Body mass index at baseline. Screened on all PK parameters (Methods 2.6) and not retained; body weight was the retained size descriptor.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline. Screened on all PK parameters (Methods 2.6) and not retained; body weight was the retained size descriptor.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Pooled median 33.4 kg/m^2 (range 19.2-57.7, Table 2)."
+      notes = "Pooled median 33.4 kg/m^2 (range 19.2-57.7, Table 2)."
     ),
     LBM = list(
-      description        = "Lean body mass. Screened on all PK parameters (Methods 2.6) and not retained; total body weight was the retained size descriptor.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass. Screened on all PK parameters (Methods 2.6) and not retained; total body weight was the retained size descriptor.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Choi 2025 Table 2 reports this as 'LBW' (lean body weight), a registered alias of the canonical LBM column; pooled median 55.1 kg (range 34.7-89.4). The body-composition formula is not stated in the paper."
+      notes = "Choi 2025 Table 2 reports this as 'LBW' (lean body weight), a registered alias of the canonical LBM column; pooled median 55.1 kg (range 34.7-89.4). The body-composition formula is not stated in the paper."
     ),
     RACE_WHITE = list(
-      description        = "White / Caucasian race indicator. Race was screened as a five-level categorical covariate on all PK parameters (Methods 2.6) and not retained in the final model (Table 3).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White / Caucasian race indicator. Race was screened as a five-level categorical covariate on all PK parameters (Methods 2.6) and not retained in the final model (Table 3).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not Caucasian)",
-      notes              = "Choi 2025 Table 2: 398/498 Caucasian (79.92%). Simulated race-subgroup exposure GMRs fell within 0.80-1.25 (Figure 6)."
+      notes = "Choi 2025 Table 2: 398/498 Caucasian (79.92%). Simulated race-subgroup exposure GMRs fell within 0.80-1.25 (Figure 6)."
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator. Part of the same five-level race screen; not retained.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator. Part of the same five-level race screen; not retained.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not Black)",
-      notes              = "Choi 2025 Table 2: 65/498 Black (13.05%)."
+      notes = "Choi 2025 Table 2: 65/498 Black (13.05%)."
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator. Part of the same five-level race screen; not retained.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator. Part of the same five-level race screen; not retained.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not Asian)",
-      notes              = "Choi 2025 Table 2: 23/498 Asian (4.62%)."
+      notes = "Choi 2025 Table 2: 23/498 Asian (4.62%)."
     ),
     RACE_OTHER = list(
-      description        = "Residual race-category indicator. Part of the same five-level race screen; not retained.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Residual race-category indicator. Part of the same five-level race screen; not retained.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not in the residual category)",
-      notes              = paste(
+      notes = paste(
         "Choi 2025 Table 2 reports two residual levels: 'Others' (13/498) and",
         "'Native Hawaiian or Pacific Islander' (2/498). Both are folded onto",
         "this single canonical column because no NHPI canonical exists and the",
@@ -128,23 +128,29 @@ Choi_2025_efpeglenatide <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 498L,                                   # Choi 2025 Table 2 Total column
-    n_studies      = 6L,                                     # Choi 2025 Table 1: HM-EXC-102 (phase 1) and -201/-202/-203/-204/-205 (phase 2)
-    n_observations = 3316L,                                  # Choi 2025 Methods 2.2: post-dose concentrations above LLOQ used in estimation (3,596 collected)
-    age_range      = "18-64 years",                          # Choi 2025 Table 2 Total column; see notes -- per-study ranges reach 75 years
-    age_median     = "52 years",                             # Choi 2025 Table 2 Total column
-    weight_range   = "49.7-191 kg",                          # Choi 2025 Table 2 Total column
-    weight_median  = "93.6 kg",                              # Choi 2025 Table 2 Total column
-    bmi_range      = "19.2-57.7 kg/m^2",                     # Choi 2025 Table 2 Total column
-    bmi_median     = "33.4 kg/m^2",                          # Choi 2025 Table 2 Total column
-    height_range   = "142-201 cm",                           # Choi 2025 Table 2 Total column
-    sex_female_pct = 55.22,                                  # Choi 2025 Table 2: 275/498 female
-    race_ethnicity = c(Caucasian = 79.92, Black = 13.05, Asian = 4.62, `Native Hawaiian or Pacific Islander` = 0.4, Other = 1.92),  # Choi 2025 Table 2 Total column
-    disease_state  = "Type 2 diabetes mellitus (293 participants, 58.84%) or non-diabetic obesity (205 participants, 41.16%)",  # Choi 2025 Table 2
-    dose_range     = "Subcutaneous efpeglenatide. Single ascending doses 2-100 ug/kg; multiple doses 0.3-6 mg once weekly (QW), 6-8 mg every two weeks (Q2W), and 8-16 mg once monthly (QM)",  # Choi 2025 Table 1
-    regions        = "Multicenter, international",           # Choi 2025 Table 1 (HM-EXC-203 described as multicenter, international)
-    notes          = paste(
+    species = "human",
+    n_subjects = 498L, # Choi 2025 Table 2 Total column
+    n_studies = 6L, # Choi 2025 Table 1: HM-EXC-102 (phase 1) and -201/-202/-203/-204/-205 (phase 2)
+    n_observations = 3316L, # Choi 2025 Methods 2.2: post-dose concentrations above LLOQ used in estimation (3,596 collected)
+    age_range = "18-64 years", # Choi 2025 Table 2 Total column; see notes -- per-study ranges reach 75 years
+    age_median = "52 years", # Choi 2025 Table 2 Total column
+    weight_range = "49.7-191 kg", # Choi 2025 Table 2 Total column
+    weight_median = "93.6 kg", # Choi 2025 Table 2 Total column
+    bmi_range = "19.2-57.7 kg/m^2", # Choi 2025 Table 2 Total column
+    bmi_median = "33.4 kg/m^2", # Choi 2025 Table 2 Total column
+    height_range = "142-201 cm", # Choi 2025 Table 2 Total column
+    sex_female_pct = 55.22, # Choi 2025 Table 2: 275/498 female
+    race_ethnicity = c(
+      Caucasian = 79.92,
+      Black = 13.05,
+      Asian = 4.62,
+      `Native Hawaiian or Pacific Islander` = 0.4,
+      Other = 1.92
+    ), # Choi 2025 Table 2 Total column
+    disease_state = "Type 2 diabetes mellitus (293 participants, 58.84%) or non-diabetic obesity (205 participants, 41.16%)", # Choi 2025 Table 2
+    dose_range = "Subcutaneous efpeglenatide. Single ascending doses 2-100 ug/kg; multiple doses 0.3-6 mg once weekly (QW), 6-8 mg every two weeks (Q2W), and 8-16 mg once monthly (QM)", # Choi 2025 Table 1
+    regions = "Multicenter, international", # Choi 2025 Table 1 (HM-EXC-203 described as multicenter, international)
+    notes = paste(
       "Pooled analysis of one phase 1 (HM-EXC-102) and five phase 2",
       "(HM-EXC-201, -202, -203, -204, -205) studies; liraglutide comparator",
       "arms in HM-EXC-102 and HM-EXC-203 were excluded (Methods 2.1).",

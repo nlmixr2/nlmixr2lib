@@ -24,38 +24,38 @@ Bartko_2018_sutimlimab <- function() {
 
   covariateData <- list(
     CP_SUTIMLIMAB_UGML = list(
-      description        = "Instantaneous sutimlimab (BIVV009 / TNT009) serum concentration at the time of each CP-activity observation, supplied as a time-varying covariate from observed serum samples or an upstream PK source.",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Instantaneous sutimlimab (BIVV009 / TNT009) serum concentration at the time of each CP-activity observation, supplied as a time-varying covariate from observed serum samples or an upstream PK source.",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying per event row. Drives the sigmoidal Imax expression",
         "CPactivity = e0 - imax * CP_SUTIMLIMAB_UGML^hill / (ic50^hill + CP_SUTIMLIMAB_UGML^hill).",
         "In Bartko 2018 this was the individual serum sutimlimab concentration measured by a validated immunoassay at a GLP-certified laboratory (Vela Laboratories, Vienna, Austria; Bartko 2018 Methods, 'Pharmacokinetics'), time-matched to the CP activity measured in the same sample (Methods, 'PK/PD').",
         "Reference values observed (Bartko 2018 Table 2): mean Cmax rose from 40 ug/mL at 3 mg/kg to 2036 ug/mL at 100 mg/kg after a single 60-minute i.v. infusion; concentrations were below the limit of quantification at the 0.3 and 1 mg/kg dose levels, so those two cohorts contribute no concentration-effect pairs.",
         "Set to 0 outside the drug-exposure window (the inhibition term then collapses to 0 and CPactivity returns to e0)."
       ),
-      source_name        = NA_character_
+      source_name = NA_character_
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 48L,
-    n_studies      = 1L,
-    age_range      = "19-59 years (part A sutimlimab arms, median 32); 22-41 years (part B sutimlimab arms, median 27)",
-    age_median     = "32 years (part A sutimlimab); 27 years (part B sutimlimab)",
-    weight_range   = "not tabulated as a range; cohort means (SD) ran 55 (3) to 79 (4) kg. Protocol excluded body weight > 98 kg, and > 58 kg for the 100 mg/kg part A cohort",
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = 48L,
+    n_studies = 1L,
+    age_range = "19-59 years (part A sutimlimab arms, median 32); 22-41 years (part B sutimlimab arms, median 27)",
+    age_median = "32 years (part A sutimlimab); 27 years (part B sutimlimab)",
+    weight_range = "not tabulated as a range; cohort means (SD) ran 55 (3) to 79 (4) kg. Protocol excluded body weight > 98 kg, and > 58 kg for the 100 mg/kg part A cohort",
+    weight_median = NA_character_,
     sex_female_pct = 45.8,
     race_ethnicity = c(Caucasian = 95.8, African = 4.2),
-    disease_state  = "healthy volunteers (no complement-mediated disorder); all vaccinated against encapsulated bacterial pathogens before dosing",
-    dose_range     = paste(
+    disease_state = "healthy volunteers (no complement-mediated disorder); all vaccinated against encapsulated bacterial pathogens before dosing",
+    dose_range = paste(
       "Part A (single ascending dose): 0.3, 1, 3, 10, 30, 60, or 100 mg/kg sutimlimab or placebo as a single ~60-minute i.v. infusion, 3:1 active:placebo (n = 3 active for 0.3 and 1 mg/kg, n = 6 active for the remainder).",
       "Part B (multiple ascending dose): 30 or 60 mg/kg sutimlimab or placebo as four once-weekly ~60-minute i.v. infusions (n = 6 active per dose level), with a 2-week follow-up observation period."
     ),
-    regions        = "Single centre: Department of Clinical Pharmacology, Medical University of Vienna, Austria",
-    notes          = paste(
+    regions = "Single centre: Department of Clinical Pharmacology, Medical University of Vienna, Austria",
+    notes = paste(
       "Baseline demographics are Bartko 2018 Table 1; 48 of the 64 enrolled volunteers received sutimlimab (36 in part A, 12 in part B) and 16 received placebo.",
       "Part C of the integrated protocol (patients with a complement-mediated disorder) was ongoing and is not reported in this publication, so this model is fit to healthy volunteers only.",
       "Baseline CP activity was normal in every subject (part A: placebo 95% +/- 10%, sutimlimab 97% +/- 14%; part B: placebo 99% +/- 7%, sutimlimab 94% +/- 18%).",

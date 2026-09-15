@@ -22,7 +22,7 @@ Leroux_2018_fluconazole <- function() {
     sep = " "
   )
   vignette <- "Leroux_2018_fluconazole_micafungin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -33,11 +33,11 @@ Leroux_2018_fluconazole <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight at the time of dosing",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight at the time of dosing",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Median 1.255 kg (range 0.750-4.255) at randomization in the",
         "fluconazole arm (Table 2). Enters CL and V as a linear per-kg",
         "scalar: CL_i = TVCL * WT_i and V_i = TVV * WT_i, matching the",
@@ -48,16 +48,16 @@ Leroux_2018_fluconazole <- function() {
         "not state an allometric exponent; the per-kg units in Table 3",
         "imply linear (exponent 1) scaling."
       ),
-      source_name        = "Current weight"
+      source_name = "Current weight"
     )
   )
 
   covariatesDataExcluded <- list(
     PAGE = list(
       description = "Postmenstrual age (gestational age at birth + postnatal age)",
-      units       = "months",
-      type        = "continuous",
-      notes       = paste(
+      units = "months",
+      type = "continuous",
+      notes = paste(
         "The Discussion ('our data confirmed that weight (for both",
         "antifungal agents) and postmenstrual age (only for fluconazole)",
         "influence PK in preterm neonates') indicates a postmenstrual",
@@ -75,9 +75,9 @@ Leroux_2018_fluconazole <- function() {
     ),
     GA = list(
       description = "Gestational age at birth",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = paste(
+      units = "weeks",
+      type = "continuous",
+      notes = paste(
         "Reported in Table 2 (median 28 + 2 weeks, range 24 + 1 to",
         "40 + 1 weeks). Used by the original authors to derive PAGE",
         "(via PAGE = GA + postnatal age); not retained as a covariate",
@@ -86,9 +86,9 @@ Leroux_2018_fluconazole <- function() {
     ),
     PNA = list(
       description = "Postnatal age",
-      units       = "months",
-      type        = "continuous",
-      notes       = paste(
+      units = "months",
+      type = "continuous",
+      notes = paste(
         "Reported in Table 2 in days (median 13.5, range 2.0-101.0).",
         "Used by the original authors to derive PAGE; not retained as",
         "a covariate on fluconazole CL in the final model."
@@ -97,16 +97,16 @@ Leroux_2018_fluconazole <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 18L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 18L,
+    n_studies = 1L,
     n_observations = 82L,
-    age_range      = "postnatal 2.0-101.0 days (median 13.5)",
-    ga_range       = "24 + 1 to 40 + 1 weeks (median 28 + 2)",
-    pma_range      = "25.6-49.1 weeks at randomization (median 30.4)",
-    weight_range   = "0.750-4.255 kg current weight at randomization (median 1.255); 0.640-3.960 kg birth weight (median 0.995)",
+    age_range = "postnatal 2.0-101.0 days (median 13.5)",
+    ga_range = "24 + 1 to 40 + 1 weeks (median 28 + 2)",
+    pma_range = "25.6-49.1 weeks at randomization (median 30.4)",
+    weight_range = "0.750-4.255 kg current weight at randomization (median 1.255); 0.640-3.960 kg birth weight (median 0.995)",
     sex_female_pct = 38.9,
-    disease_state  = paste(
+    disease_state = paste(
       "Preterm and term neonates and young infants (24-42 weeks",
       "corrected gestational age; postnatal age between 48 h and day",
       "of life 120 at culture acquisition) with suspected or",
@@ -114,7 +114,7 @@ Leroux_2018_fluconazole <- function() {
       "treated in five French and one Spanish neonatal intensive care",
       "units between 2013 and 2015."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous fluconazole, 2-hour infusion. Loading dose 25",
       "mg/kg on day 1 (cohort median 25.0 mg/kg/dose, range 21.4-27.3);",
       "maintenance dose 12 mg/kg/day for CGA < 30 weeks or 20",
@@ -123,8 +123,8 @@ Leroux_2018_fluconazole <- function() {
       "10.52 mg/kg/day, range 4.78-20.43). Treatment duration median",
       "6 days (range 1-20)."
     ),
-    regions        = "France (Amiens, Lille, Paris, Saint Pierre de la Reunion) and Spain (Salamanca); FP7 TINN consortium, 2013-2015.",
-    notes          = paste(
+    regions = "France (Amiens, Lille, Paris, Saint Pierre de la Reunion) and Spain (Salamanca); FP7 TINN consortium, 2013-2015.",
+    notes = paste(
       "Randomized 1:1 to fluconazole vs micafungin; PK samples on",
       "treatment days 1 and 5 per the limited-PK schedule in Table 1",
       "(2-3 samples per occasion, 4 alternative schedules depending",

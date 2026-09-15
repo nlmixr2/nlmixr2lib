@@ -16,35 +16,35 @@ vanRongen_2018_metformin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "metformin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation covariate on CL/F with reference 75.8 kg (study median). Source column 'TBW' renamed to canonical 'WT' on input. Time-fixed at baseline.",
-      source_name        = "TBW"
+      notes = "Linear-deviation covariate on CL/F with reference 75.8 kg (study median). Source column 'TBW' renamed to canonical 'WT' on input. Time-fixed at baseline.",
+      source_name = "TBW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 22L,
-    n_studies      = 1L,
-    age_range      = "11.1-17.5 years",
-    age_median     = "14.5 years (mean)",
-    weight_range   = "54.7-104.9 kg",
-    weight_median  = "75.8 kg (study median, used as reference in covariate model); 79.3 kg (mean)",
+    species = "human",
+    n_subjects = 22L,
+    n_studies = 1L,
+    age_range = "11.1-17.5 years",
+    age_median = "14.5 years (mean)",
+    weight_range = "54.7-104.9 kg",
+    weight_median = "75.8 kg (study median, used as reference in covariate model); 79.3 kg (mean)",
     sex_female_pct = 72.7,
     race_ethnicity = c(White = 100),
-    disease_state  = "Overweight and obese insulin-resistant adolescents (BMI-SDS > 2.3, HOMA-IR >= 3.4); no T2DM. All of Caucasian (Dutch) descent. 5 overweight, 17 obese.",
-    dose_range     = "Oral metformin 500 mg (n=3) or 1000 mg (n=19) twice daily for 37 weeks; PK sub-study sampled an OGTT dose in the fasted state.",
-    regions        = "Netherlands (St Antonius Hospital Nieuwegein and Jeroen Bosch Hospital 's-Hertogenbosch)",
-    notes          = "Demographics from Table 1 of van Rongen 2018. NCT01487993 / EudraCT 2010-023980-17. The 75.8 kg reference weight used by the final covariate model on CL/F is the study median TBW (paper Section 3.3 / Table 2)."
+    disease_state = "Overweight and obese insulin-resistant adolescents (BMI-SDS > 2.3, HOMA-IR >= 3.4); no T2DM. All of Caucasian (Dutch) descent. 5 overweight, 17 obese.",
+    dose_range = "Oral metformin 500 mg (n=3) or 1000 mg (n=19) twice daily for 37 weeks; PK sub-study sampled an OGTT dose in the fasted state.",
+    regions = "Netherlands (St Antonius Hospital Nieuwegein and Jeroen Bosch Hospital 's-Hertogenbosch)",
+    notes = "Demographics from Table 1 of van Rongen 2018. NCT01487993 / EudraCT 2010-023980-17. The 75.8 kg reference weight used by the final covariate model on CL/F is the study median TBW (paper Section 3.3 / Table 2)."
   )
 
   ini({

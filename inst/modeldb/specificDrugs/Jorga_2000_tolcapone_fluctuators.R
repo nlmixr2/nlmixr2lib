@@ -13,83 +13,85 @@ Jorga_2000_tolcapone_fluctuators <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tolcapone fluctuators", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tolcapone fluctuators", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tolcapone fluctuators", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tolcapone fluctuators", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tolcapone fluctuators", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body mass (paper alias 'LBW', lean body weight; computed via James 1976 formula from total body weight and height)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass (paper alias 'LBW', lean body weight; computed via James 1976 formula from total body weight and height)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form covariate on CL and Vc with reference 55 kg (population median, Table 1). Computed per James 1976: LBW(kg) = (1.10*BW - 128*BW^2/HT^2) for males, (1.07*BW - 148*BW^2/HT^2) for females, with BW in kg and HT in cm (Jorga 2000 Methods).",
-      source_name        = "LBW"
+      notes = "Power-form covariate on CL and Vc with reference 55 kg (population median, Table 1). Computed per James 1976: LBW(kg) = (1.10*BW - 128*BW^2/HT^2) for males, (1.07*BW - 148*BW^2/HT^2) for females, with BW in kg and HT in cm (Jorga 2000 Methods).",
+      source_name = "LBW"
     ),
     TPRO = list(
-      description        = "Total serum protein",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total serum protein",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form covariate on CL with reference 72 g/L (population median, Table 1). Source column 'Protein' in the paper.",
-      source_name        = "Protein"
+      notes = "Power-form covariate on CL with reference 72 g/L (population median, Table 1). Source column 'Protein' in the paper.",
+      source_name = "Protein"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form covariate on Vp with reference 44 g/L (population median, Table 1). Source column 'Albumin' in the paper.",
-      source_name        = "Albumin"
+      notes = "Power-form covariate on Vp with reference 44 g/L (population median, Table 1). Source column 'Albumin' in the paper.",
+      source_name = "Albumin"
     ),
     DOSE_50MG = list(
-      description        = "Subject-level indicator for the 50 mg three-times-daily tolcapone dose group (1 = 50 mg t.i.d. arm, 0 = 200 mg or 400 mg t.i.d. arm)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Subject-level indicator for the 50 mg three-times-daily tolcapone dose group (1 = 50 mg t.i.d. arm, 0 = 200 mg or 400 mg t.i.d. arm)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (200 mg or 400 mg t.i.d. arm; combined with DOSE_400MG = 0 selects the 200 mg reference)",
-      notes              = "Paper indicator I_Dose50mg; subject-level (each fluctuator patient was randomized to one of 50/200/400 mg t.i.d.). Multiplicative effect (1 + e_dose_50mg_vc_vp * DOSE_50MG) applied to Vc and to Vp; e_dose_50mg_vc_vp = -0.45 means V is 55% of the 200 mg reference at the 50 mg dose. The dose-dependent V is an empirical finding the authors note is plausibly driven by a few high-V outliers in the small-volume cohort and was NOT confirmed in the nonfluctuator dataset (Jorga 2000 Discussion).",
-      source_name        = "(derived from study-arm dose level)"
+      notes = "Paper indicator I_Dose50mg; subject-level (each fluctuator patient was randomized to one of 50/200/400 mg t.i.d.). Multiplicative effect (1 + e_dose_50mg_vc_vp * DOSE_50MG) applied to Vc and to Vp; e_dose_50mg_vc_vp = -0.45 means V is 55% of the 200 mg reference at the 50 mg dose. The dose-dependent V is an empirical finding the authors note is plausibly driven by a few high-V outliers in the small-volume cohort and was NOT confirmed in the nonfluctuator dataset (Jorga 2000 Discussion).",
+      source_name = "(derived from study-arm dose level)"
     ),
     DOSE_400MG = list(
-      description        = "Subject-level indicator for the 400 mg three-times-daily tolcapone dose group (1 = 400 mg t.i.d. arm, 0 = 50 mg or 200 mg t.i.d. arm)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Subject-level indicator for the 400 mg three-times-daily tolcapone dose group (1 = 400 mg t.i.d. arm, 0 = 50 mg or 200 mg t.i.d. arm)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (50 mg or 200 mg t.i.d. arm; combined with DOSE_50MG = 0 selects the 200 mg reference)",
-      notes              = "Paper indicator I_Dose400mg; subject-level. Multiplicative effect (1 + e_dose_400mg_vc_vp * DOSE_400MG) applied to Vc and to Vp; e_dose_400mg_vc_vp = +0.40 means V is 140% of the 200 mg reference at the 400 mg dose. See DOSE_50MG notes for the empirical caveat.",
-      source_name        = "(derived from study-arm dose level)"
+      notes = "Paper indicator I_Dose400mg; subject-level. Multiplicative effect (1 + e_dose_400mg_vc_vp * DOSE_400MG) applied to Vc and to Vp; e_dose_400mg_vc_vp = +0.40 means V is 140% of the 200 mg reference at the 400 mg dose. See DOSE_50MG notes for the empirical caveat.",
+      source_name = "(derived from study-arm dose level)"
     ),
     FED = list(
-      description        = "Fed-vs-fasted dose-record indicator (1 = dose taken with concomitant food, 0 = fasted)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted dose-record indicator (1 = dose taken with concomitant food, 0 = fasted)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Paper indicator I_Food. Multiplicative effect (1 + e_food_f * FED) applied on F1; e_food_f = -0.12 corresponds to a ~12% reduction in relative bioavailability in the fed state for the fluctuator cohort (Jorga 2000 Table 3 theta_Food = 0.88; Discussion: 10-15% reduction in fluctuators). Reference fasted F1 fixed at 0.6.",
-      source_name        = "Food"
+      notes = "Paper indicator I_Food. Multiplicative effect (1 + e_food_f * FED) applied on F1; e_food_f = -0.12 corresponds to a ~12% reduction in relative bioavailability in the fed state for the fluctuator cohort (Jorga 2000 Table 3 theta_Food = 0.88; Discussion: 10-15% reduction in fluctuators). Reference fasted F1 fixed at 0.6.",
+      source_name = "Food"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 215L,
-    n_studies      = 2L,
-    study_names    = c("Fluctuator 50 mg t.i.d. (n = 75)",
-                       "Fluctuator 200 mg t.i.d. (n = 74)",
-                       "Fluctuator 400 mg t.i.d. (n = 66)"),
+    species = "human",
+    n_subjects = 215L,
+    n_studies = 2L,
+    study_names = c(
+      "Fluctuator 50 mg t.i.d. (n = 75)",
+      "Fluctuator 200 mg t.i.d. (n = 74)",
+      "Fluctuator 400 mg t.i.d. (n = 66)"
+    ),
     n_observations = 981L,
-    age_range      = "34-82 years",
-    age_median     = "65 years",
-    weight_range   = "36-153 kg",
-    weight_median  = "71 kg",
-    lbm_range      = "25-83 kg",
-    lbm_median     = "55 kg",
+    age_range = "34-82 years",
+    age_median = "65 years",
+    weight_range = "36-153 kg",
+    weight_median = "71 kg",
+    lbm_range = "25-83 kg",
+    lbm_median = "55 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = c(Caucasian = 98.0, Black = 0.24, Asian = 0.73, Other = 1.46),
-    disease_state  = "Parkinson's disease with fluctuating motor response to levodopa/AADC inhibitor therapy ('fluctuators')",
-    dose_range     = "50, 200, or 400 mg tolcapone three times daily for 6 weeks, in addition to ongoing levodopa-carbidopa (Sinemet) or levodopa-benserazide (Madopar) therapy",
-    regions        = "Three multicentre Phase II dose-finding studies across 49 centres worldwide",
-    sampling       = "Sparse: 5-8 plasma samples per patient on 2-5 occasions across study days 14, 21/28, and 42; samples taken pre-dose, near Cmax, and during the decline phase",
-    notes          = "Demographics aggregated for the combined fluctuator + nonfluctuator population in Table 1; n=412 enrolled, n=275 with PK data (215 fluctuators + 60 nonfluctuators), and the demographics here are taken from the combined-cohort 'Fluctuators' column of Table 1 where reported (n=315 for the broader fluctuator-arm denominator)."
+    disease_state = "Parkinson's disease with fluctuating motor response to levodopa/AADC inhibitor therapy ('fluctuators')",
+    dose_range = "50, 200, or 400 mg tolcapone three times daily for 6 weeks, in addition to ongoing levodopa-carbidopa (Sinemet) or levodopa-benserazide (Madopar) therapy",
+    regions = "Three multicentre Phase II dose-finding studies across 49 centres worldwide",
+    sampling = "Sparse: 5-8 plasma samples per patient on 2-5 occasions across study days 14, 21/28, and 42; samples taken pre-dose, near Cmax, and during the decline phase",
+    notes = "Demographics aggregated for the combined fluctuator + nonfluctuator population in Table 1; n=412 enrolled, n=275 with PK data (215 fluctuators + 60 nonfluctuators), and the demographics here are taken from the combined-cohort 'Fluctuators' column of Table 1 where reported (n=315 for the broader fluctuator-arm denominator)."
   )
 
   ini({

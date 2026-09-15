@@ -12,11 +12,11 @@ Li_2024_orin1001 <- function() {
 
   covariateData <- list(
     TBILI = list(
-      description        = "Total serum bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline value; power scaling on CL/F normalized to the cohort median",
         "of 10.3 umol/L (Table 1, Eq. 3). Negative exponent: higher bilirubin",
         "lowers apparent clearance, interpreted by the authors as a marker of",
@@ -25,14 +25,14 @@ Li_2024_orin1001 <- function() {
         "so no mg/dL conversion is required.",
         sep = " "
       ),
-      source_name        = "TBIL"
+      source_name = "TBIL"
     ),
     LBM = list(
-      description        = "Lean body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Derived from body weight, height, and sex via the Janmahasatian et al.",
         "(2005) formula, per Methods section 2.4.2. Power scaling on CL/F",
         "(Eq. 3) and on CL2/F (Eq. S1), both normalized to the cohort median of",
@@ -40,14 +40,14 @@ Li_2024_orin1001 <- function() {
         "canonical register name for the same quantity.",
         sep = " "
       ),
-      source_name        = "LBW"
+      source_name = "LBW"
     ),
     LDH = list(
-      description        = "Serum lactate dehydrogenase",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Serum lactate dehydrogenase",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline value; power scaling on V2/F normalized to the cohort median",
         "of 214 IU/L (Table 1, Eq. S3, and the Figure 6 reference-patient",
         "definition). Retained as statistically significant but the authors",
@@ -56,46 +56,46 @@ Li_2024_orin1001 <- function() {
         "register's canonical U/L.",
         sep = " "
       ),
-      source_name        = "LDH"
+      source_name = "LDH"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte  = "ORIN1001",
-      units    = "mg",
+      analyte = "ORIN1001",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "ORIN1001",
-      units    = "mg",
+      analyte = "ORIN1001",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "ORIN1001",
-      units    = "mg",
+      analyte = "ORIN1001",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 25,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 25,
+    n_studies = 1,
     n_observations = 471,
-    age_range      = "37-72 years",
-    age_median     = "57 years",
-    weight_range   = "42-80 kg",
-    weight_median  = "64 kg",
+    age_range = "37-72 years",
+    age_median = "57 years",
+    weight_range = "42-80 kg",
+    weight_median = "64 kg",
     sex_female_pct = 48,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "advanced solid tumors",
-    dose_range     = "100-900 mg orally once daily",
-    regions        = "China",
-    notes          = paste(
+    disease_state = "advanced solid tumors",
+    dose_range = "100-900 mg orally once daily",
+    regions = "China",
+    notes = paste(
       "Phase I open-label, dose-escalation and dose-expansion basket trial",
       "(NCT05154201) at Peking University Cancer Hospital. Seven dose groups",
       "(100, 200, 300, 400, 500, 650, 900 mg QD). Each subject was followed for",

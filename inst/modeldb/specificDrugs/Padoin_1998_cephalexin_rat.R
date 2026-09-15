@@ -10,8 +10,8 @@ Padoin_1998_cephalexin_rat <- function() {
   )
   vignette <- "Padoin_1998_cephalexin_rat"
   units <- list(
-    time          = "h",
-    dosing        = "mg/kg",
+    time = "h",
+    dosing = "mg/kg",
     concentration = "mg/L"
   )
 
@@ -19,34 +19,34 @@ Padoin_1998_cephalexin_rat <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "cephalexin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "cephalexin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "cephalexin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "cephalexin", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cephalexin", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_QPRL_ORAL = list(
-      description        = "Indicator for concomitant oral (gastric-tube) quinapril coadministration: 1 = subject received oral quinapril (Padoin 1998 group 5: cephalexin GT + quinapril GT), 0 = otherwise (Padoin 1998 groups 1 (cephalexin IA only), 2 (cephalexin IA + quinapril IA), 3 (cephalexin IA + quinapril GT), 4 (cephalexin GT only)).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for concomitant oral (gastric-tube) quinapril coadministration: 1 = subject received oral quinapril (Padoin 1998 group 5: cephalexin GT + quinapril GT), 0 = otherwise (Padoin 1998 groups 1 (cephalexin IA only), 2 (cephalexin IA + quinapril IA), 3 (cephalexin IA + quinapril GT), 4 (cephalexin GT only)).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no oral quinapril coadministration; reference pools groups 1-4 because the paper found no DDI on cephalexin CL or Ka in any of these conditions)",
-      notes              = "Padoin 1998 dose / regimen: single 0.8 mg/kg oral dose of quinapril via gastric tube, administered 15 min before the 50 mg/kg oral cephalexin dose (also via gastric tube), in male Wistar rats (n = 8 per group). Time-fixed per subject (parallel-group design). The paper's final model specifies CL = 0.640 L/h/kg and Ka = 0.177 1/h when CONMED_QPRL_ORAL = 1 vs the reference CL = 0.810 L/h/kg and Ka = 0.249 1/h when CONMED_QPRL_ORAL = 0. The reference category pools group 3 (cephalexin IA + quinapril GT) into the no-DDI condition because the paper specifies CL_j = CL1 = 0.810 L/h/kg for groups 1-4 and only group 5 receives the lower CL; Ka is irrelevant in groups 1-3 (IA dosing skips the depot compartment).",
-      source_name        = "(derived from the paper's group indicator; the paper's final model writes 'Ka_j = Ka1 if quinapril is not given; Ka_j = Ka2 if quinapril is given via a GT' and 'CL_j = CL1 for groups 1 to 4; CL_j = CL2 for group 5', collapsing both effects into the single binary CONMED_QPRL_ORAL canonical column for downstream simulation)"
+      notes = "Padoin 1998 dose / regimen: single 0.8 mg/kg oral dose of quinapril via gastric tube, administered 15 min before the 50 mg/kg oral cephalexin dose (also via gastric tube), in male Wistar rats (n = 8 per group). Time-fixed per subject (parallel-group design). The paper's final model specifies CL = 0.640 L/h/kg and Ka = 0.177 1/h when CONMED_QPRL_ORAL = 1 vs the reference CL = 0.810 L/h/kg and Ka = 0.249 1/h when CONMED_QPRL_ORAL = 0. The reference category pools group 3 (cephalexin IA + quinapril GT) into the no-DDI condition because the paper specifies CL_j = CL1 = 0.810 L/h/kg for groups 1-4 and only group 5 receives the lower CL; Ka is irrelevant in groups 1-3 (IA dosing skips the depot compartment).",
+      source_name = "(derived from the paper's group indicator; the paper's final model writes 'Ka_j = Ka1 if quinapril is not given; Ka_j = Ka2 if quinapril is given via a GT' and 'CL_j = CL1 for groups 1 to 4; CL_j = CL2 for group 5', collapsing both effects into the single binary CONMED_QPRL_ORAL canonical column for downstream simulation)"
     )
   )
 
   population <- list(
-    species        = "rat (male Wistar, IFACREDO, L'Arbresle, France)",
-    n_subjects     = 40L,
-    n_studies      = 1L,
-    age_range      = "not reported (animals fasted 18 h before the experiment, water freely available)",
-    weight_range   = "250-280 g body weight at experiment start",
+    species = "rat (male Wistar, IFACREDO, L'Arbresle, France)",
+    n_subjects = 40L,
+    n_studies = 1L,
+    age_range = "not reported (animals fasted 18 h before the experiment, water freely available)",
+    weight_range = "250-280 g body weight at experiment start",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = "healthy rats prepared with an indwelling carotid artery catheter (installed 24 h pre-experiment under thiopental anesthesia, 50 mg/kg IP) for intra-arterial drug administration and serial arterial blood sampling; oral doses delivered via gastric tube as a 2% methylcellulose suspension",
-    dose_range     = "single 50 mg/kg dose of cephalexin (IA or via gastric tube) +/- single 0.8 mg/kg dose of quinapril (IA or via gastric tube, administered 15 min before cephalexin when given orally)",
-    regions        = "preclinical (in-vivo rat); Hopital Avicenne, Bobigny, France",
-    notes          = "Five parallel groups of n = 8 rats each (total n = 40): group 1 cephalexin IA only; group 2 cephalexin IA + quinapril IA; group 3 cephalexin IA + quinapril via GT; group 4 cephalexin via GT only; group 5 cephalexin via GT + quinapril via GT (the only group with the demonstrated DDI). Arterial blood samples (0.15 mL) collected at 0, 5, 15, 30, 45, 60, 90 min and 2, 3, 4, 5, 6 h after cephalexin administration; blood volume replaced with twice-volume isotonic saline after 30 min. Cephalexin assayed by HPLC with UV detection at 262 nm (Spherisorb C18 column); calibration linear 2-100 mg/L, LLOQ 2.0 mg/L, interassay precision 7-10% CV (paper Methods, Analytical methods). Cephalexin plasma protein binding determined ex vivo (n = 5 separate rats) was constant at fu = 0.82 +/- 0.08 at 5, 30, and 120 min post-dose. Population fit by NONMEM IV.2.0 with the first-order conditional estimation method (METHOD=COND); both groups 1-4 and group 5 were fit jointly to give the final model in paper Table 4."
+    disease_state = "healthy rats prepared with an indwelling carotid artery catheter (installed 24 h pre-experiment under thiopental anesthesia, 50 mg/kg IP) for intra-arterial drug administration and serial arterial blood sampling; oral doses delivered via gastric tube as a 2% methylcellulose suspension",
+    dose_range = "single 50 mg/kg dose of cephalexin (IA or via gastric tube) +/- single 0.8 mg/kg dose of quinapril (IA or via gastric tube, administered 15 min before cephalexin when given orally)",
+    regions = "preclinical (in-vivo rat); Hopital Avicenne, Bobigny, France",
+    notes = "Five parallel groups of n = 8 rats each (total n = 40): group 1 cephalexin IA only; group 2 cephalexin IA + quinapril IA; group 3 cephalexin IA + quinapril via GT; group 4 cephalexin via GT only; group 5 cephalexin via GT + quinapril via GT (the only group with the demonstrated DDI). Arterial blood samples (0.15 mL) collected at 0, 5, 15, 30, 45, 60, 90 min and 2, 3, 4, 5, 6 h after cephalexin administration; blood volume replaced with twice-volume isotonic saline after 30 min. Cephalexin assayed by HPLC with UV detection at 262 nm (Spherisorb C18 column); calibration linear 2-100 mg/L, LLOQ 2.0 mg/L, interassay precision 7-10% CV (paper Methods, Analytical methods). Cephalexin plasma protein binding determined ex vivo (n = 5 separate rats) was constant at fu = 0.82 +/- 0.08 at 5, 30, and 120 min post-dose. Population fit by NONMEM IV.2.0 with the first-order conditional estimation method (METHOD=COND); both groups 1-4 and group 5 were fit jointly to give the final model in paper Table 4."
   )
 
   ini({

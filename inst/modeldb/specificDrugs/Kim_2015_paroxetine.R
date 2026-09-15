@@ -8,45 +8,45 @@ Kim_2015_paroxetine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "paroxetine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "paroxetine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "paroxetine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Daily paroxetine dose administered at steady state (per-subject)",
-      units              = "mg",
-      type               = "continuous",
+      description = "Daily paroxetine dose administered at steady state (per-subject)",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Use case (a): per-subject assigned daily dose used as a power-form covariate on CL/F to capture the nonlinear (saturable) elimination of paroxetine without instantiating an explicit Michaelis-Menten model. Reference 25 mg/day (median of the Kim 2015 cohort). The negative exponent (-0.363) reflects decreasing CL/F with increasing dose. Per Kim 2015 Methods, subjects were dosed at 10-52.5 mg/day (median 25 mg) with the bulk of observations between 10 and 25 mg/day.",
-      source_name        = "DOSE"
+      notes = "Use case (a): per-subject assigned daily dose used as a power-form covariate on CL/F to capture the nonlinear (saturable) elimination of paroxetine without instantiating an explicit Michaelis-Menten model. Reference 25 mg/day (median of the Kim 2015 cohort). The negative exponent (-0.363) reflects decreasing CL/F with increasing dose. Per Kim 2015 Methods, subjects were dosed at 10-52.5 mg/day (median 25 mg) with the bulk of observations between 10 and 25 mg/day.",
+      source_name = "DOSE"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form covariate on CL/F with reference 71 years (median of the Kim 2015 cohort; range 24-90 years). The negative exponent (-0.702) reflects decreasing CL/F with age, consistent with reduced hepatic CYP2D6 activity in elderly subjects.",
-      source_name        = "AGE"
+      notes = "Power-form covariate on CL/F with reference 71 years (median of the Kim 2015 cohort; range 24-90 years). The negative exponent (-0.702) reflects decreasing CL/F with age, consistent with reduced hepatic CYP2D6 activity in elderly subjects.",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 127L,
-    n_studies      = 1L,
-    age_range      = "24-90 years",
-    age_median     = "71 years",
-    weight_range   = "37.0-86.9 kg",
-    weight_median  = "58 kg",
+    species = "human",
+    n_subjects = 127L,
+    n_studies = 1L,
+    age_range = "24-90 years",
+    age_median = "71 years",
+    weight_range = "37.0-86.9 kg",
+    weight_median = "58 kg",
     sex_female_pct = 70.1,
     race_ethnicity = c(Korean = 100),
-    disease_state  = "Adults with major depressive disorder (65.4%) or anxiety disorder (34.6%; comprising generalized anxiety disorder, panic disorder, or social phobia) per DSM-IV criteria.",
-    dose_range     = "10-52.5 mg PO once daily (one subject on twice-daily dosing); 23.2% on immediate-release tablets and 76.8% on controlled-release tablets.",
-    regions        = "Republic of Korea (Samsung Medical Center, Seoul; single-center retrospective cohort 2005-2011).",
+    disease_state = "Adults with major depressive disorder (65.4%) or anxiety disorder (34.6%; comprising generalized anxiety disorder, panic disorder, or social phobia) per DSM-IV criteria.",
+    dose_range = "10-52.5 mg PO once daily (one subject on twice-daily dosing); 23.2% on immediate-release tablets and 76.8% on controlled-release tablets.",
+    regions = "Republic of Korea (Samsung Medical Center, Seoul; single-center retrospective cohort 2005-2011).",
     n_observations = 271L,
     formulation_mix = "23.2% immediate-release; 76.8% controlled-release (relative bioavailability of CR 0.67 per the Paxil-CR product monograph).",
-    notes          = "Baseline demographics per Kim 2015 Table 1. Retrospective TDM dataset (271 steady-state trough concentrations from 127 outpatients). No subjects on co-medication known to alter paroxetine PK. CYP2D6 genotype not characterised. Both serum albumin and weight data were missing for a minority of subjects; the published model carried these subjects with population-typical values."
+    notes = "Baseline demographics per Kim 2015 Table 1. Retrospective TDM dataset (271 steady-state trough concentrations from 127 outpatients). No subjects on co-medication known to alter paroxetine PK. CYP2D6 genotype not characterised. Both serum albumin and weight data were missing for a minority of subjects; the published model carried these subjects with population-typical values."
   )
 
   ini({

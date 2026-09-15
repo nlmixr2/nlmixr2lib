@@ -19,10 +19,10 @@ vanHasselt_2013_eribulin <- function() {
   )
   vignette <- "vanHasselt_2013_eribulin"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L",
-    anc           = "cells/uL"
+    anc = "cells/uL"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -30,88 +30,94 @@ vanHasselt_2013_eribulin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "eribulin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "eribulin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "eribulin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "eribulin", units = "mg", specimen = "plasma", verified = FALSE),
-    precursor1  = list(analyte = "eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
-    circ        = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE)
+    precursor1 = list(analyte = "eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on the Majid 2014 PK parameters with reference 68.7 kg (per the Majid 2014 CL / Q / V equations reproduced in Kawamura 2018 section 2.3): CL, Q2, Q3 scale as (WT/68.7)^0.75; V1, V2, V3 scale linearly as (WT/68.7). van Hasselt 2013 Table 2 reports the pooled-cohort bodyweight median 67.7 kg (IQR 59.0-77.6, footnote scaling value 70 kg for the PK model). WT is used only by the PK layer; the van Hasselt 2013 PD model does not retain bodyweight as a covariate in the final MTT / SLOPE relationships.",
-      source_name        = "WT"
+      notes = "Allometric scaling on the Majid 2014 PK parameters with reference 68.7 kg (per the Majid 2014 CL / Q / V equations reproduced in Kawamura 2018 section 2.3): CL, Q2, Q3 scale as (WT/68.7)^0.75; V1, V2, V3 scale linearly as (WT/68.7). van Hasselt 2013 Table 2 reports the pooled-cohort bodyweight median 67.7 kg (IQR 59.0-77.6, footnote scaling value 70 kg for the PK model). WT is used only by the PK layer; the van Hasselt 2013 PD model does not retain bodyweight as a covariate in the final MTT / SLOPE relationships.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin at baseline (canonical SI unit g/L).",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin at baseline (canonical SI unit g/L).",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters BOTH the PK CL term (Majid 2014: (ALB_gdL/4.0)^0.946 with reference 4.0 g/dL) AND the van Hasselt 2013 PD MTT and SLOPE terms (Table 3 final model: (ALB_gdL/4)^0.374 on MTT, (ALB_gdL/4)^0.763 on SLOPE). Canonical register unit is g/L (SI); van Hasselt 2013 Table 2 reports median 3.90 g/dL (IQR 3.6-4.27 g/dL, scaling value 4 g/dL per Table 2 footnote). The model() body applies an inline conversion `alb_gdL <- ALB * 0.1` so the g/L canonical column drives both the PK and PD terms at their published g/dL calibration.",
-      source_name        = "ALB"
+      notes = "Enters BOTH the PK CL term (Majid 2014: (ALB_gdL/4.0)^0.946 with reference 4.0 g/dL) AND the van Hasselt 2013 PD MTT and SLOPE terms (Table 3 final model: (ALB_gdL/4)^0.374 on MTT, (ALB_gdL/4)^0.763 on SLOPE). Canonical register unit is g/L (SI); van Hasselt 2013 Table 2 reports median 3.90 g/dL (IQR 3.6-4.27 g/dL, scaling value 4 g/dL per Table 2 footnote). The model() body applies an inline conversion `alb_gdL <- ALB * 0.1` so the g/L canonical column drives both the PK and PD terms at their published g/dL calibration.",
+      source_name = "ALB"
     ),
     ALP = list(
-      description        = "Serum alkaline phosphatase at baseline.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alkaline phosphatase at baseline.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters BOTH the PK CL term (Majid 2014: (ALP/132)^-0.209 with reference 132 U/L) AND the van Hasselt 2013 PD MTT term (Table 3 final model: (ALP/100)^-0.0337 with scaling value 100 U/L per Table 2 footnote). van Hasselt 2013 Table 2 reports median 118 U/L (IQR 82.0-206 U/L). The two references differ because the PK analysis was fit on a different (earlier) pooled cohort than the PD analysis; both are applied verbatim.",
-      source_name        = "ALP"
+      notes = "Enters BOTH the PK CL term (Majid 2014: (ALP/132)^-0.209 with reference 132 U/L) AND the van Hasselt 2013 PD MTT term (Table 3 final model: (ALP/100)^-0.0337 with scaling value 100 U/L per Table 2 footnote). van Hasselt 2013 Table 2 reports median 118 U/L (IQR 82.0-206 U/L). The two references differ because the PK analysis was fit on a different (earlier) pooled cohort than the PD analysis; both are applied verbatim.",
+      source_name = "ALP"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin at baseline (canonical SI unit umol/L).",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin at baseline (canonical SI unit umol/L).",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters BOTH the PK CL term (Majid 2014: (TBILI_mgdL/0.5)^-0.180 with reference 0.5 mg/dL) AND the van Hasselt 2013 PD MTT term (Table 3 final model: (TBILI_mgdL/2)^-0.046 with scaling value 2 mg/dL per Table 2 footnote). Canonical register unit is umol/L (SI); van Hasselt 2013 Table 2 reports median 0.50 mg/dL (IQR 0.40-0.70 mg/dL). The model() body applies an inline conversion `tbili_mgdL <- TBILI / 17.1` so the umol/L canonical column drives both the PK and PD terms at their published mg/dL calibration. Source column name in van Hasselt 2013 is BILI; the canonical register uses TBILI.",
-      source_name        = "BILI"
+      notes = "Enters BOTH the PK CL term (Majid 2014: (TBILI_mgdL/0.5)^-0.180 with reference 0.5 mg/dL) AND the van Hasselt 2013 PD MTT term (Table 3 final model: (TBILI_mgdL/2)^-0.046 with scaling value 2 mg/dL per Table 2 footnote). Canonical register unit is umol/L (SI); van Hasselt 2013 Table 2 reports median 0.50 mg/dL (IQR 0.40-0.70 mg/dL). The model() body applies an inline conversion `tbili_mgdL <- TBILI / 17.1` so the umol/L canonical column drives both the PK and PD terms at their published mg/dL calibration. Source column name in van Hasselt 2013 is BILI; the canonical register uses TBILI.",
+      source_name = "BILI"
     ),
     LDH = list(
-      description        = "Serum lactate dehydrogenase at baseline.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum lactate dehydrogenase at baseline.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "van Hasselt 2013 Table 3 final covariate model: LDH enters MTT as (LDH/238)^-0.0561 with scaling value 238 U/L per Table 2 footnote. Cohort median 328 U/L (IQR 211-486 U/L). Interpreted as a disease-burden / cell-turnover proxy in this metastatic-breast-cancer cohort (see canonical register notes for LDH).",
-      source_name        = "LDH"
+      notes = "van Hasselt 2013 Table 3 final covariate model: LDH enters MTT as (LDH/238)^-0.0561 with scaling value 238 U/L per Table 2 footnote. Cohort median 328 U/L (IQR 211-486 U/L). Interpreted as a disease-burden / cell-turnover proxy in this metastatic-breast-cancer cohort (see canonical register notes for LDH).",
+      source_name = "LDH"
     ),
     AST = list(
-      description        = "Serum aspartate aminotransferase at baseline.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum aspartate aminotransferase at baseline.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "van Hasselt 2013 Table 3 final covariate model: AST enters SLOPE as (AST/30)^0.119. The scaling value is not explicitly listed in Table 2 footnote (which enumerates deviations from median for the five covariates WT, ALB, ALP, BILI, LDH); AST scaling therefore defaults to the cohort median 30.0 U/L per Table 2 (IQR 22.0-46.0 U/L). Positive exponent -> elevated AST increases the linear drug-effect slope, i.e. patients with worse liver function are more sensitive to eribulin-induced myelosuppression.",
-      source_name        = "AST"
+      notes = "van Hasselt 2013 Table 3 final covariate model: AST enters SLOPE as (AST/30)^0.119. The scaling value is not explicitly listed in Table 2 footnote (which enumerates deviations from median for the five covariates WT, ALB, ALP, BILI, LDH); AST scaling therefore defaults to the cohort median 30.0 U/L per Table 2 (IQR 22.0-46.0 U/L). Positive exponent -> elevated AST increases the linear drug-effect slope, i.e. patients with worse liver function are more sensitive to eribulin-induced myelosuppression.",
+      source_name = "AST"
     ),
     CONMED_GCSF = list(
-      description        = "Concomitant granulocyte colony-stimulating factor (G-CSF) treatment indicator (1 = received G-CSF; 0 = did not).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant granulocyte colony-stimulating factor (G-CSF) treatment indicator (1 = received G-CSF; 0 = did not).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant G-CSF treatment)",
-      notes              = "van Hasselt 2013 Table 2 counts 382 / 1302 (yes / no) patients receiving G-CSF (22.7% of the cohort). Table 3 final covariate model retains G-CSF as a proportional / dichotomous effect on BOTH MTT and SLOPE per Eq. 10: MTT_ind = MTT_typ * ... * 0.883^CONMED_GCSF (G-CSF shortens MTT by ~12%) and SLOPE_ind = SLOPE_typ * ... * 1.3^CONMED_GCSF (G-CSF increases SLOPE by ~30%). van Hasselt 2013 treats this as a subject-level indicator in the covariate model (the paper does not describe per-cycle time-varying encoding), so users should supply CONMED_GCSF as a per-subject constant (1 for any subject who received G-CSF at any point during the observation period, 0 otherwise). Distinct from CSF1 (colony-stimulating factor 1 / M-CSF, a target-engagement biomarker); see canonical register CONMED_GCSF entry.",
-      source_name        = "G-CSF"
+      notes = "van Hasselt 2013 Table 2 counts 382 / 1302 (yes / no) patients receiving G-CSF (22.7% of the cohort). Table 3 final covariate model retains G-CSF as a proportional / dichotomous effect on BOTH MTT and SLOPE per Eq. 10: MTT_ind = MTT_typ * ... * 0.883^CONMED_GCSF (G-CSF shortens MTT by ~12%) and SLOPE_ind = SLOPE_typ * ... * 1.3^CONMED_GCSF (G-CSF increases SLOPE by ~30%). van Hasselt 2013 treats this as a subject-level indicator in the covariate model (the paper does not describe per-cycle time-varying encoding), so users should supply CONMED_GCSF as a per-subject constant (1 for any subject who received G-CSF at any point during the observation period, 0 otherwise). Distinct from CSF1 (colony-stimulating factor 1 / M-CSF, a target-engagement biomarker); see canonical register CONMED_GCSF entry.",
+      source_name = "G-CSF"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 1579L,
-    n_studies        = 12L,
-    age_range        = "median 58.0 years (IQR 49.0-66.0)",
-    weight_range     = "median 67.7 kg (IQR 59.0-77.6 kg)",
-    sex_female_pct   = 85.6,
-    race_ethnicity   = c(Caucasian = 79.4, `Black/African American` = 5.3, `Asian/Pacific Islander` = 1.5, Japanese = 6.1, `Other/unknown` = 8.4),
-    disease_state    = "Late-stage metastatic breast cancer. Pooled data set of 12 phase I, II, and III studies of eribulin mesilate (Table 1 of van Hasselt 2013 lists the individual studies). 1579 patients contributed 23 427 absolute neutrophil count (ANC) measurements to the PD analysis; PK data were available for 428 patients (27%). Prior therapy exposure was high: previous chemotherapy 1527/61 (yes/no), previous Pt-containing chemotherapy 446/1142, previous radiotherapy 1212/375, previous hormonal therapy 923/761. G-CSF was administered in 382/1302 patients (22.7%).",
-    dose_range       = "Eribulin mesilate 1.4 mg/m^2 IV per the approved dosing schedule (day 1 and day 8 of a 21-day treatment cycle) evaluated in phase II / III; phase I studies explored 0.6-4 mg/m^2 dose escalation. Doses must be supplied to this model in milligrams of eribulin FREE BASE; conversion from the mesilate dose is D_free_base = D_mesilate * 1.23/1.4 per the Majid 2014 / Kawamura 2018 conversion factor.",
-    regions          = "Not tabulated per se; the pooled 12-study data set includes phase I / II / III trials conducted across North America, Europe, and Japan (Japanese subgroup n = 96, per Table 2 ethnicity breakdown).",
-    prior_therapy    = "Highly pretreated cohort: 96% received previous chemotherapy, 28% received prior Pt-containing chemotherapy, 76% received prior radiotherapy, 58% received prior hormonal therapy, 10% received blood transfusions. Median 4 prior chemotherapy lines is not explicitly reported in this paper but is characteristic of the Phase III EMBRACE population from which the largest study was drawn.",
-    notes            = "Semi-physiological Friberg-style myelosuppression model with linear drug effect (E = SLOPE * C) selected over the E-max alternative on the basis of superior parameter precision and a high correlation between EC50 and Emax fixed effects. First-order estimation method was used (first-order conditional estimation with interaction was not computationally feasible). Off-diagonal IIV covariances and IOV were not computationally feasible. Bootstrap validation n=200 confirmed the point estimates (Table 3 final-covariate-model column). ANC0 covariates identified in the univariate analysis (albumin, sex, blood transfusion, prior Pt-chemotherapy) were NOT retained in the final full model because ANC0 is known per subject at start of therapy and is of less prognostic importance than MTT / gamma / SLOPE. Ethnicity covariate on SLOPE (Asian / Japanese) was tested in the univariate analysis (Table 4) but did not reach the P<0.001 significance threshold and was not retained. The reason G-CSF-on-gamma dropped out of the final model was likely confounding with the retained G-CSF-on-SLOPE effect."
+    species = "human",
+    n_subjects = 1579L,
+    n_studies = 12L,
+    age_range = "median 58.0 years (IQR 49.0-66.0)",
+    weight_range = "median 67.7 kg (IQR 59.0-77.6 kg)",
+    sex_female_pct = 85.6,
+    race_ethnicity = c(
+      Caucasian = 79.4,
+      `Black/African American` = 5.3,
+      `Asian/Pacific Islander` = 1.5,
+      Japanese = 6.1,
+      `Other/unknown` = 8.4
+    ),
+    disease_state = "Late-stage metastatic breast cancer. Pooled data set of 12 phase I, II, and III studies of eribulin mesilate (Table 1 of van Hasselt 2013 lists the individual studies). 1579 patients contributed 23 427 absolute neutrophil count (ANC) measurements to the PD analysis; PK data were available for 428 patients (27%). Prior therapy exposure was high: previous chemotherapy 1527/61 (yes/no), previous Pt-containing chemotherapy 446/1142, previous radiotherapy 1212/375, previous hormonal therapy 923/761. G-CSF was administered in 382/1302 patients (22.7%).",
+    dose_range = "Eribulin mesilate 1.4 mg/m^2 IV per the approved dosing schedule (day 1 and day 8 of a 21-day treatment cycle) evaluated in phase II / III; phase I studies explored 0.6-4 mg/m^2 dose escalation. Doses must be supplied to this model in milligrams of eribulin FREE BASE; conversion from the mesilate dose is D_free_base = D_mesilate * 1.23/1.4 per the Majid 2014 / Kawamura 2018 conversion factor.",
+    regions = "Not tabulated per se; the pooled 12-study data set includes phase I / II / III trials conducted across North America, Europe, and Japan (Japanese subgroup n = 96, per Table 2 ethnicity breakdown).",
+    prior_therapy = "Highly pretreated cohort: 96% received previous chemotherapy, 28% received prior Pt-containing chemotherapy, 76% received prior radiotherapy, 58% received prior hormonal therapy, 10% received blood transfusions. Median 4 prior chemotherapy lines is not explicitly reported in this paper but is characteristic of the Phase III EMBRACE population from which the largest study was drawn.",
+    notes = "Semi-physiological Friberg-style myelosuppression model with linear drug effect (E = SLOPE * C) selected over the E-max alternative on the basis of superior parameter precision and a high correlation between EC50 and Emax fixed effects. First-order estimation method was used (first-order conditional estimation with interaction was not computationally feasible). Off-diagonal IIV covariances and IOV were not computationally feasible. Bootstrap validation n=200 confirmed the point estimates (Table 3 final-covariate-model column). ANC0 covariates identified in the univariate analysis (albumin, sex, blood transfusion, prior Pt-chemotherapy) were NOT retained in the final full model because ANC0 is known per subject at start of therapy and is of less prognostic importance than MTT / gamma / SLOPE. Ethnicity covariate on SLOPE (Asian / Japanese) was tested in the univariate analysis (Table 4) but did not reach the P<0.001 significance threshold and was not retained. The reason G-CSF-on-gamma dropped out of the final model was likely confounding with the retained G-CSF-on-SLOPE effect."
   )
 
   ini({

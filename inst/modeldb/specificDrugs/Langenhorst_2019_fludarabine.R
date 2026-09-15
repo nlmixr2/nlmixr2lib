@@ -8,51 +8,51 @@ Langenhorst_2019_fludarabine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "fludarabine", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "fludarabine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "fludarabine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "fludarabine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Actual body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Actual body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed within the pharmacokinetic sampling window (Langenhorst 2019 Table 1: median 60 kg across 258 patients, range 4.3-130 kg; pediatric subgroup 4.3-96 kg, adult subgroup 47-130 kg). Used as the size descriptor for allometric scaling of all six structural parameters (CL, Q2, Q3, V1, V2, V3) with fixed exponents 0.75 for clearances and 1.0 for volumes, referenced to 70 kg (Langenhorst 2019 Section 3.2 'Structural and Stochastic Model' and Table 2). Alternative body-size descriptors (fat-free mass, body surface area) were tested but did not improve model fit (Section 3.3, dOFV +60 and +68 respectively). Actual body weight (not ideal / adjusted / fat-free) is the descriptor to use.",
-      source_name        = "BW"
+      notes = "Time-fixed within the pharmacokinetic sampling window (Langenhorst 2019 Table 1: median 60 kg across 258 patients, range 4.3-130 kg; pediatric subgroup 4.3-96 kg, adult subgroup 47-130 kg). Used as the size descriptor for allometric scaling of all six structural parameters (CL, Q2, Q3, V1, V2, V3) with fixed exponents 0.75 for clearances and 1.0 for volumes, referenced to 70 kg (Langenhorst 2019 Section 3.2 'Structural and Stochastic Model' and Table 2). Alternative body-size descriptors (fat-free mass, body surface area) were tested but did not improve model fit (Section 3.3, dOFV +60 and +68 respectively). Actual body weight (not ideal / adjusted / fat-free) is the descriptor to use.",
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate, BSA-normalized (mL/min/1.73 m^2), capped at a maturation-adjusted maximum",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate, BSA-normalized (mL/min/1.73 m^2), capped at a maturation-adjusted maximum",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts BSA-normalized creatinine-based renal-function estimates, following the eGFR precedent of Cirincione 2017 MDRD eGFR, Bajaj 2017 CKD-EPI eGFR, and Andrews 2017 adapted-Schwartz eGFR). Source paper's column is eGFR. Calculated from the mean serum creatinine value available between day -7 and day 0 prior to fludarabine infusion (Langenhorst 2019 Section 2.5). The Cockroft-Gault formula was used for adults (women >= 17 years, men >= 14 years; result BSA-normalized as 1.73 * CrCl / BSA to give mL/min/1.73 m^2) and the Schwartz formula for pediatric patients (women < 17 years, men < 14 years). Values were capped at a maturation-adjusted maximum: eGFR_max = 140 mL/min/1.73 m^2, ramping UP from 35 (25% of 140) at birth to 140 at 1.5 years of age, then held constant to age 30 years, then declining by 8 mL/min/1.73 m^2 per decade thereafter. Population range 25-140 mL/min/1.73 m^2, median 120 (pediatric median 140; adult median 110). In model() the CRCL value is converted from mL/min/1.73 m^2 to L/h via * 60/1000 (= * 0.06) so that the paper's unit-less Slope_pop = 0.78 (parameter e_crcl_cl) multiplies directly to give the renal-clearance contribution at the 70-kg reference. Used only in the CL equation; V1, V2, V3, Q2, Q3 depend only on WT.",
-      source_name        = "eGFR"
+      notes = "Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts BSA-normalized creatinine-based renal-function estimates, following the eGFR precedent of Cirincione 2017 MDRD eGFR, Bajaj 2017 CKD-EPI eGFR, and Andrews 2017 adapted-Schwartz eGFR). Source paper's column is eGFR. Calculated from the mean serum creatinine value available between day -7 and day 0 prior to fludarabine infusion (Langenhorst 2019 Section 2.5). The Cockroft-Gault formula was used for adults (women >= 17 years, men >= 14 years; result BSA-normalized as 1.73 * CrCl / BSA to give mL/min/1.73 m^2) and the Schwartz formula for pediatric patients (women < 17 years, men < 14 years). Values were capped at a maturation-adjusted maximum: eGFR_max = 140 mL/min/1.73 m^2, ramping UP from 35 (25% of 140) at birth to 140 at 1.5 years of age, then held constant to age 30 years, then declining by 8 mL/min/1.73 m^2 per decade thereafter. Population range 25-140 mL/min/1.73 m^2, median 120 (pediatric median 140; adult median 110). In model() the CRCL value is converted from mL/min/1.73 m^2 to L/h via * 60/1000 (= * 0.06) so that the paper's unit-less Slope_pop = 0.78 (parameter e_crcl_cl) multiplies directly to give the renal-clearance contribution at the 70-kg reference. Used only in the CL equation; V1, V2, V3, Q2, Q3 depend only on WT.",
+      source_name = "eGFR"
     )
   )
 
   population <- list(
-    species                 = "human",
-    n_subjects              = 258L,
-    n_studies               = 1L,
-    n_pk_samples            = 2605L,
-    n_doses                 = 596L,
-    age_range               = "0.3-74 years",
-    age_median              = "18 years",
-    weight_range            = "4.3-130 kg",
-    weight_median           = "60 kg",
-    sex_female_pct          = 38.0,
-    race_ethnicity          = "Not reported in source",
-    disease_state           = "Allogeneic hematopoietic cell transplantation recipients across a full range of HCT indications (benign disorders 27%, acute leukemia 45%, lymphoma 6.6%, myelodysplastic syndrome 12%, plasma cell disorder 8.9%). Pediatric (age <= 20 years) 52%, adult (age > 20 years) 48%.",
-    renal_function          = "eGFR range 25-140 mL/min/1.73 m^2 (median 120); Cockroft-Gault for adults, Schwartz for pediatric, both BSA-normalized to mL/min/1.73 m^2 and capped at a maturation-adjusted maximum described in Section 2.5",
-    dose_range              = "160 mg/m^2 cumulative fludarabine phosphate (n = 197) OR 40 mg/m^2 cumulative fludarabine phosphate combined with 120 mg/m^2 clofarabine (n = 61); administered as a 1-h IV infusion of fludarabine phosphate (F-ara-AMP prodrug, rapidly converted to circulating F-ara-A) once daily for 4 days (day -5 to day -2 pre-transplant)",
+    species = "human",
+    n_subjects = 258L,
+    n_studies = 1L,
+    n_pk_samples = 2605L,
+    n_doses = 596L,
+    age_range = "0.3-74 years",
+    age_median = "18 years",
+    weight_range = "4.3-130 kg",
+    weight_median = "60 kg",
+    sex_female_pct = 38.0,
+    race_ethnicity = "Not reported in source",
+    disease_state = "Allogeneic hematopoietic cell transplantation recipients across a full range of HCT indications (benign disorders 27%, acute leukemia 45%, lymphoma 6.6%, myelodysplastic syndrome 12%, plasma cell disorder 8.9%). Pediatric (age <= 20 years) 52%, adult (age > 20 years) 48%.",
+    renal_function = "eGFR range 25-140 mL/min/1.73 m^2 (median 120); Cockroft-Gault for adults, Schwartz for pediatric, both BSA-normalized to mL/min/1.73 m^2 and capped at a maturation-adjusted maximum described in Section 2.5",
+    dose_range = "160 mg/m^2 cumulative fludarabine phosphate (n = 197) OR 40 mg/m^2 cumulative fludarabine phosphate combined with 120 mg/m^2 clofarabine (n = 61); administered as a 1-h IV infusion of fludarabine phosphate (F-ara-AMP prodrug, rapidly converted to circulating F-ara-A) once daily for 4 days (day -5 to day -2 pre-transplant)",
     concomitant_medications = "Busulfan (myeloablative, targeted to 90 mg*h/L cumulative AUC_T0-inf; 30 mg*h/L for Fanconi anemia) as a 3-h IV infusion directly following each fludarabine infusion. Rabbit ATG in the unrelated-donor HCT setting (10 mg/kg for children < 30 kg, 7.5 mg/kg for children > 30 kg over 4 daily doses from day -9 for children; 6 mg/kg over four 12-h infusions from day -12 for adults). Clofarabine 30 mg/m^2/day x 4 doses preceding fludarabine in the low-dose pediatric-malignancy subgroup. Clemastine, paracetamol, and 2 mg/kg prednisolone (max 100 mg) were administered IV prior to ATG. Neither clofarabine co-administration nor ATG was retained as a covariate in the final PK model (Langenhorst 2019 Section 3.3).",
-    regions                 = "Single centre: University Medical Centre Utrecht, The Netherlands",
-    sampling_window         = "Samples drawn on days 1 (42%), 2 (17%), 3 (4%), and 4 (37%) of conditioning. Routine TDM sampling at 4, 5, 6, and 7 h after end of fludarabine infusion; additional samples 7-24 h post-infusion for a subset; from January 2016 onwards, additional samples 15-45 min after end of fludarabine infusion (pre-busulfan). Median 10 samples per patient (range 3-19); 116/596 doses (19%) had peak samples (< 3 h post infusion end), 117/596 (20%) had trough samples (> 8 h).",
-    assay                   = "F-ara-A (the circulating metabolite of fludarabine) quantified in plasma by validated liquid chromatography mass spectrometry (LC-MS), LLOQ 0.001 mg/L; per FDA / EMA bioanalytical validation guidelines. None of the 2605 samples were below the LLOQ.",
-    iov_structure           = "Each dose + subsequent sampling was defined as a separate occasion in the paper. IOV on CL/Q2/Q3 (12% CV) and V1/V2/V3 (31% CV) was reported (Langenhorst 2019 Table 2). NOT encoded structurally in this file - the source paper does not define an operational occasion column suitable for downstream model-library use (Brooks 2021 / Andrews 2017 precedent); downstream users who want IOV can add an OCC indicator column and per-occasion etas in rxode2.",
-    notes                   = "Retrospective analysis of PK samples acquired May 2010 - January 2017 during routine busulfan TDM (protocol UMCU 11/063). Non-linear mixed-effects modelling in NONMEM 7.3.0 with FOCE-I. Pirana 2.9.5 + R 3.3.3 for workflow / visualization. Non-parametric bootstrap n = 1000 (95% success); prediction-corrected VPCs and NPDE from 1000 simulations."
+    regions = "Single centre: University Medical Centre Utrecht, The Netherlands",
+    sampling_window = "Samples drawn on days 1 (42%), 2 (17%), 3 (4%), and 4 (37%) of conditioning. Routine TDM sampling at 4, 5, 6, and 7 h after end of fludarabine infusion; additional samples 7-24 h post-infusion for a subset; from January 2016 onwards, additional samples 15-45 min after end of fludarabine infusion (pre-busulfan). Median 10 samples per patient (range 3-19); 116/596 doses (19%) had peak samples (< 3 h post infusion end), 117/596 (20%) had trough samples (> 8 h).",
+    assay = "F-ara-A (the circulating metabolite of fludarabine) quantified in plasma by validated liquid chromatography mass spectrometry (LC-MS), LLOQ 0.001 mg/L; per FDA / EMA bioanalytical validation guidelines. None of the 2605 samples were below the LLOQ.",
+    iov_structure = "Each dose + subsequent sampling was defined as a separate occasion in the paper. IOV on CL/Q2/Q3 (12% CV) and V1/V2/V3 (31% CV) was reported (Langenhorst 2019 Table 2). NOT encoded structurally in this file - the source paper does not define an operational occasion column suitable for downstream model-library use (Brooks 2021 / Andrews 2017 precedent); downstream users who want IOV can add an OCC indicator column and per-occasion etas in rxode2.",
+    notes = "Retrospective analysis of PK samples acquired May 2010 - January 2017 during routine busulfan TDM (protocol UMCU 11/063). Non-linear mixed-effects modelling in NONMEM 7.3.0 with FOCE-I. Pirana 2.9.5 + R 3.3.3 for workflow / visualization. Non-parametric bootstrap n = 1000 (95% success); prediction-corrected VPCs and NPDE from 1000 simulations."
   )
 
   ini({

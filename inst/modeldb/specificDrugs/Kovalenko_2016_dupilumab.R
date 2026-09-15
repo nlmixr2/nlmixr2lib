@@ -29,35 +29,35 @@ Kovalenko_2016_dupilumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on central volume; reference weight 75 kg per Eq. 1 of the paper.",
-      source_name        = "WT"
+      notes = "Power effect on central volume; reference weight 75 kg per Eq. 1 of the paper.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 197L,
-    n_studies      = 6L,
-    age_range      = "Adults; study-wide mean age 37 years",
-    age_median     = "Mean 37 years (Results, Data section)",
-    weight_range   = "Adults; study-wide mean weight 76 kg",
-    weight_median  = "Mean 76 kg (Results, Data section)",
+    n_subjects = 197L,
+    n_studies = 6L,
+    age_range = "Adults; study-wide mean age 37 years",
+    age_median = "Mean 37 years (Results, Data section)",
+    weight_range = "Adults; study-wide mean weight 76 kg",
+    weight_median = "Mean 76 kg (Results, Data section)",
     sex_female_pct = 49,
     race_ethnicity = "Not reported in the article",
-    disease_state  = "Pooled healthy volunteers and patients with moderate-to-severe atopic dermatitis",
-    dose_range     = "IV 1, 3, 8, 12 mg/kg single infusions; SC 75-300 mg single or weekly up to 12 doses",
-    regions        = "Not specified in the article",
-    notes          = "197 participants (96 female / 101 male) across six Phase 1 and Phase 2 studies (NCT01015027, NCT01259323, NCT01385657, NCT01484600, NCT01548404, NCT01639040); 2,518 dupilumab serum concentrations analysed with NONMEM v7.3.0 and Monolix v4.3.2 using SAEM and importance sampling.  Demographic summary appears in the Results / Data subsection (page 619); study design is in Table 1."
+    disease_state = "Pooled healthy volunteers and patients with moderate-to-severe atopic dermatitis",
+    dose_range = "IV 1, 3, 8, 12 mg/kg single infusions; SC 75-300 mg single or weekly up to 12 doses",
+    regions = "Not specified in the article",
+    notes = "197 participants (96 female / 101 male) across six Phase 1 and Phase 2 studies (NCT01015027, NCT01259323, NCT01385657, NCT01484600, NCT01548404, NCT01639040); 2,518 dupilumab serum concentrations analysed with NONMEM v7.3.0 and Monolix v4.3.2 using SAEM and importance sampling.  Demographic summary appears in the Results / Data subsection (page 619); study design is in Table 1."
   )
 
   ini({

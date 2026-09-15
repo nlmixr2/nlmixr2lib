@@ -55,27 +55,27 @@ Serrano_2026_atopicDermatitis_placebo_mbma <- function() {
   # Dodds_2013_psoriasis_biologics_mbma) so that checkModelConventions() sees a
   # parseable dosing / concentration pair.
   units <- list(
-    time          = "week (weeks since randomisation; the onset rate k is reported in week^-1 and the source's primary read-outs are Weeks 12 and 16)",
-    dosing        = "n/a (placebo arms only; this model consumes NO rxode2 dose events and has no exposure driver)",
+    time = "week (weeks since randomisation; the onset rate k is reported in week^-1 and the source's primary read-outs are Weeks 12 and 16)",
+    dosing = "n/a (placebo arms only; this model consumes NO rxode2 dose events and has no exposure driver)",
     concentration = "probability/arm (prob_easi75 is the STUDY-ARM probability that a placebo patient achieves a 75% reduction from baseline in the Eczema Area and Severity Index, on a 0-1 scale; it is NOT a drug concentration. The slash satisfies checkModelConventions unit parsing.)"
   )
 
   covariateData <- list(
     SCORE_EASI = list(
-      description        = "Study-arm MEAN baseline Eczema Area and Severity Index score, as reported by the source trial.",
-      units              = "(score)",
-      type               = "continuous",
+      description = "Study-arm MEAN baseline Eczema Area and Severity Index score, as reported by the source trial.",
+      units = "(score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "TRIAL-ARM-LEVEL, not subject-level: this is the arm's reported mean baseline EASI, which is the grain at which a model-based meta-analysis of published aggregate data operates. Entered CENTERED on 29, the across-trial mean baseline EASI (Serrano 2026 Results 3.2 numeric equation, 'EASI_i - 29', and Results 3.3, 'a baseline EASI score of 29 (mean EASI value across trials)'). Note that 29 is the MEAN and is distinct from the median of 29.6 reported in Table 2; the centering constant is the mean, as Methods 2.4 states the continuous-covariate form is theta_X * (X - Xbar). Effect acts on the PLATEAU (Em), not on the onset rate. Observed across-arm range 11.1-34.5 (Table 2); the source's own tertile mid-values of 19 / 29 / 34 (Figure 2B) bound the range over which the linear-in-logit effect was exercised, and extrapolation far outside 11-35 is unsupported. Two arms of one trial (Study 203121) had mean baseline EASI < 16 and satisfied the moderate-to-severe inclusion criteria via the BSA and IGA thresholds instead; a leave-one-out sensitivity analysis (Results 3.2, Figure S8) showed excluding that trial widened the confidence interval on this effect by about 50% without shifting the point estimates more than 15%, so those low-severity arms IMPROVE rather than bias the estimate.",
-      source_name        = "mean baseline EASI score / EASI_i (Serrano 2026 Table 2 'Baseline EASI (score)'; Results 3.2 final equation)"
+      notes = "TRIAL-ARM-LEVEL, not subject-level: this is the arm's reported mean baseline EASI, which is the grain at which a model-based meta-analysis of published aggregate data operates. Entered CENTERED on 29, the across-trial mean baseline EASI (Serrano 2026 Results 3.2 numeric equation, 'EASI_i - 29', and Results 3.3, 'a baseline EASI score of 29 (mean EASI value across trials)'). Note that 29 is the MEAN and is distinct from the median of 29.6 reported in Table 2; the centering constant is the mean, as Methods 2.4 states the continuous-covariate form is theta_X * (X - Xbar). Effect acts on the PLATEAU (Em), not on the onset rate. Observed across-arm range 11.1-34.5 (Table 2); the source's own tertile mid-values of 19 / 29 / 34 (Figure 2B) bound the range over which the linear-in-logit effect was exercised, and extrapolation far outside 11-35 is unsupported. Two arms of one trial (Study 203121) had mean baseline EASI < 16 and satisfied the moderate-to-severe inclusion criteria via the BSA and IGA thresholds instead; a leave-one-out sensitivity analysis (Results 3.2, Figure S8) showed excluding that trial widened the confidence interval on this effect by about 50% without shifting the point estimates more than 15%, so those low-severity arms IMPROVE rather than bias the estimate.",
+      source_name = "mean baseline EASI score / EASI_i (Serrano 2026 Table 2 'Baseline EASI (score)'; Results 3.2 final equation)"
     ),
     CONMED_STEROID_TOPICAL = list(
-      description        = "1 = the trial protocol permitted concomitant TOPICAL corticosteroid (TCS) therapy in the placebo arm, 0 = no concomitant therapy was permitted.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the trial protocol permitted concomitant TOPICAL corticosteroid (TCS) therapy in the placebo arm, 0 = no concomitant therapy was permitted.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant therapy). The typical maximum placebo effect emax therefore refers to a monotherapy-design placebo arm.",
-      notes              = "TRIAL-DESIGN flag at the ARM level, not a record of any individual patient's steroid use: it encodes whether the protocol allowed background TCS, which the source treats as the design decision a trial designer controls. 14 of the 41 placebo arms permitted TCS and 27 did not (Table 2). This is the single strongest driver in the analysis: dropping it costs 28 AIC points (Table 3, p = 6.80e-8). Distinct from the register's CONMED_STEROID, which is SYSTEMIC corticosteroid administration recorded per subject; the route and the grain both differ and the two columns must not be substituted for one another. The source's Discussion argues the effect is pharmacological rather than a nuisance: permitting TCS 'transform[s] what constitutes a placebo response from natural disease fluctuation to active management effects'.",
-      source_name        = "I_TCS / TCS concomitant therapy (Serrano 2026 Results 3.2 final equation; Table 4 'TCS therapy effect')"
+      notes = "TRIAL-DESIGN flag at the ARM level, not a record of any individual patient's steroid use: it encodes whether the protocol allowed background TCS, which the source treats as the design decision a trial designer controls. 14 of the 41 placebo arms permitted TCS and 27 did not (Table 2). This is the single strongest driver in the analysis: dropping it costs 28 AIC points (Table 3, p = 6.80e-8). Distinct from the register's CONMED_STEROID, which is SYSTEMIC corticosteroid administration recorded per subject; the route and the grain both differ and the two columns must not be substituted for one another. The source's Discussion argues the effect is pharmacological rather than a nuisance: permitting TCS 'transform[s] what constitutes a placebo response from natural disease fluctuation to active management effects'.",
+      source_name = "I_TCS / TCS concomitant therapy (Serrano 2026 Results 3.2 final equation; Table 4 'TCS therapy effect')"
     )
   )
 
@@ -90,37 +90,37 @@ Serrano_2026_atopicDermatitis_placebo_mbma <- function() {
   # for covariates a paper rejected.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Study-arm mean patient age. Screened as an MBMA covariate but NOT retained in the final model.",
-      units              = "year",
-      type               = "continuous",
+      description = "Study-arm mean patient age. Screened as an MBMA covariate but NOT retained in the final model.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Listed in Serrano 2026 Methods 2.2 among the demographics screened ('mean: age, weight, proportion of males'). Results 3.2: 'Trial study phase, mean age, mean weight and mean disease duration showed no significant covariate effects and were excluded from the final model.' No point estimate is reported. Table 2 gives a median across arms of 36.6 years (range 27.9-44.1).",
-      source_name        = "Age (years) (Serrano 2026 Table 2; Methods 2.2 covariate list)"
+      notes = "Listed in Serrano 2026 Methods 2.2 among the demographics screened ('mean: age, weight, proportion of males'). Results 3.2: 'Trial study phase, mean age, mean weight and mean disease duration showed no significant covariate effects and were excluded from the final model.' No point estimate is reported. Table 2 gives a median across arms of 36.6 years (range 27.9-44.1).",
+      source_name = "Age (years) (Serrano 2026 Table 2; Methods 2.2 covariate list)"
     ),
     WT = list(
-      description        = "Study-arm mean patient body weight. Screened as an MBMA covariate but NOT retained in the final model.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Study-arm mean patient body weight. Screened as an MBMA covariate but NOT retained in the final model.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Listed in Serrano 2026 Methods 2.2 and rejected in Results 3.2 alongside age, disease duration and study phase. No point estimate is reported. Table 2 gives a median across arms of 75.0 kg (range 65.6-81.1). Weight would not be expected to matter here in any case: there is no drug and therefore no exposure for weight to scale.",
-      source_name        = "Weight (kg) (Serrano 2026 Table 2; Methods 2.2 covariate list)"
+      notes = "Listed in Serrano 2026 Methods 2.2 and rejected in Results 3.2 alongside age, disease duration and study phase. No point estimate is reported. Table 2 gives a median across arms of 75.0 kg (range 65.6-81.1). Weight would not be expected to matter here in any case: there is no drug and therefore no exposure for weight to scale.",
+      source_name = "Weight (kg) (Serrano 2026 Table 2; Methods 2.2 covariate list)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 4827L,
-    n_studies      = 40L,
-    n_arms         = 41L,
-    age_range      = "study-arm means 27.9-44.1 years, median across arms 36.6 (Table 2). Trials primarily enrolled adults.",
-    weight_range   = "study-arm means 65.6-81.1 kg, median across arms 75.0 (Table 2)",
+    species = "human",
+    n_subjects = 4827L,
+    n_studies = 40L,
+    n_arms = 41L,
+    age_range = "study-arm means 27.9-44.1 years, median across arms 36.6 (Table 2). Trials primarily enrolled adults.",
+    weight_range = "study-arm means 65.6-81.1 kg, median across arms 75.0 (Table 2)",
     sex_female_pct = 44.9,
     race_ethnicity = "Not reported at arm level; the source lists geographic region among the factors it could NOT evaluate for lack of data (Discussion limitations).",
-    disease_state  = "Moderate-to-severe atopic dermatitis. Trials were required to enrol patients meeting at least two of: EASI >= 16, affected body surface area >= 10%, Investigator Global Assessment >= 3. Study-arm mean baseline EASI ranged 11.1-34.5 (median 29.6) and mean affected BSA 14.5-62.0% (median 48.6%); arms with mean baseline EASI < 16 qualified via the BSA and IGA thresholds.",
-    dose_range     = "n/a (placebo arms only)",
-    timepoints     = "EASI-75 responder counts at the timepoints each trial reported over its double-blind period; the source's primary read-outs are Week 12 and Week 16. Observed placebo EASI-75 rates ranged 4.6-36.8% at Week 12 and 6.1-39.4% at Week 16 (Results 3.1).",
-    regions        = "International; 40 randomised trials published 2014-2024 (search window 2000-2024), 18 Phase 2 and 22 Phase 3. Table 1 lists every trial with its NCT number and data source.",
-    notes          = "MBMA at the STUDY-ARM level: each modelled observation is one placebo arm's EASI-75 responder count at one timepoint, so the random effects are BETWEEN-TRIAL, not between-subject, and this model must not be used to simulate individual patients. sex_female_pct is derived as 100 - 55.1, the complement of the Table 2 median 'Percent of males (%)' of 55.1 (range 35.7-82.2), and is therefore a median across arms rather than a pooled patient proportion. One trial contributed TWO placebo arms with different dosing frequencies, which is why 40 trials give 41 arms. Covariate values missing from a publication were filled by random-forest imputation (Methods 2.2), with Table S4 confirming arm-mean trends were preserved; the supplement is NOT on disk, so the per-covariate imputation fractions are unknown (see vignette Errata). Six further screened covariates were rejected and are recorded here in prose because the register has no canonical for them and this file mints none for a rejected covariate: mean affected body surface area (strongly collinear with baseline EASI, r = 0.96, and therefore not separately identifiable), mean disease duration, prior therapy, trial start year, study phase (Phase 2 vs Phase 3), and the proportion of male patients. Of these, affected BSA DID show a significant univariate inverse correlation with the Week 12 placebo rate (r = -0.39, p < 0.05) but lost to baseline EASI in the stepwise selection. Fitted in R 4.2.1 with nlme 3.1-157 by maximum likelihood, not in NONMEM."
+    disease_state = "Moderate-to-severe atopic dermatitis. Trials were required to enrol patients meeting at least two of: EASI >= 16, affected body surface area >= 10%, Investigator Global Assessment >= 3. Study-arm mean baseline EASI ranged 11.1-34.5 (median 29.6) and mean affected BSA 14.5-62.0% (median 48.6%); arms with mean baseline EASI < 16 qualified via the BSA and IGA thresholds.",
+    dose_range = "n/a (placebo arms only)",
+    timepoints = "EASI-75 responder counts at the timepoints each trial reported over its double-blind period; the source's primary read-outs are Week 12 and Week 16. Observed placebo EASI-75 rates ranged 4.6-36.8% at Week 12 and 6.1-39.4% at Week 16 (Results 3.1).",
+    regions = "International; 40 randomised trials published 2014-2024 (search window 2000-2024), 18 Phase 2 and 22 Phase 3. Table 1 lists every trial with its NCT number and data source.",
+    notes = "MBMA at the STUDY-ARM level: each modelled observation is one placebo arm's EASI-75 responder count at one timepoint, so the random effects are BETWEEN-TRIAL, not between-subject, and this model must not be used to simulate individual patients. sex_female_pct is derived as 100 - 55.1, the complement of the Table 2 median 'Percent of males (%)' of 55.1 (range 35.7-82.2), and is therefore a median across arms rather than a pooled patient proportion. One trial contributed TWO placebo arms with different dosing frequencies, which is why 40 trials give 41 arms. Covariate values missing from a publication were filled by random-forest imputation (Methods 2.2), with Table S4 confirming arm-mean trends were preserved; the supplement is NOT on disk, so the per-covariate imputation fractions are unknown (see vignette Errata). Six further screened covariates were rejected and are recorded here in prose because the register has no canonical for them and this file mints none for a rejected covariate: mean affected body surface area (strongly collinear with baseline EASI, r = 0.96, and therefore not separately identifiable), mean disease duration, prior therapy, trial start year, study phase (Phase 2 vs Phase 3), and the proportion of male patients. Of these, affected BSA DID show a significant univariate inverse correlation with the Week 12 placebo rate (r = -0.39, p < 0.05) but lost to baseline EASI in the stepwise selection. Fitted in R 4.2.1 with nlme 3.1-157 by maximum likelihood, not in NONMEM."
   )
 
   ini({

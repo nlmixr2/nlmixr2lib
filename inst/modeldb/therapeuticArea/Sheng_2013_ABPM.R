@@ -19,13 +19,17 @@ Sheng_2013_ABPM <- function() {
   # which is incompatible with the bootstrap CIs the paper reports. See the
   # vignette Assumptions and deviations section for the full reconciliation.
   paper_specific_etas <- c(
-    "etaa11", "etaa21", "etaa12", "etaa22",
-    "etaphs1", "etaphs2"
+    "etaa11",
+    "etaa21",
+    "etaa12",
+    "etaa22",
+    "etaphs1",
+    "etaphs2"
   )
 
   units <- list(
-    time          = "day",
-    dosing        = "n/a (baseline BP rhythm model with no drug input)",
+    time = "day",
+    dosing = "n/a (baseline BP rhythm model with no drug input)",
     concentration = "mmHg (blood pressure; outputs SBP and DBP)"
   )
 
@@ -38,58 +42,58 @@ Sheng_2013_ABPM <- function() {
 
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Female-sex indicator (1 = female, 0 = male). Screened by Sheng 2013 against all eight structural parameters (Base1, Base2, A11, A21, A12, A22, PHS1, PHS2) and not retained in the final model.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female-sex indicator (1 = female, 0 = male). Screened by Sheng 2013 against all eight structural parameters (Base1, Base2, A11, A21, A12, A22, PHS1, PHS2) and not retained in the final model.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened in the covariate-evaluation step of Sheng 2013 (Methods 'Covariate model selection', Results 'The covariates ... did not significantly increase the goodness of fit'); not retained in the final structural model. Recorded here only to preserve the provenance of the covariate screen.",
-      source_name        = "Sex (male/female)"
+      notes = "Screened in the covariate-evaluation step of Sheng 2013 (Methods 'Covariate model selection', Results 'The covariates ... did not significantly increase the goodness of fit'); not retained in the final structural model. Recorded here only to preserve the provenance of the covariate screen.",
+      source_name = "Sex (male/female)"
     ),
     AGE = list(
-      description        = "Subject age. Screened by Sheng 2013 against all eight structural parameters; not retained in the final model.",
-      units              = "year",
-      type               = "continuous",
+      description = "Subject age. Screened by Sheng 2013 against all eight structural parameters; not retained in the final model.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened (Methods 'Covariate model selection'); not retained. Cohort medians 49-52 years across the four trials (Table 1).",
-      source_name        = "Age (year)"
+      notes = "Screened (Methods 'Covariate model selection'); not retained. Cohort medians 49-52 years across the four trials (Table 1).",
+      source_name = "Age (year)"
     ),
     WT = list(
-      description        = "Body weight. Screened by Sheng 2013 against all eight structural parameters; not retained in the final model.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight. Screened by Sheng 2013 against all eight structural parameters; not retained in the final model.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened (Methods 'Covariate model selection'); not retained. Cohort medians 66-74 kg across the four trials (Table 1).",
-      source_name        = "Weight (kg)"
+      notes = "Screened (Methods 'Covariate model selection'); not retained. Cohort medians 66-74 kg across the four trials (Table 1).",
+      source_name = "Weight (kg)"
     ),
     BMI = list(
-      description        = "Body mass index. Screened by Sheng 2013 against all eight structural parameters; not retained in the final model.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index. Screened by Sheng 2013 against all eight structural parameters; not retained in the final model.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened (Methods 'Covariate model selection'); not retained. Cohort medians 24-26 kg/m^2 across the four trials (Table 1).",
-      source_name        = "BMI (kg/m^2)"
+      notes = "Screened (Methods 'Covariate model selection'); not retained. Cohort medians 24-26 kg/m^2 across the four trials (Table 1).",
+      source_name = "BMI (kg/m^2)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 38L,
-    n_studies       = 1L,
-    age_range       = "35-69 years",
-    age_median      = "51.6 years (mean +/- 7.83 SD; Sheng 2013 Table 1, Study 1)",
-    weight_range    = "45-85 kg",
-    weight_median   = "65.5 kg (mean +/- 9.27 SD)",
-    sex_female_pct  = 55.3,
-    race_ethnicity  = "Han Chinese (Sheng 2013 Methods; all subjects enrolled in Chinese centres)",
-    disease_state   = "Mild-to-moderate essential hypertension (mean sitting SBP/DBP 140-179/90-109 mmHg). Major exclusions: significant cardiovascular, hepatic, or renal disease; type 1 diabetes or uncontrolled type 2 diabetes; pregnancy potential; current anticonvulsants or antidepressants; drug-abuse history.",
-    dose_range      = "Not applicable -- the parameter estimates come from the 2-week placebo run-in period (no active antihypertensive administered).",
-    regions         = "China",
-    notes           = "Final-model estimates come from Study 1 (38 patients, 2110 SBP and 2110 DBP measurements at the end of the 2-week placebo run-in period; Sheng 2013 Table 2). The structural model was subsequently re-estimated on three additional Chinese antihypertensive-trial cohorts (Study 2: n=42; Study 3: n=25; Study 4: n=29) and on the pooled four-study dataset (n=134), all yielding very similar parameter estimates (Sheng 2013 Table 3). Each subject contributed 24-h ABPM with measurements every 15 min from 8 AM-10 PM and every 30 min from 10 PM-8 AM, recorded with a SunTech Medical Instruments ABP monitor. The four-study population was 56-69 patients per cohort with 50-55 mean age and similar weight / BMI ranges; the full pooled cohort is summarised in Sheng 2013 Table 1.",
+    species = "human",
+    n_subjects = 38L,
+    n_studies = 1L,
+    age_range = "35-69 years",
+    age_median = "51.6 years (mean +/- 7.83 SD; Sheng 2013 Table 1, Study 1)",
+    weight_range = "45-85 kg",
+    weight_median = "65.5 kg (mean +/- 9.27 SD)",
+    sex_female_pct = 55.3,
+    race_ethnicity = "Han Chinese (Sheng 2013 Methods; all subjects enrolled in Chinese centres)",
+    disease_state = "Mild-to-moderate essential hypertension (mean sitting SBP/DBP 140-179/90-109 mmHg). Major exclusions: significant cardiovascular, hepatic, or renal disease; type 1 diabetes or uncontrolled type 2 diabetes; pregnancy potential; current anticonvulsants or antidepressants; drug-abuse history.",
+    dose_range = "Not applicable -- the parameter estimates come from the 2-week placebo run-in period (no active antihypertensive administered).",
+    regions = "China",
+    notes = "Final-model estimates come from Study 1 (38 patients, 2110 SBP and 2110 DBP measurements at the end of the 2-week placebo run-in period; Sheng 2013 Table 2). The structural model was subsequently re-estimated on three additional Chinese antihypertensive-trial cohorts (Study 2: n=42; Study 3: n=25; Study 4: n=29) and on the pooled four-study dataset (n=134), all yielding very similar parameter estimates (Sheng 2013 Table 3). Each subject contributed 24-h ABPM with measurements every 15 min from 8 AM-10 PM and every 30 min from 10 PM-8 AM, recorded with a SunTech Medical Instruments ABP monitor. The four-study population was 56-69 patients per cohort with 50-55 mean age and similar weight / BMI ranges; the full pooled cohort is summarised in Sheng 2013 Table 1.",
     average_sbp_baseline_mmHg = "141 +/- 15.6 (Study 1 Table 1)",
     average_dbp_baseline_mmHg = "90.4 +/- 10.2 (Study 1 Table 1)",
-    n_sbp_observations       = 2110L,
-    n_dbp_observations       = 2110L,
-    nonmem_method            = "FOCE-I (NONMEM 7.2 via Wings for NONMEM WFN720; Perl-speaks-NONMEM 3.5.3 for bootstrap)"
+    n_sbp_observations = 2110L,
+    n_dbp_observations = 2110L,
+    nonmem_method = "FOCE-I (NONMEM 7.2 via Wings for NONMEM WFN720; Perl-speaks-NONMEM 3.5.3 for bootstrap)"
   )
 
   ini({

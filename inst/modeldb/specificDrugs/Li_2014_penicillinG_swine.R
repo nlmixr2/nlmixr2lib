@@ -1,45 +1,45 @@
 Li_2014_penicillinG_swine <- function() {
   description <- "Preclinical (swine). Three-compartment population pharmacokinetic model for penicillin G in swine, with two parallel first-order absorption depots covering intramuscular penicillin potassium and intramuscular procaine penicillin, plus separate kidney and muscle tissue compartments connected to the central compartment by inter-compartmental clearance; pooled meta-analysis of 89 pigs from 13 published studies and one unpublished FDA dataset (Li 2014)."
-  reference   <- "Li M, Gehring R, Tell L, Baynes R, Huang Q, Riviere JE. Interspecies mixed-effect pharmacokinetic modeling of penicillin G in cattle and swine. Antimicrob Agents Chemother. 2014;58(8):4495-4503. doi:10.1128/AAC.02806-14"
-  vignette    <- "Li_2014_penicillinG"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Li M, Gehring R, Tell L, Baynes R, Huang Q, Riviere JE. Interspecies mixed-effect pharmacokinetic modeling of penicillin G in cattle and swine. Antimicrob Agents Chemother. 2014;58(8):4495-4503. doi:10.1128/AAC.02806-14"
+  vignette <- "Li_2014_penicillinG"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot1      = list(analyte = "penicillinG swine", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2      = list(analyte = "penicillinG swine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "penicillinG swine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot1 = list(analyte = "penicillinG swine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "penicillinG swine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "penicillinG swine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "penicillinG swine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "penicillinG swine", units = "mg", specimen = "plasma", verified = FALSE),
-    kidney      = list(analyte = "penicillinG swine", units = "mg", specimen = "tissue", verified = FALSE),
-    muscle      = list(analyte = "penicillinG swine", units = "mg", specimen = "tissue", verified = FALSE)
+    kidney = list(analyte = "penicillinG swine", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle = list(analyte = "penicillinG swine", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as a power-model covariate on Vp (first peripheral volume) per Li 2014 Table 3 covariate factor theta_1 = 0.132. Form: Vp_i = Vp_pop * (WT/50)^0.132. Reference WT (50 kg) is a rounded midrange of the swine dataset (Li 2014 Table 1 weights 3.3-221 kg); the paper did not report the exact normalisation weight.",
-      source_name        = "WT"
+      notes = "Used as a power-model covariate on Vp (first peripheral volume) per Li 2014 Table 3 covariate factor theta_1 = 0.132. Form: Vp_i = Vp_pop * (WT/50)^0.132. Reference WT (50 kg) is a rounded midrange of the swine dataset (Li 2014 Table 1 weights 3.3-221 kg); the paper did not report the exact normalisation weight.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "swine (Sus scrofa domesticus); piglets and adult pigs pooled from 13 published studies plus one FDA unpublished dataset",
-    n_subjects     = 89L,
-    n_studies      = 14L,
-    age_range      = "0.02-0.259 years (piglet through grower pig, pooled across studies where reported)",
-    weight_range   = "3.3-221.1 kg (piglet through adult, pooled across studies)",
+    species = "swine (Sus scrofa domesticus); piglets and adult pigs pooled from 13 published studies plus one FDA unpublished dataset",
+    n_subjects = 89L,
+    n_studies = 14L,
+    age_range = "0.02-0.259 years (piglet through grower pig, pooled across studies where reported)",
+    weight_range = "3.3-221.1 kg (piglet through adult, pooled across studies)",
     sex_female_pct = NA_real_,
-    disease_state  = "Healthy animals only (animals with various diseased conditions were excluded; Li 2014 Methods)",
-    dose_range     = "Penicillin potassium 7.64-52.6 mg/kg IV or IM; procaine penicillin 8.47-33 mg/kg IM (Li 2014 Table 1)",
-    regions        = "Published swine PK studies (US and international); FARAD records; one unpublished FDA dataset (Shelver et al.)",
+    disease_state = "Healthy animals only (animals with various diseased conditions were excluded; Li 2014 Methods)",
+    dose_range = "Penicillin potassium 7.64-52.6 mg/kg IV or IM; procaine penicillin 8.47-33 mg/kg IM (Li 2014 Table 1)",
+    regions = "Published swine PK studies (US and international); FARAD records; one unpublished FDA dataset (Shelver et al.)",
     n_observations = 443L,
-    notes          = "Pooled plasma data (443 concentrations from 89 pigs) plus 97 kidney and 84 muscle tissue residue concentrations. Swine liver data were too sparse to model. Routes carried in the dosing dataset via the rxode2 cmt column: 'central' for IV; 'depot1' for intramuscular penicillin potassium; 'depot2' for intramuscular procaine penicillin. The companion cattle model from this paper is modellib('Li_2014_penicillinG_cattle')."
+    notes = "Pooled plasma data (443 concentrations from 89 pigs) plus 97 kidney and 84 muscle tissue residue concentrations. Swine liver data were too sparse to model. Routes carried in the dosing dataset via the rxode2 cmt column: 'central' for IV; 'depot1' for intramuscular penicillin potassium; 'depot2' for intramuscular procaine penicillin. The companion cattle model from this paper is modellib('Li_2014_penicillinG_cattle')."
   )
 
   ini({

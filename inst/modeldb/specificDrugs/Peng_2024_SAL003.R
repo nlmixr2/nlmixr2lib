@@ -8,35 +8,35 @@ Peng_2024_SAL003 <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "SAL003", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "SAL003", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "SAL003", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "SAL003", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "SAL003", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate (WT/70)^0.77 on central volume of distribution Vc (Peng 2024 Table 2: dVdWeight = 0.77, RSE 20.74%). The paper does not specify the reference body weight associated with the tvV estimate of 5.07 L; 70 kg is used here as the conventional allometric reference and the choice is documented in the vignette's Assumptions and deviations section. The studied population's median body weight is approximately 65 kg.",
-      source_name        = "WT"
+      notes = "Power covariate (WT/70)^0.77 on central volume of distribution Vc (Peng 2024 Table 2: dVdWeight = 0.77, RSE 20.74%). The paper does not specify the reference body weight associated with the tvV estimate of 5.07 L; 70 kg is used here as the conventional allometric reference and the choice is documented in the vignette's Assumptions and deviations section. The studied population's median body weight is approximately 65 kg.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 40L,
-    n_studies       = 2L,
-    age_range       = "19-65 years",
-    weight_range    = "45.7-88.8 kg",
-    weight_median   = "approximately 65 kg (61.3 kg in SAD, 67.65 kg in MAD)",
-    sex_female_pct  = 38,
-    race_ethnicity  = c(HanChinese = 95, OtherChinese = 5),
-    disease_state   = "Pooled single-ascending-dose (SAD) phase 1 in healthy Chinese volunteers (n = 20 on SAL003) and multiple-ascending-dose (MAD) phase 1 in Chinese patients with primary hypercholesterolemia or mixed hyperlipidemia (n = 20 on SAL003).",
-    dose_range      = "SAD: single subcutaneous 70, 140, or 420 mg (the 35 and 280 mg SAD cohorts were not measured for PK and were excluded from the popPK model). MAD: subcutaneous 140 mg every 4 weeks (Q4W) or 420 mg every 8 weeks (Q8W) over 16 weeks, on a stable atorvastatin background.",
-    regions         = "China (Third Xiangya Hospital, Central South University).",
-    notes           = "Pooled n = 40 SAL003-treated subjects across SAD and MAD phase 1 studies registered at chinadrugtrials.org.cn (SAD: CTR20200225; MAD: CTR20212013). Baseline demographics from Peng 2024 Table 1; SAL003 PK characterised via ELISA on plasma samples."
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 2L,
+    age_range = "19-65 years",
+    weight_range = "45.7-88.8 kg",
+    weight_median = "approximately 65 kg (61.3 kg in SAD, 67.65 kg in MAD)",
+    sex_female_pct = 38,
+    race_ethnicity = c(HanChinese = 95, OtherChinese = 5),
+    disease_state = "Pooled single-ascending-dose (SAD) phase 1 in healthy Chinese volunteers (n = 20 on SAL003) and multiple-ascending-dose (MAD) phase 1 in Chinese patients with primary hypercholesterolemia or mixed hyperlipidemia (n = 20 on SAL003).",
+    dose_range = "SAD: single subcutaneous 70, 140, or 420 mg (the 35 and 280 mg SAD cohorts were not measured for PK and were excluded from the popPK model). MAD: subcutaneous 140 mg every 4 weeks (Q4W) or 420 mg every 8 weeks (Q8W) over 16 weeks, on a stable atorvastatin background.",
+    regions = "China (Third Xiangya Hospital, Central South University).",
+    notes = "Pooled n = 40 SAL003-treated subjects across SAD and MAD phase 1 studies registered at chinadrugtrials.org.cn (SAD: CTR20200225; MAD: CTR20212013). Baseline demographics from Peng 2024 Table 1; SAL003 PK characterised via ELISA on plasma samples."
   )
 
   ini({

@@ -1,6 +1,6 @@
 Rosario_2015_vedolizumab <- function() {
   description <- "Two-compartment population PK model for vedolizumab (humanised anti-alpha4-beta7 integrin IgG1 monoclonal antibody) with parallel linear and Michaelis-Menten elimination in adults with moderately-to-severely active ulcerative colitis or Crohn's disease and healthy volunteers (Rosario 2015)."
-  reference   <- "Rosario M, Dirks NL, Gastonguay MR, Fasanmade AA, Wyant T, Parikh A, Sandborn WJ, Feagan BG, Reinisch W, Fox I. Population pharmacokinetics-pharmacodynamics of vedolizumab in patients with ulcerative colitis and Crohn's disease. Aliment Pharmacol Ther. 2015;42(2):188-202. doi:10.1111/apt.13243 (PMID 25996351). A corrigendum (doi:10.1111/apt.15571; PMC6885991) corrects a unit typo in the text (ng/mL -> ug/mL) and does not change any parameter value."
+  reference <- "Rosario M, Dirks NL, Gastonguay MR, Fasanmade AA, Wyant T, Parikh A, Sandborn WJ, Feagan BG, Reinisch W, Fox I. Population pharmacokinetics-pharmacodynamics of vedolizumab in patients with ulcerative colitis and Crohn's disease. Aliment Pharmacol Ther. 2015;42(2):188-202. doi:10.1111/apt.13243 (PMID 25996351). A corrigendum (doi:10.1111/apt.15571; PMC6885991) corrects a unit typo in the text (ng/mL -> ug/mL) and does not change any parameter value."
   vignette <- "Rosario_2015_vedolizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
@@ -8,135 +8,135 @@ Rosario_2015_vedolizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "vedolizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "vedolizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "vedolizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects on CLL (exponent 0.362, estimated) and Vc (exponent 0.467, estimated); fixed allometric exponents on Vp (1), Vmax (0.75), and Q (0.75). Reference 70 kg per Rosario 2015 Table 2 footnote (reference patient).",
-      source_name        = "WT"
+      notes = "Power-form effects on CLL (exponent 0.362, estimated) and Vc (exponent 0.467, estimated); fixed allometric exponents on Vp (1), Vmax (0.75), and Q (0.75). Reference 70 kg per Rosario 2015 Table 2 footnote (reference patient).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
+      description = "Baseline serum albumin",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CLL: (ALB / 4)^(-1.18). Reference 4 g/dL is the reference-patient albumin (Rosario 2015 Table 2 footnote and Figure 5 caption). US-convention g/dL matches the source paper.",
-      source_name        = "ALB"
+      notes = "Power-form effect on CLL: (ALB / 4)^(-1.18). Reference 4 g/dL is the reference-patient albumin (Rosario 2015 Table 2 footnote and Figure 5 caption). US-convention g/dL matches the source paper.",
+      source_name = "ALB"
     ),
     SCORE_CALPRO = list(
-      description        = "Baseline faecal calprotectin",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Baseline faecal calprotectin",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CLL: (SCORE_CALPRO / 700)^0.0310. Reference 700 mg/kg per Rosario 2015 Table 2 footnote (reference patient).",
-      source_name        = "SCORE_CALPRO"
+      notes = "Power-form effect on CLL: (SCORE_CALPRO / 700)^0.0310. Reference 700 mg/kg per Rosario 2015 Table 2 footnote (reference patient).",
+      source_name = "SCORE_CALPRO"
     ),
     SCORE_CDAI = list(
-      description        = "Crohn's Disease Activity Index (CD patients only)",
-      units              = "(score)",
-      type               = "continuous",
+      description = "Crohn's Disease Activity Index (CD patients only)",
+      units = "(score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CLL for CD patients only: (SCORE_CDAI / 300)^(-0.0515 * IBD_CD). Reference 300 per Rosario 2015 Table 2 footnote (reference CD patient). Gated by IBD_CD so the effect is identically 1 for UC patients; for CD patients supply the observed SCORE_CDAI.",
-      source_name        = "SCORE_CDAI"
+      notes = "Power-form effect on CLL for CD patients only: (SCORE_CDAI / 300)^(-0.0515 * IBD_CD). Reference 300 per Rosario 2015 Table 2 footnote (reference CD patient). Gated by IBD_CD so the effect is identically 1 for UC patients; for CD patients supply the observed SCORE_CDAI.",
+      source_name = "SCORE_CDAI"
     ),
     SCORE_PMAYO = list(
-      description        = "Partial Mayo score (UC patients only)",
-      units              = "(score 0-9)",
-      type               = "continuous",
+      description = "Partial Mayo score (UC patients only)",
+      units = "(score 0-9)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CLL for UC patients only: (SCORE_PMAYO / 6)^(0.0408 * (1 - IBD_CD)). Reference 6 per Rosario 2015 Table 2 footnote (reference UC patient). Gated by (1 - IBD_CD) so the effect is identically 1 for CD patients.",
-      source_name        = "SCORE_PMAYO"
+      notes = "Power-form effect on CLL for UC patients only: (SCORE_PMAYO / 6)^(0.0408 * (1 - IBD_CD)). Reference 6 per Rosario 2015 Table 2 footnote (reference UC patient). Gated by (1 - IBD_CD) so the effect is identically 1 for CD patients.",
+      source_name = "SCORE_PMAYO"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CLL: (AGE / 40)^(-0.0346). Reference 40 years per Rosario 2015 Table 2 footnote (reference patient).",
-      source_name        = "AGE"
+      notes = "Power-form effect on CLL: (AGE / 40)^(-0.0346). Reference 40 years per Rosario 2015 Table 2 footnote (reference patient).",
+      source_name = "AGE"
     ),
     IBD_CD = list(
-      description        = "IBD diagnosis indicator (Crohn's disease vs ulcerative colitis)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "IBD diagnosis indicator (Crohn's disease vs ulcerative colitis)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ulcerative colitis)",
-      notes              = "Switches the typical CLL between UC (0.159 L/day) and CD (0.155 L/day), gates the disease-activity covariates (SCORE_PMAYO applies only when IBD_CD = 0; SCORE_CDAI applies only when IBD_CD = 1), and drives a small multiplicative effect on Vc (1.01^IBD_CD). The reference patient for Vc is UC (IBD_CD = 0) per Rosario 2015 Table 2 footnote.",
-      source_name        = "DX"
+      notes = "Switches the typical CLL between UC (0.159 L/day) and CD (0.155 L/day), gates the disease-activity covariates (SCORE_PMAYO applies only when IBD_CD = 0; SCORE_CDAI applies only when IBD_CD = 1), and drives a small multiplicative effect on Vc (1.01^IBD_CD). The reference patient for Vc is UC (IBD_CD = 0) per Rosario 2015 Table 2 footnote.",
+      source_name = "DX"
     ),
     PRIOR_TNF = list(
-      description        = "Prior anti-TNF-alpha antagonist therapy",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior anti-TNF-alpha antagonist therapy",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (TNF-naive)",
-      notes              = "Multiplicative effect on CLL of the form 1.04^PRIOR_TNF (Rosario 2015 Table S4; null effect = 1).",
-      source_name        = "PRIOR_TNF"
+      notes = "Multiplicative effect on CLL of the form 1.04^PRIOR_TNF (Rosario 2015 Table S4; null effect = 1).",
+      source_name = "PRIOR_TNF"
     ),
     ADA_POS = list(
-      description        = "Anti-drug-antibody positivity",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug-antibody positivity",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Multiplicative effect on CLL of the form 1.12^ADA_POS (Rosario 2015 Table S4; null effect = 1). Rosario 2015 did not find a statistically significant ADA-titre effect and used the binary positivity indicator in the final model.",
-      source_name        = "ADA"
+      notes = "Multiplicative effect on CLL of the form 1.12^ADA_POS (Rosario 2015 Table S4; null effect = 1). Rosario 2015 did not find a statistically significant ADA-titre effect and used the binary positivity indicator in the final model.",
+      source_name = "ADA"
     ),
     CONMED_AZA = list(
-      description        = "Concomitant azathioprine use",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant azathioprine use",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant azathioprine)",
-      notes              = "Multiplicative effect on CLL of the form 0.998^CONMED_AZA (Rosario 2015 Table S4; null effect = 1).",
-      source_name        = "AZA"
+      notes = "Multiplicative effect on CLL of the form 0.998^CONMED_AZA (Rosario 2015 Table S4; null effect = 1).",
+      source_name = "AZA"
     ),
     CONMED_MP = list(
-      description        = "Concomitant 6-mercaptopurine use",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant 6-mercaptopurine use",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant 6-MP)",
-      notes              = "Multiplicative effect on CLL of the form 1.04^CONMED_MP (Rosario 2015 Table S4; null effect = 1).",
-      source_name        = "MP"
+      notes = "Multiplicative effect on CLL of the form 1.04^CONMED_MP (Rosario 2015 Table S4; null effect = 1).",
+      source_name = "MP"
     ),
     CONMED_MTX = list(
-      description        = "Concomitant methotrexate use",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant methotrexate use",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant methotrexate)",
-      notes              = "Multiplicative effect on CLL of the form 0.983^CONMED_MTX (Rosario 2015 Table S4; null effect = 1).",
-      source_name        = "MTX"
+      notes = "Multiplicative effect on CLL of the form 0.983^CONMED_MTX (Rosario 2015 Table S4; null effect = 1).",
+      source_name = "MTX"
     ),
     CONMED_AMINO = list(
-      description        = "Concomitant aminosalicylate therapy",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant aminosalicylate therapy",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant aminosalicylate)",
-      notes              = "Multiplicative effect on CLL of the form 1.02^CONMED_AMINO (Rosario 2015 Table S4; null effect = 1). Covers 5-ASA and the broader aminosalicylate class per the paper's 'AMINO' label.",
-      source_name        = "AMINO"
+      notes = "Multiplicative effect on CLL of the form 1.02^CONMED_AMINO (Rosario 2015 Table S4; null effect = 1). Covers 5-ASA and the broader aminosalicylate class per the paper's 'AMINO' label.",
+      source_name = "AMINO"
     )
   )
 
   population <- list(
-    n_subjects     = 2700L,
-    n_studies      = 6L,
-    age_range      = "18-78 years",
-    age_median     = "39 years (IBD patients)",
-    weight_range   = "29.4-156 kg",
-    weight_median  = "70 kg (reference for allometric and power-form scaling)",
+    n_subjects = 2700L,
+    n_studies = 6L,
+    age_range = "18-78 years",
+    age_median = "39 years (IBD patients)",
+    weight_range = "29.4-156 kg",
+    weight_median = "70 kg (reference for allometric and power-form scaling)",
     sex_female_pct = 48,
     race_ethnicity = c(White = 87, Black = 2, Asian = 6, Other = 5),
-    disease_state  = "Moderately-to-severely active ulcerative colitis or Crohn's disease (IBD cohort); healthy adult volunteers in the phase 1 study contributed to the linear-CL characterisation.",
-    dose_range     = "Single IV doses 0.2-10 mg/kg; multiple IV doses 2.0/6.0/10.0 mg/kg or fixed 300 mg every 4 or 8 weeks (induction wks 0,2; maintenance through week 52 in phase 3).",
-    regions        = "North America, Western/Northern Europe, Central Europe, Eastern Europe, Asia/Australia/Africa (phase 3 trials); United States (phase 1); Canada and Russia (phase 2).",
+    disease_state = "Moderately-to-severely active ulcerative colitis or Crohn's disease (IBD cohort); healthy adult volunteers in the phase 1 study contributed to the linear-CL characterisation.",
+    dose_range = "Single IV doses 0.2-10 mg/kg; multiple IV doses 2.0/6.0/10.0 mg/kg or fixed 300 mg every 4 or 8 weeks (induction wks 0,2; maintenance through week 52 in phase 3).",
+    regions = "North America, Western/Northern Europe, Central Europe, Eastern Europe, Asia/Australia/Africa (phase 3 trials); United States (phase 1); Canada and Russia (phase 2).",
     ada_positive_pct = 4,
-    prior_tnf_pct    = 50,
-    cd_pct           = 51,
-    uc_pct           = 43,
-    healthy_pct      = 6,
-    notes          = "Pooled phase 1/2/3 vedolizumab dataset: C13009 (phase 1, healthy volunteers), C13002 (phase 2 UC), GEMINI 1 (phase 3 UC), GEMINI 2 (phase 3 CD), GEMINI 3 (phase 3 CD), C13004 (phase 2 CD). Demographics from Rosario 2015 Table 1 (pooled population used for population PK-PD analyses). Approximate n_subjects 2700 is the total PK-evaluable pool reported in Table S1 of Appendix S1."
+    prior_tnf_pct = 50,
+    cd_pct = 51,
+    uc_pct = 43,
+    healthy_pct = 6,
+    notes = "Pooled phase 1/2/3 vedolizumab dataset: C13009 (phase 1, healthy volunteers), C13002 (phase 2 UC), GEMINI 1 (phase 3 UC), GEMINI 2 (phase 3 CD), GEMINI 3 (phase 3 CD), C13004 (phase 2 CD). Demographics from Rosario 2015 Table 1 (pooled population used for population PK-PD analyses). Approximate n_subjects 2700 is the total PK-evaluable pool reported in Table S1 of Appendix S1."
   )
 
   ini({

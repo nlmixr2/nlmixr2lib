@@ -32,22 +32,26 @@ Huang_2026_tiapride <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "tiapride", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "tiapride",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "tiapride", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "tiapride",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model, power-scaled on apparent clearance and",
         "referenced to the cohort median 30.62 kg (Huang 2026 Table 1, IQR 26.93-34.65 kg;",
         "Equation 6). Age, weight, height, BSA, FFM and CLCR were all screened on CL/F by stepwise",
@@ -60,7 +64,7 @@ Huang_2026_tiapride <- function() {
         "exponent 0.553 has a wide bootstrap 95% CI (0.277-0.771) that excludes neither the",
         "theory-based allometric 0.75 nor a linear-per-kg 1, so it is not sharply identified."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     )
   )
 
@@ -70,19 +74,27 @@ Huang_2026_tiapride <- function() {
   # model().
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age.", units = "years", type = "continuous",
+      description = "Age.",
+      units = "years",
+      type = "continuous",
       notes = "Median 8 years (IQR 7-10), Huang 2026 Table 1. Screened on CL/F, not retained."
     ),
     WT = list(
-      description = "Total body weight.", units = "kg", type = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       notes = "Median 36.7 kg (IQR 31.0-42.5), Huang 2026 Table 1. Screened on CL/F, not retained; FFM won."
     ),
     HT = list(
-      description = "Height.", units = "cm", type = "continuous",
+      description = "Height.",
+      units = "cm",
+      type = "continuous",
       notes = "Median 135 cm (IQR 130-146.5), Huang 2026 Table 1. Screened on CL/F, not retained."
     ),
     BSA = list(
-      description = "Body surface area.", units = "m^2", type = "continuous",
+      description = "Body surface area.",
+      units = "m^2",
+      type = "continuous",
       notes = paste(
         "Median 1.18 (IQR 1.06-1.32), Huang 2026 Table 1. Screened on CL/F, not retained.",
         "Table 1 prints the unit as 'cm2', which cannot be right for values near 1.18 in an",
@@ -90,7 +102,9 @@ Huang_2026_tiapride <- function() {
       )
     ),
     CLCR = list(
-      description = "Creatinine clearance.", units = "mL/min", type = "continuous",
+      description = "Creatinine clearance.",
+      units = "mL/min",
+      type = "continuous",
       notes = paste(
         "Median 118.3 mL/min (IQR 106.77-136.79), Huang 2026 Table 1. Screened on CL/F and NOT",
         "retained even though tiapride is predominantly renally eliminated: the Discussion states",
@@ -99,11 +113,15 @@ Huang_2026_tiapride <- function() {
       )
     ),
     SEXF = list(
-      description = "Female sex indicator.", units = "(binary)", type = "categorical",
+      description = "Female sex indicator.",
+      units = "(binary)",
+      type = "categorical",
       notes = "31 male / 7 female, Huang 2026 Table 1. Screened and not significant (Discussion)."
     ),
     CONMED_ANY = list(
-      description = "Any concomitant medication.", units = "(binary)", type = "categorical",
+      description = "Any concomitant medication.",
+      units = "(binary)",
+      type = "categorical",
       notes = paste(
         "23 of 38 patients had a combined-medication case, Huang 2026 Table 1. The Discussion names",
         "aripiprazole, topiramate, clonidine, sodium valproate and traditional Chinese medicine and",
@@ -115,22 +133,22 @@ Huang_2026_tiapride <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 38,
-    n_studies      = 1,
-    age_range      = "5-15 years; median 8 (IQR 7-10)",
-    weight_median  = "36.7 kg (IQR 31.0-42.5)",
-    height_median  = "135 cm (IQR 130-146.5)",
-    ffm_median     = "30.62 kg (IQR 26.93-34.65)",
-    bmi_median     = "19.1 (IQR 16.72-21.89)",
-    bsa_median     = "1.18 m^2 (IQR 1.06-1.32)",
+    species = "human",
+    n_subjects = 38,
+    n_studies = 1,
+    age_range = "5-15 years; median 8 (IQR 7-10)",
+    weight_median = "36.7 kg (IQR 31.0-42.5)",
+    height_median = "135 cm (IQR 130-146.5)",
+    ffm_median = "30.62 kg (IQR 26.93-34.65)",
+    bmi_median = "19.1 (IQR 16.72-21.89)",
+    bsa_median = "1.18 m^2 (IQR 1.06-1.32)",
     sex_female_pct = 18.4,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "tic disorders diagnosed by DSM-5, without organic disease or other neuropsychiatric comorbidity",
+    disease_state = "tic disorders diagnosed by DSM-5, without organic disease or other neuropsychiatric comorbidity",
     renal_function = "creatinine clearance median 118.3 mL/min (IQR 106.77-136.79); serum creatinine median 47 umol/L (IQR 41-52)",
-    dose_range     = "oral tiapride 2-10 mg/kg/day given two or three times daily; median total daily dose 215 mg/day (IQR 150-300)",
-    regions        = "China (single centre, Fujian)",
-    notes          = paste(
+    dose_range = "oral tiapride 2-10 mg/kg/day given two or three times daily; median total daily dose 215 mg/day (IQR 150-300)",
+    regions = "China (single centre, Fujian)",
+    notes = paste(
       "Single-centre prospective observational outpatient study at Fujian Medical University Union",
       "Hospital, April 2024 to October 2025, with 6 months of follow-up per patient. Paired plasma",
       "and saliva samples were taken before and after the final dose after at least 7 days of",

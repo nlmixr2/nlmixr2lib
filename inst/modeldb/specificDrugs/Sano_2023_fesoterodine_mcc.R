@@ -6,38 +6,38 @@ Sano_2023_fesoterodine_mcc <- function() {
 
   covariateData <- list(
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives BOTH the maximum attainable MCC and the typical baseline MCC through the same piecewise-linear factor (AGE + 1)/13, capped at 1 for AGE > 12 (Sano 2023 Eqs. 5-8 and Online Resource 8b). The factor comes from the pediatric expected-bladder-capacity (EBC) rule quoted in Sano 2023 Methods section 2.3.3: EBC = [30 + AGE * 30] mL = 30 * (AGE + 1) mL up to age 12, constant at 390 mL from age 12 onwards. Age is used at its baseline value and is not advanced over the 12-week observation window. Observed range in the pharmacokinetic/pharmacodynamic analysis population is 6-16 years (median 9).",
-      source_name        = "AGE"
+      notes = "Drives BOTH the maximum attainable MCC and the typical baseline MCC through the same piecewise-linear factor (AGE + 1)/13, capped at 1 for AGE > 12 (Sano 2023 Eqs. 5-8 and Online Resource 8b). The factor comes from the pediatric expected-bladder-capacity (EBC) rule quoted in Sano 2023 Methods section 2.3.3: EBC = [30 + AGE * 30] mL = 30 * (AGE + 1) mL up to age 12, constant at 390 mL from age 12 onwards. Age is used at its baseline value and is not advanced over the 12-week observation window. Observed range in the pharmacokinetic/pharmacodynamic analysis population is 6-16 years (median 9).",
+      source_name = "AGE"
     ),
     CAV = list(
-      description        = "Individual 5-HMT average plasma concentration at steady state (Cavg,ss) over the once-daily dosing interval",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual 5-HMT average plasma concentration at steady state (Cavg,ss) over the once-daily dosing interval",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cavg,ss = F * DOSE / (CL/F * tau) (Sano 2023 Eq. 4), computed per patient from the individual empirical-Bayes CL/F of the companion population PK model (modellib('Sano_2023_fesoterodine')) with tau = 24 h. In the source NM-TRAN dataset this is the CSS column, supplied as data rather than computed inside the PD model, because Sano 2023 fitted the PK and PD models SEQUENTIALLY (Online Resource 5 is a $PRED model with no PK). SET CAV = 0 FOR THE BASELINE OCCASION: Online Resource 8b states explicitly that Cavg,ss at baseline was set to zero, which collapses the Emax term and makes the baseline prediction exactly BASE. Observed group medians in study 1047 were 1.21, 2.64, 2.49 and 4.22 ng/mL for 2 mg BIC, 4 mg BIC, 4 mg tablet and 8 mg tablet QD respectively (Online Resource 10).",
-      source_name        = "CSS"
+      notes = "Cavg,ss = F * DOSE / (CL/F * tau) (Sano 2023 Eq. 4), computed per patient from the individual empirical-Bayes CL/F of the companion population PK model (modellib('Sano_2023_fesoterodine')) with tau = 24 h. In the source NM-TRAN dataset this is the CSS column, supplied as data rather than computed inside the PD model, because Sano 2023 fitted the PK and PD models SEQUENTIALLY (Online Resource 5 is a $PRED model with no PK). SET CAV = 0 FOR THE BASELINE OCCASION: Online Resource 8b states explicitly that Cavg,ss at baseline was set to zero, which collapses the Emax term and makes the baseline prediction exactly BASE. Observed group medians in study 1047 were 1.21, 2.64, 2.49 and 4.22 ng/mL for 2 mg BIC, 4 mg BIC, 4 mg tablet and 8 mg tablet QD respectively (Online Resource 10).",
+      source_name = "CSS"
     )
   )
 
   population <- list(
-    species           = "human",
-    n_subjects        = 121L,
-    n_observations    = 242L,
-    n_studies         = 1L,
-    age_range         = "6-16 years (median 9, mean 9.58, SD 2.72)",
-    weight_range      = "11.7-85.0 kg (median 28, mean 33.5, SD 14.4)",
-    sex_female_pct    = 49.6,
-    race_ethnicity    = c(White = 44.6, Black = 1.7, Asian = 51.2, Other = 2.5),
-    cyp2d6_pm_pct     = 1.7,
-    baseline_mcc      = "Median 152 mL (range 16-451); mean 165 mL (SD 94.6)",
-    disease_state     = "Pediatric patients with symptoms of neurogenic detrusor overactivity (NDO) enrolled in the phase III study 1047.",
-    dose_range        = "Fesoterodine 4 or 8 mg tablet QD (cohort 1, patients over 25 kg); fesoterodine 2 or 4 mg beads-in-capsule QD (cohort 2, patients 25 kg or less). Patients randomized to the oxybutynin extended-release comparator arm are not part of this analysis population.",
-    regions           = "Multinational (NCT01557244 phase III study 1047).",
-    notes             = "Demographics from Sano 2023 Online Resource 11 (pharmacokinetic/pharmacodynamic analysis population). Each patient contributes exactly two MCC observations: baseline and week 12 (2 x 121 = 242). MCC was measured by multichannel cystometry through a dual-lumen urodynamic catheter, filling until voiding or leaking began, until MCC reached the expected bladder capacity, or at a detrusor pressure of at least 40 cm H2O (Sano 2023 Methods section 2.2.3). Because few observations lay above EC50, the exposure-response relationship is close to linear across the observed Cavg,ss range and the authors caution that EC50 carries wide uncertainty (95% CI 4.11-10.1 ng/mL)."
+    species = "human",
+    n_subjects = 121L,
+    n_observations = 242L,
+    n_studies = 1L,
+    age_range = "6-16 years (median 9, mean 9.58, SD 2.72)",
+    weight_range = "11.7-85.0 kg (median 28, mean 33.5, SD 14.4)",
+    sex_female_pct = 49.6,
+    race_ethnicity = c(White = 44.6, Black = 1.7, Asian = 51.2, Other = 2.5),
+    cyp2d6_pm_pct = 1.7,
+    baseline_mcc = "Median 152 mL (range 16-451); mean 165 mL (SD 94.6)",
+    disease_state = "Pediatric patients with symptoms of neurogenic detrusor overactivity (NDO) enrolled in the phase III study 1047.",
+    dose_range = "Fesoterodine 4 or 8 mg tablet QD (cohort 1, patients over 25 kg); fesoterodine 2 or 4 mg beads-in-capsule QD (cohort 2, patients 25 kg or less). Patients randomized to the oxybutynin extended-release comparator arm are not part of this analysis population.",
+    regions = "Multinational (NCT01557244 phase III study 1047).",
+    notes = "Demographics from Sano 2023 Online Resource 11 (pharmacokinetic/pharmacodynamic analysis population). Each patient contributes exactly two MCC observations: baseline and week 12 (2 x 121 = 242). MCC was measured by multichannel cystometry through a dual-lumen urodynamic catheter, filling until voiding or leaking began, until MCC reached the expected bladder capacity, or at a detrusor pressure of at least 40 cm H2O (Sano 2023 Methods section 2.2.3). Because few observations lay above EC50, the exposure-response relationship is close to linear across the observed Cavg,ss range and the authors caution that EC50 carries wide uncertainty (95% CI 4.11-10.1 ng/mL)."
   )
 
   ini({

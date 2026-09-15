@@ -14,53 +14,53 @@ Fattinger_1991_quinidine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "quinidine", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "quinidine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "quinidine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance, raw modified Cockcroft-Gault (NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, raw modified Cockcroft-Gault (NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Estimated from serum creatinine via the modified Cockcroft-Gault equation reported on page 281: CLcr = (150 - age) * Body weight / Scr, with +10% for males and -10% for females (Dettli 1983). Used as a linear effect on the renal-clearance arm of total apparent CL: CL_renal = e_crcl_cl_renal * CRCL (L/h per mL/min). Source column 'CLcr' renamed to canonical 'CRCL' on input. The published cohort had median CRCL 62.5 mL/min (range 17 to >100 mL/min, page 281).",
-      source_name        = "CLcr"
+      notes = "Estimated from serum creatinine via the modified Cockcroft-Gault equation reported on page 281: CLcr = (150 - age) * Body weight / Scr, with +10% for males and -10% for females (Dettli 1983). Used as a linear effect on the renal-clearance arm of total apparent CL: CL_renal = e_crcl_cl_renal * CRCL (L/h per mL/min). Source column 'CLcr' renamed to canonical 'CRCL' on input. The published cohort had median CRCL 62.5 mL/min (range 17 to >100 mL/min, page 281).",
+      source_name = "CLcr"
     ),
     DIS_HF_OR_LF_SEV = list(
-      description        = "Severe heart failure OR severe liver failure pooled indicator (1 = either present; 0 = neither)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Severe heart failure OR severe liver failure pooled indicator (1 = either present; 0 = neither)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no severe heart failure and no severe liver failure)",
-      notes              = "Time-fixed. Severe heart failure (n = 2) was defined as low cardiac output or pulmonary oedema; severe liver failure (n = 3) was serum bilirubin > 30 umol/L AND prothrombin time < 60% of normal (page 281). The two conditions were pooled into a single covariate because their estimated effects on non-renal CL were of similar magnitude and patient counts were small (page 282). Mild and moderate heart or liver dysfunction did not show an effect and are excluded from this indicator. Drives a multiplicative reduction of the non-renal CL arm from 12.6 L/h to 6.8 L/h (a factor of 0.5397) per Table 1.",
-      source_name        = "(pooled severe HF or severe LF)"
+      notes = "Time-fixed. Severe heart failure (n = 2) was defined as low cardiac output or pulmonary oedema; severe liver failure (n = 3) was serum bilirubin > 30 umol/L AND prothrombin time < 60% of normal (page 281). The two conditions were pooled into a single covariate because their estimated effects on non-renal CL were of similar magnitude and patient counts were small (page 282). Mild and moderate heart or liver dysfunction did not show an effect and are excluded from this indicator. Drives a multiplicative reduction of the non-renal CL arm from 12.6 L/h to 6.8 L/h (a factor of 0.5397) per Table 1.",
+      source_name = "(pooled severe HF or severe LF)"
     ),
     FORM_QUIN_SR = list(
-      description        = "Slow-release quinidine bisulphate (Kinidin duriles, Astra) vs immediate-release quinidine sulphate (Chinidin sulfuricum, Siegfried) formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Slow-release quinidine bisulphate (Kinidin duriles, Astra) vs immediate-release quinidine sulphate (Chinidin sulfuricum, Siegfried) formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (immediate-release quinidine sulphate; the typical-value absorption-duration and bioavailability reference)",
-      notes              = "Per-dose-occasion indicator: in the Fattinger 1991 cohort 45/60 patients received both formulations across the dataset and 15/60 received only one (page 280 Figure 2). When a subject receives both formulations, FORM_QUIN_SR is set on each dose record. Drives the structural switch between (a) durations of zero-order absorption (1.37 h for QS reference; 6.0 h for QBS) and (b) relative bioavailability (1 for QS reference; 1.36 for QBS). The per-subject IIV on the QS absorption duration applies only when FORM_QUIN_SR = 0; the QBS duration carries no IIV per Methods page 282. Doses must be entered in mg of quinidine base (apply the paper's stoichiometric factors of 0.829 mg base per mg quinidine sulphate and 0.663 mg base per mg quinidine bisulphate, Windholz 1983, before passing to the model; the model's bioavailability term then captures only the formulation-driven absorption difference).",
-      source_name        = "(formulation: QS vs QBS)"
+      notes = "Per-dose-occasion indicator: in the Fattinger 1991 cohort 45/60 patients received both formulations across the dataset and 15/60 received only one (page 280 Figure 2). When a subject receives both formulations, FORM_QUIN_SR is set on each dose record. Drives the structural switch between (a) durations of zero-order absorption (1.37 h for QS reference; 6.0 h for QBS) and (b) relative bioavailability (1 for QS reference; 1.36 for QBS). The per-subject IIV on the QS absorption duration applies only when FORM_QUIN_SR = 0; the QBS duration carries no IIV per Methods page 282. Doses must be entered in mg of quinidine base (apply the paper's stoichiometric factors of 0.829 mg base per mg quinidine sulphate and 0.663 mg base per mg quinidine bisulphate, Windholz 1983, before passing to the model; the model's bioavailability term then captures only the formulation-driven absorption difference).",
+      source_name = "(formulation: QS vs QBS)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 60L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 60L,
+    n_studies = 1L,
     n_observations = "260 serum drug concentration measurements in the model-development cohort; 30 separate patients (single concentration each) in the external-validation cohort",
-    age_range      = "28-82 years",
-    age_median     = "65.5 years",
-    weight_range   = "45-105 kg",
-    weight_median  = "70.5 kg",
+    age_range = "28-82 years",
+    age_median = "65.5 years",
+    weight_range = "45-105 kg",
+    weight_median = "70.5 kg",
     sex_female_pct = 23.3,
     race_ethnicity = NA_character_,
-    disease_state  = "Adults treated for supraventricular or ventricular arrhythmias. Cohort breakdown by hepatic and cardiac status (page 281): severe liver failure n = 3, moderate liver dysfunction n = 22; mild heart failure n = 19, moderate heart failure n = 20, severe heart failure n = 2. Median creatinine clearance 62.5 mL/min (range 17 to >100 mL/min). Nine patients received concomitant nifedipine (5 at 30-40 mg/day, 4 at 60 mg/day); nifedipine had no effect on quinidine PK in this cohort.",
-    dose_range     = "Usual regimen: first dose 400 or 600 mg quinidine sulphate orally, followed 3 h later by 500 mg quinidine bisulphate twice or three times daily; 56 of 260 samples obtained under steady state (>= 96 h on unchanged regimen).",
-    regions        = "Switzerland (University Hospital, Basel)",
+    disease_state = "Adults treated for supraventricular or ventricular arrhythmias. Cohort breakdown by hepatic and cardiac status (page 281): severe liver failure n = 3, moderate liver dysfunction n = 22; mild heart failure n = 19, moderate heart failure n = 20, severe heart failure n = 2. Median creatinine clearance 62.5 mL/min (range 17 to >100 mL/min). Nine patients received concomitant nifedipine (5 at 30-40 mg/day, 4 at 60 mg/day); nifedipine had no effect on quinidine PK in this cohort.",
+    dose_range = "Usual regimen: first dose 400 or 600 mg quinidine sulphate orally, followed 3 h later by 500 mg quinidine bisulphate twice or three times daily; 56 of 260 samples obtained under steady state (>= 96 h on unchanged regimen).",
+    regions = "Switzerland (University Hospital, Basel)",
     renal_function = "Median creatinine clearance 62.5 mL/min (range 17 to >100 mL/min); covers mild to severe but not end-stage renal impairment. Apply with caution outside the 17 to >100 mL/min range observed (Discussion page 283).",
-    notes          = "Demographics from Methods 'Study population' page 280-281. The model was fit by NONMEM using a stepwise covariate-selection procedure (Methods page 281). Bioavailability of oral quinidine sulphate was assumed to be 100% per the abstract item 3 (so CL and V in this file are apparent CL/F and V/F at the quinidine-sulphate reference). External validation in a separate cohort of 30 consecutive patients (median CrCl 48.7 mL/min, range 19.5 to >100 mL/min, no severe HF/LF) showed 28/30 measured concentrations within the 90% prediction interval (page 282)."
+    notes = "Demographics from Methods 'Study population' page 280-281. The model was fit by NONMEM using a stepwise covariate-selection procedure (Methods page 281). Bioavailability of oral quinidine sulphate was assumed to be 100% per the abstract item 3 (so CL and V in this file are apparent CL/F and V/F at the quinidine-sulphate reference). External validation in a separate cohort of 30 consecutive patients (median CrCl 48.7 mL/min, range 19.5 to >100 mL/min, no severe HF/LF) showed 28/30 measured concentrations within the 90% prediction interval (page 282)."
   )
 
   ini({

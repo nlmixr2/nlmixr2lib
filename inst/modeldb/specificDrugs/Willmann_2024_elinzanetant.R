@@ -95,44 +95,64 @@ Willmann_2024_elinzanetant <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "elinzanetant", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "elinzanetant",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "elinzanetant", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "elinzanetant",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "elinzanetant", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "elinzanetant",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_c13 = list(
-      analyte = "[13C5]-elinzanetant", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "[13C5]-elinzanetant",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_c13 = list(
-      analyte = "[13C5]-elinzanetant", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "[13C5]-elinzanetant",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_m3034 = list(
-      analyte = "elinzanetant metabolite M30/34", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "elinzanetant metabolite M30/34",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_m3034 = list(
-      analyte = "elinzanetant metabolite M30/34", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "elinzanetant metabolite M30/34",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_m27 = list(
-      analyte = "elinzanetant metabolite M27", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "elinzanetant metabolite M27",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_m27 = list(
-      analyte = "elinzanetant metabolite M27", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "elinzanetant metabolite M27",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_m1821 = list(
-      analyte = "elinzanetant metabolite M18/21", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "elinzanetant metabolite M18/21",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
@@ -185,7 +205,8 @@ Willmann_2024_elinzanetant <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline",
-      units = "year", type = "continuous",
+      units = "year",
+      type = "continuous",
       notes = paste(
         "Screened post hoc at two cut-points (Willmann 2024 Table S2, Figure 3):",
         ">= 55 vs < 55 years gave a geometric mean AUC(0-24)ss ratio of 0.939",
@@ -196,7 +217,8 @@ Willmann_2024_elinzanetant <- function() {
     ),
     WT = list(
       description = "Body weight at baseline",
-      units = "kg", type = "continuous",
+      units = "kg",
+      type = "continuous",
       notes = paste(
         "Screened post hoc at two cut-points (Willmann 2024 Figure 3):",
         ">= 60 vs < 60 kg gave a ratio of 0.945 [90% CI 0.851-1.055] (278 vs 58",
@@ -206,7 +228,8 @@ Willmann_2024_elinzanetant <- function() {
     ),
     HT = list(
       description = "Body height at baseline",
-      units = "cm", type = "continuous",
+      units = "cm",
+      type = "continuous",
       notes = paste(
         "Screened post hoc above vs below the female-population median of 1.62 m",
         "(Willmann 2024 Figure 3): ratio 0.884 [90% CI 0.815-0.961] (168 vs 168",
@@ -220,7 +243,8 @@ Willmann_2024_elinzanetant <- function() {
     ),
     BMI = list(
       description = "Body mass index at baseline",
-      units = "kg/m2", type = "continuous",
+      units = "kg/m2",
+      type = "continuous",
       notes = paste(
         "Screened post hoc at two cut-points (Willmann 2024 Figure 3):",
         ">= 25 vs < 25 kg/m2 gave a ratio of 0.977 [90% CI 0.907-1.067] (231 vs",
@@ -230,7 +254,8 @@ Willmann_2024_elinzanetant <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
       notes = paste(
         "Metabolite AUC(0-24)ss was significantly lower in the 30 male than in",
@@ -243,7 +268,8 @@ Willmann_2024_elinzanetant <- function() {
     ),
     RACE_BLACK = list(
       description = "Black race indicator",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White or Other",
       notes = paste(
         "Screened post hoc within the female subpopulation (Willmann 2024",
@@ -258,7 +284,8 @@ Willmann_2024_elinzanetant <- function() {
     ),
     RACE_WHITE = list(
       description = "White race indicator",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = Black or Other",
       notes = paste(
         "Screened post hoc alongside RACE_BLACK (Willmann 2024 Figure 3): white",
@@ -268,7 +295,8 @@ Willmann_2024_elinzanetant <- function() {
     ),
     AST = list(
       description = "Aspartate transaminase at baseline",
-      units = "U/L", type = "continuous",
+      units = "U/L",
+      type = "continuous",
       notes = paste(
         "Screened post hoc above vs below the female-population median of",
         "21 U/L (Willmann 2024 Figure 3): ratio 1.045 [90% CI 0.966-1.140]",
@@ -277,7 +305,8 @@ Willmann_2024_elinzanetant <- function() {
     ),
     ALT = list(
       description = "Alanine transaminase at baseline",
-      units = "U/L", type = "continuous",
+      units = "U/L",
+      type = "continuous",
       notes = paste(
         "Screened post hoc above vs below the female-population median of",
         "20 U/L (Willmann 2024 Figure 3): ratio 1.022 [90% CI 0.942-1.104]",
@@ -286,7 +315,8 @@ Willmann_2024_elinzanetant <- function() {
     ),
     ALP = list(
       description = "Alkaline phosphatase at baseline",
-      units = "U/L", type = "continuous",
+      units = "U/L",
+      type = "continuous",
       notes = paste(
         "Screened post hoc above vs below the female-population median of",
         "79.5 U/L (Willmann 2024 Figure 3): ratio 0.946 [90% CI 0.876-1.021]",
@@ -295,7 +325,8 @@ Willmann_2024_elinzanetant <- function() {
     ),
     TBILI_BASE = list(
       description = "Total bilirubin at baseline",
-      units = "mg/dL", type = "continuous",
+      units = "mg/dL",
+      type = "continuous",
       notes = paste(
         "Screened post hoc above vs below the female-population median of",
         "0.491 mg/dL (Willmann 2024 Figure 3): ratio 1.147 [90% CI 1.063-1.239]",
@@ -316,7 +347,8 @@ Willmann_2024_elinzanetant <- function() {
     ),
     ALB = list(
       description = "Serum albumin at baseline",
-      units = "g/dL", type = "continuous",
+      units = "g/dL",
+      type = "continuous",
       notes = paste(
         "Screened post hoc above vs below the female-population median of",
         "4.4 g/dL (Willmann 2024 Figure 3): ratio 1.060 [90% CI 0.976-1.153]",

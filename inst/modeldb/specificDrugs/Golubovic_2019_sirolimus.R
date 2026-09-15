@@ -9,55 +9,55 @@ Golubovic_2019_sirolimus <- function() {
     sep = " "
   )
   vignette <- "Golubovic_2019_sirolimus"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "sirolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "sirolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sirolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sirolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "sirolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age (baseline; years).",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age (baseline; years).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on CL/F with reference age 44 years (close to the cohort mean of 43.22 years and present in the paper's final equation): cl_eff = (1 + e_age_cl * AGE / 44). Coefficient e_age_cl = -0.388 reproduces the 49 percent CL/F decrease from age 16 to age 64 reported in the Discussion.",
-      source_name        = "AGE"
+      notes = "Linear-deviation effect on CL/F with reference age 44 years (close to the cohort mean of 43.22 years and present in the paper's final equation): cl_eff = (1 + e_age_cl * AGE / 44). Coefficient e_age_cl = -0.388 reproduces the 49 percent CL/F decrease from age 16 to age 64 reported in the Discussion.",
+      source_name = "AGE"
     ),
     AST = list(
-      description        = "Serum aspartate aminotransferase activity (baseline or time-varying).",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Serum aspartate aminotransferase activity (baseline or time-varying).",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Binarized inline as ast_high <- (AST > 37) per Golubovic 2019 Results: AST entered as a 0/1 categorical indicator with 1 = AST greater than 37 IU/L (the laboratory upper limit of normal used in the source paper). Power-form effect on CL/F: 0.630^ast_high (-37 percent when ast_high = 1).",
-      source_name        = "AST"
+      notes = "Binarized inline as ast_high <- (AST > 37) per Golubovic 2019 Results: AST entered as a 0/1 categorical indicator with 1 = AST greater than 37 IU/L (the laboratory upper limit of normal used in the source paper). Power-form effect on CL/F: 0.630^ast_high (-37 percent when ast_high = 1).",
+      source_name = "AST"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 25L,
-    n_studies        = 1L,
-    n_observations   = 250L,
-    age_range        = "16-64 years",
-    age_median       = "43.22 years (mean)",
-    weight_range     = "44-128 kg",
-    weight_median    = "77.07 kg (mean)",
-    sex_female_pct   = 28.0,
-    race_ethnicity   = "Not reported (single-country Serbian cohort).",
-    disease_state    = "Adult kidney transplant recipients converted to sirolimus from a calcineurin inhibitor (tacrolimus or cyclosporine) as the second-line immunosuppressive treatment; all on triple immunosuppression with mycophenolate mofetil and corticosteroids.",
-    dose_range       = "0.5-15 mg/day oral sirolimus titrated to maintain trough blood concentrations of 8-20 ng/mL.",
-    regions          = "Serbia (single centre: Nephrology Clinic, Clinical Center of Serbia, University of Belgrade).",
-    co_medication    = "Mycophenolate mofetil (mean 1104 mg/day, range 0-2000) and corticosteroids (mean 10.74 mg/day, range 0-50).",
-    graft_origin     = "Living donor n = 23 (92 percent); cadaveric n = 2 (8 percent).",
-    dialysis_pre     = "Pre-transplant dialysis n = 21 (84 percent); no pre-transplant dialysis n = 4 (16 percent).",
-    assay            = "Architect Sirolimus chemiluminescent microparticle immunoassay (Abbott Laboratories), nominal measurement range 2-30 ng/mL; samples above range diluted per manufacturer protocol.",
-    notes            = "Single-centre retrospective TDM cohort. Demographics summarised here are Table I model-development column (n = 25); an independent external-validation cohort of 13 newly converted patients is described in the source but is not encoded in this model. All samples are end-of-dosing-interval trough concentrations drawn before the morning dose. Sex: 18 male (72 percent) / 7 female (28 percent)."
+    species = "human",
+    n_subjects = 25L,
+    n_studies = 1L,
+    n_observations = 250L,
+    age_range = "16-64 years",
+    age_median = "43.22 years (mean)",
+    weight_range = "44-128 kg",
+    weight_median = "77.07 kg (mean)",
+    sex_female_pct = 28.0,
+    race_ethnicity = "Not reported (single-country Serbian cohort).",
+    disease_state = "Adult kidney transplant recipients converted to sirolimus from a calcineurin inhibitor (tacrolimus or cyclosporine) as the second-line immunosuppressive treatment; all on triple immunosuppression with mycophenolate mofetil and corticosteroids.",
+    dose_range = "0.5-15 mg/day oral sirolimus titrated to maintain trough blood concentrations of 8-20 ng/mL.",
+    regions = "Serbia (single centre: Nephrology Clinic, Clinical Center of Serbia, University of Belgrade).",
+    co_medication = "Mycophenolate mofetil (mean 1104 mg/day, range 0-2000) and corticosteroids (mean 10.74 mg/day, range 0-50).",
+    graft_origin = "Living donor n = 23 (92 percent); cadaveric n = 2 (8 percent).",
+    dialysis_pre = "Pre-transplant dialysis n = 21 (84 percent); no pre-transplant dialysis n = 4 (16 percent).",
+    assay = "Architect Sirolimus chemiluminescent microparticle immunoassay (Abbott Laboratories), nominal measurement range 2-30 ng/mL; samples above range diluted per manufacturer protocol.",
+    notes = "Single-centre retrospective TDM cohort. Demographics summarised here are Table I model-development column (n = 25); an independent external-validation cohort of 13 newly converted patients is described in the source but is not encoded in this model. All samples are end-of-dosing-interval trough concentrations drawn before the morning dose. Sex: 18 male (72 percent) / 7 female (28 percent)."
   )
 
   ini({

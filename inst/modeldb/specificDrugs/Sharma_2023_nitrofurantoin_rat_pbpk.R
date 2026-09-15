@@ -21,27 +21,32 @@ Sharma_2023_nitrofurantoin_rat_pbpk <- function() {
   vignette <- "Sharma_2023_nitrofurantoin"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L",
-    amount        = "mg",
-    weight        = "kg"
+    amount = "mg",
+    weight = "kg"
   )
 
   compartmentData <- list(
-    a_gut_lumen      = list(analyte = "nitrofurantoin", units = "mg", specimen = "administration site", verified = TRUE),
-    a_gut            = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_liver          = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_hepatic        = list(analyte = "nitrofurantoin metabolites (lumped)", units = "mg", specimen = "tissue", verified = TRUE),
-    a_bile           = list(analyte = "nitrofurantoin", units = "mg", specimen = "bile",                verified = TRUE),
-    a_feces          = list(analyte = "nitrofurantoin", units = "mg", specimen = "faeces",              verified = TRUE),
-    a_kidney         = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_filtrate       = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine",               verified = TRUE),
-    a_urine_storage  = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine",               verified = TRUE),
-    a_fat            = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_rest_of_body   = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_plasma         = list(analyte = "nitrofurantoin", units = "mg", specimen = "plasma",              verified = TRUE),
-    a_urine          = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine",               verified = TRUE)
+    a_gut_lumen = list(analyte = "nitrofurantoin", units = "mg", specimen = "administration site", verified = TRUE),
+    a_gut = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_liver = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_hepatic = list(
+      analyte = "nitrofurantoin metabolites (lumped)",
+      units = "mg",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    a_bile = list(analyte = "nitrofurantoin", units = "mg", specimen = "bile", verified = TRUE),
+    a_feces = list(analyte = "nitrofurantoin", units = "mg", specimen = "faeces", verified = TRUE),
+    a_kidney = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_filtrate = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine", verified = TRUE),
+    a_urine_storage = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine", verified = TRUE),
+    a_fat = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_rest_of_body = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_plasma = list(analyte = "nitrofurantoin", units = "mg", specimen = "plasma", verified = TRUE),
+    a_urine = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine", verified = TRUE)
   )
 
   # No covariates -- fixed 0.25 kg reference rat. Override BW via
@@ -50,16 +55,16 @@ Sharma_2023_nitrofurantoin_rat_pbpk <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "rat",
-    n_subjects     = NA_integer_,
-    n_studies      = 2L,
-    age_range      = NA_character_,
-    weight_range   = "0.25 kg reference rat (author-deposited rat model file)",
-    weight_median  = "0.25 kg",
+    species = "rat",
+    n_subjects = NA_integer_,
+    n_studies = 2L,
+    age_range = NA_character_,
+    weight_range = "0.25 kg reference rat (author-deposited rat model file)",
+    weight_median = "0.25 kg",
     sex_female_pct = NA_real_,
-    disease_state  = "Healthy rats (kinetic studies, no disease model)",
-    dose_range     = "3 to 25 mg/kg single IV (Figure S2); oral dosing also simulated (Figure S6)",
-    notes          = paste(
+    disease_state = "Healthy rats (kinetic studies, no disease model)",
+    dose_range = "3 to 25 mg/kg single IV (Figure S2); oral dosing also simulated (Figure S6)",
+    notes = paste(
       "Calibration and test data are DIGITISED literature values, not an individual-level",
       "dataset: Sharma 2023 Methods 2.3 states rat kinetics data upon IV or oral dosing were",
       "taken from references 23 and 28 using WebPlotDigitizer, and the fitted points are the",

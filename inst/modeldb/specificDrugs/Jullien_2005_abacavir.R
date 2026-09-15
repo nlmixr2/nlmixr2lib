@@ -8,36 +8,36 @@ Jullien_2005_abacavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline body weight. Estimated power-form effect on apparent clearance (CL/F): CL/F = TV(CL/F) * (WT/65)^e_wt_cl. Reference is the population median (65 kg).",
-      source_name        = "BW"
+      notes = "Time-fixed baseline body weight. Estimated power-form effect on apparent clearance (CL/F): CL/F = TV(CL/F) * (WT/65)^e_wt_cl. Reference is the population median (65 kg).",
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 188,
-    n_studies      = 1,
-    age_range      = "16.1-72.8 years",
-    age_median     = "40 years",
-    weight_range   = "36-102 kg",
-    weight_median  = "65 kg",
+    species = "human",
+    n_subjects = 188,
+    n_studies = 1,
+    age_range = "16.1-72.8 years",
+    age_median = "40 years",
+    weight_range = "36-102 kg",
+    weight_median = "65 kg",
     sex_female_pct = 19.7,
-    disease_state  = "HIV-infected adults on highly active antiretroviral therapy (HAART) receiving abacavir 300 mg BID",
-    dose_range     = "300 mg oral BID",
-    regions        = "France",
+    disease_state = "HIV-infected adults on highly active antiretroviral therapy (HAART) receiving abacavir 300 mg BID",
+    dose_range = "300 mg oral BID",
+    regions = "France",
     n_observations = 344,
-    notes          = "Retrospective routine therapeutic-drug-monitoring data; 344 plasma samples (30 BLQ set to half the LOQ of 0.01 mg/L), median 1 sample per patient (range 1-7); 151 men and 37 women (19.7% female). Demographics from Jullien 2005 Table 1."
+    notes = "Retrospective routine therapeutic-drug-monitoring data; 344 plasma samples (30 BLQ set to half the LOQ of 0.01 mg/L), median 1 sample per patient (range 1-7); 151 men and 37 women (19.7% female). Demographics from Jullien 2005 Table 1."
   )
 
   ini({

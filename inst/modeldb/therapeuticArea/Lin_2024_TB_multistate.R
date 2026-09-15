@@ -40,30 +40,59 @@ Lin_2024_TB_multistate <- function() {
   # `s_alive` / `s_dropout` / `s_death` states of
   # Ibrahim_2023_ibrutinib_competing_risk.R.
   paper_specific_compartments <- c(
-    "s_activeTb", "s_converted", "s_recurrentTb", "s_dropout", "s_death"
+    "s_activeTb",
+    "s_converted",
+    "s_recurrentTb",
+    "s_dropout",
+    "s_death"
   )
 
   units <- list(
-    time          = "week",
-    dosing        = "n/a (no drug-dosing events; the model propagates state-occupancy probabilities)",
+    time = "week",
+    dosing = "n/a (no drug-dosing events; the model propagates state-occupancy probabilities)",
     concentration = "probability (all five states are occupancy probabilities, not drug concentrations)"
   )
 
   compartmentData <- list(
-    s_activeTb    = list(analyte = "probability of being in the active TB state", units = NA_character_, specimen = "not applicable", verified = TRUE),
-    s_converted   = list(analyte = "probability of being in the sputum-culture-converted state", units = NA_character_, specimen = "not applicable", verified = TRUE),
-    s_recurrentTb = list(analyte = "probability of being in the recurrent TB state", units = NA_character_, specimen = "not applicable", verified = TRUE),
-    s_dropout     = list(analyte = "probability of having dropped out of the study", units = NA_character_, specimen = "not applicable", verified = TRUE),
-    s_death       = list(analyte = "probability of having died", units = NA_character_, specimen = "not applicable", verified = TRUE)
+    s_activeTb = list(
+      analyte = "probability of being in the active TB state",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    s_converted = list(
+      analyte = "probability of being in the sputum-culture-converted state",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    s_recurrentTb = list(
+      analyte = "probability of being in the recurrent TB state",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    s_dropout = list(
+      analyte = "probability of having dropped out of the study",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    s_death = list(
+      analyte = "probability of having died",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     MBL_HL_WK2 = list(
-      description        = "Model-derived half-life of mycobacterial-load decline evaluated over the first 2 weeks of treatment (the source's HL2).",
-      units              = "week",
-      type               = "continuous",
+      description = "Model-derived half-life of mycobacterial-load decline evaluated over the first 2 weeks of treatment (the source's HL2).",
+      units = "week",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject in the final model. Lin 2024 Supplementary 'Predictors investigation' derives the",
         "metric prospectively from data up to week 2 only ('only data until time t were used to compute",
         "model-derived predictors at time t'), and carries the week-2 value forward for the rest of the study, so",
@@ -81,14 +110,14 @@ Lin_2024_TB_multistate <- function() {
         "modellib('Svensson_2017_bedaquiline'), whose hl_i is already in weeks -- no conversion needed. Must be",
         "strictly positive."
       ),
-      source_name        = "HL2"
+      source_name = "HL2"
     ),
     MBL_END = list(
-      description        = "Model-derived mycobacterial load at the end of the 24-week bedaquiline treatment period (the source's MMBLend), on the natural scale.",
-      units              = "n bacteria per sample inoculum",
-      type               = "continuous",
+      description = "Model-derived mycobacterial load at the end of the 24-week bedaquiline treatment period (the source's MMBLend), on the natural scale.",
+      units = "n bacteria per sample inoculum",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters the recurrence hazard on the NATURAL-LOG scale and only after week 26:",
         "lambda23 = exp(llambda23 + e_sexf_lambda23 * SEXF + e_mblend_lambda23 * (t > 26) *",
         "(log(MBL_END) - log(5.5726e-05))), with e_mblend_lambda23 = 0.0371081 (NONMEM code $DES, THETA(18);",
@@ -104,14 +133,14 @@ Lin_2024_TB_multistate <- function() {
         "completion of 24 week treatment', but the control stream gates it at IF(WEEK.GT.26). The control stream",
         "is used here (see the vignette Assumptions and deviations section)."
       ),
-      source_name        = "MMBLend"
+      source_name = "MMBLend"
     ),
     TTP_MGIT_BASE = list(
-      description        = "Baseline mean time-to-positivity in the mycobacterial growth indicator tube (MGIT) liquid-culture system, as the mean of triplicate pre-treatment sputum samples.",
-      units              = "days",
-      type               = "continuous",
+      description = "Baseline mean time-to-positivity in the mycobacterial growth indicator tube (MGIT) liquid-culture system, as the mean of triplicate pre-treatment sputum samples.",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters BOTH the peak time and the surge width of the conversion hazard with a",
         "single shared coefficient of opposite sign:",
         "PT12 = exp(lpt12 - e_ttp_pt12sw12 * (TTP_MGIT_BASE - 9.06944) / 7) and",
@@ -129,14 +158,14 @@ Lin_2024_TB_multistate <- function() {
         "register's own instruction, the cohort-specific reference is documented here rather than overwriting the",
         "canonical."
       ),
-      source_name        = "MTTP"
+      source_name = "MTTP"
     ),
     DIS_TB_XDR_STRICT = list(
-      description        = "Extensively-drug-resistant (XDR) tuberculosis indicator, XDR only: 1 = XDR, 0 = pre-XDR, MDR, drug-susceptible or unclassified.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Extensively-drug-resistant (XDR) tuberculosis indicator, XDR only: 1 = XDR, 0 = pre-XDR, MDR, drug-susceptible or unclassified.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-XDR: pre-XDR + MDR + drug-susceptible + missing-treated-as-MDR)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Encoded in the NONMEM control stream as XDR = 0; IF(TBTYPE.EQ.4) XDR = 1, i.e.",
         "the pre-XDR category (95 of 402 patients, 28%) sits in the REFERENCE group -- this is a strictly narrower",
         "dichotomisation than the sibling canonical DIS_TB_XDR, which pools pre-XDR with XDR. Lin 2024 Results",
@@ -148,14 +177,14 @@ Lin_2024_TB_multistate <- function() {
         "Per Lin 2024 Discussion, the ~16% of patients with missing drug-resistance profile were assigned to the",
         "MDR (reference) group after testing that they did not differ significantly from MDR."
       ),
-      source_name        = "XDR"
+      source_name = "XDR"
     ),
     SEXF = list(
-      description        = "Sex: 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex: 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters the recurrence hazard as exp(e_sexf_lambda23 * SEXF) with",
         "e_sexf_lambda23 = -0.812999 (NONMEM code $DES, THETA(17); Table S2 'betasex on lambda23' = -0.813), a",
         "hazard ratio of exp(-0.813) = 0.443 for women relative to men -- i.e. men are at higher risk of",
@@ -167,14 +196,14 @@ Lin_2024_TB_multistate <- function() {
         "Lin 2024 Figure 3, whose reference individual (all covariates at their typical value, hence SEXF = 0) is",
         "described as 'a 33-year-old male'."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     AGE = list(
-      description        = "Age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters all three dropout hazards (lambda14, lambda24 and lambda34, which share a",
         "single covariate exponent) as exp(e_age_lambda1424 * (AGE - 33)) with e_age_lambda1424 = -0.0230092",
         "(NONMEM code $DES, THETA(15); Table S2 'betaage on lambda14/24/34' = -0.0230). Younger patients drop out",
@@ -182,14 +211,14 @@ Lin_2024_TB_multistate <- function() {
         "'33 (18-68)') and is hardcoded in the control stream both as the median-imputation value for missing age",
         "and as the centering constant."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject: this model uses BASELINE weight only. Lin 2024 screened time-varying body-weight",
         "change as a predictor (Methods, 'Post-baseline time-varying predictors') but did not retain it, so there",
         "is no time-varying weight column to pair with and the plain WT canonical is used rather than WT_BASE",
@@ -201,14 +230,14 @@ Lin_2024_TB_multistate <- function() {
         "'55 (30-113)'). Lin 2024 Discussion cautions that this finding 'should be interpreted with caution",
         "outside the investigated weight range' of 30-113 kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     STUDY_C208 = list(
-      description        = "Source-study indicator for the pooled analysis: 1 = TMC207-C208 (randomized, double-blind, placebo-controlled phase IIb), 0 = TMC207-C209 (open-label, single-arm phase IIb).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Source-study indicator for the pooled analysis: 1 = TMC207-C208 (randomized, double-blind, placebo-controlled phase IIb), 0 = TMC207-C209 (open-label, single-arm phase IIb).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (TMC207-C209)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters all three dropout hazards (lambda14, lambda24 and lambda34, which share a",
         "single covariate exponent) as exp(e_study_lambda1424 * STUDY_C208) with e_study_lambda1424 = 0.909188",
         "(NONMEM code $DES, THETA(14); Table S2 'betastudy on lambda14/24/34' = 0.910), a hazard ratio of",
@@ -217,7 +246,7 @@ Lin_2024_TB_multistate <- function() {
         "reference individual is 'enrolled in the C209 study'. Cohort split: C208 n = 195 (49%), C209 n = 207 (51%)",
         "(Lin 2024 Table 1)."
       ),
-      source_name        = "C208"
+      source_name = "C208"
     )
   )
 
@@ -227,50 +256,50 @@ Lin_2024_TB_multistate <- function() {
   covariatesDataExcluded <- list(
     HIV_POS = list(
       description = "Concomitant HIV infection (Y/N).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a baseline covariate on every transition; not retained. Lin 2024 Results: 'The presence of cavitation and HIV status were not identified as predictors of any transition hazard between each state.' The Discussion attributes this to 91% of the cohort not living with HIV (36 of 402, 9%, were HIV-positive; Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a baseline covariate on every transition; not retained. Lin 2024 Results: 'The presence of cavitation and HIV status were not identified as predictors of any transition hazard between each state.' The Discussion attributes this to 91% of the cohort not living with HIV (36 of 402, 9%, were HIV-positive; Table 1)."
     ),
     DIS_TB_CAVITATION = list(
       description = "Presence of lung cavitation on baseline chest radiograph (Y/N).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a baseline covariate on every transition; not retained (Lin 2024 Results). The Discussion attributes this to 96% of the cohort (385 of 402, Table 1) having cavitary disease, leaving little contrast."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a baseline covariate on every transition; not retained (Lin 2024 Results). The Discussion attributes this to 96% of the cohort (385 of 402, Table 1) having cavitary disease, leaving little contrast."
     ),
     DIS_TB_PRIORTX = list(
       description = "Previous anti-TB treatment before enrollment in the study (Y/N).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a baseline covariate; not retained. Lin 2024 Discussion notes the information 'was indirectly included through the bacterial clearance and MMBL metrics', i.e. it already acts through MBL_HL_WK2 and MBL_END. 186 of 402 patients (46%) had prior treatment (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a baseline covariate; not retained. Lin 2024 Discussion notes the information 'was indirectly included through the bacterial clearance and MMBL metrics', i.e. it already acts through MBL_HL_WK2 and MBL_END. 186 of 402 patients (46%) had prior treatment (Table 1)."
     ),
     TRT_BDQ = list(
       description = "Received bedaquiline on top of the background regimen (Y/N); 303 of 402 patients (75%).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a baseline covariate; not retained as a direct predictor of any transition. Bedaquiline exposure reaches the model indirectly through MBL_HL_WK2 and MBL_END, which are derived from the exposure-driven upstream mycobacterial-load model modellib('Svensson_2017_bedaquiline')."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a baseline covariate; not retained as a direct predictor of any transition. Bedaquiline exposure reaches the model indirectly through MBL_HL_WK2 and MBL_END, which are derived from the exposure-driven upstream mycobacterial-load model modellib('Svensson_2017_bedaquiline')."
     ),
     ALB = list(
       description = "Serum albumin over time, derived from the upstream bedaquiline population PK model.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened as a post-baseline time-varying predictor (Lin 2024 Methods); not retained in the final model. Computed in the source from a self-limiting logistic model in Svensson 2016 (CPT PSP)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened as a post-baseline time-varying predictor (Lin 2024 Methods); not retained in the final model. Computed in the source from a self-limiting logistic model in Svensson 2016 (CPT PSP)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 402L,
-    n_studies      = 2L,
-    age_range      = "18-68 years (median 33)",
-    age_median     = "33 years",
-    weight_range   = "30-113 kg (median 55)",
-    weight_median  = "55 kg",
+    species = "human",
+    n_subjects = 402L,
+    n_studies = 2L,
+    age_range = "18-68 years (median 33)",
+    age_median = "33 years",
+    weight_range = "30-113 kg (median 55)",
+    weight_median = "55 kg",
     sex_female_pct = 35,
     race_ethnicity = NULL,
-    disease_state  = "Drug-resistant pulmonary tuberculosis: 3% drug-sensitive, 54% MDR, 28% pre-XDR, 14% XDR (pre-2021 WHO definitions); 96% with lung cavitation; 9% living with HIV; 46% previously treated for TB",
-    dose_range     = "Bedaquiline 400 mg once daily for 2 weeks, then 200 mg three times weekly for a further 22 weeks (6 weeks in C208 stage 1), on top of a multidrug background regimen; 75% of patients received bedaquiline and 25% received placebo (C208 stage 1/2 placebo arm)",
-    regions        = "Brazil, China, Estonia, India, Latvia, Peru, Philippines, Russia, South Africa, South Korea, Thailand, Turkey, Ukraine; 75% of patients from a high-TB-burden country",
-    notes          = paste(
+    disease_state = "Drug-resistant pulmonary tuberculosis: 3% drug-sensitive, 54% MDR, 28% pre-XDR, 14% XDR (pre-2021 WHO definitions); 96% with lung cavitation; 9% living with HIV; 46% previously treated for TB",
+    dose_range = "Bedaquiline 400 mg once daily for 2 weeks, then 200 mg three times weekly for a further 22 weeks (6 weeks in C208 stage 1), on top of a multidrug background regimen; 75% of patients received bedaquiline and 25% received placebo (C208 stage 1/2 placebo arm)",
+    regions = "Brazil, China, Estonia, India, Latvia, Peru, Philippines, Russia, South Africa, South Korea, Thailand, Turkey, Ukraine; 75% of patients from a high-TB-burden country",
+    notes = paste(
       "Baseline characteristics from Lin 2024 Table 1. Of 439 patients enrolled in TMC207-C208 (NCT00449644) and",
       "TMC207-C209 (NCT00910871), 35 with negative cultures at both screening and baseline and 2 with only",
       "pre-treatment observations were excluded, leaving 402. Nineteen patients had missing baseline sputum",

@@ -3,8 +3,8 @@ Yu_2025_perampanel <- function() {
   reference <- "Yu L, Mao F, Chen S, Liu J, Xiao J, Chen M, Luo H, Yu Z, Dai H. Development and Validation of a Population Pharmacokinetics Model of Perampanel for Pediatric Epilepsy Patients for Optimized Dosing. Drug Des Devel Ther. 2025;19:3119-3128. doi:10.2147/DDDT.S499085"
   vignette <- "Yu_2025_perampanel"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -12,50 +12,50 @@ Yu_2025_perampanel <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "perampanel", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "perampanel", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "perampanel", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Age at the time of the therapeutic-drug-monitoring sample",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at the time of the therapeutic-drug-monitoring sample",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying in principle; Yu 2025 Table 1 reports baseline age. Enters apparent clearance as the linear-centralized power term ((AGE + 10)/8.8)^e_age_cl (Yu 2025 Equation 1). The normalisation constants 10 and 8.8 are printed in Equation 1 and are NOT the sample median (median age 9.00 years); they are used exactly as published. Note that ((AGE + 10)/8.8) = 1 at AGE = -1.2 years, so lcl is an extrapolated coefficient rather than a typical value at any observed age -- see the lcl label. Studied range 0.58-17.9 years (Table 1).",
-      source_name        = "Age"
+      notes = "Time-varying in principle; Yu 2025 Table 1 reports baseline age. Enters apparent clearance as the linear-centralized power term ((AGE + 10)/8.8)^e_age_cl (Yu 2025 Equation 1). The normalisation constants 10 and 8.8 are printed in Equation 1 and are NOT the sample median (median age 9.00 years); they are used exactly as published. Note that ((AGE + 10)/8.8) = 1 at AGE = -1.2 years, so lcl is an extrapolated coefficient rather than a typical value at any observed age -- see the lcl label. Studied range 0.58-17.9 years (Table 1).",
+      source_name = "Age"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the apparent volume of distribution as V = lvc * log10(WT) (Yu 2025 Equation 2, V(L) = 227 * LGBW, where LGBW is described in the text as 'the log value of body weight'). The published equation applies no normalisation, so lvc is a coefficient in L per base-10-log unit of body weight in kg, not a volume at a reference weight. Studied range 9.00-89.0 kg, median 28.1 kg (Table 1). See the vignette Errata for the log-base reading.",
-      source_name        = "BW / LGBW"
+      notes = "Enters the apparent volume of distribution as V = lvc * log10(WT) (Yu 2025 Equation 2, V(L) = 227 * LGBW, where LGBW is described in the text as 'the log value of body weight'). The published equation applies no normalisation, so lvc is a coefficient in L per base-10-log unit of body weight in kg, not a volume at a reference weight. Studied range 9.00-89.0 kg, median 28.1 kg (Table 1). See the vignette Errata for the log-base reading.",
+      source_name = "BW / LGBW"
     ),
     CONMED_OXC = list(
-      description        = "Concomitant oxcarbazepine",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant oxcarbazepine",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant oxcarbazepine)",
-      notes              = "Yu 2025 Equation 1 defines the comedication covariates as taking the value 0 when absent and 1 when the drug is administered simultaneously with perampanel. 26 of 151 patients (17.2%) received oxcarbazepine (Table 1). Multiplicative effect on apparent clearance (cl *= e_oxc_cl^CONMED_OXC) with e_oxc_cl = 1.51 (Table 2 final model); oxcarbazepine is a CYP3A4 inducer and perampanel is cleared predominantly by CYP3A4/5.",
-      source_name        = "OXC"
+      notes = "Yu 2025 Equation 1 defines the comedication covariates as taking the value 0 when absent and 1 when the drug is administered simultaneously with perampanel. 26 of 151 patients (17.2%) received oxcarbazepine (Table 1). Multiplicative effect on apparent clearance (cl *= e_oxc_cl^CONMED_OXC) with e_oxc_cl = 1.51 (Table 2 final model); oxcarbazepine is a CYP3A4 inducer and perampanel is cleared predominantly by CYP3A4/5.",
+      source_name = "OXC"
     ),
     CONMED_VPA = list(
-      description        = "Concomitant sodium valproate",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant sodium valproate",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant sodium valproate)",
-      notes              = "Yu 2025 Equation 1; 0 when absent, 1 when co-administered. 53 of 151 patients (35.1%) received sodium valproate (Table 1); a further single patient (0.66%) received magnesium valproate, which the covariate definition in Equation 1 does not cover. Multiplicative effect on apparent clearance (cl *= e_vpa_cl^CONMED_VPA) with e_vpa_cl = 0.745 (Table 2 final model), i.e. valproate lowers CL/F by about 25% via CYP3A4/5 inhibition.",
-      source_name        = "VPA"
+      notes = "Yu 2025 Equation 1; 0 when absent, 1 when co-administered. 53 of 151 patients (35.1%) received sodium valproate (Table 1); a further single patient (0.66%) received magnesium valproate, which the covariate definition in Equation 1 does not cover. Multiplicative effect on apparent clearance (cl *= e_vpa_cl^CONMED_VPA) with e_vpa_cl = 0.745 (Table 2 final model), i.e. valproate lowers CL/F by about 25% via CYP3A4/5 inhibition.",
+      source_name = "VPA"
     ),
     CONMED_CBZ = list(
-      description        = "Concomitant carbamazepine",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant carbamazepine",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant carbamazepine)",
-      notes              = "Yu 2025 Equation 1; 0 when absent, 1 when co-administered. 8 of 151 patients (5.30%) received carbamazepine (Table 1). Multiplicative effect on apparent clearance (cl *= e_cbz_cl^CONMED_CBZ) with e_cbz_cl = 1.88 (Table 2 final model); carbamazepine is a strong CYP3A4 inducer.",
-      source_name        = "CBZ"
+      notes = "Yu 2025 Equation 1; 0 when absent, 1 when co-administered. 8 of 151 patients (5.30%) received carbamazepine (Table 1). Multiplicative effect on apparent clearance (cl *= e_cbz_cl^CONMED_CBZ) with e_cbz_cl = 1.88 (Table 2 final model); carbamazepine is a strong CYP3A4 inducer.",
+      source_name = "CBZ"
     )
   )
 
@@ -65,85 +65,85 @@ Yu_2025_perampanel <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the covariate analysis (Yu 2025 Methods, 'PPK Modeling and Validation') but not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the covariate analysis (Yu 2025 Methods, 'PPK Modeling and Validation') but not retained in the final model."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained. Correlated with body weight; Yu 2025 dropped one of any pair of covariates with correlation coefficient > 0.3."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained. Correlated with body weight; Yu 2025 dropped one of any pair of covariates with correlation coefficient > 0.3."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained (correlated with body weight)."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened but not retained (correlated with body weight)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained (correlated with body weight)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened but not retained (correlated with body weight)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     TPROT = list(
       description = "Total protein",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     ALP = list(
       description = "Alkaline phosphatase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Entered on clearance at forward inclusion (Table S1 step 7, dOFV -5.03) but removed at backward elimination (step 8, dOFV +5.03 < 10.83)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Entered on clearance at forward inclusion (Table S1 step 7, dOFV -5.03) but removed at backward elimination (step 8, dOFV +5.03 < 10.83)."
     ),
     CONMED_PB = list(
       description = "Concomitant phenobarbital",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Entered on clearance at forward inclusion (Table S1 step 6, dOFV -5.89) but removed at backward elimination (step 9, dOFV +5.89 < 10.83). Only 2 of 151 patients (1.32%) received phenobarbital."
+      units = "(binary)",
+      type = "binary",
+      notes = "Entered on clearance at forward inclusion (Table S1 step 6, dOFV -5.89) but removed at backward elimination (step 9, dOFV +5.89 < 10.83). Only 2 of 151 patients (1.32%) received phenobarbital."
     ),
     CONMED_PHT = list(
       description = "Concomitant phenytoin",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Listed among the enzyme-inducing antiseizure medications screened (Yu 2025 Methods) but not retained; no phenytoin use is tabulated in Table 1."
+      units = "(binary)",
+      type = "binary",
+      notes = "Listed among the enzyme-inducing antiseizure medications screened (Yu 2025 Methods) but not retained; no phenytoin use is tabulated in Table 1."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 151L,
-    n_studies      = 1L,
-    age_range      = "0.58-17.9 years",
-    age_median     = "9.00 years (IQR 6.34-11.88)",
-    weight_range   = "9.00-89.0 kg",
-    weight_median  = "28.1 kg (IQR 21.2-41.0)",
+    species = "human",
+    n_subjects = 151L,
+    n_studies = 1L,
+    age_range = "0.58-17.9 years",
+    age_median = "9.00 years (IQR 6.34-11.88)",
+    weight_range = "9.00-89.0 kg",
+    weight_median = "28.1 kg (IQR 21.2-41.0)",
     sex_female_pct = 36.4,
-    disease_state  = "Pediatric patients with epilepsy (focal 51.0%, generalized 46.4%, focal evolving to generalized 2.65%) receiving oral perampanel; no patient had severe hepatic or renal impairment",
-    dose_range     = "1.00-8.00 mg total daily oral perampanel; median daily dose 2.00 mg (IQR 2.00-4.00). Monte Carlo dosing simulations spanned 2-12 mg/d.",
-    regions        = "China (Second Affiliated Hospital, Zhejiang University School of Medicine, Hangzhou)",
-    notes          = "Retrospective single-centre study of routine TDM records collected February 2021 - September 2023 (Yu 2025 Methods). 454 plasma concentrations from 151 patients; 120 patients (79.5%) were younger than 12 years and 31 were aged 12-18 years. TDM was performed about 3 weeks after perampanel initiation, with samples drawn in the morning approximately 12 h after the previous dose, so essentially all observations are near-trough steady-state concentrations. Assay: validated HPLC with a range of 15-1500 ng/mL; observed perampanel concentrations 30.0-1082 ng/mL, median 242 ng/mL (IQR 144-340). Median height 134 cm, BMI 16.6 kg/m^2, BSA 1.06 m^2, CrCl 149 mL/min. Comedications: sodium valproate 35.1%, levetiracetam 27.8%, topiramate 18.5%, oxcarbazepine 17.2%, lamotrigine 8.61%, lacosamide 6.62%, clonazepam 5.96%, carbamazepine 5.30%, clobazam 4.64%, zonisamide 3.97%, vigabatrin 1.99%, phenobarbital 1.32%, magnesium valproate 0.66%, nitrazepam 5.83%/9.68% by age stratum."
+    disease_state = "Pediatric patients with epilepsy (focal 51.0%, generalized 46.4%, focal evolving to generalized 2.65%) receiving oral perampanel; no patient had severe hepatic or renal impairment",
+    dose_range = "1.00-8.00 mg total daily oral perampanel; median daily dose 2.00 mg (IQR 2.00-4.00). Monte Carlo dosing simulations spanned 2-12 mg/d.",
+    regions = "China (Second Affiliated Hospital, Zhejiang University School of Medicine, Hangzhou)",
+    notes = "Retrospective single-centre study of routine TDM records collected February 2021 - September 2023 (Yu 2025 Methods). 454 plasma concentrations from 151 patients; 120 patients (79.5%) were younger than 12 years and 31 were aged 12-18 years. TDM was performed about 3 weeks after perampanel initiation, with samples drawn in the morning approximately 12 h after the previous dose, so essentially all observations are near-trough steady-state concentrations. Assay: validated HPLC with a range of 15-1500 ng/mL; observed perampanel concentrations 30.0-1082 ng/mL, median 242 ng/mL (IQR 144-340). Median height 134 cm, BMI 16.6 kg/m^2, BSA 1.06 m^2, CrCl 149 mL/min. Comedications: sodium valproate 35.1%, levetiracetam 27.8%, topiramate 18.5%, oxcarbazepine 17.2%, lamotrigine 8.61%, lacosamide 6.62%, clonazepam 5.96%, carbamazepine 5.30%, clobazam 4.64%, zonisamide 3.97%, vigabatrin 1.99%, phenobarbital 1.32%, magnesium valproate 0.66%, nitrazepam 5.83%/9.68% by age stratum."
   )
 
   ini({

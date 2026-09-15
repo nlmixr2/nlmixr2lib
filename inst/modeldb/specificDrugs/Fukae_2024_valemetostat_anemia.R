@@ -47,116 +47,116 @@ Fukae_2024_valemetostat_anemia <- function() {
   )
   vignette <- "Fukae_2024_valemetostat_exposure_response"
   units <- list(
-    time          = "n/a (static landmark exposure-safety model; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the AUCU_VALE covariate column)",
+    time = "n/a (static landmark exposure-safety model; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the AUCU_VALE covariate column)",
     concentration = "prob_anemia (probability of grade >= 3 anemia, 0-1; also logit_anemia)"
   )
 
   covariateData <- list(
     AUCU_VALE = list(
-      description        = "Unbound (free) valemetostat plasma AUC over the once-daily 24 h dosing interval at steady state, per subject. Supplied as data: this model has no PK layer, and the source analysis used empirical-Bayes individual predictions from the companion population PK model (Fukae 2024, doi:10.1002/psp4.13201).",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Unbound (free) valemetostat plasma AUC over the once-daily 24 h dosing interval at steady state, per subject. Supplied as data: this model has no PK layer, and the source analysis used empirical-Bayes individual predictions from the companion population PK model (Fukae 2024, doi:10.1002/psp4.13201).",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 375 ng*h/mL and scaled by 250 ng*h/mL inside model() (Fukae 2024 Table 3 footnote reference patient; Table 3 row 'Unbound valemetostat AUCSS: 250 ng*h/mL increase'). Observed 5th-95th percentile 184-887 ng*h/mL, which is the paper's modified region of practical equivalence. Unbound, not total.",
-      source_name        = "unbound valemetostat AUCSS"
+      notes = "Centred at 375 ng*h/mL and scaled by 250 ng*h/mL inside model() (Fukae 2024 Table 3 footnote reference patient; Table 3 row 'Unbound valemetostat AUCSS: 250 ng*h/mL increase'). Observed 5th-95th percentile 184-887 ng*h/mL, which is the paper's modified region of practical equivalence. Unbound, not total.",
+      source_name = "unbound valemetostat AUCSS"
     ),
     AGE = list(
-      description        = "Age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 65 years and scaled by 10 years inside model(). R/R NHL safety analysis set median 69.0 years, range 37-88 (Fukae 2024 Table 1).",
-      source_name        = "Age"
+      notes = "Centred at 65 years and scaled by 10 years inside model(). R/R NHL safety analysis set median 69.0 years, range 37-88 (Fukae 2024 Table 1).",
+      source_name = "Age"
     ),
     LDH = list(
-      description        = "Baseline serum lactate dehydrogenase concentration.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum lactate dehydrogenase concentration.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 250 U/L and scaled by 300 U/L inside model(). R/R NHL safety analysis set median 244 U/L, range 119-2000 (Fukae 2024 Table 1).",
-      source_name        = "LDH"
+      notes = "Centred at 250 U/L and scaled by 300 U/L inside model(). R/R NHL safety analysis set median 244 U/L, range 119-2000 (Fukae 2024 Table 1).",
+      source_name = "LDH"
     ),
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 63 kg and scaled by 20 kg inside model(). R/R NHL safety analysis set median 63.4 kg, range 34.5-114 (Fukae 2024 Table 1).",
-      source_name        = "Weight"
+      notes = "Centred at 63 kg and scaled by 20 kg inside model(). R/R NHL safety analysis set median 63.4 kg, range 34.5-114 (Fukae 2024 Table 1).",
+      source_name = "Weight"
     ),
     HGB = list(
-      description        = "Baseline blood hemoglobin concentration -- the laboratory value corresponding to this model's anemia endpoint.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline blood hemoglobin concentration -- the laboratory value corresponding to this model's anemia endpoint.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 115 g/L and scaled by 20 g/L inside model(). The 115 g/L reference is stated in the Fukae 2024 Results narrative ('A 20 g/L baseline Hb increase from the reference value (115 g/L)') rather than in the Table 3 footnote, which omits the laboratory reference values. R/R NHL safety analysis set median 116 g/L, range 70-165 (Table 1). This effect was deliberately NOT regularized: Fukae 2024 Methods removed the spike component for the baseline laboratory value corresponding to each hematologic endpoint, using a slab-only prior 'given the self-evident a priori relevance of these baseline values'. It is correspondingly the dominant covariate, odds ratio 0.417 per 20 g/L increase.",
-      source_name        = "Hemoglobin"
+      notes = "Centred at 115 g/L and scaled by 20 g/L inside model(). The 115 g/L reference is stated in the Fukae 2024 Results narrative ('A 20 g/L baseline Hb increase from the reference value (115 g/L)') rather than in the Table 3 footnote, which omits the laboratory reference values. R/R NHL safety analysis set median 116 g/L, range 70-165 (Table 1). This effect was deliberately NOT regularized: Fukae 2024 Methods removed the spike component for the baseline laboratory value corresponding to each hematologic endpoint, using a slab-only prior 'given the self-evident a priori relevance of these baseline values'. It is correspondingly the dominant covariate, odds ratio 0.417 per 20 g/L increase.",
+      source_name = "Hemoglobin"
     ),
     SEXF = list(
-      description        = "Sex indicator; 1 = female, 0 = male. Binary covariates are NOT centred or scaled -- Fukae 2024 Methods applies centring and scaling to 'continuous covariates only'.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator; 1 = female, 0 = male. Binary covariates are NOT centred or scaled -- Fukae 2024 Methods applies centring and scaling to 'continuous covariates only'.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; the reference patient is male per the Table 3 footnote)",
-      notes              = "R/R NHL safety analysis set 44.1% female (Fukae 2024 Table 1).",
-      source_name        = "Sex: female"
+      notes = "R/R NHL safety analysis set 44.1% female (Fukae 2024 Table 1).",
+      source_name = "Sex: female"
     ),
     HEPIMP_MILD = list(
-      description        = "Mild hepatic impairment indicator; 1 = mild impairment, 0 = normal hepatic function. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild hepatic impairment indicator; 1 = mild impairment, 0 = normal hepatic function. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function; the reference patient has normal hepatic function per the Table 3 footnote)",
-      notes              = "Fukae 2024 dichotomizes hepatic function as normal versus mild impairment; no moderate or severe stratum was enrolled. R/R NHL safety analysis set 13.7% mild (Table 1).",
-      source_name        = "Hepatic function: mild impairment"
+      notes = "Fukae 2024 dichotomizes hepatic function as normal versus mild impairment; no moderate or severe stratum was enrolled. R/R NHL safety analysis set 13.7% mild (Table 1).",
+      source_name = "Hepatic function: mild impairment"
     ),
     RACE_WHITE = list(
-      description        = "White race indicator; 1 = White, 0 = otherwise. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White race indicator; 1 = White, 0 = otherwise. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Asian, when RACE_BLACK is also 0; the reference patient is Asian per the Table 3 footnote)",
-      notes              = "Paired with RACE_BLACK to encode the paper's three-level race covariate (Asian / White / Black) with two binary indicators; both 0 gives the Asian reference. R/R NHL safety analysis set Asian 72.5%, White 21.6%, Black 5.9% (Fukae 2024 Table 1). Distinct from REGION_USA, which records enrollment country -- Fukae 2024 carries both simultaneously.",
-      source_name        = "Race: White"
+      notes = "Paired with RACE_BLACK to encode the paper's three-level race covariate (Asian / White / Black) with two binary indicators; both 0 gives the Asian reference. R/R NHL safety analysis set Asian 72.5%, White 21.6%, Black 5.9% (Fukae 2024 Table 1). Distinct from REGION_USA, which records enrollment country -- Fukae 2024 carries both simultaneously.",
+      source_name = "Race: White"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator; 1 = Black, 0 = otherwise. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator; 1 = Black, 0 = otherwise. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Asian, when RACE_WHITE is also 0)",
-      notes              = "Paired with RACE_WHITE; see that entry. Only 6 of 102 patients were Black (5.9%), which is why several Black-race credible intervals in Table 3 are extremely wide (the slope effect for anemia is 1.33 with an upper bound of 543).",
-      source_name        = "Race: Black"
+      notes = "Paired with RACE_WHITE; see that entry. Only 6 of 102 patients were Black (5.9%), which is why several Black-race credible intervals in Table 3 are extremely wide (the slope effect for anemia is 1.33 with an upper bound of 543).",
+      source_name = "Race: Black"
     ),
     REGION_USA = list(
-      description        = "United States enrollment indicator; 1 = enrolled and treated at a United States study site, 0 = enrolled in Japan. Not centred or scaled (binary).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "United States enrollment indicator; 1 = enrolled and treated at a United States study site, 0 = enrolled in Japan. Not centred or scaled (binary).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Japan; the reference patient is 'an Asian male in Japan' per the Table 3 footnote)",
-      notes              = "The pooled cohort has only two regions, so this is the exact complement of a Japan indicator. R/R NHL safety analysis set Japan 69.6%, United States 30.4% (Fukae 2024 Table 1). Distinct from the RACE_* indicators: 3 of the 102 patients were Asian enrolled in the United States, so region and race are not collinear.",
-      source_name        = "Geographic region: United States"
+      notes = "The pooled cohort has only two regions, so this is the exact complement of a Japan indicator. R/R NHL safety analysis set Japan 69.6%, United States 30.4% (Fukae 2024 Table 1). Distinct from the RACE_* indicators: 3 of the 102 patients were Asian enrolled in the United States, so region and race are not collinear.",
+      source_name = "Geographic region: United States"
     )
   )
 
   covariatesDataExcluded <- list(
     DIS_NHL_STAGE4 = list(
       description = "Non-Hodgkin lymphoma disease stage indicator; 1 = stage IV, 0 = stage I/II/III.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Named by Fukae 2024 Methods as a candidate categorical covariate for the exposure-safety analysis ('NHL disease stage (I-III/IV)'), but NOT reported in Table 3 and therefore not retained in the final model -- no point estimate exists anywhere on disk. Stage was heavily missing in the safety cohort (24 of 102 patients, 23.5%; Table 1), the likely reason it was dropped. Documented here to preserve the covariate screen without carrying a convention warning."
+      units = "(binary)",
+      type = "binary",
+      notes = "Named by Fukae 2024 Methods as a candidate categorical covariate for the exposure-safety analysis ('NHL disease stage (I-III/IV)'), but NOT reported in Table 3 and therefore not retained in the final model -- no point estimate exists anywhere on disk. Stage was heavily missing in the safety cohort (24 of 102 patients, 23.5%; Table 1), the likely reason it was dropped. Documented here to preserve the covariate screen without carrying a convention warning."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 102L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 102L,
+    n_studies = 2L,
     n_observations = "101 evaluable binary anemia records (one per patient; 1 of the 102 patients had a missing anemia outcome, Fukae 2024 Table 1)",
-    age_range      = "median 69.0 years, range 37-88 (Fukae 2024 Table 1)",
-    weight_range   = "median 63.4 kg, range 34.5-114 (Fukae 2024 Table 1)",
+    age_range = "median 69.0 years, range 37-88 (Fukae 2024 Table 1)",
+    weight_range = "median 63.4 kg, range 34.5-114 (Fukae 2024 Table 1)",
     sex_female_pct = 44.1,
     race_ethnicity = c(Asian = 72.5, White = 21.6, Black = 5.9),
-    disease_state  = "relapsed or refractory non-Hodgkin lymphomas, including adult T-cell leukemia/lymphoma and other peripheral T-cell lymphomas",
-    dose_range     = "valemetostat 150, 200, 250 or 300 mg orally once daily (J101 dose escalation and expansion; J201 was 200 mg throughout)",
-    regions        = "Japan and the United States",
-    notes          = paste0(
+    disease_state = "relapsed or refractory non-Hodgkin lymphomas, including adult T-cell leukemia/lymphoma and other peripheral T-cell lymphomas",
+    dose_range = "valemetostat 150, 200, 250 or 300 mg orally once daily (J101 dose escalation and expansion; J201 was 200 mg throughout)",
+    regions = "Japan and the United States",
+    notes = paste0(
       "Grade >= 3 anemia was assessed from laboratory hemoglobin values ",
       "rather than from investigator-reported adverse-event terms ",
       "(Fukae 2024 Table 1 note). Observed outcome: 21 of 102 patients ",

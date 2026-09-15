@@ -8,56 +8,56 @@ Nath_2010_melphalan_total <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "melphalan total", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "melphalan total", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "melphalan total", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass (Janmahasatian formula)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass (Janmahasatian formula)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on non-renal CL (fixed exponent 0.75) and V1 (fixed exponent 1) with reference 50 kg (Nath 2010 final equations p. 489). Note: the screening grid in Table 4 used FFM/53 (the cohort median per Table 2); the final-model equations on p. 489 use FFM/50, which we follow verbatim. Computed per Janmahasatian et al. Clin Pharmacokinet 2005;44:1051-1065 from total body weight, height, and sex.",
-      source_name        = "FFM"
+      notes = "Power-form effect on non-renal CL (fixed exponent 0.75) and V1 (fixed exponent 1) with reference 50 kg (Nath 2010 final equations p. 489). Note: the screening grid in Table 4 used FFM/53 (the cohort median per Table 2); the final-model equations on p. 489 use FFM/50, which we follow verbatim. Computed per Janmahasatian et al. Clin Pharmacokinet 2005;44:1051-1065 from total body weight, height, and sex.",
+      source_name = "FFM"
     ),
     HCT = list(
-      description        = "Hematocrit on the day of melphalan administration (or closest prior value if unavailable)",
-      units              = "%",
-      type               = "continuous",
+      description = "Hematocrit on the day of melphalan administration (or closest prior value if unavailable)",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on non-renal CL with reference 34 % (cohort median per Nath 2010 Table 2). Population range 20-45 %.",
-      source_name        = "HCT"
+      notes = "Power-form effect on non-renal CL with reference 34 % (cohort median per Nath 2010 Table 2). Population range 20-45 %.",
+      source_name = "HCT"
     ),
     CRCL = list(
-      description        = "Estimated creatinine clearance by Cockcroft and Gault, normalized to a standard weight of 70 kg",
-      units              = "mL/min/70 kg",
-      type               = "continuous",
+      description = "Estimated creatinine clearance by Cockcroft and Gault, normalized to a standard weight of 70 kg",
+      units = "mL/min/70 kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source paper applied Cockcroft-Gault using actual body weight, then divided by total body weight and multiplied by 70 to express the result as mL/min/70 kg (Nath 2010 Methods, page 486). Linear effect on renal CL with reference 88 mL/min/70 kg (cohort median per Table 2). Documented assay form per the CRCL register entry: this model uses the weight-normalised Cockcroft-Gault variant, distinct from BSA-normalised eGFR forms used elsewhere in the library.",
-      source_name        = "CLcr"
+      notes = "Source paper applied Cockcroft-Gault using actual body weight, then divided by total body weight and multiplied by 70 to express the result as mL/min/70 kg (Nath 2010 Methods, page 486). Linear effect on renal CL with reference 88 mL/min/70 kg (cohort median per Table 2). Documented assay form per the CRCL register entry: this model uses the weight-normalised Cockcroft-Gault variant, distinct from BSA-normalised eGFR forms used elsewhere in the library.",
+      source_name = "CLcr"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 100L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 100L,
+    n_studies = 1L,
     n_observations = 1057L,
-    age_range      = "36-73 years",
-    age_median     = "57 years",
-    weight_range   = "42-132 kg",
-    weight_median  = "78 kg",
+    age_range = "36-73 years",
+    age_median = "57 years",
+    weight_range = "42-132 kg",
+    weight_median = "78 kg",
     sex_female_pct = 41,
     race_ethnicity = "Not reported",
-    disease_state  = "Multiple myeloma undergoing high-dose melphalan and autologous stem cell transplantation",
-    dose_range     = "150-450 mg IV (median 368 mg; 115-216 mg/m^2, median 192 mg/m^2); infusion over a median 35 min (range 15-95 min)",
-    regions        = "Australia (six participating hospitals; ACTRN0126000231549)",
-    ffm_range      = "34.4-80.5 kg (median 53.3)",
-    bsa_range      = "1.3-2.6 m^2 (median 1.9)",
-    crcl_range     = "26-205 mL/min/70 kg (median 88); 29-234 mL/min (median 97)",
-    hct_range      = "20-45 % (median 34); 35 % of patients had HCT < 33 %",
-    notes          = "Nath 2010 Table 2 baseline characteristics. Myeloma type: IgG 58, IgA 21, light chain 7, non-secretory 1, missing 13. Total melphalan concentrations measured in all samples (n = 1057); unbound concentrations were measured in 5-6 samples per patient and modelled separately (Nath_2010_melphalan_unbound)."
+    disease_state = "Multiple myeloma undergoing high-dose melphalan and autologous stem cell transplantation",
+    dose_range = "150-450 mg IV (median 368 mg; 115-216 mg/m^2, median 192 mg/m^2); infusion over a median 35 min (range 15-95 min)",
+    regions = "Australia (six participating hospitals; ACTRN0126000231549)",
+    ffm_range = "34.4-80.5 kg (median 53.3)",
+    bsa_range = "1.3-2.6 m^2 (median 1.9)",
+    crcl_range = "26-205 mL/min/70 kg (median 88); 29-234 mL/min (median 97)",
+    hct_range = "20-45 % (median 34); 35 % of patients had HCT < 33 %",
+    notes = "Nath 2010 Table 2 baseline characteristics. Myeloma type: IgG 58, IgA 21, light chain 7, non-secretory 1, missing 13. Total melphalan concentrations measured in all samples (n = 1057); unbound concentrations were measured in 5-6 samples per patient and modelled separately (Nath_2010_melphalan_unbound)."
   )
 
   ini({

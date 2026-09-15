@@ -18,8 +18,8 @@ Wicha_2018_rifampicin <- function() {
   )
   vignette <- "Wicha_2018_rifampicin"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "mg/L for plasma Cc and ELF Celf and PAE Cpae; CFU/mL for the bacterial states (the log_cfu observation is on the natural-log scale)"
   )
 
@@ -28,23 +28,38 @@ Wicha_2018_rifampicin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
-    enzyme  = list(analyte = "Active Rifampicin Enzyme Complex", units = "mg", specimen = "plasma", verified = FALSE),
+    enzyme = list(analyte = "Active Rifampicin Enzyme Complex", units = "mg", specimen = "plasma", verified = FALSE),
     effect1 = list(analyte = "Rifampicin", units = "mg", specimen = "epithelial lining fluid", verified = FALSE),
     effect2 = list(analyte = "Rifampicin", units = "mg", specimen = "epithelial lining fluid", verified = FALSE),
-    fast    = list(analyte = "Mycobacterium tuberculosis (Fast-Multiplying Subpopulation)", units = "mg", specimen = "not applicable", verified = FALSE),
-    slow    = list(analyte = "Mycobacterium tuberculosis (Slow-Growing Subpopulation)", units = "mg", specimen = "not applicable", verified = FALSE),
-    nonm    = list(analyte = "Mycobacterium tuberculosis (Non-Multiplying Subpopulation)", units = "mg", specimen = "not applicable", verified = FALSE)
+    fast = list(
+      analyte = "Mycobacterium tuberculosis (Fast-Multiplying Subpopulation)",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    slow = list(
+      analyte = "Mycobacterium tuberculosis (Slow-Growing Subpopulation)",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    nonm = list(
+      analyte = "Mycobacterium tuberculosis (Non-Multiplying Subpopulation)",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Per-record administered rifampicin dose (mg) used as the input to the saturable dose-dependent bioavailability function bio = 1 + femax * max(DOSE - 450, 0) / (fed50 + max(DOSE - 450, 0)).",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-record administered rifampicin dose (mg) used as the input to the saturable dose-dependent bioavailability function bio = 1 + femax * max(DOSE - 450, 0) / (fed50 + max(DOSE - 450, 0)).",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference dose 450 mg (the standard adult rifampicin dose) where bio = 1",
         "by construction. The Svensson 2018 HIGHRIF1 calibration spans 600-2100 mg",
         "(10-35 mg/kg in adults); Wicha 2018 extrapolates the EBA simulation up to",
@@ -56,22 +71,22 @@ Wicha_2018_rifampicin <- function() {
         "extrapolation since Svensson 2018 PK was formally only studied up to",
         "40 mg/kg."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 0L,
-    age_range      = "adults (TB patients; the Svensson 2018 HIGHRIF1 source cohort enrolled adult pulmonary TB patients)",
-    weight_range   = "log-normal with geometric mean 60 kg and geometric SD 10% (Wicha 2018 Methods 'Pharmacokinetics of rifampicin in the different target systems')",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 0L,
+    age_range = "adults (TB patients; the Svensson 2018 HIGHRIF1 source cohort enrolled adult pulmonary TB patients)",
+    weight_range = "log-normal with geometric mean 60 kg and geometric SD 10% (Wicha 2018 Methods 'Pharmacokinetics of rifampicin in the different target systems')",
     sex_female_pct = NA_real_,
     race_ethnicity = "not specified; the Wicha 2018 simulation is intended for global TB populations",
-    disease_state  = "Adults with active drug-susceptible pulmonary Mycobacterium tuberculosis infection (simulated phase IIa early bactericidal activity cohort)",
-    dose_range     = "Oral rifampicin 2.5 to 50 mg/kg once daily for 14 days (Wicha 2018 Methods 'Translational prediction from in vitro to the target systems'). The reported predictions emphasize the 10, 25, 35, and 50 mg/kg dose levels.",
-    regions        = "global TB cohorts; the EBA validation in Wicha 2018 Figure 4a pools observed EBA from contemporary clinical trials (Boeree 2015, Jindani 1980, Sirgel 2005, Diacon 2007, Chan 1992, Rustomjee 2008).",
-    notes          = paste(
+    disease_state = "Adults with active drug-susceptible pulmonary Mycobacterium tuberculosis infection (simulated phase IIa early bactericidal activity cohort)",
+    dose_range = "Oral rifampicin 2.5 to 50 mg/kg once daily for 14 days (Wicha 2018 Methods 'Translational prediction from in vitro to the target systems'). The reported predictions emphasize the 10, 25, 35, and 50 mg/kg dose levels.",
+    regions = "global TB cohorts; the EBA validation in Wicha 2018 Figure 4a pools observed EBA from contemporary clinical trials (Boeree 2015, Jindani 1980, Sirgel 2005, Diacon 2007, Chan 1992, Rustomjee 2008).",
+    notes = paste(
       "Wicha 2018 is a SIMULATION study built on three previously published model",
       "components linked in this work: Svensson 2018 HIGHRIF1 popPK (saturable",
       "Michaelis-Menten clearance + enzyme-pool autoinduction + dose-dependent F),",

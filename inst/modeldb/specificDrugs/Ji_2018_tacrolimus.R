@@ -23,17 +23,17 @@ Ji_2018_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     POD = list(
-      description        = "Days post-transplantation",
-      units              = "days",
-      type               = "continuous",
+      description = "Days post-transplantation",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Time-varying within subject. Enters CL/F and V/F as a direct power ",
         "covariate (POD^0.257 on CL/F, POD^0.322 on V/F; Ji 2018 final-model ",
         "equation in Results), not as a centred-deviation effect. The model ",
@@ -43,14 +43,14 @@ Ji_2018_tacrolimus <- function() {
         "V/F to zero; downstream users simulating predose / day-of-surgery ",
         "events should restrict simulations to POD >= 1 or clamp POD = max(POD, 1)."
       ),
-      source_name        = "POD"
+      source_name = "POD"
     ),
     CYP3A5_EXPR = list(
-      description        = "Recipient CYP3A5 expresser status (rs776746 / CYP3A5*3 polymorphism)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Recipient CYP3A5 expresser status (rs776746 / CYP3A5*3 polymorphism)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5 *3/*3 non-expresser recipient)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed germline genotype of the graft recipient. 1 = at least one ",
         "functional CYP3A5*1 allele (genotype *1/*1 or *1/*3); 0 = homozygous ",
         "*3/*3. Derived from the recipient half of the combinational CYP3A5 ",
@@ -62,14 +62,14 @@ Ji_2018_tacrolimus <- function() {
         "(REDE n=10, REDN n=13), 35/58 (60.3%) recipient nonexpressers (RNDE ",
         "n=8, RNDN n=27); Hardy-Weinberg equilibrium (Ji 2018 Methods)."
       ),
-      source_name        = "CYP3A5 recipient (REDE/REDN -> 1; RNDE/RNDN -> 0)"
+      source_name = "CYP3A5 recipient (REDE/REDN -> 1; RNDE/RNDN -> 0)"
     ),
     CYP3A5_EXPR_DONOR = list(
-      description        = "Donor CYP3A5 expresser status (rs776746 / CYP3A5*3 polymorphism)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Donor CYP3A5 expresser status (rs776746 / CYP3A5*3 polymorphism)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5 *3/*3 non-expresser donor)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed germline genotype of the liver-graft donor. 1 = donor ",
         "carries at least one functional CYP3A5*1 allele (genotype *1/*1 or ",
         "*1/*3); 0 = donor is homozygous *3/*3. Derived from the donor half ",
@@ -85,28 +85,28 @@ Ji_2018_tacrolimus <- function() {
         "40/58 (69.0%) donor nonexpressers (REDN n=13, RNDN n=27); ",
         "Hardy-Weinberg equilibrium (Ji 2018 Methods)."
       ),
-      source_name        = "CYP3A5 donor (REDE/RNDE -> 1; REDN/RNDN -> 0)"
+      source_name = "CYP3A5 donor (REDE/RNDE -> 1; REDN/RNDN -> 0)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 58L,
-    n_studies        = 1L,
-    n_observations   = 605L,
-    age_range        = "19-65 years",
-    age_median       = "49.2 years (mean +/- SD 49.2 +/- 8.7)",
-    weight_range     = "40.1-85.5 kg",
-    weight_median    = "61.4 kg (mean +/- SD 61.4 +/- 10.1)",
-    sex_female_pct   = 20.7,
-    race_ethnicity   = "Korean (single-centre Seoul, Republic of Korea)",
-    disease_state    = paste0(
+    species = "human",
+    n_subjects = 58L,
+    n_studies = 1L,
+    n_observations = 605L,
+    age_range = "19-65 years",
+    age_median = "49.2 years (mean +/- SD 49.2 +/- 8.7)",
+    weight_range = "40.1-85.5 kg",
+    weight_median = "61.4 kg (mean +/- SD 61.4 +/- 10.1)",
+    sex_female_pct = 20.7,
+    race_ethnicity = "Korean (single-centre Seoul, Republic of Korea)",
+    disease_state = paste0(
       "Korean adult patients receiving de novo living-donor liver ",
       "transplantation (LDLT). Patients were on a triple- or double-drug ",
       "immunosuppression regimen including tacrolimus and corticosteroids, ",
       "with or without mycophenolate mofetil."
     ),
-    dose_range       = paste0(
+    dose_range = paste0(
       "Oral tacrolimus (Astellas Prograf), starting on postoperative day 1, ",
       "administered twice daily at 10:00 and 22:00 on an empty stomach. ",
       "Per-dose range 0.1-6 mg (mean +/- SD 1.9 +/- 1.2 mg). Doses were ",
@@ -114,7 +114,7 @@ Ji_2018_tacrolimus <- function() {
       "trough concentrations of 8-13 ng/mL (triple regimen) or 13-17 ng/mL ",
       "(double regimen) over the first 14 days post-transplant."
     ),
-    regions          = "Republic of Korea (Seoul National University Hospital, single-centre).",
+    regions = "Republic of Korea (Seoul National University Hospital, single-centre).",
     cyp3a5_distribution = paste0(
       "Four combinational recipient/donor groups: REDE (recipient expresser ",
       "+ donor expresser) n = 10; REDN (recipient expresser + donor ",
@@ -123,8 +123,8 @@ Ji_2018_tacrolimus <- function() {
       "Hardy-Weinberg equilibrium for both recipient and donor genotype ",
       "distributions (all P > 0.05; Ji 2018 Methods)."
     ),
-    pod_range        = "1-14 days (first 14 days post-transplant).",
-    sampling_design  = paste0(
+    pod_range = "1-14 days (first 14 days post-transplant).",
+    sampling_design = paste0(
       "Routine therapeutic drug monitoring trough samples drawn daily around ",
       "09:00 (~11 hours after the prior 22:00 dose), starting the day after ",
       "the first dose and continuing until discharge. Total 605 trough ",
@@ -132,7 +132,7 @@ Ji_2018_tacrolimus <- function() {
       "Whole-blood tacrolimus measured by enzyme immunoassay. Observed ",
       "concentration mean +/- SD 9.7 +/- 3.9 ng/mL (range 1.6-21.4)."
     ),
-    notes            = paste0(
+    notes = paste0(
       "Single-centre retrospective analysis of 58 patients from a prior ",
       "study (Ji 2018 reference 3). Population pharmacokinetic modelling ",
       "performed in NONMEM v7.4 + PsN with FOCE-I; internal validation by ",

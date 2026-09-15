@@ -6,11 +6,11 @@ Gasthuys_2023_paracetamol_dog <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Subject-level, time-fixed. Applied as a power function with exponents fixed at",
         "0.75 for CL and 1 for Vd, Vp and Q (Gasthuys 2023 Table 3, 'Covariate model' rows).",
         "The reference weight is 9.70 kg, the median body weight of the six beagle dogs",
@@ -24,24 +24,24 @@ Gasthuys_2023_paracetamol_dog <- function() {
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "beagle dog",
-    n_subjects     = 6L,
-    n_studies      = 1L,
+    species = "beagle dog",
+    n_subjects = 6L,
+    n_studies = 1L,
     n_observations = "575 plasma paracetamol concentrations from six beagle dogs across eight occasions (Gasthuys 2023 Results 2.1). Concentrations below the 7.5 ng/mL limit of quantification (1.19% of dog records) were excluded before fitting.",
-    age_range      = "1.7-4.0 years (median 1.9 years)",
-    age_median     = "1.9 years",
-    weight_range   = "7.90-13.3 kg",
-    weight_median  = "9.70 kg",
-    disease_state  = "clinically healthy adult beagle dogs (Marshall BioResources, Lyon, France)",
-    dose_range     = "168 mg paracetamol per occasion: 7 mL of Panadol suspension by oral gavage followed by 10 mL tap water, and a single 16.8 mL / 168 mg intravenous injection on day 14",
-    regions        = "Belgium (Janssen R&D animal facility; ethical committee approval 512)",
-    notes          = paste(
+    age_range = "1.7-4.0 years (median 1.9 years)",
+    age_median = "1.9 years",
+    weight_range = "7.90-13.3 kg",
+    weight_median = "9.70 kg",
+    disease_state = "clinically healthy adult beagle dogs (Marshall BioResources, Lyon, France)",
+    dose_range = "168 mg paracetamol per occasion: 7 mL of Panadol suspension by oral gavage followed by 10 mL tap water, and a single 16.8 mL / 168 mg intravenous injection on day 14",
+    regions = "Belgium (Janssen R&D animal facility; ethical committee approval 512)",
+    notes = paste(
       "Sequential (not crossover) design over 50 days, one prandial condition per occasion",
       "(Gasthuys 2023 Figure 5): day 0 fasted, day 14 intravenous, day 22 reference meal 200",
       "(100 g, 200 kcal), day 28 infant formula 100 (150 mL, 100 kcal), day 35 reference meal 100",

@@ -34,8 +34,12 @@ addResErr <- function(ui, reserr, endpoint, model) {
     if (endpoint %in% modelUi$predDf$cond) {
       paramErr <- endpoint
     } else {
-      stop("requested to add/change residual error for '", endpoint, "' but not defined as a modeled endpoint",
-        call. = FALSE)
+      stop(
+        "requested to add/change residual error for '",
+        endpoint,
+        "' but not defined as a modeled endpoint",
+        call. = FALSE
+      )
     }
   }
   if ("rxLinCmt" %in% paramErr) {

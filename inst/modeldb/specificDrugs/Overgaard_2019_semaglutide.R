@@ -8,49 +8,56 @@ Overgaard_2019_semaglutide <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "semaglutide", units = "nmol", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "semaglutide", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "semaglutide", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "semaglutide", units = "nmol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "semaglutide", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL and Q (shared exponent 1.01) and on Vc and Vp (shared exponent 0.923) per Overgaard 2019 Table 4. Reference weight 85 kg per Methods (reference subject profile). Time-fixed at baseline.",
-      source_name        = "WT"
+      notes = "Power effect on CL and Q (shared exponent 1.01) and on Vc and Vp (shared exponent 0.923) per Overgaard 2019 Table 4. Reference weight 85 kg per Methods (reference subject profile). Time-fixed at baseline.",
+      source_name = "WT"
     ),
     DIS_DIAB = list(
-      description        = "Type 2 diabetes status (glycaemic status indicator)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Type 2 diabetes status (glycaemic status indicator)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normoglycaemia / healthy volunteer)",
-      notes              = "Maps the glycaemic-status covariate of Overgaard 2019 (normoglycaemia vs T2D) onto the canonical DIS_DIAB binary indicator. 1 = type 2 diabetes; 0 = normoglycaemia (the reference subject profile is healthy). Multiplicative effects: 1.12 on CL and 0.544 on ka per Overgaard 2019 Table 4. The cohort comprised 277 normoglycaemic and 76 T2D subjects (Table 3); only T2D was distinguished, so the canonical DIS_DIAB (which does not separate Type 1 vs Type 2) is the appropriate column. Renamed from canonical DIAB to DIS_DIAB on 2026-06-19 per the canonical-register standardization audit.",
-      source_name        = "T2D"
+      notes = "Maps the glycaemic-status covariate of Overgaard 2019 (normoglycaemia vs T2D) onto the canonical DIS_DIAB binary indicator. 1 = type 2 diabetes; 0 = normoglycaemia (the reference subject profile is healthy). Multiplicative effects: 1.12 on CL and 0.544 on ka per Overgaard 2019 Table 4. The cohort comprised 277 normoglycaemic and 76 T2D subjects (Table 3); only T2D was distinguished, so the canonical DIS_DIAB (which does not separate Type 1 vs Type 2) is the appropriate column. Renamed from canonical DIAB to DIS_DIAB on 2026-06-19 per the canonical-register standardization audit.",
+      source_name = "T2D"
     )
   )
 
   population <- list(
-    n_subjects     = 353L,                                         # Overgaard 2019 Table 3 (two-compartment model dataset)
-    n_studies      = 9L,                                           # Overgaard 2019 Table 1 (nine clinical pharmacology trials)
-    age_range      = "19-70 years",                                # Overgaard 2019 Table 3
-    age_mean       = "44.6 years (SD 11.8)",                       # Overgaard 2019 Table 3
-    weight_range   = "51.9-121.2 kg",                              # Overgaard 2019 Table 3
-    weight_mean    = "81.9 kg (SD 15.1)",                          # Overgaard 2019 Table 3
-    bmi_range      = "18.7-42.8 kg/m^2",                           # Overgaard 2019 Table 3
-    sex_female_pct = 36.0,                                         # 127 / 353 per Overgaard 2019 Table 3
-    race_ethnicity = c(White = 92.6, Asian = 4.5, Black = 0.8,
-                       OtherMissing = 2.0),                         # Overgaard 2019 Table 3 (327/16/3/7 of 353)
-    diabetes_pct   = 21.5,                                         # 76 T2D / 353 total per Overgaard 2019 Table 3
-    disease_state  = "Pooled clinical pharmacology cohort: healthy volunteers (277) and adults with type 2 diabetes (76); a hepatic-impairment subgroup of 25 subjects was also included.",
-    dose_range     = "0.25 to 1.5 mg semaglutide once weekly subcutaneous (and 0.25 mg single intravenous in trial 7) across nine clinical pharmacology trials.",
-    regions        = "Multinational; included a Japanese safety-and-PK trial (trial 1) alongside Caucasian-majority trials.",
-    trials         = c("NCT02146079", "NCT02110871", "NCT02212067", "NCT02064348",
-                       "NCT02147431", "NCT02079870", "NCT02231684", "NCT02022254",
-                       "NCT02243098"),
-    notes          = "Demographics from Overgaard 2019 Table 3 (two-compartment model column). The reference subject profile used for the typical-value parameters is a healthy, white, non-Hispanic female aged <= 65 years with body weight 85 kg, abdomen injection site, and 1.34 mg/mL drug product strength (Methods, page 654). Injection-site (abdomen / thigh) and drug-product-strength (1, 1.34, 3, 10 mg/mL) covariate effects are documented in the vignette but not encoded in this model file; see the vignette's Assumptions and deviations section for rationale."
+    n_subjects = 353L, # Overgaard 2019 Table 3 (two-compartment model dataset)
+    n_studies = 9L, # Overgaard 2019 Table 1 (nine clinical pharmacology trials)
+    age_range = "19-70 years", # Overgaard 2019 Table 3
+    age_mean = "44.6 years (SD 11.8)", # Overgaard 2019 Table 3
+    weight_range = "51.9-121.2 kg", # Overgaard 2019 Table 3
+    weight_mean = "81.9 kg (SD 15.1)", # Overgaard 2019 Table 3
+    bmi_range = "18.7-42.8 kg/m^2", # Overgaard 2019 Table 3
+    sex_female_pct = 36.0, # 127 / 353 per Overgaard 2019 Table 3
+    race_ethnicity = c(White = 92.6, Asian = 4.5, Black = 0.8, OtherMissing = 2.0), # Overgaard 2019 Table 3 (327/16/3/7 of 353)
+    diabetes_pct = 21.5, # 76 T2D / 353 total per Overgaard 2019 Table 3
+    disease_state = "Pooled clinical pharmacology cohort: healthy volunteers (277) and adults with type 2 diabetes (76); a hepatic-impairment subgroup of 25 subjects was also included.",
+    dose_range = "0.25 to 1.5 mg semaglutide once weekly subcutaneous (and 0.25 mg single intravenous in trial 7) across nine clinical pharmacology trials.",
+    regions = "Multinational; included a Japanese safety-and-PK trial (trial 1) alongside Caucasian-majority trials.",
+    trials = c(
+      "NCT02146079",
+      "NCT02110871",
+      "NCT02212067",
+      "NCT02064348",
+      "NCT02147431",
+      "NCT02079870",
+      "NCT02231684",
+      "NCT02022254",
+      "NCT02243098"
+    ),
+    notes = "Demographics from Overgaard 2019 Table 3 (two-compartment model column). The reference subject profile used for the typical-value parameters is a healthy, white, non-Hispanic female aged <= 65 years with body weight 85 kg, abdomen injection site, and 1.34 mg/mL drug product strength (Methods, page 654). Injection-site (abdomen / thigh) and drug-product-strength (1, 1.34, 3, 10 mg/mL) covariate effects are documented in the vignette but not encoded in this model file; see the vignette's Assumptions and deviations section for rationale."
   )
 
   ini({

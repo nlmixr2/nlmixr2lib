@@ -45,8 +45,8 @@ Inoue_2025_valemetostat <- function() {
   vignette <- "Inoue_2025_valemetostat_ptcl"
 
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
   # Unit convention. Inoue 2025 Table 2 prints KD and RMAX in nmol/L and the
@@ -62,175 +62,183 @@ Inoue_2025_valemetostat <- function() {
 
   covariateData <- list(
     AAG = list(
-      description        = "Baseline serum alpha-1-acid glycoprotein concentration. The sole binding partner in the central compartment and the only covariate the paper judged to materially affect TOTAL valemetostat exposure.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline serum alpha-1-acid glycoprotein concentration. The sole binding partner in the central compartment and the only covariate the paper judged to materially affect TOTAL valemetostat exposure.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reported in mg/dL by Inoue 2025 rather than in the register's canonical g/L; 100 mg/dL = 1 g/L. Reference value 100 mg/dL (Inoue 2025 Figure 2 caption reference individual). Enters in THREE places with only TWO estimated exponents: BMAX (exponent 0.805) and a single COMMON exponent (0.336) shared by CL and F1. Because CL and F1 carry the same exponent, unbound AUCss = dose * F1 / CL is algebraically independent of AAG while total exposure still rises with AAG through BMAX -- this is the paper's key mechanistic result (Results 'Final PPK Model Including Covariate Effects'; Discussion). Pooled PPK cohort mean (SD) 113 (62.3) mg/dL (Table 1); patients ran higher than non-patients (Figure S1).",
-      source_name        = "AAG"
+      notes = "Reported in mg/dL by Inoue 2025 rather than in the register's canonical g/L; 100 mg/dL = 1 g/L. Reference value 100 mg/dL (Inoue 2025 Figure 2 caption reference individual). Enters in THREE places with only TWO estimated exponents: BMAX (exponent 0.805) and a single COMMON exponent (0.336) shared by CL and F1. Because CL and F1 carry the same exponent, unbound AUCss = dose * F1 / CL is algebraically independent of AAG while total exposure still rises with AAG through BMAX -- this is the paper's key mechanistic result (Results 'Final PPK Model Including Covariate Effects'; Discussion). Pooled PPK cohort mean (SD) 113 (62.3) mg/dL (Table 1); patients ran higher than non-patients (Figure S1).",
+      source_name = "AAG"
     ),
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric, with exponents FIXED at 0.75 for all clearance terms (CL, Q2, Q3) and 1 for all volume terms (V1, V2, V3) -- Inoue 2025 Results and Table 2 rows 'CL ~ WT' and 'V ~ WT', both marked FIXED. Reference weight 68.2 kg (Figure 2 caption reference individual). Pooled PPK cohort mean (SD) 69.3 (15.9) kg (Table 1).",
-      source_name        = "WT"
+      notes = "Allometric, with exponents FIXED at 0.75 for all clearance terms (CL, Q2, Q3) and 1 for all volume terms (V1, V2, V3) -- Inoue 2025 Results and Table 2 rows 'CL ~ WT' and 'V ~ WT', both marked FIXED. Reference weight 68.2 kg (Figure 2 caption reference individual). Pooled PPK cohort mean (SD) 69.3 (15.9) kg (Table 1).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on unbound CL with reference 65 years (Figure 2 caption reference individual). Exponent -0.205 with RSE 58.4% and a bootstrap 95% CI spanning zero (-0.553 to 0.0156, Table 2), i.e. retained in the full covariate model but not statistically resolved. Pooled PPK cohort mean (SD) 59.8 (17.2) years (Table 1).",
-      source_name        = "AGE"
+      notes = "Power effect on unbound CL with reference 65 years (Figure 2 caption reference individual). Exponent -0.205 with RSE 58.4% and a bootstrap 95% CI spanning zero (-0.553 to 0.0156, Table 2), i.e. retained in the full covariate model but not statistically resolved. Pooled PPK cohort mean (SD) 59.8 (17.2) years (Table 1).",
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault calculated creatinine clearance at baseline.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault calculated creatinine clearance at baseline.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on unbound CL with reference 83 mL/min (Figure 2 caption reference individual). Exponent -0.0107 with RSE 804% -- the least well-determined parameter in the model, consistent with valemetostat being eliminated hepatically. Pooled PPK cohort mean (SD) 89.2 (35.5) mL/min (Table 1).",
-      source_name        = "CrCl"
+      notes = "Power effect on unbound CL with reference 83 mL/min (Figure 2 caption reference individual). Exponent -0.0107 with RSE 804% -- the least well-determined parameter in the model, consistent with valemetostat being eliminated hepatically. Pooled PPK cohort mean (SD) 89.2 (35.5) mL/min (Table 1).",
+      source_name = "CrCl"
     ),
     SEXF = list(
-      description        = "Sex indicator; 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator; 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; the Figure 2 reference individual is male)",
-      notes              = "Multiplicative effect on unbound CL, 1.06. Pooled PPK cohort 64.3% male (Table 1).",
-      source_name        = "Female"
+      notes = "Multiplicative effect on unbound CL, 1.06. Pooled PPK cohort 64.3% male (Table 1).",
+      source_name = "Female"
     ),
     TUMTP_ATLL = list(
-      description        = "Adult T-cell leukemia/lymphoma indicator; 1 = ATLL, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Adult T-cell leukemia/lymphoma indicator; 1 = ATLL, 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (peripheral T-cell lymphoma, when DIS_BCELLNHL and DIS_HEALTHY are also 0)",
-      notes              = "One of three indicators decomposing the paper's four-level 'population type' covariate (healthy participant / PTCL / ATLL / other NHL) against a PTCL reference; the Figure 2 caption reference individual is 'a male patient with PTCL'. Multiplicative effect on unbound CL, 0.828. Pooled PPK cohort 17.8% ATLL (Table 1).",
-      source_name        = "ATLL"
+      notes = "One of three indicators decomposing the paper's four-level 'population type' covariate (healthy participant / PTCL / ATLL / other NHL) against a PTCL reference; the Figure 2 caption reference individual is 'a male patient with PTCL'. Multiplicative effect on unbound CL, 0.828. Pooled PPK cohort 17.8% ATLL (Table 1).",
+      source_name = "ATLL"
     ),
     DIS_BCELLNHL = list(
-      description        = "Other (non-ATLL, non-PTCL) non-Hodgkin lymphoma indicator; 1 = other NHL, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Other (non-ATLL, non-PTCL) non-Hodgkin lymphoma indicator; 1 = other NHL, 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (peripheral T-cell lymphoma, when TUMTP_ATLL and DIS_HEALTHY are also 0)",
-      notes              = "Inoue 2025 labels this stratum 'other NHL'. It is mapped onto the existing DIS_BCELLNHL canonical because the only study contributing non-ATLL non-PTCL lymphoma patients is J101, which the Methods describe as enrolling 'R/R non-Hodgkin lymphoma (NHL), including B-cell lymphomas, ATLL, and PTCL' -- so the residual NHL stratum is the B-cell lymphoma group. Multiplicative effect on unbound CL, 0.847. Pooled PPK cohort 5.6% (19 of 342, Table 1). See the vignette Errata: the paper's label is the histology-agnostic 'other NHL', so a future paper using an explicitly non-B-cell residual stratum should not reuse this mapping without checking.",
-      source_name        = "OTHER NHL"
+      notes = "Inoue 2025 labels this stratum 'other NHL'. It is mapped onto the existing DIS_BCELLNHL canonical because the only study contributing non-ATLL non-PTCL lymphoma patients is J101, which the Methods describe as enrolling 'R/R non-Hodgkin lymphoma (NHL), including B-cell lymphomas, ATLL, and PTCL' -- so the residual NHL stratum is the B-cell lymphoma group. Multiplicative effect on unbound CL, 0.847. Pooled PPK cohort 5.6% (19 of 342, Table 1). See the vignette Errata: the paper's label is the histology-agnostic 'other NHL', so a future paper using an explicitly non-B-cell residual stratum should not reuse this mapping without checking.",
+      source_name = "OTHER NHL"
     ),
     DIS_HEALTHY = list(
-      description        = "Non-patient indicator; 1 = healthy participant or non-cancer participant with hepatic impairment, 0 = lymphoma patient.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Non-patient indicator; 1 = healthy participant or non-cancer participant with hepatic impairment, 0 = lymphoma patient.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (peripheral T-cell lymphoma patient, when TUMTP_ATLL and DIS_BCELLNHL are also 0)",
-      notes              = "Inoue 2025 calls this level 'non-patient'; it pools the healthy Japanese participants of the J107 DDI study and J109 food-effect study with the non-cancer hepatic-impairment participants of U106 (Figure S1 caption: 'The non-patient group includes both healthy participants and non-cancer patients with hepatic impairment'). Multiplicative effect on unbound CL, 0.942. Pooled PPK cohort 21.1% (72 of 342, Table 1).",
-      source_name        = "NON-PATIENT"
+      notes = "Inoue 2025 calls this level 'non-patient'; it pools the healthy Japanese participants of the J107 DDI study and J109 food-effect study with the non-cancer hepatic-impairment participants of U106 (Figure S1 caption: 'The non-patient group includes both healthy participants and non-cancer patients with hepatic impairment'). Multiplicative effect on unbound CL, 0.942. Pooled PPK cohort 21.1% (72 of 342, Table 1).",
+      source_name = "NON-PATIENT"
     ),
     RACE_ASIAN_OTH = list(
-      description        = "Asian non-Japanese indicator; 1 = Asian and enrolled outside Japan, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian non-Japanese indicator; 1 = Asian and enrolled outside Japan, 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Asian Japanese, when RACE_WHITE and RACE_OTHER are also 0)",
-      notes              = "The paper's covariate is a combined 'race/country enrolled' factor with four levels (Asian Japanese / Asian non-Japanese / White / Other) and an Asian-Japanese reference (Figure 2 caption reference individual is 'Asian Japanese'); the dominant Asian subgroup required by the RACE_ASIAN_OTH register entry is therefore Japanese. Multiplicative effect on unbound CL, 1.25 -- the largest non-AAG covariate effect in the model. Pooled PPK cohort 6.1% (Table 1).",
-      source_name        = "ASIAN NON-J"
+      notes = "The paper's covariate is a combined 'race/country enrolled' factor with four levels (Asian Japanese / Asian non-Japanese / White / Other) and an Asian-Japanese reference (Figure 2 caption reference individual is 'Asian Japanese'); the dominant Asian subgroup required by the RACE_ASIAN_OTH register entry is therefore Japanese. Multiplicative effect on unbound CL, 1.25 -- the largest non-AAG covariate effect in the model. Pooled PPK cohort 6.1% (Table 1).",
+      source_name = "ASIAN NON-J"
     ),
     RACE_WHITE = list(
-      description        = "White race indicator; 1 = White, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White race indicator; 1 = White, 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Asian Japanese, when RACE_ASIAN_OTH and RACE_OTHER are also 0)",
-      notes              = "Multiplicative effect on unbound CL, 0.967. Pooled PPK cohort 39.2% (Table 1).",
-      source_name        = "WHITE"
+      notes = "Multiplicative effect on unbound CL, 0.967. Pooled PPK cohort 39.2% (Table 1).",
+      source_name = "WHITE"
     ),
     RACE_OTHER = list(
-      description        = "Race category 'Other' indicator; 1 = other, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race category 'Other' indicator; 1 = other, 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Asian Japanese, when RACE_ASIAN_OTH and RACE_WHITE are also 0)",
-      notes              = "Multiplicative effect on unbound CL, 0.816. Pooled PPK cohort 12.9% (Table 1).",
-      source_name        = "OTHER RACE"
+      notes = "Multiplicative effect on unbound CL, 0.816. Pooled PPK cohort 12.9% (Table 1).",
+      source_name = "OTHER RACE"
     ),
     HEPIMP_MILD = list(
-      description        = "Mild hepatic impairment indicator by NCI-ODWG criteria; 1 = mild, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild hepatic impairment indicator by NCI-ODWG criteria; 1 = mild, 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function, when HEPIMP_MOD is also 0)",
-      notes              = "Multiplicative effect on unbound CL, 0.892. Pooled PPK cohort 21.1% mild (Table 1). Paired with HEPIMP_MOD; no severe stratum was enrolled.",
-      source_name        = "HEPAT MILD"
+      notes = "Multiplicative effect on unbound CL, 0.892. Pooled PPK cohort 21.1% mild (Table 1). Paired with HEPIMP_MOD; no severe stratum was enrolled.",
+      source_name = "HEPAT MILD"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment indicator by NCI-ODWG criteria; 1 = moderate, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment indicator by NCI-ODWG criteria; 1 = moderate, 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function, when HEPIMP_MILD is also 0)",
-      notes              = "Multiplicative effect on unbound CL, 0.752 -- a 33% higher unbound exposure. The paper quantifies the same effect from the post hoc simulations as a 29% (95% CI 1%-66%) increase in unbound AUCss. Pooled PPK cohort 3.5% moderate (12 of 342, Table 1).",
-      source_name        = "HEPAT MOD"
+      notes = "Multiplicative effect on unbound CL, 0.752 -- a 33% higher unbound exposure. The paper quantifies the same effect from the post hoc simulations as a 29% (95% CI 1%-66%) increase in unbound AUCss. Pooled PPK cohort 3.5% moderate (12 of 342, Table 1).",
+      source_name = "HEPAT MOD"
     ),
     CONMED_PGP_INH = list(
-      description        = "Concomitant P-glycoprotein inhibitor indicator; 1 = on a P-gp inhibitor and NOT on a CYP3A inhibitor, 0 = otherwise. Time-varying.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant P-glycoprotein inhibitor indicator; 1 = on a P-gp inhibitor and NOT on a CYP3A inhibitor, 0 = otherwise. Time-varying.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no interacting comedication, when CONMED_CYP3A4_INH is also 0)",
-      notes              = "Inoue 2025 grouped its comedication categories 'due to small sample size' into none / P-gp inhibitor / CYP3A inhibitor with or without a P-gp inhibitor, so this indicator is the P-gp-ONLY arm and is superseded by CONMED_CYP3A4_INH when both are present -- the model() code enforces the precedence explicitly. Multiplicative effect on F1, 1.29. Treated as a TIME-VARYING covariate with immediate onset and immediate loss of effect (a limitation the Discussion flags). 14 of 342 participants (4.1%) took a P-gp inhibitor (Table 1).",
-      source_name        = "DDI PGPi"
+      notes = "Inoue 2025 grouped its comedication categories 'due to small sample size' into none / P-gp inhibitor / CYP3A inhibitor with or without a P-gp inhibitor, so this indicator is the P-gp-ONLY arm and is superseded by CONMED_CYP3A4_INH when both are present -- the model() code enforces the precedence explicitly. Multiplicative effect on F1, 1.29. Treated as a TIME-VARYING covariate with immediate onset and immediate loss of effect (a limitation the Discussion flags). 14 of 342 participants (4.1%) took a P-gp inhibitor (Table 1).",
+      source_name = "DDI PGPi"
     ),
     CONMED_CYP3A4_INH = list(
-      description        = "Concomitant CYP3A inhibitor indicator; 1 = on a moderate or strong CYP3A inhibitor with or without a P-gp inhibitor, 0 = otherwise. Time-varying.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A inhibitor indicator; 1 = on a moderate or strong CYP3A inhibitor with or without a P-gp inhibitor, 0 = otherwise. Time-varying.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no interacting comedication, when CONMED_PGP_INH is also 0)",
-      notes              = "Takes precedence over CONMED_PGP_INH per the paper's grouping ('CYP3Ai +/- P-gpi'). Multiplicative effect on F1, 1.23. 23 participants (6.7%) took a moderate CYP3A inhibitor, 1 (0.3%) a strong one and 1 (0.3%) a P-gp plus CYP3A inhibitor (Table 1). The Discussion notes the estimated magnitude is smaller than the dedicated DDI study found (4-fold with itraconazole, 1.6-fold with fluconazole) and attributes the gap to small numbers, missing comedication duration and the immediate-onset assumption.",
-      source_name        = "DDI CYPi PGPi"
+      notes = "Takes precedence over CONMED_PGP_INH per the paper's grouping ('CYP3Ai +/- P-gpi'). Multiplicative effect on F1, 1.23. 23 participants (6.7%) took a moderate CYP3A inhibitor, 1 (0.3%) a strong one and 1 (0.3%) a P-gp plus CYP3A inhibitor (Table 1). The Discussion notes the estimated magnitude is smaller than the dedicated DDI study found (4-fold with itraconazole, 1.6-fold with fluconazole) and attributes the gap to small numbers, missing comedication duration and the immediate-onset assumption.",
+      source_name = "DDI CYPi PGPi"
     ),
     STUDY_J101 = list(
-      description        = "DS3201-A-J101 study indicator; 1 = the observation comes from the J101 phase 1 study, 0 = any of the other five studies.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "DS3201-A-J101 study indicator; 1 = the observation comes from the J101 phase 1 study, 0 = any of the other five studies.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (J201, VALENTINE-PTCL01, J107, J109 or U106)",
-      notes              = "Applies ONLY to unbound valemetostat observations, and does two separate things: it rescales the predicted unbound concentration by the estimated assay factor 0.638 (Table 2 row 'ASSAY, DS3201-A-J101 unbound adjustment factor'), and it selects a different residual error (Sigma(3,3) = 0.327 rather than Sigma(2,2) = 0.404). Total valemetostat observations are unaffected. J101 contributed 71 of the 251 ER-safety patients (Table 1).",
-      source_name        = "ASSAY"
+      notes = "Applies ONLY to unbound valemetostat observations, and does two separate things: it rescales the predicted unbound concentration by the estimated assay factor 0.638 (Table 2 row 'ASSAY, DS3201-A-J101 unbound adjustment factor'), and it selects a different residual error (Sigma(3,3) = 0.327 rather than Sigma(2,2) = 0.404). Total valemetostat observations are unaffected. J101 contributed 71 of the 251 ER-safety patients (Table 1).",
+      source_name = "ASSAY"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "valemetostat", units = "nmol",
-      specimen = "administration site", verified = TRUE
+      analyte = "valemetostat",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "valemetostat", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "valemetostat",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "valemetostat", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "valemetostat",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral2 = list(
-      analyte = "valemetostat", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "valemetostat",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 342L,
-    n_studies      = 6L,
+    species = "human",
+    n_subjects = 342L,
+    n_studies = 6L,
     n_observations = "4635 total valemetostat concentrations from 342 participants and 3085 unbound valemetostat concentrations from 339 participants; 131 total (2.8%) and 43 unbound (1.4%) records were below the limit of quantification (Inoue 2025 Results)",
-    age_range      = "mean (SD) 59.8 (17.2) years (Inoue 2025 Table 1)",
-    weight_range   = "mean (SD) 69.3 (15.9) kg (Inoue 2025 Table 1)",
+    age_range = "mean (SD) 59.8 (17.2) years (Inoue 2025 Table 1)",
+    weight_range = "mean (SD) 69.3 (15.9) kg (Inoue 2025 Table 1)",
     sex_female_pct = 35.7,
     race_ethnicity = c(
-      `Asian, Japanese`     = 41.8,
+      `Asian, Japanese` = 41.8,
       `Asian, non-Japanese` = 6.1,
-      White                 = 39.2,
-      Other                 = 12.9
+      White = 39.2,
+      Other = 12.9
     ),
-    disease_state  = "relapsed or refractory non-Hodgkin lymphoma -- peripheral T-cell lymphoma 55.6%, adult T-cell leukemia/lymphoma 17.8%, other NHL 5.6% -- pooled with 21.1% non-patients (healthy Japanese participants and non-cancer participants with hepatic impairment)",
-    dose_range     = "valemetostat orally once daily; 200 mg is the approved and predominant dose (J201 and VALENTINE-PTCL01), with J101 contributing a multiple-ascending-dose escalation and J107/J109 single-dose healthy-participant data",
-    regions        = "Japan and non-Japanese sites (VALENTINE-PTCL01 is multinational; J107 and J109 enrolled Japanese healthy participants; U106 enrolled non-Japanese participants with hepatic impairment)",
+    disease_state = "relapsed or refractory non-Hodgkin lymphoma -- peripheral T-cell lymphoma 55.6%, adult T-cell leukemia/lymphoma 17.8%, other NHL 5.6% -- pooled with 21.1% non-patients (healthy Japanese participants and non-cancer participants with hepatic impairment)",
+    dose_range = "valemetostat orally once daily; 200 mg is the approved and predominant dose (J201 and VALENTINE-PTCL01), with J101 contributing a multiple-ascending-dose escalation and J107/J109 single-dose healthy-participant data",
+    regions = "Japan and non-Japanese sites (VALENTINE-PTCL01 is multinational; J107 and J109 enrolled Japanese healthy participants; U106 enrolled non-Japanese participants with hepatic impairment)",
     hepatic_function = "normal 74.9%, mild NCI-ODWG impairment 21.1%, moderate 3.5% (Inoue 2025 Table 1)",
     renal_function = "creatinine clearance mean (SD) 89.2 (35.5) mL/min (Inoue 2025 Table 1)",
-    co_medication  = "moderate CYP3A inhibitor 6.7%, strong CYP3A inhibitor 0.3%, P-gp inhibitor 4.1%, P-gp plus CYP3A inhibitor 0.3% (Inoue 2025 Table 1)",
-    notes          = paste0(
+    co_medication = "moderate CYP3A inhibitor 6.7%, strong CYP3A inhibitor 0.3%, P-gp inhibitor 4.1%, P-gp plus CYP3A inhibitor 0.3% (Inoue 2025 Table 1)",
+    notes = paste0(
       "Six trials: DS3201-A-J101 (NCT02732275, R/R NHL), J201 ",
       "(NCT04102150, R/R ATLL), VALENTINE-PTCL01 (NCT04703192, R/R PTCL ",
       "and ATLL), DS3201-A-J107 (jRCT2080225242, DDI in healthy Japanese ",

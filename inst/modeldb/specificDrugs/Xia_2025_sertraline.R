@@ -30,7 +30,7 @@ Xia_2025_sertraline <- function() {
     sep = " "
   )
   vignette <- "Xia_2025_sertraline"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # No covariate was retained in the final model, so covariateData is empty and
   # every screened covariate is documented in covariatesDataExcluded below.
@@ -38,11 +38,11 @@ Xia_2025_sertraline <- function() {
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age at the therapeutic-drug-monitoring sample",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at the therapeutic-drug-monitoring sample",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on the median-centred linear form of Xia 2025 Eq. (3) and not retained",
         "(Results, Model Establishment: 'no significant covariates were screened').",
         "Cohort median (range) 15 (13-17) years. The Discussion is explicit that this is a",
@@ -54,14 +54,14 @@ Xia_2025_sertraline <- function() {
         "CL/F = 76.1 * [1 - 0.0068 * (AGE - 22)] over an 11-79 year range.",
         sep = " "
       ),
-      source_name        = "Age (Xia 2025 Table 1)"
+      source_name = "Age (Xia 2025 Table 1)"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened via the median-centred linear form of Eq. (3) and not retained.",
         "Cohort median (range) 57.5 (39.9-89) kg in males and 50 (34-91) kg in females",
         "(Table 1); 5.80% of weights were missing and were replaced by the within-sex median.",
@@ -71,80 +71,80 @@ Xia_2025_sertraline <- function() {
         "No allometric scaling was applied in the final model.",
         sep = " "
       ),
-      source_name        = "Weight (Xia 2025 Table 1)"
+      source_name = "Weight (Xia 2025 Table 1)"
     ),
     HT = list(
-      description        = "Body height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened via the median-centred linear form of Eq. (3) and not retained.",
         "Cohort median (range) 169 (150-176) cm in males and 159.5 (150-172) cm in females",
         "(Table 1). 37.90% of heights were missing and were replaced by the within-sex median,",
         "which further limits the power of this screen.",
         sep = " "
       ),
-      source_name        = "Height (Xia 2025 Table 1)"
+      source_name = "Height (Xia 2025 Table 1)"
     ),
     SEXF = list(
-      description        = "Sex, 1 = female",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex, 1 = female",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Screened via the categorical-covariate form of Eq. (4) and not retained.",
         "Xia 2025 states directly under Eq. (4) that 'For gender covariates, a COV of 1",
         "represents females and 0 represents males', which matches the SEXF orientation with",
         "no value transformation. Cohort was 30 male (29.00%) / 73 female (71.00%) (Table 1).",
         sep = " "
       ),
-      source_name        = "Gender (Xia 2025 Table 1)"
+      source_name = "Gender (Xia 2025 Table 1)"
     ),
     CONMED_QUETIAPINE = list(
-      description        = "Concomitant quetiapine coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant quetiapine coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant quetiapine)",
-      notes              = paste(
+      notes = paste(
         "Screened via Eq. (4) (COV of 1 represents co-administration, 0 represents no",
         "co-administration) and not retained. The most common comedication in the cohort:",
         "43 patients (41.75%) per Table 1.",
         sep = " "
       ),
-      source_name        = "Quetiapine (Xia 2025 Table 1)"
+      source_name = "Quetiapine (Xia 2025 Table 1)"
     ),
     CONMED_OLANZAPINE = list(
-      description        = "Concomitant olanzapine coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant olanzapine coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant olanzapine)",
-      notes              = paste(
+      notes = paste(
         "Screened via Eq. (4) and not retained. 32 patients (31.07%) per Table 1.",
         sep = " "
       ),
-      source_name        = "Olanzapine (Xia 2025 Table 1)"
+      source_name = "Olanzapine (Xia 2025 Table 1)"
     ),
     CONMED_ALPRAZOLAM = list(
-      description        = "Concomitant alprazolam coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant alprazolam coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant alprazolam)",
-      notes              = paste(
+      notes = paste(
         "Screened via Eq. (4) and not retained. 34 patients (33.00%) per Table 1.",
         "The Discussion notes that no comedication reached significance because of the low",
         "frequency of concomitant use, and that the same three psychiatric drug classes were",
         "likewise non-significant in the group's earlier cohort (reference 34).",
         sep = " "
       ),
-      source_name        = "Alprazolam (Xia 2025 Table 1)"
+      source_name = "Alprazolam (Xia 2025 Table 1)"
     ),
     CYP2C19_PHENO = list(
-      description        = "CYP2C19 metaboliser phenotype group",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "CYP2C19 metaboliser phenotype group",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = "Normal / extensive metaboliser",
-      notes              = paste(
+      notes = paste(
         "NOT screened - no genotype data existed. Xia 2025 Discussion: 'the CYP2C19 genotype",
         "was not tested in patients in this study, and therefore the effect of CYP2C19",
         "genotyping on our PPK model could not be assessed.' Recorded here because the paper",
@@ -155,34 +155,34 @@ Xia_2025_sertraline <- function() {
         "so nothing is encoded.",
         sep = " "
       ),
-      source_name        = "CYP2C19 (Xia 2025 Discussion)"
+      source_name = "CYP2C19 (Xia 2025 Discussion)"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "sertraline", units = "mg", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "sertraline", units = "mg", specimen = "serum",               verified = TRUE)
+    depot = list(analyte = "sertraline", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "sertraline", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 103L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 103L,
+    n_studies = 1L,
     n_concentrations = 221L,
-    age_range        = "13-17 years",
-    age_median       = "15 years",
-    weight_range     = "39.9-89 kg (male); 34-91 kg (female)",
-    weight_median    = "57.5 kg (male); 50 kg (female)",
-    height_range     = "150-176 cm (male); 150-172 cm (female)",
-    height_median    = "169 cm (male); 159.5 cm (female)",
-    sex_female_pct   = 71,
-    race_ethnicity   = "Chinese (single-centre Guangzhou cohort; non-Chinese patients were an explicit exclusion criterion, and the cohort is not further stratified by the source)",
-    disease_state    = "Hospitalised adolescents with depressive disorders receiving oral sertraline",
-    dose_range       = "Daily dose median 150 mg, range 50-300 mg; the simulations use 50, 100 and 200 mg QD",
-    regions          = "China (The Affiliated Brain Hospital of Guangzhou Medical University, Guangzhou, Guangdong)",
-    co_medication    = "Quetiapine 43 patients (41.75%); alprazolam 34 (33.00%); olanzapine 32 (31.07%)",
-    sampling         = "Retrospective therapeutic drug monitoring; all 221 samples are elimination-phase troughs drawn at 6-7 a.m. before the next scheduled dose. Median (range) observed concentration 63.54 (5.07-299.87) ug/L.",
-    notes            = paste(
+    age_range = "13-17 years",
+    age_median = "15 years",
+    weight_range = "39.9-89 kg (male); 34-91 kg (female)",
+    weight_median = "57.5 kg (male); 50 kg (female)",
+    height_range = "150-176 cm (male); 150-172 cm (female)",
+    height_median = "169 cm (male); 159.5 cm (female)",
+    sex_female_pct = 71,
+    race_ethnicity = "Chinese (single-centre Guangzhou cohort; non-Chinese patients were an explicit exclusion criterion, and the cohort is not further stratified by the source)",
+    disease_state = "Hospitalised adolescents with depressive disorders receiving oral sertraline",
+    dose_range = "Daily dose median 150 mg, range 50-300 mg; the simulations use 50, 100 and 200 mg QD",
+    regions = "China (The Affiliated Brain Hospital of Guangzhou Medical University, Guangzhou, Guangdong)",
+    co_medication = "Quetiapine 43 patients (41.75%); alprazolam 34 (33.00%); olanzapine 32 (31.07%)",
+    sampling = "Retrospective therapeutic drug monitoring; all 221 samples are elimination-phase troughs drawn at 6-7 a.m. before the next scheduled dose. Median (range) observed concentration 63.54 (5.07-299.87) ug/L.",
+    notes = paste(
       "Baseline demographics from Xia 2025 Table 1. Retrospective TDM data collected",
       "1 January 2019 to 31 December 2023; IRB approval 2021027. Serum sertraline quantified",
       "by HPLC-MS/MS over a 5-500 ng/mL calibrated range with intra- and inter-day precision",

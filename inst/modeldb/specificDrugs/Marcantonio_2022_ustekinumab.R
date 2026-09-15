@@ -19,8 +19,8 @@ Marcantonio_2022_ustekinumab <- function() {
   )
   vignette <- "Marcantonio_2022_efa"
   units <- list(
-    time          = "day",
-    dosing        = "Ustekinumab dose amount into depot (SC) in nmol; MW = 148600 Da so 45 mg = 303.5 nmol.",
+    time = "day",
+    dosing = "Ustekinumab dose amount into depot (SC) in nmol; MW = 148600 Da so 45 mg = 303.5 nmol.",
     concentration = "Free ustekinumab plasma concentration Cc = Ab_00 / V in nM; V = 5 L."
   )
 
@@ -34,22 +34,22 @@ Marcantonio_2022_ustekinumab <- function() {
     Ab_0L = list(analyte = "bound ustekinumab", units = NA_character_, specimen = "plasma", verified = FALSE),
     Ab_L0 = list(analyte = "free ustekinumab", units = NA_character_, specimen = "plasma", verified = FALSE),
     Ab_LL = list(analyte = "bound ustekinumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    L1    = list(analyte = "p40", units = NA_character_, specimen = "plasma", verified = FALSE),
-    R1    = list(analyte = "IL-12R-beta1", units = NA_character_, specimen = "plasma", verified = FALSE),
-    L1R1  = list(analyte = "p40:IL-12R-beta1 complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    S1    = list(analyte = "ustekinumab:p40 complex", units = NA_character_, specimen = "plasma", verified = FALSE)
+    L1 = list(analyte = "p40", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1 = list(analyte = "IL-12R-beta1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1R1 = list(analyte = "p40:IL-12R-beta1 complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S1 = list(analyte = "ustekinumab:p40 complex", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    disease_state  = "Adults with moderate-to-severe plaque psoriasis.",
-    dose_range     = "45 mg SC (60-100 kg subjects) or 90 mg SC (>100 kg) at weeks 0 and 4, then every 12 weeks (Stelara USPI). Model prediction targets the 12-week maintenance schedule.",
-    regions        = NA_character_,
-    notes          = "See sibling Marcantonio 2022 anti-ligand models for shared methodology."
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    disease_state = "Adults with moderate-to-severe plaque psoriasis.",
+    dose_range = "45 mg SC (60-100 kg subjects) or 90 mg SC (>100 kg) at weeks 0 and 4, then every 12 weeks (Stelara USPI). Model prediction targets the 12-week maintenance schedule.",
+    regions = NA_character_,
+    notes = "See sibling Marcantonio 2022 anti-ligand models for shared methodology."
   )
 
   ini({

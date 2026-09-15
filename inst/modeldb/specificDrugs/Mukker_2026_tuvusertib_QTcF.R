@@ -45,96 +45,96 @@ Mukker_2026_tuvusertib_QTcF <- function() {
   vignette <- "Mukker_2026_tuvusertib_QTc"
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; PD-only model fed by an external tuvusertib plasma-concentration covariate)",
+    time = "h",
+    dosing = "(none; PD-only model fed by an external tuvusertib plasma-concentration covariate)",
     concentration = "(observation QTcF is the change from baseline in the Fridericia-corrected QT interval, ms; driving covariate CP_TUVUSERTIB_NGML is in ng/mL)"
   )
 
   covariateData <- list(
     CP_TUVUSERTIB_NGML = list(
-      description        = "Instantaneous tuvusertib plasma concentration at the time of each ECG observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Instantaneous tuvusertib plasma concentration at the time of each ECG observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying per event row. Drives the linear concentration-DeltaQTcF term (theta1 + eta1) * CP_TUVUSERTIB_NGML.",
         "In Mukker 2026 this was the observed tuvusertib plasma concentration in the time-matched PK-ECG dataset: serial blood samples were drawn immediately after each triplicate 12-lead ECG, and concentrations were measured by a validated LC/MS method with a lower limit of quantification of 0.5 ng/mL (Mukker 2026 Methods 2.2.2).",
         "The slope is reported directly in ms per ng/mL (Mukker 2026 Table 2), so CP_TUVUSERTIB_NGML is supplied in ng/mL with no in-model unit rescaling.",
         "Reference values observed: geometric mean steady-state Cmax 1410 ng/mL at 180 mg QD (the recommended dose for expansion), with 2x and 3x that value (2820 and 4230 ng/mL) used for the supratherapeutic projections in Table 3; median 524, P90 1732, P95 2252 and maximum 3290 ng/mL across the C-QTc dataset (Table S2).",
         "Set to 0 outside the drug-exposure window (the concentration-slope term then collapses to 0, leaving the intercept, nominal-time and baseline terms)."
       ),
-      source_name        = "tuvusertib plasma concentration (C in Equation 1)"
+      source_name = "tuvusertib plasma concentration (C in Equation 1)"
     ),
     QTC_BL = list(
-      description        = "Subject's baseline (time-zero) Fridericia-corrected QT interval, treated as a per-subject time-fixed covariate. Enters the linear-mixed-effects intercept as the centered term e_qtc_bl_e0 * (QTC_BL - 422). Set QTC_BL = 422 ms for the typical subject -- the centered term then collapses to 0.",
-      units              = "ms",
-      type               = "continuous",
+      description = "Subject's baseline (time-zero) Fridericia-corrected QT interval, treated as a per-subject time-fixed covariate. Enters the linear-mixed-effects intercept as the centered term e_qtc_bl_e0 * (QTC_BL - 422). Set QTC_BL = 422 ms for the typical subject -- the centered term then collapses to 0.",
+      units = "ms",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Derived from the triplicate 12-lead ECGs recorded at baseline; triplicates were averaged to a single mean value per patient per timepoint and QTcF computed per Fridericia (Mukker 2026 Methods 2.2.2).",
         "Centering reference: unlike Darpo 2014 (where the cohort median was not published and a rounded 390 ms standard had to be assumed), Mukker 2026 PUBLISHES the centering constant. The Equation 1 legend defines QTcF0 as 'the overall mean QTcF_i0, that is, the mean of all the baseline (time zero) QTcF values', and Table 1 reports mean (SD) baseline QTcF = 422 (21.0) ms. The model therefore uses qtc_bl_ref = 422 ms with no assumption.",
         "Eligibility for the parent trial excluded patients with pre-existing QTc prolongation (average QTcF > 450 ms for males, > 470 ms for females; Mukker 2026 Methods 2.2.1), so the covariate range is truncated above.",
         "The QT correction method is not carried in the canonical name (per the QTC_BL register entry); here it is Fridericia."
       ),
-      source_name        = "QTcF_i0 / Baseline QTcF"
+      source_name = "QTcF_i0 / Baseline QTcF"
     ),
     T_LASTDOSE = list(
-      description        = "Nominal (protocol-scheduled) time after the most recent tuvusertib dose at which the triplicate ECG was recorded, in hours. Selects one of the four estimated nominal-timepoint intercept shifts.",
-      units              = "h",
-      type               = "continuous",
+      description = "Nominal (protocol-scheduled) time after the most recent tuvusertib dose at which the triplicate ECG was recorded, in hours. Selects one of the four estimated nominal-timepoint intercept shifts.",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying per event row. Mukker 2026 Equation 1 carries a term theta2 * Time_j where theta2 is 'a factor estimating time-specific intercepts at nominal times j accounting for diurnal variation'. Table 2 reports four estimates, one per nominal post-dose hour (0, 1, 2, 3 h), each footnoted as 'the estimated difference from the population mean intercept' -- i.e. mean-centered class effects rather than contrasts against an omitted reference level.",
         "Because this is a PD-only model with no dosing records, rxode2's native tad() is unavailable and the post-dose clock must be supplied as a covariate column; see the T_LASTDOSE register entry.",
         "The column carries the NOMINAL scheduled hour, not the actual elapsed time: the class-effect model is defined on the nominal sampling grid. model() bins the supplied value to its nearest scheduled level (< 0.5 h -> 0 h; 0.5-1.5 h -> 1 h; 1.5-2.5 h -> 2 h; >= 2.5 h -> 3 h) so that small protocol-window slippage does not silently fall through to the wrong class.",
         "Every ECG in the analysis dataset falls at one of the four nominal times, so the four indicators are exhaustive and mutually exclusive by construction."
       ),
-      source_name        = "nominal time after dose (Time_j in Equation 1)"
+      source_name = "nominal time after dose (Time_j in Equation 1)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate on the C-DeltaQTcF model and not retained (p > 0.1; Mukker 2026 Results 3.2.2). Cohort mean (SD) 78.6 (18.0) kg (Table 1). No point estimate is reported anywhere on disk, so the effect cannot be encoded."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as a candidate covariate on the C-DeltaQTcF model and not retained (p > 0.1; Mukker 2026 Results 3.2.2). Cohort mean (SD) 78.6 (18.0) kg (Table 1). No point estimate is reported anywhere on disk, so the effect cannot be encoded."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened and not retained (p > 0.1; Mukker 2026 Results 3.2.2). Cohort mean (SD) 61.9 (10.9) years (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened and not retained (p > 0.1; Mukker 2026 Results 3.2.2). Cohort mean (SD) 61.9 (10.9) years (Table 1)."
     ),
     SEXF = list(
       description = "Biological sex (1 = female)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (paper covariate 'sex') and not retained (p > 0.1; Mukker 2026 Results 3.2.2). Cohort was 32 female (58.2%) / 23 male (41.8%) (Table 1). Note this is the covariate whose retention drives the headline finding of the Darpo 2014 rac-sotalol companion model in this registry; it did not reach significance here."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (paper covariate 'sex') and not retained (p > 0.1; Mukker 2026 Results 3.2.2). Cohort was 32 female (58.2%) / 23 male (41.8%) (Table 1). Note this is the covariate whose retention drives the headline finding of the Darpo 2014 rac-sotalol companion model in this registry; it did not reach significance here."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as part of the 'race' covariate and not retained (p > 0.1; Mukker 2026 Results 3.2.2). 5 of 55 patients (9.1%) were Asian (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as part of the 'race' covariate and not retained (p > 0.1; Mukker 2026 Results 3.2.2). 5 of 55 patients (9.1%) were Asian (Table 1)."
     ),
     RACE_BLACK = list(
       description = "Black or African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as part of the 'race' covariate and not retained (p > 0.1; Mukker 2026 Results 3.2.2). 2 of 55 patients (3.6%) were Black or African American (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as part of the 'race' covariate and not retained (p > 0.1; Mukker 2026 Results 3.2.2). 2 of 55 patients (3.6%) were Black or African American (Table 1)."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 55L,
-    n_studies        = 1L,
-    age_range        = "mean (SD) 61.9 (10.9) years",
-    weight_range     = "mean (SD) 78.6 (18.0) kg",
-    sex_female_pct   = 58.2,
-    race_ethnicity   = c(White = 76.4, Asian = 9.1, Black_or_African_American = 3.6, Other = 10.9),
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 55L,
+    n_studies = 1L,
+    age_range = "mean (SD) 61.9 (10.9) years",
+    weight_range = "mean (SD) 78.6 (18.0) kg",
+    sex_female_pct = 58.2,
+    race_ethnicity = c(White = 76.4, Asian = 9.1, Black_or_African_American = 3.6, Other = 10.9),
+    disease_state = paste(
       "Patients with advanced solid tumors enrolled in Part A1 of DDRiver",
       "Solid Tumors 301 (NCT04170153), an open-label, first-in-human,",
       "multicenter phase I dose-escalation study of tuvusertib monotherapy.",
@@ -142,7 +142,7 @@ Mukker_2026_tuvusertib_QTcF <- function() {
       "for males, > 470 ms for females) were excluded. Mean (SD) baseline",
       "QTcF interval 422 (21.0) ms (Mukker 2026 Table 1)."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Tuvusertib 5-270 mg orally. Regimens contributing to the C-QTc",
       "analysis: 5, 10, 20, 40, 80, 130, 180, 220 and 270 mg once daily",
       "(QD) continuous; 180 and 220 mg QD 2 weeks on / 1 week off; and",
@@ -151,8 +151,8 @@ Mukker_2026_tuvusertib_QTcF <- function() {
       "for expansion 180 mg QD 2 weeks on / 1 week off (Mukker 2026",
       "Abstract, Introduction and Figure S2 legend)."
     ),
-    regions          = NA_character_,
-    notes            = paste(
+    regions = NA_character_,
+    notes = paste(
       "Inclusion in the C-QTc dataset required 12-lead triplicate ECG readings at baseline plus at least one post-baseline reading, each with a time-matched tuvusertib plasma concentration (Mukker 2026 Methods 2.2.1).",
       "ECG handling: digital triplicate ECGs collected at prespecified timepoints and centrally read by an independent cardiologist (IQVIA). Duplicate and single ECGs were excluded; triplicates were averaged to one mean value per patient per timepoint, and QTcF derived by the Fridericia formula (Mukker 2026 Methods 2.2.2). Nominal post-dose ECG times were 0, 1, 2 and 3 h (Table 2).",
       "The four Garnett assumptions were each checked and met (Mukker 2026 Results 3.2.2 and Supporting Information Results S1): (i) no tuvusertib effect on heart rate -- established by the companion C-DeltaHR model in Mukker_2026_tuvusertib_HR.R; (ii) QTcF independent of heart rate after Fridericia correction (p = 0.11 for the residual QTcF-RR dependence); (iii) no hysteresis between concentration and DeltaQTcF; (iv) no nonlinearity in the C-DeltaQTcF relationship by LOESS.",

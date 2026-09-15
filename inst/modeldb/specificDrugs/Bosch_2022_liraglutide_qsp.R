@@ -41,17 +41,26 @@ Bosch_2022_liraglutide_qsp <- function() {
   )
   vignette <- "Bosch_2022_liraglutide_qsp"
   paper_specific_compartments <- c(
-    "glc_dose", "glc_buffer", "glc_gut1", "glc_gut2", "glc_gut3",
-    "glc_central", "glc_peripheral",
-    "ins_central", "ins_effect",
-    "glp_central", "glg_central",
-    "gip_central", "gip_peripheral",
-    "lira_depot", "lira_central"
+    "glc_dose",
+    "glc_buffer",
+    "glc_gut1",
+    "glc_gut2",
+    "glc_gut3",
+    "glc_central",
+    "glc_peripheral",
+    "ins_central",
+    "ins_effect",
+    "glp_central",
+    "glg_central",
+    "gip_central",
+    "gip_peripheral",
+    "lira_depot",
+    "lira_central"
   )
 
   units <- list(
-    time          = "h",
-    dosing        = "mmol (glucose meal) or pmol (liraglutide SC)",
+    time = "h",
+    dosing = "mmol (glucose meal) or pmol (liraglutide SC)",
     concentration = "mmol/L (glucose), pmol/L (insulin, GLP-1, glucagon, GIP, liraglutide)"
   )
 
@@ -60,30 +69,40 @@ Bosch_2022_liraglutide_qsp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    glc_dose       = list(analyte = "glucose meal", units = NA_character_, specimen = "administration site", verified = FALSE),
-    glc_buffer     = list(analyte = "glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    glc_gut1       = list(analyte = "glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
-    glc_gut2       = list(analyte = "glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
-    glc_gut3       = list(analyte = "glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
-    glc_central    = list(analyte = "glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glc_dose = list(
+      analyte = "glucose meal",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    glc_buffer = list(analyte = "glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    glc_gut1 = list(analyte = "glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glc_gut2 = list(analyte = "glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glc_gut3 = list(analyte = "glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glc_central = list(analyte = "glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
     glc_peripheral = list(analyte = "glucose", units = NA_character_, specimen = "tissue", verified = FALSE),
-    ins_central    = list(analyte = "insulin", units = NA_character_, specimen = "plasma", verified = FALSE),
-    ins_effect     = list(analyte = "insulin", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    glp_central    = list(analyte = "GLP-1", units = NA_character_, specimen = "plasma", verified = FALSE),
-    glg_central    = list(analyte = "glucagon", units = NA_character_, specimen = "plasma", verified = FALSE),
-    gip_central    = list(analyte = "GIP", units = NA_character_, specimen = "plasma", verified = FALSE),
+    ins_central = list(analyte = "insulin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    ins_effect = list(analyte = "insulin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glp_central = list(analyte = "GLP-1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glg_central = list(analyte = "glucagon", units = NA_character_, specimen = "plasma", verified = FALSE),
+    gip_central = list(analyte = "GIP", units = NA_character_, specimen = "plasma", verified = FALSE),
     gip_peripheral = list(analyte = "GIP", units = NA_character_, specimen = "tissue", verified = FALSE),
-    lira_depot     = list(analyte = "liraglutide", units = NA_character_, specimen = "administration site", verified = FALSE),
-    lira_central   = list(analyte = "liraglutide", units = NA_character_, specimen = "plasma", verified = FALSE)
+    lira_depot = list(
+      analyte = "liraglutide",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    lira_central = list(analyte = "liraglutide", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DIS_DIAB = list(
-      description        = "Type 2 diabetes mellitus indicator (1 = T2DM patient, 0 = healthy volunteer)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Type 2 diabetes mellitus indicator (1 = T2DM patient, 0 = healthy volunteer)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer)",
-      notes              = paste(
+      notes = paste(
         "Bosch 2022 uses a per-subject `PAT` flag in NONMEM (paper's",
         "convention: PAT=1 for healthy volunteer, PAT=0 for T2DM; see the",
         "supplementary NONMEM code Appendix S1 `IF (PAT.EQ.1.OR.STUD.EQ.2)",
@@ -100,14 +119,14 @@ Bosch_2022_liraglutide_qsp <- function() {
         "GIP-on-insulin-secretion amplification 'could only be estimated",
         "for the HV population' in T2DM). Time-fixed at study entry."
       ),
-      source_name        = "PAT (inverted -- PAT=1 in the paper is HV, mapped here to DIS_DIAB=0)"
+      source_name = "PAT (inverted -- PAT=1 in the paper is HV, mapped here to DIS_DIAB=0)"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters as a linear multiplier on the Watson 2010 liraglutide",
         "PK parameters (CL/F = 0.013 L/h per kg body weight; V/F = 0.16",
         "L per kg body weight). Bosch 2022 quotes the Watson 2010 model",
@@ -118,19 +137,19 @@ Bosch_2022_liraglutide_qsp <- function() {
         "no-drug simulation can supply any positive WT without affecting",
         "the endogenous 4GI dynamics."
       ),
-      source_name        = "BW0"
+      source_name = "BW0"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 12L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 12L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled healthy volunteers, healthy obese volunteers, and adults",
       "with type 2 diabetes mellitus from 12 published clinical studies",
       "used as development data (10 studies: Silber 2007 IVGTT +/-",
@@ -146,7 +165,7 @@ Bosch_2022_liraglutide_qsp <- function() {
       "arms of AWARD-6 and the dulaglutide + semaglutide arms of",
       "SUSTAIN-7 (also 40 weeks)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Nonpharmacological perturbations: 75 g oral glucose or standard",
       "meals (breakfast, lunch, dinner, snack); IV glucose infusions",
       "and clamps; IV endogenous-hormone infusions (GLP-1, glucagon,",
@@ -156,8 +175,8 @@ Bosch_2022_liraglutide_qsp <- function() {
       "dulaglutide 0.75 or 1.5 mg once weekly (AWARD-6, SUSTAIN-7) and",
       "semaglutide 0.5 or 1.0 mg once weekly (SUSTAIN-7)."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Sample sizes are not tabulated in the aggregate paper because",
       "Bosch 2022 fits mean per-study time-course profiles digitized",
       "from published figures via DigitizeIt (Bosch 2022 Methods 'Data",

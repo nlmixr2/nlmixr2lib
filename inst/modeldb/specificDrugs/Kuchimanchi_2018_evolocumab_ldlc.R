@@ -10,89 +10,98 @@ Kuchimanchi_2018_evolocumab_ldlc <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "evolocumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "evolocumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "evolocumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "evolocumab", units = "mg", specimen = "plasma", verified = FALSE),
     auc_wk8_12 = list(analyte = "evolocumab AUC over weeks 8-12", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate (WT/84)^exponent on CL (0.276), V (1.04), and Vmax (0.145) in the PK layer (Table 3). Reference 84 kg = mean body weight of the pooled phase 1-3 analysis population. Not retained as a covariate at the PD / exposure-response layer.",
-      source_name        = "WT"
+      notes = "Power covariate (WT/84)^exponent on CL (0.276), V (1.04), and Vmax (0.145) in the PK layer (Table 3). Reference 84 kg = mean body weight of the pooled phase 1-3 analysis population. Not retained as a covariate at the PD / exposure-response layer.",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Female-sex exponent on V (1.11) in the PK layer (Table 3). Reference patient is male.",
-      source_name        = "SEXF"
+      notes = "Female-sex exponent on V (1.11) in the PK layer (Table 3). Reference patient is male.",
+      source_name = "SEXF"
     ),
     CONMED_STATIN_MONO = list(
-      description        = "Concomitant statin monotherapy indicator, 1 = patient on a statin only (no other lipid-lowering comedication), 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant statin monotherapy indicator, 1 = patient on a statin only (no other lipid-lowering comedication), 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on statin monotherapy)",
-      notes              = "Multiplicative exponent 1.13 on Vmax (PK layer, Table 3); multiplicative exponent 0.797 on baseline LDL-C and multiplicative exponent 0.937 on Emax in the exposure-response layer (Table 4). Reference patient is not on any lipid-lowering medication.",
-      source_name        = "CONMED_STATIN_MONO"
+      notes = "Multiplicative exponent 1.13 on Vmax (PK layer, Table 3); multiplicative exponent 0.797 on baseline LDL-C and multiplicative exponent 0.937 on Emax in the exposure-response layer (Table 4). Reference patient is not on any lipid-lowering medication.",
+      source_name = "CONMED_STATIN_MONO"
     ),
     CONMED_EZE = list(
-      description        = "Concomitant ezetimibe indicator, 1 = patient taking ezetimibe (with or without other lipid-lowering comedication), 0 = not on ezetimibe",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant ezetimibe indicator, 1 = patient taking ezetimibe (with or without other lipid-lowering comedication), 0 = not on ezetimibe",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on ezetimibe)",
-      notes              = "Kuchimanchi 2018 Methods defines this as 'all patients on ezetimibe, regardless of comedications'; in the popPK dataset ~79% of ezetimibe users were also on a statin, so the effect represents statin + ezetimibe combination therapy. Multiplicative exponent 1.20 on Vmax (PK layer, Table 3); multiplicative exponent 0.768 on baseline LDL-C in the exposure-response layer (Table 4).",
-      source_name        = "CONMED_EZE"
+      notes = "Kuchimanchi 2018 Methods defines this as 'all patients on ezetimibe, regardless of comedications'; in the popPK dataset ~79% of ezetimibe users were also on a statin, so the effect represents statin + ezetimibe combination therapy. Multiplicative exponent 1.20 on Vmax (PK layer, Table 3); multiplicative exponent 0.768 on baseline LDL-C in the exposure-response layer (Table 4).",
+      source_name = "CONMED_EZE"
     ),
     PCSK9 = list(
-      description        = "Baseline unbound PCSK9 (proprotein convertase subtilisin/kexin type 9) serum concentration",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Baseline unbound PCSK9 (proprotein convertase subtilisin/kexin type 9) serum concentration",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate (PCSK9/425)^0.194 on Vmax in the PK layer (Table 3). Reference 425 ng/mL (= 5.9 nM) is the population median. Baseline (time-fixed) covariate; patients with missing baseline PCSK9 were excluded from analyses that included PCSK9 as a covariate. Not retained at the PD / exposure-response layer.",
-      source_name        = "PCSK9"
+      notes = "Power covariate (PCSK9/425)^0.194 on Vmax in the PK layer (Table 3). Reference 425 ng/mL (= 5.9 nM) is the population median. Baseline (time-fixed) covariate; patients with missing baseline PCSK9 were excluded from analyses that included PCSK9 as a covariate. Not retained at the PD / exposure-response layer.",
+      source_name = "PCSK9"
     ),
     DIS_HEFH = list(
-      description        = "Heterozygous familial hypercholesterolemia indicator, 1 = patient with HeFH, 0 = non-HeFH",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Heterozygous familial hypercholesterolemia indicator, 1 = patient with HeFH, 0 = non-HeFH",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-HeFH)",
-      notes              = "Multiplicative exponent 1.28 on baseline LDL-C in the exposure-response layer (Table 4). HeFH patients have higher baseline LDL-C than the non-HeFH reference. Kuchimanchi 2018 Results notes that all HeFH patients in the dataset were taking a statin and/or ezetimibe, so any HeFH simulation should typically be combined with CONMED_STATIN_MONO = 1 or CONMED_EZE = 1.",
-      source_name        = "HEFH"
+      notes = "Multiplicative exponent 1.28 on baseline LDL-C in the exposure-response layer (Table 4). HeFH patients have higher baseline LDL-C than the non-HeFH reference. Kuchimanchi 2018 Results notes that all HeFH patients in the dataset were taking a statin and/or ezetimibe, so any HeFH simulation should typically be combined with CONMED_STATIN_MONO = 1 or CONMED_EZE = 1.",
+      source_name = "HEFH"
     ),
     REGI_QM = list(
-      description        = "Once-monthly dosing-regimen indicator, 1 = QM (e.g., 420 mg SC every 4 weeks), 0 = Q2W (e.g., 140 mg SC every 2 weeks)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Once-monthly dosing-regimen indicator, 1 = QM (e.g., 420 mg SC every 4 weeks), 0 = Q2W (e.g., 140 mg SC every 2 weeks)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Q2W; the structural reference for the Emax-on-AUC EC50 estimate)",
-      notes              = "Per-subject (regimen-fixed) categorical indicator used by the static Emax-on-AUC exposure-response model to apply the QM-specific EC50 multiplier reg_qm (Table 4 REG = 2.30): ec50_eff = ec50 * reg_qm^REGI_QM. Required because the Emax-on-AUC formulation cannot represent the difference in target-saturation time courses between Q2W and QM regimens that produce similar AUC values. Set REGI_QM = 1 for QM simulations and REGI_QM = 0 for Q2W simulations; both values are valid inputs to the model regardless of the actual dosing interval used in the event table, but the canonical interpretation is to keep REGI_QM consistent with the simulated regimen.",
-      source_name        = "REGI_QM"
+      notes = "Per-subject (regimen-fixed) categorical indicator used by the static Emax-on-AUC exposure-response model to apply the QM-specific EC50 multiplier reg_qm (Table 4 REG = 2.30): ec50_eff = ec50 * reg_qm^REGI_QM. Required because the Emax-on-AUC formulation cannot represent the difference in target-saturation time courses between Q2W and QM regimens that produce similar AUC values. Set REGI_QM = 1 for QM simulations and REGI_QM = 0 for Q2W simulations; both values are valid inputs to the model regardless of the actual dosing interval used in the event table, but the canonical interpretation is to keep REGI_QM consistent with the simulated regimen.",
+      source_name = "REGI_QM"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects_pk    = 3414L,
-    n_subjects_pkpd  = 1314L,
-    n_observations   = 16179L,
-    n_studies        = 11L,
-    n_studies_pkpd   = 4L,
-    age_range        = "18-80 years",
-    age_median       = "57 years (mean; Table 2 reports SD 58 which appears to be a typographical error)",
-    weight_range     = "41-175 kg",
-    weight_median    = "84.2 kg (mean)",
-    sex_female_pct   = 50,
-    race_ethnicity   = c(White = 87, Black = 7, Asian = 4, Hispanic = 0, Other = 1, AmericanIndianAlaska = 0, NativeHawaiianPacific = 0, Multiple = 0),
-    disease_state    = "Pooled adults: healthy volunteers (phase 1a) and patients with hypercholesterolemia (phase 1b, 2, and 3), including patients with heterozygous familial hypercholesterolemia (9%), diabetes (11%), and statin-intolerance cohorts. Most subjects received concomitant lipid-lowering therapy (statins 72%, ezetimibe 12%).",
-    dose_range       = "Evolocumab 7-420 mg IV or SC, single- and multiple-dose across Q2W and QM regimens. Phase 3 studies used the commercial regimens 140 mg SC Q2W and 420 mg SC QM.",
-    regions          = "Multi-regional (11 pooled clinical studies spanning phase 1, 2, and 3).",
-    pcsk9_baseline   = "Mean 402 ng/mL (SD 375), range 15.5-1233 ng/mL; median used for reference patient = 425 ng/mL (= 5.9 nM).",
-    ldlc_baseline    = "Typical baseline LDL-C used by the exposure-response model is 150 mg/dL for the reference patient (Table 4 typical value); the paper-predicted maximal LDL-C reduction is 99.7 mg/dL.",
-    notes            = "PK parameters from Kuchimanchi 2018 Table 3 (updated phase 3 popPK model; N = 3414 evolocumab-treated patients pooled from 11 studies). Exposure-response parameters from Table 4 (n = 1314 patients pooled from 4 phase 2 studies). The PK layer fits the full pooled phase 1-3 dataset; the exposure-response layer is fit only on the phase 2 LDL-C measurements at the mean of weeks 10 and 12 of treatment, using individual-predicted AUCwk8-12 from the popPK model as the predictor."
+    species = "human",
+    n_subjects_pk = 3414L,
+    n_subjects_pkpd = 1314L,
+    n_observations = 16179L,
+    n_studies = 11L,
+    n_studies_pkpd = 4L,
+    age_range = "18-80 years",
+    age_median = "57 years (mean; Table 2 reports SD 58 which appears to be a typographical error)",
+    weight_range = "41-175 kg",
+    weight_median = "84.2 kg (mean)",
+    sex_female_pct = 50,
+    race_ethnicity = c(
+      White = 87,
+      Black = 7,
+      Asian = 4,
+      Hispanic = 0,
+      Other = 1,
+      AmericanIndianAlaska = 0,
+      NativeHawaiianPacific = 0,
+      Multiple = 0
+    ),
+    disease_state = "Pooled adults: healthy volunteers (phase 1a) and patients with hypercholesterolemia (phase 1b, 2, and 3), including patients with heterozygous familial hypercholesterolemia (9%), diabetes (11%), and statin-intolerance cohorts. Most subjects received concomitant lipid-lowering therapy (statins 72%, ezetimibe 12%).",
+    dose_range = "Evolocumab 7-420 mg IV or SC, single- and multiple-dose across Q2W and QM regimens. Phase 3 studies used the commercial regimens 140 mg SC Q2W and 420 mg SC QM.",
+    regions = "Multi-regional (11 pooled clinical studies spanning phase 1, 2, and 3).",
+    pcsk9_baseline = "Mean 402 ng/mL (SD 375), range 15.5-1233 ng/mL; median used for reference patient = 425 ng/mL (= 5.9 nM).",
+    ldlc_baseline = "Typical baseline LDL-C used by the exposure-response model is 150 mg/dL for the reference patient (Table 4 typical value); the paper-predicted maximal LDL-C reduction is 99.7 mg/dL.",
+    notes = "PK parameters from Kuchimanchi 2018 Table 3 (updated phase 3 popPK model; N = 3414 evolocumab-treated patients pooled from 11 studies). Exposure-response parameters from Table 4 (n = 1314 patients pooled from 4 phase 2 studies). The PK layer fits the full pooled phase 1-3 dataset; the exposure-response layer is fit only on the phase 2 LDL-C measurements at the mean of weeks 10 and 12 of treatment, using individual-predicted AUCwk8-12 from the popPK model as the predictor."
   )
 
   ini({

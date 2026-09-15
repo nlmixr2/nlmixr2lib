@@ -14,34 +14,34 @@ Downes_2023_vancomycin_full <- function() {
   # paper never states what the peripheral distribution compartment represents.
   # "plasma" follows the repository default and is not a paper-sourced claim.
   compartmentData <- list(
-    central     = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Downes 2023 Methods section 2.3: 'Clearance parameters were allometrically scaled for standardized weight to a power of 0.75 and volume parameters were scaled by standardized weight (power 1); weight was standardized by the median of the subjects' weights (27 kg).' Note that the 27 kg normalizing constant printed in the model equation does not equal the 25.9 kg model-training-group median in Table 1; the printed constant is the one this model uses. Table 1 training-group weight median 25.9 kg (IQR 13.9-41.8).",
-      source_name        = "WT"
+      notes = "Downes 2023 Methods section 2.3: 'Clearance parameters were allometrically scaled for standardized weight to a power of 0.75 and volume parameters were scaled by standardized weight (power 1); weight was standardized by the median of the subjects' weights (27 kg).' Note that the 27 kg normalizing constant printed in the model equation does not equal the 25.9 kg model-training-group median in Table 1; the printed constant is the one this model uses. Table 1 training-group weight median 25.9 kg (IQR 13.9-41.8).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate from the cystatin-C-based Hoek equation, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate from the cystatin-C-based Hoek equation, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Downes 2023 Methods section 2.3: 'GFR was estimated using ... pCysC alone based on the Hoek equation [32]' (Hoek FJ et al., Nephrol Dial Transplant 2003;18:2024-2031). Stored under canonical CRCL, which covers BSA-normalized GFR estimates regardless of the filtration marker; the assay form here is a cystatin-C-based estimate, chosen precisely BECAUSE creatinine is unreliable in critically ill children (Downes 2023 Introduction). Reference value 134 mL/min/1.73 m^2 is the normalizing constant printed in Table 2 and Table S4; it does not equal the Table 1 training-group median of 143 mL/min/1.73 m^2 at PK sampling (IQR 110-197), and the printed constant is the one this model uses. Half of the training group met the paper's augmented-renal-clearance definition of eGFR > 130 mL/min/1.73 m^2, so the cohort skews supranormal and the model carries little information about renal impairment.",
-      source_name        = "HOEK"
+      notes = "Downes 2023 Methods section 2.3: 'GFR was estimated using ... pCysC alone based on the Hoek equation [32]' (Hoek FJ et al., Nephrol Dial Transplant 2003;18:2024-2031). Stored under canonical CRCL, which covers BSA-normalized GFR estimates regardless of the filtration marker; the assay form here is a cystatin-C-based estimate, chosen precisely BECAUSE creatinine is unreliable in critically ill children (Downes 2023 Introduction). Reference value 134 mL/min/1.73 m^2 is the normalizing constant printed in Table 2 and Table S4; it does not equal the Table 1 training-group median of 143 mL/min/1.73 m^2 at PK sampling (IQR 110-197), and the printed constant is the one this model uses. Half of the training group met the paper's augmented-renal-clearance definition of eGFR > 130 mL/min/1.73 m^2, so the cohort skews supranormal and the model carries little information about renal impairment.",
+      source_name = "HOEK"
     ),
     UNGALCR = list(
-      description        = "Urinary neutrophil gelatinase-associated lipocalin normalized to urine creatinine",
-      units              = "ng/mg creatinine",
-      type               = "continuous",
+      description = "Urinary neutrophil gelatinase-associated lipocalin normalized to urine creatinine",
+      units = "ng/mg creatinine",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Downes 2023 Methods section 2.3: 'Urinary biomarkers were normalized to urine creatinine (i.e., [biomarker]/[uCr]) to account for urine volume.' Enters the clearance equation as the paper's LNGAL term, defined in the Table 2 and Table S4 footnotes as 'the natural logarithm of the urinary NGAL concentration normalized to urinary creatinine (uNGAL/uCr)', so this column holds the RATIO on its natural scale and model() takes the logarithm. IMPORTANT: the term is NOT normalized to a reference value, so CL0 = 3.31 L/h is the clearance at UNGALCR = 1 ng/mg creatinine, which is far below any observed value; at the Table S3 training-group median of 60.3 ng/mg the NGAL factor is 0.94^log(60.3) = 0.776, a 22 percent clearance reduction. Table S3 training-group median 60.3 ng/mg creatinine (IQR 24.1-249.8); Discussion reports the training-group range as 1.4-2809 and the testing-group range as 7.8-10034, a spread the authors flag as possibly too imprecise for individual-level AUC estimation. Urine was collected on the evening and morning prior to PK sampling, with residual pre-vancomycin clinical samples used as baseline where available.",
-      source_name        = "uNGAL/uCr"
+      notes = "Downes 2023 Methods section 2.3: 'Urinary biomarkers were normalized to urine creatinine (i.e., [biomarker]/[uCr]) to account for urine volume.' Enters the clearance equation as the paper's LNGAL term, defined in the Table 2 and Table S4 footnotes as 'the natural logarithm of the urinary NGAL concentration normalized to urinary creatinine (uNGAL/uCr)', so this column holds the RATIO on its natural scale and model() takes the logarithm. IMPORTANT: the term is NOT normalized to a reference value, so CL0 = 3.31 L/h is the clearance at UNGALCR = 1 ng/mg creatinine, which is far below any observed value; at the Table S3 training-group median of 60.3 ng/mg the NGAL factor is 0.94^log(60.3) = 0.776, a 22 percent clearance reduction. Table S3 training-group median 60.3 ng/mg creatinine (IQR 24.1-249.8); Discussion reports the training-group range as 1.4-2809 and the testing-group range as 7.8-10034, a spread the authors flag as possibly too imprecise for individual-level AUC estimation. Urine was collected on the evening and morning prior to PK sampling, with residual pre-vancomycin clinical samples used as baseline where available.",
+      source_name = "uNGAL/uCr"
     )
   )
 
@@ -53,71 +53,71 @@ Downes_2023_vancomycin_full <- function() {
   # was the only urinary biomarker retained.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL as a power function of (AGE/10) (Table S2 step 3, AIC change -1.9) and as a Hill function (AIC change -0.6), and on V1 as a power function (AIC change -2.7). Not retained.",
-      source_name        = "AGE"
+      notes = "Screened on CL as a power function of (AGE/10) (Table S2 step 3, AIC change -1.9) and as a Hill function (AIC change -0.6), and on V1 as a power function (AIC change -2.7). Not retained.",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male",
-      notes              = "Screened on CL (Table S2 step 3, AIC change -4.0) and on V1 (AIC change -0.2), parameterized as TH2^FEM with FEM = 1 if female and 0 if male, the same orientation as canonical SEXF. Not retained.",
-      source_name        = "FEM"
+      notes = "Screened on CL (Table S2 step 3, AIC change -4.0) and on V1 (AIC change -0.2), parameterized as TH2^FEM with FEM = 1 if female and 0 if male, the same orientation as canonical SEXF. Not retained.",
+      source_name = "FEM"
     ),
     CONMED_INOTROPE = list(
-      description        = "Active vasopressor receipt indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active vasopressor receipt indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "no active vasopressor receipt",
-      notes              = "Screened on CL (Table S2 step 3, AIC change -5.9) and on V1 (AIC change -1.4), parameterized as TH2^VASO with VASO = 1 if active vasopressor receipt. Table 1 reports vasopressor receipt in 47 percent of the training group at PK sampling. Not retained. Stored under canonical CONMED_INOTROPE, which covers concomitant inotrope / vasoactive coadministration.",
-      source_name        = "VASO"
+      notes = "Screened on CL (Table S2 step 3, AIC change -5.9) and on V1 (AIC change -1.4), parameterized as TH2^VASO with VASO = 1 if active vasopressor receipt. Table 1 reports vasopressor receipt in 47 percent of the training group at PK sampling. Not retained. Stored under canonical CONMED_INOTROPE, which covers concomitant inotrope / vasoactive coadministration.",
+      source_name = "VASO"
     ),
     PIM3 = list(
-      description        = "Pediatric Index of Mortality 3 score, expressed as a probability of death",
-      units              = "(probability, 0-1)",
-      type               = "continuous",
+      description = "Pediatric Index of Mortality 3 score, expressed as a probability of death",
+      units = "(probability, 0-1)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL and on V1 as (PIM3/2.82)^TH2 (Table S2 step 3, AIC changes -1.6 and -3.0). Table 1 training-group median 1.3 percent (IQR 0.5-4.3) at PK sampling. Not retained. No canonical register entry is proposed because the covariate is not used by any registered model; the name here is the paper's own and is documentation only.",
-      source_name        = "PIM3"
+      notes = "Screened on CL and on V1 as (PIM3/2.82)^TH2 (Table S2 step 3, AIC changes -1.6 and -3.0). Table 1 training-group median 1.3 percent (IQR 0.5-4.3) at PK sampling. Not retained. No canonical register entry is proposed because the covariate is not used by any registered model; the name here is the paper's own and is documentation only.",
+      source_name = "PIM3"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL as (0.4/SCR)^TH1 (Table S2 step 2, AIC change -12.9; and again in step 3 with AIC change -3.6). Cystatin C outperformed serum creatinine by an AIC difference of -14.6, which is the paper's headline finding. Not retained in the full model; the sibling Downes_2023_vancomycin_schwartz model uses a creatinine-based eGFR instead.",
-      source_name        = "SCR"
+      notes = "Screened on CL as (0.4/SCR)^TH1 (Table S2 step 2, AIC change -12.9; and again in step 3 with AIC change -3.6). Cystatin C outperformed serum creatinine by an AIC difference of -14.6, which is the paper's headline finding. Not retained in the full model; the sibling Downes_2023_vancomycin_schwartz model uses a creatinine-based eGFR instead.",
+      source_name = "SCR"
     ),
     CYSC = list(
-      description        = "Plasma cystatin C",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Plasma cystatin C",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL as (0.6/PCYSC)^TH1 (Table S2 step 2, AIC change -27.5), giving essentially the same fit as eGFR-Hoek (AIC change -27.2). Downes 2023 Results section 3.2 states the authors 'proceeded with further model training using the eGFRHoek model since clinical dosing guidance is typically based on a patient's eGFR rather than a direct biomarker result', so raw cystatin C is not in the final model even though it fit equally well. Table S3 training-group median 0.55 mg/L (IQR 0.4-0.7).",
-      source_name        = "PCYSC"
+      notes = "Screened on CL as (0.6/PCYSC)^TH1 (Table S2 step 2, AIC change -27.5), giving essentially the same fit as eGFR-Hoek (AIC change -27.2). Downes 2023 Results section 3.2 states the authors 'proceeded with further model training using the eGFRHoek model since clinical dosing guidance is typically based on a patient's eGFR rather than a direct biomarker result', so raw cystatin C is not in the final model even though it fit equally well. Table S3 training-group median 0.55 mg/L (IQR 0.4-0.7).",
+      source_name = "PCYSC"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 30L,
-    n_studies        = 1L,
-    n_sites          = 1L,
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    n_sites = 1L,
     n_concentrations = 150L,
-    age_range        = "1-17 years (eligibility); Table 1 training-group median 9.8 years, IQR 3.8-11.2",
-    age_median       = "9.8 years (IQR 3.8-11.2)",
-    weight_range     = "IQR 13.9-41.8 kg (full range not reported)",
-    weight_median    = "25.9 kg (IQR 13.9-41.8)",
-    sex_female_pct   = 37,
-    disease_state    = "Critically ill children in a single quaternary-care PICU receiving intermittent IV vancomycin for a suspected infection (a microbiological culture performed within 24 h of vancomycin initiation). Excluded: renal replacement therapy, plasmapheresis, extracorporeal membrane oxygenation, and age under 1 year (the authors excluded infants because cystatin C is affected by renal maturation over the first year of life, and state explicitly that the model cannot be applied to infants). PIM3 probability of death median 1.3 percent (IQR 0.5-4.3) at PK sampling; vasopressors in 47 percent at PK sampling.",
-    dose_range       = "Clinician-chosen intermittent IV regimens; typical initial dosages 10-15 mg/kg/dose every 6-8 h. Table 1 training-group dose at PK sampling median 13.2 mg/kg (IQR 10.0-14.8)",
-    regions          = "United States (Children's Hospital of Philadelphia, Philadelphia PA)",
-    renal_function   = "eGFR-Hoek median 143 mL/min/1.73 m^2 (IQR 110-197) and eGFR-Schwartz median 164 (IQR 114-222) at PK sampling; serum creatinine median 0.30 mg/dL (IQR 0.20-0.48). Half of the training group had augmented renal clearance (eGFR-Hoek > 130 mL/min/1.73 m^2).",
-    notes            = "Prospective observational study conducted August 2018 to July 2021. 50 evaluable subjects were split into a 30-subject model TRAINING group (this model) and a 20-subject model TESTING group used only for Bayesian AUC24 evaluation; the parameters here were estimated from the training group alone. The 30 training subjects contributed 150 vancomycin concentrations (14 clinical TDM samples and 136 research PK samples) spanning 3.9-67.8 ug/mL, with 2 values below the 3.0 ug/mL LLOQ coded as LLOQ/2. Model fit by NONPARAMETRIC adaptive grid (NPAG) in Pmetrics 1.9.7, not by a parametric method. The authors state explicitly (Discussion) that for a nonparametric fit 'the idea of typical parameter values and interindividual variability around them does not apply', so the Table 2 medians and CV percents encoded here are lognormal summaries of a joint density whose true shape is not reported -- see the vignette Assumptions section. Reported eta shrinkage is high across every parameter (49-61 percent, Table 2), consistent with only 150 concentrations across 30 subjects."
+    age_range = "1-17 years (eligibility); Table 1 training-group median 9.8 years, IQR 3.8-11.2",
+    age_median = "9.8 years (IQR 3.8-11.2)",
+    weight_range = "IQR 13.9-41.8 kg (full range not reported)",
+    weight_median = "25.9 kg (IQR 13.9-41.8)",
+    sex_female_pct = 37,
+    disease_state = "Critically ill children in a single quaternary-care PICU receiving intermittent IV vancomycin for a suspected infection (a microbiological culture performed within 24 h of vancomycin initiation). Excluded: renal replacement therapy, plasmapheresis, extracorporeal membrane oxygenation, and age under 1 year (the authors excluded infants because cystatin C is affected by renal maturation over the first year of life, and state explicitly that the model cannot be applied to infants). PIM3 probability of death median 1.3 percent (IQR 0.5-4.3) at PK sampling; vasopressors in 47 percent at PK sampling.",
+    dose_range = "Clinician-chosen intermittent IV regimens; typical initial dosages 10-15 mg/kg/dose every 6-8 h. Table 1 training-group dose at PK sampling median 13.2 mg/kg (IQR 10.0-14.8)",
+    regions = "United States (Children's Hospital of Philadelphia, Philadelphia PA)",
+    renal_function = "eGFR-Hoek median 143 mL/min/1.73 m^2 (IQR 110-197) and eGFR-Schwartz median 164 (IQR 114-222) at PK sampling; serum creatinine median 0.30 mg/dL (IQR 0.20-0.48). Half of the training group had augmented renal clearance (eGFR-Hoek > 130 mL/min/1.73 m^2).",
+    notes = "Prospective observational study conducted August 2018 to July 2021. 50 evaluable subjects were split into a 30-subject model TRAINING group (this model) and a 20-subject model TESTING group used only for Bayesian AUC24 evaluation; the parameters here were estimated from the training group alone. The 30 training subjects contributed 150 vancomycin concentrations (14 clinical TDM samples and 136 research PK samples) spanning 3.9-67.8 ug/mL, with 2 values below the 3.0 ug/mL LLOQ coded as LLOQ/2. Model fit by NONPARAMETRIC adaptive grid (NPAG) in Pmetrics 1.9.7, not by a parametric method. The authors state explicitly (Discussion) that for a nonparametric fit 'the idea of typical parameter values and interindividual variability around them does not apply', so the Table 2 medians and CV percents encoded here are lognormal summaries of a joint density whose true shape is not reported -- see the vignette Assumptions section. Reported eta shrinkage is high across every parameter (49-61 percent, Table 2), consistent with only 150 concentrations across 30 subjects."
   )
 
   ini({

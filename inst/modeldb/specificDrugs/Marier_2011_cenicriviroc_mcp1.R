@@ -50,24 +50,24 @@ Marier_2011_cenicriviroc_mcp1 <- function() {
   vignette <- "Marier_2011_cenicriviroc"
 
   units <- list(
-    time          = "h",
-    dosing        = "not applicable (static exposure-response model; cenicriviroc exposure enters through the covariate CSS_CVC rather than through rxode2 dose events)",
+    time = "h",
+    dosing = "not applicable (static exposure-response model; cenicriviroc exposure enters through the covariate CSS_CVC rather than through rxode2 dose events)",
     concentration = "log10 pg/mL (the modelled observation dmcp1 is the CHANGE FROM BASELINE in plasma MCP-1 on the log10 scale, NOT a drug concentration; the driving covariate CSS_CVC is the average steady-state cenicriviroc plasma concentration in ng/mL)"
   )
 
   covariateData <- list(
     CSS_CVC = list(
-      description        = "Individual average steady-state plasma concentration (Css) of cenicriviroc (TBR-652) on day 10 of once-daily oral dosing, carried as the per-subject exposure metric that drives the Emax term.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual average steady-state plasma concentration (Css) of cenicriviroc (TBR-652) on day 10 of once-daily oral dosing, carried as the per-subject exposure metric that drives the Emax term.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Identical column, identical derivation and identical caveats as in the companion model Marier_2011_cenicriviroc_hiv1rna.R; see that file's covariateData notes for the full detail. In brief: Css is a noncompartmental quantity, AUC0-24 / 24 h from the day-10 intensive profile (Methods 'Pharmacokinetics', p. 2769), with cohort mean values of 15.92, 51.89, 79.82, 110.8 and 303.0 ng/mL at 25, 50, 75, 100 and 150 mg QD (Table 2, p. 2772). There is no PK model in this paper to generate the column with.",
         "One timing mismatch is worth being explicit about, because it is a real limitation of pairing these two quantities rather than a transcription question. MCP-1 was measured on DAY 10 (Methods 'Pharmacodynamics', p. 2770: 'Determination of the change from baseline in the inflammatory marker monocyte chemotactic protein 1 (MCP-1) was performed based on data collected on day 10'), which is the same day as the PK profile that yields Css -- so exposure and response are contemporaneous here. The companion HIV-1 RNA model instead pairs the day-10 Css with the day-11 viral load, one day later. Both pairings are the authors' own.",
         "PLACEBO subjects carry CSS_CVC = 0 and are plotted on the y-axis of Figure 4; the model returns exactly 0 there because it has no intercept term. Set CSS_CVC = 0 to simulate placebo.",
         "Individual Css values span roughly 0 to 490 ng/mL across Figure 4, the same range as Figure 3. Total, not unbound concentration."
       ),
-      source_name        = "Css (average concentration under steady-state conditions)"
+      source_name = "Css (average concentration under steady-state conditions)"
     )
   )
 
@@ -76,45 +76,45 @@ Marier_2011_cenicriviroc_mcp1 <- function() {
   # screen on either Emax fit. Documentation only.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1: overall mean 79.81 kg (SD 17.08); cohort means 69.50-93.87 kg. Not used in the PK/PD model.",
-      source_name        = "Mean wt (kg) (SD)"
+      notes = "Table 1: overall mean 79.81 kg (SD 17.08); cohort means 69.50-93.87 kg. Not used in the PK/PD model.",
+      source_name = "Mean wt (kg) (SD)"
     ),
     AGE = list(
-      description        = "Age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1: overall mean 38.9 years (SD 7.95); inclusion range 18-65 years. Not used in the PK/PD model.",
-      source_name        = "Mean age (yr) (SD)"
+      notes = "Table 1: overall mean 38.9 years (SD 7.95); inclusion range 18-65 years. Not used in the PK/PD model.",
+      source_name = "Mean age (yr) (SD)"
     ),
     SEXF = list(
-      description        = "Female sex indicator (0 = male, 1 = female).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (0 = male, 1 = female).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Table 1: 7 of 54 (13%) female. Not used in the PK/PD model.",
-      source_name        = "Females"
+      notes = "Table 1: 7 of 54 (13%) female. Not used in the PK/PD model.",
+      source_name = "Females"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    age_range      = "18-65 years by protocol; cohort means 33.9-41.0 years, overall mean 38.9 years (SD 7.95)",
-    weight_range   = "cohort mean weights 69.50-93.87 kg; overall mean 79.81 kg (SD 17.08)",
-    height_range   = "cohort mean heights 171.33-179.14 cm; overall mean 176.71 cm (SD 9.685)",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = "18-65 years by protocol; cohort means 33.9-41.0 years, overall mean 38.9 years (SD 7.95)",
+    weight_range = "cohort mean weights 69.50-93.87 kg; overall mean 79.81 kg (SD 17.08)",
+    height_range = "cohort mean heights 171.33-179.14 cm; overall mean 176.71 cm (SD 9.685)",
     sex_female_pct = 13,
     race_ethnicity = c(Caucasian = 55.6, `African-American` = 25.9, Hispanic = 13.0, Other = 3.7, Asian = 1.9),
-    disease_state  = "HIV-1 infection, antiretroviral treatment-experienced but off all antiretroviral therapy for at least 6 weeks (range 6 weeks to 3 years), CCR5-antagonist-naive, CCR5-tropic virus by the enhanced-sensitivity Trofile assay, screening plasma HIV-1 RNA at least 5,000 copies/mL and CD4+ count at least 250 cells/mm^3",
-    dose_range     = "Cenicriviroc (TBR-652) 25, 50, 75, 100 or 150 mg orally once daily for 10 days as monotherapy, or matching placebo, randomised 4:1 within each dose cohort. The 25, 50, 75 and 150 mg doses were given as multiples of a 25 mg tablet (formulation F1); the 100 mg dose used a single 100 mg tablet of a different formulation (F2).",
-    regions        = "10 sites: 9 in the United States (52 of 54 patients) and 1 in Argentina (2 patients, both in the 100 mg cohort)",
-    endpoint       = "Change from baseline in plasma MCP-1 (CCL2) concentration on day 10, on the log10 scale, in log10 pg/mL.",
-    notes          = paste(
+    disease_state = "HIV-1 infection, antiretroviral treatment-experienced but off all antiretroviral therapy for at least 6 weeks (range 6 weeks to 3 years), CCR5-antagonist-naive, CCR5-tropic virus by the enhanced-sensitivity Trofile assay, screening plasma HIV-1 RNA at least 5,000 copies/mL and CD4+ count at least 250 cells/mm^3",
+    dose_range = "Cenicriviroc (TBR-652) 25, 50, 75, 100 or 150 mg orally once daily for 10 days as monotherapy, or matching placebo, randomised 4:1 within each dose cohort. The 25, 50, 75 and 150 mg doses were given as multiples of a 25 mg tablet (formulation F1); the 100 mg dose used a single 100 mg tablet of a different formulation (F2).",
+    regions = "10 sites: 9 in the United States (52 of 54 patients) and 1 in Argentina (2 patients, both in the 100 mg cohort)",
+    endpoint = "Change from baseline in plasma MCP-1 (CCL2) concentration on day 10, on the log10 scale, in log10 pg/mL.",
+    notes = paste(
       "n_subjects is NA deliberately. Marier 2011 states neither an analysis-set size nor a per-cohort n for the MCP-1 exposure-response, and the only per-cohort n values in the paper are the PK set (Table 2) and the HIV-1 RNA set (Table 3), neither of which the paper says applies here. Counting points off Figure 4 would be a guess, so no number is asserted. 54 patients were screened and entered study 652-2-201 and are the population of Table 1; the demographic percentages above are that 54-patient denominator.",
       "The MCP-1 analysis is explicitly EXPLORATORY: Methods 'Pharmacokinetic/pharmacodynamic modeling' (p. 2770) introduces it as 'An exploratory analysis was performed by assessing the relationship between drug exposure and change from baseline in the inflammatory marker MCP-1', and the Results close with 'Additional studies will be required to assess the longer-term effect of TBR-652 on MCP-1' (p. 2773). Treat the parameters accordingly.",
       "No baseline MCP-1 concentration is reported anywhere in the paper, so the model can only return the change from baseline and cannot be converted to an absolute MCP-1 concentration without an external baseline. This is recorded in the vignette's Assumptions and deviations.",

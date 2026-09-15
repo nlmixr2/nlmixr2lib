@@ -28,11 +28,11 @@ Mauro_2025_nilotinib_lowfat <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units             = "kg",
-      type              = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes             = paste(
+      notes = paste(
         "Power (allometric-style) effect on CL. Mauro 2025 does not state the",
         "reference weight; 70 kg is assumed here per the rounded-standard",
         "convention. NOTE the published exponent is NEGATIVE (-0.670, 95% CI",
@@ -42,14 +42,14 @@ Mauro_2025_nilotinib_lowfat <- function() {
         "entirely below zero.",
         sep = " "
       ),
-      source_name       = "WT"
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female",
-      units             = "(binary)",
-      type              = "binary",
+      description = "Biological sex indicator, 1 = female",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes             = paste(
+      notes = paste(
         "Two separate effects. (1) On CL for every subject (-26.6%: female CL is",
         "lower). (2) On relative bioavailability, but ONLY for female subjects",
         "receiving nilotinib TABLETS under FASTED conditions (+11.1%); the",
@@ -59,14 +59,14 @@ Mauro_2025_nilotinib_lowfat <- function() {
         "conditions. The gating is implemented as SEXF * FORM_TABLET * (1 - FED).",
         sep = " "
       ),
-      source_name       = "SEX"
+      source_name = "SEX"
     ),
     FORM_TABLET = list(
-      description        = "Formulation indicator, 1 = nilotinib tablet, 0 = nilotinib capsule",
-      units             = "(binary)",
-      type              = "binary",
+      description = "Formulation indicator, 1 = nilotinib tablet, 0 = nilotinib capsule",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Tasigna nilotinib hydrochloride monohydrate capsule -- the F1 = 1 anchor)",
-      notes             = paste(
+      notes = paste(
         "The comparator here is a CAPSULE, not the non-tablet oral liquid named in",
         "the FORM_TABLET register default (same situation as Wada 2023 sparsentan).",
         "1 = the novel Danziten film-coated tablet (nilotinib tartrate, modified",
@@ -78,14 +78,14 @@ Mauro_2025_nilotinib_lowfat <- function() {
         "specific food effects.",
         sep = " "
       ),
-      source_name       = "FORM"
+      source_name = "FORM"
     ),
     DOSE = list(
-      description        = "Administered nilotinib dose for the current dose record",
-      units             = "mg",
-      type              = "continuous",
+      description = "Administered nilotinib dose for the current dose record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes             = paste(
+      notes = paste(
         "The TOTAL dose administered at the event, not the per-unit strength: a",
         "190 mg tablet dose is 2 x 95 mg tablets and enters as DOSE = 190.",
         "Two uses. (1) A shared power effect on relative bioavailability",
@@ -97,14 +97,14 @@ Mauro_2025_nilotinib_lowfat <- function() {
         "capsules), so a single effect per formulation is applied at every dose.",
         sep = " "
       ),
-      source_name       = "DOSE"
+      source_name = "DOSE"
     ),
     FED = list(
-      description        = "Any-food-vs-fasted indicator for the dose record, 1 = a meal preceded the dose",
-      units             = "(binary)",
-      type              = "binary",
+      description = "Any-food-vs-fasted indicator for the dose record, 1 = a meal preceded the dose",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted: overnight fast of >= 10 h with no meal before dosing)",
-      notes             = paste(
+      notes = paste(
         "Carries the food effects that Mauro 2025 estimated WITHOUT distinguishing",
         "the prandial sub-state: on the zero-order absorption duration D1 and the",
         "absorption lag ALAG1 (both formulation-specific) and on the central volume",
@@ -116,14 +116,14 @@ Mauro_2025_nilotinib_lowfat <- function() {
         "food effects, carried over unchanged from the Final Model, still apply.",
         sep = " "
       ),
-      source_name       = "FOOD"
+      source_name = "FOOD"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat-meal indicator for the dose record, 1 = a high-fat meal preceded the dose",
-      units             = "(binary)",
-      type              = "binary",
+      description = "High-fat-meal indicator for the dose record, 1 = a high-fat meal preceded the dose",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted or low-fat meal)",
-      notes             = paste(
+      notes = paste(
         "Mauro 2025 Methods, 'Prandial state definitions': the high-fat meal is a",
         "high-fat high-calorie breakfast of 800-1000 kcal, non-vegetarian, about 50%",
         "fat content, consumed within 30 min. Paired with MEAL_PREDOSE_2H, which",
@@ -132,14 +132,14 @@ Mauro_2025_nilotinib_lowfat <- function() {
         "high-fat meal' state).",
         sep = " "
       ),
-      source_name       = "FOOD"
+      source_name = "FOOD"
     ),
     FED_LOWFAT = list(
-      description        = "Low-fat-meal indicator for the dose record, 1 = a low-fat meal preceded the dose",
-      units             = "(binary)",
-      type              = "binary",
+      description = "Low-fat-meal indicator for the dose record, 1 = a low-fat meal preceded the dose",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted or high-fat meal)",
-      notes             = paste(
+      notes = paste(
         "Mauro 2025 Methods, 'Prandial state definitions': the low-fat meal is a",
         "light-fat high-calorie breakfast of 400-500 kcal with about 25% fat",
         "content. In this paper the low-fat meal was only ever given 2 h before the",
@@ -148,14 +148,14 @@ Mauro_2025_nilotinib_lowfat <- function() {
         "meal 0.5 h before the dose was not studied and carries no estimate.",
         sep = " "
       ),
-      source_name       = "FOOD"
+      source_name = "FOOD"
     ),
     MEAL_PREDOSE_2H = list(
-      description        = "Dose-to-meal interval indicator, 1 = the dose was taken about 2 h after the start of the meal rather than about 0.5 h after it",
-      units             = "(binary)",
-      type              = "binary",
+      description = "Dose-to-meal interval indicator, 1 = the dose was taken about 2 h after the start of the meal rather than about 0.5 h after it",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (dose taken about 0.5 h after the start of the meal, or fasted)",
-      notes             = paste(
+      notes = paste(
         "Mauro 2025 calls the 2 h interval 'modified fasting' (permitted by the",
         "approved nilotinib capsule label) and the 0.5 h interval 'fed'. The meal",
         "composition is identical between the two high-fat states, so this",
@@ -165,14 +165,14 @@ Mauro_2025_nilotinib_lowfat <- function() {
         "is not portable between papers -- read each paper's own definition.",
         sep = " "
       ),
-      source_name       = "FOOD"
+      source_name = "FOOD"
     ),
     OCC = list(
-      description        = "Occasion (crossover period) index for the dose record",
-      units             = "(integer)",
-      type              = "categorical",
+      description = "Occasion (crossover period) index for the dose record",
+      units = "(integer)",
+      type = "categorical",
       reference_category = NULL,
-      notes             = paste(
+      notes = paste(
         "Drives the inter-occasion variability on the central volume V1",
         "(Supplemental Table 3, 'Inter-Occasion Variability'). Mauro 2025 does not",
         "state how many occasions the IOV spans; three are implemented here because",
@@ -181,40 +181,40 @@ Mauro_2025_nilotinib_lowfat <- function() {
         "single-occasion simulation set OCC = 1 throughout.",
         sep = " "
       ),
-      source_name       = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate analysis (Mauro 2025 Methods, 'Analyses') but not retained in the final model; no point estimate is published."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate analysis (Mauro 2025 Methods, 'Analyses') but not retained in the final model; no point estimate is published."
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate analysis but not retained; no point estimate is published."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate analysis but not retained; no point estimate is published."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate analysis but not retained; no point estimate is published."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate analysis but not retained; no point estimate is published."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate analysis but not retained; no point estimate is published."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate analysis but not retained; no point estimate is published."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate analysis but not retained; no point estimate is published."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate analysis but not retained; no point estimate is published."
     )
   )
 

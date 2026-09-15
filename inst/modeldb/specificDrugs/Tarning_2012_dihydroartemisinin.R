@@ -37,13 +37,13 @@ Tarning_2012_dihydroartemisinin <- function() {
     sep = " "
   )
   vignette <- "Tarning_2012_dihydroartemisinin_piperaquine"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
     transit1 = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
     transit2 = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
     transit3 = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
@@ -51,16 +51,16 @@ Tarning_2012_dihydroartemisinin <- function() {
     transit5 = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
     transit6 = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
     transit7 = list(analyte = "dihydroartemisinin", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject at admission. Tarning 2012 Table 1",
         "reports body-weight medians of 51 kg (range 36-58) in pregnant",
         "women and 48 kg (range 37-78) in non-pregnant women. Allometric",
@@ -74,14 +74,14 @@ Tarning_2012_dihydroartemisinin <- function() {
         "for the co-administered piperaquine.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PREG = list(
-      description        = "Pregnancy status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = pregnant (second or third trimester), 0 = non-pregnant.",
         "Time-fixed per subject. Tarning 2012 enrolled 24 pregnant women",
         "(estimated gestational age 13.1-33.4 weeks, median 25.3) and 24",
@@ -93,14 +93,14 @@ Tarning_2012_dihydroartemisinin <- function() {
         "dihydroartemisinin'). Reference category 0 = non-pregnant.",
         sep = " "
       ),
-      source_name        = "PREG"
+      source_name = "PREG"
     ),
     PARA = list(
-      description        = "Plasmodium falciparum parasitaemia at admission (asexual parasites/uL)",
-      units              = "parasites/uL",
-      type               = "continuous",
+      description = "Plasmodium falciparum parasitaemia at admission (asexual parasites/uL)",
+      units = "parasites/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Admission-only (time-fixed) parasitaemia. Tarning 2012 Table 1",
         "reports medians of 6,780 (range 96-177,000) parasites/uL in",
         "pregnant women and 9,670 (range 32-136,000) in non-pregnant",
@@ -123,19 +123,19 @@ Tarning_2012_dihydroartemisinin <- function() {
         "Mahidol-Oxford malaria popPK family.",
         sep = " "
       ),
-      source_name        = "PARA"
+      source_name = "PARA"
     ),
     OCC = list(
-      description        = paste(
+      description = paste(
         "Integer-valued dose-occasion indicator for between-occasion",
         "variability on mean transit time (MTT). Values 1, 2, 3 identify",
         "the three consecutive daily doses (0, 24, and 48 h",
         "post-treatment-start)."
       ),
-      units              = "(count)",
-      type               = "categorical",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Decomposed inside model() into binary indicators oc1, oc2, oc3",
         "that multiplex the BOV eta on MTT. Tarning 2012 Results",
         "'Pharmacokinetics of dihydroartemisinin': 'Allowing",
@@ -149,19 +149,19 @@ Tarning_2012_dihydroartemisinin <- function() {
         "and OCC = 3 after dose 3.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 48L,
-    n_pregnant      = 24L,
-    n_studies       = 1L,
-    age_range       = "18-45 years (Table 1; median 25 pregnant, 27.5 non-pregnant)",
-    weight_range    = "36-78 kg (Table 1; median 51 pregnant, 48 non-pregnant; allometric reference 48.5 kg)",
-    sex_female_pct  = 100,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 48L,
+    n_pregnant = 24L,
+    n_studies = 1L,
+    age_range = "18-45 years (Table 1; median 25 pregnant, 27.5 non-pregnant)",
+    weight_range = "36-78 kg (Table 1; median 51 pregnant, 48 non-pregnant; allometric reference 48.5 kg)",
+    sex_female_pct = 100,
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria (or mixed P. falciparum +",
       "P. vivax) in pregnant women in their second or third trimester (GA",
       "13.1-33.4 weeks, median 25.3) and age- and parasitaemia-matched",
@@ -170,7 +170,7 @@ Tarning_2012_dihydroartemisinin <- function() {
       "non-pregnant women (Table 1).",
       sep = " "
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Holleypharm fixed-dose dihydroartemisinin-piperaquine tablet (40",
       "mg dihydroartemisinin + 320 mg piperaquine tetraphosphate",
       "equivalent to 184 mg base per tablet); once daily by mouth for 3",
@@ -179,8 +179,8 @@ Tarning_2012_dihydroartemisinin <- function() {
       "non-pregnant women (Table 1).",
       sep = " "
     ),
-    regions         = "Thai-Myanmar border (Shoklo Malaria Research Unit, Wang Pha Clinic)",
-    notes           = paste(
+    regions = "Thai-Myanmar border (Shoklo Malaria Research Unit, Wang Pha Clinic)",
+    notes = paste(
       "Demographics from Tarning 2012 Table 1. 480 dihydroartemisinin",
       "plasma samples per cohort (frequent venipuncture in the first 72",
       "h; Methods 'Drug regimen and blood sampling'). The structural",

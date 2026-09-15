@@ -1,8 +1,8 @@
 Kloos_2021_pegasparaginase <- function() {
   description <- "One-compartment population PK model with time-dependent (split-point) clearance for intravenous PEGasparaginase in pediatric acute lymphoblastic leukemia patients treated on the Dutch Childhood Oncology Group ALL-11 protocol (Kloos 2021). Clearance and volume of distribution are normalized to body surface area; clearance is constant for the first 12.7 days after a dose and then increases linearly with time after dose as the polyethylene glycol moiety is hydrolyzed. Clearance is 38 percent higher during an active infection and 11-19 percent lower outside induction, encoded as multiplicative treatment-phase factors with protocol 1A as the reference. Inter-individual variability on clearance is shared with the volume of distribution through a scaled eta; inter-occasion variability on clearance uses one occasion per administered dose. Combined proportional and additive residual error."
-  reference   <- "Kloos RQH, Mathot R, Pieters R, van der Sluis IM. Individualized dosing guidelines for PEGasparaginase and factors influencing the clearance: a population pharmacokinetic model. Haematologica. 2021;106(5):1254-1261. doi:10.3324/haematol.2019.242289. Erratum (corrected Table 5 dose-adjustment nomogram): Haematologica. 2023;108(9):2558. doi:10.3324/haematol.2023.283685"
-  vignette    <- "Kloos_2021_pegasparaginase"
-  units       <- list(time = "day", dosing = "IU", concentration = "IU/L")
+  reference <- "Kloos RQH, Mathot R, Pieters R, van der Sluis IM. Individualized dosing guidelines for PEGasparaginase and factors influencing the clearance: a population pharmacokinetic model. Haematologica. 2021;106(5):1254-1261. doi:10.3324/haematol.2019.242289. Erratum (corrected Table 5 dose-adjustment nomogram): Haematologica. 2023;108(9):2558. doi:10.3324/haematol.2023.283685"
+  vignette <- "Kloos_2021_pegasparaginase"
+  units <- list(time = "day", dosing = "IU", concentration = "IU/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -13,68 +13,68 @@ Kloos_2021_pegasparaginase <- function() {
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Computed by the Mosteller formula (Kloos 2021 Methods, Population pharmacokinetic analysis, citing Mosteller 1987). Index-dataset median 0.76 m^2 (IQR 0.65-1.05; Supplemental Table 2); measured at the start of PEGasparaginase therapy. BSA normalizes BOTH clearance and volume of distribution (no exponent; a linear proportionality, not an allometric power term) -- Kloos 2021 Table 2 final-model equations and Online Supplementary Appendix, Supplemental Results, PK analysis: 'Cl = Theta1 * e^(eta + eta_IOV) * BSA' and 'Vd = Theta3 * e^(Theta4 * eta) * BSA'. Normalization by BSA reduced unexplained inter-individual variability in clearance from 29.6 percent to 24.1 percent (Kloos 2021 Results, Structural model). The Monte Carlo simulations that generated the dosing guidelines spanned BSA 0.52-2.3 m^2 (Supplemental Results, Simulations).",
-      source_name        = "BSA"
+      notes = "Computed by the Mosteller formula (Kloos 2021 Methods, Population pharmacokinetic analysis, citing Mosteller 1987). Index-dataset median 0.76 m^2 (IQR 0.65-1.05; Supplemental Table 2); measured at the start of PEGasparaginase therapy. BSA normalizes BOTH clearance and volume of distribution (no exponent; a linear proportionality, not an allometric power term) -- Kloos 2021 Table 2 final-model equations and Online Supplementary Appendix, Supplemental Results, PK analysis: 'Cl = Theta1 * e^(eta + eta_IOV) * BSA' and 'Vd = Theta3 * e^(Theta4 * eta) * BSA'. Normalization by BSA reduced unexplained inter-individual variability in clearance from 29.6 percent to 24.1 percent (Kloos 2021 Results, Structural model). The Monte Carlo simulations that generated the dosing guidelines spanned BSA 0.52-2.3 m^2 (Supplemental Results, Simulations).",
+      source_name = "BSA"
     ),
     DIS_INFECT_ACTIVE = list(
-      description        = "Active clinical infection episode indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active clinical infection episode indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no active infection)",
-      notes              = "Time-varying per record. Kloos 2021 defines an infection as 'fever (>38 degrees Celsius) and hospital admission or prescription of antibiotics' (Online Supplementary Appendix, Supplemental Table 2 footnote; also Methods, Covariate analysis). 19 of 92 index-dataset patients had at least one infection (Supplemental Table 2). Multiplies clearance by 1.38 (Table 2 final model); the authors attribute the increase to activation of the mononuclear phagocyte system, which clears PEGylated asparaginase (Discussion). ICU admission was screened alongside infection in the multivariate analysis but did not improve the fit on top of infection and treatment phase (delta OFV -2.6; Supplemental Results, PK analysis) and is therefore not a covariate of this model.",
-      source_name        = "INFECTION"
+      notes = "Time-varying per record. Kloos 2021 defines an infection as 'fever (>38 degrees Celsius) and hospital admission or prescription of antibiotics' (Online Supplementary Appendix, Supplemental Table 2 footnote; also Methods, Covariate analysis). 19 of 92 index-dataset patients had at least one infection (Supplemental Table 2). Multiplies clearance by 1.38 (Table 2 final model); the authors attribute the increase to activation of the mononuclear phagocyte system, which clears PEGylated asparaginase (Discussion). ICU admission was screened alongside infection in the multivariate analysis but did not improve the fit on top of infection and treatment phase (delta OFV -2.6; Supplemental Results, PK analysis) and is therefore not a covariate of this model.",
+      source_name = "INFECTION"
     ),
     TRTPH_1B = list(
-      description        = "DCOG ALL-11 protocol 1B treatment-phase indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "DCOG ALL-11 protocol 1B treatment-phase indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (protocol 1A induction, the model reference phase)",
-      notes              = "Time-varying per record. Protocol 1B follows induction protocol 1A and comprises cyclophosphamide, cytarabine and 6-mercaptopurine plus a 1,500 IU/m^2 PEGasparaginase dose at day 40 (Supplemental Table 1). Its clearance effect was FIXED to 1 (i.e., pooled with the 1A reference) because only two patients were treated as high risk and the association between the high-risk blocks and PEGasparaginase clearance could not be estimated reliably (Kloos 2021 Results, Covariate analysis; Table 2 lists the 1B row as '1 (fix)'). Retained as an explicit column so the model's phase mapping is complete and the fixed status is visible in ini().",
-      source_name        = "Treatment phase 1B"
+      notes = "Time-varying per record. Protocol 1B follows induction protocol 1A and comprises cyclophosphamide, cytarabine and 6-mercaptopurine plus a 1,500 IU/m^2 PEGasparaginase dose at day 40 (Supplemental Table 1). Its clearance effect was FIXED to 1 (i.e., pooled with the 1A reference) because only two patients were treated as high risk and the association between the high-risk blocks and PEGasparaginase clearance could not be estimated reliably (Kloos 2021 Results, Covariate analysis; Table 2 lists the 1B row as '1 (fix)'). Retained as an explicit column so the model's phase mapping is complete and the fixed status is visible in ini().",
+      source_name = "Treatment phase 1B"
     ),
     TRTPH_M = list(
-      description        = "DCOG ALL-11 protocol M treatment-phase indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "DCOG ALL-11 protocol M treatment-phase indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (protocol 1A induction, the model reference phase)",
-      notes              = "Time-varying per record. Protocol M comprises 6-mercaptopurine plus high-dose methotrexate (Supplemental Table 1); 69 of 816 index-dataset levels fall in this phase (Table 1). Multiplies clearance by 0.87 (Table 2 final model).",
-      source_name        = "Treatment phase M"
+      notes = "Time-varying per record. Protocol M comprises 6-mercaptopurine plus high-dose methotrexate (Supplemental Table 1); 69 of 816 index-dataset levels fall in this phase (Table 1). Multiplies clearance by 0.87 (Table 2 final model).",
+      source_name = "Treatment phase M"
     ),
     TRTPH_MR_INTENS = list(
-      description        = "DCOG ALL-11 medium-risk-group intensification treatment-phase indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "DCOG ALL-11 medium-risk-group intensification treatment-phase indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (protocol 1A induction, the model reference phase)",
-      notes              = "Time-varying per record. Medium-risk intensification comprises dexamethasone, vincristine, 6-mercaptopurine and (in TEL/AML1-negative patients) doxorubicin, or methotrexate in place of doxorubicin for TEL/AML1-positive patients (Figure 1, Supplemental Table 1); 168 of 816 index-dataset levels fall in this phase (Table 1). Multiplies clearance by 0.89 (Table 2 final model).",
-      source_name        = "Treatment phase MR intensification"
+      notes = "Time-varying per record. Medium-risk intensification comprises dexamethasone, vincristine, 6-mercaptopurine and (in TEL/AML1-negative patients) doxorubicin, or methotrexate in place of doxorubicin for TEL/AML1-positive patients (Figure 1, Supplemental Table 1); 168 of 816 index-dataset levels fall in this phase (Table 1). Multiplies clearance by 0.89 (Table 2 final model).",
+      source_name = "Treatment phase MR intensification"
     ),
     TRTPH_MR_MAINT = list(
-      description        = "DCOG ALL-11 medium-risk-group maintenance treatment-phase indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "DCOG ALL-11 medium-risk-group maintenance treatment-phase indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (protocol 1A induction, the model reference phase)",
-      notes              = "Time-varying per record. Medium-risk maintenance comprises dexamethasone, vincristine, methotrexate and 6-mercaptopurine (Figure 1, Supplemental Table 1); 250 of 816 index-dataset levels fall in this phase, the largest single phase (Table 1). Multiplies clearance by 0.81 (Table 2 final model).",
-      source_name        = "Treatment phase MR maintenance"
+      notes = "Time-varying per record. Medium-risk maintenance comprises dexamethasone, vincristine, methotrexate and 6-mercaptopurine (Figure 1, Supplemental Table 1); 250 of 816 index-dataset levels fall in this phase, the largest single phase (Table 1). Multiplies clearance by 0.81 (Table 2 final model).",
+      source_name = "Treatment phase MR maintenance"
     ),
     TRTPH_SR_IV = list(
-      description        = "DCOG ALL-11 standard-risk-group protocol IV treatment-phase indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "DCOG ALL-11 standard-risk-group protocol IV treatment-phase indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (protocol 1A induction, the model reference phase)",
-      notes              = "Time-varying per record. Standard-risk protocol IV comprises dexamethasone and vincristine plus a single individualized PEGasparaginase dose at day 1 (Figure 1, Supplemental Table 1); 38 of 816 index-dataset levels fall in this phase (Table 1). Multiplies clearance by 0.81 (Table 2 final model).",
-      source_name        = "Treatment phase SR protocol IV"
+      notes = "Time-varying per record. Standard-risk protocol IV comprises dexamethasone and vincristine plus a single individualized PEGasparaginase dose at day 1 (Figure 1, Supplemental Table 1); 38 of 816 index-dataset levels fall in this phase (Table 1). Multiplies clearance by 0.81 (Table 2 final model).",
+      source_name = "Treatment phase SR protocol IV"
     ),
     OCC = list(
-      description        = "Integer occasion index for inter-occasion variability on clearance",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer occasion index for inter-occasion variability on clearance",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Kloos 2021 Online Supplementary Appendix, Supplemental Methods, Population PK analysis defines the occasion explicitly: 'inter-individual variability and inter-occasion variability, with an occasion defined as administration of a new dose'. This model instantiates three occasions, matching the three fixed 1,500 IU/m^2 PEGasparaginase doses given biweekly during induction on protocols 1A (days 12 and 26) and 1B (day 40) per Supplemental Table 1 and Kloos 2021 Methods, Patients and treatment protocol. Data assemblers set OCC = 1, 2, 3, ... incrementing at each new administration; records with OCC outside 1-3 receive no IOV contribution.",
-      source_name        = "occasion (administration of a new dose)"
+      notes = "Kloos 2021 Online Supplementary Appendix, Supplemental Methods, Population PK analysis defines the occasion explicitly: 'inter-individual variability and inter-occasion variability, with an occasion defined as administration of a new dose'. This model instantiates three occasions, matching the three fixed 1,500 IU/m^2 PEGasparaginase doses given biweekly during induction on protocols 1A (days 12 and 26) and 1B (day 40) per Supplemental Table 1 and Kloos 2021 Methods, Patients and treatment protocol. Data assemblers set OCC = 1, 2, 3, ... incrementing at each new administration; records with OCC outside 1-3 receive no IOV contribution.",
+      source_name = "occasion (administration of a new dose)"
     )
   )
 
@@ -84,44 +84,44 @@ Kloos_2021_pegasparaginase <- function() {
   # Supplementary Appendix, Supplemental Results, PK analysis).
   covariatesDataExcluded <- list(
     WBC = list(
-      description        = "Leukocyte count",
-      units              = "10^9/L",
-      type               = "continuous",
+      description = "Leukocyte count",
+      units = "10^9/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the univariate analysis (Kloos 2021 Table 3: effect -0.09, 95% CI -0.13 to -0.05, delta OFV -22.9) as a power covariate centred on the cohort median 2.4 x 10^9/L (Supplemental Methods). Not retained: the supplement records that leukocytes 'had large relative standard errors and the 95% confidence interval included 0' (Supplemental Results, PK analysis). Index-dataset median 2.4 x 10^9/L (IQR 1.5-4.0), 8 percent of measurements missing (Supplemental Table 2)."
+      notes = "Screened in the univariate analysis (Kloos 2021 Table 3: effect -0.09, 95% CI -0.13 to -0.05, delta OFV -22.9) as a power covariate centred on the cohort median 2.4 x 10^9/L (Supplemental Methods). Not retained: the supplement records that leukocytes 'had large relative standard errors and the 95% confidence interval included 0' (Supplemental Results, PK analysis). Index-dataset median 2.4 x 10^9/L (IQR 1.5-4.0), 8 percent of measurements missing (Supplemental Table 2)."
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the univariate analysis (Kloos 2021 Table 3: effect -0.21, 95% CI -0.36 to -0.07, delta OFV -17.0). Not retained for the same reason as WBC (large RSE / CI including 0; Supplemental Results, PK analysis). Index-dataset median 27 umol/L (IQR 22-33), 62 percent of measurements missing (Supplemental Table 2)."
+      notes = "Screened in the univariate analysis (Kloos 2021 Table 3: effect -0.21, 95% CI -0.36 to -0.07, delta OFV -17.0). Not retained for the same reason as WBC (large RSE / CI including 0; Supplemental Results, PK analysis). Index-dataset median 27 umol/L (IQR 22-33), 62 percent of measurements missing (Supplemental Table 2)."
     ),
     ADA_POS = list(
-      description        = "Anti-asparaginase antibody status (anti-native E. coli asparaginase and anti-PEGasparaginase antibodies, reported as extinction / optical-density values)",
-      units              = "(binary; source reported continuous optical density)",
-      type               = "binary",
+      description = "Anti-asparaginase antibody status (anti-native E. coli asparaginase and anti-PEGasparaginase antibodies, reported as extinction / optical-density values)",
+      units = "(binary; source reported continuous optical density)",
+      type = "binary",
       reference_category = "0 (antibody negative)",
-      notes              = "Screened in the univariate analysis as continuous extinction values (Kloos 2021 Table 3: anti-native E. coli asparaginase antibodies effect 0.05, 95% CI -0.01 to 0.11, delta OFV -12.9; anti-PEGasparaginase antibodies effect 0.04, 95% CI -0.01 to 0.10, delta OFV -7.3). Neither was retained (large RSE, 95% CI including 0; Supplemental Results, PK analysis). Only 2 of 92 index patients developed an allergy and 2 developed silent inactivation (Supplemental Table 2), so the cohort carried little antibody signal. Registered here under the canonical binary ADA_POS name even though the source screened a continuous optical-density readout, because the concept excluded is anti-drug-antibody status."
+      notes = "Screened in the univariate analysis as continuous extinction values (Kloos 2021 Table 3: anti-native E. coli asparaginase antibodies effect 0.05, 95% CI -0.01 to 0.11, delta OFV -12.9; anti-PEGasparaginase antibodies effect 0.04, 95% CI -0.01 to 0.10, delta OFV -7.3). Neither was retained (large RSE, 95% CI including 0; Supplemental Results, PK analysis). Only 2 of 92 index patients developed an allergy and 2 developed silent inactivation (Supplemental Table 2), so the cohort carried little antibody signal. Registered here under the canonical binary ADA_POS name even though the source screened a continuous optical-density readout, because the concept excluded is anti-drug-antibody status."
     )
   )
 
   population <- list(
-    species             = "human",
-    n_subjects          = 92L,
-    n_studies           = 1L,
-    n_observations      = 816L,
-    age_range           = "1-18 years (eligibility); index-dataset median 4.8 years, IQR 3.3-8.2",
-    weight_range        = "Index-dataset median 19.2 kg, IQR 14.9-29.3",
-    bsa_range           = "Index-dataset median 0.76 m^2, IQR 0.65-1.05",
-    sex_female_pct      = 44.6,
-    race_ethnicity      = "Not reported (single-center Dutch cohort with additional trough samples from other Dutch pediatric oncology centers).",
-    disease_state       = "Newly diagnosed pediatric acute lymphoblastic leukemia treated per the Dutch Childhood Oncology Group (DCOG) ALL-11 protocol between November 2014 and May 2017. Risk stratification after induction: standard risk 13 (14 percent), medium risk 76 (83 percent), high risk 2 (2 percent), not stratified 1 (1 percent) (Supplemental Table 2).",
-    dose_range          = "Three fixed doses of 1,500 IU/m^2 biweekly during induction (protocols 1A and 1B), then individualized doses guided by therapeutic drug monitoring of asparaginase activity; standard-risk patients received one individualized dose in protocol IV, medium-risk patients up to 14 individualized doses during intensification and maintenance. Each dose was administered intravenously over 1 hour.",
-    regions             = "Netherlands (Sophia Children's Hospital - Erasmus MC, Rotterdam, plus trough samples from other Dutch pediatric oncology centers via the national TDM program).",
+    species = "human",
+    n_subjects = 92L,
+    n_studies = 1L,
+    n_observations = 816L,
+    age_range = "1-18 years (eligibility); index-dataset median 4.8 years, IQR 3.3-8.2",
+    weight_range = "Index-dataset median 19.2 kg, IQR 14.9-29.3",
+    bsa_range = "Index-dataset median 0.76 m^2, IQR 0.65-1.05",
+    sex_female_pct = 44.6,
+    race_ethnicity = "Not reported (single-center Dutch cohort with additional trough samples from other Dutch pediatric oncology centers).",
+    disease_state = "Newly diagnosed pediatric acute lymphoblastic leukemia treated per the Dutch Childhood Oncology Group (DCOG) ALL-11 protocol between November 2014 and May 2017. Risk stratification after induction: standard risk 13 (14 percent), medium risk 76 (83 percent), high risk 2 (2 percent), not stratified 1 (1 percent) (Supplemental Table 2).",
+    dose_range = "Three fixed doses of 1,500 IU/m^2 biweekly during induction (protocols 1A and 1B), then individualized doses guided by therapeutic drug monitoring of asparaginase activity; standard-risk patients received one individualized dose in protocol IV, medium-risk patients up to 14 individualized doses during intensification and maintenance. Each dose was administered intravenously over 1 hour.",
+    regions = "Netherlands (Sophia Children's Hospital - Erasmus MC, Rotterdam, plus trough samples from other Dutch pediatric oncology centers via the national TDM program).",
     bioanalytic_methods = "Asparaginase activity in serum by the L-aspartic beta-hydroxamate (AHA) assay with photometric detection of indooxine at 690 nm; lower limit of quantification 10 IU/L. Values below the LLQ were excluded from the analysis (M2 / M3 methods gave unstable runs).",
-    validation_cohort   = "An independent validation dataset of 28 patients / 405 samples, obtained by randomly selecting 25 percent of the total 120-patient population, was used for external validation (Table 1, Supplemental Table 2).",
-    notes               = "Baseline demographics from Kloos 2021 Supplemental Table 2; sample distribution from Table 1. NONMEM 7.2 with FOCE+I on log-transformed asparaginase activity levels. One-compartment model; addition of a second compartment did not improve the fit, and first-order, zero-order and Michaelis-Menten elimination all failed to describe the data, so a split-point time-dependent clearance model after Wurthwein 2017 was adopted. The final model was assessed by bootstrap (1000 replicates), prediction-corrected VPC, and external validation. Trial registration NL50250.078.14 (CCMO register)."
+    validation_cohort = "An independent validation dataset of 28 patients / 405 samples, obtained by randomly selecting 25 percent of the total 120-patient population, was used for external validation (Table 1, Supplemental Table 2).",
+    notes = "Baseline demographics from Kloos 2021 Supplemental Table 2; sample distribution from Table 1. NONMEM 7.2 with FOCE+I on log-transformed asparaginase activity levels. One-compartment model; addition of a second compartment did not improve the fit, and first-order, zero-order and Michaelis-Menten elimination all failed to describe the data, so a split-point time-dependent clearance model after Wurthwein 2017 was adopted. The final model was assessed by bootstrap (1000 replicates), prediction-corrected VPC, and external validation. Trial registration NL50250.078.14 (CCMO register)."
   )
 
   ini({

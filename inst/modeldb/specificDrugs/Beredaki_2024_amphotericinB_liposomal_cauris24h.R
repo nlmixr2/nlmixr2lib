@@ -24,15 +24,25 @@ Beredaki_2024_amphotericinB_liposomal_cauris24h <- function() {
   # which has no entry in the biological-specimen vocabulary. The matrix is
   # recorded in the analyte strings and in population$system.
   compartmentData <- list(
-    central = list(analyte = "liposomal amphotericin B in the internal compartment (RPMI-1640 growth medium)", units = "mg", specimen = "not applicable", verified = TRUE),
-    bact    = list(analyte = "Candida auris viable count in the internal compartment (RPMI-1640 growth medium)", units = "CFU/mL", specimen = "not applicable", verified = TRUE)
+    central = list(
+      analyte = "liposomal amphotericin B in the internal compartment (RPMI-1640 growth medium)",
+      units = "mg",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact = list(
+      analyte = "Candida auris viable count in the internal compartment (RPMI-1640 growth medium)",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "in vitro (four Candida auris clinical isolates; one-compartment dilution PK/PD model)",
-    n_subjects     = 4L,
-    n_studies      = 1L,
-    organism       = paste(
+    species = "in vitro (four Candida auris clinical isolates; one-compartment dilution PK/PD model)",
+    n_subjects = 4L,
+    n_studies = 1L,
+    organism = paste(
       "Four Candida auris isolates (Beredaki 2024 Table 1, median MIC in mg/L,",
       "CLSI M27-A3, amphotericin B deoxycholate / liposomal amphotericin B):",
       "C. auris 51 clade I 1 / 1; C. auris 52 clade I 2 (1-2) / 4;",
@@ -43,7 +53,7 @@ Beredaki_2024_amphotericinB_liposomal_cauris24h <- function() {
       "'CLSI AMB/L-AMB' pairs and the Monte Carlo analysis is indexed on",
       "'CLSI AMB MICs')."
     ),
-    system         = paste(
+    system = paste(
       "Previously validated one-compartment in vitro PK/PD dilution model:",
       "a 250 mL conical glass culture vessel (internal compartment) holding an",
       "initial 5 mL of fresh RPMI-1640, connected to a peristaltic pump",
@@ -56,15 +66,15 @@ Beredaki_2024_amphotericinB_liposomal_cauris24h <- function() {
       "chloramphenicol. L-AMB was AmBisome (Gilead Sciences) reconstituted to",
       "4 mg/mL."
     ),
-    disease_state  = "In vitro infection of the internal compartment at a starting inoculum of 10^4 CFU/mL",
-    dose_range     = paste(
+    disease_state = "In vitro infection of the internal compartment at a starting inoculum of 10^4 CFU/mL",
+    dose_range = paste(
       "L-AMB target peak concentrations Cmax 0.25-64 mg/L, added once daily for",
       "48 h. Target average half-life 9 h (the longer second distribution",
       "half-life of human L-AMB, which covers most of the 24 h dosing",
       "interval); achieved in vitro half-life 10 h (range 5-12 h) with peak",
       "concentrations within 10% of target."
     ),
-    sampling       = paste(
+    sampling = paste(
       "PK: samples from the internal compartment assayed by microbiological",
       "diffusion against a Paecilomyces variotii strain; lowest limit of",
       "detection 0.03 mg/L for the 80% partial growth inhibition zone, linear",
@@ -75,8 +85,8 @@ Beredaki_2024_amphotericinB_liposomal_cauris24h <- function() {
       "incubated at 30 degrees C for 24 h; dilutions yielding 10-50 colonies",
       "were counted (Figure 4 shows 0, 3, 6, 24 and 48 h)."
     ),
-    regions        = "Greece (Clinical Microbiology Laboratory, Attikon University Hospital, Athens)",
-    notes          = paste(
+    regions = "Greece (Clinical Microbiology Laboratory, Attikon University Hospital, Athens)",
+    notes = paste(
       "All experiments were repeated twice. Each drug-free control grew by",
       "more than 2.5 log10 CFU/mL, from 4.04 +/- 0.24 log10 CFU/mL at t = 0 h",
       "to 7.52 +/- 0.56 log10 CFU/mL at t = 48 h across all isolates. Because",

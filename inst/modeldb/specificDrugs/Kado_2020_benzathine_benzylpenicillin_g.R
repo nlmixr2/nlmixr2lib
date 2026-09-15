@@ -1,6 +1,6 @@
 Kado_2020_benzathine_benzylpenicillin_g <- function() {
   description <- "One-compartment population PK model for penicillin released from benzathine benzylpenicillin G (Bicillin L-A) with three parallel absorption pathways (slow and fast via a transit compartment, plus an immediate pathway that bypasses the transit compartment) and route-specific structural parameters for intramuscular (IM) and subcutaneous (SC) administration, developed from 311 dried-blood-spot penicillin concentrations in a randomized crossover of 15 healthy adult male volunteers each receiving 1.2 MIU IM and 1.2 MIU SC into the dorsogluteal region (Kado 2020)."
-  reference   <- paste(
+  reference <- paste(
     "Kado JH, Salman S, Henderson R, Hand R, Wyber R, Page-Sharp M, Batty K,",
     "Carapetis J, Manning L. Subcutaneous administration of benzathine",
     "benzylpenicillin G has favourable pharmacokinetic characteristics for the",
@@ -10,46 +10,71 @@ Kado_2020_benzathine_benzylpenicillin_g <- function() {
     "doi:10.1093/jac/dkaa282",
     sep = " "
   )
-  vignette    <- "Kado_2020_benzathine_benzylpenicillin_g"
-  units       <- list(time = "day", dosing = "mg", concentration = "ng/mL")
+  vignette <- "Kado_2020_benzathine_benzylpenicillin_g"
+  units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot1   = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1 = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2   = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2 = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
-    depot3   = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "plasma", verified = FALSE)
+    depot1 = list(
+      analyte = "benzathine benzylpenicillin g",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    transit1 = list(
+      analyte = "benzathine benzylpenicillin g",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot2 = list(
+      analyte = "benzathine benzylpenicillin g",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    transit2 = list(
+      analyte = "benzathine benzylpenicillin g",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot3 = list(
+      analyte = "benzathine benzylpenicillin g",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     ROUTE_SC = list(
-      description        = "Route-of-administration indicator: 1 = SC injection, 0 = IM injection.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Route-of-administration indicator: 1 = SC injection, 0 = IM injection.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (IM injection; the reference route for structural parameters).",
-      notes              = "Per-dose-record covariate. IM is the reference route (Kado 2020 Table 1 IM structural parameters are the paper's reference); SC structural parameters were estimated as multiplicative factors on the IM values ('Relative structural model parameters for SC administration' rows). ROUTE_SC switches the three absorption half-lives (t1/2,abs-1/-2/-3), the transit half-life (t1/2,tr), the two dose-split ratios (RAT-transit, RAT-slowfast), and applies the SC relative bioavailability F_SC = 0.957. IIVs are also route-specific per Kado 2020 Methods 'PK modelling' section.",
-      source_name        = "ROUTE_SC"
+      notes = "Per-dose-record covariate. IM is the reference route (Kado 2020 Table 1 IM structural parameters are the paper's reference); SC structural parameters were estimated as multiplicative factors on the IM values ('Relative structural model parameters for SC administration' rows). ROUTE_SC switches the three absorption half-lives (t1/2,abs-1/-2/-3), the transit half-life (t1/2,tr), the two dose-split ratios (RAT-transit, RAT-slowfast), and applies the SC relative bioavailability F_SC = 0.957. IIVs are also route-specific per Kado 2020 Methods 'PK modelling' section.",
+      source_name = "ROUTE_SC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 15L,
-    n_studies      = 1L,
-    age_range      = "18.3-46.6 years (median 24.6)",
-    age_median     = "24.6 years",
-    weight_range   = "not reported (BMI 19.2-25.8 kg/m^2; entry criterion 18.5-26.0 kg/m^2)",
-    weight_median  = "not reported (assumed ~70 kg for reference simulations per Kado 2020 Methods 'Simulations')",
+    species = "human",
+    n_subjects = 15L,
+    n_studies = 1L,
+    age_range = "18.3-46.6 years (median 24.6)",
+    age_median = "24.6 years",
+    weight_range = "not reported (BMI 19.2-25.8 kg/m^2; entry criterion 18.5-26.0 kg/m^2)",
+    weight_median = "not reported (assumed ~70 kg for reference simulations per Kado 2020 Methods 'Simulations')",
     sex_female_pct = 0,
     race_ethnicity = c(Caucasian = 66.7, Asian = 26.7, African = 6.7),
-    disease_state  = "healthy adult male volunteers (nonsmokers, no chronic illness, no allergy to penicillin/cephalosporins, no prescription/OTC/herbal medications for at least 7 days prior)",
-    dose_range     = "1.2 MIU (1016.6 mg / 2.3 mL Bicillin L-A) single dose IM followed by 1.2 MIU single dose SC, or vice-versa, with a 10-week washout between doses",
-    regions        = "Australia (Perth, Western Australia; Linear Clinical Research volunteer database)",
-    notes          = "Randomized crossover pharmacokinetic study; each participant received both routes. 311 valid dried-blood-spot penicillin concentrations were included in the final analysis (5.3% BLQ). 53 paired plasma/DBS samples at 12 h and 14 days confirmed DBS validity (Spearman r = 0.99). Sampling: baseline, 2, 6, 12, 24, 48 h then 3, 5, 7, 14, 21, 28, 42 days post-dose. Baseline demographics: Table (Results, para 1). Final model estimates: Table 1. Re-parameterized route comparison: Table 2. Simulation-derived Cmax/Cmin/T>20/T>10: Table 3."
+    disease_state = "healthy adult male volunteers (nonsmokers, no chronic illness, no allergy to penicillin/cephalosporins, no prescription/OTC/herbal medications for at least 7 days prior)",
+    dose_range = "1.2 MIU (1016.6 mg / 2.3 mL Bicillin L-A) single dose IM followed by 1.2 MIU single dose SC, or vice-versa, with a 10-week washout between doses",
+    regions = "Australia (Perth, Western Australia; Linear Clinical Research volunteer database)",
+    notes = "Randomized crossover pharmacokinetic study; each participant received both routes. 311 valid dried-blood-spot penicillin concentrations were included in the final analysis (5.3% BLQ). 53 paired plasma/DBS samples at 12 h and 14 days confirmed DBS validity (Spearman r = 0.99). Sampling: baseline, 2, 6, 12, 24, 48 h then 3, 5, 7, 14, 21, 28, 42 days post-dose. Baseline demographics: Table (Results, para 1). Final model estimates: Table 1. Re-parameterized route comparison: Table 2. Simulation-derived Cmax/Cmin/T>20/T>10: Table 3."
   )
 
   ini({

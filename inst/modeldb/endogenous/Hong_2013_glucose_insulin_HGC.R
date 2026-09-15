@@ -36,8 +36,8 @@ Hong_2013_glucose_insulin_HGC <- function() {
   vignette <- "Hong_2013_glucose_insulin"
 
   units <- list(
-    time          = "min",
-    dosing        = "mg of glucose (intravenous loading dose plus Biostator-controlled GIR into the glucose compartment)",
+    time = "min",
+    dosing = "mg of glucose (intravenous loading dose plus Biostator-controlled GIR into the glucose compartment)",
     concentration = "mg/L for glucose (G / VG) and mU/L for insulin (I / VI); convert to mg/dL via /10 and to mmol/L via /18.02 for glucose"
   )
 
@@ -48,39 +48,39 @@ Hong_2013_glucose_insulin_HGC <- function() {
   compartmentData <- list(
     glucose = list(analyte = "Glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
     insulin = list(analyte = "Insulin", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    effect  = list(analyte = "Effect", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "Effect", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     FPG = list(
-      description        = "Baseline fasting plasma glucose concentration (GCss in the paper notation). Used to derive the constant endogenous glucose production rate GP at steady state via GP = GCss * (CLG + CLGI_HGC * ICss). Time-fixed per subject.",
-      units              = "mg/L (paper reports baseline glucose in mg/dL with range 110-180 mg/dL across the DIS_DIAB cohort; multiply by 10 to convert to the mg/L scale used internally by the ODEs)",
-      type               = "continuous",
+      description = "Baseline fasting plasma glucose concentration (GCss in the paper notation). Used to derive the constant endogenous glucose production rate GP at steady state via GP = GCss * (CLG + CLGI_HGC * ICss). Time-fixed per subject.",
+      units = "mg/L (paper reports baseline glucose in mg/dL with range 110-180 mg/dL across the DIS_DIAB cohort; multiply by 10 to convert to the mg/L scale used internally by the ODEs)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Default reference value 1300 mg/L (= 130 mg/dL, mid-range for the Hong 2013 cohort of DIS_DIAB patients with fasting plasma glucose 110-180 mg/dL). Supply per-subject baseline glucose via this column to anchor each subject's drug-free steady state.",
-      source_name        = "GCss"
+      notes = "Default reference value 1300 mg/L (= 130 mg/dL, mid-range for the Hong 2013 cohort of DIS_DIAB patients with fasting plasma glucose 110-180 mg/dL). Supply per-subject baseline glucose via this column to anchor each subject's drug-free steady state.",
+      source_name = "GCss"
     ),
     INS_BL = list(
-      description        = "Baseline fasting plasma insulin concentration (ICss in the paper notation). Used to derive the constant endogenous glucose production rate GP and the baseline insulin secretion ICss*CLI at steady state. Time-fixed per subject.",
-      units              = "mU/L (paper internal units)",
-      type               = "continuous",
+      description = "Baseline fasting plasma insulin concentration (ICss in the paper notation). Used to derive the constant endogenous glucose production rate GP and the baseline insulin secretion ICss*CLI at steady state. Time-fixed per subject.",
+      units = "mU/L (paper internal units)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Default reference value 13 mU/L (representative DIS_DIAB fasting insulin; paper does not report a single typical value because subject-level baseline insulin was used as a per-subject covariate). Companion canonical to FPG. NA_NA_paracetamol's INS_BL is in pmol/L with a 1/6.945 rescale; Hong 2013 uses mU/L directly so no rescaling is applied here.",
-      source_name        = "ICss"
+      notes = "Default reference value 13 mU/L (representative DIS_DIAB fasting insulin; paper does not report a single typical value because subject-level baseline insulin was used as a per-subject covariate). Companion canonical to FPG. NA_NA_paracetamol's INS_BL is in pmol/L with a 1/6.945 rescale; Hong 2013 uses mU/L directly so no rescaling is applied here.",
+      source_name = "ICss"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,
-    n_studies      = 1L,
-    age_range      = "40-65 years (mean 53.7, SD 7.3)",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
+    age_range = "40-65 years (mean 53.7, SD 7.3)",
+    weight_range = NA_character_,
     sex_female_pct = 20,
-    disease_state  = "Type 2 diabetes mellitus (DIS_DIAB) managed by diet only. Fasting blood glucose 110-180 mg/dL; HbA1c 5.4-8.3% (mean 6.4%, SD 0.8%). Patients excluded if treated with an antidiabetic drug in the 2 months prior to screening or with severe diabetes complications.",
-    dose_range     = "Hyperglycemic clamp procedure: intravenous glucose loading dose 150 mg/kg followed by a Biostator-controlled 20% glucose infusion regulated to clamp blood glucose at 240 mg/dL for 120 min. Palosuran 125 mg b.i.d. (or placebo) was administered orally twice daily for 4 weeks and the HGC was performed 1 h after drug administration on day 29 of each treatment period; palosuran had no clinically meaningful effect and is set to zero in the published final model.",
-    regions        = "Germany (Ethikkommission der Aerztekammer Nordrhein, Germany).",
-    notes          = "Subject demographics from Hong 2013 Methods 'Patients and Study Design'. Two-way crossover design (palosuran vs placebo) with 4-week treatment periods and 4-week washout; MTT performed on day 28 and HGC on day 29 of each period. Subject-level palosuran treatment effects (theta_pal in Eqs 8-9) were estimated as -0.122 with 95% CI including zero and -7.44% on glucose elimination (not clinically relevant), so the published final estimates fix the palosuran effect to zero. Glucose volume of distribution VI was fixed to 6.09 L from the Silber 2007 DIS_DIAB literature value because the within-study estimate (0.52 L) was not physiologically meaningful."
+    disease_state = "Type 2 diabetes mellitus (DIS_DIAB) managed by diet only. Fasting blood glucose 110-180 mg/dL; HbA1c 5.4-8.3% (mean 6.4%, SD 0.8%). Patients excluded if treated with an antidiabetic drug in the 2 months prior to screening or with severe diabetes complications.",
+    dose_range = "Hyperglycemic clamp procedure: intravenous glucose loading dose 150 mg/kg followed by a Biostator-controlled 20% glucose infusion regulated to clamp blood glucose at 240 mg/dL for 120 min. Palosuran 125 mg b.i.d. (or placebo) was administered orally twice daily for 4 weeks and the HGC was performed 1 h after drug administration on day 29 of each treatment period; palosuran had no clinically meaningful effect and is set to zero in the published final model.",
+    regions = "Germany (Ethikkommission der Aerztekammer Nordrhein, Germany).",
+    notes = "Subject demographics from Hong 2013 Methods 'Patients and Study Design'. Two-way crossover design (palosuran vs placebo) with 4-week treatment periods and 4-week washout; MTT performed on day 28 and HGC on day 29 of each period. Subject-level palosuran treatment effects (theta_pal in Eqs 8-9) were estimated as -0.122 with 95% CI including zero and -7.44% on glucose elimination (not clinically relevant), so the published final estimates fix the palosuran effect to zero. Glucose volume of distribution VI was fixed to 6.09 L from the Silber 2007 DIS_DIAB literature value because the within-study estimate (0.52 L) was not physiologically meaningful."
   )
 
   ini({

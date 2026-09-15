@@ -29,7 +29,7 @@ Gu_2025_furosemide_pbpk <- function() {
     sep = " "
   )
   vignette <- "Gu_2025_heart_failure_pbpk"
-  units    <- list(time = "min", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "min", dosing = "mg", concentration = "ug/mL")
 
   # Gut-WALL tissue states and the caecum / colon lumen segments have no
   # canonical entry yet. wall_duodenum / wall_jejunum / wall_ileum follow
@@ -37,17 +37,23 @@ Gu_2025_furosemide_pbpk <- function() {
   # extend that same wall_<segment> family, and cecum / colon extend the
   # stomach / duodenum / jejunum / ileum lumen family.
   paper_specific_compartments <- c(
-    "wall_stomach", "wall_duodenum", "wall_jejunum", "wall_ileum",
-    "wall_cecum", "wall_colon", "cecum", "colon"
+    "wall_stomach",
+    "wall_duodenum",
+    "wall_jejunum",
+    "wall_ileum",
+    "wall_cecum",
+    "wall_colon",
+    "cecum",
+    "colon"
   )
 
   covariateData <- list(
     DIS_CHF_NYHA2 = list(
-      description        = "NYHA functional class II heart-failure indicator (1 = mild chronic heart failure).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "NYHA functional class II heart-failure indicator (1 = mild chronic heart failure).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no heart failure when DIS_CHF_NYHA2, DIS_CHF_NYHA3 and DIS_CHF_NYHA4 are all 0)",
-      notes              = paste(
+      notes = paste(
         "The three DIS_CHF_NYHA* indicators are mutually exclusive; all",
         "three 0 selects the healthy 70 kg physiology of Supplementary",
         "Table S1. DIS_CHF_NYHA2 = 1 selects the II Grade column of Gu",
@@ -58,14 +64,14 @@ Gu_2025_furosemide_pbpk <- function() {
         "of the rescaled flows. Intrinsic clearances are NOT rescaled",
         "(Section 2.3)."
       ),
-      source_name        = "HF-II"
+      source_name = "HF-II"
     ),
     DIS_CHF_NYHA3 = list(
-      description        = "NYHA functional class III heart-failure indicator (1 = moderate chronic heart failure).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "NYHA functional class III heart-failure indicator (1 = moderate chronic heart failure).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no heart failure when DIS_CHF_NYHA2, DIS_CHF_NYHA3 and DIS_CHF_NYHA4 are all 0)",
-      notes              = paste(
+      notes = paste(
         "The three DIS_CHF_NYHA* indicators are mutually exclusive; all",
         "three 0 selects the healthy 70 kg physiology of Supplementary",
         "Table S1. DIS_CHF_NYHA3 = 1 selects the III Grade column of Gu",
@@ -76,14 +82,14 @@ Gu_2025_furosemide_pbpk <- function() {
         "of the rescaled flows. Intrinsic clearances are NOT rescaled",
         "(Section 2.3)."
       ),
-      source_name        = "HF-III"
+      source_name = "HF-III"
     ),
     DIS_CHF_NYHA4 = list(
-      description        = "NYHA functional class IV heart-failure indicator (1 = severe chronic heart failure).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "NYHA functional class IV heart-failure indicator (1 = severe chronic heart failure).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no heart failure when DIS_CHF_NYHA2, DIS_CHF_NYHA3 and DIS_CHF_NYHA4 are all 0)",
-      notes              = paste(
+      notes = paste(
         "The three DIS_CHF_NYHA* indicators are mutually exclusive; all",
         "three 0 selects the healthy 70 kg physiology of Supplementary",
         "Table S1. DIS_CHF_NYHA4 = 1 selects the IV Grade column of Gu",
@@ -94,50 +100,50 @@ Gu_2025_furosemide_pbpk <- function() {
         "of the rescaled flows. Intrinsic clearances are NOT rescaled",
         "(Section 2.3)."
       ),
-      source_name        = "HF-IV"
+      source_name = "HF-IV"
     )
   )
 
   compartmentData <- list(
-    stomach        = list(analyte = "furosemide", units = "mg", specimen = "administration site", verified = TRUE),
-    duodenum       = list(analyte = "furosemide", units = "mg", specimen = "administration site", verified = TRUE),
-    jejunum        = list(analyte = "furosemide", units = "mg", specimen = "administration site", verified = TRUE),
-    ileum          = list(analyte = "furosemide", units = "mg", specimen = "administration site", verified = TRUE),
-    cecum          = list(analyte = "furosemide", units = "mg", specimen = "administration site", verified = TRUE),
-    colon          = list(analyte = "furosemide", units = "mg", specimen = "administration site", verified = TRUE),
-    wall_stomach   = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_duodenum  = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_jejunum   = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_ileum     = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_cecum     = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_colon     = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    liver          = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney         = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    spleen         = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    lung           = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    heart          = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    brain          = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle         = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    skin           = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    adipose        = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    other          = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
-    arterial       = list(analyte = "furosemide", units = "mg", specimen = "whole blood", verified = TRUE),
-    venous         = list(analyte = "furosemide", units = "mg", specimen = "whole blood", verified = TRUE)
+    stomach = list(analyte = "furosemide", units = "mg", specimen = "administration site", verified = TRUE),
+    duodenum = list(analyte = "furosemide", units = "mg", specimen = "administration site", verified = TRUE),
+    jejunum = list(analyte = "furosemide", units = "mg", specimen = "administration site", verified = TRUE),
+    ileum = list(analyte = "furosemide", units = "mg", specimen = "administration site", verified = TRUE),
+    cecum = list(analyte = "furosemide", units = "mg", specimen = "administration site", verified = TRUE),
+    colon = list(analyte = "furosemide", units = "mg", specimen = "administration site", verified = TRUE),
+    wall_stomach = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_duodenum = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_jejunum = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_ileum = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_cecum = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_colon = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    lung = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    skin = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    adipose = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "furosemide", units = "mg", specimen = "tissue", verified = TRUE),
+    arterial = list(analyte = "furosemide", units = "mg", specimen = "whole blood", verified = TRUE),
+    venous = list(analyte = "furosemide", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 100L,
-    n_studies      = 10L,
-    age_range      = "adults (18-90 years across the pooled reports)",
-    weight_median  = "70 kg (the model is parameterised for a 70 kg adult; no weight covariate)",
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 100L,
+    n_studies = 10L,
+    age_range = "adults (18-90 years across the pooled reports)",
+    weight_median = "70 kg (the model is parameterised for a 70 kg adult; no weight covariate)",
+    disease_state = paste(
       "Pooled healthy volunteers and chronic heart-failure patients",
       "(NYHA classes II-IV) from the literature reports tabulated in Gu",
       "2025 Supplementary Table S3."
     ),
-    dose_range     = "20-120 mg oral and 40-120 mg intravenous",
-    notes          = paste(
+    dose_range = "20-120 mg oral and 40-120 mg intravenous",
+    notes = paste(
       "Literature-digitised clinical data; subject counts are the sum of",
       "the per-report n in Supplementary Table S3. The authors simulated",
       "1000 virtual individuals per population by drawing CLli,int,",
@@ -406,4 +412,3 @@ Gu_2025_furosemide_pbpk <- function() {
     Cc ~ prop(propSd)
   })
 }
-

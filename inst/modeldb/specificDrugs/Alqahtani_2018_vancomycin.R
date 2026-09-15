@@ -8,53 +8,53 @@ Alqahtani_2018_vancomycin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Alqahtani 2018 Table 1: mean 79.6 kg (SD 17; range 52-111.8). Reference 79.6 kg used in the V1 power-scaling term in Table 3 footnote.",
-      source_name        = "WT"
+      notes = "Alqahtani 2018 Table 1: mean 79.6 kg (SD 17; range 52-111.8). Reference 79.6 kg used in the V1 power-scaling term in Table 3 footnote.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Alqahtani 2018 Methods: CLCR estimated using the Cockcroft-Gault equation. Table 1 cohort mean 83.5 mL/min (SD 29.3; range 33.4-125); reference value 83.5 mL/min used in the CL power-scaling term in Table 3 footnote (CL = 6.13 * (CLCR/83.5)^0.514 * (albumin/35.5)^0.854). Stored under canonical CRCL with raw mL/min (per inst/references/covariate-columns.md, CRCL accepts raw Cockcroft-Gault when the source paper does not apply BSA normalization).",
-      source_name        = "CLCR"
+      notes = "Alqahtani 2018 Methods: CLCR estimated using the Cockcroft-Gault equation. Table 1 cohort mean 83.5 mL/min (SD 29.3; range 33.4-125); reference value 83.5 mL/min used in the CL power-scaling term in Table 3 footnote (CL = 6.13 * (CLCR/83.5)^0.514 * (albumin/35.5)^0.854). Stored under canonical CRCL with raw mL/min (per inst/references/covariate-columns.md, CRCL accepts raw Cockcroft-Gault when the source paper does not apply BSA normalization).",
+      source_name = "CLCR"
     ),
     ALB = list(
-      description        = "Serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Alqahtani 2018 Table 1: mean 35.5 g/L (SD 4.5; range 25-44). Reference 35.5 g/L used in the CL power-scaling term in Table 3 footnote.",
-      source_name        = "albumin"
+      notes = "Alqahtani 2018 Table 1: mean 35.5 g/L (SD 4.5; range 25-44). Reference 35.5 g/L used in the CL power-scaling term in Table 3 footnote.",
+      source_name = "albumin"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 28L,
-    n_studies        = 1L,
-    age_range        = "18-78 years",
-    age_median       = "51.7 years (mean, SD 15.9)",
-    weight_range     = "52-111.8 kg",
-    weight_median    = "79.6 kg (mean, SD 17)",
-    sex_female_pct   = 39,
-    race_ethnicity   = "Not reported (single-center study in Riyadh, Saudi Arabia)",
-    disease_state    = "Adults >=18 years undergoing open heart surgery with cardiopulmonary bypass; receiving vancomycin as prophylactic antibiotic. Patients excluded if vancomycin was administered in the 72 h before surgery.",
-    dose_range       = "1 g vancomycin IV infusion over 30 min, first dose 2 h before skin incision then q12h for 48 h; extra (redosing) dose if surgery lasted >4 h (about 12 of 28 patients received an extra dose).",
-    regions          = "Saudi Arabia (single center, King Fahad Cardiac Center, King Saud University Medical City, Riyadh)",
-    renal_function   = "Cockcroft-Gault CLCR mean 83.5 mL/min (range 33.4-125)",
+    species = "human",
+    n_subjects = 28L,
+    n_studies = 1L,
+    age_range = "18-78 years",
+    age_median = "51.7 years (mean, SD 15.9)",
+    weight_range = "52-111.8 kg",
+    weight_median = "79.6 kg (mean, SD 17)",
+    sex_female_pct = 39,
+    race_ethnicity = "Not reported (single-center study in Riyadh, Saudi Arabia)",
+    disease_state = "Adults >=18 years undergoing open heart surgery with cardiopulmonary bypass; receiving vancomycin as prophylactic antibiotic. Patients excluded if vancomycin was administered in the 72 h before surgery.",
+    dose_range = "1 g vancomycin IV infusion over 30 min, first dose 2 h before skin incision then q12h for 48 h; extra (redosing) dose if surgery lasted >4 h (about 12 of 28 patients received an extra dose).",
+    regions = "Saudi Arabia (single center, King Fahad Cardiac Center, King Saud University Medical City, Riyadh)",
+    renal_function = "Cockcroft-Gault CLCR mean 83.5 mL/min (range 33.4-125)",
     n_concentrations = 168L,
-    notes            = "Prospective open-label observational PK study (Alqahtani 2018 Table 1). 168 plasma vancomycin concentrations from 28 patients; 6 nominal sampling times per patient (before skin incision, at start of CPB, 1 h after starting CPB, before skin closure, 24 h and 48 h after first dose). Vancomycin assay: Architect iVancomycin chemiluminescent microparticle immunoassay (analytical range 0.24-100 ug/mL). Model fit using Monolix 4.4 SAEM. Body mass index mean 29.8 (range 20.2-41.9); serum creatinine mean 77.2 umol/L (range 41-134). The paper notes that CPB itself was tested as a covariate on CL and V and was not retained in the final model."
+    notes = "Prospective open-label observational PK study (Alqahtani 2018 Table 1). 168 plasma vancomycin concentrations from 28 patients; 6 nominal sampling times per patient (before skin incision, at start of CPB, 1 h after starting CPB, before skin closure, 24 h and 48 h after first dose). Vancomycin assay: Architect iVancomycin chemiluminescent microparticle immunoassay (analytical range 0.24-100 ug/mL). Model fit using Monolix 4.4 SAEM. Body mass index mean 29.8 (range 20.2-41.9); serum creatinine mean 77.2 umol/L (range 41-134). The paper notes that CPB itself was tested as a covariate on CL and V and was not retained in the final model."
   )
 
   ini({

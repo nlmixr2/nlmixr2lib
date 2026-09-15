@@ -14,63 +14,69 @@ Salem_2014_efavirenz <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying (children were followed up to 4 years, with PK assessments at weeks 2, 6, 56, and 112; Salem 2014 Methods 'Patient population and study design'). Drives fixed-exponent allometric scaling on CL/F (exponent 0.75) and V/F (exponent 1.0) with standard reference weight 70 kg per Salem 2014 Methods 'Development of the covariate model' paragraph 3.",
-      source_name        = "WT"
+      notes = "Time-varying (children were followed up to 4 years, with PK assessments at weeks 2, 6, 56, and 112; Salem 2014 Methods 'Patient population and study design'). Drives fixed-exponent allometric scaling on CL/F (exponent 0.75) and V/F (exponent 1.0) with standard reference weight 70 kg per Salem 2014 Methods 'Development of the covariate model' paragraph 3.",
+      source_name = "WT"
     ),
     PNA = list(
-      description        = "Postnatal age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying (per Salem 2014 Methods, AGE is the postnatal age of the subject in months). Drives the sigmoid Emax maturation of CL/F (TM50 = 4.6 months, Hill = 3.4) and the Emax maturation of the relative bioavailability of the oral liquid formulations vs the capsule reference (TM50 = 10.6 months, Hill fixed at 1).",
-      source_name        = "AGE"
+      notes = "Time-varying (per Salem 2014 Methods, AGE is the postnatal age of the subject in months). Drives the sigmoid Emax maturation of CL/F (TM50 = 4.6 months, Hill = 3.4) and the Emax maturation of the relative bioavailability of the oral liquid formulations vs the capsule reference (TM50 = 10.6 months, Hill fixed at 1).",
+      source_name = "AGE"
     ),
     SNP_CYP2B6_RS3745274_T_COUNT = list(
-      description        = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant.",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant.",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (germline genotype). Only the homozygous variant (T/T, count = 2) carries a CL/F effect in Salem 2014 -- no difference was observed between G/T and G/G (Salem 2014 Results paragraph 3). The packaged model derives the binary T/T indicator inline as (SNP_CYP2B6_RS3745274_T_COUNT >= 2). Cohort allele-genotype frequencies (n = 96; Salem 2014 Table 1): GG 36%, GT 30%, TT 13%, Missing 23%. Mixture modelling on the 22 missing-genotype subjects did not suggest a hidden T/T fraction (Salem 2014 Results paragraph 3); for downstream simulation those subjects can be assigned the non-T/T phenotype (count = 0 or 1).",
-      source_name        = "CYP2B6-G516T"
+      notes = "Time-fixed (germline genotype). Only the homozygous variant (T/T, count = 2) carries a CL/F effect in Salem 2014 -- no difference was observed between G/T and G/G (Salem 2014 Results paragraph 3). The packaged model derives the binary T/T indicator inline as (SNP_CYP2B6_RS3745274_T_COUNT >= 2). Cohort allele-genotype frequencies (n = 96; Salem 2014 Table 1): GG 36%, GT 30%, TT 13%, Missing 23%. Mixture modelling on the 22 missing-genotype subjects did not suggest a hidden T/T fraction (Salem 2014 Results paragraph 3); for downstream simulation those subjects can be assigned the non-T/T phenotype (count = 0 or 1).",
+      source_name = "CYP2B6-G516T"
     ),
     FORM_CAPSULE = list(
-      description        = "Formulation indicator at the dose record: 1 = capsule (structural F = 1 reference), 0 = oral liquid (suspension or solution; F decreases below 1 with decreasing age via an Emax function).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Formulation indicator at the dose record: 1 = capsule (structural F = 1 reference), 0 = oral liquid (suspension or solution; F decreases below 1 with decreasing age via an Emax function).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (capsule; F fixed structurally to 1 per Salem 2014 Methods 'Development of the covariate model' paragraph 5)",
-      notes              = "Per-dose-record covariate (children could switch formulations during follow-up as they aged out of the liquid formulation). Salem 2014 explicitly states that no difference in relative bioavailability was observed between the suspension and the solution (Results paragraph 4), so the same liquid F profile applies to both. The packaged model gates the age-dependent Emax bioavailability and its associated IIV (etaltvf_liq) so they apply only when FORM_CAPSULE = 0; FORM_CAPSULE = 1 yields F = 1 exactly (no IIV on the capsule arm).",
-      source_name        = "FORM"
+      notes = "Per-dose-record covariate (children could switch formulations during follow-up as they aged out of the liquid formulation). Salem 2014 explicitly states that no difference in relative bioavailability was observed between the suspension and the solution (Results paragraph 4), so the same liquid F profile applies to both. The packaged model gates the age-dependent Emax bioavailability and its associated IIV (etaltvf_liq) so they apply only when FORM_CAPSULE = 0; FORM_CAPSULE = 1 yields F = 1 exactly (no IIV on the capsule arm).",
+      source_name = "FORM"
     )
   )
 
   population <- list(
-    species            = "human",
-    n_subjects         = 96,
-    n_studies          = 1,
-    age_range          = "2-202 months postnatal (~ 0.17-16.8 years)",
-    age_median         = "66 months postnatal (~ 5.5 years)",
-    weight_range       = "4.8-96.4 kg",
-    weight_median      = "18.7 kg",
-    bsa_range          = "0.27-2.07 m^2 (median 0.75; Mosteller formula)",
-    sex_female_pct     = 59,
-    race_ethnicity     = c(`Non-Hispanic white` = 13, `Non-Hispanic black` = 56, Hispanic = 29, `Native American` = 1, Other = 1),
-    cyp2b6_freq        = "CYP2B6-516G>T (rs3745274) cohort frequencies (n = 96; Salem 2014 Table 1): G/G 36%, G/T 30%, T/T 13%, Missing 23%. MDR1-C3435T frequencies were collected (C/C 33%, C/T 35%, T/T 7%, Missing 26%) but the MDR1 polymorphism had no effect on CL/F or V/F and is not encoded in the model.",
-    disease_state      = "HIV-1-infected children enrolled in the Pediatric AIDS Clinical Trials Group 382 (PACTG382) study; combination antiretroviral therapy of efavirenz plus nelfinavir plus at least one nucleoside reverse transcriptase inhibitor. Inclusion criteria: < 16 years old at enrolment with plasma HIV-1 RNA > 400 copies/mL by reverse transcription-PCR (Amplicor Monitor assay).",
-    dose_range         = "AUC-controlled design targeting 24 h steady-state AUC0-24 between 190 and 380 uM*h. Initial allometric dosing: capsule mg/day = (weight[kg]/70)^0.7 * 600 mg; oral suspension or solution mg/day = (weight[kg]/70)^0.7 * 720 mg (the 20% dose top-up anticipates the lower liquid bioavailability). Doses were rounded to the nearest 25 mg, and adjusted proportionately up to a 200 mg maximum increase if the measured AUC fell outside target.",
-    regions            = "United States and Puerto Rico (18 participating PACTG sites)",
-    n_observations     = "3172 plasma efavirenz concentrations across 96 subjects, sampled before-dose and 2, 5, 8, 12 h post-dose at weeks 2, 6, and (if dose was adjusted at week 6) week 10. Additional 6 h and 24 h samples were collected from cohort I (ages 3-16 years) only. Follow-up AUC samples were collected at weeks 56 and 112 to monitor for changes during growth and development. Concentrations were quantified by validated HPLC at a PACTG Pharmacology Laboratory, LLOQ 0.020 mg/L, assay variability 1-4.5%.",
-    study              = "PACTG382 (open-label phase I/II two-cohort study). Cohort I: ages 3-16 years at enrolment. Cohort II: ages 2 months to 8 years at enrolment.",
-    notes              = "Baseline demographics from Salem 2014 Table 1. The study was approved by the institutional review boards of all 18 participating sites; informed written consent was obtained from parents or guardians."
+    species = "human",
+    n_subjects = 96,
+    n_studies = 1,
+    age_range = "2-202 months postnatal (~ 0.17-16.8 years)",
+    age_median = "66 months postnatal (~ 5.5 years)",
+    weight_range = "4.8-96.4 kg",
+    weight_median = "18.7 kg",
+    bsa_range = "0.27-2.07 m^2 (median 0.75; Mosteller formula)",
+    sex_female_pct = 59,
+    race_ethnicity = c(
+      `Non-Hispanic white` = 13,
+      `Non-Hispanic black` = 56,
+      Hispanic = 29,
+      `Native American` = 1,
+      Other = 1
+    ),
+    cyp2b6_freq = "CYP2B6-516G>T (rs3745274) cohort frequencies (n = 96; Salem 2014 Table 1): G/G 36%, G/T 30%, T/T 13%, Missing 23%. MDR1-C3435T frequencies were collected (C/C 33%, C/T 35%, T/T 7%, Missing 26%) but the MDR1 polymorphism had no effect on CL/F or V/F and is not encoded in the model.",
+    disease_state = "HIV-1-infected children enrolled in the Pediatric AIDS Clinical Trials Group 382 (PACTG382) study; combination antiretroviral therapy of efavirenz plus nelfinavir plus at least one nucleoside reverse transcriptase inhibitor. Inclusion criteria: < 16 years old at enrolment with plasma HIV-1 RNA > 400 copies/mL by reverse transcription-PCR (Amplicor Monitor assay).",
+    dose_range = "AUC-controlled design targeting 24 h steady-state AUC0-24 between 190 and 380 uM*h. Initial allometric dosing: capsule mg/day = (weight[kg]/70)^0.7 * 600 mg; oral suspension or solution mg/day = (weight[kg]/70)^0.7 * 720 mg (the 20% dose top-up anticipates the lower liquid bioavailability). Doses were rounded to the nearest 25 mg, and adjusted proportionately up to a 200 mg maximum increase if the measured AUC fell outside target.",
+    regions = "United States and Puerto Rico (18 participating PACTG sites)",
+    n_observations = "3172 plasma efavirenz concentrations across 96 subjects, sampled before-dose and 2, 5, 8, 12 h post-dose at weeks 2, 6, and (if dose was adjusted at week 6) week 10. Additional 6 h and 24 h samples were collected from cohort I (ages 3-16 years) only. Follow-up AUC samples were collected at weeks 56 and 112 to monitor for changes during growth and development. Concentrations were quantified by validated HPLC at a PACTG Pharmacology Laboratory, LLOQ 0.020 mg/L, assay variability 1-4.5%.",
+    study = "PACTG382 (open-label phase I/II two-cohort study). Cohort I: ages 3-16 years at enrolment. Cohort II: ages 2 months to 8 years at enrolment.",
+    notes = "Baseline demographics from Salem 2014 Table 1. The study was approved by the institutional review boards of all 18 participating sites; informed written consent was obtained from parents or guardians."
   )
 
   ini({

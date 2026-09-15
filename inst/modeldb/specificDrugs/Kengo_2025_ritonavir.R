@@ -42,30 +42,38 @@ Kengo_2025_ritonavir <- function() {
   # state is a concentration in mg/L and not an amount in mg.
   compartmentData <- list(
     depot = list(
-      analyte = "ritonavir", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "ritonavir",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "ritonavir", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "ritonavir",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "ritonavir", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "ritonavir",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     effect = list(
-      analyte = "ritonavir", units = "mg/L",
-      specimen = "blood cell", verified = TRUE
+      analyte = "ritonavir",
+      units = "mg/L",
+      specimen = "blood cell",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass, computed from sex, total body weight, and height by the Janmahasatian (2005) formula",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass, computed from sex, total body weight, and height by the Janmahasatian (2005) formula",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size descriptor for clearance and inter-compartmental",
         "clearance (exponent 0.75) and for both volumes (exponent 1), with a",
         "fixed 42 kg reference. Kengo 2025 Table 2 footnote a states that all",
@@ -83,14 +91,14 @@ Kengo_2025_ritonavir <- function() {
         "m and WT in kg. Users should supply a measured or",
         "Janmahasatian-derived FFM column directly."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     CONMED_RIF = list(
-      description        = "Concomitant rifampicin co-administration indicator (1 = on rifampicin, 0 = ATV/r alone)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampicin co-administration indicator (1 = on rifampicin, 0 = ATV/r alone)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no rifampicin; DERIVE visit 1, ATV/r 300/100 mg once daily alone)",
-      notes              = paste(
+      notes = paste(
         "Chronic-induction semantics: rifampicin 600 mg once daily was added",
         "to the ATV/r regimen after DERIVE visit 1 (day 7) and sampling for",
         "visit 2 was carried out on day 21, so the indicator switches on only",
@@ -105,14 +113,14 @@ Kengo_2025_ritonavir <- function() {
         "that increasing the rifampicin dose had no further effect on",
         "ritonavir pharmacokinetics, so no rifampicin-dose covariate enters."
       ),
-      source_name        = "RIF"
+      source_name = "RIF"
     ),
     REGI_BID = list(
-      description        = "ATV/r dosing-regimen indicator (1 = atazanavir/ritonavir 300/100 mg twice daily, 0 = 300/100 mg once daily)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ATV/r dosing-regimen indicator (1 = atazanavir/ritonavir 300/100 mg twice daily, 0 = 300/100 mg once daily)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ATV/r 300/100 mg once daily)",
-      notes              = paste(
+      notes = paste(
         "Modifies bioavailability only, and only in the presence of",
         "rifampicin: DERIVE never sampled twice-daily ATV/r without",
         "rifampicin, so setting REGI_BID = 1 with CONMED_RIF = 0 is",
@@ -122,14 +130,14 @@ Kengo_2025_ritonavir <- function() {
         "reference to 66.7% of reference (Kengo 2025 Table 2 changes in F of",
         "-68.8% and -33.3%, and Results 3.4)."
       ),
-      source_name        = "VISIT"
+      source_name = "VISIT"
     ),
     OCC = list(
-      description        = "Integer dosing-occasion index used for the between-occasion random effects",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer dosing-occasion index used for the between-occasion random effects",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Eight occasions. Kengo 2025 Methods 2.3 defines an occasion as a",
         "single administered dose, and the supplementary atazanavir control",
         "stream -- whose structure the ritonavir model shares -- multiplexes",
@@ -143,16 +151,16 @@ Kengo_2025_ritonavir <- function() {
         "the between-occasion etas -- Kengo 2025 Table 2 leaves both rows",
         "blank in the ritonavir column."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     DOSE_RIF_MG = list(
       description = "Rifampicin daily dose",
-      units       = "mg",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg",
+      type = "continuous",
+      notes = paste(
         "The rifampicin dose was raised from 600 mg to 1200 mg once daily",
         "before DERIVE visit 4, but Kengo 2025 Results 3.4 reports that",
         "increasing the rifampicin dose had no further effect on ritonavir",
@@ -163,19 +171,19 @@ Kengo_2025_ritonavir <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 26L,
-    n_studies      = 1L,
-    age_range      = "23-61 years (median 44)",
-    age_median     = "44 years",
-    weight_range   = "50-75 kg (median 67)",
-    weight_median  = "67 kg",
-    ffm_range      = "37.9-41.9 kg (median 41.0)",
-    height_range   = "1.48-1.86 m (median 1.59)",
-    bmi_range      = "19.9-31.6 kg/m2 (median 26.1)",
+    species = "human",
+    n_subjects = 26L,
+    n_studies = 1L,
+    age_range = "23-61 years (median 44)",
+    age_median = "44 years",
+    weight_range = "50-75 kg (median 67)",
+    weight_median = "67 kg",
+    ffm_range = "37.9-41.9 kg (median 41.0)",
+    height_range = "1.48-1.86 m (median 1.59)",
+    bmi_range = "19.9-31.6 kg/m2 (median 26.1)",
     sex_female_pct = 88,
     race_ethnicity = "Black African (23 of 23 with race recorded, 100%)",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults living with HIV with undetectable viral load (<50 copies/mL) on",
       "ritonavir-boosted-atazanavir-based second-line antiretroviral therapy",
       "for at least 6 months. Participants with tuberculosis, hepatitis or",
@@ -184,7 +192,7 @@ Kengo_2025_ritonavir <- function() {
       "All were taking lamivudine; 17 (65%) were also on tenofovir disoproxil",
       "fumarate, 8 (31%) on zidovudine and 1 (4%) on abacavir."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Ritonavir 100 mg once daily as the booster of atazanavir/ritonavir",
       "300/100 mg at visit 1 (day 7); then rifampicin 600 mg once daily and",
       "dolutegravir 50 mg twice daily added with sampling at visit 2",
@@ -193,8 +201,8 @@ Kengo_2025_ritonavir <- function() {
       "rifampicin increased to 1200 mg once daily with sampling at visit 4",
       "(day 35)."
     ),
-    regions        = "Uganda (Joint Clinical Research Centre, Kampala)",
-    notes          = paste(
+    regions = "Uganda (Joint Clinical Research Centre, Kampala)",
+    notes = paste(
       "DERIVE (NCT04121195), an open-label, single-arm, dose-escalation",
       "study. Plasma sampling at predose and 0.5, 1, 2, 4, 6, 8 and 12 h",
       "postdose at every visit, with an extra 24 h sample at visit 1.",

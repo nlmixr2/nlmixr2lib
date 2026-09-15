@@ -44,18 +44,18 @@ Parasrampuria_2025_temsavir <- function() {
   )
   vignette <- "Parasrampuria_2025_temsavir"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometrically scaled against the population PK cohort MEDIAN of",
         "72 kg (Table S2: median 72 kg, range 38-151 kg, N = 764). Both",
         "exponents were FIXED, not estimated: 0.75 on CL/F and Q/F, 1 on",
@@ -72,14 +72,14 @@ Parasrampuria_2025_temsavir <- function() {
         "adjustment is warranted across this range because the Day 8",
         "virologic response barely moves."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CONMED_CYP3A4_IND_MOD = list(
-      description        = "Concomitant moderate CYP3A inducer coadministration indicator; 1 = on a moderate CYP3A inducer, 0 = not.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant moderate CYP3A inducer coadministration indicator; 1 = on a moderate CYP3A inducer, 0 = not.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant moderate CYP3A inducer)",
-      notes              = paste(
+      notes = paste(
         "The MODERATE stratum specifically. Parasrampuria 2025 Discussion:",
         "'Simulation estimated effect of moderate CYP3A inducers, primarily",
         "etravirine (ETR)' and 'strong CYP3A inducers were not included in",
@@ -96,14 +96,14 @@ Parasrampuria_2025_temsavir <- function() {
         "matched the 52% Ctau decrease observed in a dedicated etravirine",
         "DDI study in healthy subjects."
       ),
-      source_name        = "IND"
+      source_name = "IND"
     ),
     CONMED_CYP3A4_INH_STRONG = list(
-      description        = "Concomitant strong CYP3A inhibitor coadministration indicator; 1 = on a strong CYP3A inhibitor, 0 = not.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant strong CYP3A inhibitor coadministration indicator; 1 = on a strong CYP3A inhibitor, 0 = not.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant strong CYP3A inhibitor)",
-      notes              = paste(
+      notes = paste(
         "Parasrampuria 2025 Discussion identifies the agents behind this",
         "flag: 'The population PK model estimated impact of strong CYP3A",
         "inhibitors, primarily ritonavir (RTV) and cobicistat (COBI)'.",
@@ -117,105 +117,105 @@ Parasrampuria_2025_temsavir <- function() {
         "the 44-88% Ctau increases seen in dedicated RTV, atazanavir/RTV",
         "and darunavir/RTV DDI studies."
       ),
-      source_name        = "INH"
+      source_name = "INH"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested on CL/F and V2/F (Table 1); not retained. Population PK cohort median 42 years, range 17-73 (Table S2). Parasrampuria 2025 flags this as a model limitation: only 11 subjects (1.4%) were 65 years or older."
+      units = "years",
+      type = "continuous",
+      notes = "Tested on CL/F and V2/F (Table 1); not retained. Population PK cohort median 42 years, range 17-73 (Table S2). Parasrampuria 2025 flags this as a model limitation: only 11 subjects (1.4%) were 65 years or older."
     ),
     SEXF = list(
       description = "Female sex indicator; 1 = female, 0 = male.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL/F, V2/F and Ka (Table 1, printed as 'gender'); not retained. Population PK cohort 216 female (28%), 548 male (72%) (Table S2). The source reports counts by sex but not the coding direction of its index variable; SEXF is the register canonical."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL/F, V2/F and Ka (Table 1, printed as 'gender'); not retained. Population PK cohort 216 female (28%), 548 male (72%) (Table S2). The source reports counts by sex but not the coding direction of its index variable; SEXF is the register canonical."
     ),
     RACE_BLACK = list(
       description = "Black / African American race indicator; 1 = Black or African American, 0 = other.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL/F and V2/F (Table 1, as 'race'); not retained. Population PK cohort 177 (23%) (Table S2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL/F and V2/F (Table 1, as 'race'); not retained. Population PK cohort 177 (23%) (Table S2)."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator; 1 = Asian, 0 = other.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL/F and V2/F (Table 1, as 'race'); not retained. Population PK cohort 5 subjects (1%) (Table S2) -- Parasrampuria 2025 names this explicitly as a model limitation ('few (N = 5) Asian subjects'), so the null result is an absence of information rather than evidence of no effect."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL/F and V2/F (Table 1, as 'race'); not retained. Population PK cohort 5 subjects (1%) (Table S2) -- Parasrampuria 2025 names this explicitly as a model limitation ('few (N = 5) Asian subjects'), so the null result is an absence of information rather than evidence of no effect."
     ),
     HIV_POS = list(
       description = "HIV-1 infection status of the analysis subject; 1 = HIV-1-infected patient, 0 = healthy volunteer.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL/F, V2/F and Ka (Table 1, as 'population (HIV-1 vs. healthy)'); not retained. Population PK cohort 606 HIV-1-infected (79%) and 158 healthy (21%) (Table S2). A published null of practical importance: it is what licenses pooling the healthy-volunteer phase 1 data with the patient data in one model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL/F, V2/F and Ka (Table 1, as 'population (HIV-1 vs. healthy)'); not retained. Population PK cohort 606 HIV-1-infected (79%) and 158 healthy (21%) (Table S2). A published null of practical importance: it is what licenses pooling the healthy-volunteer phase 1 data with the patient data in one model."
     ),
     CRCL = list(
       description = "Baseline creatinine clearance.",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Tested on CL/F and V2/F (Table 1); not retained. Population PK cohort median 118 mL/min, range 5.26-271 (Table S2)."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Tested on CL/F and V2/F (Table 1); not retained. Population PK cohort median 118 mL/min, range 5.26-271 (Table S2)."
     ),
     ALT = list(
       description = "Baseline alanine aminotransferase.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested on CL/F and V2/F (Table 1); not retained. Population PK cohort median 24 U/L, range 6-240; Table S2 writes the unit as IU/L, used interchangeably with the canonical U/L."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested on CL/F and V2/F (Table 1); not retained. Population PK cohort median 24 U/L, range 6-240; Table S2 writes the unit as IU/L, used interchangeably with the canonical U/L."
     ),
     AST = list(
       description = "Baseline aspartate aminotransferase.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested on CL/F and V2/F (Table 1); not retained. Population PK cohort median 25 U/L, range 10-288 (Table S2, printed as IU/L)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested on CL/F and V2/F (Table 1); not retained. Population PK cohort median 25 U/L, range 10-288 (Table S2, printed as IU/L)."
     ),
     ALP = list(
       description = "Baseline alkaline phosphatase.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested on CL/F (Table 1); not retained. Population PK cohort median 80 U/L, range 36-612 (Table S2, printed as IU/L). Mechanistically interesting and still null: intestinal alkaline phosphatase is the enzyme that hydrolyses the fostemsavir prodrug to temsavir, but serum ALP does not track that intestinal activity."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested on CL/F (Table 1); not retained. Population PK cohort median 80 U/L, range 36-612 (Table S2, printed as IU/L). Mechanistically interesting and still null: intestinal alkaline phosphatase is the enzyme that hydrolyses the fostemsavir prodrug to temsavir, but serum ALP does not track that intestinal activity."
     ),
     DBIL = list(
       description = "Baseline direct (conjugated) bilirubin.",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Tested on CL/F (Table 1, as 'BILI', defined in the Table 1 abbreviations as direct bilirubin); not retained. Population PK cohort median 0.100 mg/dL, range 0.00-30.8 (Table S2). The register canonical DBIL is in umol/L; the source reports mg/dL and no conversion is applied here because the covariate is not in the model."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Tested on CL/F (Table 1, as 'BILI', defined in the Table 1 abbreviations as direct bilirubin); not retained. Population PK cohort median 0.100 mg/dL, range 0.00-30.8 (Table S2). The register canonical DBIL is in umol/L; the source reports mg/dL and no conversion is applied here because the covariate is not in the model."
     ),
     CREAT = list(
       description = "Baseline serum creatinine.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Tested on CL/F (Table 1, as 'SCr'); not retained. Not summarised for the population PK cohort in Table S2; the exposure-safety cohort median was 77 umol/L, range 31.8-1630."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Tested on CL/F (Table 1, as 'SCr'); not retained. Not summarised for the population PK cohort in Table S2; the exposure-safety cohort median was 77 umol/L, range 31.8-1630."
     ),
     FASTED_STRICT = list(
       description = "Fasted-state indicator at the dose record; 1 = fasted, 0 = fed.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "NOT TESTED, for a structural reason rather than a null result: Parasrampuria 2025 Methods state 'The effect of prandial status was not tested as data were not collected in the Phase 3 study.' The food effect was instead brought in post hoc from a dedicated phase 1 food-effect study -- median Ctau under a standard meal was 1.68-fold the fasted value -- by multiplying model-predicted concentrations by 0.595 (= 1/1.68) to mimic fasting in the Table 5 simulations, rather than by fitting a relative-bioavailability parameter. The 0.595 factor is therefore an external post-processing constant and is deliberately NOT encoded in this model; see the vignette."
+      units = "(binary)",
+      type = "binary",
+      notes = "NOT TESTED, for a structural reason rather than a null result: Parasrampuria 2025 Methods state 'The effect of prandial status was not tested as data were not collected in the Phase 3 study.' The food effect was instead brought in post hoc from a dedicated phase 1 food-effect study -- median Ctau under a standard meal was 1.68-fold the fasted value -- by multiplying model-predicted concentrations by 0.595 (= 1/1.68) to mimic fasting in the Table 5 simulations, rather than by fitting a relative-bioavailability parameter. The 0.595 factor is therefore an external post-processing constant and is deliberately NOT encoded in this model; see the vignette."
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "temsavir", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "temsavir", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "temsavir", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "temsavir", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "temsavir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 764L,
-    n_studies      = 7L,
+    species = "human",
+    n_subjects = 764L,
+    n_studies = 7L,
     n_observations = "10,236 quantifiable plasma temsavir concentrations; BLQ records (< 5 ng/mL) were neither imputed nor included",
-    age_range      = "17-73 years (median 42; 11 subjects (1.4%) aged 65 years or older) (Table S2)",
-    weight_range   = "38-151 kg (median 72; baseline BMI median 24.9 kg/m2, range 14.4-52.2) (Table S2)",
+    age_range = "17-73 years (median 42; 11 subjects (1.4%) aged 65 years or older) (Table S2)",
+    weight_range = "38-151 kg (median 72; baseline BMI median 24.9 kg/m2, range 14.4-52.2) (Table S2)",
     sex_female_pct = 28.3,
     race_ethnicity = c(White = 64.0, `Black or African American` = 23.0, Asian = 1.0, Other = 12.0),
-    disease_state  = "pooled healthy adult volunteers (158, 21%) and adults with HIV-1 infection (606, 79%); the phase 2 and phase 3 patients were treatment-experienced, and the phase 3 BRIGHTE cohort was heavily treatment-experienced (HTE) with multidrug-resistant HIV-1 failing their current antiretroviral regimen",
-    dose_range     = "fostemsavir extended-release tablets, oral: monotherapy 600-2400 mg twice daily and 1200 mg once daily; in combination with other HIV therapy 400-800 mg BID, 600-1200 mg every 12 h, 1200 mg at bedtime, and 600-1200 mg BID. Up to 10 days in the early-phase studies and 96 weeks or more in the late-phase studies. The approved regimen is 600 mg BID.",
-    regions        = "multinational; the phase 3 BRIGHTE randomised cohort was 41% North America, 38% South America, 19% Europe, 3% other (Table S2)",
-    co_medication  = "concomitant CYP3A inhibitor 293 subjects (38%), concomitant CYP3A inducer 37 subjects (5%) (Table S2)",
-    notes          = paste0(
+    disease_state = "pooled healthy adult volunteers (158, 21%) and adults with HIV-1 infection (606, 79%); the phase 2 and phase 3 patients were treatment-experienced, and the phase 3 BRIGHTE cohort was heavily treatment-experienced (HTE) with multidrug-resistant HIV-1 failing their current antiretroviral regimen",
+    dose_range = "fostemsavir extended-release tablets, oral: monotherapy 600-2400 mg twice daily and 1200 mg once daily; in combination with other HIV therapy 400-800 mg BID, 600-1200 mg every 12 h, 1200 mg at bedtime, and 600-1200 mg BID. Up to 10 days in the early-phase studies and 96 weeks or more in the late-phase studies. The approved regimen is 600 mg BID.",
+    regions = "multinational; the phase 3 BRIGHTE randomised cohort was 41% North America, 38% South America, 19% Europe, 3% other (Table S2)",
+    co_medication = "concomitant CYP3A inhibitor 293 subjects (38%), concomitant CYP3A inducer 37 subjects (5%) (Table S2)",
+    notes = paste0(
       "Seven pooled studies: four phase 1 studies in healthy volunteers ",
       "(including a thorough-QT study and DDI studies with darunavir/ritonavir ",
       "and etravirine), the phase 2a proof-of-concept AI438006 (NCT01009814), ",

@@ -8,51 +8,51 @@ Tiraboschi_2025_amlitelimab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "amlitelimab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "amlitelimab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "amlitelimab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "amlitelimab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "amlitelimab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline (not time-varying) per the Tiraboschi 2025 NONMEM control stream; allometric effects on CL, V1 (central), and V2 (peripheral) with reference weight 75 kg (population median).",
-      source_name        = "BWT"
+      notes = "Baseline (not time-varying) per the Tiraboschi 2025 NONMEM control stream; allometric effects on CL, V1 (central), and V2 (peripheral) with reference weight 75 kg (population median).",
+      source_name = "BWT"
     ),
     SCORE_EASI = list(
-      description        = "Baseline Eczema Area and Severity Index score",
-      units              = "(score, 0-72)",
-      type               = "continuous",
+      description = "Baseline Eczema Area and Severity Index score",
+      units = "(score, 0-72)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline SCORE_EASI (BEASI in the source NONMEM code); enters linear clearance as an additive term 0.00111 * SCORE_EASI (L/day). Healthy volunteers have SCORE_EASI = 0. Renamed from source column BEASI to the canonical SCORE_EASI per covariate-columns.md.",
-      source_name        = "BEASI"
+      notes = "Baseline SCORE_EASI (BEASI in the source NONMEM code); enters linear clearance as an additive term 0.00111 * SCORE_EASI (L/day). Healthy volunteers have SCORE_EASI = 0. Renamed from source column BEASI to the canonical SCORE_EASI per covariate-columns.md.",
+      source_name = "BEASI"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline albumin (BALB in the source NONMEM code); covariate on subcutaneous bioavailability via the additive term 0.598 * ((ALB/47) - 1) on the linear F1 scale before logit transformation. Reference value 47 g/L is the population median. Renamed from source column BALB to the canonical ALB per covariate-columns.md.",
-      source_name        = "BALB"
+      notes = "Baseline albumin (BALB in the source NONMEM code); covariate on subcutaneous bioavailability via the additive term 0.598 * ((ALB/47) - 1) on the linear F1 scale before logit transformation. Reference value 47 g/L is the population median. Renamed from source column BALB to the canonical ALB per covariate-columns.md.",
+      source_name = "BALB"
     )
   )
 
   population <- list(
-    n_subjects     = 439,
-    n_studies      = 5,
-    age_range      = "18-72 years",
-    age_median     = "33 years",
-    weight_range   = "40.5-148 kg",
-    weight_median  = "74.5 kg",
+    n_subjects = 439,
+    n_studies = 5,
+    age_range = "18-72 years",
+    age_median = "33 years",
+    weight_range = "40.5-148 kg",
+    weight_median = "74.5 kg",
     sex_female_pct = 38,
     race_ethnicity = c(White = 82.7, Black = 4.33, Asian = 11.2, Other = 1.82),
-    disease_state  = "Pooled across 5 clinical studies: 78 healthy volunteers (phase 1) and 361 adults with moderate-to-severe atopic dermatitis (phase 2a n=59 and STREAM-AD phase 2b n=302); among AD subjects, baseline SCORE_EASI mean 29.7 (SD 11.3) and 72.9% classified as severe (SCORE_EASI > 21)",
-    dose_range     = "Single or repeated IV and SC doses; labelled STREAM-AD regimens include 250 mg SC Q4W / Q12W with a 500 mg SC loading dose and 62.5 mg SC Q4W",
-    regions        = "Multi-regional (STREAM-AD phase 2b primary driver; region breakdown not reported in the source)",
-    notes          = "Demographics from Tiraboschi 2025 Table S1 (pooled PopPK analysis population, n=439). Three phase 1 studies in healthy volunteers (n=48 + 24 + 6) and two phase 2 studies in AD (n=59 phase 2a + n=302 STREAM-AD phase 2b). 80 of 439 subjects (18.2%) had at least one positive ADA sample; ADA was not a significant covariate in the final PopPK model."
+    disease_state = "Pooled across 5 clinical studies: 78 healthy volunteers (phase 1) and 361 adults with moderate-to-severe atopic dermatitis (phase 2a n=59 and STREAM-AD phase 2b n=302); among AD subjects, baseline SCORE_EASI mean 29.7 (SD 11.3) and 72.9% classified as severe (SCORE_EASI > 21)",
+    dose_range = "Single or repeated IV and SC doses; labelled STREAM-AD regimens include 250 mg SC Q4W / Q12W with a 500 mg SC loading dose and 62.5 mg SC Q4W",
+    regions = "Multi-regional (STREAM-AD phase 2b primary driver; region breakdown not reported in the source)",
+    notes = "Demographics from Tiraboschi 2025 Table S1 (pooled PopPK analysis population, n=439). Three phase 1 studies in healthy volunteers (n=48 + 24 + 6) and two phase 2 studies in AD (n=59 phase 2a + n=302 STREAM-AD phase 2b). 80 of 439 subjects (18.2%) had at least one positive ADA sample; ADA was not a significant covariate in the final PopPK model."
   )
 
   ini({

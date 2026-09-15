@@ -18,61 +18,61 @@ Smythe_2012_rifampicin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
     transit1 = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
     enz_pool = list(analyte = "Enzyme (unitary-baseline)", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline (time-fixed in the Smythe 2012 analysis).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline (time-fixed in the Smythe 2012 analysis).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used together with FFM in the Anderson-Holford normal-fat-mass (NFM) scaling: NFM_param = FFM + Ffat_param * (WT - FFM); then CL/F is proportional to (NFM_CL / 70)^0.75 and V/F to (NFM_V / 70)^1.0. Cohort median 55 kg (interquartile range 50-61 kg across the four study sites; Smythe 2012 Table 1). Reference 70 kg for the allometric standardization. Range 38-80 kg (Methods 'Patients' paragraph 1).",
-      source_name        = "WT"
+      notes = "Used together with FFM in the Anderson-Holford normal-fat-mass (NFM) scaling: NFM_param = FFM + Ffat_param * (WT - FFM); then CL/F is proportional to (NFM_CL / 70)^0.75 and V/F to (NFM_V / 70)^1.0. Cohort median 55 kg (interquartile range 50-61 kg across the four study sites; Smythe 2012 Table 1). Reference 70 kg for the allometric standardization. Range 38-80 kg (Methods 'Patients' paragraph 1).",
+      source_name = "WT"
     ),
     FFM = list(
-      description        = "Fat-free mass derived from body weight, height, and sex via the Janmahasatian / Anderson-Holford WHSmax / WHS50 formula (Smythe 2012 Eqs. 8-10).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass derived from body weight, height, and sex via the Janmahasatian / Anderson-Holford WHSmax / WHS50 formula (Smythe 2012 Eqs. 8-10).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Sex-specific FFM formula (Smythe 2012 Methods 'Covariate analysis' Eq. 8): men WHSmax = 42.92 kg/m^2 and WHS50 = 30.93 kg/m^2; women WHSmax = 37.99 kg/m^2 and WHS50 = 35.98 kg/m^2; FFM = WHSmax * HT^2 * WT / (WHS50 * HT^2 + WT) with HT in meters and WT in kg. Used together with WT in the Anderson-Holford NFM scaling (paper Eqs. 9-10 give the NFM expressions for CL/F and V/F respectively). Cohort median FFM 45 kg (range 37-50 kg across sites; Smythe 2012 Table 1). The user data set should supply FFM directly as a covariate column; the vignette includes a chunk demonstrating the FFM derivation.",
-      source_name        = "FFM"
+      notes = "Sex-specific FFM formula (Smythe 2012 Methods 'Covariate analysis' Eq. 8): men WHSmax = 42.92 kg/m^2 and WHS50 = 30.93 kg/m^2; women WHSmax = 37.99 kg/m^2 and WHS50 = 35.98 kg/m^2; FFM = WHSmax * HT^2 * WT / (WHS50 * HT^2 + WT) with HT in meters and WT in kg. Used together with WT in the Anderson-Holford NFM scaling (paper Eqs. 9-10 give the NFM expressions for CL/F and V/F respectively). Cohort median FFM 45 kg (range 37-50 kg across sites; Smythe 2012 Table 1). The user data set should supply FFM directly as a covariate column; the vignette includes a chunk demonstrating the FFM derivation.",
+      source_name = "FFM"
     ),
     HIV_POS = list(
-      description        = "HIV-1 antibody positive comorbidity indicator at study entry (1 = HIV-positive, 0 = HIV-negative). Time-fixed per subject; all HIV-positive subjects in the Smythe 2012 cohort were antiretroviral naive.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HIV-1 antibody positive comorbidity indicator at study entry (1 = HIV-positive, 0 = HIV-negative). Time-fixed per subject; all HIV-positive subjects in the Smythe 2012 cohort were antiretroviral naive.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HIV-negative)",
-      notes              = "Multiplicative effect on V/F: V/F_HIV = V/F * (1 + 0.296 * HIV_POS); HIV-positive patients have a 29.6% larger apparent volume of distribution than HIV-negative reference subjects (Smythe 2012 Table 3 row 'V/F-HIV (%)' = 29.6, RSE 17.2%). Sex, age, study site, and creatinine clearance were tested but not retained in the final NFM-scaled covariate model (Methods 'Covariate analysis' paragraph 1; Results paragraphs 2-3). 54 of 174 patients were HIV-positive (49 South Africa, 0 Senegal, 2 Benin, 3 Guinea per Smythe 2012 Table 1).",
-      source_name        = "HIV"
+      notes = "Multiplicative effect on V/F: V/F_HIV = V/F * (1 + 0.296 * HIV_POS); HIV-positive patients have a 29.6% larger apparent volume of distribution than HIV-negative reference subjects (Smythe 2012 Table 3 row 'V/F-HIV (%)' = 29.6, RSE 17.2%). Sex, age, study site, and creatinine clearance were tested but not retained in the final NFM-scaled covariate model (Methods 'Covariate analysis' paragraph 1; Results paragraphs 2-3). 54 of 174 patients were HIV-positive (49 South Africa, 0 Senegal, 2 Benin, 3 Guinea per Smythe 2012 Table 1).",
+      source_name = "HIV"
     ),
     OCC = list(
-      description        = "Integer-valued occasion / period indicator: 1 = preinduced state (first dose, day 1), 2 = induced state (~day 29 after daily dosing, when autoinduction is at or near steady state). Smythe 2012 fit IOV across these two occasions on MTT and F.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator: 1 = preinduced state (first dose, day 1), 2 = induced state (~day 29 after daily dosing, when autoinduction is at or near steady state). Smythe 2012 fit IOV across these two occasions on MTT and F.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Time-varying within subject; constant within an occasion. Decomposed inside model() into binary indicators oc1, oc2 that multiplex the per-occasion IOV etas on log(MTT) and log(F). Smythe 2012 reports a single shared IOV variance per parameter across the two occasions (Table 3 rows 'IOV MTT (%)' = 68 and 'IOV F (%)' = 16.2); encoded with the first occasion's eta estimated and the second occasion's eta fixed to the same variance (the Wilkins 2008 / Barnett 2018 OMEGA BLOCK(1) SAME idiom; nlmixr2 has no SAME shortcut). The two-occasion design is what the source data set supports; users wanting to simulate IOV at additional doses can extend the OCC range and add corresponding etaiov_*_<k> ~ fix() entries.",
-      source_name        = "OCC"
+      notes = "Time-varying within subject; constant within an occasion. Decomposed inside model() into binary indicators oc1, oc2 that multiplex the per-occasion IOV etas on log(MTT) and log(F). Smythe 2012 reports a single shared IOV variance per parameter across the two occasions (Table 3 rows 'IOV MTT (%)' = 68 and 'IOV F (%)' = 16.2); encoded with the first occasion's eta estimated and the second occasion's eta fixed to the same variance (the Wilkins 2008 / Barnett 2018 OMEGA BLOCK(1) SAME idiom; nlmixr2 has no SAME shortcut). The two-occasion design is what the source data set supports; users wanting to simulate IOV at additional doses can extend the OCC range and add corresponding etaiov_*_<k> ~ fix() entries.",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 174L,
-    n_studies      = 1L,
-    age_range      = "18-65 years (Methods 'Patients' paragraph 1)",
-    age_median     = "28 years (South Africa) / 26 (Senegal) / 25 (Benin) / 34 (Guinea); pooled interquartile range 24-37 (South Africa, the largest cohort; Smythe 2012 Table 1)",
-    weight_range   = "38-80 kg (Methods 'Patients' paragraph 1)",
-    weight_median  = "55 kg (interquartile range 50-61 kg in South Africa, similar across sites; Smythe 2012 Table 1)",
+    species = "human",
+    n_subjects = 174L,
+    n_studies = 1L,
+    age_range = "18-65 years (Methods 'Patients' paragraph 1)",
+    age_median = "28 years (South Africa) / 26 (Senegal) / 25 (Benin) / 34 (Guinea); pooled interquartile range 24-37 (South Africa, the largest cohort; Smythe 2012 Table 1)",
+    weight_range = "38-80 kg (Methods 'Patients' paragraph 1)",
+    weight_median = "55 kg (interquartile range 50-61 kg in South Africa, similar across sites; Smythe 2012 Table 1)",
     sex_female_pct = 34.5,
     race_ethnicity = "African; pooled across South Africa, Senegal, Benin, Guinea (Smythe 2012 Methods 'Patients' paragraph 1 and Table 1).",
-    disease_state  = "Adults with newly diagnosed pulmonary tuberculosis enrolled in the control arm of the OFLOTUB phase III multicenter trial (NCT00216385). 54 of 174 patients (31%) were HIV-positive and antiretroviral naive (Smythe 2012 Table 1).",
-    dose_range     = "Rifampicin 450 mg orally daily (patients < 50 kg body weight, n = 71) or 600 mg orally daily (patients >= 50 kg body weight, n = 103) co-administered with isoniazid, pyrazinamide, and ethambutol as fixed-dose combination tablets, six days per week, by directly observed therapy during the 2-month intensive phase of standard short-course antituberculosis treatment.",
-    regions        = "South Africa (n = 101), Senegal (n = 27), Benin (n = 19), Guinea (n = 27).",
-    notes          = "Baseline demographics from Smythe 2012 Table 1. 946 rifampicin plasma concentrations across the two occasions were modeled. Three sparse samples per occasion per patient: 1-2 h and 2.5-3.5 h post-dose for all patients, with the third sample block-randomized to 4-6 h or 8-10 h post-dose on occasion 1; on occasion 2 (median sampling day 29, range 26-50 days) the third sample was predose, 4-6 h, or 8-10 h post-dose. The clinical trial identifier is NCT00216385."
+    disease_state = "Adults with newly diagnosed pulmonary tuberculosis enrolled in the control arm of the OFLOTUB phase III multicenter trial (NCT00216385). 54 of 174 patients (31%) were HIV-positive and antiretroviral naive (Smythe 2012 Table 1).",
+    dose_range = "Rifampicin 450 mg orally daily (patients < 50 kg body weight, n = 71) or 600 mg orally daily (patients >= 50 kg body weight, n = 103) co-administered with isoniazid, pyrazinamide, and ethambutol as fixed-dose combination tablets, six days per week, by directly observed therapy during the 2-month intensive phase of standard short-course antituberculosis treatment.",
+    regions = "South Africa (n = 101), Senegal (n = 27), Benin (n = 19), Guinea (n = 27).",
+    notes = "Baseline demographics from Smythe 2012 Table 1. 946 rifampicin plasma concentrations across the two occasions were modeled. Three sparse samples per occasion per patient: 1-2 h and 2.5-3.5 h post-dose for all patients, with the third sample block-randomized to 4-6 h or 8-10 h post-dose on occasion 1; on occasion 2 (median sampling day 29, range 26-50 days) the third sample was predose, 4-6 h, or 8-10 h post-dose. The clinical trial identifier is NCT00216385."
   )
 
   ini({

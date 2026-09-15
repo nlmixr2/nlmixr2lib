@@ -29,17 +29,17 @@ Zhou_2025_teicoplanin <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    central     = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Real-time creatinine clearance calculated with the Cockcroft-Gault formula, the only covariate retained in the final model (power effect on clearance)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Real-time creatinine clearance calculated with the Cockcroft-Gault formula, the only covariate retained in the final model (power effect on clearance)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column CrCL. RAW Cockcroft-Gault creatinine clearance in mL/min,",
         "NOT normalised to 1.73 m^2 body surface area (Zhou 2025 Methods, 'Study",
         "design and patients': 'Creatinine clearance (CrCL) was calculated by the",
@@ -86,28 +86,28 @@ Zhou_2025_teicoplanin <- function() {
         "Monte Carlo table (Table 3, 160 cells) to a median absolute difference",
         "under 2 percentage points; see vignettes/articles/Zhou_2025_teicoplanin.Rmd."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "23 of 79 development-set subjects were female (56/79 male, Zhou 2025 Table 1). Screened on CL (dOFV -0.6) and on Vc (dOFV -0.7) and not retained (Table S2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "23 of 79 development-set subjects were female (56/79 male, Zhou 2025 Table 1). Screened on CL (dOFV -0.6) and on Vc (dOFV -0.7) and not retained (Table S2)."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Median 42.5 years (IQR 36-52.8) in the development set (Zhou 2025 Table 1). Screened on CL (dOFV -3.2) and on Vc (dOFV -2.5); both fall short of the -3.84 forward-inclusion threshold (Table S2)."
+      units = "years",
+      type = "continuous",
+      notes = "Median 42.5 years (IQR 36-52.8) in the development set (Zhou 2025 Table 1). Screened on CL (dOFV -3.2) and on Vc (dOFV -2.5); both fall short of the -3.84 forward-inclusion threshold (Table S2)."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Median 64.8 kg (IQR 54-74.8) in the development set (Zhou 2025 Table 1).",
         "Screened on Vc (dOFV -3.7) and on CL (dOFV -2.5) and not retained",
         "(Table S2). The Discussion attributes the null result to the limited",
@@ -119,9 +119,9 @@ Zhou_2025_teicoplanin <- function() {
     ),
     ALB = list(
       description = "Baseline serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Median 37.0 g/L (IQR 34.4-39.5) in the development set (Zhou 2025",
         "Table 1). Screened on CL (dOFV -0.6) and on Vc (dOFV -1.3) and not",
         "retained (Table S2, source column BALB). The Discussion notes that",
@@ -131,21 +131,21 @@ Zhou_2025_teicoplanin <- function() {
     ),
     BILI = list(
       description = "Baseline total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Median 6.3 umol/L (IQR 4.9-9) in the development set (Zhou 2025 Table 1). Screened on CL (dOFV -2.3) and on Vc (dOFV -1.3) and not retained (Table S2, source column BTBIL). Direct bilirubin was collected but dropped before covariate screening for collinearity with total bilirubin (r = 0.8 > 0.6, Table S2 footnote a)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Median 6.3 umol/L (IQR 4.9-9) in the development set (Zhou 2025 Table 1). Screened on CL (dOFV -2.3) and on Vc (dOFV -1.3) and not retained (Table S2, source column BTBIL). Direct bilirubin was collected but dropped before covariate screening for collinearity with total bilirubin (r = 0.8 > 0.6, Table S2 footnote a)."
     ),
     ALT = list(
       description = "Baseline alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Median 12.9 U/L (IQR 8.7-16.6) in the development set (Zhou 2025 Table 1). Screened on CL (dOFV -3.3) and on Vc (dOFV -0.5) and not retained (Table S2, source column BALT). Aspartate aminotransferase was collected but dropped before covariate screening for collinearity with ALT (r = 0.8 > 0.6, Table S2 footnote b)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Median 12.9 U/L (IQR 8.7-16.6) in the development set (Zhou 2025 Table 1). Screened on CL (dOFV -3.3) and on Vc (dOFV -0.5) and not retained (Table S2, source column BALT). Aspartate aminotransferase was collected but dropped before covariate screening for collinearity with ALT (r = 0.8 > 0.6, Table S2 footnote b)."
     ),
     CRCL_BASE = list(
       description = "Baseline creatinine clearance (Cockcroft-Gault), time-fixed",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Median 9 mL/min (IQR 6.6-13.8) in the development set (Zhou 2025",
         "Table 1). Screened on CL (dOFV -5.5) and on Vc (dOFV -0.5) under source",
         "column BCRCL. Although the CL effect cleared the -3.84 forward-inclusion",
@@ -157,25 +157,25 @@ Zhou_2025_teicoplanin <- function() {
     ),
     T_POSTTRANSPLANT_GT1MO = list(
       description = "Post-transplantation interval indicator: 1 = more than 1 month since transplantation, 0 = within 1 month",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Source column DFLAG, described in the Table S2 abbreviations as 'a categorical covariate distinguishing postoperative duration intervals, dichotomized into two temporal strata: the short-term postoperative phase (<=1 month) and extended postoperative period (>1 month)'. 65 of 79 development-set subjects were within 1 month of transplantation (Zhou 2025 Table 1). Screened on CL (dOFV 0) and on Vc (dOFV 0) and not retained (Table S2). Listed here as documentation only; the name is not registered in inst/references/covariate-columns.md because the model does not use it."
+      units = "(binary)",
+      type = "binary",
+      notes = "Source column DFLAG, described in the Table S2 abbreviations as 'a categorical covariate distinguishing postoperative duration intervals, dichotomized into two temporal strata: the short-term postoperative phase (<=1 month) and extended postoperative period (>1 month)'. 65 of 79 development-set subjects were within 1 month of transplantation (Zhou 2025 Table 1). Screened on CL (dOFV 0) and on Vc (dOFV 0) and not retained (Table S2). Listed here as documentation only; the name is not registered in inst/references/covariate-columns.md because the model does not use it."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 79L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 79L,
+    n_studies = 1L,
     n_concentrations = 306L,
-    age_median       = "42.5 years (development set); 42.0 years overall",
-    age_range        = "IQR 36-52.8 years in the development set (Zhou 2025 Table 1); the study enrolled adults aged >= 18 years",
-    weight_median    = "64.8 kg (development set); 62.7 kg overall",
-    weight_range     = "IQR 54-74.8 kg in the development set (Zhou 2025 Table 1)",
-    height_median    = "168 cm (development set)",
-    sex_female_pct   = 29.1,
-    race_ethnicity   = "Not reported by category; single-centre Chinese cohort (Second Xiangya Hospital, Central South University, Changsha, Hunan)",
-    disease_state    = paste(
+    age_median = "42.5 years (development set); 42.0 years overall",
+    age_range = "IQR 36-52.8 years in the development set (Zhou 2025 Table 1); the study enrolled adults aged >= 18 years",
+    weight_median = "64.8 kg (development set); 62.7 kg overall",
+    weight_range = "IQR 54-74.8 kg in the development set (Zhou 2025 Table 1)",
+    height_median = "168 cm (development set)",
+    sex_female_pct = 29.1,
+    race_ethnicity = "Not reported by category; single-centre Chinese cohort (Second Xiangya Hospital, Central South University, Changsha, Hunan)",
+    disease_state = paste(
       "Adult renal transplant recipients (age >= 18 years) receiving",
       "intravenous teicoplanin for at least 72 h. 80 of the 99 enrolled",
       "patients received it as perioperative antimicrobial prophylaxis and 19",
@@ -190,7 +190,7 @@ Zhou_2025_teicoplanin <- function() {
       "or renal replacement therapy. Median teicoplanin treatment duration was 9",
       "days (IQR 8-12) in the development set."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Teicoplanin (Zhejiang Medicine Co., Ltd) by 1 h intravenous infusion. All",
       "patients received the same empirical regimen: three loading doses of 400",
       "mg every 12 h followed by a maintenance dose of 400 mg once daily for at",
@@ -200,8 +200,8 @@ Zhou_2025_teicoplanin <- function() {
       "400, 600, 800 and 1000 mg q12h given either three or five times, followed",
       "by maintenance doses of 200-1000 mg q24h."
     ),
-    regions          = "China (Second Xiangya Hospital, Changsha, Hunan; development cohort enrolled January 2022 to December 2023)",
-    renal_function   = paste(
+    regions = "China (Second Xiangya Hospital, Changsha, Hunan; development cohort enrolled January 2022 to December 2023)",
+    renal_function = paste(
       "Severely impaired at baseline and recovering during treatment.",
       "Development set (Zhou 2025 Table 1): baseline Cockcroft-Gault creatinine",
       "clearance median 9 mL/min (IQR 6.6-13.8); baseline blood urea nitrogen",
@@ -233,7 +233,7 @@ Zhou_2025_teicoplanin <- function() {
       "validation'); goodness-of-fit plots and a prediction-corrected VPC on the",
       "validation set are Figures S2 and 3."
     ),
-    notes            = paste(
+    notes = paste(
       "Single-centre prospective two-phase study; 99 patients and 386 plasma",
       "samples in total, split 79 patients / 306 samples for model development",
       "and 20 patients / 80 samples for external validation. Sampling: two to",

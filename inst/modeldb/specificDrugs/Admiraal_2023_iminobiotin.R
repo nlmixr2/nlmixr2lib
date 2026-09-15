@@ -8,36 +8,36 @@ Admiraal_2023_iminobiotin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "iminobiotin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "iminobiotin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "iminobiotin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate on hospital admission, by the Modification of Diet in Renal Disease (MDRD) equation: 186 * (Creat/88.4)^-1.154 * Age^-0.203 * (0.742 if female) * (1.210 if Black).",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate on hospital admission, by the Modification of Diet in Renal Disease (MDRD) equation: 186 * (Creat/88.4)^-1.154 * Age^-0.203 * (0.742 if female) * (1.210 if Black).",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-model effect on clearance with reference 90 mL/min/1.73 m^2. The reference value is NOT reported in Admiraal 2023 or its supplement; 90 mL/min/1.73 m^2 was set per the nlmixr2lib registry's most common adult-MDRD/CKD-EPI convention (Bajaj 2017, Li 2019), with operator approval (task 171 sidecar 001, response value 'A'). At eGFR = 90 the model returns the published typical CL = 12.10 L/h; behaviour at any non-reference eGFR depends on this REF choice (raised to the 1.03 power exponent). Source column 'eGFR' (MDRD-based) maps to the canonical CRCL.",
-      source_name        = "eGFR"
+      notes = "Power-model effect on clearance with reference 90 mL/min/1.73 m^2. The reference value is NOT reported in Admiraal 2023 or its supplement; 90 mL/min/1.73 m^2 was set per the nlmixr2lib registry's most common adult-MDRD/CKD-EPI convention (Bajaj 2017, Li 2019), with operator approval (task 171 sidecar 001, response value 'A'). At eGFR = 90 the model returns the published typical CL = 12.10 L/h; behaviour at any non-reference eGFR depends on this REF choice (raised to the 1.03 power exponent). Source column 'eGFR' (MDRD-based) maps to the canonical CRCL.",
+      source_name = "eGFR"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 21L,
-    n_studies        = 1L,
-    age_range        = "median 60.5 yr (cohort A IQR 59.5-67); 64 yr (cohort B IQR 63-66); 74 yr (cohort C IQR 69-76)",
-    age_median       = "65 years (pooled, approximated from cohort medians)",
-    weight_range     = "median 87.5 kg (cohort A IQR 82-112); 76.5 kg (cohort B IQR 67.5-96.5); 83 kg (cohort C IQR 77-84)",
-    weight_median    = "83 kg (pooled, approximated from cohort medians)",
-    sex_female_pct   = 24,
-    race_ethnicity   = "Not reported in detail",
-    disease_state    = "Adult survivors of out-of-hospital cardiac arrest (OHCA) admitted to the intensive care unit after return of spontaneous circulation; treated with targeted temperature management (36 C for 24 h) and sedated with propofol +/- remifentanil during study drug administration.",
-    dose_range       = "Three dose-escalation cohorts: cohort A 0.055 mg/kg/dose (body-weight dosing); cohorts B and C eGFR-based bins targeting AUC0-24h 2,100-3,300 ng*h/mL (cohort B) and 7,200-8,400 ng*h/mL (cohort C). All cohorts received six 15-minute IV infusions, every 4 h, over 24 h.",
-    regions          = "Single centre, Amsterdam UMC, Netherlands",
-    renal_function   = "MDRD eGFR on hospital admission spanned the dosing-table range of 0-220 mL/min/1.73 m^2 (Supplementary Table S1). Population median eGFR not reported in the paper.",
-    notes            = "Demographics from Admiraal 2023 Table 1. N = 21 (cohort A 8, cohort B 8, cohort C 5). One patient (patient 12) was screen-failed post hoc and excluded from PK analysis; the modelled N is therefore 21, not the protocol's planned N = 24. Median time from OHCA to first dose was 5.3 h (IQR 4.8-5.6). NCT02836340 / EUDRACT 2015-003902-17."
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
+    age_range = "median 60.5 yr (cohort A IQR 59.5-67); 64 yr (cohort B IQR 63-66); 74 yr (cohort C IQR 69-76)",
+    age_median = "65 years (pooled, approximated from cohort medians)",
+    weight_range = "median 87.5 kg (cohort A IQR 82-112); 76.5 kg (cohort B IQR 67.5-96.5); 83 kg (cohort C IQR 77-84)",
+    weight_median = "83 kg (pooled, approximated from cohort medians)",
+    sex_female_pct = 24,
+    race_ethnicity = "Not reported in detail",
+    disease_state = "Adult survivors of out-of-hospital cardiac arrest (OHCA) admitted to the intensive care unit after return of spontaneous circulation; treated with targeted temperature management (36 C for 24 h) and sedated with propofol +/- remifentanil during study drug administration.",
+    dose_range = "Three dose-escalation cohorts: cohort A 0.055 mg/kg/dose (body-weight dosing); cohorts B and C eGFR-based bins targeting AUC0-24h 2,100-3,300 ng*h/mL (cohort B) and 7,200-8,400 ng*h/mL (cohort C). All cohorts received six 15-minute IV infusions, every 4 h, over 24 h.",
+    regions = "Single centre, Amsterdam UMC, Netherlands",
+    renal_function = "MDRD eGFR on hospital admission spanned the dosing-table range of 0-220 mL/min/1.73 m^2 (Supplementary Table S1). Population median eGFR not reported in the paper.",
+    notes = "Demographics from Admiraal 2023 Table 1. N = 21 (cohort A 8, cohort B 8, cohort C 5). One patient (patient 12) was screen-failed post hoc and excluded from PK analysis; the modelled N is therefore 21, not the protocol's planned N = 24. Median time from OHCA to first dose was 5.3 h (IQR 4.8-5.6). NCT02836340 / EUDRACT 2015-003902-17."
   )
 
   ini({

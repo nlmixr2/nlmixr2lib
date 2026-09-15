@@ -47,8 +47,8 @@ Mann_2022_mu_receptor_binding <- function() {
   )
   vignette <- "Laffont_2025_opioid_overdose_reversal_simulation"
   units <- list(
-    time          = "min",
-    dosing        = "(not applicable; ligand concentrations are time-varying covariates)",
+    time = "min",
+    dosing = "(not applicable; ligand concentrations are time-varying covariates)",
     concentration = "fraction (RL_op and RL_antag are fractions of total mu-opioid receptor pool)"
   )
 
@@ -57,17 +57,27 @@ Mann_2022_mu_receptor_binding <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    RL_op    = list(analyte = "mu-opioid receptors bound by opioid agonist", units = NA_character_, specimen = "retina", verified = FALSE),
-    RL_antag = list(analyte = "mu-opioid receptors bound by opioid antagonist", units = NA_character_, specimen = "retina", verified = FALSE)
+    RL_op = list(
+      analyte = "mu-opioid receptors bound by opioid agonist",
+      units = NA_character_,
+      specimen = "retina",
+      verified = FALSE
+    ),
+    RL_antag = list(
+      analyte = "mu-opioid receptors bound by opioid antagonist",
+      units = NA_character_,
+      specimen = "retina",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     OPIOID_ID = list(
-      description        = "Integer 1..13 selecting which Table-S2 (Mann 2022) or Table-S3 (Laffont 2024) ligand fills the opioid agonist slot at runtime",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Integer 1..13 selecting which Table-S2 (Mann 2022) or Table-S3 (Laffont 2024) ligand fills the opioid agonist slot at runtime",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Mapping (Mann 2022 Supplement 1 Table S2 row order, alphabetical",
         "after first letter, preserved verbatim in this model file):",
         "1 = alfentanil; 2 = buprenorphine; 3 = butyryl fentanyl;",
@@ -80,14 +90,14 @@ Mann_2022_mu_receptor_binding <- function() {
         "Used in model() to gate which Kon_<ligand>, Koff_<ligand>,",
         "n_<ligand> values are routed into the opioid binding ODE."
       ),
-      source_name        = "(none; new canonical covariate registered for this model)"
+      source_name = "(none; new canonical covariate registered for this model)"
     ),
     ANTAGONIST_ID = list(
-      description        = "Integer 1..13 selecting which Table-S2 (Mann 2022) or Table-S3 (Laffont 2024) ligand fills the opioid antagonist slot at runtime",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Integer 1..13 selecting which Table-S2 (Mann 2022) or Table-S3 (Laffont 2024) ligand fills the opioid antagonist slot at runtime",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Same integer-to-ligand mapping as OPIOID_ID. In the Mann 2022",
         "context only naloxone (10) is used as the antagonist; in the",
         "Laffont 2024 / Laffont 2025 expansion, nalmefene (13) is the",
@@ -98,14 +108,14 @@ Mann_2022_mu_receptor_binding <- function() {
         "receptor without producing the full ventilatory-depression",
         "effect coupled to the agonist slot."
       ),
-      source_name        = "(none; new canonical covariate registered for this model)"
+      source_name = "(none; new canonical covariate registered for this model)"
     ),
     L_OPIOID_pM = list(
-      description        = "Time-varying opioid agonist effect-site concentration (pM) feeding the opioid binding ODE",
-      units              = "pM",
-      type               = "continuous",
+      description = "Time-varying opioid agonist effect-site concentration (pM) feeding the opioid binding ODE",
+      units = "pM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "In the Mann 2022 chain, the upstream IV-opioid PK layer",
         "(Mann_2022_fentanyl_iv or Mann_2022_carfentanil_iv) exposes its",
         "effect-site concentration Ce_pM as this covariate. The pM",
@@ -113,40 +123,40 @@ Mann_2022_mu_receptor_binding <- function() {
         "use: supply L_OPIOID_pM as a time-varying data column on the",
         "subject's records."
       ),
-      source_name        = "(none; new canonical covariate registered for this model)"
+      source_name = "(none; new canonical covariate registered for this model)"
     ),
     L_ANTAGONIST_pM = list(
-      description        = "Time-varying opioid antagonist effect-site concentration (pM) feeding the antagonist binding ODE",
-      units              = "pM",
-      type               = "continuous",
+      description = "Time-varying opioid antagonist effect-site concentration (pM) feeding the antagonist binding ODE",
+      units = "pM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Antagonist analogue of L_OPIOID_pM. In the Mann 2022 +",
         "Laffont 2024 chain, the upstream naloxone or nalmefene PK",
         "layer exposes its effect-site concentration in pM as this",
         "covariate."
       ),
-      source_name        = "(none; new canonical covariate registered for this model)"
+      source_name = "(none; new canonical covariate registered for this model)"
     )
   )
 
   population <- list(
-    species        = "in vitro (rat C6 glioma cells stably transfected with human mu-opioid receptor cDNA, C6-hMOR cell line) for binding-parameter fitting; the receptor-binding layer is then deployed in the Mann 2022 human-overdose simulation chain.",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "in vitro (rat C6 glioma cells stably transfected with human mu-opioid receptor cDNA, C6-hMOR cell line) for binding-parameter fitting; the receptor-binding layer is then deployed in the Mann 2022 human-overdose simulation chain.",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "In vitro receptor binding assay; not a clinical population.",
-    dose_range     = paste(
+    disease_state = "In vitro receptor binding assay; not a clinical population.",
+    dose_range = paste(
       "Ligand concentrations at the binding-assay scale ranged from",
       "0.01 to 81.7 nM across ligands (per-ligand ranges in Mann 2022",
       "Supplement 1 Experimental Procedures). In the integrated overdose",
       "chain, ligand concentrations are driven by the upstream PK layer."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Parameter values are best-fit point estimates from association",
       "and dissociation experiments simultaneously fit to Equation 1 of",
       "Supplement 1: dRL/dt = Kon * L^n * R - Koff * RL, with",
@@ -162,7 +172,7 @@ Mann_2022_mu_receptor_binding <- function() {
       "only (the binding model is a typical-value mechanism without",
       "between-subject variability)."
     ),
-    n_ligands      = 13L
+    n_ligands = 13L
   )
 
   ini({

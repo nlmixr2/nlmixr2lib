@@ -46,14 +46,17 @@ Kapitanov_2025_dupilumab_3cmt_qsp <- function() {
   # canonical paper-mechanistic extensions of the multi-compartment TMDD
   # binding.
   paper_specific_compartments <- c(
-    "target_central", "complex_central",
-    "target_peripheral1", "complex_peripheral1",
-    "target_peripheral2", "complex_peripheral2"
+    "target_central",
+    "complex_central",
+    "target_peripheral1",
+    "complex_peripheral1",
+    "target_peripheral2",
+    "complex_peripheral2"
   )
 
   units <- list(
-    time          = "h",
-    dosing        = paste(
+    time = "h",
+    dosing = paste(
       "Dupilumab dose into the central compartment must be in mg.",
       "Bioavailability multiplier converts amt (mg) to nmol using MW",
       "147 kDa (standard IgG4 mAb; not stated in Kapitanov 2025). Case",
@@ -77,29 +80,44 @@ Kapitanov_2025_dupilumab_3cmt_qsp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central             = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1         = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral2         = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    target_central      = list(analyte = "IL4R", units = NA_character_, specimen = "plasma", verified = FALSE),
-    target_peripheral1  = list(analyte = "IL4R", units = NA_character_, specimen = "plasma", verified = FALSE),
-    target_peripheral2  = list(analyte = "IL4R", units = NA_character_, specimen = "plasma", verified = FALSE),
-    complex_central     = list(analyte = "dupilumab-IL4R complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    complex_peripheral1 = list(analyte = "dupilumab-IL4R complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    complex_peripheral2 = list(analyte = "dupilumab-IL4R complex", units = NA_character_, specimen = "plasma", verified = FALSE)
+    central = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target_central = list(analyte = "IL4R", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target_peripheral1 = list(analyte = "IL4R", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target_peripheral2 = list(analyte = "IL4R", units = NA_character_, specimen = "plasma", verified = FALSE),
+    complex_central = list(
+      analyte = "dupilumab-IL4R complex",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    complex_peripheral1 = list(
+      analyte = "dupilumab-IL4R complex",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    complex_peripheral2 = list(
+      analyte = "dupilumab-IL4R complex",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    age_range      = "healthy adult volunteers (upstream PK data)",
-    weight_range   = "assumed 70 kg",
-    weight_median  = "70 kg (Kapitanov 2025 Section 2.4 standard human)",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = "healthy adult volunteers (upstream PK data)",
+    weight_range = "assumed 70 kg",
+    weight_median = "70 kg (Kapitanov 2025 Section 2.4 standard human)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "The dupilumab PK layer inherits from Case Study 2, i.e. the",
       "healthy-volunteer first-in-human study of Li E et al. 2015",
       "(Kapitanov 2025 ref 35). The IL4R concentration in the SoA",
@@ -112,14 +130,14 @@ Kapitanov_2025_dupilumab_3cmt_qsp <- function() {
       "atopic dermatitis.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single IV bolus at 1, 3, 8, and 12 mg/kg (70, 210, 560, 840 mg",
       "at 70 kg) simulated to demonstrate SoA receptor-occupancy",
       "prediction.",
       sep = " "
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Kapitanov 2025 does not perform a per-subject fit for Case",
       "Study 3; the parameters are structural / mechanistic",
       "assumptions on top of the Case Study 2 fitted PK. No IIV / OMEGA",

@@ -34,8 +34,8 @@ Stringer_2014_sipoglitazar <- function() {
   )
   vignette <- "Stringer_2014_sipoglitazar"
   units <- list(
-    time          = "day",
-    dosing        = "mg sipoglitazar (oral total daily dose, carried as the DOSE_SIPOGLITAZAR_MGD covariate; the model has no event-table dose records)",
+    time = "day",
+    dosing = "mg sipoglitazar (oral total daily dose, carried as the DOSE_SIPOGLITAZAR_MGD covariate; the model has no event-table dose records)",
     concentration = "FPG in mmol/L; HbA1c in % (NGSP); AUC0-24h at steady state in mg*day/L"
   )
 
@@ -48,49 +48,49 @@ Stringer_2014_sipoglitazar <- function() {
   # (Equations 3 and 4).
   compartmentData <- list(
     glucose = list(analyte = "glucose", units = "mmol/L", specimen = "plasma", verified = TRUE),
-    hba1c   = list(analyte = "HbA1c",   units = "%",      specimen = "blood cell", verified = TRUE)
+    hba1c = list(analyte = "HbA1c", units = "%", specimen = "blood cell", verified = TRUE)
   )
 
   covariateData <- list(
     TRT = list(
-      description        = "Per-subject treatment-cohort indicator. 0 = placebo; 1 = sipoglitazar at any regimen OTHER than 32 mg twice daily (8 mg QD, 16 mg QD, 16 mg BID, 32 mg QD, 64 mg QD); 2 = sipoglitazar 32 mg twice daily; 3 = rosiglitazone 8 mg once daily.",
-      units              = "(categorical / integer-coded)",
-      type               = "categorical",
+      description = "Per-subject treatment-cohort indicator. 0 = placebo; 1 = sipoglitazar at any regimen OTHER than 32 mg twice daily (8 mg QD, 16 mg QD, 16 mg BID, 32 mg QD, 64 mg QD); 2 = sipoglitazar 32 mg twice daily; 3 = rosiglitazone 8 mg once daily.",
+      units = "(categorical / integer-coded)",
+      type = "categorical",
       reference_category = "0 (placebo)",
-      notes              = "Stringer 2014 Methods 'Subjects and Data Collection': 'Patients were treated with sipoglitazar, rosiglitazone, or placebo: sipoglitazar 8 mg once daily (QD), 16 mg QD, 16 mg twice daily (BID), 32 mg QD, 32 mg BID, and 64 mg QD, placebo or rosiglitazone 8 mg QD.' Disposition: sipoglitazar n = 572, rosiglitazone n = 72, placebo n = 136 (total 780). The cohort indicator carries three distinct pieces of model structure. (a) Level 2 is split out from the other sipoglitazar regimens because the paper estimated a SEPARATE FPG baseline for that arm: Methods 'A lower FPG baseline value was observed in the 32 mg BID sipoglitazar group compared to all other treatment groups. The addition of a separate FPG baseline for this group was included in the model' (Table 2 rows 'BSL FPG 9.41' and 'BSL FPG(a) 9.02', footnote a 'BSL FPG value for 32 mg BID group'). (b) Level 3 gates the rosiglitazone treatment effect ROTE on KoutG, because no rosiglitazone plasma concentrations were collected and the effect is a fixed step rather than exposure-driven (Methods: 'In the rosiglitazone group, no plasma concentration data were collected during the treatment period and as such the treatment effect for rosiglitazone (ROTE) was included using a stimulatory step function on KoutG'). (c) Levels 0 vs 1/2 vs 3 select the HbA1c lifestyle effect LEHB (0.037 placebo, 0.037 - 0.017 = 0.020 sipoglitazar, 0 rosiglitazone per Results 'Lifestyle Effect Model': 'No significant lifestyle effect on HbA1c could be indentified on the rosiglitazone group'). The sipoglitazar DOSE LEVEL is NOT carried by TRT -- it is carried separately by DOSE_SIPOGLITAZAR_MGD, so a level-1 or level-2 subject must also have a non-zero daily dose set.",
-      source_name        = "treatment group"
+      notes = "Stringer 2014 Methods 'Subjects and Data Collection': 'Patients were treated with sipoglitazar, rosiglitazone, or placebo: sipoglitazar 8 mg once daily (QD), 16 mg QD, 16 mg twice daily (BID), 32 mg QD, 32 mg BID, and 64 mg QD, placebo or rosiglitazone 8 mg QD.' Disposition: sipoglitazar n = 572, rosiglitazone n = 72, placebo n = 136 (total 780). The cohort indicator carries three distinct pieces of model structure. (a) Level 2 is split out from the other sipoglitazar regimens because the paper estimated a SEPARATE FPG baseline for that arm: Methods 'A lower FPG baseline value was observed in the 32 mg BID sipoglitazar group compared to all other treatment groups. The addition of a separate FPG baseline for this group was included in the model' (Table 2 rows 'BSL FPG 9.41' and 'BSL FPG(a) 9.02', footnote a 'BSL FPG value for 32 mg BID group'). (b) Level 3 gates the rosiglitazone treatment effect ROTE on KoutG, because no rosiglitazone plasma concentrations were collected and the effect is a fixed step rather than exposure-driven (Methods: 'In the rosiglitazone group, no plasma concentration data were collected during the treatment period and as such the treatment effect for rosiglitazone (ROTE) was included using a stimulatory step function on KoutG'). (c) Levels 0 vs 1/2 vs 3 select the HbA1c lifestyle effect LEHB (0.037 placebo, 0.037 - 0.017 = 0.020 sipoglitazar, 0 rosiglitazone per Results 'Lifestyle Effect Model': 'No significant lifestyle effect on HbA1c could be indentified on the rosiglitazone group'). The sipoglitazar DOSE LEVEL is NOT carried by TRT -- it is carried separately by DOSE_SIPOGLITAZAR_MGD, so a level-1 or level-2 subject must also have a non-zero daily dose set.",
+      source_name = "treatment group"
     ),
     DOSE_SIPOGLITAZAR_MGD = list(
-      description        = "Subject's TOTAL daily sipoglitazar dose in mg/day, summed across both administrations for the twice-daily regimens. 0 mg/day for placebo and rosiglitazone subjects.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Subject's TOTAL daily sipoglitazar dose in mg/day, summed across both administrations for the twice-daily regimens. 0 mg/day for placebo and rosiglitazone subjects.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Stringer 2014 Methods: studied regimens are 8 mg QD, 16 mg QD, 16 mg BID, 32 mg QD, 32 mg BID and 64 mg QD, i.e. total daily doses of 8, 16, 32, 32, 64 and 64 mg/day. Enters the steady-state exposure computation AUC = DOSE_SIPOGLITAZAR_MGD / (CL * 24), which drives the Emax stimulation of KoutG (Equation 1). The total-daily-dose basis (rather than a per-administration dose) is fixed by the paper's own definition of the driver: Methods 'AUC50 is the AUC0-24h at steady state achieving half the maximal response' and 'individual exposure, AUC (AUC = dose/CL) over the dose interval at steady state'. It is confirmed numerically by the paper's own simulations -- Table 1 assigns 64 mg to UGT2B15*1/*1 (CL 5.04 L/h) giving AUC = 64 / 120.96 = 0.529 mg*day/L, DEF = 0.487 * 0.529 / (1.15 + 0.529) = 0.153, and a steady-state FPG of 9.41 / 1.153 = 8.16 mmol/L, matching the -1.2 mmol/L change from baseline reported in Results and the ~8.2 mmol/L asymptote of Figure 2a. The paper tested but did NOT retain a separate AUC50 between QD and BID regimens ('To explore any potential differences between daily dosing regimens, a different AUC50 value was tested between the BID and QD groups'; only one AUC50 appears in Table 2), so a 32 mg BID subject and a 64 mg QD subject share the same drug effect at the same clearance.",
-      source_name        = "dose"
+      notes = "Stringer 2014 Methods: studied regimens are 8 mg QD, 16 mg QD, 16 mg BID, 32 mg QD, 32 mg BID and 64 mg QD, i.e. total daily doses of 8, 16, 32, 32, 64 and 64 mg/day. Enters the steady-state exposure computation AUC = DOSE_SIPOGLITAZAR_MGD / (CL * 24), which drives the Emax stimulation of KoutG (Equation 1). The total-daily-dose basis (rather than a per-administration dose) is fixed by the paper's own definition of the driver: Methods 'AUC50 is the AUC0-24h at steady state achieving half the maximal response' and 'individual exposure, AUC (AUC = dose/CL) over the dose interval at steady state'. It is confirmed numerically by the paper's own simulations -- Table 1 assigns 64 mg to UGT2B15*1/*1 (CL 5.04 L/h) giving AUC = 64 / 120.96 = 0.529 mg*day/L, DEF = 0.487 * 0.529 / (1.15 + 0.529) = 0.153, and a steady-state FPG of 9.41 / 1.153 = 8.16 mmol/L, matching the -1.2 mmol/L change from baseline reported in Results and the ~8.2 mmol/L asymptote of Figure 2a. The paper tested but did NOT retain a separate AUC50 between QD and BID regimens ('To explore any potential differences between daily dosing regimens, a different AUC50 value was tested between the BID and QD groups'; only one AUC50 appears in Table 2), so a 32 mg BID subject and a 64 mg QD subject share the same drug effect at the same clearance.",
+      source_name = "dose"
     ),
     UGT2B15_STAR2_HET = list(
-      description        = "Binary germline genotype indicator for the UGT2B15*1/*2 heterozygote group: 1 = subject carries exactly one UGT2B15*2 allele; 0 = otherwise (the union of *1/*1 wild-type homozygotes and *2/*2 homozygous carriers, which the paired indicator UGT2B15_STAR2_HOM flags). Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary germline genotype indicator for the UGT2B15*1/*2 heterozygote group: 1 = subject carries exactly one UGT2B15*2 allele; 0 = otherwise (the union of *1/*1 wild-type homozygotes and *2/*2 homozygous carriers, which the paired indicator UGT2B15_STAR2_HOM flags). Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (UGT2B15*1/*1 wild-type homozygote, when UGT2B15_STAR2_HOM and UGT2B15_MISSING are also 0)",
-      notes              = "Stringer 2014 Table 1 fixes the sipoglitazar clearance used to compute exposure for this stratum at 3.35 L/h. Genotype counts UGT2B15*1/*1 : *1/*2 : *2/*2 = 149 : 357 : 194 (Table S1 of the supplement), i.e. 21% : 51% : 28% of genotyped subjects (Methods 'Model Qualification'). UGT2B15*2 is the reduced-glucuronidation variant, so *1/*2 subjects have intermediate clearance and *2/*2 subjects the lowest -- Introduction: 'Higher plasma exposure of sipoglitazar was observed in the UGT2B15*2/*2 genotype than subjects homozygous for the wild-type allele UGT2B15*1/*1 (3.3-fold higher) or heterozygous allele UGT2B15*1/*2 (2.2-fold higher).'",
-      source_name        = "UGT2B15*1/*2"
+      notes = "Stringer 2014 Table 1 fixes the sipoglitazar clearance used to compute exposure for this stratum at 3.35 L/h. Genotype counts UGT2B15*1/*1 : *1/*2 : *2/*2 = 149 : 357 : 194 (Table S1 of the supplement), i.e. 21% : 51% : 28% of genotyped subjects (Methods 'Model Qualification'). UGT2B15*2 is the reduced-glucuronidation variant, so *1/*2 subjects have intermediate clearance and *2/*2 subjects the lowest -- Introduction: 'Higher plasma exposure of sipoglitazar was observed in the UGT2B15*2/*2 genotype than subjects homozygous for the wild-type allele UGT2B15*1/*1 (3.3-fold higher) or heterozygous allele UGT2B15*1/*2 (2.2-fold higher).'",
+      source_name = "UGT2B15*1/*2"
     ),
     UGT2B15_STAR2_HOM = list(
-      description        = "Binary germline genotype indicator for the UGT2B15*2/*2 homozygous-variant group: 1 = subject carries two UGT2B15*2 alleles; 0 = otherwise (the union of *1/*1 wild-type homozygotes and *1/*2 heterozygotes, which the paired indicator UGT2B15_STAR2_HET flags). Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary germline genotype indicator for the UGT2B15*2/*2 homozygous-variant group: 1 = subject carries two UGT2B15*2 alleles; 0 = otherwise (the union of *1/*1 wild-type homozygotes and *1/*2 heterozygotes, which the paired indicator UGT2B15_STAR2_HET flags). Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (UGT2B15*1/*1 wild-type homozygote, when UGT2B15_STAR2_HET and UGT2B15_MISSING are also 0)",
-      notes              = "Stringer 2014 Table 1 fixes the sipoglitazar clearance used to compute exposure for this stratum at 1.53 L/h -- 3.3-fold lower than the UGT2B15*1/*1 value of 5.04 L/h, matching the '3.3-fold higher' exposure statement in the Introduction. n = 194 of 700 genotyped subjects (supplement Table S1).",
-      source_name        = "UGT2B15*2/*2"
+      notes = "Stringer 2014 Table 1 fixes the sipoglitazar clearance used to compute exposure for this stratum at 1.53 L/h -- 3.3-fold lower than the UGT2B15*1/*1 value of 5.04 L/h, matching the '3.3-fold higher' exposure statement in the Introduction. n = 194 of 700 genotyped subjects (supplement Table S1).",
+      source_name = "UGT2B15*2/*2"
     ),
     UGT2B15_MISSING = list(
-      description        = "Binary indicator for a subject whose UGT2B15 genotype was not collected. 1 = genotype missing; 0 = genotype known (in which case UGT2B15_STAR2_HET and UGT2B15_STAR2_HOM together identify the diplotype, and both being 0 means *1/*1). When UGT2B15_MISSING is 1 both star-allele indicators must be 0.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for a subject whose UGT2B15 genotype was not collected. 1 = genotype missing; 0 = genotype known (in which case UGT2B15_STAR2_HET and UGT2B15_STAR2_HOM together identify the diplotype, and both being 0 means *1/*1). When UGT2B15_MISSING is 1 both star-allele indicators must be 0.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (UGT2B15 genotype known)",
-      notes              = "Stringer 2014 Methods 'Intra-Individual Variability and Residual Error': 'Genotype information was not collected in 10% of the population, however, these subjects were included in the analysis using an average clearance value for the population.' Supplement Table S1 footnote: 'genotype information not collected in 80 subjects' (80 of 780 = 10.3%). The paper does not print the numeric population-average clearance it used; the value carried in this model file (3.21 L/h) is DERIVED from the paper's own numbers as the genotype-frequency-weighted mean of the Table 1 clearances using the Table S1 genotype counts -- (149 * 5.04 + 357 * 3.35 + 194 * 1.53) / 700 = 3.205 L/h. See the vignette Assumptions and deviations section.",
-      source_name        = "genotype not collected"
+      notes = "Stringer 2014 Methods 'Intra-Individual Variability and Residual Error': 'Genotype information was not collected in 10% of the population, however, these subjects were included in the analysis using an average clearance value for the population.' Supplement Table S1 footnote: 'genotype information not collected in 80 subjects' (80 of 780 = 10.3%). The paper does not print the numeric population-average clearance it used; the value carried in this model file (3.21 L/h) is DERIVED from the paper's own numbers as the genotype-frequency-weighted mean of the Table 1 clearances using the Table S1 genotype counts -- (149 * 5.04 + 357 * 3.35 + 194 * 1.53) / 700 = 3.205 L/h. See the vignette Assumptions and deviations section.",
+      source_name = "genotype not collected"
     )
   )
 
@@ -102,46 +102,46 @@ Stringer_2014_sipoglitazar <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age at baseline.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened by forward inclusion / backward elimination (Methods 'Covariate Analysis') on the IIV of BSLG, BSLH, LEFPG and LEHB; not retained. Cohort median 56 years (range 34-75), supplement Table S1."
+      units = "years",
+      type = "continuous",
+      notes = "Screened by forward inclusion / backward elimination (Methods 'Covariate Analysis') on the IIV of BSLG, BSLH, LEFPG and LEHB; not retained. Cohort median 56 years (range 34-75), supplement Table S1."
     ),
     SEXF = list(
       description = "Sex indicator: 1 = female, 0 = male.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened and not retained (Results 'Covariate Analysis'). Cohort 388 male : 392 female, supplement Table S1."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened and not retained (Results 'Covariate Analysis'). Cohort 388 male : 392 female, supplement Table S1."
     ),
     WT = list(
       description = "Body weight at baseline.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened and not retained (Results 'Covariate Analysis'). Cohort median 88.8 kg (range 55-160), supplement Table S1."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened and not retained (Results 'Covariate Analysis'). Cohort median 88.8 kg (range 55-160), supplement Table S1."
     ),
     T_DIAG_DIAB = list(
       description = "Time since diagnosis of type 2 diabetes mellitus.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened and not retained (Results 'Covariate Analysis'). Cohort median 1.0 year (range 0-30.9), supplement Table S1. All subjects were drug-naive at entry."
+      units = "years",
+      type = "continuous",
+      notes = "Screened and not retained (Results 'Covariate Analysis'). Cohort median 1.0 year (range 0-30.9), supplement Table S1. All subjects were drug-naive at entry."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 780L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 780L,
+    n_studies = 2L,
     n_observations = "FPG and HbA1c sampled at -1, 0, 2, 4, 6, 8, 10 and 12 weeks in every subject (Methods 'Subjects and Data Collection'); the paper does not report an observation count.",
-    age_range      = "34-75 years (inclusion criterion age > 35 and < 75 years; supplement Table S1 realised range 34-75)",
-    age_median     = "56 years (supplement Table S1)",
-    weight_range   = "55-160 kg (supplement Table S1)",
-    weight_median  = "88.8 kg (supplement Table S1)",
+    age_range = "34-75 years (inclusion criterion age > 35 and < 75 years; supplement Table S1 realised range 34-75)",
+    age_median = "56 years (supplement Table S1)",
+    weight_range = "55-160 kg (supplement Table S1)",
+    weight_median = "88.8 kg (supplement Table S1)",
     sex_female_pct = 50.3,
     race_ethnicity = "Not reported in the source paper. The Discussion contrasts the observed UGT2B15*1/*1 frequency (21%) against a literature Caucasian frequency of 19-22% and Asian American / Japanese American frequencies of 47% / 100%, implying a predominantly Caucasian cohort, but no race table is given.",
-    disease_state  = "Drug-naive adults with type 2 diabetes mellitus. Inclusion criteria: diagnosis of type 2 diabetes with no prior exposure to anti-diabetic medication, screening HbA1c > 7.0% and < 10.0%, age > 35 and < 75 years. Baseline FPG median 9.3 mmol/L (range 2.9-20.8); baseline HbA1c median 7.9% (range 6.9-9.9); duration of disease median 1.0 year (range 0-30.9). Supplement Table S1.",
-    dose_range     = "Sipoglitazar 8 mg QD, 16 mg QD, 16 mg BID, 32 mg QD, 32 mg BID or 64 mg QD (total daily dose 8-64 mg/day), rosiglitazone 8 mg QD, or placebo, each for 13 weeks. Disposition: sipoglitazar n = 572, rosiglitazone n = 72, placebo n = 136.",
-    regions        = "Not reported in the source paper; the central laboratory was Medical Research Laboratories International, Brussels, Belgium.",
-    genotype       = "UGT2B15*1/*1 : *1/*2 : *2/*2 = 149 : 357 : 194 among the 700 genotyped subjects (21% : 51% : 28%); genotype was not collected in the remaining 80 subjects (supplement Table S1 footnote).",
-    notes          = "Two 13-week Phase II randomized, double-blind trials pooled for the analysis. All subjects received dietary advice for the entire trial duration, which is what the LEFPG / LEHB 'lifestyle effect' parameters absorb. Estimation in NONMEM 7.1 with FOCE-I and ADVAN6; simulations in Berkeley Madonna 8.3.13. Model stability assessed with 500 bootstrap replicates (92.6% minimised successfully); no eta shrinkage above 12%."
+    disease_state = "Drug-naive adults with type 2 diabetes mellitus. Inclusion criteria: diagnosis of type 2 diabetes with no prior exposure to anti-diabetic medication, screening HbA1c > 7.0% and < 10.0%, age > 35 and < 75 years. Baseline FPG median 9.3 mmol/L (range 2.9-20.8); baseline HbA1c median 7.9% (range 6.9-9.9); duration of disease median 1.0 year (range 0-30.9). Supplement Table S1.",
+    dose_range = "Sipoglitazar 8 mg QD, 16 mg QD, 16 mg BID, 32 mg QD, 32 mg BID or 64 mg QD (total daily dose 8-64 mg/day), rosiglitazone 8 mg QD, or placebo, each for 13 weeks. Disposition: sipoglitazar n = 572, rosiglitazone n = 72, placebo n = 136.",
+    regions = "Not reported in the source paper; the central laboratory was Medical Research Laboratories International, Brussels, Belgium.",
+    genotype = "UGT2B15*1/*1 : *1/*2 : *2/*2 = 149 : 357 : 194 among the 700 genotyped subjects (21% : 51% : 28%); genotype was not collected in the remaining 80 subjects (supplement Table S1 footnote).",
+    notes = "Two 13-week Phase II randomized, double-blind trials pooled for the analysis. All subjects received dietary advice for the entire trial duration, which is what the LEFPG / LEHB 'lifestyle effect' parameters absorb. Estimation in NONMEM 7.1 with FOCE-I and ADVAN6; simulations in Berkeley Madonna 8.3.13. Model stability assessed with 500 bootstrap replicates (92.6% minimised successfully); no eta shrinkage above 12%."
   )
 
   ini({

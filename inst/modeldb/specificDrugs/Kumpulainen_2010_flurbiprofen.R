@@ -14,41 +14,41 @@ Kumpulainen_2010_flurbiprofen <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "flurbiprofen", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2      = list(analyte = "flurbiprofen", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "flurbiprofen", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "flurbiprofen", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "flurbiprofen", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "flurbiprofen", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "flurbiprofen", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "flurbiprofen", units = "mg", specimen = "plasma", verified = FALSE),
-    csf         = list(analyte = "flurbiprofen", units = "mg", specimen = "CSF", verified = FALSE)
+    csf = list(analyte = "flurbiprofen", units = "mg", specimen = "CSF", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Drives allometric scaling on CL (exponent fixed at 0.75) and on all volumes V_central, V_shallow, V_deep, V_CSF (shared exponent fixed at 1.0). Reference weight 70 kg per the paper's (WT/70) normalisation. Median weight in the study was 20 kg (range 7-76 kg).",
-      source_name        = "WT"
+      notes = "Time-fixed per subject. Drives allometric scaling on CL (exponent fixed at 0.75) and on all volumes V_central, V_shallow, V_deep, V_CSF (shared exponent fixed at 1.0). Reference weight 70 kg per the paper's (WT/70) normalisation. Median weight in the study was 20 kg (range 7-76 kg).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 64L,
-    n_studies      = 1L,
-    age_range      = "3 months to 13 years",
-    age_median     = "5.2 years",
-    weight_range   = "7-76 kg",
-    weight_median  = "20 kg",
-    height_range   = "60-167 cm",
-    height_median  = "110 cm",
+    species = "human",
+    n_subjects = 64L,
+    n_studies = 1L,
+    age_range = "3 months to 13 years",
+    age_median = "5.2 years",
+    weight_range = "7-76 kg",
+    weight_median = "20 kg",
+    height_range = "60-167 cm",
+    height_median = "110 cm",
     sex_female_pct = 23.4,
     race_ethnicity = "Not reported (single-centre Finnish cohort; 64 healthy children scheduled for elective lower-body surgery with spinal anaesthesia)",
-    disease_state  = "Healthy children scheduled for elective lower-body surgery (herniotomy, orthopaedic, genitourinary, other) under spinal anaesthesia. EudraCT 2006-000310-20; Research Ethics Committee of the Hospital District of Northern Savo (no. 12/2006).",
-    dose_range     = "Single preoperative dose: 37 children received 1 mg/kg oral flurbiprofen syrup (Froben, 5 mg/mL, Abbott); 27 children received a 10-min IV injection of 0.9 mg/kg flurbiprofen axetil (Ropion 10 mg/mL, Kaken Pharmaceutical) which corresponds to approximately 0.65 mg/kg flurbiprofen equivalent. The model receives the flurbiprofen-equivalent mass on the IV depot2 compartment.",
-    regions        = "Finland (Kuopio University Hospital, single centre).",
-    notes          = "304 total plasma + 62 protein-free plasma + 60 total CSF flurbiprofen concentrations from 64 children. NONMEM VI with first-order conditional estimation with interaction (FOCE-I). Premedication: transmucosal midazolam + ketamine; intraoperative sedation: propofol + thiopental; postoperative analgesia: paracetamol + ketoprofen with fentanyl rescue. Concomitant medications were not modelled."
+    disease_state = "Healthy children scheduled for elective lower-body surgery (herniotomy, orthopaedic, genitourinary, other) under spinal anaesthesia. EudraCT 2006-000310-20; Research Ethics Committee of the Hospital District of Northern Savo (no. 12/2006).",
+    dose_range = "Single preoperative dose: 37 children received 1 mg/kg oral flurbiprofen syrup (Froben, 5 mg/mL, Abbott); 27 children received a 10-min IV injection of 0.9 mg/kg flurbiprofen axetil (Ropion 10 mg/mL, Kaken Pharmaceutical) which corresponds to approximately 0.65 mg/kg flurbiprofen equivalent. The model receives the flurbiprofen-equivalent mass on the IV depot2 compartment.",
+    regions = "Finland (Kuopio University Hospital, single centre).",
+    notes = "304 total plasma + 62 protein-free plasma + 60 total CSF flurbiprofen concentrations from 64 children. NONMEM VI with first-order conditional estimation with interaction (FOCE-I). Premedication: transmucosal midazolam + ketamine; intraoperative sedation: propofol + thiopental; postoperative analgesia: paracetamol + ketoprofen with fentanyl rescue. Concomitant medications were not modelled."
   )
 
   ini({

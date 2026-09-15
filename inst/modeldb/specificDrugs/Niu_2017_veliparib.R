@@ -30,20 +30,20 @@ Niu_2017_veliparib <- function() {
   # final parent-metabolite model) and Methods "Sampling and Assay for
   # Veliparib and M8 Serum Concentration" (plasma sampling).
   compartmentData <- list(
-    depot           = list(analyte = "veliparib", units = "mg", specimen = "administration site", verified = TRUE),
-    central         = list(analyte = "veliparib", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1     = list(analyte = "veliparib", units = "mg", specimen = "plasma", verified = TRUE),
-    central_m8      = list(analyte = "M8", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_m8  = list(analyte = "M8", units = "mg", specimen = "plasma", verified = TRUE)
+    depot = list(analyte = "veliparib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "veliparib", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "veliparib", units = "mg", specimen = "plasma", verified = TRUE),
+    central_m8 = list(analyte = "M8", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_m8 = list(analyte = "M8", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated by the Cockcroft-Gault formula, NOT body-surface-area normalised",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the Cockcroft-Gault formula, NOT body-surface-area normalised",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Raw (non-BSA-normalised) Cockcroft-Gault creatinine clearance in mL/min, the",
         "only renal-function covariate in the model. Niu 2017 Table 1 footnote: 'CLCR",
         "was estimated using the Cockcroft-Gault formula. Estimated CLCR values higher",
@@ -62,14 +62,14 @@ Niu_2017_veliparib <- function() {
         "CRCL via the CLCR source alias (precedents: Delattre_2010_amikacin.R,",
         "Jonsson_2015_edoxaban.R)."
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     ),
     LBM = list(
-      description        = "Lean body mass, the size descriptor on the veliparib central volume of distribution",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass, the size descriptor on the veliparib central volume of distribution",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters as a median-centred power term on the veliparib central volume:",
         "vc = vc * (LBM/48)^1.21 (Niu 2017 Eq. 7). The 48 kg centring value matches",
         "the cohort mean LBM of 47.6 kg (Table 1, Total column) and the Abstract's",
@@ -85,7 +85,7 @@ Niu_2017_veliparib <- function() {
         "screened and REJECTED in favour of LBM (Supplemental Table S1 run 105, an",
         "allometric weight model with exponents fixed at 1 and 0.75, was rejected)."
       ),
-      source_name        = "LBM"
+      source_name = "LBM"
     )
   )
 
@@ -101,11 +101,15 @@ Niu_2017_veliparib <- function() {
   # preserved without declaring covariates that model() never references.
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = "Screened, not retained. Cohort mean 53.5 years, range 28.0-84.0 (Niu 2017 Table 1)."
     ),
     WT = list(
-      description = "Total body weight", units = "kg", type = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       notes = paste(
         "Screened, not retained; LBM was preferred as the size descriptor on Vc/F.",
         "Supplemental Table S1 run 105 (allometric WT with exponents fixed at 1 for",
@@ -114,13 +118,16 @@ Niu_2017_veliparib <- function() {
       )
     ),
     BSA = list(
-      description = "Body surface area, estimated by the Mosteller formula", units = "m^2",
+      description = "Body surface area, estimated by the Mosteller formula",
+      units = "m^2",
       type = "continuous",
       notes = "Screened, not retained. Niu 2017 Methods cites the Mosteller formula (reference 18); BSA values are not tabulated in the paper."
     ),
     SEXF = list(
-      description = "Biological sex indicator, 1 = female, 0 = male", units = "(binary)",
-      type = "binary", reference_category = "0 (male)",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
+      reference_category = "0 (male)",
       notes = paste(
         "Screened, not retained. Niu 2017 coded sex as 0 for females and 1 for males",
         "(Eq. 4), i.e. the SEXM orientation; the canonical SEXF is the inverse",
@@ -129,42 +136,48 @@ Niu_2017_veliparib <- function() {
       )
     ),
     ALT = list(
-      description = "Alanine aminotransferase", units = "U/L", type = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Screened as part of liver function, not retained. Cohort mean 28.3 U/L, range 7.00-135 (Niu 2017 Table 1)."
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Screened as part of liver function, not retained. Cohort mean 33.7 U/L, range 11.0-117 (Niu 2017 Table 1)."
     ),
     TBILI = list(
-      description = "Total bilirubin", units = "mg/dL", type = "continuous",
+      description = "Total bilirubin",
+      units = "mg/dL",
+      type = "continuous",
       notes = "Screened as part of liver function, not retained. Cohort mean 0.51 mg/dL, range 0.10-1.10 (Niu 2017 Table 1); reported in mg/dL, not the register's canonical umol/L."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 67L,
-    n_studies      = 1L,
-    age_range      = "28.0-84.0 years",
-    age_median     = "53.5 years (cohort mean; the paper reports mean and range, not median)",
-    weight_range   = "45.0-119 kg",
-    weight_median  = "74.9 kg (cohort mean; the paper reports mean and range, not median)",
+    species = "human",
+    n_subjects = 67L,
+    n_studies = 1L,
+    age_range = "28.0-84.0 years",
+    age_median = "53.5 years (cohort mean; the paper reports mean and range, not median)",
+    weight_range = "45.0-119 kg",
+    weight_median = "74.9 kg (cohort mean; the paper reports mean and range, not median)",
     sex_female_pct = 97.2,
     race_ethnicity = "Not reported",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with BRCA 1/2-mutated cancer or PARP-sensitive tumor types, enrolled in a",
       "phase 1 multicenter, randomized, open-label dose-escalation study of chronically",
       "dosed single-agent veliparib (ClinicalTrials.gov NCT00892736). ECOG performance",
       "status 0 in 43 (61%), 1 in 22 (31%) and 2 in 6 (8%) of the 71 enrolled patients."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral veliparib twice daily without regard to meals at 9 AM/PM dose levels:",
       "50/50, 100/50, 100/100, 150/100, 150/150, 200/200, 300/300, 400/400 and",
       "500/500 mg. Only the morning dose was given on day 1; twice-daily dosing started",
       "on day 2 and continued for at least one 28-day cycle."
     ),
-    regions        = "Not reported (multicenter, United States)",
+    regions = "Not reported (multicenter, United States)",
     renal_function = paste(
       "Cockcroft-Gault CLCR mean 95.2 mL/min, range 48.5-120 (Niu 2017 Table 1). For 20",
       "of the 71 patients the Cockcroft-Gault estimate exceeded 120 mL/min and was",
@@ -173,7 +186,7 @@ Niu_2017_veliparib <- function() {
       "patients with clinically significant renal impairment were enrolled; a dedicated",
       "renal-dysfunction study (NCT01366144) was ongoing at publication."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Niu 2017 Table 1 (Total column, n = 71 enrolled).",
       "THE PK MODEL WAS FIT TO 67 PATIENTS, not 71: Table 1 footnote states 'Of the 71",
       "patients, 67 had pharmacokinetic samples for veliparib, and 38 of the 67 had M8",

@@ -16,49 +16,49 @@ FiedlerKelly_2019_fremanezumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "fremanezumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "fremanezumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "fremanezumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "fremanezumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "fremanezumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling on CL (exponent 1.05) and on the central volume of distribution Vc (exponent 1.53; same exponent applied to both Vc,IV and Vc,SC per Table 2 footnotes d and e), normalized to the population median of 71 kg. Treated as a baseline (time-invariant) covariate in the source. Vp, Q, F, and ALAG1 are FIXED in the source and do not carry an allometric weight effect.",
-      source_name        = "WT"
+      notes = "Used for allometric scaling on CL (exponent 1.05) and on the central volume of distribution Vc (exponent 1.53; same exponent applied to both Vc,IV and Vc,SC per Table 2 footnotes d and e), normalized to the population median of 71 kg. Treated as a baseline (time-invariant) covariate in the source. Vp, Q, F, and ALAG1 are FIXED in the source and do not carry an allometric weight effect.",
+      source_name = "WT"
     ),
     ROUTE_IV = list(
-      description        = "Indicator for intravenous administration of fremanezumab",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for intravenous administration of fremanezumab",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (subcutaneous)",
-      notes              = "Per-subject (or per-dose-record) dosing-route indicator: 1 = IV cohort, 0 = SC cohort. Selects the route-specific central volume of distribution (Vc,IV = 2.98 L FIXED for ROUTE_IV = 1; Vc,SC = 1.88 L for ROUTE_IV = 0) and the route-specific residual-error structure (proportional only with sigma^2 = 0.0467 for IV; combined additive sigma^2 = 0.204 (ug/mL)^2 plus proportional sigma^2 = 0.0531 for SC), as reported in Fiedler-Kelly 2019 Table 2. Distinct from the rxode2 cmt event column (cmt = central for IV doses, cmt = depot for SC doses); ROUTE_IV is the additional per-subject covariate that the V and residual-error switches need. ADA was evaluated as a covariate in the source paper (only 0.7% of samples were ADA-positive) and was NOT a statistically significant predictor of fremanezumab PK, so it is not encoded as a model covariate.",
-      source_name        = "Route of administration (IV vs SC; not given a NONMEM column letter in the paper text)"
+      notes = "Per-subject (or per-dose-record) dosing-route indicator: 1 = IV cohort, 0 = SC cohort. Selects the route-specific central volume of distribution (Vc,IV = 2.98 L FIXED for ROUTE_IV = 1; Vc,SC = 1.88 L for ROUTE_IV = 0) and the route-specific residual-error structure (proportional only with sigma^2 = 0.0467 for IV; combined additive sigma^2 = 0.204 (ug/mL)^2 plus proportional sigma^2 = 0.0531 for SC), as reported in Fiedler-Kelly 2019 Table 2. Distinct from the rxode2 cmt event column (cmt = central for IV doses, cmt = depot for SC doses); ROUTE_IV is the additional per-subject covariate that the V and residual-error switches need. ADA was evaluated as a covariate in the source paper (only 0.7% of samples were ADA-positive) and was NOT a statistically significant predictor of fremanezumab PK, so it is not encoded as a model covariate.",
+      source_name = "Route of administration (IV vs SC; not given a NONMEM column letter in the paper text)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 2546L,
-    n_observations   = 13745L,
-    n_studies        = 7L,
-    study            = "Pooled phase 1, 2b, and 3 fremanezumab studies (LBR-101-011, TV48125-PK-10078, LBR-101-021, LBR-101-022, TV48125-CNS-30049, TV48125-CNS-30050, TV48125-CNS-30051).",
-    age_range        = "18-71 years",
-    age_median       = "43 years",
-    weight_range     = "43.5-131.8 kg (median 70.8 kg; 5th-95th percentiles approximately 51-101 kg)",
-    weight_median    = "70.8 kg (the covariate model uses 71 kg as the median-of-population reference)",
-    sex_female_pct   = 86.1,
-    race_ethnicity   = c(Caucasian = 79.9, Other = 20.1),
-    disease_state    = "Healthy adults (n = 74) and adults with chronic migraine or episodic migraine (n = 2474).",
-    dose_range       = "Phase 1: 225 / 675 / 900 mg single IV (1-h infusion) or single SC; phase 2b: 225-900 mg SC every 28 days for 3 months (one cohort: 675 mg loading then 225 mg); phase 3 pivotal: 225 mg SC every 28 days for 3 months (with or without a 675 mg loading dose) or 675 mg SC every 28 days for 3 months; phase 3 long-term safety: 225 mg SC monthly (with 675 mg loading) or 675 mg SC quarterly for 12 months.",
-    regions          = "International, multi-center; phase 1 study TV48125-PK-10078 enrolled matched Japanese and Caucasian cohorts. The full geographic breakdown is not reproduced in the main paper text.",
+    species = "human",
+    n_subjects = 2546L,
+    n_observations = 13745L,
+    n_studies = 7L,
+    study = "Pooled phase 1, 2b, and 3 fremanezumab studies (LBR-101-011, TV48125-PK-10078, LBR-101-021, LBR-101-022, TV48125-CNS-30049, TV48125-CNS-30050, TV48125-CNS-30051).",
+    age_range = "18-71 years",
+    age_median = "43 years",
+    weight_range = "43.5-131.8 kg (median 70.8 kg; 5th-95th percentiles approximately 51-101 kg)",
+    weight_median = "70.8 kg (the covariate model uses 71 kg as the median-of-population reference)",
+    sex_female_pct = 86.1,
+    race_ethnicity = c(Caucasian = 79.9, Other = 20.1),
+    disease_state = "Healthy adults (n = 74) and adults with chronic migraine or episodic migraine (n = 2474).",
+    dose_range = "Phase 1: 225 / 675 / 900 mg single IV (1-h infusion) or single SC; phase 2b: 225-900 mg SC every 28 days for 3 months (one cohort: 675 mg loading then 225 mg); phase 3 pivotal: 225 mg SC every 28 days for 3 months (with or without a 675 mg loading dose) or 675 mg SC every 28 days for 3 months; phase 3 long-term safety: 225 mg SC monthly (with 675 mg loading) or 675 mg SC quarterly for 12 months.",
+    regions = "International, multi-center; phase 1 study TV48125-PK-10078 enrolled matched Japanese and Caucasian cohorts. The full geographic breakdown is not reproduced in the main paper text.",
     ada_positive_pct = 0.7,
-    sampling         = "Phase 1: full PK profiles to 90 d (LBR-101-011) or 225 d (TV48125-PK-10078). Phase 2b and phase 3 pivotal: predose troughs on d 1, 29, 57, and a follow-up sample on d 85. Phase 3 LTS: predose troughs on d 1, 85, 169, 253, 337, and a follow-up sample on d 534, plus two non-trough samples per subject collected 3-10 d or 15-20 d after a dose. 13745 fremanezumab concentrations total (2436 from phase 1 and 2b, 11309 from phase 3); 1.9% of postdose samples were below the LLOQ of 250 ng/mL and were excluded from modeling.",
+    sampling = "Phase 1: full PK profiles to 90 d (LBR-101-011) or 225 d (TV48125-PK-10078). Phase 2b and phase 3 pivotal: predose troughs on d 1, 29, 57, and a follow-up sample on d 85. Phase 3 LTS: predose troughs on d 1, 85, 169, 253, 337, and a follow-up sample on d 534, plus two non-trough samples per subject collected 3-10 d or 15-20 d after a dose. 13745 fremanezumab concentrations total (2436 from phase 1 and 2b, 11309 from phase 3); 1.9% of postdose samples were below the LLOQ of 250 ng/mL and were excluded from modeling.",
     reference_subject = "Median WT = 71 kg, IV or SC route selected per ROUTE_IV; the typical-value subject reported in Fiedler-Kelly 2019 Results (CL = 0.0902 L/d, Vc,SC = 1.88 L, F = 0.658).",
-    notes            = "Population-level demographics from Fiedler-Kelly 2019 Section 'Exploratory data analysis' (median age 43 y, median WT 70.8 kg, 86.1% female, 79.9% Caucasian); per-study breakdowns are in Supporting Table S1 (not on disk). Approximately 20% of PK samples were collected in the presence of preventive migraine medications, 55% in the presence of acute medications, and 9% in the presence of analgesics; ADA-positive samples comprised only 0.7% of those collected. None of the covariates examined (age, albumin, renal function, sex, race, injection site, acute / analgesic / preventive medication use, ADA status, hepatic impairment up to moderate) was a statistically significant predictor of fremanezumab PK in the forward-selection / backward-elimination analysis; only body weight was retained in the final model."
+    notes = "Population-level demographics from Fiedler-Kelly 2019 Section 'Exploratory data analysis' (median age 43 y, median WT 70.8 kg, 86.1% female, 79.9% Caucasian); per-study breakdowns are in Supporting Table S1 (not on disk). Approximately 20% of PK samples were collected in the presence of preventive migraine medications, 55% in the presence of acute medications, and 9% in the presence of analgesics; ADA-positive samples comprised only 0.7% of those collected. None of the covariates examined (age, albumin, renal function, sex, race, injection site, acute / analgesic / preventive medication use, ADA status, hepatic impairment up to moderate) was a statistically significant predictor of fremanezumab PK in the forward-selection / backward-elimination analysis; only body weight was retained in the final model."
   )
 
   ini({

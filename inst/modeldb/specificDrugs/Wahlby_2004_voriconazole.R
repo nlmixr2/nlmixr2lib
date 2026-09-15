@@ -14,72 +14,72 @@ Wahlby_2004_voriconazole <- function() {
     sep = " "
   )
   vignette <- "Wahlby_2004_time_varying_covariates"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight, time-varying (Walsh 2004 / Wahlby 2004 voriconazole pediatric cohort uses linear WT scaling on all disposition parameters).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight, time-varying (Walsh 2004 / Wahlby 2004 voriconazole pediatric cohort uses linear WT scaling on all disposition parameters).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear (not allometric) WT scaling on CL, V1, Q, V2 per Methods. The pediatric cohort spans ages 2-11 years.",
-      source_name        = "WT"
+      notes = "Linear (not allometric) WT scaling on CL, V1, Q, V2 per Methods. The pediatric cohort spans ages 2-11 years.",
+      source_name = "WT"
     ),
     ALT = list(
-      description        = "Serum alanine aminotransferase, time-varying.",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Serum alanine aminotransferase, time-varying.",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Table 3 reports median 25 IU/L overall (range 7-535). Reference value in the log(ALT) effect: 25 IU/L (Eq 7).",
-      source_name        = "ALT"
+      notes = "Time-varying. Table 3 reports median 25 IU/L overall (range 7-535). Reference value in the log(ALT) effect: 25 IU/L (Eq 7).",
+      source_name = "ALT"
     ),
     ALP = list(
-      description        = "Serum alkaline phosphatase, time-varying.",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Serum alkaline phosphatase, time-varying.",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Table 3 reports median 130 IU/L (range 47-761). Used together with ALP_BASE in the final model to form log(ALP/ALP_BASE) = the paper's log(DALKP) term.",
-      source_name        = "ALKP"
+      notes = "Time-varying. Table 3 reports median 130 IU/L (range 47-761). Used together with ALP_BASE in the final model to form log(ALP/ALP_BASE) = the paper's log(DALKP) term.",
+      source_name = "ALKP"
     ),
     ALP_BASE = list(
-      description        = "Per-subject baseline alkaline phosphatase (BALKP in the source paper), time-fixed.",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Per-subject baseline alkaline phosphatase (BALKP in the source paper), time-fixed.",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject constant. Median across 34 subjects with baseline value = 136 IU/L (Table 3, BALKP row). One subject had missing ALKP records imputed to the median baseline value per the source paper. The final model uses log(ALP / ALP_BASE) for the within-subject delta (paper's log(DALKP) term).",
-      source_name        = "BALKP"
+      notes = "Per-subject constant. Median across 34 subjects with baseline value = 136 IU/L (Table 3, BALKP row). One subject had missing ALKP records imputed to the median baseline value per the source paper. The final model uses log(ALP / ALP_BASE) for the within-subject delta (paper's log(DALKP) term).",
+      source_name = "BALKP"
     ),
     CYP2C19_NON_EM = list(
-      description        = "Composite CYP2C19 non-homozygous-extensive-metabolizer indicator (1 = poor or heterozygous-extensive metabolizer, 0 = homozygous extensive metabolizer).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Composite CYP2C19 non-homozygous-extensive-metabolizer indicator (1 = poor or heterozygous-extensive metabolizer, 0 = homozygous extensive metabolizer).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0",
-      notes              = "Wahlby 2004 codes this column as 'PM' but groups both true PMs (homozygous loss-of-function) and heterozygous-EMs (one functional, one loss-of-function allele) under value 1. This is a composite carrier indicator rather than the strict CYP2C19_PM category. Distinct from CYP2C19_PM (which is the strict homozygous-PM canonical) and from CYP2C19_S2_CARRIER (which is *2-specific).",
-      source_name        = "PM"
+      notes = "Wahlby 2004 codes this column as 'PM' but groups both true PMs (homozygous loss-of-function) and heterozygous-EMs (one functional, one loss-of-function allele) under value 1. This is a composite carrier indicator rather than the strict CYP2C19_PM category. Distinct from CYP2C19_PM (which is the strict homozygous-PM canonical) and from CYP2C19_S2_CARRIER (which is *2-specific).",
+      source_name = "PM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 35L,
-    n_studies      = 2L,
-    age_range      = "2-11 years",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 35L,
+    n_studies = 2L,
+    age_range = "2-11 years",
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Pediatric subjects (aged 2-11 years) receiving intravenous voriconazole on 1-5 occasions; the cohort pooled two pediatric studies described in Walsh TJ et al. 2004 (Antimicrob Agents Chemother).",
-    dose_range     = "Intravenous voriconazole infusions over 0.2-7.6 days follow-up; specific dose ranges are reported by Walsh 2004 and are not reproduced in Wahlby 2004.",
+    disease_state = "Pediatric subjects (aged 2-11 years) receiving intravenous voriconazole on 1-5 occasions; the cohort pooled two pediatric studies described in Walsh TJ et al. 2004 (Antimicrob Agents Chemother).",
+    dose_range = "Intravenous voriconazole infusions over 0.2-7.6 days follow-up; specific dose ranges are reported by Walsh 2004 and are not reproduced in Wahlby 2004.",
     n_observations = 355L,
-    follow_up      = "0.2-7.6 days per subject; on average 10 voriconazole plasma concentrations per individual.",
-    regions        = NA_character_,
-    notes          = "Pediatric population. Per Methods, disposition parameters are normalised to body weight (linear, not allometric). The Karlsson 1995-style sigma-IIV residual-error pattern reported by Wahlby 2004 (omega_sigma = 0.77) is documented but is approximated in this entry by a homoscedastic proportional residual error; see the vignette Errata."
+    follow_up = "0.2-7.6 days per subject; on average 10 voriconazole plasma concentrations per individual.",
+    regions = NA_character_,
+    notes = "Pediatric population. Per Methods, disposition parameters are normalised to body weight (linear, not allometric). The Karlsson 1995-style sigma-IIV residual-error pattern reported by Wahlby 2004 (omega_sigma = 0.77) is documented but is approximated in this entry by a homoscedastic proportional residual error; see the vignette Errata."
   )
 
   ini({

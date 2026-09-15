@@ -41,75 +41,89 @@ Heo_2016_amlodipine_valsartan <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central         = list(analyte = "amlodipine", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "amlodipine", units = "mg", specimen = "plasma", verified = FALSE),
-    effect_sbp      = list(analyte = "SBP", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect_dbp      = list(analyte = "DBP", units = "mg", specimen = "not applicable", verified = FALSE),
-    central_val     = list(analyte = "valsartan", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "amlodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "amlodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    effect_sbp = list(analyte = "SBP", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect_dbp = list(analyte = "DBP", units = "mg", specimen = "not applicable", verified = FALSE),
+    central_val = list(analyte = "valsartan", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_val = list(analyte = "valsartan", units = "mg", specimen = "plasma", verified = FALSE),
-    effect_val      = list(analyte = "BP", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect_val = list(analyte = "BP", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-invariant. Used for theory-based allometric scaling on CL,",
         "Q (exponent 0.75) and V1, V2 (exponent 1) for both drugs, with",
         "reference weight 70 kg (Heo 2016 Methods, Eq 1-2). Cohort mean",
         "68.7 kg, SD 7.63 kg (Table S3)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = "Screened by stepwise covariate modelling (SCM) but not retained in the final popPK model (Heo 2016 Results: 'Apart from body weight, no other covariate factors were found to be significant (P > 0.001).')."
     ),
     CREAT = list(
-      description = "Serum creatinine", units = "mg/dL", type = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       notes = "Screened but not retained in the final model."
     ),
     SMOKE = list(
-      description = "Smoking status", units = "(binary)", type = "binary",
+      description = "Smoking status",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened but not retained in the final model."
     ),
     DRINK = list(
-      description = "Alcohol drinking status", units = "(binary)", type = "binary",
+      description = "Alcohol drinking status",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened but not retained in the final model."
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "IU/L", type = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       notes = "Screened for amlodipine only (extensive hepatic metabolism) but not retained."
     ),
     ALT = list(
-      description = "Alanine aminotransferase", units = "IU/L", type = "continuous",
+      description = "Alanine aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       notes = "Screened for amlodipine only but not retained."
     ),
     GGT = list(
-      description = "Gamma-glutamyl transferase", units = "IU/L", type = "continuous",
+      description = "Gamma-glutamyl transferase",
+      units = "IU/L",
+      type = "continuous",
       notes = "Screened for amlodipine only but not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 48,
-    n_studies      = 1,
-    age_range      = "not reported (mean 29 years, SD 5.98; Table S3)",
-    age_median     = "29 years (mean)",
-    weight_range   = "not reported (mean 68.7 kg, SD 7.63; Table S3)",
-    weight_median  = "68.7 kg (mean)",
+    species = "human",
+    n_subjects = 48,
+    n_studies = 1,
+    age_range = "not reported (mean 29 years, SD 5.98; Table S3)",
+    age_median = "29 years (mean)",
+    weight_range = "not reported (mean 68.7 kg, SD 7.63; Table S3)",
+    weight_median = "68.7 kg (mean)",
     sex_female_pct = 0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "healthy volunteers",
-    dose_range     = "single oral dose of a fixed-dose-combination tablet of amlodipine 10 mg + valsartan 160 mg (as besylate or orotate; crossover)",
-    regions        = "South Korea",
+    disease_state = "healthy volunteers",
+    dose_range = "single oral dose of a fixed-dose-combination tablet of amlodipine 10 mg + valsartan 160 mg (as besylate or orotate; crossover)",
+    regions = "South Korea",
     notes = paste(
       "Combined-administration PK/PD data were taken from a 48-subject",
       "two-way crossover FDC bioequivalence study (Kim 2013 Clin Ther",

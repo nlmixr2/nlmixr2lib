@@ -43,18 +43,18 @@ Chen_2021_lorlatinib_hypercholesterolemia <- function() {
   )
   vignette <- "Chen_2021_lorlatinib_exposure_response"
   units <- list(
-    time          = "n/a (static landmark exposure-safety regression; no time dimension. The treatment-duration covariate T_FIRSTDOSE is carried in canonical hours and divided by 24 inside model() to recover the paper's days)",
-    dosing        = "n/a (no dose events; exposure enters as the CMAX covariate column)",
+    time = "n/a (static landmark exposure-safety regression; no time dimension. The treatment-duration covariate T_FIRSTDOSE is carried in canonical hours and divided by 24 inside model() to recover the paper's days)",
+    dosing = "n/a (no dose events; exposure enters as the CMAX covariate column)",
     concentration = "prob_hypercholesterolemia (probability of grade >= 3 hypercholesterolemia, 0-1; also logit_hypercholesterolemia)"
   )
 
   covariateData <- list(
     CMAX = list(
-      description        = "Maximum observed lorlatinib plasma concentration prior to the adverse event (Cmax,event), per subject. Supplied as data: this model has no PK layer, and the source analysis used individual predictions from the companion lorlatinib population PK model with time-varying clearance (Chen 2021, doi:10.1002/psp4.12585).",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Maximum observed lorlatinib plasma concentration prior to the adverse event (Cmax,event), per subject. Supplied as data: this model has no PK layer, and the source analysis used individual predictions from the companion lorlatinib population PK model with time-varying clearance (Chen 2021, doi:10.1002/psp4.12585).",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TOTAL (not unbound) plasma concentration. NOT a fixed-interval",
         "Cmax: the averaging window ends at the adverse event, so the",
         "window length is subject-specific and equals the whole on-study",
@@ -72,14 +72,14 @@ Chen_2021_lorlatinib_hypercholesterolemia <- function() {
         "ALK-inhibitor-pretreated patients dosed at 100 mg q.d.",
         "(Chen 2021 Results, Exposure-efficacy)."
       ),
-      source_name        = "Cmax event (maximum observed concentration prior to the AE)"
+      source_name = "Cmax event (maximum observed concentration prior to the AE)"
     ),
     TCHOL = list(
-      description        = "Baseline total serum cholesterol (BCHOL).",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline total serum cholesterol (BCHOL).",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "NOT centred: Chen 2021 fits the raw covariate value, so the",
         "intercept -18.829 is the logit at TCHOL = 0, TE = 0 and",
         "CMAX = 1 ng/mL rather than at any clinically meaningful patient.",
@@ -92,14 +92,14 @@ Chen_2021_lorlatinib_hypercholesterolemia <- function() {
         "the paper fixes this covariate to when drawing the Figure 1",
         "exposure-response curve."
       ),
-      source_name        = "BCHOL (baseline cholesterol)"
+      source_name = "BCHOL (baseline cholesterol)"
     ),
     T_FIRSTDOSE = list(
-      description        = "Time on study from the first lorlatinib dose up to the event (TE).",
-      units              = "h",
-      type               = "continuous",
+      description = "Time on study from the first lorlatinib dose up to the event (TE).",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Canonical units are hours, so model() divides by 24 to recover",
         "the DAYS in which Chen 2021 estimates the coefficient (0.004 per",
         "day, odds ratio 1.004 per day) -- exactly the convention the",
@@ -114,16 +114,16 @@ Chen_2021_lorlatinib_hypercholesterolemia <- function() {
         "grade >= 3'. Analysis-population median 41 days = 984 h, the value",
         "the paper fixes this covariate to for the Figure 1 curve."
       ),
-      source_name        = "TE (time from first dose up to the event, days)"
+      source_name = "TE (time from first dose up to the event, days)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Baseline body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened across all four safety endpoints (Chen 2021 Table S4",
         "candidate-covariate list; Table 2 summarises it for every",
         "analysis population) but retained only in the companion weight-gain",
@@ -133,9 +133,9 @@ Chen_2021_lorlatinib_hypercholesterolemia <- function() {
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator; 1 = Asian, 0 = other.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but not retained for this endpoint; retained only in the",
         "companion hypertriglyceridemia model. Safety analysis set Asian",
         "110/328 (34%), White 168 (51%), Black 6 (2%), Other 13 (4%),",
@@ -145,20 +145,20 @@ Chen_2021_lorlatinib_hypercholesterolemia <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 298L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 298L,
+    n_studies = 1L,
     n_observations = "298 evaluable binary grade->=-3-hypercholesterolemia records (one per patient) out of the 328-patient safety analysis set; the 30-patient shortfall is the Chen 2021 Table 3 'n/N' column (298/328) and reflects patients without a complete baseline-cholesterol record",
-    age_range      = "median 53.00 years, range 19.00-85.00 (Chen 2021 Table 1, safety population)",
-    weight_range   = "median 66.79 kg, range 31.80-155.50 (Chen 2021 Table 1, safety population)",
+    age_range = "median 53.00 years, range 19.00-85.00 (Chen 2021 Table 1, safety population)",
+    weight_range = "median 66.79 kg, range 31.80-155.50 (Chen 2021 Table 1, safety population)",
     sex_female_pct = 58.0,
     race_ethnicity = c(White = 51.0, Asian = 34.0, Other = 4.0, Black = 2.0, Missing = 9.0),
-    disease_state  = "advanced anaplastic lymphoma kinase (ALK)-positive or c-ROS oncogene 1 (ROS1)-positive non-small cell lung cancer; ECOG performance status 0 (42%), 1 (54%), 2 (3%), 3 (0.3%); 85% had received at least one prior ALK inhibitor and 69% had CNS metastasis prior to or at any time on study",
-    dose_range     = "lorlatinib 10, 25, 50, 75, 100, 150 or 200 mg orally once daily, or 35, 75 or 100 mg orally twice daily (phase I dose escalation); 100 mg orally once daily (phase II expansion, the labelled dose)",
-    regions        = "Multicentre international phase I/II study B7461001 (NCT01970865); regional breakdown not reported in Chen 2021",
+    disease_state = "advanced anaplastic lymphoma kinase (ALK)-positive or c-ROS oncogene 1 (ROS1)-positive non-small cell lung cancer; ECOG performance status 0 (42%), 1 (54%), 2 (3%), 3 (0.3%); 85% had received at least one prior ALK inhibitor and 69% had CNS metastasis prior to or at any time on study",
+    dose_range = "lorlatinib 10, 25, 50, 75, 100, 150 or 200 mg orally once daily, or 35, 75 or 100 mg orally twice daily (phase I dose escalation); 100 mg orally once daily (phase II expansion, the labelled dose)",
+    regions = "Multicentre international phase I/II study B7461001 (NCT01970865); regional breakdown not reported in Chen 2021",
     baseline_total_cholesterol = "median 193.00 mg/dL, range 3.00-321.00, mean 192.95 (SD 44.06), 28 missing (Chen 2021 Table 2, safety population)",
-    concomitant_medication     = "concomitant statin therapy 266/328 (81%), steroid therapy 139 (42%), narcotics 164 (50%) (Chen 2021 Table 1)",
-    notes          = paste0(
+    concomitant_medication = "concomitant statin therapy 266/328 (81%), steroid therapy 139 (42%), narcotics 164 (50%) (Chen 2021 Table 1)",
+    notes = paste0(
       "Chen 2021 assessed exposure-response only for safety endpoints ",
       "with an incidence above 10% in all treated patients. ",
       "Hypercholesterolemia was the most common treatment-related ",

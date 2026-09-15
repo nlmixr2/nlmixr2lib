@@ -1,8 +1,8 @@
 DAgate_2024_aciclovir <- function() {
   description <- "One-compartment IV population PK model for aciclovir in term and pre-term neonates with suspected systemic (herpes simplex virus) infection. Total clearance is the sum of an allometrically-scaled, post-menstrual-age-maturing residual clearance (tubular secretion plus metabolism) and the individual creatinine clearance (glomerular filtration) entering at unit slope; central volume scales linearly with body weight and is 2.67-fold higher in the presence of systemic infection."
-  reference   <- "D'Agate S, Ruiz Gabarre D, Della Pasqua O. Population pharmacokinetics and dose rationale for aciclovir in term and pre-term neonates with herpes. Pharmacol Res Perspect. 2024;12(3):e1193. doi:10.1002/prp2.1193"
-  vignette    <- "DAgate_2024_aciclovir"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "D'Agate S, Ruiz Gabarre D, Della Pasqua O. Population pharmacokinetics and dose rationale for aciclovir in term and pre-term neonates with herpes. Pharmacol Res Perspect. 2024;12(3):e1193. doi:10.1002/prp2.1193"
+  vignette <- "DAgate_2024_aciclovir"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against D'Agate 2024 Section 4.1 ("one-
@@ -14,36 +14,36 @@ DAgate_2024_aciclovir <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference weight 1.37 kg, the population median stated beneath D'Agate 2024 Methods Eq. 2 and Eq. 3 ('1.37 kg is the median weight for the population'); Table 1 reports a median weight of 1420 g (range 373-5720 g) over the 32 enrolled infants. Enters CL as (WT/1.37)^0.75 and V as (WT/1.37)^1, both exponents pre-defined and fixed (Methods Section 2.3 item 1 for CL, and 'The effect of body weight on V was evaluated considering a pre-defined fixed allometric exponent with value 1' for V). The source records a single weight per infant alongside birth weight, so treat it as baseline unless a time-varying record is available.",
-      source_name        = "WT"
+      notes = "Reference weight 1.37 kg, the population median stated beneath D'Agate 2024 Methods Eq. 2 and Eq. 3 ('1.37 kg is the median weight for the population'); Table 1 reports a median weight of 1420 g (range 373-5720 g) over the 32 enrolled infants. Enters CL as (WT/1.37)^0.75 and V as (WT/1.37)^1, both exponents pre-defined and fixed (Methods Section 2.3 item 1 for CL, and 'The effect of body weight on V was evaluated considering a pre-defined fixed allometric exponent with value 1' for V). The source records a single weight per infant alongside birth weight, so treat it as baseline unless a time-varying record is available.",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Post-menstrual age (gestational age plus post-natal age)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Post-menstrual age (gestational age plus post-natal age)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "WEEKS, not the register-default months: D'Agate 2024 states post-menstrual age in weeks throughout, and the maturation half-time PMA50 = 50 weeks is only meaningful on that scale (see the PAGE entry in inst/references/covariate-columns.md, which provides for this). Table 1 median 31 weeks (range 25-41). Drives the maturation fraction PMA^HILL / (PMA50^HILL + PMA^HILL) on the residual clearance; Methods Section 2.2 states the sigmoidal function is used 'based on the assumption that PMA can be considered a proxy for maturation-related changes in renal clearance'.",
-      source_name        = "PMA"
+      notes = "WEEKS, not the register-default months: D'Agate 2024 states post-menstrual age in weeks throughout, and the maturation half-time PMA50 = 50 weeks is only meaningful on that scale (see the PAGE entry in inst/references/covariate-columns.md, which provides for this). Table 1 median 31 weeks (range 25-41). Drives the maturation fraction PMA^HILL / (PMA50^HILL + PMA^HILL) on the residual clearance; Methods Section 2.2 states the sigmoidal function is used 'based on the assumption that PMA can be considered a proxy for maturation-related changes in renal clearance'.",
+      source_name = "PMA"
     ),
     CRCL = list(
-      description        = "Individual creatinine clearance (Schwartz formula; raw, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Individual creatinine clearance (Schwartz formula; raw, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. D'Agate 2024 Methods Section 2.3 item 3 computes CLCR with the Schwartz formula CLCR = k * HT / SCr, with k = 0.33 when gestational age is below 36 weeks and k = 0.45 otherwise, HT the subject height in cm and SCr the serum creatinine in mg/dL. (The paper prints 'mg/L' for SCr, which is a unit typo: reading it as mg/dL reproduces the Table 3 cohort medians -- 0.33 * 40.31 / 0.6 = 22.2 against a published 23.53 pre-term, and 0.45 * 49.27 / 0.49 = 45.3 against a published 46.2 term -- whereas mg/L understates them tenfold, and Tables 1 and 3 both tabulate serum creatinine in mg/dL.) 'SCr was measured multiple times for each subject; so, CLCR was introduced as a time-varying covariate.' The Schwartz value is BSA-normalized (mL/min/1.73 m^2), and the paper then states 'The values obtained were converted from mL/min/1.73 m^2 to L/h using the individual body surface area of the subject as calculated with Gehan and George formula' -- i.e. the model consumes the INDIVIDUAL, non-BSA-normalized creatinine clearance. This column therefore carries the individual (de-normalized) value in raw mL/min, matching the raw-mL/min variant of the canonical CRCL column documented in inst/references/covariate-columns.md (Delattre 2010, Georges 2009 precedent); model() applies the 0.06 mL/min -> L/h conversion. To construct it from a BSA-normalized Schwartz estimate use CRCL = CLCR_schwartz * BSA / 1.73. It enters total clearance ADDITIVELY at unit slope (Table 2: 'CL (L/h) = theta1*(WT/1.37)^0.75*(PMA/(theta3 + PMA)) + CLCR'), representing the glomerular-filtration arm; the Discussion reports it to be about 25% of total aciclovir clearance.",
-      source_name        = "CLCR"
+      notes = "Time-varying. D'Agate 2024 Methods Section 2.3 item 3 computes CLCR with the Schwartz formula CLCR = k * HT / SCr, with k = 0.33 when gestational age is below 36 weeks and k = 0.45 otherwise, HT the subject height in cm and SCr the serum creatinine in mg/dL. (The paper prints 'mg/L' for SCr, which is a unit typo: reading it as mg/dL reproduces the Table 3 cohort medians -- 0.33 * 40.31 / 0.6 = 22.2 against a published 23.53 pre-term, and 0.45 * 49.27 / 0.49 = 45.3 against a published 46.2 term -- whereas mg/L understates them tenfold, and Tables 1 and 3 both tabulate serum creatinine in mg/dL.) 'SCr was measured multiple times for each subject; so, CLCR was introduced as a time-varying covariate.' The Schwartz value is BSA-normalized (mL/min/1.73 m^2), and the paper then states 'The values obtained were converted from mL/min/1.73 m^2 to L/h using the individual body surface area of the subject as calculated with Gehan and George formula' -- i.e. the model consumes the INDIVIDUAL, non-BSA-normalized creatinine clearance. This column therefore carries the individual (de-normalized) value in raw mL/min, matching the raw-mL/min variant of the canonical CRCL column documented in inst/references/covariate-columns.md (Delattre 2010, Georges 2009 precedent); model() applies the 0.06 mL/min -> L/h conversion. To construct it from a BSA-normalized Schwartz estimate use CRCL = CLCR_schwartz * BSA / 1.73. It enters total clearance ADDITIVELY at unit slope (Table 2: 'CL (L/h) = theta1*(WT/1.37)^0.75*(PMA/(theta3 + PMA)) + CLCR'), representing the glomerular-filtration arm; the Discussion reports it to be about 25% of total aciclovir clearance.",
+      source_name = "CLCR"
     ),
     DIS_INFECT_ACTIVE = list(
-      description        = "Systemic (herpes simplex virus) infection indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Systemic (herpes simplex virus) infection indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no evidence of systemic infection)",
-      notes              = "D'Agate 2024 Methods Section 2.3 used STUDY as the discrete proxy for disease status because individual baseline viral load was unavailable: 'The use of study as a proxy for the disease status provided a suitable alternative to the lack of individual details on baseline viral load' (Results Section 4.1). Study 2 (multicentre, infants 23-34 weeks gestational age with suspected systemic HSV infection) had the larger proportion of positive virological findings and the lower observed concentrations, hence the larger volume of distribution; Study 1 is the reference. The paper's Table 2 abbreviation list names the column DIS (disease status). Set to 1 for the infected group, which multiplies V by 2.67. Note that the paper's own virtual-cohort simulations (Table 3) correspond to DIS = 0 -- see the model vignette.",
-      source_name        = "DIS"
+      notes = "D'Agate 2024 Methods Section 2.3 used STUDY as the discrete proxy for disease status because individual baseline viral load was unavailable: 'The use of study as a proxy for the disease status provided a suitable alternative to the lack of individual details on baseline viral load' (Results Section 4.1). Study 2 (multicentre, infants 23-34 weeks gestational age with suspected systemic HSV infection) had the larger proportion of positive virological findings and the lower observed concentrations, hence the larger volume of distribution; Study 1 is the reference. The paper's Table 2 abbreviation list names the column DIS (disease status). Set to 1 for the infected group, which multiplies V by 2.67. Note that the paper's own virtual-cohort simulations (Table 3) correspond to DIS = 0 -- see the model vignette.",
+      source_name = "DIS"
     )
   )
 
@@ -56,77 +56,77 @@ DAgate_2024_aciclovir <- function() {
   covariatesDataExcluded <- list(
     PNA = list(
       description = "Post-natal age",
-      units       = "days",
-      type        = "continuous",
-      notes       = "Table 1 median 3 days (range 1-30). Screened; not statistically significant (Discussion)."
+      units = "days",
+      type = "continuous",
+      notes = "Table 1 median 3 days (range 1-30). Screened; not statistically significant (Discussion)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Table 1 reports 17 female / 15 male among the 32 enrolled infants. Screened; not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Table 1 reports 17 female / 15 male among the 32 enrolled infants. Screened; not retained."
     ),
     RACE_BLACK = list(
       description = "Black race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Table 1 reports White/Black/Asian = 20/11/1. Race screened as a candidate covariate; not statistically significant (Discussion)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Table 1 reports White/Black/Asian = 20/11/1. Race screened as a candidate covariate; not statistically significant (Discussion)."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Table 1 reports White/Black/Asian = 20/11/1. Race screened as a candidate covariate; not statistically significant (Discussion)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Table 1 reports White/Black/Asian = 20/11/1. Race screened as a candidate covariate; not statistically significant (Discussion)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Table 1 median 0.9 mg/dL (range 0.3-1.8). Screened as a covariate in its own right; it enters the final model only indirectly, as an input to the Schwartz CRCL column."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Table 1 median 0.9 mg/dL (range 0.3-1.8). Screened as a covariate in its own right; it enters the final model only indirectly, as an input to the Schwartz CRCL column."
     ),
     WT_BIRTH = list(
       description = "Birth weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Table 1 median 1295 g (range 420-4840 g). Screened alongside current weight; current weight was retained."
+      units = "kg",
+      type = "continuous",
+      notes = "Table 1 median 1295 g (range 420-4840 g). Screened alongside current weight; current weight was retained."
     ),
     CONMED_VASOPRESSIN = list(
       description = "Concomitant vasopressin use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Table 1 reports 1 subject. Co-medication use screened; not statistically significant (Discussion)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Table 1 reports 1 subject. Co-medication use screened; not statistically significant (Discussion)."
     ),
     CONMED_DOPAMINE = list(
       description = "Concomitant dopamine use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Table 1 reports 4 subjects. Co-medication use screened; not statistically significant (Discussion)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Table 1 reports 4 subjects. Co-medication use screened; not statistically significant (Discussion)."
     ),
     CONMED_EPINEPHRINE = list(
       description = "Concomitant epinephrine use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Table 1 reports 7 subjects. Co-medication use screened; not statistically significant (Discussion)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Table 1 reports 7 subjects. Co-medication use screened; not statistically significant (Discussion)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 28L,
-    n_studies      = 2L,
-    age_range      = "Gestational age 23-40 weeks (median 30); post-menstrual age 25-41 weeks (median 31); post-natal age 1-30 days (median 3)",
-    ga_range       = "23-40 weeks (median 30)",
-    pma_range      = "25-41 weeks (median 31)",
-    weight_range   = "0.373-5.720 kg (median 1.420 kg)",
-    weight_median  = "1.42 kg",
+    species = "human",
+    n_subjects = 28L,
+    n_studies = 2L,
+    age_range = "Gestational age 23-40 weeks (median 30); post-menstrual age 25-41 weeks (median 31); post-natal age 1-30 days (median 3)",
+    ga_range = "23-40 weeks (median 30)",
+    pma_range = "25-41 weeks (median 31)",
+    weight_range = "0.373-5.720 kg (median 1.420 kg)",
+    weight_median = "1.42 kg",
     sex_female_pct = 53.1,
     race_ethnicity = c(White = 62.5, Black = 34.4, Asian = 3.1),
-    disease_state  = "Term and pre-term neonates and young infants with suspected systemic infection; Study 2 specifically enrolled infants with suspected systemic herpes simplex virus infection.",
+    disease_state = "Term and pre-term neonates and young infants with suspected systemic infection; Study 2 specifically enrolled infants with suspected systemic herpes simplex virus infection.",
     renal_function = "Serum creatinine median 0.9 mg/dL (range 0.3-1.8). Post-hoc Schwartz creatinine clearance median 15.8 mL/min/1.73 m^2 (90% CI 9.4-40.0), against a post-hoc total clearance of 71.0 mL/min/1.73 m^2 (90% CI 26.2-257.6), so glomerular filtration accounts for roughly one quarter of total aciclovir clearance (Results Section 4.1).",
-    co_medication  = "Vasopressin 1 subject, dopamine 4 subjects, epinephrine 7 subjects (Table 1, of the 32 enrolled).",
-    dose_range     = "Intravenous aciclovir; the currently recommended neonatal regimen is 20 mg/kg every 8 h (60 mg/kg/day).",
-    regions        = "United States (data from Sampson et al.; Study 1 single-centre, Study 2 multicentre)",
-    notes          = "Demographics are D'Agate 2024 Table 1, reported for the 32 enrolled infants. Ninety-two plasma samples were collected; 9 were excluded before model development as contaminated or drawn during infusion, leaving 83 samples from 28 infants in the final data set (Results Section 4). The population metadata n_subjects therefore records the 28 infants contributing to the fit, while Table 1 percentages are over the 32 enrolled."
+    co_medication = "Vasopressin 1 subject, dopamine 4 subjects, epinephrine 7 subjects (Table 1, of the 32 enrolled).",
+    dose_range = "Intravenous aciclovir; the currently recommended neonatal regimen is 20 mg/kg every 8 h (60 mg/kg/day).",
+    regions = "United States (data from Sampson et al.; Study 1 single-centre, Study 2 multicentre)",
+    notes = "Demographics are D'Agate 2024 Table 1, reported for the 32 enrolled infants. Ninety-two plasma samples were collected; 9 were excluded before model development as contaminated or drawn during infusion, leaving 83 samples from 28 infants in the final data set (Results Section 4). The population metadata n_subjects therefore records the 28 infants contributing to the fit, while Table 1 percentages are over the 32 enrolled."
   )
 
   ini({

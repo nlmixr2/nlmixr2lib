@@ -31,11 +31,11 @@ Jiang_2024_empagliflozin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the Jiang 2024 final model. Entered",
         "as log-transformed body weight on apparent clearance and on the",
         "apparent peripheral volume of distribution (Results 2.3: 'the",
@@ -60,14 +60,14 @@ Jiang_2024_empagliflozin <- function() {
         "See the vignette 'Assumptions and deviations' section.",
         sep = " "
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     OCC = list(
-      description        = "Crossover-period (occasion) indicator: 1 = period 1, 2 = period 2",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Crossover-period (occasion) indicator: 1 = period 1, 2 = period 2",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Both source studies were randomized, open-label, two-period,",
         "two-sequence crossover studies, so every subject contributes two",
         "single-dose occasions (one per formulation). Jiang 2024 Discussion:",
@@ -85,7 +85,7 @@ Jiang_2024_empagliflozin <- function() {
         "differ only through the IOV random effects.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
@@ -99,11 +99,11 @@ Jiang_2024_empagliflozin <- function() {
   # Table 1, pooled column (n = 54).
   covariatesDataExcluded <- list(
     FORM_EMPA_LPROLINE = list(
-      description        = "Formulation indicator: 1 = empagliflozin L-proline cocrystal (CKD-370), 0 = conventional empagliflozin",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Formulation indicator: 1 = empagliflozin L-proline cocrystal (CKD-370), 0 = conventional empagliflozin",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (conventional empagliflozin formulation)",
-      notes              = paste(
+      notes = paste(
         "Screened as the 'treatment' covariate (Methods 4.4) and NOT",
         "retained -- this null result is the paper's primary conclusion.",
         "Results 2.3 / Discussion: 'the results of the population PK",
@@ -123,28 +123,28 @@ Jiang_2024_empagliflozin <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.4), not retained. Table 1 pooled median 27.5 years [20-50], mean 30.26 +/- 7.48. Study eligibility required 19-50 years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened (Methods 4.4), not retained. Table 1 pooled median 27.5 years [20-50], mean 30.26 +/- 7.48. Study eligibility required 19-50 years."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.4), not retained. Table 1 pooled median 171.5 cm [155.2-186.4], mean 171.21 +/- 7.28."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened (Methods 4.4), not retained. Table 1 pooled median 171.5 cm [155.2-186.4], mean 171.21 +/- 7.28."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.4), not retained. Table 1 pooled median 24.1 kg/m^2 [19.5-26.9], mean 23.75 +/- 2.03. Study eligibility required 18-27 kg/m^2."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened (Methods 4.4), not retained. Table 1 pooled median 24.1 kg/m^2 [19.5-26.9], mean 23.75 +/- 2.03. Study eligibility required 18-27 kg/m^2."
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; the cohort majority, 42/54)",
-      notes              = paste(
+      notes = paste(
         "Screened (Methods 4.4). Results 2.3 reports that sex on the",
         "peripheral volume of distribution DID significantly improve the",
         "fit during covariate screening, but it 'was also excluded from the",
@@ -157,27 +157,27 @@ Jiang_2024_empagliflozin <- function() {
     ),
     FPG = list(
       description = "Fasting plasma glucose (screening clinical chemistry)",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.4), not retained. Table 1 pooled median 87 mg/dL [78-101], mean 87.70 +/- 5.97. Reported in mg/dL by the source; the canonical FPG unit is mmol/L (divide by 18.02)."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened (Methods 4.4), not retained. Table 1 pooled median 87 mg/dL [78-101], mean 87.70 +/- 5.97. Reported in mg/dL by the source; the canonical FPG unit is mmol/L (divide by 18.02)."
     ),
     TPRO = list(
       description = "Total serum protein",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened as 'protein' (Methods 4.4), not retained. Table 1 pooled median 6.7 g/dL [6.2-7.4], mean 6.69 +/- 0.25. Reported in g/dL by the source; the canonical TPRO unit is g/L (multiply by 10)."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened as 'protein' (Methods 4.4), not retained. Table 1 pooled median 6.7 g/dL [6.2-7.4], mean 6.69 +/- 0.25. Reported in g/dL by the source; the canonical TPRO unit is g/L (multiply by 10)."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.4), not retained. Table 1 pooled median 17 IU/L [12-35], mean 17.61 +/- 4.47."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened (Methods 4.4), not retained. Table 1 pooled median 17 IU/L [12-35], mean 17.61 +/- 4.47."
     ),
     ALP = list(
       description = "Alkaline phosphatase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "IU/L",
+      type = "continuous",
+      notes = paste(
         "Screened (Methods 4.4). Results 2.3 reports that ALP on",
         "intercompartmental clearance (Q) DID significantly improve the fit",
         "during covariate screening, but 'ALP was excluded because it was",
@@ -189,43 +189,43 @@ Jiang_2024_empagliflozin <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.4), not retained. Table 1 pooled median 16.5 IU/L [7-64], mean 19.00 +/- 10.60."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened (Methods 4.4), not retained. Table 1 pooled median 16.5 IU/L [7-64], mean 19.00 +/- 10.60."
     ),
     LDH = list(
       description = "Lactate dehydrogenase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened (Methods 4.4), not retained. Table 1 pooled median 147 IU/L [113-219], mean 150.06 +/- 21.88."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened (Methods 4.4), not retained. Table 1 pooled median 147 IU/L [113-219], mean 150.06 +/- 21.88."
     ),
     CRCL = list(
       description = "Estimated glomerular filtration rate (MDRD equation)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Screened as 'eGFR' (Methods 4.4), not retained. Table 1 pooled median 112.35 mL/min/1.73 m^2 [74.2-143.9], mean 111.17 +/- 15.62. Stored under the canonical CRCL, whose register entry lists MDRD eGFR as an accepted assay form."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Screened as 'eGFR' (Methods 4.4), not retained. Table 1 pooled median 112.35 mL/min/1.73 m^2 [74.2-143.9], mean 111.17 +/- 15.62. Stored under the canonical CRCL, whose register entry lists MDRD eGFR as an accepted assay form."
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 54L,
-    n_studies       = 2L,
-    n_observations  = 1832L,
-    age_range       = "20-50 years (Table 1 pooled: median 27.5 years, mean 30.26 +/- 7.48); study eligibility 19-50 years",
-    weight_range    = "55.6-83.4 kg (Table 1 pooled: median 72.1 kg, mean 69.69 +/- 7.82)",
-    bmi_range       = "19.5-26.9 kg/m^2 (Table 1 pooled: median 24.1); study eligibility 18-27 kg/m^2",
-    renal_function  = "Normal; MDRD eGFR 74.2-143.9 mL/min/1.73 m^2 (Table 1 pooled median 112.35)",
-    sex_female_pct  = 22.2,
-    race_ethnicity  = c(Asian = 100),
-    disease_state   = "Healthy volunteers (no clinically significant medical history, physical examination, vital signs, 12-lead ECG, or clinical laboratory findings)",
-    dose_range      = paste(
+    species = "human",
+    n_subjects = 54L,
+    n_studies = 2L,
+    n_observations = 1832L,
+    age_range = "20-50 years (Table 1 pooled: median 27.5 years, mean 30.26 +/- 7.48); study eligibility 19-50 years",
+    weight_range = "55.6-83.4 kg (Table 1 pooled: median 72.1 kg, mean 69.69 +/- 7.82)",
+    bmi_range = "19.5-26.9 kg/m^2 (Table 1 pooled: median 24.1); study eligibility 18-27 kg/m^2",
+    renal_function = "Normal; MDRD eGFR 74.2-143.9 mL/min/1.73 m^2 (Table 1 pooled median 112.35)",
+    sex_female_pct = 22.2,
+    race_ethnicity = c(Asian = 100),
+    disease_state = "Healthy volunteers (no clinically significant medical history, physical examination, vital signs, 12-lead ECG, or clinical laboratory findings)",
+    dose_range = paste(
       "Single oral doses. Study A (NCT03849495): 25 mg empagliflozin",
       "L-proline vs 25 mg conventional empagliflozin. Study B",
       "(NCT03848637): 5 mg/1000 mg empagliflozin L-proline/metformin vs",
@@ -233,9 +233,9 @@ Jiang_2024_empagliflozin <- function() {
       "5 mg of the empagliflozin moiety.",
       sep = " "
     ),
-    regions         = "Republic of Korea (single centre, Seoul National University Hospital)",
-    co_medication   = "Study B only: metformin 1000 mg co-administered as a fixed-dose combination. Jiang 2024 Discussion argues a PK interaction is unlikely because 'metformin and empagliflozin have no common pathways for metabolism or any common transporters', and reports that PK parameters were similar with or without the Study B data.",
-    notes           = paste(
+    regions = "Republic of Korea (single centre, Seoul National University Hospital)",
+    co_medication = "Study B only: metformin 1000 mg co-administered as a fixed-dose combination. Jiang 2024 Discussion argues a PK interaction is unlikely because 'metformin and empagliflozin have no common pathways for metabolism or any common transporters', and reports that PK parameters were similar with or without the Study B data.",
+    notes = paste(
       "27 subjects per study (54 total), all healthy Korean adults.",
       "1832 pooled plasma empagliflozin concentrations: 864 from Study A",
       "(432 per formulation) and 968 from Study B (485 conventional, 483",

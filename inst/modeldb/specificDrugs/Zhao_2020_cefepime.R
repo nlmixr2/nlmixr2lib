@@ -14,7 +14,7 @@ Zhao_2020_cefepime <- function() {
     sep = " "
   )
   vignette <- "Gotta_2025_cefepime_infant_neurotoxicity"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
     central = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE)
@@ -22,11 +22,11 @@ Zhao_2020_cefepime <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling referenced to 3.352 kg (the cohort median",
         "current weight, reported as 3353 g in Zhao 2020 Table 1 and",
         "written as 3,352 g in the Table 3 model expressions) on both CL",
@@ -37,14 +37,14 @@ Zhao_2020_cefepime <- function() {
         "uses the canonical WT in kg with the equivalent reference",
         "3.352 kg. Cohort range 950-4350 g (0.95-4.35 kg)."
       ),
-      source_name        = "CW"
+      source_name = "CW"
     ),
     PAGE = list(
-      description        = "Postmenstrual age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL: (PMA_weeks / 40)^1.16 per Zhao 2020 Table 3",
         "(F_age = (PMA/40)^theta_3, theta_3 = 1.16). The source paper",
         "reports PMA in weeks; this model converts the canonical PAGE",
@@ -55,14 +55,14 @@ Zhao_2020_cefepime <- function() {
         "so extrapolation much beyond 48 weeks is outside the",
         "model-development range."
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Inverse power effect on CL. Zhao 2020 Table 3 writes the renal",
         "function factor as RF = 1/(CREA/28.5)^theta_4 with",
         "theta_4 = 0.218, i.e. (CREAT / 28.5)^-0.218. The reference",
@@ -78,26 +78,26 @@ Zhao_2020_cefepime <- function() {
         "with creatinine, which is backwards for a renally eliminated",
         "cephalosporin."
       ),
-      source_name        = "CREA"
+      source_name = "CREA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 85L,
-    n_studies      = 1L,
-    age_range      = "Postnatal age 1-25 days (mean 7.58, SD 3.83, median 8)",
-    age_median     = "8 days postnatal age",
-    weight_range   = "0.95-4.35 kg (mean 3.21, SD 0.678, median 3.353)",
-    weight_median  = "3.353 kg",
-    disease_state  = "Neonates and young infants treated with cefepime for neonatal infection",
-    dose_range     = "30 mg/kg every 12 h intravenously; actual doses 30-190 mg/dose (mean 106, SD 31.8), 25.2-53.9 mg/kg/dose (mean 33.3, SD 8.31)",
-    regions        = "China (Beijing Obstetrics and Gynecology Hospital and Shandong Provincial Qianfoshan Hospital)",
-    ga_range       = "28.0-41.6 weeks (mean 38.1, SD 2.80, median 39.0)",
-    pma_range      = "30.6-45.1 weeks (mean 39.2, SD 3.35, median 40.1)",
-    creat_range    = "11.5-92.4 umol/L (mean 34.3, SD 17.1, median 28.5)",
+    species = "human",
+    n_subjects = 85L,
+    n_studies = 1L,
+    age_range = "Postnatal age 1-25 days (mean 7.58, SD 3.83, median 8)",
+    age_median = "8 days postnatal age",
+    weight_range = "0.95-4.35 kg (mean 3.21, SD 0.678, median 3.353)",
+    weight_median = "3.353 kg",
+    disease_state = "Neonates and young infants treated with cefepime for neonatal infection",
+    dose_range = "30 mg/kg every 12 h intravenously; actual doses 30-190 mg/dose (mean 106, SD 31.8), 25.2-53.9 mg/kg/dose (mean 33.3, SD 8.31)",
+    regions = "China (Beijing Obstetrics and Gynecology Hospital and Shandong Provincial Qianfoshan Hospital)",
+    ga_range = "28.0-41.6 weeks (mean 38.1, SD 2.80, median 39.0)",
+    pma_range = "30.6-45.1 weeks (mean 39.2, SD 3.35, median 40.1)",
+    creat_range = "11.5-92.4 umol/L (mean 34.3, SD 17.1, median 28.5)",
     n_observations = 100L,
-    notes          = paste(
+    notes = paste(
       "Baseline demographics per Zhao 2020 Table 1. 85 neonates enrolled",
       "2017-2018 contributing 100 plasma concentrations under an",
       "opportunistic sampling design. Inclusion criteria: PMA < 48 weeks,",

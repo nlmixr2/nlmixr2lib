@@ -23,82 +23,82 @@ Yang_2025_polymyxinB <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yang 2025 Methods 'Data collection' item (4): 'liver and renal function indices, with CrCL calculated using the Cockcroft-Gault equation'. Raw mL/min, not normalized to 1.73 m^2 BSA; stored under the canonical CRCL column per inst/references/covariate-columns.md, which accepts raw mL/min provided the assay form is documented per model (precedent: Delattre_2010_amikacin.R, Chen_2023_nemonoxacin.R, Valade_2015_emtricitabine.R). Applied as a power covariate on CL, CL = 2.03 * (CRCL / 75.99)^0.26 * ... (Equation 6). The normalizing constant is printed only as the symbol 'CrCLmedian' in Equation 6; 75.99 mL/min is the modeling-set median from Table 1 (75.99, IQR 38.46-130.58). See the vignette source-trace section for the Table 3 arithmetic that confirms this reading. Time-fixed per subject in this analysis (a single baseline CrCL per patient).",
-      source_name        = "CrCL"
+      notes = "Yang 2025 Methods 'Data collection' item (4): 'liver and renal function indices, with CrCL calculated using the Cockcroft-Gault equation'. Raw mL/min, not normalized to 1.73 m^2 BSA; stored under the canonical CRCL column per inst/references/covariate-columns.md, which accepts raw mL/min provided the assay form is documented per model (precedent: Delattre_2010_amikacin.R, Chen_2023_nemonoxacin.R, Valade_2015_emtricitabine.R). Applied as a power covariate on CL, CL = 2.03 * (CRCL / 75.99)^0.26 * ... (Equation 6). The normalizing constant is printed only as the symbol 'CrCLmedian' in Equation 6; 75.99 mL/min is the modeling-set median from Table 1 (75.99, IQR 38.46-130.58). See the vignette source-trace section for the Table 3 arithmetic that confirms this reading. Time-fixed per subject in this analysis (a single baseline CrCL per patient).",
+      source_name = "CrCL"
     ),
     PLT = list(
-      description        = "Platelet (thrombocyte) count from the routine complete blood count",
-      units              = "10^9/L",
-      type               = "continuous",
+      description = "Platelet (thrombocyte) count from the routine complete blood count",
+      units = "10^9/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yang 2025 Table 1 'PLT (10^9/L)'. Applied as a power covariate on CL, CL = ... * (PLT / 163.50)^(-0.14) (Equation 6); a HIGHER platelet count gives a LOWER clearance. The normalizing constant is printed only as the symbol 'PLTmedian' in Equation 6; 163.50 x 10^9/L is the modeling-set median from Table 1 (163.50, IQR 84.5-266.25). Yang 2025 Discussion states this is the first report of platelet count as a covariate on polymyxin B PK, and the Limitations paragraph notes that patients with elevated platelet counts were excluded from modeling, so the relationship is supported only over roughly 85-266 x 10^9/L (the modeling-set interquartile range, which is also the range used for the Monte Carlo simulations of Table 3). Time-fixed per subject in this analysis.",
-      source_name        = "PLT"
+      notes = "Yang 2025 Table 1 'PLT (10^9/L)'. Applied as a power covariate on CL, CL = ... * (PLT / 163.50)^(-0.14) (Equation 6); a HIGHER platelet count gives a LOWER clearance. The normalizing constant is printed only as the symbol 'PLTmedian' in Equation 6; 163.50 x 10^9/L is the modeling-set median from Table 1 (163.50, IQR 84.5-266.25). Yang 2025 Discussion states this is the first report of platelet count as a covariate on polymyxin B PK, and the Limitations paragraph notes that patients with elevated platelet counts were excluded from modeling, so the relationship is supported only over roughly 85-266 x 10^9/L (the modeling-set interquartile range, which is also the range used for the Monte Carlo simulations of Table 3). Time-fixed per subject in this analysis.",
+      source_name = "PLT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened per Yang 2025 Methods ('Covariates included age, weight, APACHE II score, the presence of sepsis, and all laboratory parameters listed in Table 1') using Spearman correlation against empirical Bayes estimates followed by stepwise forward addition / backward elimination. Not retained: only CrCL and PLT met the inclusion criteria, and no covariate was retained on V."
+      units = "years",
+      type = "continuous",
+      notes = "Screened per Yang 2025 Methods ('Covariates included age, weight, APACHE II score, the presence of sepsis, and all laboratory parameters listed in Table 1') using Spearman correlation against empirical Bayes estimates followed by stepwise forward addition / backward elimination. Not retained: only CrCL and PLT met the inclusion criteria, and no covariate was retained on V."
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened (Yang 2025 Methods) and not retained. Notable because Table 4 shows that two of the five comparator polymyxin B popPK studies (Manchandani et al., Crass et al.) did retain total body weight on CL."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened (Yang 2025 Methods) and not retained. Notable because Table 4 shows that two of the five comparator polymyxin B popPK studies (Manchandani et al., Crass et al.) did retain total body weight on CL."
     ),
     APACHEII = list(
       description = "Acute Physiology and Chronic Health Evaluation II severity-of-illness score",
-      units       = "(points)",
-      type        = "continuous",
-      notes       = "Screened (Yang 2025 Methods) and not retained. Modeling-set value 28 +/- 9.25 (Table 1)."
+      units = "(points)",
+      type = "continuous",
+      notes = "Screened (Yang 2025 Methods) and not retained. Modeling-set value 28 +/- 9.25 (Table 1)."
     ),
     SEPSIS = list(
       description = "Presence of sepsis",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened (Yang 2025 Methods, 'the presence of sepsis') and not retained."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened (Yang 2025 Methods, 'the presence of sepsis') and not retained."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened as one of the Table 1 laboratory parameters and not retained. Yang 2025 Limitations notes that only total (not unbound) polymyxin B was measured, so an albumin-driven protein-binding effect could not be resolved."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened as one of the Table 1 laboratory parameters and not retained. Yang 2025 Limitations notes that only total (not unbound) polymyxin B was measured, so an albumin-driven protein-binding effect could not be resolved."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as one of the Table 1 laboratory parameters and not retained; the derived Cockcroft-Gault CRCL was retained instead."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as one of the Table 1 laboratory parameters and not retained; the derived Cockcroft-Gault CRCL was retained instead."
     ),
     OTHER_TABLE1_LABS = list(
       description = "Remaining Table 1 laboratory parameters screened as candidate covariates",
-      units       = "(various)",
-      type        = "continuous",
-      notes       = "BUN, eGFR, ALT, AST, total protein, total bilirubin, hemoglobin, white blood cell count, IL-6, INR, APTT and fibrinogen were all screened per Yang 2025 Methods ('all laboratory parameters listed in Table 1') and none was retained in the final model. Grouped into a single entry because the paper reports the screen collectively rather than per analyte."
+      units = "(various)",
+      type = "continuous",
+      notes = "BUN, eGFR, ALT, AST, total protein, total bilirubin, hemoglobin, white blood cell count, IL-6, INR, APTT and fibrinogen were all screened per Yang 2025 Methods ('all laboratory parameters listed in Table 1') and none was retained in the final model. Grouped into a single entry because the paper reports the screen collectively rather than per analyte."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 80L,
-    n_studies      = 1L,
-    age_median     = "60 years (IQR 47-74)",
-    weight_median  = "63 kg (IQR 55-74)",
+    species = "human",
+    n_subjects = 80L,
+    n_studies = 1L,
+    age_median = "60 years (IQR 47-74)",
+    weight_median = "63 kg (IQR 55-74)",
     sex_female_pct = 25,
     race_ethnicity = "Not reported (single-center Chinese ICU cohort)",
-    disease_state  = "Critically ill adult ICU patients with microbiologically confirmed carbapenem-resistant organism (CRO) infection: carbapenem-resistant Acinetobacter baumannii (70 cases), carbapenem-resistant Enterobacterales (56 cases) and carbapenem-resistant Pseudomonas aeruginosa (15 cases); lung was the dominant infection site (81.25%). APACHE II 28 +/- 9.25. Patients receiving any form of renal replacement therapy during polymyxin B treatment were excluded.",
-    dose_range     = "Intravenous polymyxin B, loading dose in 97.5% of the modeling set followed by a maintenance dose of 1.31 +/- 0.25 mg/kg per administration; Monte Carlo simulations covered 50, 75, 100 and 125 mg q12h given as 1-hour infusions. Median treatment duration 13 days (IQR 9-16).",
-    regions        = "China (intensive care unit, First Affiliated Hospital of Army Medical University, Chong Qing)",
+    disease_state = "Critically ill adult ICU patients with microbiologically confirmed carbapenem-resistant organism (CRO) infection: carbapenem-resistant Acinetobacter baumannii (70 cases), carbapenem-resistant Enterobacterales (56 cases) and carbapenem-resistant Pseudomonas aeruginosa (15 cases); lung was the dominant infection site (81.25%). APACHE II 28 +/- 9.25. Patients receiving any form of renal replacement therapy during polymyxin B treatment were excluded.",
+    dose_range = "Intravenous polymyxin B, loading dose in 97.5% of the modeling set followed by a maintenance dose of 1.31 +/- 0.25 mg/kg per administration; Monte Carlo simulations covered 50, 75, 100 and 125 mg q12h given as 1-hour infusions. Median treatment duration 13 days (IQR 9-16).",
+    regions = "China (intensive care unit, First Affiliated Hospital of Army Medical University, Chong Qing)",
     renal_function = "Cockcroft-Gault CrCL median 75.99 mL/min (IQR 38.46-130.58); serum creatinine median 79.70 umol/L (IQR 51.60-158.90). Renal replacement therapy was an exclusion criterion.",
     n_observations = "184 polymyxin B plasma concentrations from 80 patients in the modeling set (11 patients had repeated sampling). Two samples per occasion: one immediately before an infusion (steady-state trough) and one immediately after (steady-state peak), collected after at least 48 h of therapy. An additional 15 patients / 30 samples formed a chronologically separated external validation set.",
-    notes          = "Single-center prospective study, August 2021 to July 2024; ethics approval No. (A) KY2021064. Baseline demographics and laboratory parameters in Yang 2025 Table 1 (modeling set column). Concentrations measured by validated UPLC-MS/MS with polymyxin E2 as internal standard; total polymyxin B was computed by summing the molar contributions of PMB1 and PMB2. External validation gave MPE% 2.69, MAPE% 28.45, F20 36.67% and F30 73.33%."
+    notes = "Single-center prospective study, August 2021 to July 2024; ethics approval No. (A) KY2021064. Baseline demographics and laboratory parameters in Yang 2025 Table 1 (modeling set column). Concentrations measured by validated UPLC-MS/MS with polymyxin E2 as internal standard; total polymyxin B was computed by summing the molar contributions of PMB1 and PMB2. External validation gave MPE% 2.69, MAPE% 28.45, F20 36.67% and F30 73.33%."
   )
 
   ini({

@@ -1,41 +1,41 @@
 Na_2024_tovecimig <- function() {
   description <- "Two-compartment population PK model for tovecimig (ABL001/CTX-009), a bispecific antibody targeting DLL4 and VEGF-A, in adult patients with relapsed or refractory solid tumors, with parallel linear and Michaelis-Menten elimination from the central compartment and a power body-weight effect on the central volume."
-  reference   <- "Na JY, Jeon J, Huh KY, Eom J, Ahn J, You WK, Oh J. Population pharmacokinetic model of ABL001/CTX-009 (anti-VEGF/DLL4) in adult cancer patients with solid tumor. Cancer Sci. 2024;115(12):3943-3951. doi:10.1111/cas.16363"
-  vignette    <- "Na_2024_tovecimig"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Na JY, Jeon J, Huh KY, Eom J, Ahn J, You WK, Oh J. Population pharmacokinetic model of ABL001/CTX-009 (anti-VEGF/DLL4) in adult cancer patients with solid tumor. Cancer Sci. 2024;115(12):3943-3951. doi:10.1111/cas.16363"
+  vignette <- "Na_2024_tovecimig"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight. Power effect on the central volume V1 only: V1 = theta_V1 * (WT/70)^0.598. Reference 70 kg is the 'typically accepted value' the authors centered on (Na 2024 Methods Section 2.4, Equation 1; Table 2 footnote b). The only covariate retained in the final model; it explained approximately 7% of the between-subject variability in V1 (Na 2024 Discussion). Cohort mean 64.2 kg (SD 16.4), range 35.6-110.2 kg.",
-      source_name        = "Weight"
+      notes = "Baseline body weight. Power effect on the central volume V1 only: V1 = theta_V1 * (WT/70)^0.598. Reference 70 kg is the 'typically accepted value' the authors centered on (Na 2024 Methods Section 2.4, Equation 1; Table 2 footnote b). The only covariate retained in the final model; it explained approximately 7% of the between-subject variability in V1 (Na 2024 Discussion). Cohort mean 64.2 kg (SD 16.4), range 35.6-110.2 kg.",
+      source_name = "Weight"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "tovecimig", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "tovecimig", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tovecimig", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 31L,
+    species = "human",
+    n_subjects = 31L,
     n_observations = 712L,
-    n_studies      = 1L,
-    phases         = "Phase 1 (first-in-human dose escalation), NCT03292783",
-    age_range      = "25-81 years",
-    age_mean       = "53.5 years (SD 12.4)",
-    weight_range   = "35.6-110.2 kg",
-    weight_mean    = "64.2 kg (SD 16.4)",
+    n_studies = 1L,
+    phases = "Phase 1 (first-in-human dose escalation), NCT03292783",
+    age_range = "25-81 years",
+    age_mean = "53.5 years (SD 12.4)",
+    weight_range = "35.6-110.2 kg",
+    weight_mean = "64.2 kg (SD 16.4)",
     sex_female_pct = 38.7,
     race_ethnicity = "Not reported; all three study sites were in the Republic of Korea",
-    disease_state  = "Adults (aged >= 19 years) with progressive locally advanced or metastatic solid tumors relapsed or refractory to standard therapy; ECOG 0-2 (87% ECOG 1). Primary tumor locations: stomach 38.7%, colon/rectal 35.5%, other 16.1%, biliary tract / liver / ovary 3.2% each. Median 5 prior lines of treatment.",
-    dose_range     = "0.3, 1, 2.5, 5, 7.5, 10, 12.5, 15, and 17.5 mg/kg as a 1-h IV infusion in 2-week cycles (the second dose used a 3-week interval)",
-    regions        = "Republic of Korea (Seoul National University Hospital Bundang, Samsung Medical Center, Asan Medical Center)",
-    notes          = "Demographics from Na 2024 Table 1 (dose-escalation cohort, N = 31; the dose-expansion cohort of 14 patients was NOT used for model development). Only 6 of 712 samples (< 1%) were below the 250 ng/mL LLOQ and were treated as missing. Covariates screened by stepwise selection included dose group (categorical, exponential form) and body weight (continuous, power form centered on 70 kg); only body weight on V1 was retained. Immunogenicity (anti-drug antibody) and tumor burden were not evaluated as covariates (Na 2024 Discussion, limitations)."
+    disease_state = "Adults (aged >= 19 years) with progressive locally advanced or metastatic solid tumors relapsed or refractory to standard therapy; ECOG 0-2 (87% ECOG 1). Primary tumor locations: stomach 38.7%, colon/rectal 35.5%, other 16.1%, biliary tract / liver / ovary 3.2% each. Median 5 prior lines of treatment.",
+    dose_range = "0.3, 1, 2.5, 5, 7.5, 10, 12.5, 15, and 17.5 mg/kg as a 1-h IV infusion in 2-week cycles (the second dose used a 3-week interval)",
+    regions = "Republic of Korea (Seoul National University Hospital Bundang, Samsung Medical Center, Asan Medical Center)",
+    notes = "Demographics from Na 2024 Table 1 (dose-escalation cohort, N = 31; the dose-expansion cohort of 14 patients was NOT used for model development). Only 6 of 712 samples (< 1%) were below the 250 ng/mL LLOQ and were treated as missing. Covariates screened by stepwise selection included dose group (categorical, exponential form) and body weight (continuous, power form centered on 70 kg); only body weight on V1 was retained. Immunogenicity (anti-drug antibody) and tumor burden were not evaluated as covariates (Na 2024 Discussion, limitations)."
   )
 
   ini({

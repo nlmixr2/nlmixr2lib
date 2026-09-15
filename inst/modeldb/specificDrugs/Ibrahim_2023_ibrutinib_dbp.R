@@ -25,8 +25,8 @@ Ibrahim_2023_ibrutinib_dbp <- function() {
   )
   vignette <- "Ibrahim_2023_ibrutinib"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; ibrutinib exposure enters as the time-varying covariate AUC_IBRU)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; ibrutinib exposure enters as the time-varying covariate AUC_IBRU)",
     concentration = "diastolic blood pressure in mmHg (not a drug concentration)"
   )
 
@@ -35,17 +35,22 @@ Ibrahim_2023_ibrutinib_dbp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    transit1 = list(analyte = "ibrutinib exposure", units = NA_character_, specimen = "administration site", verified = FALSE),
-    dbp      = list(analyte = "diastolic blood pressure", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    transit1 = list(
+      analyte = "ibrutinib exposure",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    dbp = list(analyte = "diastolic blood pressure", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     AUC_IBRU = list(
-      description        = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",
-      units              = "h*ng/mL",
-      type               = "continuous",
+      description = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",
+      units = "h*ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying: the value tracks the patient's current daily ibrutinib dose level and drops to 0 during",
         "treatment interruptions. Ibrutinib enters this model ONLY through this column -- the model contains no drug",
         "compartment and no dosing events. Ibrahim 2023 derived per-subject AUC(0-24) by integrating the individual",
@@ -54,14 +59,14 @@ Ibrahim_2023_ibrutinib_dbp <- function() {
         "function as Emax * AUC_IBRU / (AUC50 + AUC_IBRU) with AUC50 = 63.1 h*ng/mL (Ibrahim 2023 Table 2) -- about",
         "twice the corresponding IAUC50 of the pBtk efficacy model (34.1 h*ng/mL)."
       ),
-      source_name        = "DAILYAUC"
+      source_name = "DAILYAUC"
     ),
     AGE = list(
-      description        = "Baseline age.",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (baseline value). Enters the dBP baseline in power form",
         "dbpbase = exp(lrbase_dbp + etalrbase_dbp + e_age_base_dbp * log(AGE / 63)), equivalently",
         "dBPbaseline = 69.7 * (AGE / 63)^-0.204, with reference age 63 years (Ibrahim 2023 Table 2 footnote b:",
@@ -70,22 +75,22 @@ Ibrahim_2023_ibrutinib_dbp <- function() {
         "transit time rather than on the baseline: 'The baseline dBP was inversely correlated with age, as previously",
         "described, and older patients had lower MTTsBP values' (Ibrahim 2023 Discussion)."
       ),
-      source_name        = "LNAGE"
+      source_name = "LNAGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 120L,
-    n_studies      = 1L,
-    age_range      = "mean 62.4 (SD 9.9) years",
-    weight_range   = "mean 82.3 (SD 17) kg",
+    species = "human",
+    n_subjects = 120L,
+    n_studies = 1L,
+    age_range = "mean 62.4 (SD 9.9) years",
+    weight_range = "mean 82.3 (SD 17) kg",
     sex_female_pct = 24.2,
     race_ethnicity = NULL,
-    disease_state  = "Chronic lymphocytic leukemia (CLL); 20.8% treatment-naive, 79.2% relapsed/refractory",
-    dose_range     = "ibrutinib 420 mg once daily (n = 94) or 840 mg once daily (n = 38) in PCYC-1102",
-    regions        = "United States (PCYC-1102, phase Ib/II)",
-    notes          = paste(
+    disease_state = "Chronic lymphocytic leukemia (CLL); 20.8% treatment-naive, 79.2% relapsed/refractory",
+    dose_range = "ibrutinib 420 mg once daily (n = 94) or 840 mg once daily (n = 38) in PCYC-1102",
+    regions = "United States (PCYC-1102, phase Ib/II)",
+    notes = paste(
       "Baseline demographics from Ibrahim 2023 Supplementary Table S1. The blood-pressure dataset contained 2413",
       "paired sBP and dBP measurements (Ibrahim 2023 Appendix S1 section 1). At baseline 0.25% of patients had",
       "dBP >= 90 mmHg; after 2 years of the approved 420 mg/day schedule the model predicted 7.83%",
@@ -98,9 +103,9 @@ Ibrahim_2023_ibrutinib_dbp <- function() {
   covariatesDataExcluded <- list(
     CONMED_ANTIHYPERTENSIVE = list(
       description = "Antihypertensive co-medication indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but NOT retained in the final model. Ibrahim 2023 Patients and Methods 'PK-blood pressure model'",
         "tested the effect of antihypertensive drugs as a time-varying binary covariate, 'either as a step function",
         "or as a function in which the antihypertensive effect gradually evolved'; neither form survived the",
@@ -109,9 +114,9 @@ Ibrahim_2023_ibrutinib_dbp <- function() {
     ),
     SEXF = list(
       description = "Subject sex indicator: 1 = female, 0 = male.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but NOT retained in the final dBP model. Ibrahim 2023 Patients and Methods 'Covariate analysis'",
         "evaluated baseline age and gender in the blood pressure and competing risk models; only the age effect on",
         "the dBP baseline was retained (Table 2). No coefficient is reported for sex."

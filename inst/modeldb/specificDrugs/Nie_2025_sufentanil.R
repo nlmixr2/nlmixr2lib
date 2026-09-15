@@ -46,18 +46,18 @@ Nie_2025_sufentanil <- function() {
 
   compartmentData <- list(
     central = list(analyte = "sufentanil", units = "ng", specimen = "plasma", verified = TRUE),
-    cord    = list(analyte = "sufentanil", units = "ng", specimen = "plasma", verified = TRUE)
+    cord = list(analyte = "sufentanil", units = "ng", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41L,
-    n_studies      = 1L,
-    age_range      = "20-40 years (inclusion criterion)",
-    age_mean       = "27.2 +/- 2.9 years",
-    weight_mean    = "70.2 +/- 7.5 kg",
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
+    age_range = "20-40 years (inclusion criterion)",
+    age_mean = "27.2 +/- 2.9 years",
+    weight_mean = "70.2 +/- 7.5 kg",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Primiparous women with a singleton pregnancy requesting epidural labour analgesia,",
       "ASA physical status II-III, BMI 18.5-30 kg/m^2, cervical dilation 2 <= phi < 6 cm and a",
       "visual analogue scale score >= 50 mm before analgesia. Women with cardiopulmonary disease,",
@@ -67,14 +67,14 @@ Nie_2025_sufentanil <- function() {
       "catheter became displaced.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Epidural sufentanil 0.3 ug/mL mixed with 0.1% ropivacaine. Loading: 5 mL of the mixture",
       "with 1/400,000 epinephrine, then a 10 mL bolus 5 min later (15 mL, 4.5 ug total).",
       "Patient-controlled epidural analgesia from 30 min: continuous infusion 6 mL/h (1.8 ug/h),",
       "6 mL demand bolus, 15 min lockout, maximum 30 mL/h; maintained until delivery.",
       sep = " "
     ),
-    regions        = paste(
+    regions = paste(
       "China; six centres (Obstetrics and Gynecology Hospital of Fudan University, Shanghai;",
       "Chengdu Women's and Children's Central Hospital; First Affiliated Hospital of Guizhou",
       "University of Traditional Chinese Medicine, Guiyang; Jiangxi Maternal and Child Health",
@@ -93,7 +93,7 @@ Nie_2025_sufentanil <- function() {
       "parameters.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Secondary PK analysis of a previously reported prospective trial comparing epidural",
       "nalbuphine-ropivacaine with sufentanil-ropivacaine (ChiCTR1800018810); enrolment November",
       "2018 to February 2019, concentration measurement February 2020. 90 parturients were",

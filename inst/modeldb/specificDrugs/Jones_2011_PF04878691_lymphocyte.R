@@ -36,37 +36,37 @@ Jones_2011_PF04878691_lymphocyte <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "PF04878691 lymphocyte", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "PF04878691 lymphocyte", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "PF04878691 lymphocyte", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "PF04878691 lymphocyte", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "PF04878691 lymphocyte", units = "mg", specimen = "plasma", verified = FALSE),
-    lymph       = list(analyte = "PF04878691 lymphocyte", units = "mg", specimen = "lymph", verified = FALSE)
+    lymph = list(analyte = "PF04878691 lymphocyte", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required scaling covariate for the inherited per-kg PK parameters; see Jones_2011_PF04878691.R. Population median 79 kg.",
-      source_name        = "WT"
+      notes = "Required scaling covariate for the inherited per-kg PK parameters; see Jones_2011_PF04878691.R. Population median 79 kg.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "21-55 years",
-    age_median     = "34 years",
-    weight_range   = "57-97 kg",
-    weight_median  = "79 kg",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "21-55 years",
+    age_median = "34 years",
+    weight_range = "57-97 kg",
+    weight_median = "79 kg",
     sex_female_pct = 8,
     race_ethnicity = "Not tabulated in Jones 2011.",
-    disease_state  = "Healthy adult volunteers (multiple-dose escalation Phase 1 study; ClinicalTrials.gov NCT00810758).",
-    dose_range     = "PF-04878691 administered orally at 3, 6, or 9 mg twice weekly (days 1, 4, 8, 11) for 2 weeks; n = 6 active per dose cohort plus n = 2 placebo per cohort.",
-    regions        = "Not specified.",
-    notes          = "Absolute lymphocyte count measured by immunophenotyping. Sequential population fit: individual EBE PK parameters from the Table 1 PK model were used as the exposure driver for the lymphocyte fit. Transient dose- and time-dependent decreases in absolute lymphocyte count were observed in the 6 and 9 mg dose groups."
+    disease_state = "Healthy adult volunteers (multiple-dose escalation Phase 1 study; ClinicalTrials.gov NCT00810758).",
+    dose_range = "PF-04878691 administered orally at 3, 6, or 9 mg twice weekly (days 1, 4, 8, 11) for 2 weeks; n = 6 active per dose cohort plus n = 2 placebo per cohort.",
+    regions = "Not specified.",
+    notes = "Absolute lymphocyte count measured by immunophenotyping. Sequential population fit: individual EBE PK parameters from the Table 1 PK model were used as the exposure driver for the lymphocyte fit. Transient dose- and time-dependent decreases in absolute lymphocyte count were observed in the 6 and 9 mg dose groups."
   )
 
   ini({

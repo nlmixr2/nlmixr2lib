@@ -29,19 +29,19 @@ Gibbs_2011_amg221 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "AMG 221", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "AMG 221", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "AMG 221", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "AMG 221", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "AMG 221", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "AMG 221", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "AMG 221", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE_LOW_AMG221 = list(
-      description        = "Low-dose AMG 221 indicator (1 = 3 mg oral AMG 221 dose record; 0 = 30 or 100 mg oral AMG 221 dose record).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Low-dose AMG 221 indicator (1 = 3 mg oral AMG 221 dose record; 0 = 30 or 100 mg oral AMG 221 dose record).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (30 or 100 mg oral AMG 221, where F1 = 1)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator that scales relative bioavailability F1",
         "downward at the 3 mg dose level (Gibbs 2011 Table III: F1 = 0.546",
         "at 3 mg vs F1 = 1 at 30/100 mg; footnote a). Gibbs 2011 Discussion",
@@ -53,30 +53,30 @@ Gibbs_2011_amg221 <- function() {
         "three discrete dose levels were tested. Apply at the dose record;",
         "observation rows inherit the indicator from the preceding dose."
       ),
-      source_name        = "derived from administered dose"
+      source_name = "derived from administered dose"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 55L,
-    n_studies      = 1L,
-    age_range      = "18-45 years",
-    age_median     = "30 years (mean 30 +/- 7 SD)",
-    weight_range   = "means 104 kg (placebo) and 106 kg (AMG 221) with SD +/- 13-14 kg",
-    weight_median  = "approximately 105 kg (mean +/- 13 SD)",
+    species = "human",
+    n_subjects = 55L,
+    n_studies = 1L,
+    age_range = "18-45 years",
+    age_median = "30 years (mean 30 +/- 7 SD)",
+    weight_range = "means 104 kg (placebo) and 106 kg (AMG 221) with SD +/- 13-14 kg",
+    weight_median = "approximately 105 kg (mean +/- 13 SD)",
     sex_female_pct = 18,
     race_ethnicity = c(
-      "White or Caucasian"           = 49,
-      "Black or African American"    = 15,
-      "Hispanic or Latino"           = 33,
+      "White or Caucasian" = 49,
+      "Black or African American" = 15,
+      "Hispanic or Latino" = 33,
       "American Indian or Alaska Native" = 2,
-      "Other"                        = 2
+      "Other" = 2
     ),
-    disease_state  = "Healthy obese adults (BMI 29.1-42.8 kg/m^2, mean 34.0 +/- 3.2 SD).",
-    dose_range     = "Single oral 3, 30, or 100 mg AMG 221 as a suspension (or matching placebo).",
-    regions        = "Not stated; Amgen phase 1 sponsor",
-    notes          = paste(
+    disease_state = "Healthy obese adults (BMI 29.1-42.8 kg/m^2, mean 34.0 +/- 3.2 SD).",
+    dose_range = "Single oral 3, 30, or 100 mg AMG 221 as a suspension (or matching placebo).",
+    regions = "Not stated; Amgen phase 1 sponsor",
+    notes = paste(
       "n = 55 total: 44 AMG 221 (3 mg n=20, 30 mg n=12, 100 mg n=12) + 11",
       "placebo. Phase 1, randomized, placebo-controlled, double-blind,",
       "exploratory design (Gibbs 2011 Methods). Rich plasma sampling: 13",

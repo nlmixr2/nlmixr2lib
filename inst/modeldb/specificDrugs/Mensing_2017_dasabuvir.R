@@ -17,8 +17,8 @@ Mensing_2017_dasabuvir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "dasabuvir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "dasabuvir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "dasabuvir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dasabuvir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dasabuvir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -26,62 +26,62 @@ Mensing_2017_dasabuvir <- function() {
 
   covariatesDataExcluded <- list(
     HEPIMP_MILD = list(
-      description        = "Compensated cirrhosis (Child-Pugh stage A) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Compensated cirrhosis (Child-Pugh stage A) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no cirrhosis)",
-      notes              = "Retained in the author's final dasabuvir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.29 (1.22, 1.36) and AUC24,ss ratio of 1.39 (1.30, 1.49) for cirrhotic vs noncirrhotic patients (29-39% higher exposures); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
-      source_name        = "CIRR"
+      notes = "Retained in the author's final dasabuvir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.29 (1.22, 1.36) and AUC24,ss ratio of 1.39 (1.30, 1.49) for cirrhotic vs noncirrhotic patients (29-39% higher exposures); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
+      source_name = "CIRR"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Retained in the author's final dasabuvir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.16 (1.12, 1.21) and AUC24,ss ratio of 1.21 (1.15, 1.28) for females vs males (16-21% higher exposures); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
-      source_name        = "SEX"
+      notes = "Retained in the author's final dasabuvir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.16 (1.12, 1.21) and AUC24,ss ratio of 1.21 (1.15, 1.28) for females vs males (16-21% higher exposures); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
+      source_name = "SEX"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Retained in the author's final dasabuvir model as a significant covariate on Vc/F and Vp/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at Age 44 years and Age 64 years vs the cohort median of 54 years (Cmax,ss / AUC24,ss ratios of 0.97/1.00 at age 44 and 1.02/1.00 at age 64); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
-      source_name        = "AGE"
+      notes = "Retained in the author's final dasabuvir model as a significant covariate on Vc/F and Vp/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at Age 44 years and Age 64 years vs the cohort median of 54 years (Cmax,ss / AUC24,ss ratios of 0.97/1.00 at age 44 and 1.02/1.00 at age 64); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Retained in the author's final dasabuvir model as a significant covariate on BOTH CL/F and Vc/F and Vp/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at body weight 66 kg and 86 kg vs the cohort median of 76 kg (Cmax,ss / AUC24,ss ratios of 1.05/1.04 at 66 kg and 0.96/0.97 at 86 kg); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
-      source_name        = "WT"
+      notes = "Retained in the author's final dasabuvir model as a significant covariate on BOTH CL/F and Vc/F and Vp/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at body weight 66 kg and 86 kg vs the cohort median of 76 kg (Cmax,ss / AUC24,ss ratios of 1.05/1.04 at 66 kg and 0.96/0.97 at 86 kg); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance (Cockcroft-Gault)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance (Cockcroft-Gault)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Retained in the author's final dasabuvir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at CrCL 75 mL/min and 105 mL/min vs the DAA-pharmacokinetic-dataset median of 104 mL/min (Cmax,ss / AUC24,ss ratios of 1.06/1.10 at 75 mL/min and 1.00/1.00 at 105 mL/min); paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Cohort range 37.0-281.4 mL/min, median 104.0 mL/min.",
-      source_name        = "CRCL"
+      notes = "Retained in the author's final dasabuvir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at CrCL 75 mL/min and 105 mL/min vs the DAA-pharmacokinetic-dataset median of 104 mL/min (Cmax,ss / AUC24,ss ratios of 1.06/1.10 at 75 mL/min and 1.00/1.00 at 105 mL/min); paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Cohort range 37.0-281.4 mL/min, median 104.0 mL/min.",
+      source_name = "CRCL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2348L,
-    n_studies      = 7L,
-    age_range      = "18-71 years",
-    age_median     = "54 years",
-    weight_range   = "42-129 kg",
-    weight_median  = "76 kg",
+    species = "human",
+    n_subjects = 2348L,
+    n_studies = 7L,
+    age_range = "18-71 years",
+    age_median = "54 years",
+    weight_range = "42-129 kg",
+    weight_median = "76 kg",
     sex_female_pct = 42,
     race_ethnicity = c(Asian = 2, Black = 7, Nonblack_NonAsian = 91),
     ethnicity_hispanic_latino_pct = 6,
-    disease_state  = "Adults with chronic hepatitis C virus (HCV) genotype 1 infection (HCV RNA > 10,000 IU/mL). 16% had compensated cirrhosis (Child-Pugh A); none had moderate or severe hepatic impairment. 34% were peg-IFN/RBV treatment-experienced.",
-    dose_range     = "Dasabuvir 250 mg orally twice daily, in combination with paritaprevir/ritonavir/ombitasvir (150/100/25 mg once daily) and optional weight-based ribavirin; 12-week or 24-week treatment courses.",
-    regions        = "Multinational phase II (NCT01911845) and phase III (PEARL-II/III/IV, SAPPHIRE-I/II, TURQUOISE-II) studies.",
-    notes          = "Demographic and clinical baseline characteristics from Mensing 2017 Table 2 (DAA pharmacokinetic data column, n = 2348)."
+    disease_state = "Adults with chronic hepatitis C virus (HCV) genotype 1 infection (HCV RNA > 10,000 IU/mL). 16% had compensated cirrhosis (Child-Pugh A); none had moderate or severe hepatic impairment. 34% were peg-IFN/RBV treatment-experienced.",
+    dose_range = "Dasabuvir 250 mg orally twice daily, in combination with paritaprevir/ritonavir/ombitasvir (150/100/25 mg once daily) and optional weight-based ribavirin; 12-week or 24-week treatment courses.",
+    regions = "Multinational phase II (NCT01911845) and phase III (PEARL-II/III/IV, SAPPHIRE-I/II, TURQUOISE-II) studies.",
+    notes = "Demographic and clinical baseline characteristics from Mensing 2017 Table 2 (DAA pharmacokinetic data column, n = 2348)."
   )
 
   ini({

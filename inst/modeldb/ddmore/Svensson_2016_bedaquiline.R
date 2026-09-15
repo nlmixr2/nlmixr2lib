@@ -12,7 +12,7 @@ Svensson_2016_bedaquiline <- function() {
   )
   vignette <- "Svensson_2016_bedaquiline"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
-  ddmore_id    <- "DDMODEL00000219"
+  ddmore_id <- "DDMODEL00000219"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -20,67 +20,67 @@ Svensson_2016_bedaquiline <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    central_m2  = list(analyte = "M2", units = "mg", specimen = "plasma", verified = FALSE)
+    central_m2 = list(analyte = "M2", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (time-varying; supplied per observation)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (time-varying; supplied per observation)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying body weight applied as allometric power on clearances and volumes around a reference of 70 kg: `cl = cl_typ * (WT/70)^e_wt_cl` (estimated exponent 0.181) and `vc = vc_typ * (WT/70)^e_wt_vc` (exponent fixed to 1.0). The same `(WT/70)^e_wt_cl` factor is shared across CL, Q1, Q2, CLM2 and the same `(WT/70)^e_wt_vc` factor across Vc, Vp1, Vp2, Vc_m2 (Svensson 2016 Methods, equations after Table 3). The publication itself fits a semi-physiological linear weight trajectory (WT0 -> WT120 over 120 weeks) and uses *individually predicted* time-varying weight inside the PK model; the nlmixr2lib implementation expects the user to supply WT either as a constant baseline column or as the time-varying trajectory of choice (see vignette Errata).",
-      source_name        = "WT"
+      notes = "Time-varying body weight applied as allometric power on clearances and volumes around a reference of 70 kg: `cl = cl_typ * (WT/70)^e_wt_cl` (estimated exponent 0.181) and `vc = vc_typ * (WT/70)^e_wt_vc` (exponent fixed to 1.0). The same `(WT/70)^e_wt_cl` factor is shared across CL, Q1, Q2, CLM2 and the same `(WT/70)^e_wt_vc` factor across Vc, Vp1, Vp2, Vc_m2 (Svensson 2016 Methods, equations after Table 3). The publication itself fits a semi-physiological linear weight trajectory (WT0 -> WT120 over 120 weeks) and uses *individually predicted* time-varying weight inside the PK model; the nlmixr2lib implementation expects the user to supply WT either as a constant baseline column or as the time-varying trajectory of choice (see vignette Errata).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin concentration (time-varying; supplied per observation)",
-      units              = "g/dL",
-      type               = "continuous",
+      description = "Serum albumin concentration (time-varying; supplied per observation)",
+      units = "g/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying serum albumin in g/dL applied as a power effect around the typical population steady-state value Ass = 4.04 g/dL: `cl = cl_typ * (ALB/4.04)^e_alb_cl` with estimated exponent 1.64 (Svensson 2016 Table 3, 'Individual time varying effect of albumin CL/CLM2/fbm'). The same exponent enters CLM2 twice — once directly and once via the inverse of the albumin power on the bedaquiline-to-M2 fraction-metabolised fbm — so the net albumin power on CLM2 is `(ALB/4.04)^(2*1.64)`. Volumes carry an additional fixed-coefficient unbound-fraction-driven adjustment `(4.04/ALB)^e_alb_vc` with `e_alb_vc` fixed to 1.0 (THETA(21) FIX in the .mod and 'Time varying effect of protein binding on disposition - 1 Fix' in Table 3). The publication itself fits a semi-physiological self-limiting logistic albumin model (A0 = 3.65 g/dL recovering to Ass = 4.04 g/dL with T1/2_return = 20.4 weeks per Table 2) and uses individually predicted time-varying albumin inside the PK model; the nlmixr2lib implementation expects the user to supply ALB either as a constant baseline column or as the time-varying trajectory of choice (see vignette Errata).",
-      source_name        = "ALB"
+      notes = "Time-varying serum albumin in g/dL applied as a power effect around the typical population steady-state value Ass = 4.04 g/dL: `cl = cl_typ * (ALB/4.04)^e_alb_cl` with estimated exponent 1.64 (Svensson 2016 Table 3, 'Individual time varying effect of albumin CL/CLM2/fbm'). The same exponent enters CLM2 twice — once directly and once via the inverse of the albumin power on the bedaquiline-to-M2 fraction-metabolised fbm — so the net albumin power on CLM2 is `(ALB/4.04)^(2*1.64)`. Volumes carry an additional fixed-coefficient unbound-fraction-driven adjustment `(4.04/ALB)^e_alb_vc` with `e_alb_vc` fixed to 1.0 (THETA(21) FIX in the .mod and 'Time varying effect of protein binding on disposition - 1 Fix' in Table 3). The publication itself fits a semi-physiological self-limiting logistic albumin model (A0 = 3.65 g/dL recovering to Ass = 4.04 g/dL with T1/2_return = 20.4 weeks per Table 2) and uses individually predicted time-varying albumin inside the PK model; the nlmixr2lib implementation expects the user to supply ALB either as a constant baseline column or as the time-varying trajectory of choice (see vignette Errata).",
+      source_name = "ALB"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear deviation around the median of 32 years applied to clearances: `cl = cl_typ * (1 + e_age_cl * (32 - AGE))` with estimated coefficient 0.00881 1/year (Svensson 2016 Table 3 footnote 'Age effect on CL/CLM2'). The reference age is the cohort median (32 years) reported in Table 1. Younger patients (AGE < 32) have higher CL; older patients have lower CL.",
-      source_name        = "AGE"
+      notes = "Linear deviation around the median of 32 years applied to clearances: `cl = cl_typ * (1 + e_age_cl * (32 - AGE))` with estimated coefficient 0.00881 1/year (Svensson 2016 Table 3 footnote 'Age effect on CL/CLM2'). The reference age is the cohort median (32 years) reported in Table 1. Younger patients (AGE < 32) have higher CL; older patients have lower CL.",
+      source_name = "AGE"
     ),
     RACE_BLACK = list(
-      description        = "Black-race indicator (1 = Black, 0 = non-Black)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black-race indicator (1 = Black, 0 = non-Black)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black; reference category includes White, Asian, Hispanic, and Other in the Svensson 2016 cohort).",
-      notes              = "Multiplicative effect on clearances: `cl = cl_typ * (1 + e_race_black_cl * RACE_BLACK)` with estimated coefficient 0.84 (Svensson 2016 Table 3, 'Effect of black race on CL/CM2'). Black patients have ~84% higher BDQ and M2 CL relative to the non-Black reference. The .mod source column is `RACE` with the value 2 mapped to Black via `IF (RACE.EQ.2) BLACK = 1`; supply the canonical 0/1-coded `RACE_BLACK` column directly.",
-      source_name        = "RACE"
+      notes = "Multiplicative effect on clearances: `cl = cl_typ * (1 + e_race_black_cl * RACE_BLACK)` with estimated coefficient 0.84 (Svensson 2016 Table 3, 'Effect of black race on CL/CM2'). Black patients have ~84% higher BDQ and M2 CL relative to the non-Black reference. The .mod source column is `RACE` with the value 2 mapped to Black via `IF (RACE.EQ.2) BLACK = 1`; supply the canonical 0/1-coded `RACE_BLACK` column directly.",
+      source_name = "RACE"
     )
   )
 
   population <- list(
-    n_subjects     = 335L,
-    n_studies      = 2L,
-    age_range      = "18-68 years (Table 1)",
-    age_median     = "32 years",
-    weight_range   = "Stage 1: 37-81 kg (median 55 kg) at start of treatment; stage 2: 30-113 kg (median 57 kg)",
-    weight_median  = "55-57 kg (study-stage dependent; Table 1)",
+    n_subjects = 335L,
+    n_studies = 2L,
+    age_range = "18-68 years (Table 1)",
+    age_median = "32 years",
+    weight_range = "Stage 1: 37-81 kg (median 55 kg) at start of treatment; stage 2: 30-113 kg (median 57 kg)",
+    weight_median = "55-57 kg (study-stage dependent; Table 1)",
     sex_female_pct = NA_real_,
     race_ethnicity = c(
       Black = 38.2,
       Asian = 38.2,
       Other = 23.6
     ),
-    disease_state  = "Adult patients with pulmonary multidrug-resistant tuberculosis (MDR-TB) or pre-extensively / extensively drug-resistant tuberculosis (Pre-XDR / XDR-TB), enrolled in the C208 (placebo-controlled, two-stage) and C209 (open-label) phase II trials. Subjects with HIV co-infection were eligible if CD4+ counts were >250 cells/microL.",
-    dose_range     = "Oral bedaquiline 400 mg once daily for the first 2 weeks (loading), followed by 200 mg three times weekly for 22 weeks, on top of an individualized second-line MDR-TB background regimen. Total treatment: 24 weeks of bedaquiline. Followed by 96 weeks of off-bedaquiline follow-up.",
-    regions        = "Multicenter international (C208 and C209). Specific regional breakdown is not reported in the main text.",
-    notes          = "Pooled analysis of two phase II trials (C208, two-stage placebo-controlled; C209, open-label) reported in Svensson 2016 Methods. Race breakdown is taken from Table 1 study-stage columns; the precise overall percentages depend on weighting C208 stage 1 (n=21 active), C208 stage 2 (n=79 active), and C209 (n=233 active) — Table 1 reports per-stage percentages and absolute counts. The race mix above represents the pooled C208 stage 2 + C209 mix and should be treated as approximate; consult Table 1 for cohort-specific values."
+    disease_state = "Adult patients with pulmonary multidrug-resistant tuberculosis (MDR-TB) or pre-extensively / extensively drug-resistant tuberculosis (Pre-XDR / XDR-TB), enrolled in the C208 (placebo-controlled, two-stage) and C209 (open-label) phase II trials. Subjects with HIV co-infection were eligible if CD4+ counts were >250 cells/microL.",
+    dose_range = "Oral bedaquiline 400 mg once daily for the first 2 weeks (loading), followed by 200 mg three times weekly for 22 weeks, on top of an individualized second-line MDR-TB background regimen. Total treatment: 24 weeks of bedaquiline. Followed by 96 weeks of off-bedaquiline follow-up.",
+    regions = "Multicenter international (C208 and C209). Specific regional breakdown is not reported in the main text.",
+    notes = "Pooled analysis of two phase II trials (C208, two-stage placebo-controlled; C209, open-label) reported in Svensson 2016 Methods. Race breakdown is taken from Table 1 study-stage columns; the precise overall percentages depend on weighting C208 stage 1 (n=21 active), C208 stage 2 (n=79 active), and C209 (n=233 active) — Table 1 reports per-stage percentages and absolute counts. The race mix above represents the pooled C208 stage 2 + C209 mix and should be treated as approximate; consult Table 1 for cohort-specific values."
   )
 
   ini({

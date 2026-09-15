@@ -10,24 +10,24 @@ Cao_2013_adecatumumab <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     plasma = list(analyte = "adecatumumab", units = "mg", specimen = "plasma", verified = FALSE),
-    tight  = list(analyte = "adecatumumab", units = "mg", specimen = "tissue", verified = FALSE),
-    leaky  = list(analyte = "adecatumumab", units = "mg", specimen = "tissue", verified = FALSE),
-    lymph  = list(analyte = "adecatumumab", units = "mg", specimen = "lymph", verified = FALSE)
+    tight = list(analyte = "adecatumumab", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky = list(analyte = "adecatumumab", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph = list(analyte = "adecatumumab", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1,
-    age_range      = "adults (per Oberneder 2006 source study)",
-    weight_range   = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
+    n_subjects = NA_integer_,
+    n_studies = 1,
+    age_range = "adults (per Oberneder 2006 source study)",
+    weight_range = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = "Hormone-refractory prostate cancer (adecatumumab anti-EpCAM human IgG1).",
-    dose_range     = "Multiple-dose IV (per Oberneder 2006); see Cao 2013 Figure 5 adecatumumab panel.",
-    regions        = NA,
-    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Oberneder R et al. Eur J Cancer 2006;42:2530-2538 (PMID 16930989). Adecatumumab has the highest CLp in the Cao 2013 human cohort (~0.030 L/h), corresponding to its short ~15-day half-life. The fit used a typical-value structural mPBPK model in ADAPT 5; no IIV or covariate effects were estimated."
+    disease_state = "Hormone-refractory prostate cancer (adecatumumab anti-EpCAM human IgG1).",
+    dose_range = "Multiple-dose IV (per Oberneder 2006); see Cao 2013 Figure 5 adecatumumab panel.",
+    regions = NA,
+    notes = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Oberneder R et al. Eur J Cancer 2006;42:2530-2538 (PMID 16930989). Adecatumumab has the highest CLp in the Cao 2013 human cohort (~0.030 L/h), corresponding to its short ~15-day half-life. The fit used a typical-value structural mPBPK model in ADAPT 5; no IIV or covariate effects were estimated."
   )
 
   ini({

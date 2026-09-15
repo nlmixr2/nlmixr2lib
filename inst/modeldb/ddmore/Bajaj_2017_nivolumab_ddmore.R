@@ -10,75 +10,75 @@ Bajaj_2017_nivolumab_ddmore <- function() {
   )
   vignette <- "Bajaj_2017_nivolumab_ddmore"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
-  ddmore_id    <- "DDMODEL00000284"
+  ddmore_id <- "DDMODEL00000284"
   replicate_of <- "inst/modeldb/specificDrugs/Bajaj_2017_nivolumab.R"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL and Vc with reference weight 80 kg (Output_real_Nivo-PPK.lst $PK lines 100, 159: BBWT_R = 80 kg). DDMORE bundle source column is BBWT (Simulated_pkdata1_dataset.csv); stored under canonical WT.",
-      source_name        = "BBWT"
+      notes = "Power scaling on CL and Vc with reference weight 80 kg (Output_real_Nivo-PPK.lst $PK lines 100, 159: BBWT_R = 80 kg). DDMORE bundle source column is BBWT (Simulated_pkdata1_dataset.csv); stored under canonical WT.",
+      source_name = "BBWT"
     ),
     CRCL = list(
-      description        = "Baseline CKD-EPI estimated glomerular filtration rate",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline CKD-EPI estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL with reference 90 mL/min/1.73 m^2 (Output_real_Nivo-PPK.lst $PK line 113: BGFR_R = 90). Bajaj 2017 Methods states eGFR was estimated using the CKD-EPI equation. DDMORE bundle source column is BGFR; stored under canonical CRCL.",
-      source_name        = "BGFR"
+      notes = "Power scaling on CL with reference 90 mL/min/1.73 m^2 (Output_real_Nivo-PPK.lst $PK line 113: BGFR_R = 90). Bajaj 2017 Methods states eGFR was estimated using the CKD-EPI equation. DDMORE bundle source column is BGFR; stored under canonical CRCL.",
+      source_name = "BGFR"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) in the canonical column. The bundle's own reference category is female (SEXN = 2), see notes.",
-      notes              = "Bajaj 2017 (and the DDMORE bundle) encode sex as SEXN with 1 = male and 2 = female and use female as the reference category in CL and Vc (Output_real_Nivo-PPK.lst $PK lines 132-133, 168, 179: 'reference is SEX=2 (Female)'). To store under the canonical SEXF (1 = female, 0 = male) while preserving the bundle's female-reference CL_REF and VC_REF, the effect is applied in model() as exp(e_sex_cl * (1 - SEXF)) and exp(e_sex_vc * (1 - SEXF)), so SEXF = 1 yields factor 1 and SEXF = 0 yields the bundle's male-vs-female exp-coefficient. Source column SEXN; convert as SEXF = as.integer(SEXN == 2).",
-      source_name        = "SEXN"
+      notes = "Bajaj 2017 (and the DDMORE bundle) encode sex as SEXN with 1 = male and 2 = female and use female as the reference category in CL and Vc (Output_real_Nivo-PPK.lst $PK lines 132-133, 168, 179: 'reference is SEX=2 (Female)'). To store under the canonical SEXF (1 = female, 0 = male) while preserving the bundle's female-reference CL_REF and VC_REF, the effect is applied in model() as exp(e_sex_cl * (1 - SEXF)) and exp(e_sex_vc * (1 - SEXF)), so SEXF = 1 yields factor 1 and SEXF = 0 yields the bundle's male-vs-female exp-coefficient. Source column SEXN; convert as SEXF = as.integer(SEXN == 2).",
+      source_name = "SEXN"
     ),
     RACE_ASIAN = list(
-      description        = "Indicator for Asian race",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for Asian race",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian; pooled White, Black / African American, and Other)",
-      notes              = "Exponential effect on CL for Asian race (Output_real_Nivo-PPK.lst $THETA line 51 and $PK lines 151, 174: theta18 = CL_RAAS, applied as exp(theta18) when RACE_I == 3). DDMORE bundle source column is RACEN with codes 1 = White, 2 = African American, 3 = Asian, 4 = Other (.mod header line 13); canonical RACE_ASIAN = as.integer(RACEN == 3).",
-      source_name        = "RACEN"
+      notes = "Exponential effect on CL for Asian race (Output_real_Nivo-PPK.lst $THETA line 51 and $PK lines 151, 174: theta18 = CL_RAAS, applied as exp(theta18) when RACE_I == 3). DDMORE bundle source column is RACEN with codes 1 = White, 2 = African American, 3 = Asian, 4 = Other (.mod header line 13); canonical RACE_ASIAN = as.integer(RACEN == 3).",
+      source_name = "RACEN"
     ),
     ECOG_GE1 = list(
-      description        = "Baseline Eastern Cooperative Oncology Group (ECOG) performance-status indicator (1 if ECOG >= 1, else 0)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline Eastern Cooperative Oncology Group (ECOG) performance-status indicator (1 if ECOG >= 1, else 0)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG performance status = 0, i.e., fully active)",
-      notes              = "Exponential effect on CL for patients with ECOG >= 1 (Output_real_Nivo-PPK.lst $THETA line 46 and $PK lines 138, 169: theta13 = CL_PS_1, applied as exp(theta13) when PS >= 1). DDMORE bundle source column is PS with codes 0 / 1 already binarized (.mod header line 14); canonical ECOG_GE1 takes the same numeric values. Bajaj 2017 ECOG values came directly from each study except CA209025, which collected Karnofsky Performance Status (KPS) and was mapped to ECOG via the Oken 1982 crosswalk before binarization.",
-      source_name        = "PS"
+      notes = "Exponential effect on CL for patients with ECOG >= 1 (Output_real_Nivo-PPK.lst $THETA line 46 and $PK lines 138, 169: theta13 = CL_PS_1, applied as exp(theta13) when PS >= 1). DDMORE bundle source column is PS with codes 0 / 1 already binarized (.mod header line 14); canonical ECOG_GE1 takes the same numeric values. Bajaj 2017 ECOG values came directly from each study except CA209025, which collected Karnofsky Performance Status (KPS) and was mapped to ECOG via the Oken 1982 crosswalk before binarization.",
+      source_name = "PS"
     )
   )
 
   population <- list(
-    n_subjects     = 1895L,
-    n_studies      = 11L,
-    age_range      = "mean 61.1 years (SD 11.1)",
-    age_median     = "not reported (mean reported instead)",
-    weight_range   = "mean 79.1 kg (SD 19.3); model-application range 34.1 - 168.2 kg",
-    weight_median  = "not reported (mean reported instead)",
+    n_subjects = 1895L,
+    n_studies = 11L,
+    age_range = "mean 61.1 years (SD 11.1)",
+    age_median = "not reported (mean reported instead)",
+    weight_range = "mean 79.1 kg (SD 19.3); model-application range 34.1 - 168.2 kg",
+    weight_median = "not reported (mean reported instead)",
     sex_female_pct = 33.3,
     race_ethnicity = c(White = 88.92, Asian = 6.44, `Black/African American` = 2.8, Other = 1.74),
-    disease_state  = "Advanced / metastatic solid tumors (melanoma 29.82%, NSCLC 34.78%, RCC 31.93%, other 3.48%)",
-    dose_range     = "0.3 - 10.0 mg/kg IV infusion (1-hour) Q2W or Q3W across 11 trials",
-    regions        = "Global (US, EU, Japan) across phase I / II / III studies",
+    disease_state = "Advanced / metastatic solid tumors (melanoma 29.82%, NSCLC 34.78%, RCC 31.93%, other 3.48%)",
+    dose_range = "0.3 - 10.0 mg/kg IV infusion (1-hour) Q2W or Q3W across 11 trials",
+    regions = "Global (US, EU, Japan) across phase I / II / III studies",
     ecog_distribution = "ECOG 0 38.73%, ECOG 1 58.52%, ECOG 2 2.74%",
     renal_function = "Baseline CKD-EPI eGFR mean 78.5 (SD 21.6) mL/min/1.73 m^2",
-    notes          = "Population summary mirrors the Bajaj 2017 publication (Table 3, N = 1,895; 11 pooled trials: MDX1106-01, ONO-4538-01, MDX1106-03, CA209010, CA209063, ONO-4538-02, CA209017, CA209037, CA209025, CA209057, CA209066). The DDMORE bundle's NONMEM run (Output_real_Nivo-PPK.lst lines 258-259) reports TOT. NO. OF OBS RECS = 12,292 across TOT. NO. OF INDIVIDUALS = 1,895, matching the publication's analysis dataset. The full FCM (full covariate model) with non-significant terms FIXED to 0 is what the bundle's .mod and .lst encode (24 thetas; 9 fixed at 0 for AGE, BLDH, BALB, melanoma, others-tumor, RCC-tumor, African-American race, hepatic dysfunction, plus TH5 = additive residual error fixed at 0); the model file below carries only the significant covariates because thetas fixed to zero have no effect on predictions and would clutter the source-trace."
+    notes = "Population summary mirrors the Bajaj 2017 publication (Table 3, N = 1,895; 11 pooled trials: MDX1106-01, ONO-4538-01, MDX1106-03, CA209010, CA209063, ONO-4538-02, CA209017, CA209037, CA209025, CA209057, CA209066). The DDMORE bundle's NONMEM run (Output_real_Nivo-PPK.lst lines 258-259) reports TOT. NO. OF OBS RECS = 12,292 across TOT. NO. OF INDIVIDUALS = 1,895, matching the publication's analysis dataset. The full FCM (full covariate model) with non-significant terms FIXED to 0 is what the bundle's .mod and .lst encode (24 thetas; 9 fixed at 0 for AGE, BLDH, BALB, melanoma, others-tumor, RCC-tumor, African-American race, hepatic dysfunction, plus TH5 = additive residual error fixed at 0); the model file below carries only the significant covariates because thetas fixed to zero have no effect on predictions and would clutter the source-trace."
   )
 
   ini({

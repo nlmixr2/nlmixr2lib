@@ -15,8 +15,8 @@ PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
   )
   vignette <- "PerezRuixo_2015_oxaliplatin_platelet_dynamics"
   units <- list(
-    time          = "h",
-    dosing        = "not applicable (PD-only model; no drug dose enters the ODE system -- the oxaliplatin drug effect is driven by the exogenous CP_OXA_MGL covariate column)",
+    time = "h",
+    dosing = "not applicable (PD-only model; no drug dose enters the ODE system -- the oxaliplatin drug effect is driven by the exogenous CP_OXA_MGL covariate column)",
     concentration = "10^9 cells/L (observed circulating platelet count, PLT); oxaliplatin plasma concentration covariate CP_OXA_MGL in mg/L"
   )
 
@@ -25,21 +25,46 @@ PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    prol     = list(analyte = "megakaryocyte progenitor", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    transit1 = list(analyte = "young platelet", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit2 = list(analyte = "young platelet", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit3 = list(analyte = "young platelet", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit4 = list(analyte = "young platelet", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit5 = list(analyte = "young platelet", units = NA_character_, specimen = "administration site", verified = FALSE)
+    prol = list(analyte = "megakaryocyte progenitor", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    transit1 = list(
+      analyte = "young platelet",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    transit2 = list(
+      analyte = "young platelet",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    transit3 = list(
+      analyte = "young platelet",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    transit4 = list(
+      analyte = "young platelet",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    transit5 = list(
+      analyte = "young platelet",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CP_OXA_MGL = list(
-      description        = "Oxaliplatin plasma concentration driving the platelet-dynamics drug effect E_drug = alpha * CP_OXA_MGL^beta on megakaryocyte-progenitor proliferation. Time-varying within subject.",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Oxaliplatin plasma concentration driving the platelet-dynamics drug effect E_drug = alpha * CP_OXA_MGL^beta on megakaryocyte-progenitor proliferation. Time-varying within subject.",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Required input. The Perez-Ruixo 2015 PD model uses the empirical",
         "Bayes individual PK parameter estimates from an upstream popPK paper",
         "(Perez-Ruixo 2013 Cancer Chemother Pharmacol 71:693-704, reference",
@@ -54,15 +79,16 @@ PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
         "Pharmacol 62:679-683), or (ii) values digitised from Figure 5 of",
         "the source paper. Set CP_OXA_MGL = 0 for pre-HIO or CRS-alone (cohort C)",
         "subjects so E_drug becomes 0.",
-        sep = " "),
-      source_name        = "Cp"
+        sep = " "
+      ),
+      source_name = "Cp"
     ),
     PRIOR_SPLEN = list(
-      description        = "Prior splenectomy indicator, 1 = prior splenectomy (spleen surgically removed), 0 = spleen intact. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior splenectomy indicator, 1 = prior splenectomy (spleen surgically removed), 0 = spleen intact. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (spleen intact)",
-      notes              = paste(
+      notes = paste(
         "Perez-Ruixo 2015 Table I: multiplicative factor Phi = 0.475 on the",
         "random platelet destruction rate constant ks for splenectomized",
         "patients (ks_i = ks * Phi^PRIOR_SPLEN). Splenectomy prolongs",
@@ -71,17 +97,18 @@ PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
         "(37.5%) had prior splenectomy driven by the ovarian / GI",
         "carcinomatosis debulking that includes splenectomy when tumour",
         "invades the splenic hilum.",
-        sep = " "),
-      source_name        = "splenectomy"
+        sep = " "
+      ),
+      source_name = "splenectomy"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened in the forward-inclusion / backward-elimination covariate",
         "analysis but did NOT reach the p<0.05 forward-inclusion threshold",
         "on any PD model parameter and was excluded from the final model",
@@ -89,35 +116,37 @@ PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
         "the correlation between age, BSA, sex, total proteins, and carrier",
         "solution with PD model parameters did not suggest any statistically",
         "significant association').",
-        sep = " ")
+        sep = " "
+      )
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained (see AGE above)."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened but not retained (see AGE above)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (see AGE above)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (see AGE above)."
     ),
     ALB = list(
       description = "Total proteins (serum)",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Total serum proteins (the paper's covariate label) is functionally",
         "analogous to serum albumin ALB in downstream models; screened but",
         "not retained (see AGE above).",
-        sep = " ")
+        sep = " "
+      )
     ),
     FORM_HIO_CARRIER = list(
       description = "HIO carrier solution: 1 = icodextrin 4%, 0 = dextrose 5%",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Perez-Ruixo 2015 Methods and Results: the two HIO carrier",
         "solutions (isotonic 4% icodextrin in cohort A, isotonic 5% dextrose",
         "in cohort B) were tested on PD model parameters and did not reach",
@@ -126,31 +155,34 @@ PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
         "peritoneum-to-plasma absorption and lowers CP_OXA_MGL), which is not",
         "packaged in this PD-only extraction; downstream CP_OXA_MGL already reflects",
         "the carrier's effect.",
-        sep = " ")
+        sep = " "
+      )
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 80L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 80L,
+    n_studies = 3L,
     n_observations = 1386L,
-    disease_state  = "Peritoneal carcinomatosis (PC), heterogeneous origin (ovarian, colorectal, gastric, pseudomyxoma peritonei, mesothelioma).",
-    cohorts        = paste(
+    disease_state = "Peritoneal carcinomatosis (PC), heterogeneous origin (ovarian, colorectal, gastric, pseudomyxoma peritonei, mesothelioma).",
+    cohorts = paste(
       "Cohort A: 41 patients (51.2%) treated with CRS followed by HIO in",
       "isotonic 4% icodextrin. Cohort B: 21 patients (26.3%) CRS + HIO in",
       "isotonic 5% dextrose. Cohort C: 18 patients (22.5%) CRS alone (no",
       "HIO).",
-      sep = " "),
+      sep = " "
+    ),
     splenectomized_pct = 37.5,
-    dose_range     = paste(
+    dose_range = paste(
       "HIO administered at 200 mg/L initial peritoneal concentration for",
       "30 or 60 min (dose-finding simulations explored 100-500 mg/L for",
       "30 and 60 min). Platelet transfusions administered in 5/80 (6.25%)",
       "patients.",
-      sep = " "),
-    regions        = "Spain (Hospital Quiron Torrevieja, Alicante; grant GE-079/11 Conselleria de Sanidad de Comunidad Valenciana).",
-    notes          = paste(
+      sep = " "
+    ),
+    regions = "Spain (Hospital Quiron Torrevieja, Alicante; grant GE-079/11 Conselleria de Sanidad de Comunidad Valenciana).",
+    notes = paste(
       "Age, BSA, sex, total proteins and HIO carrier solution were tested",
       "as covariates and did not reach significance. Only prior splenectomy",
       "was retained (on ks). The paper does not tabulate baseline",
@@ -161,7 +193,8 @@ PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
       "AAPS J). Estimation was NONMEM 7.1.2 FOCE. The covariance step",
       "failed so parameter RSE values are from a 76/100 successful",
       "bootstrap (Table I).",
-      sep = " ")
+      sep = " "
+    )
   )
 
   ini({

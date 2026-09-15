@@ -19,22 +19,27 @@ Straube_2025_caplacizumab_2cmt <- function() {
   # verified = FALSE. peripheral1 holds FREE drug only -- Equation (S18) gives
   # the peripheral compartment no target and no binding.
   compartmentData <- list(
-    central     = list(analyte = "caplacizumab",                              units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1 = list(analyte = "caplacizumab",                              units = "nmol", specimen = "tissue", verified = FALSE),
-    target      = list(analyte = "von Willebrand factor",                     units = "nmol", specimen = "plasma", verified = FALSE),
-    complex     = list(analyte = "caplacizumab-von Willebrand factor complex", units = "nmol", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "caplacizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "caplacizumab", units = "nmol", specimen = "tissue", verified = FALSE),
+    target = list(analyte = "von Willebrand factor", units = "nmol", specimen = "plasma", verified = FALSE),
+    complex = list(
+      analyte = "caplacizumab-von Willebrand factor complex",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "not stated in the source",
-    n_subjects    = NA_integer_,
-    n_studies     = 1L,
+    species = "not stated in the source",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
     disease_state = "ALX-0081 is a single-domain antibody against von Willebrand factor (vWF) developed to treat acquired thrombotic thrombocytopenic purpura (Straube 2025 section 3.2).",
-    dose_range    = "Single intravenous doses of 0.02, 0.4 and 8 mg/kg (Figure S3b).",
-    regions       = NA_character_,
-    notes         = paste(
+    dose_range = "Single intravenous doses of 0.02, 0.4 and 8 mg/kg (Figure S3b).",
+    regions = NA_character_,
+    notes = paste(
       "SPECIES AND BODY WEIGHT ARE NOT STATED; see Straube_2025_caplacizumab_1cmt for the full note.",
       "Same digitised data as the one-compartment fit, refitted with the two-compartment TMDD model of",
       "Equations (S18)-(S19). Table S1 footnote #: koff, Kd, Rb and Tacc were FIXED at values reported in",

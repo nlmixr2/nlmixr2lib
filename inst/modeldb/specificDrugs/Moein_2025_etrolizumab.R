@@ -49,19 +49,19 @@ Moein_2025_etrolizumab <- function() {
   paper_specific_compartments <- c("tssd")
 
   compartmentData <- list(
-    depot       = list(analyte = "etrolizumab", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "etrolizumab", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "etrolizumab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "etrolizumab", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "etrolizumab", units = "mg", specimen = "plasma", verified = TRUE),
-    tssd        = list(analyte = "not applicable", units = "day", specimen = "not applicable", verified = TRUE)
+    tssd = list(analyte = "not applicable", units = "day", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Allometric power scaling (WT / 70)^exponent, with DIFFERENT ",
         "exponents on the elimination/disposition-clearance pair (CL, Q; ",
         "exponent 0.819) and on the volume pair (Vc, Vp; exponent 0.752). ",
@@ -74,27 +74,27 @@ Moein_2025_etrolizumab <- function() {
         "the correct one and is what is encoded here; see the vignette ",
         "Errata for the forest-plot arithmetic that settles it."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Exponential effect on CL: exp(theta * (ALB - 41)). The reference ",
         "41 g/L is the reference-patient value in the Table 1 footnote ",
         "block and equals the pooled UC+CD baseline median (Table S4). ",
         "Clearance falls as albumin rises (theta < 0)."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     CRP = list(
-      description        = "Baseline C-reactive protein",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline C-reactive protein",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Exponential effect on the NATURAL LOG of CRP: ",
         "exp(theta * (log(CRP) - log(5.47))). The log transform is ",
         "load-bearing -- Table 1 names the row 'Log(CRP) on CL' and ",
@@ -106,14 +106,14 @@ Moein_2025_etrolizumab <- function() {
         "high-sensitivity) CRP assay, as is typical of ",
         "moderate-to-severe IBD cohorts. CRP must be strictly positive."
       ),
-      source_name        = "CRP"
+      source_name = "CRP"
     ),
     CRCL = list(
-      description        = "Baseline BSA-normalized estimated glomerular filtration rate",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline BSA-normalized estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Exponential effect on CL: exp(theta * (CRCL - 94.9)). Reported ",
         "by Moein 2025 as 'GFR', a creatinine-based BSA-normalized ",
         "estimate, which is the creatinine-estimate branch of the ",
@@ -123,14 +123,14 @@ Moein_2025_etrolizumab <- function() {
         "(0.2% higher CL per unit) and reaches only a 0.87-1.10 fold ",
         "range over the 2.5th-97.5th covariate percentiles (Figure 1)."
       ),
-      source_name        = "GFR"
+      source_name = "GFR"
     ),
     SCORE_SESCD = list(
-      description        = "Baseline Simple Endoscopic Score for Crohn's Disease (SES-CD)",
-      units              = "(score, 0-56)",
-      type               = "continuous",
+      description = "Baseline Simple Endoscopic Score for Crohn's Disease (SES-CD)",
+      units = "(score, 0-56)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Exponential effect on CL: exp(theta * (SCORE_SESCD - 12)). The ",
         "reference score 12 is the Table 1 reference-patient value and ",
         "equals the CD baseline median (Table S4). Recorded only in CD ",
@@ -140,14 +140,14 @@ Moein_2025_etrolizumab <- function() {
         "SCORE_SESCD = 12 for UC subjects to reproduce the published ",
         "model. Higher endoscopic severity raises clearance."
       ),
-      source_name        = "SES-CD"
+      source_name = "SES-CD"
     ),
     ADA_TITER = list(
-      description        = "Time-varying antidrug antibody titer, cumulative maximum carried forward",
-      units              = "(titer units)",
-      type               = "continuous",
+      description = "Time-varying antidrug antibody titer, cumulative maximum carried forward",
+      units = "(titer units)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Exponential effect on CL: exp(theta * ADA_TITER), i.e. centered ",
         "at zero titer, so ADA-negative samples contribute no effect. ",
         "Table 1 footnote d is explicit that the covariate is the ",
@@ -160,14 +160,14 @@ Moein_2025_etrolizumab <- function() {
         "negatives are coded 1). The effect is minimal: 3.5% higher CL ",
         "per titer unit."
       ),
-      source_name        = "ADAT"
+      source_name = "ADAT"
     ),
     PRIOR_TNF = list(
-      description        = "Prior anti-TNF biologic therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior anti-TNF biologic therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no prior anti-TNF, i.e. TNF-naive)",
-      notes              = paste0(
+      notes = paste0(
         "FRACTIONAL multiplicative effect on CL: ",
         "(1 + theta * PRIOR_TNF), giving 5.86% higher clearance in ",
         "TNF-experienced patients. The fractional (1 + theta) form -- ",
@@ -177,14 +177,14 @@ Moein_2025_etrolizumab <- function() {
         "Moein_2022_etrolizumab uses the same fractional form for its ",
         "categorical CL covariates."
       ),
-      source_name        = "Prior anti-TNF"
+      source_name = "Prior anti-TNF"
     ),
     IBD_CD = list(
-      description        = "Crohn's disease indicator within the pooled UC + CD analysis",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Crohn's disease indicator within the pooled UC + CD analysis",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ulcerative colitis with left-sided colitis, which also implies DISEXT_EP = 0 and DISEXT_OTHER = 0)",
-      notes              = paste0(
+      notes = paste0(
         "ADDITIVE shift on the LOGIT of bioavailability, not on CL and ",
         "not multiplicative: logit(F) = logit(0.743) + theta * IBD_CD. ",
         "Table 1 footnote g states that the covariates on F are on the ",
@@ -193,14 +193,14 @@ Moein_2025_etrolizumab <- function() {
         "point estimate. Mutually exclusive with the UC disease-extent ",
         "indicators: a CD subject has DISEXT_EP = DISEXT_OTHER = 0."
       ),
-      source_name        = "indication"
+      source_name = "indication"
     ),
     DISEXT_EP = list(
-      description        = "Ulcerative colitis disease extent: extensive colitis / pancolitis (vs left-sided colitis)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Ulcerative colitis disease extent: extensive colitis / pancolitis (vs left-sided colitis)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (left-sided colitis; implies DISEXT_OTHER = 0 as well)",
-      notes              = paste0(
+      notes = paste0(
         "ADDITIVE shift on the LOGIT of bioavailability. Moein 2025 ",
         "pools extensive/pancolitis with the small 'other' UC extent ",
         "group into a single 'UC not left-sided colitis' category ",
@@ -211,21 +211,21 @@ Moein_2025_etrolizumab <- function() {
         "extents separately (and on CL); here they are deliberately ",
         "collapsed. Zero for CD subjects."
       ),
-      source_name        = "DISSPR"
+      source_name = "DISSPR"
     ),
     DISEXT_OTHER = list(
-      description        = "Ulcerative colitis disease extent: other (neither left-sided colitis nor extensive/pancolitis)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Ulcerative colitis disease extent: other (neither left-sided colitis nor extensive/pancolitis)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (left-sided colitis)",
-      notes              = paste0(
+      notes = paste0(
         "ADDITIVE shift on the LOGIT of bioavailability, sharing the ",
         "single 'UC not left-sided colitis' coefficient with DISEXT_EP ",
         "(see that entry). Mutually exclusive with DISEXT_EP. Only 20 of ",
         "2312 subjects (1%) fall in this group (Table S5). Zero for CD ",
         "subjects."
       ),
-      source_name        = "DISSPR"
+      source_name = "DISSPR"
     )
   )
 
@@ -241,11 +241,11 @@ Moein_2025_etrolizumab <- function() {
   # phase I/II stratum by hand. See the vignette Errata.
   covariatesDataExcluded <- list(
     STUDY_ETRO_PHASE12 = list(
-      description        = "Phase I or phase II study indicator, a residual-error stratum",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase I or phase II study indicator, a residual-error stratum",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (phase 3 study)",
-      notes              = paste0(
+      notes = paste0(
         "RETAINED IN THE PUBLISHED MODEL but not expressible in ",
         "rxode2; see the block comment above. Table 1 reports ",
         "'Clinical study Phase I/II on RUV' = -0.230 (RSE 24.4%) as a ",
@@ -265,30 +265,35 @@ Moein_2025_etrolizumab <- function() {
         "early studies and phase 3. Only 119 of 2312 subjects (5%) are ",
         "phase I/II and all of them are UC patients (Table S5)."
       ),
-      source_name        = "Clinical study phase"
+      source_name = "Clinical study phase"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2312L,
-    n_studies      = 8L,
+    species = "human",
+    n_subjects = 2312L,
+    n_studies = 8L,
     n_observations = "9200 etrolizumab serum concentrations (4317 of them from the 864 Crohn's disease patients)",
-    age_range      = "18.0-79.0 years",
-    age_median     = "37.0 years (UC 38.0, CD 36.0)",
-    weight_range   = "35.0-216 kg",
-    weight_median  = "72.0 kg (UC 72.0, CD 71.0)",
+    age_range = "18.0-79.0 years",
+    age_median = "37.0 years (UC 38.0, CD 36.0)",
+    weight_range = "35.0-216 kg",
+    weight_median = "72.0 kg (UC 72.0, CD 71.0)",
     sex_female_pct = 44,
     race_ethnicity = c(
-      White = 83, Asian = 8, `Black or African American` = 2,
-      Other = 3, `American Indian or Alaska Native` = 0,
-      `Native Hawaiian or Pacific Islander` = 0, Multiple = 0, Unknown = 4
+      White = 83,
+      Asian = 8,
+      `Black or African American` = 2,
+      Other = 3,
+      `American Indian or Alaska Native` = 0,
+      `Native Hawaiian or Pacific Islander` = 0,
+      Multiple = 0,
+      Unknown = 4
     ),
-    disease_state  = "Moderately-to-severely active Crohn's disease (n = 864) or ulcerative colitis (n = 1448); TNF-naive and TNF-experienced",
-    dose_range     = "SC: 105 mg Q4W, 210 mg Q4W with an extra 210 mg loading dose at week 2 (BERGAMOT), 315-420 mg (phase II), 0.5-3 mg/kg Q4W and 1-3 mg/kg single dose (phase I); IV: 0.3-10 mg/kg single dose and 4 mg/kg Q4W (phase I)",
-    regions        = "Multinational: Eastern Europe 33%, Western Europe 25%, USA/Canada 23%, Asia 9%, Latin/Middle America 5%, Australia/New Zealand 4%, (South) Africa 1%",
+    disease_state = "Moderately-to-severely active Crohn's disease (n = 864) or ulcerative colitis (n = 1448); TNF-naive and TNF-experienced",
+    dose_range = "SC: 105 mg Q4W, 210 mg Q4W with an extra 210 mg loading dose at week 2 (BERGAMOT), 315-420 mg (phase II), 0.5-3 mg/kg Q4W and 1-3 mg/kg single dose (phase I); IV: 0.3-10 mg/kg single dose and 4 mg/kg Q4W (phase I)",
+    regions = "Multinational: Eastern Europe 33%, Western Europe 25%, USA/Canada 23%, Asia 9%, Latin/Middle America 5%, Australia/New Zealand 4%, (South) Africa 1%",
     renal_function = "Baseline GFR 30.7-269 mL/min/1.73 m^2, median 94.9",
-    notes          = paste0(
+    notes = paste0(
       "Baseline characteristics from Moein 2025 Tables S4 (continuous) ",
       "and S5 (categorical), 'All' column. Contributing studies ",
       "(Table S1): ABS4262g (phase I, UC, 38 subjects), EUCALYPTUS ",

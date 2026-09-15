@@ -34,8 +34,8 @@ Kata_2025_ganciclovir_maturation <- function() {
   )
   vignette <- "Kata_2025_ganciclovir"
   units <- list(
-    time          = "day (postnatal age, PNA)",
-    dosing        = "n/a (no exogenous dosing; clearance-maturation regression)",
+    time = "day (postnatal age, PNA)",
+    dosing = "n/a (no exogenous dosing; clearance-maturation regression)",
     concentration = "mL/min/1.73m^2 (body-surface-area normalised GCV clearance)"
   )
 
@@ -46,23 +46,23 @@ Kata_2025_ganciclovir_maturation <- function() {
   # 1.73 m^2 normalisation the authors applied before this regression.
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1L,
-    n_studies      = 1L,
-    age_range      = "postnatal age 9 to 112 days during GCV/VGCV therapy",
+    species = "human",
+    n_subjects = 1L,
+    n_studies = 1L,
+    age_range = "postnatal age 9 to 112 days during GCV/VGCV therapy",
     gestational_age = "27 weeks 0 days at birth",
-    weight_range   = "0.530 to 2.010 kg during therapy (birth weight 0.556 kg)",
+    weight_range = "0.530 to 2.010 kg during therapy (birth weight 0.556 kg)",
     sex_female_pct = 100,
     race_ethnicity = "Not reported (single Japanese centre)",
-    disease_state  = paste(
+    disease_state = paste(
       "Congenital cytomegalovirus infection, confirmed by CMV DNA in urine",
       "in the early neonatal period, in an extremely low birth weight",
       "preterm neonate delivered by caesarean section for non-reassuring",
       "fetal status."
     ),
-    dose_range     = "n/a (this model regresses clearance on postnatal age)",
-    regions        = "Japan (Toyama University Hospital)",
-    notes          = paste(
+    dose_range = "n/a (this model regresses clearance on postnatal age)",
+    regions = "Japan (Toyama University Hospital)",
+    notes = paste(
       "The regression has only four clearance observations, one per",
       "treatment phase, at approximately PNA 30, 51, 72 and 93 days",
       "(Table 1), so five parameters are estimated from four points plus the",

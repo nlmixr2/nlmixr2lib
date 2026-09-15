@@ -25,37 +25,42 @@ Padavia_2024_paracetamol <- function() {
   # and paracetamol-mercapturate, which is what the registered `cysmer`
   # suffix names.
   compartmentData <- list(
-    central          = list(analyte = "paracetamol", units = "umol", specimen = "plasma", verified = TRUE),
-    peripheral1      = list(analyte = "paracetamol", units = "umol", specimen = "plasma", verified = TRUE),
-    central_gluc     = list(analyte = "paracetamol glucuronide", units = "umol", specimen = "plasma", verified = TRUE),
-    central_sulf     = list(analyte = "paracetamol sulphate", units = "umol", specimen = "plasma", verified = TRUE),
-    central_cysmer   = list(analyte = "paracetamol cysteine + mercapturate", units = "umol", specimen = "plasma", verified = TRUE)
+    central = list(analyte = "paracetamol", units = "umol", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "paracetamol", units = "umol", specimen = "plasma", verified = TRUE),
+    central_gluc = list(analyte = "paracetamol glucuronide", units = "umol", specimen = "plasma", verified = TRUE),
+    central_sulf = list(analyte = "paracetamol sulphate", units = "umol", specimen = "plasma", verified = TRUE),
+    central_cysmer = list(
+      analyte = "paracetamol cysteine + mercapturate",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight during treatment",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight during treatment",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-law scaling on total paracetamol clearance, centred on the population median. Methods 2.2 states that 'Bodyweight and body length were also collected every day during treatment', so this is the time-varying treatment-period weight rather than the time-fixed birth weight; Results 3.2 names the retained covariate 'bodyweight'. The Table 2 footnote centres it on 800 g, which the canonical kilogram units render as 0.8 kg. Because the covariate enters as the ratio (WT / 0.8), the gram-to-kilogram change of units leaves the term numerically identical to the published (W / 800 g) form.",
-      source_name        = "W"
+      notes = "Power-law scaling on total paracetamol clearance, centred on the population median. Methods 2.2 states that 'Bodyweight and body length were also collected every day during treatment', so this is the time-varying treatment-period weight rather than the time-fixed birth weight; Results 3.2 names the retained covariate 'bodyweight'. The Table 2 footnote centres it on 800 g, which the canonical kilogram units render as 0.8 kg. Because the covariate enters as the ratio (WT / 0.8), the gram-to-kilogram change of units leaves the term numerically identical to the published (W / 800 g) form.",
+      source_name = "W"
     ),
     HT_BIRTH = list(
-      description        = "Body length measured at birth",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body length measured at birth",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-law scaling on the peripheral volume of distribution, centred on 33 cm per the Table 2 footnote (the Table 1 median is 32.75 cm; 33 cm is that median rounded, and 33 cm is the value the published equation uses). Time-fixed per subject. Distinct from the daily body length that Methods 2.2 also collected: Results 3.2 and the Conclusion both name the retained covariate specifically as 'birth length', while the weight covariate above is the time-varying one, so the two size descriptors in this model differ in whether they are fixed at birth.",
-      source_name        = "BL"
+      notes = "Power-law scaling on the peripheral volume of distribution, centred on 33 cm per the Table 2 footnote (the Table 1 median is 32.75 cm; 33 cm is that median rounded, and 33 cm is the value the published equation uses). Time-fixed per subject. Distinct from the daily body length that Methods 2.2 also collected: Results 3.2 and the Conclusion both name the retained covariate specifically as 'birth length', while the weight covariate above is the time-varying one, so the two size descriptors in this model differ in whether they are fixed at birth.",
+      source_name = "BL"
     ),
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-law scaling, centred on 25 weeks per the Table 2 footnote, on two parameters: the glucuronidation partition ratio (the paper's t1) and, additionally, the sulphate metabolite's own elimination clearance. Because t1 sits in the shared denominator of all four metabolisation fractions, the single GA effect on t1 moves every pathway fraction at once - this is the mechanism behind the Results 3.2 statement that 'the glucuronide pathway increased and the sulfate pathway decreased' with increasing age. Time-fixed per subject; the cohort spans only 23-26 completed weeks (Table 1), so extrapolation far outside that window is not supported by the data.",
-      source_name        = "GA"
+      notes = "Power-law scaling, centred on 25 weeks per the Table 2 footnote, on two parameters: the glucuronidation partition ratio (the paper's t1) and, additionally, the sulphate metabolite's own elimination clearance. Because t1 sits in the shared denominator of all four metabolisation fractions, the single GA effect on t1 moves every pathway fraction at once - this is the mechanism behind the Results 3.2 statement that 'the glucuronide pathway increased and the sulfate pathway decreased' with increasing age. Time-fixed per subject; the cohort spans only 23-26 completed weeks (Table 1), so extrapolation far outside that window is not supported by the data.",
+      source_name = "GA"
     )
   )
 
@@ -72,54 +77,54 @@ Padavia_2024_paracetamol <- function() {
   # final model does not use.
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Sex, 1 = female",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex, 1 = female",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male",
-      notes              = "Screened in the Methods 2.4 stepwise covariate search but not retained. Table 1 reports 17 of 30 subjects male (56.7%). Source column was a male indicator ('Sex (M)'), so the canonical female orientation is SEXF = 1 - SEXM.",
-      source_name        = "Sex (M)"
+      notes = "Screened in the Methods 2.4 stepwise covariate search but not retained. Table 1 reports 17 of 30 subjects male (56.7%). Source column was a male indicator ('Sex (M)'), so the canonical female orientation is SEXF = 1 - SEXM.",
+      source_name = "Sex (M)"
     ),
     TBILI = list(
-      description        = "Total bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the Methods 2.4 stepwise covariate search but not retained. Table 1 median 46 umol/L (IQR 38-50.5, range 18-91).",
-      source_name        = "Total bilirubin"
+      notes = "Screened in the Methods 2.4 stepwise covariate search but not retained. Table 1 median 46 umol/L (IQR 38-50.5, range 18-91).",
+      source_name = "Total bilirubin"
     ),
     SBP = list(
-      description        = "Systolic arterial blood pressure",
-      units              = "mmHg",
-      type               = "continuous",
+      description = "Systolic arterial blood pressure",
+      units = "mmHg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the Methods 2.4 stepwise covariate search but not retained. Table 1 median 50.5 mmHg (IQR 44-57, range 39-78).",
-      source_name        = "Systolic blood pressure"
+      notes = "Screened in the Methods 2.4 stepwise covariate search but not retained. Table 1 median 50.5 mmHg (IQR 44-57, range 39-78).",
+      source_name = "Systolic blood pressure"
     ),
     DBP = list(
-      description        = "Diastolic arterial blood pressure",
-      units              = "mmHg",
-      type               = "continuous",
+      description = "Diastolic arterial blood pressure",
+      units = "mmHg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the Methods 2.4 stepwise covariate search but not retained. Table 1 median 29.5 mmHg (IQR 25.25-33, range 13-47); Table 1 separately reports a minimal diastolic pressure median of 19.5 mmHg.",
-      source_name        = "Diastolic blood pressure"
+      notes = "Screened in the Methods 2.4 stepwise covariate search but not retained. Table 1 median 29.5 mmHg (IQR 25.25-33, range 13-47); Table 1 separately reports a minimal diastolic pressure median of 19.5 mmHg.",
+      source_name = "Diastolic blood pressure"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30L,
-    n_studies      = 1L,
-    age_range      = "23-26 completed weeks' gestational age at birth; dosing began within 12 h of birth and ran 5 days, so postnatal age spans roughly 0-5 days",
-    ga_range       = "23-26 weeks (2 subjects at 23, 9 at 24, 7 at 25, 12 at 26)",
-    weight_range   = "0.470-0.920 kg birth weight (median 0.800 kg)",
-    length_range   = "28.0-36.5 cm birth length (median 32.75 cm)",
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "23-26 completed weeks' gestational age at birth; dosing began within 12 h of birth and ran 5 days, so postnatal age spans roughly 0-5 days",
+    ga_range = "23-26 weeks (2 subjects at 23, 9 at 24, 7 at 25, 12 at 26)",
+    weight_range = "0.470-0.920 kg birth weight (median 0.800 kg)",
+    length_range = "28.0-36.5 cm birth length (median 32.75 cm)",
     sex_female_pct = 43.3,
     race_ethnicity = NA_character_,
-    disease_state  = "Extreme preterm neonates receiving prophylactic intravenous paracetamol for closure of the ductus arteriosus. Exclusions were birth defects or congenital anomalies, twin-to-twin transfusion syndrome, suspected pulmonary hypoplasia, and clinical instability likely to cause rapid death.",
-    dose_range     = "Two dose levels of a Bayesian continual-reassessment dose-escalation trial. Level 1 (21 subjects): 20 mg/kg intravenous loading dose then 7.5 mg/kg every 6 h for 5 days. Level 2 (9 subjects): 25 mg/kg loading dose then 10 mg/kg every 6 h for 5 days. Escalation stopped at level 2 because no further efficacy gain was expected. Twenty doses total per subject.",
-    regions        = "France and Finland (8 neonatal intensive care units)",
+    disease_state = "Extreme preterm neonates receiving prophylactic intravenous paracetamol for closure of the ductus arteriosus. Exclusions were birth defects or congenital anomalies, twin-to-twin transfusion syndrome, suspected pulmonary hypoplasia, and clinical instability likely to cause rapid death.",
+    dose_range = "Two dose levels of a Bayesian continual-reassessment dose-escalation trial. Level 1 (21 subjects): 20 mg/kg intravenous loading dose then 7.5 mg/kg every 6 h for 5 days. Level 2 (9 subjects): 25 mg/kg loading dose then 10 mg/kg every 6 h for 5 days. Escalation stopped at level 2 because no further efficacy gain was expected. Twenty doses total per subject.",
+    regions = "France and Finland (8 neonatal intensive care units)",
     n_observations = "121 paracetamol and 484 metabolite plasma concentrations; median 4 samples per subject (range 2-6)",
-    notes          = "TREOCAPA phase II trial (NCT04459117), enrolled November 2020 to September 2021. Demographics from Table 1; 31 neonates were enrolled and 1 was excluded from the PK analysis for having no paracetamol plasma level. Estimation used Monolix 2021R2 (SAEM); confidence intervals came from 100 bootstrap replicates. Concentrations below the limit of quantification were handled as left-censored data. All mothers received antenatal steroids."
+    notes = "TREOCAPA phase II trial (NCT04459117), enrolled November 2020 to September 2021. Demographics from Table 1; 31 neonates were enrolled and 1 was excluded from the PK analysis for having no paracetamol plasma level. Estimation used Monolix 2021R2 (SAEM); confidence intervals came from 100 bootstrap replicates. Concentrations below the limit of quantification were handled as left-censored data. All mothers received antenatal steroids."
   )
 
   ini({

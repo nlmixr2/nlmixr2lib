@@ -32,130 +32,136 @@ Jung_2024_clopidogrel <- function() {
     "Residual error is proportional for all three analytes and additive for",
     "PRU. PK and PD were fitted sequentially: all PK parameters were fixed",
     "to their final PK-model estimates before the PD parameters were",
-    "estimated.")
+    "estimated."
+  )
   reference <- "Jung YS, Jin BH, Park MS, Kim CO, Chae D. Population pharmacokinetic-pharmacodynamic modeling of clopidogrel for dose regimen optimization based on CYP2C19 phenotypes: A proof of concept study. CPT Pharmacometrics Syst Pharmacol. 2024;13(1):29-40. doi:10.1002/psp4.13053"
   vignette <- "Jung_2024_clopidogrel"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot                = list(analyte = "clopidogrel",                  units = "mg",  specimen = "administration site", verified = TRUE),
-    liver                = list(analyte = "clopidogrel",                  units = "mg",  specimen = "tissue",              verified = TRUE),
-    central              = list(analyte = "clopidogrel",                  units = "mg",  specimen = "plasma",              verified = TRUE),
-    peripheral1          = list(analyte = "clopidogrel",                  units = "mg",  specimen = "plasma",              verified = TRUE),
-    central_h4           = list(analyte = "clopidogrel H4 active thiol",  units = "mg",  specimen = "plasma",              verified = TRUE),
-    central_cloca        = list(analyte = "clopidogrel carboxylic acid",  units = "mg",  specimen = "plasma",              verified = TRUE),
-    peripheral1_cloca    = list(analyte = "clopidogrel carboxylic acid",  units = "mg",  specimen = "plasma",              verified = TRUE),
-    pru                  = list(analyte = "P2Y12 reaction unit",          units = "PRU", specimen = "whole blood",         verified = TRUE)
+    depot = list(analyte = "clopidogrel", units = "mg", specimen = "administration site", verified = TRUE),
+    liver = list(analyte = "clopidogrel", units = "mg", specimen = "tissue", verified = TRUE),
+    central = list(analyte = "clopidogrel", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "clopidogrel", units = "mg", specimen = "plasma", verified = TRUE),
+    central_h4 = list(analyte = "clopidogrel H4 active thiol", units = "mg", specimen = "plasma", verified = TRUE),
+    central_cloca = list(analyte = "clopidogrel carboxylic acid", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_cloca = list(
+      analyte = "clopidogrel carboxylic acid",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    pru = list(analyte = "P2Y12 reaction unit", units = "PRU", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     CYP2C19_IM = list(
-      description        = "CYP2C19 intermediate-metabolizer phenotype indicator: 1 = subject is a CYP2C19 intermediate metabolizer; 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 intermediate-metabolizer phenotype indicator: 1 = subject is a CYP2C19 intermediate metabolizer; 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 together with CYP2C19_PM = 0, i.e. the extensive-metabolizer (EM) pool.",
-      notes              = "Time-fixed germline-genotype-derived phenotype determined from a blood sample taken on the day of admission (Jung 2024 Methods 'Plasma assay for PK, PD, and CYP phenotyping'). Jung 2024 Results 'Subjects and data' gives the genotype-to-phenotype map explicitly: *1/*1 and *1/*17 = EM; *1/*2, *1/*3, *2/*17 and *3/*17 = IM; *2/*2, *2/*3 and *3/*3 = PM. Cohort counts EM 17 / IM 15 / PM 4. Enters as an ADDITIVE shift on the logit scale of both nested metabolized fractions: logit(fm1) = logit(0.125) + e_cyp2c19_im_logitfm1 * CYP2C19_IM + e_cyp2c19_pm_logitfm1 * CYP2C19_PM, and likewise for fm2. The paper does not distinguish CYP2C19 ultrarapid metabolizers (UM) from EM -- Jung 2024 Discussion limitation 1 states *1/*17 subjects were pooled into EM -- so the reference category is an EM/UM pool exactly as in the register entry.",
-      source_name        = "CYP2C19 phenotype (IM)"
+      notes = "Time-fixed germline-genotype-derived phenotype determined from a blood sample taken on the day of admission (Jung 2024 Methods 'Plasma assay for PK, PD, and CYP phenotyping'). Jung 2024 Results 'Subjects and data' gives the genotype-to-phenotype map explicitly: *1/*1 and *1/*17 = EM; *1/*2, *1/*3, *2/*17 and *3/*17 = IM; *2/*2, *2/*3 and *3/*3 = PM. Cohort counts EM 17 / IM 15 / PM 4. Enters as an ADDITIVE shift on the logit scale of both nested metabolized fractions: logit(fm1) = logit(0.125) + e_cyp2c19_im_logitfm1 * CYP2C19_IM + e_cyp2c19_pm_logitfm1 * CYP2C19_PM, and likewise for fm2. The paper does not distinguish CYP2C19 ultrarapid metabolizers (UM) from EM -- Jung 2024 Discussion limitation 1 states *1/*17 subjects were pooled into EM -- so the reference category is an EM/UM pool exactly as in the register entry.",
+      source_name = "CYP2C19 phenotype (IM)"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer phenotype indicator: 1 = subject is a CYP2C19 poor metabolizer; 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer phenotype indicator: 1 = subject is a CYP2C19 poor metabolizer; 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 together with CYP2C19_IM = 0, i.e. the extensive-metabolizer (EM) pool.",
-      notes              = "Time-fixed germline-genotype-derived phenotype; see the CYP2C19_IM entry for the genotype-to-phenotype map and the logit-additive covariate form. n = 4 PM subjects (*2/*2, *2/*3, *3/*3) out of 36. The PM shift is applied to both fm1 (e_cyp2c19_pm_logitfm1 = -0.996) and fm2 (e_cyp2c19_pm_logitfm2 = -2.432), reproducing Jung 2024 Table 3 exactly: fm1 = 0.050, fm2 = 0.678, fmH4 = 0.034, fmcarbo = 0.644, fmothers = 0.322.",
-      source_name        = "CYP2C19 phenotype (PM)"
+      notes = "Time-fixed germline-genotype-derived phenotype; see the CYP2C19_IM entry for the genotype-to-phenotype map and the logit-additive covariate form. n = 4 PM subjects (*2/*2, *2/*3, *3/*3) out of 36. The PM shift is applied to both fm1 (e_cyp2c19_pm_logitfm1 = -0.996) and fm2 (e_cyp2c19_pm_logitfm2 = -2.432), reproducing Jung 2024 Table 3 exactly: fm1 = 0.050, fm2 = 0.678, fmH4 = 0.034, fmcarbo = 0.644, fmothers = 0.322.",
+      source_name = "CYP2C19 phenotype (PM)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened by stepwise covariate modeling (forward p < 0.01, backward p < 0.001) against the individual etas but not retained. Jung 2024 Results 'PK submodel': 'The only significant covariate was the CYP2C19 phenotype in fm1 and fm2.' Cohort weight 71.32 +/- 8.04 (EM), 72.80 +/- 8.69 (IM), 74.93 +/- 7.68 (PM) kg -- Table 1."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened by stepwise covariate modeling (forward p < 0.01, backward p < 0.001) against the individual etas but not retained. Jung 2024 Results 'PK submodel': 'The only significant covariate was the CYP2C19 phenotype in fm1 and fm2.' Cohort weight 71.32 +/- 8.04 (EM), 72.80 +/- 8.69 (IM), 74.93 +/- 7.68 (PM) kg -- Table 1."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained (see the WT entry). Cohort age 32.35 +/- 6.99 (EM), 31.27 +/- 4.51 (IM), 27.00 +/- 4.90 (PM) years -- Jung 2024 Table 1."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained (see the WT entry). Cohort age 32.35 +/- 6.99 (EM), 31.27 +/- 4.51 (IM), 27.00 +/- 4.90 (PM) years -- Jung 2024 Table 1."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained (see the WT entry). Cohort height 172.96 +/- 3.89 (EM), 175.31 +/- 5.19 (IM), 179.00 +/- 8.21 (PM) cm -- Jung 2024 Table 1."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained (see the WT entry). Cohort height 172.96 +/- 3.89 (EM), 175.31 +/- 5.19 (IM), 179.00 +/- 8.21 (PM) cm -- Jung 2024 Table 1."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained (see the WT entry). Cohort albumin 4.62 +/- 0.21 (EM), 4.73 +/- 0.32 (IM), 4.58 +/- 0.35 (PM) g/dL -- Jung 2024 Table 1."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened but not retained (see the WT entry). Cohort albumin 4.62 +/- 0.21 (EM), 4.73 +/- 0.32 (IM), 4.58 +/- 0.35 (PM) g/dL -- Jung 2024 Table 1."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained (see the WT entry). Cohort creatinine 0.91 +/- 0.14 (EM), 0.92 +/- 0.15 (IM), 0.95 +/- 0.07 (PM) mg/dL -- Jung 2024 Table 1."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened but not retained (see the WT entry). Cohort creatinine 0.91 +/- 0.14 (EM), 0.92 +/- 0.15 (IM), 0.95 +/- 0.07 (PM) mg/dL -- Jung 2024 Table 1."
     ),
     AST = list(
       description = "Aspartate transaminase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (see the WT entry). Cohort AST 18.53 +/- 4.90 (EM), 17.93 +/- 3.08 (IM), 17.50 +/- 6.95 (PM) IU/L -- Jung 2024 Table 1."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not retained (see the WT entry). Cohort AST 18.53 +/- 4.90 (EM), 17.93 +/- 3.08 (IM), 17.50 +/- 6.95 (PM) IU/L -- Jung 2024 Table 1."
     ),
     ALT = list(
       description = "Alanine transaminase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (see the WT entry). Cohort ALT 20.29 +/- 12.62 (EM), 15.40 +/- 5.64 (IM), 15.00 +/- 7.75 (PM) IU/L -- Jung 2024 Table 1."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not retained (see the WT entry). Cohort ALT 20.29 +/- 12.62 (EM), 15.40 +/- 5.64 (IM), 15.00 +/- 7.75 (PM) IU/L -- Jung 2024 Table 1."
     ),
     ALKPHOS = list(
       description = "Alkaline phosphatase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (see the WT entry). Cohort ALP 69.06 +/- 14.74 (EM), 64.40 +/- 12.88 (IM), 72.00 +/- 8.87 (PM) IU/L -- Jung 2024 Table 1."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not retained (see the WT entry). Cohort ALP 69.06 +/- 14.74 (EM), 64.40 +/- 12.88 (IM), 72.00 +/- 8.87 (PM) IU/L -- Jung 2024 Table 1."
     ),
     GGT = list(
       description = "Gamma-glutamyl transferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (see the WT entry). Cohort gamma-GT 23.12 +/- 13.79 (EM), 22.20 +/- 12.19 (IM), 22.50 +/- 10.97 (PM) IU/L -- Jung 2024 Table 1."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not retained (see the WT entry). Cohort gamma-GT 23.12 +/- 13.79 (EM), 22.20 +/- 12.19 (IM), 22.50 +/- 10.97 (PM) IU/L -- Jung 2024 Table 1."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained (see the WT entry). Cohort total bilirubin 0.69 +/- 0.11 (EM), 0.85 +/- 0.38 (IM), 0.80 +/- 0.50 (PM) mg/dL -- Jung 2024 Table 1."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened but not retained (see the WT entry). Cohort total bilirubin 0.69 +/- 0.11 (EM), 0.85 +/- 0.38 (IM), 0.80 +/- 0.50 (PM) mg/dL -- Jung 2024 Table 1."
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained (see the WT entry). Cohort BUN 13.11 +/- 3.60 (EM), 12.87 +/- 3.83 (IM), 12.68 +/- 3.17 (PM) mg/dL -- Jung 2024 Table 1."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened but not retained (see the WT entry). Cohort BUN 13.11 +/- 3.60 (EM), 12.87 +/- 3.83 (IM), 12.68 +/- 3.17 (PM) mg/dL -- Jung 2024 Table 1."
     ),
     TPROT = list(
       description = "Total protein",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained (see the WT entry). Cohort total protein 7.02 +/- 0.35 (EM), 7.19 +/- 0.41 (IM), 6.98 +/- 0.30 (PM) g/dL -- Jung 2024 Table 1."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened but not retained (see the WT entry). Cohort total protein 7.02 +/- 0.35 (EM), 7.19 +/- 0.41 (IM), 6.98 +/- 0.30 (PM) g/dL -- Jung 2024 Table 1."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 1L,
     n_observations = "503 clopidogrel, 239 clopidogrel H4, 504 clopidogrel carboxylic acid, and 280 PRU observations (Jung 2024 Results 'Subjects and data'). Proportions below the quantification limit were 27.0% (clopidogrel), 11.7% (H4) and 3.8% (carboxylic acid); no PRU value was BQL. BQL records were handled with the M4 method (simultaneous categorical modeling of BQL observations constrained to (0, LLOQ)).",
-    age_range      = "19-55 years by protocol; observed means 32.35 +/- 6.99 (EM), 31.27 +/- 4.51 (IM), 27.00 +/- 4.90 (PM) years (Table 1).",
-    weight_range   = "55-90 kg by protocol; observed means 71.32 +/- 8.04 (EM), 72.80 +/- 8.69 (IM), 74.93 +/- 7.68 (PM) kg (Table 1).",
+    age_range = "19-55 years by protocol; observed means 32.35 +/- 6.99 (EM), 31.27 +/- 4.51 (IM), 27.00 +/- 4.90 (PM) years (Table 1).",
+    weight_range = "55-90 kg by protocol; observed means 71.32 +/- 8.04 (EM), 72.80 +/- 8.69 (IM), 74.93 +/- 7.68 (PM) kg (Table 1).",
     sex_female_pct = 0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Healthy male volunteers. Body mass index 18.5-27.0 kg/m^2. Excluded: clinically significant pulmonary, cardiovascular, hepatobiliary, neurological, endocrine or immune disease; current smokers; gastrointestinal disease or surgery affecting absorption; clinically significant bleeding history; and screening PRU outside +/- 10% of the normal-range limits.",
-    dose_range     = "Clopidogrel 75 mg tablet orally once daily for 7 days, with no loading dose (aligned with non-acute-coronary-syndrome practice). PK samples at predose and 0.33, 0.67, 1, 1.5, 2, 3, 4, 6, 8, 12 and 24 h; H4 sampled only at predose and 0.33, 0.67, 1, 2, 4 and 6 h. PRU measured predose on days 1, 3, 5 and 7 and at 1, 4, 6 and 24 h after the day-7 dose, in duplicate with the arithmetic mean used as the endpoint.",
-    regions        = "Single centre, Severance Hospital, Seoul, South Korea (October 2019 to April 2020).",
+    disease_state = "Healthy male volunteers. Body mass index 18.5-27.0 kg/m^2. Excluded: clinically significant pulmonary, cardiovascular, hepatobiliary, neurological, endocrine or immune disease; current smokers; gastrointestinal disease or surgery affecting absorption; clinically significant bleeding history; and screening PRU outside +/- 10% of the normal-range limits.",
+    dose_range = "Clopidogrel 75 mg tablet orally once daily for 7 days, with no loading dose (aligned with non-acute-coronary-syndrome practice). PK samples at predose and 0.33, 0.67, 1, 1.5, 2, 3, 4, 6, 8, 12 and 24 h; H4 sampled only at predose and 0.33, 0.67, 1, 2, 4 and 6 h. PRU measured predose on days 1, 3, 5 and 7 and at 1, 4, 6 and 24 h after the day-7 dose, in duplicate with the arithmetic mean used as the endpoint.",
+    regions = "Single centre, Severance Hospital, Seoul, South Korea (October 2019 to April 2020).",
     genotype_distribution = "CYP2C19 phenotype: EM n = 17 (*1/*1, *1/*17), IM n = 15 (*1/*2, *1/*3, *2/*17, *3/*17), PM n = 4 (*2/*2, *2/*3, *3/*3). Ultrarapid metabolizers were not distinguished from extensive metabolizers (Jung 2024 Discussion limitation 1).",
-    notes          = "Prospective phase I trial, IRB 4-2019-0740, NCT04171687. Estimation in MonolixSuite 2021R2 with the SAEM algorithm; simulations in Simulx 2021R2. Assay LLOQs 0.09 ng/mL (clopidogrel), 0.3 ng/mL (H4) and 50 ng/mL (carboxylic acid); calibration ranges 0.09-10, 0.3-50 and 50-5000 ng/mL respectively. PRU by the VerifyNow P2Y12 assay (Accumetrics) on citrated whole blood analysed within 4 h of collection. Baseline PRU was 207.41 +/- 23.60 (EM), 199.83 +/- 28.60 (IM) and 207.50 +/- 33.48 (PM). Covariates screened and rejected are recorded in `covariatesDataExcluded`."
+    notes = "Prospective phase I trial, IRB 4-2019-0740, NCT04171687. Estimation in MonolixSuite 2021R2 with the SAEM algorithm; simulations in Simulx 2021R2. Assay LLOQs 0.09 ng/mL (clopidogrel), 0.3 ng/mL (H4) and 50 ng/mL (carboxylic acid); calibration ranges 0.09-10, 0.3-50 and 50-5000 ng/mL respectively. PRU by the VerifyNow P2Y12 assay (Accumetrics) on citrated whole blood analysed within 4 h of collection. Baseline PRU was 207.41 +/- 23.60 (EM), 199.83 +/- 28.60 (IM) and 207.50 +/- 33.48 (PM). Covariates screened and rejected are recorded in `covariatesDataExcluded`."
   )
 
   ini({

@@ -27,7 +27,7 @@ Dao_2022_imipenem <- function() {
     sep = " "
   )
   vignette <- "Zhang_2025_imipenem_model_review"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = FALSE because the primary publication is
@@ -38,11 +38,11 @@ Dao_2022_imipenem <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 1.16 kg, equal to the cohort median (range 0.5-4.1 kg;",
         "Zhang 2025 Table 1) -- a very-low-birth-weight neonatal cohort.",
         "Enters BOTH clearance and volume with the exponent 0.75 (Zhang",
@@ -57,14 +57,14 @@ Dao_2022_imipenem <- function() {
         "slip in the secondary source is a live alternative. Recorded in",
         "the vignette Errata."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological age since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological age since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "UNIT REPARAMETERISATION. The source expresses postnatal age in",
         "DAYS, centred on 21 days -- Zhang 2025 Table 1 reports the cohort",
         "PNA as 21 days (range 2.1-153) and Table 3's formula reads",
@@ -81,14 +81,14 @@ Dao_2022_imipenem <- function() {
         "achievable postnatal age, so the term is safe over its whole",
         "physical domain. Time-varying within subject."
       ),
-      source_name        = "PNA"
+      source_name = "PNA"
     ),
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 26.9 weeks, equal to the cohort median (range 24.2-41.3",
         "weeks; Zhang 2025 Table 1) -- an extremely preterm cohort. Enters",
         "clearance as the centred linear multiplier",
@@ -106,14 +106,14 @@ Dao_2022_imipenem <- function() {
         "fitted range. Recorded in the vignette Errata. Time-fixed per",
         "subject."
       ),
-      source_name        = "GA"
+      source_name = "GA"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 46.6. The review does not state the unit, but 46.6",
         "umol/L (= 0.53 mg/dL) is a physiological neonatal serum",
         "creatinine while 46.6 mg/dL is not survivable, and the study is",
@@ -128,7 +128,7 @@ Dao_2022_imipenem <- function() {
         "one of the 18 to retain serum creatinine itself (rather than a",
         "derived creatinine clearance) as a covariate. Time-varying."
       ),
-      source_name        = "SCr"
+      source_name = "SCr"
     )
   )
 
@@ -136,37 +136,52 @@ Dao_2022_imipenem <- function() {
   # Table 3, 'Covariates screened' column). The review prints no
   # coefficient for any of them, so none can be reconstructed.
   covariatesDataExcluded <- list(
-    SEXF = list(description = "Female sex",           units = "(binary)", type = "binary",     notes = "Screened, not retained (Zhang 2025 Table 3). Cohort 44/82 female (Table 1)."),
-    PMA  = list(description = "Postmenstrual age",    units = "weeks",    type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3); gestational age and postnatal age were retained separately instead. Cohort median 31 weeks, range 25.6-48.3 (Table 1). Not a registered canonical in inst/references/covariate-columns.md; recorded here as documentation only, since it is never referenced in model()."),
-    SGA  = list(description = "Small for gestational age", units = "(binary)", type = "binary", notes = "Screened, not retained (Zhang 2025 Table 3). Not a registered canonical; recorded here as documentation only.")
+    SEXF = list(
+      description = "Female sex",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Cohort 44/82 female (Table 1)."
+    ),
+    PMA = list(
+      description = "Postmenstrual age",
+      units = "weeks",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3); gestational age and postnatal age were retained separately instead. Cohort median 31 weeks, range 25.6-48.3 (Table 1). Not a registered canonical in inst/references/covariate-columns.md; recorded here as documentation only, since it is never referenced in model()."
+    ),
+    SGA = list(
+      description = "Small for gestational age",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Not a registered canonical; recorded here as documentation only."
+    )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 82L,
-    n_studies        = 1L,
-    age_median       = paste(
+    species = "human",
+    n_subjects = 82L,
+    n_studies = 1L,
+    age_median = paste(
       "postnatal age 21 days (range 2.1-153); gestational age 26.9 weeks",
       "(range 24.2-41.3); postmenstrual age 31 weeks (range 25.6-48.3)"
     ),
-    ga_range         = "24.2-41.3 weeks (median 26.9)",
-    weight_median    = "1.16 kg (range 0.5-4.1)",
-    sex_female_pct   = 53.7,
-    race_ethnicity   = NULL,
-    disease_state    = paste(
+    ga_range = "24.2-41.3 weeks (median 26.9)",
+    weight_median = "1.16 kg (range 0.5-4.1)",
+    sex_female_pct = 53.7,
+    race_ethnicity = NULL,
+    disease_state = paste(
       "Neonates, predominantly extremely preterm, receiving",
       "imipenem-cilastatin. Together with the neonatal arm of Yoshizawa",
       "2013 this is one of only two neonatal cohorts among the 18 studies",
       "in the Zhang 2025 review, and it is the more preterm of the two."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "15-20 mg/kg imipenem intravenously every 8-12 h (Zhang 2025",
       "Supplementary Table S1). The infusion duration is not reported by",
       "the review."
     ),
-    regions          = "Switzerland",
+    regions = "Switzerland",
     n_concentrations = 173L,
-    notes            = paste(
+    notes = paste(
       "Retrospective study (Zhang 2025 Table 1, study 13); 82 patients,",
       "173 samples, sex split 38 male / 44 female. Samples were taken at",
       "Cmax (1-2 h after the start of infusion), at Cmin (at steady state,",

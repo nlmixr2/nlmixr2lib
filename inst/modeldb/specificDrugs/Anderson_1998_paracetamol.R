@@ -24,44 +24,44 @@ Anderson_1998_paracetamol <- function() {
     sep = " "
   )
   vignette <- "Anderson_1998_paracetamol"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot     = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
-    central   = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
     brain_csf = list(analyte = "paracetamol", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size covariate; reference weight 70 kg per",
         "Anderson 1998 Methods (Pharmacokinetic modelling, equation 'Pi =",
         "Pstd * (Wi/Wstd)^b'). Children studied weighed 8-50 kg (Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 9L,
-    n_studies      = 1L,
-    age_range      = "5 months to 12 years",
-    age_median     = "5 years (Table 1)",
-    weight_range   = "8 to 50 kg",
-    weight_median  = "20 kg (Table 1)",
+    species = "human",
+    n_subjects = 9L,
+    n_studies = 1L,
+    age_range = "5 months to 12 years",
+    age_median = "5 years (Table 1)",
+    weight_range = "8 to 50 kg",
+    weight_median = "20 kg (Table 1)",
     sex_female_pct = 100 * 3 / 9,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Ventilator-dependent paediatric intensive-care patients with",
       "external ventricular drains placed for raised intracranial",
       "pressure (>20 mmHg). Diagnoses: closed head injury (n=3),",
@@ -70,18 +70,18 @@ Anderson_1998_paracetamol <- function() {
       "posterior fossa tumour (n=1). Six of nine children had suffered",
       "trauma (Anderson 1998 Methods, Table 1)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single nasogastric dose of paracetamol elixir 40 mg/kg",
       "(Wellcome New Zealand, 250 mg / 5 mL); approximate range",
       "320-2000 mg given the 8-50 kg weight range."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Arterial blood and CSF (from the external ventricular drain)",
       "sampled hourly for the first 4 h and 2-hourly through 10 h",
       "after the dose (Anderson 1998 Methods)."
     ),
-    regions        = "New Zealand (Auckland Children's Hospital)",
-    notes          = paste(
+    regions = "New Zealand (Auckland Children's Hospital)",
+    notes = paste(
       "Patient 1 was studied on two separate occasions five days apart;",
       "the two occasions are reported as records 1a and 1b in Tables 2",
       "and 3 of Anderson 1998. NONMEM final parameter estimates use the",

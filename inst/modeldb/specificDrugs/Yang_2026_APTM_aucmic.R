@@ -25,27 +25,27 @@ Yang_2026_APTM_aucmic <- function() {
 
   covariateData <- list(
     AUC_APTM = list(
-      description        = "APTM area under the plasma concentration-time curve, used as the numerator of the AUC/MIC PK/PD index driving the in vivo effect",
-      units              = "ug*h/mL",
-      type               = "continuous",
+      description = "APTM area under the plasma concentration-time curve, used as the numerator of the AUC/MIC PK/PD index driving the in vivo effect",
+      units = "ug*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yang 2026 calls this exposure 'AUC0-24h' throughout, but the values it actually regressed against dose are the AUCINF column of Table 2. Two independent checks establish this: least-squares regression of the Table 2 AUCINF values (2382.53, 8551.66 and 30671.54 h*ng/mL at 5, 15 and 40 mg/kg) on dose returns R^2 = 0.99480, matching the paper's stated 0.9948 to five significant figures; and inverting that same regression at the Table 3 index targets reproduces the paper's own back-calculated daily doses of 12.22 and 21.83 mg/kg to within 0.2% (12.24 and 21.86). Set to 0 for the untreated control so the sigmoid term vanishes and the predicted change equals E0. Because the paper published no structural PK model, this covariate is the model's only route for drug exposure. Note the unit change relative to Table 2: the paper tabulates h*ng/mL, so divide the tabulated value by 1000 to obtain the ug*h/mL this column expects, which keeps the AUC/MIC ratio consistent with mic in ug/mL.",
-      source_name        = "AUC0-24h (Yang 2026 Materials and methods, 'Pharmacokinetic, pharmacodynamic, and statistical analysis'; Figure 3B; index targets in Table 3). Numerically the AUCINF column of Table 2."
+      notes = "Yang 2026 calls this exposure 'AUC0-24h' throughout, but the values it actually regressed against dose are the AUCINF column of Table 2. Two independent checks establish this: least-squares regression of the Table 2 AUCINF values (2382.53, 8551.66 and 30671.54 h*ng/mL at 5, 15 and 40 mg/kg) on dose returns R^2 = 0.99480, matching the paper's stated 0.9948 to five significant figures; and inverting that same regression at the Table 3 index targets reproduces the paper's own back-calculated daily doses of 12.22 and 21.83 mg/kg to within 0.2% (12.24 and 21.86). Set to 0 for the untreated control so the sigmoid term vanishes and the predicted change equals E0. Because the paper published no structural PK model, this covariate is the model's only route for drug exposure. Note the unit change relative to Table 2: the paper tabulates h*ng/mL, so divide the tabulated value by 1000 to obtain the ug*h/mL this column expects, which keeps the AUC/MIC ratio consistent with mic in ug/mL.",
+      source_name = "AUC0-24h (Yang 2026 Materials and methods, 'Pharmacokinetic, pharmacodynamic, and statistical analysis'; Figure 3B; index targets in Table 3). Numerically the AUCINF column of Table 2."
     )
   )
 
   population <- list(
-    species        = "chicken (specific-pathogen-free, one-day-old at purchase, 35-45 g)",
-    n_subjects     = 60L,
-    n_studies      = 1L,
-    organism       = "Mycoplasma gallisepticum standard strain S6 (ATCC 15302; China Institute of Veterinary Drug Control). APTM MIC = 0.03125 ug/mL by broth microdilution and 0.0625 ug/mL by broth macrodilution; the microdilution value is the one used to form the PK/PD indices and, as a surrogate for MIC90, in the dose calculation",
-    system         = "Intratracheal M. gallisepticum infection model: chickens inoculated intratracheally with 0.2 mL of a 1 x 10^9 CFU/mL exponential-phase suspension once daily for three consecutive days",
-    disease_state  = "Experimental M. gallisepticum respiratory infection; efficacy read as the change in lung mycoplasma load relative to a baseline group euthanised before the first dose",
-    dose_range     = "0 (vehicle control), 5, 10, 15, 20, 25, 30, 35 and 40 mg/kg APTM by oral gavage, once daily for three consecutive days (45% APTM soluble powder dissolved in water)",
-    design         = "60 infected chickens: eight treatment groups plus a vehicle control group (n = 6 each) and an additional baseline group (n = 6) euthanised before the first administration to establish the initial lung load",
-    sampling       = "Lungs aseptically collected and homogenised 24 h after the final dose (72 h after the first), homogenate adjusted to 1 mL with sterile saline, ten-fold serially diluted and plated for viable mycoplasma counts",
-    regions        = "China (South China Agricultural University, Guangzhou)",
-    notes          = "Ethics approval 2025C037 (Animal Ethics Committee of South China Agricultural University). Observed mean changes in lung load: +0.20 log10 CFU/mL in the untreated control and reductions of 0.15, 0.31, 1.13, 1.85, 1.63, 2.67, 2.48 and 2.80 log10 CFU/mL at 5, 10, 15, 20, 25, 30, 35 and 40 mg/kg. The companion Cmax/MIC fit is packaged separately as Yang_2026_APTM_cmaxmic; the two indices are statistically indistinguishable in this study (R^2 = 0.9424 for AUC0-24h/MIC versus 0.9428 for Cmax/MIC) and the paper prefers AUC0-24h/MIC on mechanistic grounds (concentration-dependent killing plus a long half-life), which is why both parameterisations are carried rather than only the better-correlating one. The paper's printed dose equation, Dose = (AUC/MIC breakpoint x MIC90 x Cl) / (fu x F) with fu set to 1 and F not factored in, yields daily oral doses of 12.22 mg/kg (1-log10 target) and 21.83 mg/kg (2-log10 target), the latter rounded to the paper's headline 22 mg/kg recommendation. The 264 chickens of the pharmacokinetic arm are not counted in n_subjects, which refers to the pharmacodynamic cohort this model was fitted to; the whole study used 324 birds."
+    species = "chicken (specific-pathogen-free, one-day-old at purchase, 35-45 g)",
+    n_subjects = 60L,
+    n_studies = 1L,
+    organism = "Mycoplasma gallisepticum standard strain S6 (ATCC 15302; China Institute of Veterinary Drug Control). APTM MIC = 0.03125 ug/mL by broth microdilution and 0.0625 ug/mL by broth macrodilution; the microdilution value is the one used to form the PK/PD indices and, as a surrogate for MIC90, in the dose calculation",
+    system = "Intratracheal M. gallisepticum infection model: chickens inoculated intratracheally with 0.2 mL of a 1 x 10^9 CFU/mL exponential-phase suspension once daily for three consecutive days",
+    disease_state = "Experimental M. gallisepticum respiratory infection; efficacy read as the change in lung mycoplasma load relative to a baseline group euthanised before the first dose",
+    dose_range = "0 (vehicle control), 5, 10, 15, 20, 25, 30, 35 and 40 mg/kg APTM by oral gavage, once daily for three consecutive days (45% APTM soluble powder dissolved in water)",
+    design = "60 infected chickens: eight treatment groups plus a vehicle control group (n = 6 each) and an additional baseline group (n = 6) euthanised before the first administration to establish the initial lung load",
+    sampling = "Lungs aseptically collected and homogenised 24 h after the final dose (72 h after the first), homogenate adjusted to 1 mL with sterile saline, ten-fold serially diluted and plated for viable mycoplasma counts",
+    regions = "China (South China Agricultural University, Guangzhou)",
+    notes = "Ethics approval 2025C037 (Animal Ethics Committee of South China Agricultural University). Observed mean changes in lung load: +0.20 log10 CFU/mL in the untreated control and reductions of 0.15, 0.31, 1.13, 1.85, 1.63, 2.67, 2.48 and 2.80 log10 CFU/mL at 5, 10, 15, 20, 25, 30, 35 and 40 mg/kg. The companion Cmax/MIC fit is packaged separately as Yang_2026_APTM_cmaxmic; the two indices are statistically indistinguishable in this study (R^2 = 0.9424 for AUC0-24h/MIC versus 0.9428 for Cmax/MIC) and the paper prefers AUC0-24h/MIC on mechanistic grounds (concentration-dependent killing plus a long half-life), which is why both parameterisations are carried rather than only the better-correlating one. The paper's printed dose equation, Dose = (AUC/MIC breakpoint x MIC90 x Cl) / (fu x F) with fu set to 1 and F not factored in, yields daily oral doses of 12.22 mg/kg (1-log10 target) and 21.83 mg/kg (2-log10 target), the latter rounded to the paper's headline 22 mg/kg recommendation. The 264 chickens of the pharmacokinetic arm are not counted in n_subjects, which refers to the pharmacodynamic cohort this model was fitted to; the whole study used 324 birds."
   )
 
   ini({

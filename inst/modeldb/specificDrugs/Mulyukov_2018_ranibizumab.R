@@ -2,7 +2,12 @@ Mulyukov_2018_ranibizumab <- function() {
   description <- "Indirect-response PK/PD model of intravitreal ranibizumab on best-corrected visual acuity (SCORE_BCVA, ETDRS letters) in anti-VEGF-naive adults with neovascular age-related macular degeneration (Mulyukov 2018). SCORE_BCVA is driven by an indirect-response ODE in which drug concentration stimulates the SCORE_BCVA production rate (kin) through a Michaelis-Menten-like term with a time-dependent maximum effect emax(t) = emax_ss + demax_0 * exp(-kemax * t). The PK is a fixed first-order vitreous-elimination placeholder (kel = 0.077/day, vitreous volume = 4 mL, no IIV) borrowed from a previous population PK analysis (reference 20 of the paper) because vitreous PK data were not collected in the development studies."
   reference <- "Mulyukov Z, Weber S, Pigeolet E, Clemens A, Lehr T, Racine A. Neovascular Age-Related Macular Degeneration: A Visual Acuity Model of Natural Disease Progression and Ranibizumab Treatment Effect. CPT Pharmacometrics Syst Pharmacol. 2018;7(10):660-669. doi:10.1002/psp4.12322. PMID: 30043524."
   vignette <- "Mulyukov_2018_ranibizumab"
-  units <- list(time = "day", dosing = "mg", concentration = "mg/L (equivalent to ug/mL)", response = "SCORE_BCVA (ETDRS letters, 0-100)")
+  units <- list(
+    time = "day",
+    dosing = "mg",
+    concentration = "mg/L (equivalent to ug/mL)",
+    response = "SCORE_BCVA (ETDRS letters, 0-100)"
+  )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
@@ -10,43 +15,43 @@ Mulyukov_2018_ranibizumab <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     central = list(analyte = "ranibizumab", units = "mg", specimen = "plasma", verified = FALSE),
-    bcva    = list(analyte = "SCORE_BCVA", units = "mg", specimen = "not applicable", verified = FALSE)
+    bcva = list(analyte = "SCORE_BCVA", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power-form effect on steady-state drug effect emax_ss normalized as (AGE/77)^beta_emax_ss,AGE (Mulyukov 2018 Eq. 3, Table 2). Reference 77 years is the study-population mean baseline age. Paper narrative: a 4 ETDRS letter reduction in 12-month SCORE_BCVA improvement is expected for an 85-year-old vs a 65-year-old patient.",
-      source_name        = "AGE"
+      notes = "Time-fixed per subject. Power-form effect on steady-state drug effect emax_ss normalized as (AGE/77)^beta_emax_ss,AGE (Mulyukov 2018 Eq. 3, Table 2). Reference 77 years is the study-population mean baseline age. Paper narrative: a 4 ETDRS letter reduction in 12-month SCORE_BCVA improvement is expected for an 85-year-old vs a 65-year-old patient.",
+      source_name = "AGE"
     ),
     SCORE_BCVA = list(
-      description        = "Observed baseline best-corrected visual acuity",
-      units              = "ETDRS letters (0-100)",
-      type               = "continuous",
+      description = "Observed baseline best-corrected visual acuity",
+      units = "ETDRS letters (0-100)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Used as the per-subject center for the baseline SCORE_BCVA initial condition g0_i = BVA_i + eta_{1,i} (Mulyukov 2018 Methods, paragraph above Eq. 3: 'We modeled baseline VA as normally distributed around observed value BVA'). Canonical register alias: source column 'BVA' in Mulyukov 2018. Study-population baseline mean (SD) = 54 (13) letters across the four development datasets.",
-      source_name        = "BVA"
+      notes = "Time-fixed per subject. Used as the per-subject center for the baseline SCORE_BCVA initial condition g0_i = BVA_i + eta_{1,i} (Mulyukov 2018 Methods, paragraph above Eq. 3: 'We modeled baseline VA as normally distributed around observed value BVA'). Canonical register alias: source column 'BVA' in Mulyukov 2018. Study-population baseline mean (SD) = 54 (13) letters across the four development datasets.",
+      source_name = "BVA"
     )
   )
 
   population <- list(
-    n_subjects          = 1524L,
-    n_observations      = 29754L,
-    n_studies           = 4L,
-    age_range           = "50-96 years; mean (SD) 77 (7.5) years",
-    age_median          = "77 years (mean)",
-    weight_range        = NULL,
-    sex_female_pct      = 60,
-    race_ethnicity      = NULL,
-    disease_state       = "Anti-VEGF treatment-naive neovascular (wet) age-related macular degeneration with best-corrected visual acuity 25-70 ETDRS letters at entry.",
-    dose_range          = "Ranibizumab 0.3 mg or 0.5 mg intravitreal injection, monthly (q4w) or quarterly (q12w) after three monthly loading doses; sham comparator arms also modelled simultaneously.",
-    regions             = "Multinational (ANCHOR, MARINA, PIER, and EXCITE phase III programmes).",
-    baseline_BCVA       = "Mean (SD) 54 (13) ETDRS letters; range 3-84 letters.",
+    n_subjects = 1524L,
+    n_observations = 29754L,
+    n_studies = 4L,
+    age_range = "50-96 years; mean (SD) 77 (7.5) years",
+    age_median = "77 years (mean)",
+    weight_range = NULL,
+    sex_female_pct = 60,
+    race_ethnicity = NULL,
+    disease_state = "Anti-VEGF treatment-naive neovascular (wet) age-related macular degeneration with best-corrected visual acuity 25-70 ETDRS letters at entry.",
+    dose_range = "Ranibizumab 0.3 mg or 0.5 mg intravitreal injection, monthly (q4w) or quarterly (q12w) after three monthly loading doses; sham comparator arms also modelled simultaneously.",
+    regions = "Multinational (ANCHOR, MARINA, PIER, and EXCITE phase III programmes).",
+    baseline_BCVA = "Mean (SD) 54 (13) ETDRS letters; range 3-84 letters.",
     external_validation = "HARBOR study (ranibizumab 0.5 mg and 2.0 mg q4w, summary data only) used for predictive check only; not part of model fitting.",
-    notes               = "Pooled from the ANCHOR (2 y), MARINA (2 y), PIER (1 y), and EXCITE (1 y) phase III ranibizumab trials (Mulyukov 2018 Table 1). The PDT (verteporfin) arm of ANCHOR and the year-2 PIER data were excluded from the modelled dataset per the paper's Methods. Approximately 40% of patients were male. Weight / race-ethnicity distributions were not reported in Table 1."
+    notes = "Pooled from the ANCHOR (2 y), MARINA (2 y), PIER (1 y), and EXCITE (1 y) phase III ranibizumab trials (Mulyukov 2018 Table 1). The PDT (verteporfin) arm of ANCHOR and the year-2 PIER data were excluded from the modelled dataset per the paper's Methods. Approximately 40% of patients were male. Weight / race-ethnicity distributions were not reported in Table 1."
   )
 
   ini({

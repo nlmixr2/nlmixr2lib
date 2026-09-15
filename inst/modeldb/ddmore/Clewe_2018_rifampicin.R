@@ -10,7 +10,7 @@ Clewe_2018_rifampicin <- function() {
   )
   vignette <- "Clewe_2018_rifampicin"
   units <- list(time = "day", dosing = "CFU/mL", concentration = "mg/L")
-  ddmore_id    <- "DDMODEL00000259"
+  ddmore_id <- "DDMODEL00000259"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -18,50 +18,75 @@ Clewe_2018_rifampicin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    Fbugs = list(analyte = "Mycobacterium tuberculosis B1585 (fast-multiplying subpopulation)", units = NA_character_, specimen = "bile", verified = FALSE),
-    Sbugs = list(analyte = "Mycobacterium tuberculosis B1585 (slow-multiplying subpopulation)", units = NA_character_, specimen = "saliva", verified = FALSE),
-    Nbugs = list(analyte = "Mycobacterium tuberculosis B1585 (non-replicating subpopulation)", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    aron  = list(analyte = "CONMED_INH_CC adaptive resistance on", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    aroff = list(analyte = "CONMED_INH_CC adaptive resistance off", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    Fbugs = list(
+      analyte = "Mycobacterium tuberculosis B1585 (fast-multiplying subpopulation)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    Sbugs = list(
+      analyte = "Mycobacterium tuberculosis B1585 (slow-multiplying subpopulation)",
+      units = NA_character_,
+      specimen = "saliva",
+      verified = FALSE
+    ),
+    Nbugs = list(
+      analyte = "Mycobacterium tuberculosis B1585 (non-replicating subpopulation)",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    aron = list(
+      analyte = "CONMED_INH_CC adaptive resistance on",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    aroff = list(
+      analyte = "CONMED_INH_CC adaptive resistance off",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CONMED_RIF_CC = list(
-      description        = "Rifampicin in vitro exposure concentration (time-fixed per replicate).",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Rifampicin in vitro exposure concentration (time-fixed per replicate).",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source dataset column `CONMED_RIF_CC`. Constant per experimental replicate (the .mod initialises a static drug compartment from this column and sets DADT = 0). Supply 0 for CONMED_RIF_CC-free arms; the GPDI interaction terms multiplying CONMED_RIF_CC reduce to zero in that case.",
-      source_name        = "CONMED_RIF_CC"
+      notes = "Source dataset column `CONMED_RIF_CC`. Constant per experimental replicate (the .mod initialises a static drug compartment from this column and sets DADT = 0). Supply 0 for CONMED_RIF_CC-free arms; the GPDI interaction terms multiplying CONMED_RIF_CC reduce to zero in that case.",
+      source_name = "CONMED_RIF_CC"
     ),
     CONMED_INH_CC = list(
-      description        = "Isoniazid in vitro exposure concentration (time-fixed per replicate).",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Isoniazid in vitro exposure concentration (time-fixed per replicate).",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source dataset column `CONMED_INH_CC`. Constant per experimental replicate; drives the Hill exposure-response on Fbugs / Sbugs and the kinetics of the ARON / AROFF adaptive-resistance switch (kon * AROFF * CONMED_INH_CC).",
-      source_name        = "CONMED_INH_CC"
+      notes = "Source dataset column `CONMED_INH_CC`. Constant per experimental replicate; drives the Hill exposure-response on Fbugs / Sbugs and the kinetics of the ARON / AROFF adaptive-resistance switch (kon * AROFF * CONMED_INH_CC).",
+      source_name = "CONMED_INH_CC"
     ),
     CONMED_EMB_CC = list(
-      description        = "Ethambutol in vitro exposure concentration (time-fixed per replicate).",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Ethambutol in vitro exposure concentration (time-fixed per replicate).",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source dataset column `CONMED_EMB_CC`. Constant per experimental replicate. The .mod source guards five GPDI parameters (sdieh, sdihe, fdier, sdier, sdierh) behind `IF(A(8) > 0)` blocks so that CONMED_EMB_CC-mediated interaction shifts collapse to zero in CONMED_EMB_CC-free arms; this implementation reproduces that behaviour with `(CONMED_EMB_CC > 0) * <param>` factors.",
-      source_name        = "CONMED_EMB_CC"
+      notes = "Source dataset column `CONMED_EMB_CC`. Constant per experimental replicate. The .mod source guards five GPDI parameters (sdieh, sdihe, fdier, sdier, sdierh) behind `IF(A(8) > 0)` blocks so that CONMED_EMB_CC-mediated interaction shifts collapse to zero in CONMED_EMB_CC-free arms; this implementation reproduces that behaviour with `(CONMED_EMB_CC > 0) * <param>` factors.",
+      source_name = "CONMED_EMB_CC"
     )
   )
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "in vitro Mycobacterium tuberculosis B1585 culture (no human subjects).",
-    dose_range     = "Initial inoculum f0 + s0 = 209 + 324 = 533 (THETA(7..8) units; the .mod scales these by 1000 in $PK so the bacterial-state initial conditions are 209,000 + 324,000 = 533,000 CFU/mL with a non-replicating seed of 1e-5 CFU/mL). CONMED_RIF_CC, CONMED_INH_CC, CONMED_EMB_CC exposures are static in vitro concentrations supplied per replicate; the source dataset spans single-drug, two-drug, and three-drug exposures across NATG=1 normal-growth experiments (EXPR codes 1,2,3,7,8,11,13).",
-    regions        = NA_character_,
-    notes          = "In vitro time-kill model fit to M. tuberculosis B1585 cultures under combinations of rifampicin, isoniazid, and ethambutol. The DDMORE bundle reports `Scenario = 4`, which the .mod and the publication identify as the triple-combination MTP-GPDI fit (MTP block fixed from an earlier mono-data MTP fit; CONMED_INH_CC adaptive-resistance and per-drug exposure-response parameters fixed from the corresponding mono-data CONMED_INH_CC / CONMED_RIF_CC / CONMED_EMB_CC fits; only the GPDI interaction parameters were estimated jointly on the combination data). The companion `Clewe_2016_rifampicin` task covers the underlying single-drug CONMED_RIF_CC / MTP model (DDMODEL00000220 lineage); the present model adds the multidrug GPDI layer."
+    disease_state = "in vitro Mycobacterium tuberculosis B1585 culture (no human subjects).",
+    dose_range = "Initial inoculum f0 + s0 = 209 + 324 = 533 (THETA(7..8) units; the .mod scales these by 1000 in $PK so the bacterial-state initial conditions are 209,000 + 324,000 = 533,000 CFU/mL with a non-replicating seed of 1e-5 CFU/mL). CONMED_RIF_CC, CONMED_INH_CC, CONMED_EMB_CC exposures are static in vitro concentrations supplied per replicate; the source dataset spans single-drug, two-drug, and three-drug exposures across NATG=1 normal-growth experiments (EXPR codes 1,2,3,7,8,11,13).",
+    regions = NA_character_,
+    notes = "In vitro time-kill model fit to M. tuberculosis B1585 cultures under combinations of rifampicin, isoniazid, and ethambutol. The DDMORE bundle reports `Scenario = 4`, which the .mod and the publication identify as the triple-combination MTP-GPDI fit (MTP block fixed from an earlier mono-data MTP fit; CONMED_INH_CC adaptive-resistance and per-drug exposure-response parameters fixed from the corresponding mono-data CONMED_INH_CC / CONMED_RIF_CC / CONMED_EMB_CC fits; only the GPDI interaction parameters were estimated jointly on the combination data). The companion `Clewe_2016_rifampicin` task covers the underlying single-drug CONMED_RIF_CC / MTP model (DDMODEL00000220 lineage); the present model adds the multidrug GPDI layer."
   )
 
   ini({

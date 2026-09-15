@@ -25,8 +25,8 @@ Desmee_2015_PSA_mCRPC <- function() {
   paper_specific_compartments <- c("cells", "psa")
 
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no explicit drug-dosing events; chemotherapy effect enters via the per-subject parameters eps and tesc)",
+    time = "day",
+    dosing = "n/a (no explicit drug-dosing events; chemotherapy effect enters via the per-subject parameters eps and tesc)",
     concentration = "ng/mL (PSA) and 1/mL (cell density)"
   )
 
@@ -35,9 +35,19 @@ Desmee_2015_PSA_mCRPC <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    cells  = list(analyte = "proliferating prostate cells", units = NA_character_, specimen = "administration site", verified = FALSE),
-    psa    = list(analyte = "PSA", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    cumhaz = list(analyte = "overall-survival hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cells = list(
+      analyte = "proliferating prostate cells",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    psa = list(analyte = "PSA", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    cumhaz = list(
+      analyte = "overall-survival hazard",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
@@ -46,16 +56,16 @@ Desmee_2015_PSA_mCRPC <- function() {
   # The paper does not develop any covariate effects.
 
   population <- list(
-    species        = "human (adult males with metastatic castration-resistant prostate cancer)",
-    n_subjects     = 500L,
-    n_studies      = 1L,
-    age_range      = "not reported (the simulation parameters are inspired by the Tannock 2013 VENICE phase III arm; the simulation design itself does not specify a demographic distribution)",
-    weight_range   = "not reported (not used; no allometric scaling in the model)",
+    species = "human (adult males with metastatic castration-resistant prostate cancer)",
+    n_subjects = 500L,
+    n_studies = 1L,
+    age_range = "not reported (the simulation parameters are inspired by the Tannock 2013 VENICE phase III arm; the simulation design itself does not specify a demographic distribution)",
+    weight_range = "not reported (not used; no allometric scaling in the model)",
     sex_female_pct = 0,
-    disease_state  = "metastatic castration-resistant prostate cancer (mCRPC) under chemotherapy",
-    dose_range     = "n/a (drug effect is encoded as a per-subject effectiveness eps held until an individual escape time tesc; there is no explicit dose or pharmacokinetic input)",
-    regions        = "n/a (simulation study; no patient population was enrolled)",
-    notes          = paste(
+    disease_state = "metastatic castration-resistant prostate cancer (mCRPC) under chemotherapy",
+    dose_range = "n/a (drug effect is encoded as a per-subject effectiveness eps held until an individual escape time tesc; there is no explicit dose or pharmacokinetic input)",
+    regions = "n/a (simulation study; no patient population was enrolled)",
+    notes = paste(
       "Simulation design (paper Methods, 'Simulation study' / 'Design'):",
       "M = 100 datasets of N = 500 patients each, with PSA measurements",
       "every 3 weeks for 2 years (last possible measurement at t = 735 day;",

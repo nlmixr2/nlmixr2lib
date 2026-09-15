@@ -8,41 +8,43 @@ Diao_2016_daclizumab_treg <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "daclizumab treg", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "daclizumab treg", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "daclizumab treg", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "daclizumab treg", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "daclizumab treg", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling of the inherited Othman 2014 PK parameters (CL, Q, Vc, Vp) with reference 70 kg; exponents 0.54 on CL/Q and 0.64 on Vc/Vp. Treg PD parameters do not carry weight covariates in Diao 2016.",
-      source_name        = "WT"
+      notes = "Used for allometric scaling of the inherited Othman 2014 PK parameters (CL, Q, Vc, Vp) with reference 70 kg; exponents 0.54 on CL/Q and 0.64 on Vc/Vp. Treg PD parameters do not carry weight covariates in Diao 2016.",
+      source_name = "WT"
     ),
     DOSE_50MG = list(
-      description        = "Record-level indicator for the 50 mg SC dose (1 = 50 mg SC, 0 = any other SC dose or any IV dose)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Record-level indicator for the 50 mg SC dose (1 = 50 mg SC, 0 = any other SC dose or any IV dose)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (100, 150, 200, or 300 mg SC dose, or any IV dose)",
-      notes              = "Inherited from the Othman 2014 PK backbone. Diao 2016 dosing is 150 or 300 mg SC every 4 weeks, so leave DOSE_50MG = 0 in clinical simulations.",
-      source_name        = "(derived from AMT)"
+      notes = "Inherited from the Othman 2014 PK backbone. Diao 2016 dosing is 150 or 300 mg SC every 4 weeks, so leave DOSE_50MG = 0 in clinical simulations.",
+      source_name = "(derived from AMT)"
     )
   )
 
   population <- list(
-    n_subjects     = 1353L,
-    n_records      = 8742L,
-    n_studies      = 4L,
-    study_names    = c("205MS201 / SELECT (Phase 2, RRMS)",
-                       "205MS202 / SELECTION (Phase 2 extension with washout cohort)",
-                       "205MS302 / OBSERVE (immunogenicity / PK / PD with intensive substudy)",
-                       "205MS301 / DECIDE (Phase 3 vs IFN beta-1a)"),
-    disease_state  = "Relapsing-remitting multiple sclerosis (RRMS)",
-    dose_range     = "Daclizumab HYP 150 or 300 mg SC every 4 weeks",
-    notes          = paste0(
+    n_subjects = 1353L,
+    n_records = 8742L,
+    n_studies = 4L,
+    study_names = c(
+      "205MS201 / SELECT (Phase 2, RRMS)",
+      "205MS202 / SELECTION (Phase 2 extension with washout cohort)",
+      "205MS302 / OBSERVE (immunogenicity / PK / PD with intensive substudy)",
+      "205MS301 / DECIDE (Phase 3 vs IFN beta-1a)"
+    ),
+    disease_state = "Relapsing-remitting multiple sclerosis (RRMS)",
+    dose_range = "Daclizumab HYP 150 or 300 mg SC every 4 weeks",
+    notes = paste0(
       "Pooled PK/PD dataset of 1353 RRMS subjects with 8742 Treg records ",
       "from four daclizumab HYP clinical studies (Diao 2016 Table 2). ",
       "Treg defined as CD4+ CD127low/- Foxp3+ as a percentage of all CD4+ ",
@@ -50,8 +52,8 @@ Diao_2016_daclizumab_treg <- function() {
     ),
     pd_subgroups = list(
       `205MS201/202 (SELECT/SELECTION)` = list(subjects = 545L, records = 4835L),
-      `205MS302 (OBSERVE)`              = list(subjects = 106L, records =  891L),
-      `205MS301 (DECIDE)`                = list(subjects = 702L, records = 3016L)
+      `205MS302 (OBSERVE)` = list(subjects = 106L, records = 891L),
+      `205MS301 (DECIDE)` = list(subjects = 702L, records = 3016L)
     )
   )
 

@@ -8,33 +8,33 @@ Laffont_2024_nalmefene <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "nalmefene", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "nalmefene", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "nalmefene", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "nalmefene", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "nalmefene", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power (allometric) scaling on apparent clearance with reference weight 74.7 kg (population median in nalmefene PK dataset).",
-      source_name        = "WT"
+      notes = "Power (allometric) scaling on apparent clearance with reference weight 74.7 kg (population median in nalmefene PK dataset).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = "TODO: not reported in main text; population PK dataset pooled three healthy-volunteer studies (Crystal 2024 ref 22 [two PK studies, one nostril vs. two nostrils] and Ellison 2024 ref 23 [pharmacodynamic remifentanil-induced respiratory depression study]). Detail is in Supplementary Tables 1-2 (not on disk).",
-    n_studies      = 3,
-    age_range      = "Adult (healthy volunteers); detailed range in Supplementary Table 1 (not on disk).",
-    weight_median  = "74.7 kg (median body weight reported as the allometric reference value in Table 1)",
+    n_subjects = "TODO: not reported in main text; population PK dataset pooled three healthy-volunteer studies (Crystal 2024 ref 22 [two PK studies, one nostril vs. two nostrils] and Ellison 2024 ref 23 [pharmacodynamic remifentanil-induced respiratory depression study]). Detail is in Supplementary Tables 1-2 (not on disk).",
+    n_studies = 3,
+    age_range = "Adult (healthy volunteers); detailed range in Supplementary Table 1 (not on disk).",
+    weight_median = "74.7 kg (median body weight reported as the allometric reference value in Table 1)",
     sex_female_pct = "TODO: not reported in main text",
     race_ethnicity = "TODO: not reported in main text",
-    disease_state  = "Healthy adult volunteers",
-    dose_range     = "Single 3 mg IN nalmefene HCl per nostril (1 or 2 nostrils, total 3 or 6 mg) and single 1 mg IM nalmefene HCl in PK studies; 3 mg IN nalmefene HCl in pharmacodynamic study under hypercapnic mask",
-    regions        = "TODO: not reported in main text",
-    notes          = "Pooled population PK analysis from Crystal et al. 2024 and Ellison et al. 2024. Body weight on apparent clearance has reference 74.7 kg. The pharmacodynamic study under a hypercapnic gas mixture mask reduced first-order intranasal absorption by ~35% (estimated parameter STDEFF = -0.349 on INKA); for opioid-overdose rescue simulations the authors used absorption parameters estimated outside the hypercapnic mask, i.e., STDEFF = 0. The Laffont_2024_nalmefene model file follows that rescue-setting convention."
+    disease_state = "Healthy adult volunteers",
+    dose_range = "Single 3 mg IN nalmefene HCl per nostril (1 or 2 nostrils, total 3 or 6 mg) and single 1 mg IM nalmefene HCl in PK studies; 3 mg IN nalmefene HCl in pharmacodynamic study under hypercapnic mask",
+    regions = "TODO: not reported in main text",
+    notes = "Pooled population PK analysis from Crystal et al. 2024 and Ellison et al. 2024. Body weight on apparent clearance has reference 74.7 kg. The pharmacodynamic study under a hypercapnic gas mixture mask reduced first-order intranasal absorption by ~35% (estimated parameter STDEFF = -0.349 on INKA); for opioid-overdose rescue simulations the authors used absorption parameters estimated outside the hypercapnic mask, i.e., STDEFF = 0. The Laffont_2024_nalmefene model file follows that rescue-setting convention."
   )
 
   ini({

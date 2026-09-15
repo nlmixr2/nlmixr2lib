@@ -39,18 +39,18 @@ Liu_2024_saf189s_dor <- function() {
   )
   vignette <- "Liu_2024_saf189s"
   units <- list(
-    time          = "n/a (semiparametric Cox relative hazard; the baseline hazard and therefore the time scale are unspecified by the fit)",
-    dosing        = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
+    time = "n/a (semiparametric Cox relative hazard; the baseline hazard and therefore the time scale are unspecified by the fit)",
+    dosing = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
     concentration = "hr (relative hazard of loss of response, unitless; also lhr, the log relative hazard)"
   )
 
   covariateData <- list(
     CTROUGH = list(
-      description        = "Individual SAF-189s steady-state trough plasma concentration (Cmin,ss), per subject. Supplied as data: this model has no PK layer, and the source analysis used the individual post hoc parameters of the companion population PK model together with the patient's most prevalent dose level (Liu 2024 Methods, E-R analysis).",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual SAF-189s steady-state trough plasma concentration (Cmin,ss), per subject. Supplied as data: this model has no PK layer, and the source analysis used the individual post hoc parameters of the companion population PK model together with the patient's most prevalent dose level (Liu 2024 Methods, E-R analysis).",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TOTAL (not unbound) plasma concentration, at STEADY STATE, and",
         "computed at the MOST PREVALENT dose the patient received. The",
         "companion exposure-SAFETY models use AUCss computed at the",
@@ -70,23 +70,23 @@ Liu_2024_saf189s_dor <- function() {
         "responded, and no separate exposure distribution is reported",
         "for it."
       ),
-      source_name        = "C min,ss (steady-state minimum concentration) estimated using the most prevalent dose"
+      source_name = "C min,ss (steady-state minimum concentration) estimated using the most prevalent dose"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 192L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 192L,
+    n_studies = 1L,
     n_observations = "192 right-censored duration-of-response times (one per responding patient)",
-    age_range      = "SAF001 phase II: median 54.1 years, range 20.0-84.0 (Liu 2024 Supplementary Table 1)",
-    weight_range   = "median 63.2 kg, range 37.3-92.5 across the PK-evaluable cohort",
+    age_range = "SAF001 phase II: median 54.1 years, range 20.0-84.0 (Liu 2024 Supplementary Table 1)",
+    weight_range = "median 63.2 kg, range 37.3-92.5 across the PK-evaluable cohort",
     sex_female_pct = 53.6,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "ALK-positive or ROS1-positive advanced non-small cell lung cancer, restricted to patients achieving an independent-review-committee-assessed complete or partial response; duration measured from first response to progression or death",
-    dose_range     = "SAF-189s 80, 120, 160 or 210 mg orally once daily in 21-day cycles (phase IIa) or 160 mg once daily (phase IIb)",
-    regions        = "China",
-    notes          = paste0(
+    disease_state = "ALK-positive or ROS1-positive advanced non-small cell lung cancer, restricted to patients achieving an independent-review-committee-assessed complete or partial response; duration measured from first response to progression or death",
+    dose_range = "SAF-189s 80, 120, 160 or 210 mg orally once daily in 21-day cycles (phase IIa) or 160 mg once daily (phase IIb)",
+    regions = "China",
+    notes = paste0(
       "The DOR analysis set is the 192 responders among the 244 phase ",
       "II patients used for the companion ORR and PFS models (Liu 2024 ",
       "Results, Exposure-response analysis; Table 4). That is a ",

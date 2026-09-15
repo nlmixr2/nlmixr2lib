@@ -13,10 +13,10 @@ Kretsos_2014_olokizumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "olokizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "olokizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "olokizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "olokizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "olokizumab", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "CRP suppression", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "CRP suppression", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
@@ -31,17 +31,17 @@ Kretsos_2014_olokizumab <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 27L,                                          # Kretsos 2014 Results: 27 patients on active treatment across Cohort 1 (2 randomization blocks, 18 active) and Cohort 2 (1 randomization block, 9 active); placebo subjects (9 across both cohorts) contribute to the PD fit. First-in-human PK data (Hickling et al. 2011, healthy male volunteers) were pooled with the first-in-patient PK for the Final model but FIH subject count is not stated in this paper.
-    n_studies      = 2L,                                           # First-in-human (Hickling 2011, NCT not stated) + first-in-patient (NCT01009242)
-    age_range      = "adult (specific range not reported)",       # Kretsos 2014: study population is adults with mild-to-moderate RA; demographic table not in main text or accessible supplement
-    weight_range   = "not reported",                              # Kretsos 2014 main text and supplement: no demographic table accessible
-    sex_female_pct = NA_real_,                                     # Not reported
-    race_ethnicity = NULL,                                         # Not reported in main text or accessible supplement
-    disease_state  = "Mild-to-moderate rheumatoid arthritis. Baseline CRP eligibility windowed during the trial (median 3.37 ug/mL, range 0.6-27.2 ug/mL per paper Discussion); used as randomization-stratification variable. First-in-human cohort that contributed PK data only was healthy male volunteers.",
-    dose_range     = "Single-dose IV (0.1, 1, 3 mg/kg) or SC (1, 3 mg/kg); placebo IV or SC. First-in-human study contributed additional single-dose IV / SC PK data; doses not enumerated in Kretsos 2014.",
-    regions        = "Clinical sites in Europe (UK, Germany) and USA (Kretsos 2014 Acknowledgments; investigators in TX, AZ, KS).",
-    notes          = "Trial NCT01009242. Sponsor UCB Pharma. Cohort 1 (n=27 randomized = 18 active + 9 placebo across two i.v. doses + one s.c. dose plus three additional subjects); Cohort 2 (n=12 = 9 active 3 mg/kg s.c. + 3 placebo s.c.). 18 Cohort-1 patients with at least 4 weeks postdose data fed the first interim analysis. All available Cohort-1 and Cohort-2 data fed the second interim and final analyses. Drug development codename: CDP6038."
+    species = "human",
+    n_subjects = 27L, # Kretsos 2014 Results: 27 patients on active treatment across Cohort 1 (2 randomization blocks, 18 active) and Cohort 2 (1 randomization block, 9 active); placebo subjects (9 across both cohorts) contribute to the PD fit. First-in-human PK data (Hickling et al. 2011, healthy male volunteers) were pooled with the first-in-patient PK for the Final model but FIH subject count is not stated in this paper.
+    n_studies = 2L, # First-in-human (Hickling 2011, NCT not stated) + first-in-patient (NCT01009242)
+    age_range = "adult (specific range not reported)", # Kretsos 2014: study population is adults with mild-to-moderate RA; demographic table not in main text or accessible supplement
+    weight_range = "not reported", # Kretsos 2014 main text and supplement: no demographic table accessible
+    sex_female_pct = NA_real_, # Not reported
+    race_ethnicity = NULL, # Not reported in main text or accessible supplement
+    disease_state = "Mild-to-moderate rheumatoid arthritis. Baseline CRP eligibility windowed during the trial (median 3.37 ug/mL, range 0.6-27.2 ug/mL per paper Discussion); used as randomization-stratification variable. First-in-human cohort that contributed PK data only was healthy male volunteers.",
+    dose_range = "Single-dose IV (0.1, 1, 3 mg/kg) or SC (1, 3 mg/kg); placebo IV or SC. First-in-human study contributed additional single-dose IV / SC PK data; doses not enumerated in Kretsos 2014.",
+    regions = "Clinical sites in Europe (UK, Germany) and USA (Kretsos 2014 Acknowledgments; investigators in TX, AZ, KS).",
+    notes = "Trial NCT01009242. Sponsor UCB Pharma. Cohort 1 (n=27 randomized = 18 active + 9 placebo across two i.v. doses + one s.c. dose plus three additional subjects); Cohort 2 (n=12 = 9 active 3 mg/kg s.c. + 3 placebo s.c.). 18 Cohort-1 patients with at least 4 weeks postdose data fed the first interim analysis. All available Cohort-1 and Cohort-2 data fed the second interim and final analyses. Drug development codename: CDP6038."
   )
 
   ini({

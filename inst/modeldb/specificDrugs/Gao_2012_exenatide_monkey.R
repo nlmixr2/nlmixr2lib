@@ -36,37 +36,37 @@ Gao_2012_exenatide_monkey <- function() {
   vignette <- "Gao_2012_exenatide"
 
   units <- list(
-    time          = "min",
-    dosing        = "pmol",
+    time = "min",
+    dosing = "pmol",
     concentration = "pmol/L (pM); the paper converted all doses to moles using a molecular weight of 4186.6 g/mol for exendin-4"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight. Required because Gao 2012 Table 3 reports the monkey central volume of distribution per kilogram (Vc = 69.3 mL/kg); the model multiplies it by WT to obtain an absolute volume in litres.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight. Required because Gao 2012 Table 3 reports the monkey central volume of distribution per kilogram (Vc = 69.3 mL/kg); the model multiplies it by WT to obtain an absolute volume in litres.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Default reference value 4.3 kg, the mean body weight of the three male rhesus monkeys in Ai 2008 as reported in Gao 2012 Materials and Methods (4.3 +/- 0.7 kg). Time-fixed. Volume scales linearly with WT (exponent 1), which is how the source reports it, not as an estimated allometric exponent.",
-      source_name        = "b.wt."
+      notes = "Default reference value 4.3 kg, the mean body weight of the three male rhesus monkeys in Ai 2008 as reported in Gao 2012 Materials and Methods (4.3 +/- 0.7 kg). Time-fixed. Volume scales linearly with WT (exponent 1), which is how the source reports it, not as an estimated allometric exponent.",
+      source_name = "b.wt."
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "exenatide", units = "pmol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "exenatide", units = "pmol", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "exenatide", units = "pmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "exenatide", units = "pmol", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "exenatide", units = "pmol", specimen = "tissue", verified = TRUE),
-    complex     = list(analyte = "exenatide/GLP-1R complex", units = "pmol", specimen = "tissue", verified = TRUE)
+    complex = list(analyte = "exenatide/GLP-1R complex", units = "pmol", specimen = "tissue", verified = TRUE)
   )
 
   population <- list(
-    species       = "rhesus monkey (male)",
-    n_subjects    = 3L,
-    n_studies     = 1L,
-    weight_range  = "4.3 +/- 0.7 kg (mean +/- SD)",
+    species = "rhesus monkey (male)",
+    n_subjects = 3L,
+    n_studies = 1L,
+    weight_range = "4.3 +/- 0.7 kg (mean +/- SD)",
     sex_female_pct = 0,
     disease_state = "Healthy male rhesus monkeys.",
-    dose_range    = "Single subcutaneous injection of 1, 3 or 10 ug/kg, or a single intravenous injection of 3 ug/kg. n = 3.",
+    dose_range = "Single subcutaneous injection of 1, 3 or 10 ug/kg, or a single intravenous injection of 3 ug/kg. n = 3.",
     notes = paste(
       "Gao 2012 Materials and Methods, 'In the monkey PK study'. Serum",
       "exendin-4 was measured by radioimmunoassay with a linear range of",

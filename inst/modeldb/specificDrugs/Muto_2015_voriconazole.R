@@ -1,62 +1,62 @@
 Muto_2015_voriconazole <- function() {
   description <- "Two-compartment population pharmacokinetic model with first-order absorption (lag time, oral bioavailability) and parallel linear plus time-dependent Michaelis-Menten elimination for voriconazole in 21 immunocompromised Japanese pediatric subjects (Muto 2015). Vmax declines with time after the first dose toward Vmax * (1 - Vmax_inh) with half-time T50; the maximum inhibition fraction Vmax_inh is fixed to 1 (full inhibition) for CYP2C19 heterozygous-extensive-metabolizer or poor-metabolizer subjects and modeled on the logit scale otherwise. Allometric scaling on all clearances (exponent 0.75) and all volumes (exponent 1) to a 70 kg reference; oral bioavailability F1 is modeled on the logit scale with a Manly-transformed log-normal random effect."
-  reference   <- "Muto C, Shoji S, Tomono Y, Liu P. Population pharmacokinetic analysis of voriconazole from a pharmacokinetic study with immunocompromised Japanese pediatric subjects. Antimicrob Agents Chemother. 2015;59(6):3216-3223. doi:10.1128/AAC.04993-14"
-  vignette    <- "Muto_2015_voriconazole"
-  units       <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  reference <- "Muto C, Shoji S, Tomono Y, Liu P. Population pharmacokinetic analysis of voriconazole from a pharmacokinetic study with immunocompromised Japanese pediatric subjects. Antimicrob Agents Chemother. 2015;59(6):3216-3223. doi:10.1128/AAC.04993-14"
+  vignette <- "Muto_2015_voriconazole"
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling reference 70 kg per Muto 2015 Methods (page 3217) and Appendix equations: clearances (Vmax1, CL, Q) scale with (WT/70)^0.75; volumes (V2, V3) scale with WT/70. Cohort body-weight range 11.5-55.2 kg (Table 2, n = 21); typical-value tables for 20 kg and 50 kg pediatric subjects are reported in Table 4.",
-      source_name        = "wt"
+      notes = "Allometric scaling reference 70 kg per Muto 2015 Methods (page 3217) and Appendix equations: clearances (Vmax1, CL, Q) scale with (WT/70)^0.75; volumes (V2, V3) scale with WT/70. Cohort body-weight range 11.5-55.2 kg (Table 2, n = 21); typical-value tables for 20 kg and 50 kg pediatric subjects are reported in Table 4.",
+      source_name = "wt"
     ),
     CYP2C19_IM = list(
-      description        = "CYP2C19 intermediate-metabolizer phenotype indicator (heterozygous extensive metabolizer, HEM, in Muto 2015 nomenclature)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 intermediate-metabolizer phenotype indicator (heterozygous extensive metabolizer, HEM, in Muto 2015 nomenclature)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive / ultra-rapid metabolizer; CYP2C19_PM = 0 must also be 0 for the EM/UM reference)",
-      notes              = "Muto 2015 calls the heterozygous *1/*2 (or similar) genotype a heterozygous extensive metabolizer (HEM); the canonical CYP2C19_IM phenotype indicator is the same construct. In Muto 2015 Final Model, the CYP2C19 effect on Vmax_inh dichotomizes UM/EM versus HEM/PM, with HEM/PM subjects fixed to Vmax_inh = 1 (100% inhibition of the saturable elimination arm at large t). The model () block therefore uses the OR of CYP2C19_IM and CYP2C19_PM to switch between the logit-estimated typical value and the fixed value of 1. Cohort distribution: 9 EM, 10 HEM, 2 PM (Table 2).",
-      source_name        = "CYP2C19 genotype (EM / HEM / PM)"
+      notes = "Muto 2015 calls the heterozygous *1/*2 (or similar) genotype a heterozygous extensive metabolizer (HEM); the canonical CYP2C19_IM phenotype indicator is the same construct. In Muto 2015 Final Model, the CYP2C19 effect on Vmax_inh dichotomizes UM/EM versus HEM/PM, with HEM/PM subjects fixed to Vmax_inh = 1 (100% inhibition of the saturable elimination arm at large t). The model () block therefore uses the OR of CYP2C19_IM and CYP2C19_PM to switch between the logit-estimated typical value and the fixed value of 1. Cohort distribution: 9 EM, 10 HEM, 2 PM (Table 2).",
+      source_name = "CYP2C19 genotype (EM / HEM / PM)"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer phenotype indicator (homozygous loss-of-function alleles, e.g., *2/*2)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer phenotype indicator (homozygous loss-of-function alleles, e.g., *2/*2)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive / ultra-rapid / intermediate metabolizer; pairs with CYP2C19_IM)",
-      notes              = "Muto 2015 reports 2 of 21 subjects (9.5%) as CYP2C19 poor metabolizers (PM). The covariate effect on Vmax_inh treats HEM and PM identically in the final model (paper Discussion page 3221: 'The CYP2C19 PM subjects were combined with the CYP2C19 HEM subjects during the covariate evaluation process'); both groups share Vmax_inh = 1.",
-      source_name        = "CYP2C19 genotype (EM / HEM / PM)"
+      notes = "Muto 2015 reports 2 of 21 subjects (9.5%) as CYP2C19 poor metabolizers (PM). The covariate effect on Vmax_inh treats HEM and PM identically in the final model (paper Discussion page 3221: 'The CYP2C19 PM subjects were combined with the CYP2C19 HEM subjects during the covariate evaluation process'); both groups share Vmax_inh = 1.",
+      source_name = "CYP2C19 genotype (EM / HEM / PM)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 21L,
-    n_studies       = 1L,
-    n_observations  = 276L,
-    age_range       = "3-14 years",
-    age_median      = "10 years",
-    weight_range    = "11.5-55.2 kg",
-    weight_median   = "31.5 kg",
-    bmi_range       = "11.9-22.9 kg/m^2",
-    sex_female_pct  = 57.1,
-    race_ethnicity  = "Japanese (single ethnicity)",
-    disease_state   = "Immunocompromised pediatric subjects at high risk for systemic fungal infection (largely hematological-malignancy and post-transplant indications). Concomitant medications and complicated background therapy are common and contribute to the high IIV in oral bioavailability and exposure (Muto 2015 Discussion).",
-    dose_range      = "Intravenous loading 9 mg/kg q12h (children and adolescents <50 kg) or 6 mg/kg (adolescents >=50 kg) on day 1; intravenous maintenance 8 mg/kg q12h (children and adolescents <50 kg) or 4 mg/kg q12h (adolescents >=50 kg) on days 2-7; oral suspension 9 mg/kg q12h capped at 350 mg per dose (children and adolescents <50 kg) or 200 mg q12h (adolescents >=50 kg) on days 8-14. IV infusions at 3 mg/kg/h. Oral doses at least 1 h before or after a meal.",
-    regions         = "Six centers in Japan",
-    cyp2c19_status  = c(EM_pct = 42.9, HEM_pct = 47.6, PM_pct = 9.5),
-    notes           = "Population from Table 2 (demographics) and Table 1 (dosing regimens). The current popPK analysis applies normal-inverse-Wishart Bayesian priors derived from the earlier non-Japanese pediatric + adult model of Friberg 2012 (Antimicrob Agents Chemother 56:3032-3042) to stabilize estimation in the small Japanese cohort (n = 21). Of the 21 subjects, 18 contributed oral-period concentrations (3 subjects discontinued at the i.v.-to-oral switch); 152 i.v. and 124 oral concentration records contributed to the final model fit."
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
+    n_observations = 276L,
+    age_range = "3-14 years",
+    age_median = "10 years",
+    weight_range = "11.5-55.2 kg",
+    weight_median = "31.5 kg",
+    bmi_range = "11.9-22.9 kg/m^2",
+    sex_female_pct = 57.1,
+    race_ethnicity = "Japanese (single ethnicity)",
+    disease_state = "Immunocompromised pediatric subjects at high risk for systemic fungal infection (largely hematological-malignancy and post-transplant indications). Concomitant medications and complicated background therapy are common and contribute to the high IIV in oral bioavailability and exposure (Muto 2015 Discussion).",
+    dose_range = "Intravenous loading 9 mg/kg q12h (children and adolescents <50 kg) or 6 mg/kg (adolescents >=50 kg) on day 1; intravenous maintenance 8 mg/kg q12h (children and adolescents <50 kg) or 4 mg/kg q12h (adolescents >=50 kg) on days 2-7; oral suspension 9 mg/kg q12h capped at 350 mg per dose (children and adolescents <50 kg) or 200 mg q12h (adolescents >=50 kg) on days 8-14. IV infusions at 3 mg/kg/h. Oral doses at least 1 h before or after a meal.",
+    regions = "Six centers in Japan",
+    cyp2c19_status = c(EM_pct = 42.9, HEM_pct = 47.6, PM_pct = 9.5),
+    notes = "Population from Table 2 (demographics) and Table 1 (dosing regimens). The current popPK analysis applies normal-inverse-Wishart Bayesian priors derived from the earlier non-Japanese pediatric + adult model of Friberg 2012 (Antimicrob Agents Chemother 56:3032-3042) to stabilize estimation in the small Japanese cohort (n = 21). Of the 21 subjects, 18 contributed oral-period concentrations (3 subjects discontinued at the i.v.-to-oral switch); 152 i.v. and 124 oral concentration records contributed to the final model fit."
   )
 
   ini({

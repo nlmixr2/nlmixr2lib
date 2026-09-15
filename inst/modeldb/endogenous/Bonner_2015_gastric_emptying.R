@@ -42,82 +42,82 @@ Bonner_2015_gastric_emptying <- function() {
   paper_specific_compartments <- c("gastric_remaining")
 
   units <- list(
-    time          = "min",
-    dosing        = "none (the % remaining is initialised to 100 at t = 0 by construction of Eq. 1; test meal is not represented as a dose)",
+    time = "min",
+    dosing = "none (the % remaining is initialised to 100 at t = 0 by construction of Eq. 1; test meal is not represented as a dose)",
     concentration = "% of test meal remaining in the stomach (0 - 100)"
   )
 
   covariateData <- list(
     MEAL_AQUEOUS = list(
-      description        = "Binary indicator for aqueous test meal (water, sugar solutions, fruit juice per Bonner 2015 Methods 'Covariate selection and evaluation'). 1 = aqueous test meal for the study record; 0 = otherwise. Selects theta_Aqueous in the meal-type mixture; because aqueous is the renormalised reference (theta_meal / theta_Aqueous), MEAL_AQUEOUS = 1 gives a meal-type ratio of exactly 1 on gamma1 for that record.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for aqueous test meal (water, sugar solutions, fruit juice per Bonner 2015 Methods 'Covariate selection and evaluation'). 1 = aqueous test meal for the study record; 0 = otherwise. Selects theta_Aqueous in the meal-type mixture; because aqueous is the renormalised reference (theta_meal / theta_Aqueous), MEAL_AQUEOUS = 1 gives a meal-type ratio of exactly 1 on gamma1 for that record.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not aqueous)",
-      notes              = "Bonner 2015 Table 3 theta_Aqueous = 0.697. Mutually exclusive with MEAL_BREASTMILK, MEAL_FORMULA, MEAL_SEMISOLID, MEAL_SOLID -- exactly one of the five MEAL_* indicators is 1 per record. See vignette Errata for the meal-type attachment-point best-effort choice (multiplies gamma1 with aqueous as the renormalised reference).",
-      source_name        = "aqueous solution"
+      notes = "Bonner 2015 Table 3 theta_Aqueous = 0.697. Mutually exclusive with MEAL_BREASTMILK, MEAL_FORMULA, MEAL_SEMISOLID, MEAL_SOLID -- exactly one of the five MEAL_* indicators is 1 per record. See vignette Errata for the meal-type attachment-point best-effort choice (multiplies gamma1 with aqueous as the renormalised reference).",
+      source_name = "aqueous solution"
     ),
     MEAL_BREASTMILK = list(
-      description        = "Binary indicator for breast-milk test meal. 1 = breast milk; 0 = otherwise. Multiplicative scaling factor on the fast-phase Weibull scale gamma1.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for breast-milk test meal. 1 = breast milk; 0 = otherwise. Multiplicative scaling factor on the fast-phase Weibull scale gamma1.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not breast milk)",
-      notes              = "Bonner 2015 Table 3 theta_Breast_milk = 0.959. Mutually exclusive with the other MEAL_* indicators.",
-      source_name        = "breast milk"
+      notes = "Bonner 2015 Table 3 theta_Breast_milk = 0.959. Mutually exclusive with the other MEAL_* indicators.",
+      source_name = "breast milk"
     ),
     MEAL_FORMULA = list(
-      description        = "Binary indicator for formula (any variety, including nutritional shakes per Methods).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for formula (any variety, including nutritional shakes per Methods).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not formula)",
-      notes              = "Bonner 2015 Table 3 theta_Form = 1.15. Mutually exclusive with the other MEAL_* indicators.",
-      source_name        = "formula"
+      notes = "Bonner 2015 Table 3 theta_Form = 1.15. Mutually exclusive with the other MEAL_* indicators.",
+      source_name = "formula"
     ),
     MEAL_SEMISOLID = list(
-      description        = "Binary indicator for semi-solid meal (pudding, rice cereal, or oatmeal per Methods).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for semi-solid meal (pudding, rice cereal, or oatmeal per Methods).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not semi-solid)",
-      notes              = "Bonner 2015 Table 3 theta_Semi_solid = 1.61. Mutually exclusive with the other MEAL_* indicators.",
-      source_name        = "semi-solid meals"
+      notes = "Bonner 2015 Table 3 theta_Semi_solid = 1.61. Mutually exclusive with the other MEAL_* indicators.",
+      source_name = "semi-solid meals"
     ),
     MEAL_SOLID = list(
-      description        = "Binary indicator for solid meal (e.g., pancakes, eggs, chicken liver, sandwich meals per Bonner 2015 supplementary Table 1).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for solid meal (e.g., pancakes, eggs, chicken liver, sandwich meals per Bonner 2015 supplementary Table 1).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not solid)",
-      notes              = "Bonner 2015 Table 3 theta_Solid = 1.99. Mutually exclusive with the other MEAL_* indicators.",
-      source_name        = "solid meals"
+      notes = "Bonner 2015 Table 3 theta_Solid = 1.99. Mutually exclusive with the other MEAL_* indicators.",
+      source_name = "solid meals"
     )
   )
 
   covariatesDataExcluded <- list(
     PNA = list(
-      description        = "Postnatal age in weeks. Tested as a covariate on GE (paper Methods 'Covariate selection and evaluation') after allowance for meal type and rejected because the objective function value did not change materially: BASE MODEL + Food types + postnatal Age OFV 1875.121 vs Food types alone OFV 1875.252 (Table 2), delta OFV = -0.13, not significant. Documented here so downstream users know age was screened.",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postnatal age in weeks. Tested as a covariate on GE (paper Methods 'Covariate selection and evaluation') after allowance for meal type and rejected because the objective function value did not change materially: BASE MODEL + Food types + postnatal Age OFV 1875.121 vs Food types alone OFV 1875.252 (Table 2), delta OFV = -0.13, not significant. Documented here so downstream users know age was screened.",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Methods; not retained in the final model. Postmenstrual age (postnatal + gestational, in weeks) was used only for graphical purposes and not as a modelled covariate."
+      notes = "Screened per Methods; not retained in the final model. Postmenstrual age (postnatal + gestational, in weeks) was used only for graphical purposes and not as a modelled covariate."
     ),
     GA = list(
-      description        = "Gestational age at birth in weeks. Tested as a covariate on GE after allowance for meal type (paper Table 2: BASE MODEL + Food types + Gestational age OFV 1875.211 vs Food types alone 1875.252, delta OFV = -0.04). Rejected as non-significant.",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth in weeks. Tested as a covariate on GE after allowance for meal type (paper Table 2: BASE MODEL + Food types + Gestational age OFV 1875.211 vs Food types alone 1875.252, delta OFV = -0.04). Rejected as non-significant.",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Same rationale as PNA: screened per Methods, not retained. For preterm neonates gestational age at birth was added to postnatal age when computing postmenstrual age for graphical inspection."
+      notes = "Same rationale as PNA: screened per Methods, not retained. For preterm neonates gestational age at birth was added to postnatal age when computing postmenstrual age for graphical inspection."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1457L,
-    n_studies      = 49L,
-    age_range      = "28 weeks gestational age (VLBW preterm neonates) through adults up to ~84 years (1008 months). Median across paediatric studies is low (many neonatal / preterm cohorts); adult subjects (325 individuals) span ~17-84 years. See supplementary Table 1 for the per-study 'Age in months mean (range)' column.",
-    weight_range   = "Not reported per-study in the pooled dataset. Population physically spans preterm neonates (<= ~1 kg) through adults.",
+    species = "human",
+    n_subjects = 1457L,
+    n_studies = 49L,
+    age_range = "28 weeks gestational age (VLBW preterm neonates) through adults up to ~84 years (1008 months). Median across paediatric studies is low (many neonatal / preterm cohorts); adult subjects (325 individuals) span ~17-84 years. See supplementary Table 1 for the per-study 'Age in months mean (range)' column.",
+    weight_range = "Not reported per-study in the pooled dataset. Population physically spans preterm neonates (<= ~1 kg) through adults.",
     sex_female_pct = "Not fully specified across the dataset. Of the 1457 modelling subjects, 637 were paediatrics with sex not specified; 495 paediatrics with sex specified (256 M / 228 F, plus 11 not-clearly-classified); 325 adults with sex specified (160 M / 165 F). The 165 adult women include both pre- and postmenopausal ages; most studies did not distinguish.",
-    regions        = "Not reported per-study. 49 modelling studies drawn from PubMed / Embase (English-language, human) published 1975 - 2012.",
-    dose_range     = "No drug dosing. Test meals administered orally, by nasogastric tube, or by orogastric tube; span 5 - 10% dextrose / sugar solutions, breast milk, term / preterm infant formula, rice cereal / pudding, pancakes, egg sandwiches, chicken liver, and other solids (see supplementary Table 1 for the per-study test-meal detail).",
-    disease_state  = "Healthy preterm neonates through adults. Exclusions per Methods: obese subjects, subjects on GI-motility drugs (e.g., metoclopramide, cisapride), any disease other than apnoea, and subjects with confirmed gastro-oesophageal reflux (subjects referred for suspected GOR were retained).",
-    notes          = "Model-development set: n = 1457 subjects across 49 studies. Independent validation set: n = 468 subjects across 17 studies (marked '*' in supplementary Table 1). Sampling times 20 - 300 min after meal ingestion; time-points-per-study ranged 1 - 19 (many single-time-point neonatal studies); subjects-per-study ranged 6 - 186. GE measurement methods pooled across scintigraphy (Tc-99m or In-111 -- residual-error weight T = 2), dilution (phenol red or polyethylene glycol), ultrasound, MRI, and applied potential tomography (T = 1). PR is estimated on a logit-transformed scale to keep the parameter in (0, 100). Fit in NONMEM 7.2 with FOCE-I."
+    regions = "Not reported per-study. 49 modelling studies drawn from PubMed / Embase (English-language, human) published 1975 - 2012.",
+    dose_range = "No drug dosing. Test meals administered orally, by nasogastric tube, or by orogastric tube; span 5 - 10% dextrose / sugar solutions, breast milk, term / preterm infant formula, rice cereal / pudding, pancakes, egg sandwiches, chicken liver, and other solids (see supplementary Table 1 for the per-study test-meal detail).",
+    disease_state = "Healthy preterm neonates through adults. Exclusions per Methods: obese subjects, subjects on GI-motility drugs (e.g., metoclopramide, cisapride), any disease other than apnoea, and subjects with confirmed gastro-oesophageal reflux (subjects referred for suspected GOR were retained).",
+    notes = "Model-development set: n = 1457 subjects across 49 studies. Independent validation set: n = 468 subjects across 17 studies (marked '*' in supplementary Table 1). Sampling times 20 - 300 min after meal ingestion; time-points-per-study ranged 1 - 19 (many single-time-point neonatal studies); subjects-per-study ranged 6 - 186. GE measurement methods pooled across scintigraphy (Tc-99m or In-111 -- residual-error weight T = 2), dilution (phenol red or polyethylene glycol), ultrasound, MRI, and applied potential tomography (T = 1). PR is estimated on a logit-transformed scale to keep the parameter in (0, 100). Fit in NONMEM 7.2 with FOCE-I."
   )
 
   ini({

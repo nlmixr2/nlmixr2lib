@@ -6,56 +6,63 @@ Zhang_2025_nedosiran <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric size descriptor, reference 70 kg (Zhang 2025 Table 2 covariate-formula footnote). Fixed exponents 0.750 on CL/F and Q/F and 1.00 on Vc/F and Vp/F; estimated exponents -0.221 shared by ka1 and ka2 and 0.492 on Vmax. Cohort range 11.1-129.5 kg (Supplementary Table S1).",
-      source_name        = "BW"
+      notes = "Allometric size descriptor, reference 70 kg (Zhang 2025 Table 2 covariate-formula footnote). Fixed exponents 0.750 on CL/F and Q/F and 1.00 on Vc/F and Vp/F; estimated exponents -0.221 shared by ka1 and ka2 and 0.492 on Vmax. Cohort range 11.1-129.5 kg (Supplementary Table S1).",
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "BSA-normalized estimated glomerular filtration rate",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "BSA-normalized estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 90 mL/min/1.73 m^2 (Zhang 2025 Table 2 covariate-formula footnote). Power effects on CL/F (0.969) and Vc/F (0.174). Estimating equation varies by cohort per Supplementary Table S3: CKD-EPI (adults, PHYOX2/3/5/6), MDRD (adults, PHYOX1), bedside Schwartz 2009 (children, PHYOX1/2/3), Schwartz 2012 multivariate (children, PHYOX8), Matsuo (Japanese adults, PHYOX3) and Uemura (Japanese children, PHYOX3/8). For paediatric participants a renal maturation function RMF = PMA^3.4 / (PMA^3.4 + 47.6^3.4), PMA in weeks, was applied when deriving eGFR. Cohort range 3.8-197 mL/min/1.73 m^2 (Supplementary Table S1).",
-      source_name        = "eGFR"
+      notes = "Reference 90 mL/min/1.73 m^2 (Zhang 2025 Table 2 covariate-formula footnote). Power effects on CL/F (0.969) and Vc/F (0.174). Estimating equation varies by cohort per Supplementary Table S3: CKD-EPI (adults, PHYOX2/3/5/6), MDRD (adults, PHYOX1), bedside Schwartz 2009 (children, PHYOX1/2/3), Schwartz 2012 multivariate (children, PHYOX8), Matsuo (Japanese adults, PHYOX3) and Uemura (Japanese children, PHYOX3/8). For paediatric participants a renal maturation function RMF = PMA^3.4 / (PMA^3.4 + 47.6^3.4), PMA in weeks, was applied when deriving eGFR. Cohort range 3.8-197 mL/min/1.73 m^2 (Supplementary Table S1).",
+      source_name = "eGFR"
     ),
     DIS_PH1 = list(
-      description        = "Primary hyperoxaluria type 1 disease-state indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Primary hyperoxaluria type 1 disease-state indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = primary hyperoxaluria type 2 patient or healthy volunteer",
-      notes              = "1 for PH1 subjects, 0 for PH2 subjects and healthy volunteers (Zhang 2025 Table 2 covariate-formula footnote). Enters as the multiplicative factor 1.32^DIS_PH1 on the slow absorption rate ka1. Cohort composition: 57.4% healthy volunteers, 33.1% PH1, 9.5% PH2 (Supplementary Table S1).",
-      source_name        = "PH"
+      notes = "1 for PH1 subjects, 0 for PH2 subjects and healthy volunteers (Zhang 2025 Table 2 covariate-formula footnote). Enters as the multiplicative factor 1.32^DIS_PH1 on the slow absorption rate ka1. Cohort composition: 57.4% healthy volunteers, 33.1% PH1, 9.5% PH2 (Supplementary Table S1).",
+      source_name = "PH"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
-    transit4    = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "nedosiran", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "nedosiran", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "nedosiran", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "nedosiran", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 148,
-    n_studies      = 6,
+    species = "human",
+    n_subjects = 148,
+    n_studies = 6,
     n_observations = 2087,
-    age_range      = "1.9-73 years",
-    weight_range   = "11.1-129.5 kg",
+    age_range = "1.9-73 years",
+    weight_range = "11.1-129.5 kg",
     sex_female_pct = 35.8,
-    race_ethnicity = c(White = 56.1, Asian = 19.6, `Black or African American` = 11.5, Multiple = 6.1, Other = 4.7, Unknown = 2.0),
-    disease_state  = "healthy volunteers (57.4%) and patients with primary hyperoxaluria type 1 (33.1%) or type 2 (9.5%)",
+    race_ethnicity = c(
+      White = 56.1,
+      Asian = 19.6,
+      `Black or African American` = 11.5,
+      Multiple = 6.1,
+      Other = 4.7,
+      Unknown = 2.0
+    ),
+    disease_state = "healthy volunteers (57.4%) and patients with primary hyperoxaluria type 1 (33.1%) or type 2 (9.5%)",
     renal_function = "normal 41.9%, mild impairment 35.1%, moderate impairment 6.8%, severe impairment 4.7%, end-stage renal disease 11.5%; eGFR 3.8-197 mL/min/1.73 m^2",
-    dose_range     = "0.3-12 mg/kg single SC (PHYOX1), 1.5-6 mg/kg single SC (PHYOX5, PHYOX6), 170 mg single SC (PHYOX5), 136 or 170 mg SC once-monthly and 3.5 mg/kg SC once-monthly capped at 136 or 170 mg (PHYOX2, PHYOX3, PHYOX8)",
-    regions        = "multinational; PHYOX6 enrolled Japanese and Caucasian adults",
-    notes          = "Pooled from PHYOX1 (NCT03392896), PHYOX2 (NCT03847909), PHYOX3 (NCT04042402), PHYOX5, PHYOX6 and PHYOX8 (NCT05001269). Age subgroups: 0 to <2 y (n=1), 2 to <6 y (n=12), 6 to <9 y (n=6), 9 to <12 y (n=5), 12 to <18 y (n=10), >=18 y (n=114). Baseline demographics are Supplementary Table S1 of Zhang 2025."
+    dose_range = "0.3-12 mg/kg single SC (PHYOX1), 1.5-6 mg/kg single SC (PHYOX5, PHYOX6), 170 mg single SC (PHYOX5), 136 or 170 mg SC once-monthly and 3.5 mg/kg SC once-monthly capped at 136 or 170 mg (PHYOX2, PHYOX3, PHYOX8)",
+    regions = "multinational; PHYOX6 enrolled Japanese and Caucasian adults",
+    notes = "Pooled from PHYOX1 (NCT03392896), PHYOX2 (NCT03847909), PHYOX3 (NCT04042402), PHYOX5, PHYOX6 and PHYOX8 (NCT05001269). Age subgroups: 0 to <2 y (n=1), 2 to <6 y (n=12), 6 to <9 y (n=6), 9 to <12 y (n=5), 12 to <18 y (n=10), >=18 y (n=114). Baseline demographics are Supplementary Table S1 of Zhang 2025."
   )
 
   ini({

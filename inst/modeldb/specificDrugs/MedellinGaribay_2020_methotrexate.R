@@ -31,7 +31,7 @@ MedellinGaribay_2020_methotrexate <- function() {
     sep = " "
   )
   vignette <- "Wang_2023_methotrexate"
-  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   # Issue #482. Wang 2023 Table 2 records this model as '2 CMT' with states V1
   # (central) and V2 (peripheral). Amount units are umol because every
@@ -40,17 +40,17 @@ MedellinGaribay_2020_methotrexate <- function() {
   # blood samples collected at 24, 36, 42 or 48 h post-infusion, by means of
   # the CMIA immunoassay', which fixes the specimen as plasma.
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column BSA. Power-form effect on clearance, per Wang 2023",
         "Table 2: 'CL (L/h) = 6.5 x BSA^0.62 x e^eta_CL'. Confirmed verbatim",
         "in the primary's own abstract: 'The population pharmacokinetic model",
@@ -62,14 +62,14 @@ MedellinGaribay_2020_methotrexate <- function() {
         "BSA of 0.79 m^2 the typical clearance is 6.5 x 0.79^0.62 = 5.6 L/h.",
         "Wang 2023 Table 1 records BSA median 0.79 m^2 (range 0.41-1.6)."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column Weight. Strictly linear (per-kg) effect on the central",
         "volume, per Wang 2023 Table 2: 'V1 (L) = 0.36 x Weight x e^eta_V1',",
         "confirmed verbatim in the primary's abstract ('Vc (L) = 0.36 x",
@@ -78,26 +78,26 @@ MedellinGaribay_2020_methotrexate <- function() {
         "typical central volume of 7.6 L -- the smallest of the six models",
         "Wang evaluated, which Wang's Results quotes as '7.5 [L]'."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41L,
-    n_studies      = 1L,
-    age_range      = "1.0 to 15.0 years",
-    age_median     = "5.0 years",
-    weight_range   = "8.0 to 57.3 kg",
-    weight_median  = "21.2 kg",
-    height_range   = "115 +/- 24 cm (mean +/- SD)",
-    bsa_range      = "0.41 to 1.6 m^2 (median 0.79)",
-    disease_state  = "Childhood acute lymphoblastic leukaemia (ALL) receiving high-dose methotrexate as a 24 h continuous intravenous infusion.",
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
+    age_range = "1.0 to 15.0 years",
+    age_median = "5.0 years",
+    weight_range = "8.0 to 57.3 kg",
+    weight_median = "21.2 kg",
+    height_range = "115 +/- 24 cm (mean +/- SD)",
+    bsa_range = "0.41 to 1.6 m^2 (median 0.79)",
+    disease_state = "Childhood acute lymphoblastic leukaemia (ALL) receiving high-dose methotrexate as a 24 h continuous intravenous infusion.",
     renal_function = "Serum creatinine 0.37 +/- 0.11 mg/dL (mean +/- SD).",
     hepatic_function = "ALT median 19.1 U/L (range 7.2-98.2); AST median 25.8 U/L (range 13.9-112.7).",
-    dose_range     = "2.89 +/- 0.9 g/m^2 (mean +/- SD) intravenous high-dose methotrexate over 24 h.",
-    regions        = "Mexico (Hospital Central 'Dr. Ignacio Morones Prieto', San Luis Potosi).",
-    notes          = paste(
+    dose_range = "2.89 +/- 0.9 g/m^2 (mean +/- SD) intravenous high-dose methotrexate over 24 h.",
+    regions = "Mexico (Hospital Central 'Dr. Ignacio Morones Prieto', San Luis Potosi).",
+    notes = paste(
       "Demographics from Wang 2023 Table 1, which reports n = 41 for the",
       "model-building cohort; the primary's abstract describes a prospective",
       "study in 50 children aged 1-15 years, with predictive performance",

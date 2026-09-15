@@ -48,29 +48,34 @@ Rohatagi_2008_apricoxib <- function() {
   )
   vignette <- "Rohatagi_2008_apricoxib"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "apricoxib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "apricoxib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "apricoxib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "apricoxib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "apricoxib", units = "mg", specimen = "plasma", verified = TRUE),
-    cumhaz      = list(analyte = "rescue-medication hazard", units = NA_character_, specimen = "not applicable", verified = TRUE)
+    cumhaz = list(
+      analyte = "rescue-medication hazard",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     DOSE_APRICOXIB_MG = list(
-      description        = paste(
+      description = paste(
         "Administered single oral apricoxib (CS-706) dose in mg, 0 for a",
         "placebo subject. Time-fixed per subject: the phase 2a dental-pain",
         "study gave one dose of placebo or 10, 50, 100 or 200 mg."
       ),
-      units              = "mg",
-      type               = "continuous",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Rohatagi 2008 equations 13, 14 and 15 use 'Dose_i, the patient's",
         "dose' as a subject-level regressor in the meaningful-pain-relief",
         "sub-models: P(MPR) = P0 + (Pmax - P0) * Dose / (Dose + D50PMPR),",
@@ -88,18 +93,18 @@ Rohatagi_2008_apricoxib <- function() {
         "record directly via podo(depot) and DOSE_HIGH, and do NOT use",
         "this column."
       ),
-      source_name        = "Dose"
+      source_name = "Dose"
     ),
     WT = list(
-      description        = paste(
+      description = paste(
         "Body weight. Enters the apparent central volume of the",
         "Kastrissios 2006 apricoxib PK layer as a power term normalised",
         "to 73.3 kg, that paper's development-cohort median weight."
       ),
-      units              = "kg",
-      type               = "continuous",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Kastrissios 2006 equation 8, Vc/F = (Vc/F)_Typ *",
         "(Weight / 73.3)^K_Vc/F-WT, which prints the 73.3 kg normalising",
         "value literally. Rohatagi 2008 restates the same relationship in",
@@ -117,20 +122,20 @@ Rohatagi_2008_apricoxib <- function() {
         "Emax term. Dental-pain-cohort weights: median 68.2 kg, range",
         "39.1 to 134 kg (Rohatagi 2008 Table 2)."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     SEXF = list(
-      description        = paste(
+      description = paste(
         "Biological sex, 1 = female, 0 = male. Acts on apparent oral",
         "clearance in the Kastrissios 2006 PK layer. That paper uses the",
         "opposite orientation: its equation 7 indicator 'Gender' is 1 for",
         "MALE, so the canonical column is the value inversion",
         "SEXF = 1 - Gender."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "VALUE INVERSION. The published coefficient K_CL/F-SEX = +0.325",
         "multiplies Kastrissios 2006's MALE indicator, so it is applied",
         "here to (1 - SEXF) and the typical value lcl = log(34.1) is the",
@@ -151,19 +156,19 @@ Rohatagi_2008_apricoxib <- function() {
         "Dental-pain cohort: 193 of 304 patients female, 63.5 percent",
         "(Table 2)."
       ),
-      source_name        = "Gender"
+      source_name = "Gender"
     ),
     CYP2D6_PM_IM = list(
-      description        = paste(
+      description = paste(
         "Pooled CYP2D6 poor-or-intermediate-metabolizer phenotype",
         "indicator: 1 = poor OR intermediate metabolizer, 0 = extensive",
         "OR ultrafast metabolizer. Acts on apparent oral clearance in the",
         "Kastrissios 2006 PK layer."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Kastrissios 2006 equation 7 indicator 'CYPD', defined there as",
         "'0 for subjects with the extensive/ultrafast CYP 2D6 phenotype",
         "and the value 1 for subjects with the poor/intermediate",
@@ -177,19 +182,19 @@ Rohatagi_2008_apricoxib <- function() {
         "sibling model file Kastrissios_2006_apricoxib.R for the full",
         "derivation of the pooling."
       ),
-      source_name        = "CYPD"
+      source_name = "CYPD"
     ),
     CYP2C9_RH = list(
-      description        = paste(
+      description = paste(
         "CYP2C9 reduced-hydroxylator phenotype indicator: 1 = reduced",
         "hydroxylator, 0 = intermediate metabolizer OR normal",
         "hydroxylator. Acts on apparent oral clearance in the",
         "Kastrissios 2006 PK layer."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Kastrissios 2006 equation 7 indicator 'CYPC', defined there as",
         "'0 for subjects with the intermediate/normal hydroxylator CYP 2C9",
         "phenotype and the value 1 for those with the reduced hydroxylator",
@@ -203,19 +208,19 @@ Rohatagi_2008_apricoxib <- function() {
         "or-extensive / reduced hydroxylator = 0.96 / 0.04 in Japanese and",
         "0.85 / 0.15 in Western populations."
       ),
-      source_name        = "CYPC"
+      source_name = "CYPC"
     ),
     DOSE_HIGH = list(
-      description        = paste(
+      description = paste(
         "Supratherapeutic-dose-cohort indicator: 1 = the subject received",
         "a 400 mg or 800 mg dose of apricoxib, 0 = the subject received a",
         "dose in the 2 to 200 mg range. Selects between the two typical",
         "apparent oral clearance values of the Kastrissios 2006 PK layer."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Kastrissios 2006 equation 7 indicator 'D_hi'. Rohatagi 2008",
         "quotes the effect in its Methods ('Apparent oral clearance (CL/F)",
         "was 47.2 l h-1 in the dose range 2-200 mg and was reduced by 43%",
@@ -234,7 +239,7 @@ Rohatagi_2008_apricoxib <- function() {
         "podo(depot), and distinct from DOSE_APRICOXIB_MG, which drives",
         "the pharmacodynamic dose-response equations 13 to 15."
       ),
-      source_name        = "Dhi"
+      source_name = "Dhi"
     )
   )
 
@@ -242,15 +247,15 @@ Rohatagi_2008_apricoxib <- function() {
   # documented for provenance only and are deliberately absent from model().
   covariatesDataExcluded <- list(
     PAIN = list(
-      description        = paste(
+      description = paste(
         "Baseline postoperative pain intensity, recorded on both a",
         "four-point categorical scale and a visual analogue scale at the",
         "time of dosing."
       ),
-      units              = "(categorical: 2 = moderate, 3 = severe)",
-      type               = "categorical",
+      units = "(categorical: 2 = moderate, 3 = severe)",
+      type = "categorical",
       reference_category = 2,
-      notes              = paste(
+      notes = paste(
         "Rohatagi 2008 Methods 'Data': 'Pain intensity (PI; categorical",
         "and visual analogue scales) was assessed at the time of dosing'.",
         "Explicitly screened as a covariate on the pharmacodynamic",
@@ -272,14 +277,14 @@ Rohatagi_2008_apricoxib <- function() {
         "under the same canonical because the paper collected both scales",
         "and reports neither a VAS summary nor a retained coefficient."
       ),
-      source_name        = "PI"
+      source_name = "PI"
     ),
     AGE = list(
-      description        = "Age.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Not retained on any pharmacodynamic parameter. Rohatagi 2008",
         "Methods, summarising the paper's reference 2: 'None of the tested",
         "covariates, including age, gender, race, weight, height and body",
@@ -287,39 +292,39 @@ Rohatagi_2008_apricoxib <- function() {
         "estimate is reported. Table 2 dental-pain cohort: median 22",
         "years, range 18 to 36."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     HT = list(
-      description        = "Height.",
-      units              = "cm",
-      type               = "continuous",
+      description = "Height.",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained on any pharmacodynamic parameter",
         "(Rohatagi 2008 Methods, quoting the paper's reference 2); no",
         "point estimate reported. Table 2 dental-pain cohort: median 166",
         "cm, range 125 to 193."
       ),
-      source_name        = "Height"
+      source_name = "Height"
     ),
     BMI = list(
-      description        = "Body mass index.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained on any pharmacodynamic parameter",
         "(Rohatagi 2008 Methods, quoting the paper's reference 2); no",
         "point estimate reported and no cohort summary given."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     RACE_WHITE = list(
-      description        = "White race indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White race indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained on any pharmacodynamic parameter, and",
         "not retained on any pharmacokinetic parameter either (Kastrissios",
         "2006). Table 2 dental-pain cohort ethnicity counts",
@@ -330,18 +335,18 @@ Rohatagi_2008_apricoxib <- function() {
         "through a direct effect on any model parameter. No point estimate",
         "is reported."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     ),
     COX2_ACT = list(
-      description        = paste(
+      description = paste(
         "Whole-blood cyclooxygenase-2 activity, measured as the",
         "prostaglandin E2 concentration in heparinized plasma after",
         "incubation of whole blood with lipopolysaccharide."
       ),
-      units              = "(percent of baseline COX-2 activity)",
-      type               = "continuous",
+      units = "(percent of baseline COX-2 activity)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested as the explanatory variable of the drug-effect term in",
         "place of plasma concentration and REJECTED: 'For treated",
         "patients, CS-706 plasma concentrations and whole blood COX-2",
@@ -358,35 +363,35 @@ Rohatagi_2008_apricoxib <- function() {
         "of 100 percent for both; that PK/PD biomarker model is a separate",
         "publication and is not encoded here."
       ),
-      source_name        = "COX-2 activity"
+      source_name = "COX-2 activity"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 304L,
-    n_studies      = 1L,
-    age_range      = "18-36 years",
-    age_median     = "22 years",
-    weight_range   = "39.1-134 kg",
-    weight_median  = "68.2 kg",
-    height_range   = "125-193 cm",
-    height_median  = "166 cm",
+    species = "human",
+    n_subjects = 304L,
+    n_studies = 1L,
+    age_range = "18-36 years",
+    age_median = "22 years",
+    weight_range = "39.1-134 kg",
+    weight_median = "68.2 kg",
+    height_range = "125-193 cm",
+    height_median = "166 cm",
     sex_female_pct = 63.5,
     race_ethnicity = c(White = 59.5, Black = 4.6, Asian = 3.0, Hispanic = 31.3, Other = 1.6),
-    disease_state  = paste(
+    disease_state = paste(
       "Acute moderate-to-severe postoperative dental pain, assessed within",
       "6 h of surgical removal of two or more third molars"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single oral dose of one of six randomised treatments in approximately",
       "equal proportions (about 50 patients per treatment): placebo, 10, 50,",
       "100 or 200 mg apricoxib (CS-706), or 400 mg celecoxib as an active",
       "comparator. Pain intensity and pain relief were scored at 0.25, 0.5,",
       "0.75, 1, 1.5, 2, 3, 4, 5, 6, 7, 8, 12 and 24 h postdose."
     ),
-    regions        = "United States (two sites)",
-    notes          = paste(
+    regions = "United States (two sites)",
+    notes = paste(
       "Baseline characteristics from Rohatagi 2008 Table 2, 'All' column.",
       "n_subjects = 304 is the whole randomised study population; Table 2",
       "breaks it down as 52 placebo, 201 apricoxib (10, 50, 100 and 200 mg)",

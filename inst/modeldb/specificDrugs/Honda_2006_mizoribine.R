@@ -8,52 +8,52 @@ Honda_2006_mizoribine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "mizoribine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "mizoribine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "mizoribine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear scaling on apparent volume of distribution: V/F = theta_3 * WT (Honda 2006 Eq. 3). Cohort range 54.4-98.2 kg, mean 75.6 kg (Honda 2006 Materials and Methods, Pharmacokinetic Data).",
-      source_name        = "WT"
+      notes = "Linear scaling on apparent volume of distribution: V/F = theta_3 * WT (Honda 2006 Eq. 3). Cohort range 54.4-98.2 kg, mean 75.6 kg (Honda 2006 Materials and Methods, Pharmacokinetic Data).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age (baseline)",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age (baseline)",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the Cockcroft-Gault formula for creatinine clearance: CLcr (L/h) = ((140 - AGE) * WT / (72 * CREAT)) * (60 / 1000), with CREAT in mg/dL (Honda 2006 Eq. 5). Cohort range 18-45 years, mean 25.8.",
-      source_name        = "AGE"
+      notes = "Enters the Cockcroft-Gault formula for creatinine clearance: CLcr (L/h) = ((140 - AGE) * WT / (72 * CREAT)) * (60 / 1000), with CREAT in mg/dL (Honda 2006 Eq. 5). Cohort range 18-45 years, mean 25.8.",
+      source_name = "AGE"
     ),
     CREAT = list(
-      description        = "Serum creatinine (baseline)",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine (baseline)",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the Cockcroft-Gault formula for creatinine clearance (Honda 2006 Eq. 5). Individual serum-creatinine values are not tabulated; the derived cohort-mean CLcr was 7.54 (+/- 1.40) L/h, i.e. ~125.7 mL/min.",
-      source_name        = "Scr"
+      notes = "Enters the Cockcroft-Gault formula for creatinine clearance (Honda 2006 Eq. 5). Individual serum-creatinine values are not tabulated; the derived cohort-mean CLcr was 7.54 (+/- 1.40) L/h, i.e. ~125.7 mL/min.",
+      source_name = "Scr"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36L,
-    n_studies      = 2L,
-    age_range      = "18-45 years",
-    age_median     = "mean 25.8 years",
-    weight_range   = "54.4-98.2 kg",
-    weight_median  = "mean 75.6 kg",
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 2L,
+    age_range = "18-45 years",
+    age_median = "mean 25.8 years",
+    weight_range = "54.4-98.2 kg",
+    weight_median = "mean 75.6 kg",
     sex_female_pct = 0,
     race_ethnicity = c(Caucasian = 100),
-    disease_state  = "Healthy adult male volunteers with normal renal function.",
-    dose_range     = "Oral mizoribine (50 mg tablets). Single-dose study: 3, 6, 9, or 12 mg/kg (24 subjects across 4 dose groups of 6). Multiple-dose study: 6 mg/kg once daily for 5 days, or 6 mg/kg every 12 h for 7 days (12 subjects across 2 groups of 6).",
-    regions        = "Phase 1 clinical-pharmacology cohort. Underlying serum-concentration data were from a prior phase 1 study (Stypinski et al. 2005, Br J Clin Pharmacol, in press at the time of Honda 2006).",
+    disease_state = "Healthy adult male volunteers with normal renal function.",
+    dose_range = "Oral mizoribine (50 mg tablets). Single-dose study: 3, 6, 9, or 12 mg/kg (24 subjects across 4 dose groups of 6). Multiple-dose study: 6 mg/kg once daily for 5 days, or 6 mg/kg every 12 h for 7 days (12 subjects across 2 groups of 6).",
+    regions = "Phase 1 clinical-pharmacology cohort. Underlying serum-concentration data were from a prior phase 1 study (Stypinski et al. 2005, Br J Clin Pharmacol, in press at the time of Honda 2006).",
     renal_function = "Cockcroft-Gault creatinine clearance mean 7.54 (+/- 1.40) L/h across all 36 subjects.",
-    notes          = "Demographics summarised in the Pharmacokinetic Data section of Materials and Methods. The PK data were originally obtained in the previous phase 1 study and re-analysed here with NONMEM (first-order conditional estimation) using PREDPP subroutines ADVAN2 and TRANS2 (one-compartment with first-order absorption)."
+    notes = "Demographics summarised in the Pharmacokinetic Data section of Materials and Methods. The PK data were originally obtained in the previous phase 1 study and re-analysed here with NONMEM (first-order conditional estimation) using PREDPP subroutines ADVAN2 and TRANS2 (one-compartment with first-order absorption)."
   )
 
   ini({

@@ -4,8 +4,8 @@ Ahmed_2015_topiramate <- function() {
   paper_specific_residual_sds <- c("propSdOral", "propSdIv")
   vignette <- "Ahmed_2015_topiramate"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L (TPM plasma); words per three 60-second trials (COWA)"
   )
 
@@ -13,52 +13,52 @@ Ahmed_2015_topiramate <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "topiramate", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "topiramate", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "topiramate", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "topiramate", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "topiramate", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Actual body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Actual body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL and Q (exponent 0.75, fixed) and on Vc and Vp (exponent 1, fixed) centred at 70 kg (Ahmed 2015 Table 2 footer equations). Studied range 54.73-112.30 kg.",
-      source_name        = "WT"
+      notes = "Allometric scaling on CL and Q (exponent 0.75, fixed) and on Vc and Vp (exponent 1, fixed) centred at 70 kg (Ahmed 2015 Table 2 footer equations). Studied range 54.73-112.30 kg.",
+      source_name = "WT"
     ),
     OCC = list(
-      description        = "Cumulative count of COWA test administrations for the subject by the current observation row (1 for the first administration, 2 for the second, ...). Used by the PD model as a derived binary practice-effect threshold (OCC >= 4 triggers the baseline-inflation factor); PK observations may carry any OCC value as the practice-effect term only enters the COWA observation equation.",
-      units              = "(count)",
-      type               = "count",
+      description = "Cumulative count of COWA test administrations for the subject by the current observation row (1 for the first administration, 2 for the second, ...). Used by the PD model as a derived binary practice-effect threshold (OCC >= 4 triggers the baseline-inflation factor); PK observations may carry any OCC value as the practice-effect term only enters the COWA observation equation.",
+      units = "(count)",
+      type = "count",
       reference_category = NULL,
-      notes              = "Time-varying within subject. Ahmed 2015 reports the 12% baseline inflation as a covariate effect on COWA baseline keyed to NCOWA >= 4 (page 5 / Table 3, parameter theta_NCOWA>=4); the canonical OCC integer covariate is reused here for the COWA test-administration count.",
-      source_name        = "NCOWA"
+      notes = "Time-varying within subject. Ahmed 2015 reports the 12% baseline inflation as a covariate effect on COWA baseline keyed to NCOWA >= 4 (page 5 / Table 3, parameter theta_NCOWA>=4); the canonical OCC integer covariate is reused here for the COWA test-administration count.",
+      source_name = "NCOWA"
     ),
     ROUTE_IV = list(
-      description        = "Indicator for intravenous (IV) administration of the stable-labelled topiramate formulation",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for intravenous (IV) administration of the stable-labelled topiramate formulation",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral tablet)",
-      notes              = "Per-observation dosing-route indicator (1 = IV infusion, 0 = oral tablet). Ahmed 2015 retained no route covariate effect on the structural PK parameters (Results page 5: 'age, sex, race and TPM formulation had insignificant effects on CL') but fit a separate proportional residual error magnitude for each formulation (Table 2: oral %CV = 18.4, IV %CV = 7.2). The model body selects between propSdOral and propSdIv via ROUTE_IV. Distinct from the rxode2 cmt event column (cmt = central for IV doses, cmt = depot for oral doses).",
-      source_name        = "FLAG"
+      notes = "Per-observation dosing-route indicator (1 = IV infusion, 0 = oral tablet). Ahmed 2015 retained no route covariate effect on the structural PK parameters (Results page 5: 'age, sex, race and TPM formulation had insignificant effects on CL') but fit a separate proportional residual error magnitude for each formulation (Table 2: oral %CV = 18.4, IV %CV = 7.2). The model body selects between propSdOral and propSdIv via ROUTE_IV. Distinct from the rxode2 cmt event column (cmt = central for IV doses, cmt = depot for oral doses).",
+      source_name = "FLAG"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 3L,
-    age_range      = "19-55 years",
-    age_median     = "26.5 years",
-    weight_range   = "54.73-112.30 kg",
-    weight_median  = "77.27 kg",
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 3L,
+    age_range = "19-55 years",
+    age_median = "26.5 years",
+    weight_range = "54.73-112.30 kg",
+    weight_median = "77.27 kg",
     sex_female_pct = 37.5,
     race_ethnicity = c(Caucasian = 75.0, AfricanAmerican = 15.625, Other = 6.25, Unknown = 3.125),
-    disease_state  = "Healthy adult volunteers; normal renal function; no medications known to interact with TPM or alter cognitive function",
-    dose_range     = "50-100 mg single oral dose; 50-100 mg single IV infusion over 15 min (stable-labelled formulation)",
-    regions        = "USA (University of Minnesota; University of Florida)",
-    notes          = "Pooled across three randomized crossover studies (Ahmed 2015 Table 1). Study I: n=12, two PK / PD visits with rich PK sampling (15 timepoints over 120 h, three COWA timepoints 0.25/2.5/6 h post-dose). Study II: n=11 (placebo-controlled), one sparse PK sample and one COWA test 2-3 h post-dose. Study III: n=9, single sparse PK / single COWA timepoint (third-period 2 mg lorazepam arm excluded from the modelling dataset). External validation cohort (n=9, single 200 mg oral dose) referenced but not used for model fitting."
+    disease_state = "Healthy adult volunteers; normal renal function; no medications known to interact with TPM or alter cognitive function",
+    dose_range = "50-100 mg single oral dose; 50-100 mg single IV infusion over 15 min (stable-labelled formulation)",
+    regions = "USA (University of Minnesota; University of Florida)",
+    notes = "Pooled across three randomized crossover studies (Ahmed 2015 Table 1). Study I: n=12, two PK / PD visits with rich PK sampling (15 timepoints over 120 h, three COWA timepoints 0.25/2.5/6 h post-dose). Study II: n=11 (placebo-controlled), one sparse PK sample and one COWA test 2-3 h post-dose. Study III: n=9, single sparse PK / single COWA timepoint (third-period 2 mg lorazepam arm excluded from the modelling dataset). External validation cohort (n=9, single 200 mg oral dose) referenced but not used for model fitting."
   )
 
   ini({

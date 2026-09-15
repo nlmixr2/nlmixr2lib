@@ -3,8 +3,8 @@ AitOudhia_2012_canakinumab <- function() {
   reference <- "Ait-Oudhia S, Lowe PJ, Mager DE. Bridging Clinical Outcomes of Canakinumab Treatment in Patients With Rheumatoid Arthritis With a Population Model of IL-1beta Kinetics. CPT Pharmacometrics Syst Pharmacol. 2012;1:e5. doi:10.1038/psp.2012.6"
   vignette <- "AitOudhia_2012_canakinumab"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL (total canakinumab); pg/mL (total / free IL-1beta); mg/L (CRP)"
   )
 
@@ -13,43 +13,43 @@ AitOudhia_2012_canakinumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "canakinumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "canakinumab", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "canakinumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "canakinumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "canakinumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "canakinumab", units = "mg", specimen = "plasma", verified = FALSE),
     central_il1b = list(analyte = "IL-1beta", units = "mg", specimen = "plasma", verified = FALSE),
-    crp1         = list(analyte = "CRP", units = "mg", specimen = "plasma", verified = FALSE),
-    crp2         = list(analyte = "CRP", units = "mg", specimen = "plasma", verified = FALSE),
-    crp3         = list(analyte = "CRP", units = "mg", specimen = "plasma", verified = FALSE),
-    acrl         = list(analyte = "ACR latent variable", units = "mg", specimen = "not applicable", verified = FALSE)
+    crp1 = list(analyte = "CRP", units = "mg", specimen = "plasma", verified = FALSE),
+    crp2 = list(analyte = "CRP", units = "mg", specimen = "plasma", verified = FALSE),
+    crp3 = list(analyte = "CRP", units = "mg", specimen = "plasma", verified = FALSE),
+    acrl = list(analyte = "ACR latent variable", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL (and CLDL), CLL with exponent 3/4 and on Vc, Vp with exponent 1, centred at 70 kg (Ait-Oudhia 2012 Methods, Data analysis paragraph, page 9: 'CL = thetaCL * exp(etaCL) * (BWT/70)^(3/4) and V = thetav * exp(etav) * (BWT/70)').",
-      source_name        = "BWT"
+      notes = "Allometric scaling on CL (and CLDL), CLL with exponent 3/4 and on Vc, Vp with exponent 1, centred at 70 kg (Ait-Oudhia 2012 Methods, Data analysis paragraph, page 9: 'CL = thetaCL * exp(etaCL) * (BWT/70)^(3/4) and V = thetav * exp(etav) * (BWT/70)').",
+      source_name = "BWT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 472L,
-    n_active       = 349L,
-    n_placebo      = 123L,
-    n_studies      = 4L,
-    age_range      = "18-87 years",
-    age_median     = "57 years",
-    weight_range   = "40-111 kg",
-    weight_median  = "74 kg",
+    species = "human",
+    n_subjects = 472L,
+    n_active = 349L,
+    n_placebo = 123L,
+    n_studies = 4L,
+    age_range = "18-87 years",
+    age_median = "57 years",
+    weight_range = "40-111 kg",
+    weight_median = "74 kg",
     sex_female_pct = 80,
     race_ethnicity = NA,
-    disease_state  = "Active rheumatoid arthritis",
-    dose_range     = "0.1 mg/kg to 900 mg as a 2-hour IV infusion or SC injection Q2W or Q4W; alone or with methotrexate",
-    regions        = NA,
-    notes          = "Demographics from Ait-Oudhia 2012 Results, 'Data were obtained...' paragraph (page 2). Body-weight, age, gender, and methotrexate were tested as covariates; only body weight was retained (page 2-3). Per-study breakdown is described in Supplementary Table S1 (not on disk for this extraction). Other covariate-effect coefficients (age, gender, methotrexate) were tested and dropped during model building and are not encoded here."
+    disease_state = "Active rheumatoid arthritis",
+    dose_range = "0.1 mg/kg to 900 mg as a 2-hour IV infusion or SC injection Q2W or Q4W; alone or with methotrexate",
+    regions = NA,
+    notes = "Demographics from Ait-Oudhia 2012 Results, 'Data were obtained...' paragraph (page 2). Body-weight, age, gender, and methotrexate were tested as covariates; only body weight was retained (page 2-3). Per-study breakdown is described in Supplementary Table S1 (not on disk for this extraction). Other covariate-effect coefficients (age, gender, methotrexate) were tested and dropped during model building and are not encoded here."
   )
 
   ini({

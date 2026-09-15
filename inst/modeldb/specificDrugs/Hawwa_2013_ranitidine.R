@@ -20,40 +20,40 @@ Hawwa_2013_ranitidine <- function() {
     "doi:10.1111/j.1365-2125.2012.04473.x."
   )
   vignette <- "Hawwa_2013_ranitidine"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "ranitidine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ranitidine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "ranitidine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size covariate; reference weight 70 kg per Hawwa 2013",
         "Methods/Results ('Both CL and V were allometrically scaled to an",
         "adult of 70 kg with power values of 0.75 and 1.0 for CL and V,",
         "respectively'). Cohort weight range 1.3 to 47 kg (Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DIS_HF_OR_CARDSURG = list(
-      description        = paste(
+      description = paste(
         "Pooled binary indicator for cardiac failure or cardiac surgery,",
         "the only non-weight covariate retained after backward stepwise",
         "elimination."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no cardiac failure and no cardiac surgery)",
-      notes              = paste(
+      notes = paste(
         "1 = subject has cardiac failure or has undergone (or is in the",
         "postoperative period of) cardiac surgery; 0 = neither. Hawwa 2013",
         "Table 1 reports 14 subjects with cardiac failure, 10 with cardiac",
@@ -66,21 +66,21 @@ Hawwa_2013_ranitidine <- function() {
         "following surgery (Table 1 footnote). The covariate is treated",
         "as time-fixed per subject."
       ),
-      source_name        = "HEART"
+      source_name = "HEART"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 78L,
-    n_studies      = 1L,
-    age_range      = "15 days to 15.51 years",
-    age_median     = "4.57 years (mean; SD 4.48; Table 1)",
-    weight_range   = "1.3 to 47 kg",
-    weight_median  = "16.27 kg (mean; SD 12.24; Table 1)",
+    species = "human",
+    n_subjects = 78L,
+    n_studies = 1L,
+    age_range = "15 days to 15.51 years",
+    age_median = "4.57 years (mean; SD 4.48; Table 1)",
+    weight_range = "1.3 to 47 kg",
+    weight_median = "16.27 kg (mean; SD 12.24; Table 1)",
     sex_female_pct = 100 * 41 / 78,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill children in paediatric intensive care receiving",
       "ranitidine for prophylaxis against stress ulcers and",
       "gastrointestinal bleeding, or treatment of gastro-oesophageal",
@@ -88,16 +88,16 @@ Hawwa_2013_ranitidine <- function() {
       "had undergone cardiac surgery; 9 of 78 (11.5%) had renal failure",
       "(not retained as a covariate in the final model)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral and intravenous bolus dosing; mean 1.18 mg/kg per dose,",
       "SD 0.43; route 20.5% IV only, 15.4% oral only, 64.1% both",
       "(Table 1)."
     ),
-    regions        = paste(
+    regions = paste(
       "United Kingdom (Royal Belfast Hospital for Sick Children and",
       "Alder Hey Children's Hospital, Liverpool)"
     ),
-    notes          = paste(
+    notes = paste(
       "Plasma assay (HPLC, Methods 'Ranitidine assay'); LOQ 25 ng/mL.",
       "Concentrations below LOQ but detectable (n = 26, 10.4% of the",
       "final 248 samples) were imputed at LOQ/2 (12.5 ng/mL) per Hing et",

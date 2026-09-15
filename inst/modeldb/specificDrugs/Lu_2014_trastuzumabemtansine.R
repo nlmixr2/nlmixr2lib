@@ -8,77 +8,77 @@ Lu_2014_trastuzumabemtansine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "trastuzumabemtansine", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "trastuzumabemtansine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "trastuzumabemtansine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on CL (exponent 0.49) and Vc (exponent 0.596); reference 70 kg per Lu 2014 Eq. 5.",
-      source_name        = "weight"
+      notes = "Time-fixed baseline value. Power effect on CL (exponent 0.49) and Vc (exponent 0.596); reference 70 kg per Lu 2014 Eq. 5.",
+      source_name = "weight"
     ),
     HER2_ECD = list(
-      description        = "Baseline serum HER2 shed extracellular domain concentration",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Baseline serum HER2 shed extracellular domain concentration",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on CL (exponent 0.035); reference 25 ng/mL per Lu 2014 Eq. 5. Source column 'ECD' maps to the canonical scope-specific HER2_ECD covariate.",
-      source_name        = "ECD"
+      notes = "Time-fixed baseline value. Power effect on CL (exponent 0.035); reference 25 ng/mL per Lu 2014 Eq. 5. Source column 'ECD' maps to the canonical scope-specific HER2_ECD covariate.",
+      source_name = "ECD"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value (SI units; not g/dL). Power effect on CL (exponent -0.423); reference 41 g/L per Lu 2014 Eq. 5. Source column 'ALBU' maps to the canonical ALB covariate.",
-      source_name        = "ALBU"
+      notes = "Time-fixed baseline value (SI units; not g/dL). Power effect on CL (exponent -0.423); reference 41 g/L per Lu 2014 Eq. 5. Source column 'ALBU' maps to the canonical ALB covariate.",
+      source_name = "ALBU"
     ),
     TUMSZ = list(
-      description        = "Baseline sum of the longest dimension of target lesions (RECIST)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline sum of the longest dimension of target lesions (RECIST)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on CL (exponent 0.052); reference 90 mm per Lu 2014 Eq. 5 (source reference 9 cm * 10 = 90 mm). Source column 'TMBD' is in cm; convert values to mm on data ingestion (TUMSZ_mm = TMBD_cm * 10) so the canonical unit and per-model reference agree.",
-      source_name        = "TMBD"
+      notes = "Time-fixed baseline value. Power effect on CL (exponent 0.052); reference 90 mm per Lu 2014 Eq. 5 (source reference 9 cm * 10 = 90 mm). Source column 'TMBD' is in cm; convert values to mm on data ingestion (TUMSZ_mm = TMBD_cm * 10) so the canonical unit and per-model reference agree.",
+      source_name = "TMBD"
     ),
     TRAST_BL = list(
-      description        = "Baseline serum trastuzumab concentration from prior trastuzumab-containing therapy",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Baseline serum trastuzumab concentration from prior trastuzumab-containing therapy",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Enters the CL equation linearly (not log-transformed) via exp(coef * TRAST_BL); reference value 0 ug/mL corresponds to trastuzumab-naive patients. Coefficient -0.002 ug/mL^-1 per Lu 2014 Eq. 5. Source column 'TBL' maps to the canonical scope-specific TRAST_BL covariate. Lu 2014 observed TBL = 0 ug/mL at the 5th percentile and 54 ug/mL at the 95th percentile.",
-      source_name        = "TBL"
+      notes = "Time-fixed baseline value. Enters the CL equation linearly (not log-transformed) via exp(coef * TRAST_BL); reference value 0 ug/mL corresponds to trastuzumab-naive patients. Coefficient -0.002 ug/mL^-1 per Lu 2014 Eq. 5. Source column 'TBL' maps to the canonical scope-specific TRAST_BL covariate. Lu 2014 observed TBL = 0 ug/mL at the 5th percentile and 54 ug/mL at the 95th percentile.",
+      source_name = "TBL"
     ),
     AST = list(
-      description        = "Baseline serum aspartate aminotransferase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum aspartate aminotransferase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on CL (exponent 0.071); reference 27 U/L per Lu 2014 Eq. 5. Source column 'AST' maps to the canonical AST covariate.",
-      source_name        = "AST"
+      notes = "Time-fixed baseline value. Power effect on CL (exponent 0.071); reference 27 U/L per Lu 2014 Eq. 5. Source column 'AST' maps to the canonical AST covariate.",
+      source_name = "AST"
     )
   )
 
   population <- list(
-    n_subjects     = 671L,
-    n_studies      = 5L,
-    phase_mix      = "1 phase I (TDM3569g), 3 phase II (TDM4258g, TDM4374g, TDM4450g), and 1 phase III (TDM4370g / EMILIA) studies.",
-    regimen_mix    = "643 (95.8%) patients on 3.6 mg/kg IV every 3 weeks; 28 (4.2%) patients on weekly (qw) regimens.",
+    n_subjects = 671L,
+    n_studies = 5L,
+    phase_mix = "1 phase I (TDM3569g), 3 phase II (TDM4258g, TDM4374g, TDM4450g), and 1 phase III (TDM4370g / EMILIA) studies.",
+    regimen_mix = "643 (95.8%) patients on 3.6 mg/kg IV every 3 weeks; 28 (4.2%) patients on weekly (qw) regimens.",
     n_observations = 9934L,
-    disease_state  = "HER2-positive locally advanced or metastatic breast cancer (MBC).",
-    dose_range     = "Clinical doses 2.4-4.8 mg/kg IV q3w (labeled regimen 3.6 mg/kg q3w); phase I included lower doses (>=0.3 mg/kg) where nonlinear clearance was observed at <=1.2 mg/kg.",
-    weight_range   = "5th-95th percentile 49-98 kg (per Lu 2014 Table 2); mean Asian 60.5 kg vs non-Asian 71.6 kg.",
-    age_range      = "Adults with MBC; sensitivity subgroups <65, 65-75, >75 years (per Lu 2014 Supplemental Table 4).",
+    disease_state = "HER2-positive locally advanced or metastatic breast cancer (MBC).",
+    dose_range = "Clinical doses 2.4-4.8 mg/kg IV q3w (labeled regimen 3.6 mg/kg q3w); phase I included lower doses (>=0.3 mg/kg) where nonlinear clearance was observed at <=1.2 mg/kg.",
+    weight_range = "5th-95th percentile 49-98 kg (per Lu 2014 Table 2); mean Asian 60.5 kg vs non-Asian 71.6 kg.",
+    age_range = "Adults with MBC; sensitivity subgroups <65, 65-75, >75 years (per Lu 2014 Supplemental Table 4).",
     sex_female_pct = NA_real_,
     race_ethnicity = "Global enrollment including Asian and non-Asian patients (Lu 2014 Supplemental Table 3). Race and region were tested but were not statistically significant covariates.",
-    regions        = "Global / multi-regional.",
+    regions = "Global / multi-regional.",
     external_validation = "Phase II study TDM4688g (n = 51; 505 concentration-time data points) used for external validation.",
-    reference_subject  = "70 kg, HER2_ECD 25 ng/mL, ALB 41 g/L, TUMSZ 90 mm (9 cm), TRAST_BL 0 ug/mL, AST 27 U/L (per Lu 2014 Table 2 footnote a and Eq. 5).",
-    notes          = "Baseline demographic and clinical characteristics are reported in Lu 2014 Supplemental Table 3. Observations below the minimum quantifiable concentration (0.04-0.06 ug/mL) were excluded (7.27% of data points). Age, race, geographic region, and renal function were tested but were not statistically significant covariates on CL or Vc."
+    reference_subject = "70 kg, HER2_ECD 25 ng/mL, ALB 41 g/L, TUMSZ 90 mm (9 cm), TRAST_BL 0 ug/mL, AST 27 U/L (per Lu 2014 Table 2 footnote a and Eq. 5).",
+    notes = "Baseline demographic and clinical characteristics are reported in Lu 2014 Supplemental Table 3. Observations below the minimum quantifiable concentration (0.04-0.06 ug/mL) were excluded (7.27% of data points). Age, race, geographic region, and renal function were tested but were not statistically significant covariates on CL or Vc."
   )
 
   ini({

@@ -8,76 +8,76 @@ Quartino_2019_trastuzumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on linear CL (exponent 0.967); reference 66 kg per Quartino 2019 CL covariate equation (typical patient). Weight-adjusted dosing (mg/kg) already partially compensates for body size; residual CL-vs-WT exponent captures the slight overcompensation described in Quartino 2019 Results 'Assessment of the impact of identified covariates on PK exposure'.",
-      source_name        = "Wt"
+      notes = "Time-fixed baseline value. Power effect on linear CL (exponent 0.967); reference 66 kg per Quartino 2019 CL covariate equation (typical patient). Weight-adjusted dosing (mg/kg) already partially compensates for body size; residual CL-vs-WT exponent captures the slight overcompensation described in Quartino 2019 Results 'Assessment of the impact of identified covariates on PK exposure'.",
+      source_name = "Wt"
     ),
     AST = list(
-      description        = "Baseline serum aspartate aminotransferase activity",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Baseline serum aspartate aminotransferase activity",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on linear CL (exponent 0.205); reference 24 IU/L per Quartino 2019 CL covariate equation (typical patient; median of the analysis population). Source column 'SGOT' (the legacy clinical-chemistry name for AST) maps to the canonical AST covariate.",
-      source_name        = "SGOT"
+      notes = "Time-fixed baseline value. Power effect on linear CL (exponent 0.205); reference 24 IU/L per Quartino 2019 CL covariate equation (typical patient; median of the analysis population). Source column 'SGOT' (the legacy clinical-chemistry name for AST) maps to the canonical AST covariate.",
+      source_name = "SGOT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration",
+      description = "Baseline serum albumin concentration",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value (US convention, g/dL). Power effect on linear CL (exponent -0.998, i.e. approximately inversely proportional); reference 4 g/dL per Quartino 2019 CL covariate equation (typical patient). Source column 'ALBU' maps to the canonical ALB covariate.",
-      source_name        = "ALBU"
+      notes = "Time-fixed baseline value (US convention, g/dL). Power effect on linear CL (exponent -0.998, i.e. approximately inversely proportional); reference 4 g/dL per Quartino 2019 CL covariate equation (typical patient). Source column 'ALBU' maps to the canonical ALB covariate.",
+      source_name = "ALBU"
     ),
     LMET = list(
-      description        = "Baseline presence of liver metastases",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline presence of liver metastases",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no liver metastases at baseline)",
-      notes              = "Time-fixed baseline indicator. Exponential effect on linear CL (coefficient 0.152, i.e. a ~16.4% CL increase for LMET-positive subjects). Reference LMET = 0 per Quartino 2019 CL covariate equation. Source column 'LMET' maps directly to the canonical LMET covariate.",
-      source_name        = "LMET"
+      notes = "Time-fixed baseline indicator. Exponential effect on linear CL (coefficient 0.152, i.e. a ~16.4% CL increase for LMET-positive subjects). Reference LMET = 0 per Quartino 2019 CL covariate equation. Source column 'LMET' maps directly to the canonical LMET covariate.",
+      source_name = "LMET"
     ),
     TUMTP_GASTRIC = list(
-      description        = "Tumor-type indicator for advanced gastric cancer",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator for advanced gastric cancer",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (MBC, EBC, HV, or 'Others' group)",
-      notes              = "Quartino 2019 decomposes primary tumor type (TTYPE) into three linear-CL groups (MBC/EBC/HV reference, AGC, Others) and two Vc groups (non-AGC reference, AGC). The AGC indicator enters as a per-group typical-value switch on both linear CL and Vc (different typical values selected by indicator, not a multiplicative exponential / power effect). Derived from the source categorical column TTYPE as TUMTP_GASTRIC = as.integer(TTYPE == 'AGC').",
-      source_name        = "TTYPE"
+      notes = "Quartino 2019 decomposes primary tumor type (TTYPE) into three linear-CL groups (MBC/EBC/HV reference, AGC, Others) and two Vc groups (non-AGC reference, AGC). The AGC indicator enters as a per-group typical-value switch on both linear CL and Vc (different typical values selected by indicator, not a multiplicative exponential / power effect). Derived from the source categorical column TTYPE as TUMTP_GASTRIC = as.integer(TTYPE == 'AGC').",
+      source_name = "TTYPE"
     ),
     TUMTP_OTHER = list(
-      description        = "Tumor-type indicator for 'Others' group (NSCLC and other non-breast, non-gastric solid tumors pooled in Quartino 2019)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator for 'Others' group (NSCLC and other non-breast, non-gastric solid tumors pooled in Quartino 2019)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (MBC, EBC, HV, or AGC)",
-      notes              = "Quartino 2019 pools 107/1582 patients with NSCLC, prostate, ovarian, and other miscellaneous solid tumors into a single 'Others' category for linear CL (distinct typical value theta8 = 0.148 L/day). No Vc effect. Derived from the source categorical column TTYPE as TUMTP_OTHER = as.integer(TTYPE == 'Others'). A subject has at most one of TUMTP_GASTRIC / TUMTP_OTHER set to 1; both zero = MBC/EBC/HV reference.",
-      source_name        = "TTYPE"
+      notes = "Quartino 2019 pools 107/1582 patients with NSCLC, prostate, ovarian, and other miscellaneous solid tumors into a single 'Others' category for linear CL (distinct typical value theta8 = 0.148 L/day). No Vc effect. Derived from the source categorical column TTYPE as TUMTP_OTHER = as.integer(TTYPE == 'Others'). A subject has at most one of TUMTP_GASTRIC / TUMTP_OTHER set to 1; both zero = MBC/EBC/HV reference.",
+      source_name = "TTYPE"
     )
   )
 
   population <- list(
-    n_subjects       = 1582L,
-    n_studies        = 18L,
-    n_observations   = 26040L,
-    phase_mix        = "Pooled phase I, II, and III trials (all using the innovator trastuzumab Herceptin; no biosimilar data).",
-    age_median       = "53 years",
-    weight_median    = "66 kg",
-    sex_female_pct   = 82.7,
-    race_ethnicity   = c(`non-Asian` = 83.4, Asian = 16.6),
-    disease_state    = "Metastatic breast cancer (MBC, 810/1582), early breast cancer (EBC, 391/1582), advanced gastric cancer (AGC, 274/1582), non-small cell lung cancer or other solid tumors (107/1582), and healthy volunteers (HV, 6/1582).",
-    dose_range       = "Weekly (qw): 4 mg/kg IV loading dose followed by 2 mg/kg maintenance. Every 3 weeks (q3w): 8 mg/kg IV loading dose followed by 6 mg/kg maintenance. 917 patients on q3w, 643 on qw, 28 single-dose. 1188 single-agent; remainder combination with anthracyclines, docetaxel, paclitaxel, cisplatin, or other chemotherapy.",
-    regions          = "Global; 18 pooled phase I-III studies.",
-    ecog_status      = "94.5% ECOG performance status 0 or 1.",
+    n_subjects = 1582L,
+    n_studies = 18L,
+    n_observations = 26040L,
+    phase_mix = "Pooled phase I, II, and III trials (all using the innovator trastuzumab Herceptin; no biosimilar data).",
+    age_median = "53 years",
+    weight_median = "66 kg",
+    sex_female_pct = 82.7,
+    race_ethnicity = c(`non-Asian` = 83.4, Asian = 16.6),
+    disease_state = "Metastatic breast cancer (MBC, 810/1582), early breast cancer (EBC, 391/1582), advanced gastric cancer (AGC, 274/1582), non-small cell lung cancer or other solid tumors (107/1582), and healthy volunteers (HV, 6/1582).",
+    dose_range = "Weekly (qw): 4 mg/kg IV loading dose followed by 2 mg/kg maintenance. Every 3 weeks (q3w): 8 mg/kg IV loading dose followed by 6 mg/kg maintenance. 917 patients on q3w, 643 on qw, 28 single-dose. 1188 single-agent; remainder combination with anthracyclines, docetaxel, paclitaxel, cisplatin, or other chemotherapy.",
+    regions = "Global; 18 pooled phase I-III studies.",
+    ecog_status = "94.5% ECOG performance status 0 or 1.",
     reference_subject = "66 kg, AST (SGOT) 24 IU/L, ALB 4 g/dL, no liver metastases, MBC/EBC/HV primary tumor type (the typical patient Quartino 2019 uses for covariate-impact assessment and for the 'typical BC' simulation in Table 2).",
-    notes            = "Baseline demographics per Quartino 2019 Results section 'Patient population' and Online Resource 6. The final PK dataset contained 1582 patients and 26,040 serum concentrations across 18 studies; 1588 patients passed PK data handling (316 samples or patients excluded as outliers or BLQ). Among AGC patients, 12.6% had a prior gastrectomy (not a retained model covariate). Shed-antigen ECD-HER2 (SHED) was an exploratory analysis only and is NOT part of the final model."
+    notes = "Baseline demographics per Quartino 2019 Results section 'Patient population' and Online Resource 6. The final PK dataset contained 1582 patients and 26,040 serum concentrations across 18 studies; 1588 patients passed PK data handling (316 samples or patients excluded as outliers or BLQ). Among AGC patients, 12.6% had a prior gastrectomy (not a retained model covariate). Shed-antigen ECD-HER2 (SHED) was an exploratory analysis only and is NOT part of the final model."
   )
 
   ini({

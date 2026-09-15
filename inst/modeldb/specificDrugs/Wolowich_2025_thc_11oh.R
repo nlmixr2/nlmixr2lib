@@ -47,9 +47,9 @@ Wolowich_2025_thc_11oh <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened by stepwise forward / backward selection (alpha = 0.05) and",
         "not retained. Results section 3.2.2: 'No covariate was found",
         "significant in a stepwise covariate search including sex and CYP2C9",
@@ -59,9 +59,9 @@ Wolowich_2025_thc_11oh <- function() {
     ),
     CYP2C9_PM_IM = list(
       description = "Reduced-function CYP2C9 phenotype indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened and not retained. Three of the 25 volunteers were",
         "homozygous for CYP2C9*3. The Discussion explains the negative",
         "result: 'The CYP2C9 phenotype did not contribute to the HR effects",
@@ -72,9 +72,9 @@ Wolowich_2025_thc_11oh <- function() {
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Used to compute the administered dose (0.1 mg/kg IV bolus) but not",
         "carried into the model: no volume or clearance is allometrically",
         "scaled, and Table 1 reports every disposition parameter as an",
@@ -86,35 +86,47 @@ Wolowich_2025_thc_11oh <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte = "delta-9-tetrahydrocannabinol", units = "umol",
-      specimen = "plasma", verified = TRUE
+      analyte = "delta-9-tetrahydrocannabinol",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "delta-9-tetrahydrocannabinol", units = "umol",
-      specimen = "plasma", verified = TRUE
+      analyte = "delta-9-tetrahydrocannabinol",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral2 = list(
-      analyte = "delta-9-tetrahydrocannabinol", units = "umol",
-      specimen = "plasma", verified = TRUE
+      analyte = "delta-9-tetrahydrocannabinol",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     transit1_11oh = list(
-      analyte = "11-hydroxy-delta-9-tetrahydrocannabinol", units = "umol",
-      specimen = "not applicable", verified = TRUE
+      analyte = "11-hydroxy-delta-9-tetrahydrocannabinol",
+      units = "umol",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     central_11oh = list(
-      analyte = "11-hydroxy-delta-9-tetrahydrocannabinol", units = "umol",
-      specimen = "plasma", verified = TRUE
+      analyte = "11-hydroxy-delta-9-tetrahydrocannabinol",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_11oh = list(
-      analyte = "11-hydroxy-delta-9-tetrahydrocannabinol", units = "umol",
-      specimen = "plasma", verified = TRUE
+      analyte = "11-hydroxy-delta-9-tetrahydrocannabinol",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 25L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 25L,
+    n_studies = 1L,
     n_observations = paste(
       "The full dataset held 275 THC, 275 THC-OH and 243 THC-COOH plasma",
       "concentrations plus 362 heart-rate records. PK sampling was at 0, 1,",
@@ -124,11 +136,11 @@ Wolowich_2025_thc_11oh <- function() {
       "because the heart-rate effect did not last longer than that; Table 4",
       "reports NOBS = 817 for this model."
     ),
-    age_median     = "23 years (IQR 21-25)",
-    height_median  = "171 cm (IQR 167-182)",
-    weight_median  = "65 kg (IQR 57-73)",
+    age_median = "23 years (IQR 21-25)",
+    height_median = "171 cm (IQR 167-182)",
+    weight_median = "65 kg (IQR 57-73)",
     sex_female_pct = 56,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy volunteers, cannabis naive or cannabis abstinent for at least",
       "one month. Exclusions: pregnancy, tobacco smoking within three months,",
       "suspected ischaemic heart disease, cardiac arrhythmias, BMI outside",
@@ -136,14 +148,14 @@ Wolowich_2025_thc_11oh <- function() {
       "use, and any lifetime history of treated or suspected psychiatric",
       "disease."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 0.1 mg/kg intravenous bolus of THC (0.318 umol/kg using the",
       "paper's own MW of 314.46 g/mol)."
     ),
-    genotype       = "Three of 25 volunteers were homozygous for CYP2C9*3.",
-    baseline_hr    = "76 bpm (IQR 68-81); maximal change in HR 68 bpm (IQR 58-83)",
-    regions        = "Switzerland (recovery room of a university anaesthesiology department, Bern)",
-    notes          = paste(
+    genotype = "Three of 25 volunteers were homozygous for CYP2C9*3.",
+    baseline_hr = "76 bpm (IQR 68-81); maximal change in HR 68 bpm (IQR 58-83)",
+    regions = "Switzerland (recovery room of a university anaesthesiology department, Bern)",
+    notes = paste(
       "Cantonal Ethics Committee Bern approval KEK 241-09; registered as",
       "ISRCTN53019164. Assays were LC-MS/MS with limits of quantification of",
       "0.8 ug/L (2 nM) for THC and 0.5 ug/L (1 nM) for THC-OH. Demographics",

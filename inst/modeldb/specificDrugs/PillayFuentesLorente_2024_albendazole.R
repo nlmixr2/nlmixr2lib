@@ -33,30 +33,38 @@ PillayFuentesLorente_2024_albendazole <- function() {
   # estimated on that basis.
   compartmentData <- list(
     depot = list(
-      analyte = "albendazole", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "albendazole",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "albendazole sulfoxide", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "albendazole sulfoxide",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "albendazole sulfoxide", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "albendazole sulfoxide",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_abzson = list(
-      analyte = "albendazole sulfone", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "albendazole sulfone",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     REGION_TANZANIA = list(
-      description        = "Study population / enrollment-country indicator (1 = Tanzania, 0 = Cote d'Ivoire)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study population / enrollment-country indicator (1 = Tanzania, 0 = Cote d'Ivoire)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Cote d'Ivoire)",
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the published final model (Results 3.3).",
         "Applied as an exponential categorical effect on the apparent clearance",
         "of BOTH metabolites: exp(0.56) = 1.75 (75% higher albendazole",
@@ -65,7 +73,7 @@ PillayFuentesLorente_2024_albendazole <- function() {
         "in the Abstract, Key Points, Results 3.3 and Discussion.",
         "Time-constant per subject."
       ),
-      source_name        = "Country"
+      source_name = "Country"
     )
   )
 
@@ -74,49 +82,49 @@ PillayFuentesLorente_2024_albendazole <- function() {
   # screen is preserved without declaring covariates that model() never uses.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested both as a free power-function covariate on CL and V and as",
         "theory-based allometric scaling with exponents fixed to 0.75 (CL) and",
         "1 (V). Neither improved the fit, so allometric scaling was removed",
         "from the final model (Results 3.3). Means 51.8 kg (SD 8.18) in",
         "Tanzania and 44.4 kg (SD 9.52) in Cote d'Ivoire (Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on CL and V of both metabolites; did not improve the model",
         "fit (Results 3.3). Means 19.9 kg/m^2 (SD 2.19) in Tanzania and",
         "18.9 kg/m^2 (SD 2.76) in Cote d'Ivoire (Table 1)."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Screened as a categorical covariate on CL and V; did not improve the",
         "model fit (Results 3.3). 44.4% female in Tanzania and 47.1% female in",
         "Cote d'Ivoire (Table 1)."
       ),
-      source_name        = "Sex"
+      source_name = "Sex"
     ),
     CONMED_IVERMECTIN = list(
-      description        = "Co-administered ivermectin 200 ug/kg single oral dose (1 = albendazole + ivermectin, 0 = albendazole alone)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Co-administered ivermectin 200 ug/kg single oral dose (1 = albendazole + ivermectin, 0 = albendazole alone)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (albendazole alone)",
-      notes              = paste(
+      notes = paste(
         "The paper's primary co-medication hypothesis. Tested on the apparent",
         "clearance of both metabolites and REJECTED: inclusion raised the",
         "corrected Bayesian information criterion by 9.07, so it was not",
@@ -125,23 +133,23 @@ PillayFuentesLorente_2024_albendazole <- function() {
         "concentrations were not available at the time of model development,",
         "so ivermectin PK is not part of this model."
       ),
-      source_name        = "Medication"
+      source_name = "Medication"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 44L,
-    n_studies      = 2L,
-    age_range      = "12-19 years",
-    age_median     = "mean 15.8 years (SD 1.37) in Tanzania; mean 14.6 years (SD 1.86) in Cote d'Ivoire (Table 1)",
-    weight_range   = "mean 51.8 kg (SD 8.18) in Tanzania; mean 44.4 kg (SD 9.52) in Cote d'Ivoire (Table 1)",
+    species = "human",
+    n_subjects = 44L,
+    n_studies = 2L,
+    age_range = "12-19 years",
+    age_median = "mean 15.8 years (SD 1.37) in Tanzania; mean 14.6 years (SD 1.86) in Cote d'Ivoire (Table 1)",
+    weight_range = "mean 51.8 kg (SD 8.18) in Tanzania; mean 44.4 kg (SD 9.52) in Cote d'Ivoire (Table 1)",
     sex_female_pct = 45.5,
-    disease_state  = "adolescents with confirmed Trichuris trichiura (human whipworm) infection",
-    dose_range     = "single oral albendazole 400 mg, alone or co-administered with a single oral ivermectin 200 ug/kg dose, taken after a high-fat meal",
-    regions        = "Tanzania (Pemba Island) and Cote d'Ivoire",
-    co_medication  = "ivermectin 200 ug/kg single oral dose in 24 of 44 participants; no effect on either apparent clearance was retained",
-    notes          = paste(
+    disease_state = "adolescents with confirmed Trichuris trichiura (human whipworm) infection",
+    dose_range = "single oral albendazole 400 mg, alone or co-administered with a single oral ivermectin 200 ug/kg dose, taken after a high-fat meal",
+    regions = "Tanzania (Pemba Island) and Cote d'Ivoire",
+    co_medication = "ivermectin 200 ug/kg single oral dose in 24 of 44 participants; no effect on either apparent clearance was retained",
+    notes = paste(
       "Pooled pharmacokinetic data from two phase III trials, 227 concentration",
       "records from 44 adolescents (Results 3.1). Sampling schedules differed by",
       "country and are strongly informative for which phase of the profile each",

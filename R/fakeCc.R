@@ -29,7 +29,6 @@ fakeCc <- function(fun, ..., cc = "Cc") {
   .w <- .whichDdt(.modelLines, cc, start = "", end = "")
   .f <- rxode2::rxode2(.f)
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
-  rxode2::model(.cc) <- c(.tmp$pre,
-    .tmp$post)
+  rxode2::model(.cc) <- c(.tmp$pre, .tmp$post)
   .cc
 }

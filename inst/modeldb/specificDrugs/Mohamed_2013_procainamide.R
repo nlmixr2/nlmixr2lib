@@ -40,8 +40,8 @@ Mohamed_2013_procainamide <- function() {
   )
   vignette <- "Mohamed_2013_procainamide"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -50,8 +50,8 @@ Mohamed_2013_procainamide <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "procainamide", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "procainamide", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "procainamide", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "procainamide", units = "mg", specimen = "plasma", verified = FALSE),
     central_napa = list(analyte = "N-acetylprocainamide (NAPA)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -60,18 +60,18 @@ Mohamed_2013_procainamide <- function() {
   covariatesDataExcluded <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 1L,
+    n_studies = 1L,
     n_observations = "Serial plasma samples for procainamide and NAPA collected over 120 hours as part of routine clinical care (Case Report section, paper Figure 1 caption).",
-    age_range      = "40 years (single patient)",
-    weight_range   = "70 kg (single patient)",
+    age_range = "40 years (single patient)",
+    weight_range = "70 kg (single patient)",
     sex_female_pct = 0,
     race_ethnicity = "White (single 40-year-old white male; Case Report first paragraph).",
-    disease_state  = "CKD stage 5 (serum creatinine 10 mg/dL on ICU admission) with residual renal function (~1400 mL urine per 24 h) on continuous renal replacement therapy (CRRT) at 2000 mL/h via a PRISMA system with an AN69/M100 hemofilter set and 150 mL/min blood flow, following aortic valve replacement complicated by monomorphic ventricular tachycardia treated with procainamide loading and maintenance infusions.",
-    dose_range     = "IV procainamide: 1000 mg loading dose infused at 50 mg/min for 20 min; maintenance infusions of 2 mg/min for 6 h, 4 mg/min for 8 h, 2 mg/min for 7 h, and 1 mg/min for ~13 h (approximately 36 h total therapy). Simulated regimens in Figure 2 use a 20 mg/min loading for 30 min followed by 48 h of 1, 2, or 4 mg/min maintenance.",
-    regions        = "United States (Indiana University Health Methodist Hospital, Indianapolis, IN).",
-    notes          = "Single-subject case report; the popPK model is a typical-value description of this specific patient's disposition. Between-subject variability is not identifiable from a single subject and is therefore not encoded (paper Table 1 does not report omega values). CRRT was maintained continuously at 2000 mL/h during the entire procainamide administration period; the estimated Cl_other therefore combines residual renal (~58 mL/h from the ~1400 mL/24 h urine output) with CRRT hemofiltration removal of procainamide and cannot be decomposed further without procainamide dialysate concentrations."
+    disease_state = "CKD stage 5 (serum creatinine 10 mg/dL on ICU admission) with residual renal function (~1400 mL urine per 24 h) on continuous renal replacement therapy (CRRT) at 2000 mL/h via a PRISMA system with an AN69/M100 hemofilter set and 150 mL/min blood flow, following aortic valve replacement complicated by monomorphic ventricular tachycardia treated with procainamide loading and maintenance infusions.",
+    dose_range = "IV procainamide: 1000 mg loading dose infused at 50 mg/min for 20 min; maintenance infusions of 2 mg/min for 6 h, 4 mg/min for 8 h, 2 mg/min for 7 h, and 1 mg/min for ~13 h (approximately 36 h total therapy). Simulated regimens in Figure 2 use a 20 mg/min loading for 30 min followed by 48 h of 1, 2, or 4 mg/min maintenance.",
+    regions = "United States (Indiana University Health Methodist Hospital, Indianapolis, IN).",
+    notes = "Single-subject case report; the popPK model is a typical-value description of this specific patient's disposition. Between-subject variability is not identifiable from a single subject and is therefore not encoded (paper Table 1 does not report omega values). CRRT was maintained continuously at 2000 mL/h during the entire procainamide administration period; the estimated Cl_other therefore combines residual renal (~58 mL/h from the ~1400 mL/24 h urine output) with CRRT hemofiltration removal of procainamide and cannot be decomposed further without procainamide dialysate concentrations."
   )
 
   ini({

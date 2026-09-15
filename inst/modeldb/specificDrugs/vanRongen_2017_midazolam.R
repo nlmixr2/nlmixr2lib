@@ -35,29 +35,29 @@ vanRongen_2017_midazolam <- function() {
     sep = " "
   )
   vignette <- "vanRongen_2017_midazolam"
-  units    <- list(time = "min", dosing = "ug", concentration = "microgram/L")
+  units <- list(time = "min", dosing = "ug", concentration = "microgram/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    transit5    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column 'TBW' (total body weight, kg) maps to the canonical WT.",
         "Time-fixed at baseline. Enters the Final model in two cohort-specific",
         "ways (van Rongen 2017 Table 2 footnotes): power-law on CL in obese",
@@ -67,14 +67,14 @@ vanRongen_2017_midazolam <- function() {
         "volume and adult clearance are flat across WT in the Final model. The",
         "pooled-cohort observed TBW range is 62-186.3 kg."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     ADOLESCENT = list(
-      description        = "Obese-adolescent cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Obese-adolescent cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = morbidly obese adult (BMI > 40 kg/m^2; 26-57 years; 112.3-186.3 kg)",
-      notes              = paste(
+      notes = paste(
         "1 = obese adolescent (overweight BMI-for-age 85th-95th percentile or",
         "obese BMI-for-age >= 95th percentile; 12-18.9 years; 62-149.8 kg).",
         "0 = morbidly obese adult (BMI > 40 kg/m^2; 26-57 years; 112.3-186.3 kg).",
@@ -89,43 +89,43 @@ vanRongen_2017_midazolam <- function() {
         "non-adolescent / non-adult age groups is outside the calibration",
         "envelope."
       ),
-      source_name        = NA_character_
+      source_name = NA_character_
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 39L,
-    n_studies      = 2L,
-    age_range      = "Obese adolescents 12.5-18.9 years (mean 15.9, SD 1.6); morbidly obese adults 26-57 years (mean 43.6, SD 7.6).",
-    weight_range   = "Obese adolescents 62-149.8 kg (mean 102.7, SD 24.9); morbidly obese adults 112.3-186.3 kg (mean 144.4, SD 21.7).",
-    weight_median  = "104.7 kg (adolescent reference for CL power), 141.8 kg (adult reference for Vp power).",
+    species = "human",
+    n_subjects = 39L,
+    n_studies = 2L,
+    age_range = "Obese adolescents 12.5-18.9 years (mean 15.9, SD 1.6); morbidly obese adults 26-57 years (mean 43.6, SD 7.6).",
+    weight_range = "Obese adolescents 62-149.8 kg (mean 102.7, SD 24.9); morbidly obese adults 112.3-186.3 kg (mean 144.4, SD 21.7).",
+    weight_median = "104.7 kg (adolescent reference for CL power), 141.8 kg (adult reference for Vp power).",
     sex_female_pct = 64,
     race_ethnicity = paste(
       "Obese adolescents (n = 19): 5 Caucasian, 9 African American, 5 Hispanic",
       "(per Discussion). Morbidly obese adults (n = 20): 19 Caucasian,",
       "1 African American."
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Obese adolescents (n = 19): three overweight (BMI-for-age 85th-95th",
       "percentile) and 16 obese (BMI-for-age >= 95th percentile) adolescents",
       "scheduled for general surgery (orthopaedic surgery, tonsillectomy,",
       "bariatric surgery). Morbidly obese adults (n = 20): BMI > 40 kg/m^2",
       "scheduled for bariatric surgery."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Obese adolescents: single IV bolus 2 or 3 mg midazolam given a few",
       "minutes before transfer to the operating room. Morbidly obese adults:",
       "7.5 mg oral midazolam followed by a 5 mg IV bolus at induction of",
       "anaesthesia (159 +/- 67 min after the oral dose)."
     ),
-    regions        = paste(
+    regions = paste(
       "Obese adolescents: Children's National Health System, Washington DC,",
       "USA (IRB Protocol No. 4718). Morbidly obese adults: St. Antonius",
       "Hospital, Nieuwegein, The Netherlands (VCMO NL35861.100.11, EudraCT",
       "2011-003293-93)."
     ),
-    notes          = paste(
+    notes = paste(
       "Pooled analysis of 530 midazolam plasma concentration observations",
       "from 19 obese adolescents (129 samples, all above the 0.5 ng/mL LLOQ)",
       "and 20 morbidly obese adults (401 samples retained; 33 of 434 were",

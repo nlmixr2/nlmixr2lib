@@ -8,55 +8,55 @@ Csajka_2004_indinavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "indinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "indinavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "indinavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters apparent oral clearance via a linear deviation from the 70 kg reference weight: (1 + e_wt_cl * (WT - 70) / 70). Cohort median 66.8 kg (range 41-116 kg) per Csajka 2004 Table 1.",
-      source_name        = "BW"
+      notes = "Enters apparent oral clearance via a linear deviation from the 70 kg reference weight: (1 + e_wt_cl * (WT - 70) / 70). Cohort median 66.8 kg (range 41-116 kg) per Csajka 2004 Table 1.",
+      source_name = "BW"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female); Csajka 2004's typical-value CL/F (32.4 L/h) is the female reference and the +30% male effect is applied to males.",
-      notes              = "Csajka 2004 Table 3 footnote a encodes sex as a male-indicator (sex = 1 if male) and reports the male effect as theta_male = 0.30. The canonical SEXF (1 = female, 0 = male) inverts the values, so the effect is applied in model() as (1 + e_sex_cl * (1 - SEXF)), preserving Csajka 2004's female-reference CL/F = 32.4 L/h (32.4 * 1.30 = 42.1 L/h for males, matching the paper's reported 42.0 L/h within rounding).",
-      source_name        = "sex"
+      notes = "Csajka 2004 Table 3 footnote a encodes sex as a male-indicator (sex = 1 if male) and reports the male effect as theta_male = 0.30. The canonical SEXF (1 = female, 0 = male) inverts the values, so the effect is applied in model() as (1 + e_sex_cl * (1 - SEXF)), preserving Csajka 2004's female-reference CL/F = 32.4 L/h (32.4 * 1.30 = 42.1 L/h for males, matching the paper's reported 42.0 L/h within rounding).",
+      source_name = "sex"
     ),
     CONMED_RTV = list(
-      description        = "Concomitant ritonavir (low-dose CYP3A4-inhibitor / PK-booster) coadministration indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant ritonavir (low-dose CYP3A4-inhibitor / PK-booster) coadministration indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no ritonavir; indinavir 800 mg three-times-daily monotherapy).",
-      notes              = "1 = subject receives ritonavir 100 mg twice-daily as a kinetic booster with indinavir 800 mg twice-daily; 0 = no ritonavir (indinavir 800 mg three-times-daily alone). Csajka 2004 Methods Study population: 177 of 239 patients received ritonavir. The covariate effect is applied multiplicatively to apparent oral clearance via (1 + e_rtv_cl * CONMED_RTV); e_rtv_cl = -0.63 (Table 3), so ritonavir reduces indinavir CL/F by 63% relative to the no-RTV reference.",
-      source_name        = "PI"
+      notes = "1 = subject receives ritonavir 100 mg twice-daily as a kinetic booster with indinavir 800 mg twice-daily; 0 = no ritonavir (indinavir 800 mg three-times-daily alone). Csajka 2004 Methods Study population: 177 of 239 patients received ritonavir. The covariate effect is applied multiplicatively to apparent oral clearance via (1 + e_rtv_cl * CONMED_RTV); e_rtv_cl = -0.63 (Table 3), so ritonavir reduces indinavir CL/F by 63% relative to the no-RTV reference.",
+      source_name = "PI"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 239L,
-    n_studies       = 1L,
-    n_observations  = 569L,
-    n_visits        = 490L,
-    age_range       = "16.3-73.4 years",
-    age_median      = "40.1 years",
-    weight_range    = "41-116 kg",
-    weight_median   = "66.8 kg",
-    height_range    = "150-194 cm",
-    height_median   = "172 cm",
-    sex_female_pct  = 29.3,
-    race_ethnicity  = c(Caucasian = 92, Black = 5, Hispanic = 3, Asian = 0.8),
-    disease_state   = "Adults infected with HIV-1 on combination antiretroviral therapy. CD4 12-1491 cells/mm^3 (median 433), HIV viral load 1-750000 copies/mm^3 (median 400) (Csajka 2004 Table 1).",
-    dose_range      = "Oral indinavir 800 mg three-times-daily (62 of 239 patients, no ritonavir) or 800 mg twice-daily with ritonavir 100 mg twice-daily (177 of 239 patients). 21 of 239 had been already dose-reduced to 400 or 600 mg twice-daily for side effects prior to enrollment.",
-    regions         = "Switzerland (University Hospital, Lausanne; University Hospital, Zurich).",
-    notes           = "Single-centre observational cohort followed over a 40-month period. Sparse PK sampling (median 2 visits per patient, range 1-8) plus 7 patients with full 0-8 h time-course profiles. Indinavir quantified by reverse-phase HPLC (LLOQ 250 ug/L, linear to 10000 ug/L). NONMEM V / NM-TRAN II, first-order conditional estimation. Final population PK parameter estimates from Csajka 2004 Table 3; covariate-screening tests from Table 2."
+    species = "human",
+    n_subjects = 239L,
+    n_studies = 1L,
+    n_observations = 569L,
+    n_visits = 490L,
+    age_range = "16.3-73.4 years",
+    age_median = "40.1 years",
+    weight_range = "41-116 kg",
+    weight_median = "66.8 kg",
+    height_range = "150-194 cm",
+    height_median = "172 cm",
+    sex_female_pct = 29.3,
+    race_ethnicity = c(Caucasian = 92, Black = 5, Hispanic = 3, Asian = 0.8),
+    disease_state = "Adults infected with HIV-1 on combination antiretroviral therapy. CD4 12-1491 cells/mm^3 (median 433), HIV viral load 1-750000 copies/mm^3 (median 400) (Csajka 2004 Table 1).",
+    dose_range = "Oral indinavir 800 mg three-times-daily (62 of 239 patients, no ritonavir) or 800 mg twice-daily with ritonavir 100 mg twice-daily (177 of 239 patients). 21 of 239 had been already dose-reduced to 400 or 600 mg twice-daily for side effects prior to enrollment.",
+    regions = "Switzerland (University Hospital, Lausanne; University Hospital, Zurich).",
+    notes = "Single-centre observational cohort followed over a 40-month period. Sparse PK sampling (median 2 visits per patient, range 1-8) plus 7 patients with full 0-8 h time-course profiles. Indinavir quantified by reverse-phase HPLC (LLOQ 250 ug/L, linear to 10000 ug/L). NONMEM V / NM-TRAN II, first-order conditional estimation. Final population PK parameter estimates from Csajka 2004 Table 3; covariate-screening tests from Table 2."
   )
 
   ini({

@@ -22,7 +22,8 @@ Wu_2012_bevacizumab_mouse <- function() {
     "sampling means, so the source reports neither between-subject",
     "variability nor a residual-error model; both residual SDs are",
     "therefore fixed at zero and the model is deterministic.",
-    sep = " ")
+    sep = " "
+  )
   reference <- paste(
     "Wu F, Tamhane M, Morris ME.",
     "Pharmacokinetics, Lymph Node Uptake, and Mechanistic PK Model of",
@@ -30,11 +31,12 @@ Wu_2012_bevacizumab_mouse <- function() {
     "in Mice.",
     "AAPS J. 2012;14(2):252-261.",
     "doi:10.1208/s12248-012-9342-9.",
-    sep = " ")
+    sep = " "
+  )
   vignette <- "Wu_2012_bevacizumab_mouse"
   units <- list(
-    time          = "h",
-    dosing        = "ug",
+    time = "h",
+    dosing = "ug",
     concentration = "ug/mL"
   )
 
@@ -42,34 +44,34 @@ Wu_2012_bevacizumab_mouse <- function() {
   # is 0.45 mg/kg, so state amounts are ug/kg and amount / volume is
   # ug/mL -- the units of Table I (Cmax in ug/mL) and Figs. 6 and 7.
   compartmentData <- list(
-    depot       = list(analyte = "bevacizumab", units = "ug", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "bevacizumab", units = "ug", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "bevacizumab", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "bevacizumab", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "bevacizumab", units = "ug", specimen = "tissue", verified = TRUE),
     # Axillary lymph node draining the front-footpad SC injection site.
     # Assayed as node homogenate by ELISA, hence "tissue" rather than
     # "lymph" (which is the fluid): Methods, "Plasma and Lymph Node
     # Concentrations Determined by ELISA".
-    lnode       = list(analyte = "bevacizumab", units = "ug", specimen = "tissue", verified = TRUE)
+    lnode = list(analyte = "bevacizumab", units = "ug", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (SKH-1, male)",
-    n_subjects     = 63L,
-    n_studies      = 1L,
-    weight_range   = "25-30 g",
+    species = "mouse (SKH-1, male)",
+    n_subjects = 63L,
+    n_studies = 1L,
+    weight_range = "25-30 g",
     sex_female_pct = 0,
-    disease_state  = "Healthy (no disease model; bevacizumab does not bind murine VEGF-A)",
-    dose_range     = paste(
+    disease_state = "Healthy (no disease model; bevacizumab does not bind murine VEGF-A)",
+    dose_range = paste(
       "Single 0.45 mg/kg dose of bevacizumab conjugated to IRDye 800CW",
       "(dye:protein ratio 3.5:1; 10.5 nmol/kg of dye), given either",
       "intravenously by penile-vein injection or subcutaneously into the",
       "front footpad. The dose was capped by the 15 uL maximum footpad",
       "injection volume."
     ),
-    regions        = "USA (University at Buffalo)",
-    notes          = paste(
+    regions = "USA (University at Buffalo)",
+    notes = paste(
       "Destructive sacrificial sampling: three animals were killed at each",
       "of 5 min (IV only), 15 min, 30 min, 1, 2, 4, 8, 24, 72, 168 and",
       "288 h, giving 11 IV and 10 SC timepoints (n = 63 animals in total).",

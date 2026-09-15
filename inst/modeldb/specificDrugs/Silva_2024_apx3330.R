@@ -32,18 +32,18 @@ Silva_2024_apx3330 <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "apx3330", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "apx3330", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "apx3330", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "apx3330", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "apx3330", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-model covariate on CL/F and V1/F, normalized to a 70 kg",
         "reference. Silva 2024 Methods 'Population pharmacokinetic analysis':",
         "'Covariate effects were evaluated for body weight (WT; normalized to",
@@ -57,14 +57,14 @@ Silva_2024_apx3330 <- function() {
         "the study, so it is treated as time-fixed here.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     FED = list(
-      description        = "Fed-vs-fasted dose-record indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted dose-record indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted dose)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator: 1 = APX3330 dose administered with food,",
         "0 = fasted. Identified in the 120 mg fasted-vs-fed single-dose",
         "crossover arm of the Japanese healthy-volunteer program (Silva 2024",
@@ -78,14 +78,14 @@ Silva_2024_apx3330 <- function() {
         "high-fat meal ... is commonly used in phase I trials'.",
         sep = " "
       ),
-      source_name        = "Food"
+      source_name = "Food"
     ),
     DIS_CANCER = list(
-      description        = "Advanced-solid-tumor cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Advanced-solid-tumor cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy Japanese male volunteer)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject: 1 = patient with an advanced solid tumor in",
         "the Apexian phase I study, 0 = healthy Japanese male volunteer in the",
         "pooled Eisai studies. Silva 2024 calls this covariate 'subject",
@@ -99,16 +99,16 @@ Silva_2024_apx3330 <- function() {
         "covariatesDataExcluded rather than carried as a model covariate.",
         sep = " "
       ),
-      source_name        = "Subject source"
+      source_name = "Subject source"
     )
   )
 
   covariatesDataExcluded <- list(
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Screened as a candidate covariate on CL/F and significant on its own",
         "(delta -2LL = -25.1), but NOT retained in the final model: the",
         "categorical DIS_CANCER 'subject source' indicator gave a larger drop",
@@ -126,17 +126,17 @@ Silva_2024_apx3330 <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 68,
-    n_studies      = 5,
-    age_range      = "healthy Japanese volunteers: mean 25.4 years; oncology cohort age not reported in the main text (Table S3)",
-    weight_range   = "healthy Japanese volunteers: 52-77 kg (mean 62.4 kg); oncology cohort: mean 88.3 kg",
+    species = "human",
+    n_subjects = 68,
+    n_studies = 5,
+    age_range = "healthy Japanese volunteers: mean 25.4 years; oncology cohort age not reported in the main text (Table S3)",
+    weight_range = "healthy Japanese volunteers: 52-77 kg (mean 62.4 kg); oncology cohort: mean 88.3 kg",
     sex_female_pct = 8.8,
     race_ethnicity = c(Japanese = 72.1, White = 23.5, Hispanic = 2.9, Other = 1.5),
-    disease_state  = "healthy Japanese male volunteers pooled with patients with advanced solid tumors",
-    dose_range     = "10-600 mg oral single dose and 120 mg once or twice daily (healthy volunteers); 120-360 mg orally twice daily for 22 days (patients with cancer)",
-    regions        = "Japan (Eisai healthy-volunteer studies); United States (Apexian oncology study)",
-    notes          = paste(
+    disease_state = "healthy Japanese male volunteers pooled with patients with advanced solid tumors",
+    dose_range = "10-600 mg oral single dose and 120 mg once or twice daily (healthy volunteers); 120-360 mg orally twice daily for 22 days (patients with cancer)",
+    regions = "Japan (Eisai healthy-volunteer studies); United States (Apexian oncology study)",
+    notes = paste(
       "Silva 2024 Results 'Population pharmacokinetic analysis'. The combined",
       "model was built on 1460 total-quinone plasma concentrations, of which",
       "211 (14.45%) came from the oncology study. The healthy-volunteer",

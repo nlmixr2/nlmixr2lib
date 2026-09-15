@@ -36,18 +36,18 @@ Liu_2024_saf189s <- function() {
   )
   vignette <- "Liu_2024_saf189s"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters CL/F as the power term (AGE / 53)^-0.314, referenced to",
         "the cohort MEDIAN age of 53 years (Liu 2024 Results, PopPK",
         "analysis: 'mean age 51.6 years, median age 53 years'; Figure 4",
@@ -64,14 +64,14 @@ Liu_2024_saf189s <- function() {
         "(51-54 years), so age and subject type are partially confounded",
         "in this cohort."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     PRIOR_ALKI = list(
-      description        = "Prior ALK-inhibitor therapy indicator in ALK-positive patients; 1 = the patient received ALK-inhibitor treatment before enrolment, 0 = ALK-inhibitor-naive.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior ALK-inhibitor therapy indicator in ALK-positive patients; 1 = the patient received ALK-inhibitor treatment before enrolment, 0 = ALK-inhibitor-naive.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no previous ALK-inhibitor treatment; the paper's ALKPOT = 1 group, n = 115, 36.2% of the pooled cohort)",
-      notes              = paste(
+      notes = paste(
         "Collapses levels 2, 3 and 4 of the paper's six-level ALKPOT",
         "classification, which Liu 2024 itself groups into a single",
         "estimated effect (Table 2 row 'ALKPOT = 2,3,4 on V/F'). The",
@@ -85,14 +85,14 @@ Liu_2024_saf189s <- function() {
         "mutually exclusive by construction. Multiplies V/F by 0.734",
         "(26.6% lower apparent volume)."
       ),
-      source_name        = "ALKPOT = 2, 3, 4"
+      source_name = "ALKPOT = 2, 3, 4"
     ),
     TUM_ALK_MUT = list(
-      description        = "Tumour ALK rearrangement status; 1 = ALK-positive, 0 = not ALK-positive (ROS1-positive, unknown, or a healthy participant with no tumour).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumour ALK rearrangement status; 1 = ALK-positive, 0 = not ALK-positive (ROS1-positive, unknown, or a healthy participant with no tumour).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (ALK-positive; the reference cell of the V/F covariate model is an ALK-positive, ALK-inhibitor-naive patient)",
-      notes              = paste(
+      notes = paste(
         "Used together with DIS_HEALTHY to reconstruct the paper's",
         "ALKPOT = 5 group ('others (ROS1+ patients or unknown)',",
         "n = 114, 36.0%), which in model() is the product",
@@ -107,14 +107,14 @@ Liu_2024_saf189s <- function() {
         "(8.3% lower apparent volume) when the subject is a",
         "non-ALK-positive patient."
       ),
-      source_name        = "ALK Mutation (Positive / Negative or Other); ALKPOT = 5"
+      source_name = "ALK Mutation (Positive / Negative or Other); ALKPOT = 5"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant indicator; 1 = healthy Chinese volunteer from study STL31147, 0 = NSCLC patient from study SAF001.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant indicator; 1 = healthy Chinese volunteer from study STL31147, 0 = NSCLC patient from study SAF001.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (NSCLC patient; the reference cell is an ALK-positive, ALK-inhibitor-naive patient)",
-      notes              = paste(
+      notes = paste(
         "The paper's ALKPOT = 6 level (n = 24, 7.6%). Multiplies V/F by",
         "0.784 (21.6% lower apparent volume) relative to",
         "ALK-inhibitor-naive ALK+ patients. Note the confounding: the",
@@ -125,89 +125,89 @@ Liu_2024_saf189s <- function() {
         "effect on systemic exposure, because the AUCss consequence of",
         "the V/F shift is only -2.1% (Figure 4)."
       ),
-      source_name        = "ALKPOT = 6 (healthy subjects); Subject Type"
+      source_name = "ALKPOT = 6 (healthy subjects); Subject Type"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight at baseline.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Prespecified and screened in the stepwise covariate model (Liu 2024 Methods, Covariate analysis) but NOT retained: 'None of the other intrinsic factors (i.e., healthy vs cancer patient, bodyweight, sex, preexisting mild hepatic impairment, and preexisting mild or moderate renal impairment) or extrinsic factors (i.e., concomitant medications) had clinically meaningful effects on SAF-189s systemic exposure.' No point estimate is reported anywhere on disk. Pooled cohort median 63.2 kg, range 37.3-92.5 (Supplementary Table 1)."
+      units = "kg",
+      type = "continuous",
+      notes = "Prespecified and screened in the stepwise covariate model (Liu 2024 Methods, Covariate analysis) but NOT retained: 'None of the other intrinsic factors (i.e., healthy vs cancer patient, bodyweight, sex, preexisting mild hepatic impairment, and preexisting mild or moderate renal impairment) or extrinsic factors (i.e., concomitant medications) had clinically meaningful effects on SAF-189s systemic exposure.' No point estimate is reported anywhere on disk. Pooled cohort median 63.2 kg, range 37.3-92.5 (Supplementary Table 1)."
     ),
     SEXF = list(
       description = "Sex indicator; 1 = female, 0 = male.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened, not retained (Liu 2024 Results, Impact of the PK covariates). Supplementary Table 1 reports 153 of 317 female (48.2%); the Results narrative instead says 'approximately half of them were women (56.5%)'. The two disagree and the count-backed 48.2% is used in this model's population metadata -- see the vignette Errata."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, not retained (Liu 2024 Results, Impact of the PK covariates). Supplementary Table 1 reports 153 of 317 female (48.2%); the Results narrative instead says 'approximately half of them were women (56.5%)'. The two disagree and the count-backed 48.2% is used in this model's population metadata -- see the vignette Errata."
     ),
     CRCL = list(
       description = "Creatinine clearance (Cockcroft-Gault).",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened as a renal-function marker, not retained. Pooled median 96.2 mL/min, range 48.8-199 (Supplementary Table 1); 94 subjects (29.6%) had mild and 1 (0.4%) moderate renal impairment."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened as a renal-function marker, not retained. Pooled median 96.2 mL/min, range 48.8-199 (Supplementary Table 1); 94 subjects (29.6%) had mild and 1 (0.4%) moderate renal impairment."
     ),
     ALB = list(
       description = "Serum albumin at baseline.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened, not retained. Pooled median 41.2 g/L, range 23.0-52.6 (Supplementary Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened, not retained. Pooled median 41.2 g/L, range 23.0-52.6 (Supplementary Table 1)."
     ),
     ALT = list(
       description = "Alanine aminotransferase at baseline.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker, not retained. Pooled median 24.1 U/L, range 2.00-127 (Supplementary Table 1); 41 subjects (13%) had mild hepatic impairment."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker, not retained. Pooled median 24.1 U/L, range 2.00-127 (Supplementary Table 1); 41 subjects (13%) had mild hepatic impairment."
     ),
     ALP = list(
       description = "Alkaline phosphatase at baseline.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker, not retained. Pooled median 109 U/L, range 46.0-493 (Supplementary Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker, not retained. Pooled median 109 U/L, range 46.0-493 (Supplementary Table 1)."
     ),
     TBIL = list(
       description = "Total bilirubin at baseline.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker, not retained. Supplementary Table 1 prints median 68 umol/L (range 35.0-110), which is not a credible bilirubin distribution for a cohort described as 87% hepatically normal and looks like a row misalignment in that table -- see the vignette Errata. The screening outcome is unaffected because the covariate was dropped."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker, not retained. Supplementary Table 1 prints median 68 umol/L (range 35.0-110), which is not a credible bilirubin distribution for a cohort described as 87% hepatically normal and looks like a row misalignment in that table -- see the vignette Errata. The screening outcome is unaffected because the covariate was dropped."
     ),
     SCR = list(
       description = "Serum creatinine at baseline.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened, not retained. Supplementary Table 1 prints median 163 umol/L (range 139-190), which contradicts the same table's creatinine clearance of 96.2 mL/min and its 65% normal-renal-function count; treated as a misaligned row -- see the vignette Errata."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened, not retained. Supplementary Table 1 prints median 163 umol/L (range 139-190), which contradicts the same table's creatinine clearance of 96.2 mL/min and its 65% normal-renal-function count; treated as a misaligned row -- see the vignette Errata."
     ),
     CONMED_ANY = list(
       description = "Any concomitant medication present at baseline.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as an extrinsic factor, not retained (Liu 2024 Methods lists 'co-administration values' among the prespecified covariates). Supplementary Table 1: present in 215 subjects (55.6%), including metformin in 46 (13.6%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as an extrinsic factor, not retained (Liu 2024 Methods lists 'co-administration values' among the prespecified covariates). Supplementary Table 1: present in 215 subjects (55.6%), including metformin in 46 (13.6%)."
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "SAF-189s", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "SAF-189s", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "SAF-189s", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 317L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 317L,
+    n_studies = 2L,
     n_observations = "3,173 measurable plasma concentrations retained of 3,538 acquired (89.68%); 329 pre-dose BQL, 6 pre-dose non-BQL, 30 post-dose BQL samples and 6 subjects with no samples were excluded",
-    age_range      = "18.0-84.0 years (pooled; mean 51.6, median 53). Healthy volunteers median 27 (18.0-45.0); SAF001 phase I median 51 (28.0-68.0); SAF001 phase II median 54.1 (20.0-84.0)",
-    age_median     = "53 years",
-    weight_range   = "37.3-92.5 kg",
-    weight_median  = "63.2 kg",
+    age_range = "18.0-84.0 years (pooled; mean 51.6, median 53). Healthy volunteers median 27 (18.0-45.0); SAF001 phase I median 51 (28.0-68.0); SAF001 phase II median 54.1 (20.0-84.0)",
+    age_median = "53 years",
+    weight_range = "37.3-92.5 kg",
+    weight_median = "63.2 kg",
     sex_female_pct = 48.2,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "ALK-positive or ROS1-positive advanced non-small cell lung cancer (190 ALK+ only, 103 ROS1+ only), plus 24 healthy volunteers; 136 of 317 (43%) had brain metastases at enrolment and 221 (69.8%) were disease stage IV",
-    dose_range     = "SAF-189s 20, 40, 80, 120, 160 or 210 mg orally once daily in 21-day cycles (SAF001, with a single-dose 3-day PK run-in); a single 160 mg oral dose in each of two crossover periods (STL31147, fed and fasted)",
-    regions        = "China",
+    disease_state = "ALK-positive or ROS1-positive advanced non-small cell lung cancer (190 ALK+ only, 103 ROS1+ only), plus 24 healthy volunteers; 136 of 317 (43%) had brain metastases at enrolment and 221 (69.8%) were disease stage IV",
+    dose_range = "SAF-189s 20, 40, 80, 120, 160 or 210 mg orally once daily in 21-day cycles (SAF001, with a single-dose 3-day PK run-in); a single 160 mg oral dose in each of two crossover periods (STL31147, fed and fasted)",
+    regions = "China",
     renal_function = "207 normal (65.2%), 94 mild (29.6%), 1 moderate (0.4%), 15 with eGFR >= 130 (4.8%)",
     hepatic_function = "276 normal (87%), 41 mild dysfunction (13%); no moderate or severe",
-    notes          = paste0(
+    notes = paste0(
       "Baseline characteristics from Liu 2024 Supplementary document 1, ",
       "Supplementary Table 1 (a separate publisher file, Table1.docx). ",
       "Sex is reported inconsistently: the count-backed Supplementary ",

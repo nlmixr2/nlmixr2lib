@@ -54,27 +54,38 @@
 #' 2025;11:102. \doi{10.1038/s41540-025-00585-z}
 #'
 #' @export
-Poels_2025_elranatamab_qsp_events <- function(dose_time,
-                                              dose_mg,
-                                              obs_time,
-                                              mw = 148500,
-                                              id = 1L,
-                                              cytokine_reset = TRUE,
-                                              obs_cmt = "central") {
+Poels_2025_elranatamab_qsp_events <- function(
+  dose_time,
+  dose_mg,
+  obs_time,
+  mw = 148500,
+  id = 1L,
+  cytokine_reset = TRUE,
+  obs_cmt = "central"
+) {
   stopifnot(
-    is.numeric(dose_time), length(dose_time) > 0L, !anyNA(dose_time),
-    is.numeric(dose_mg), !anyNA(dose_mg), all(dose_mg > 0),
-    is.numeric(obs_time), length(obs_time) > 0L, !anyNA(obs_time),
-    is.numeric(mw), length(mw) == 1L, mw > 0,
-    is.logical(cytokine_reset), length(cytokine_reset) == 1L,
-    is.character(obs_cmt), length(obs_cmt) == 1L
+    is.numeric(dose_time),
+    length(dose_time) > 0L,
+    !anyNA(dose_time),
+    is.numeric(dose_mg),
+    !anyNA(dose_mg),
+    all(dose_mg > 0),
+    is.numeric(obs_time),
+    length(obs_time) > 0L,
+    !anyNA(obs_time),
+    is.numeric(mw),
+    length(mw) == 1L,
+    mw > 0,
+    is.logical(cytokine_reset),
+    length(cytokine_reset) == 1L,
+    is.character(obs_cmt),
+    length(obs_cmt) == 1L
   )
   if (length(dose_mg) == 1L) {
     dose_mg <- rep(dose_mg, length(dose_time))
   }
   if (length(dose_mg) != length(dose_time)) {
-    stop("`dose_mg` must be length 1 or the same length as `dose_time`.",
-         call. = FALSE)
+    stop("`dose_mg` must be length 1 or the same length as `dose_time`.", call. = FALSE)
   }
   if (is.unsorted(dose_time, strictly = TRUE)) {
     stop("`dose_time` must be strictly increasing.", call. = FALSE)

@@ -9,34 +9,34 @@ Rekic_2011_atazanavir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "atazanavir", units = "mg", specimen = "plasma", verified = FALSE),
-    effect  = list(analyte = "bilirubin", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "bilirubin", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed allometric covariate centred at the population median of 70 kg (Rekic 2011 Methods Eq. 1). Used to scale CL/F with a fixed exponent of 0.75 and V/F with a fixed exponent of 1.",
-      source_name        = "BW"
+      notes = "Time-fixed allometric covariate centred at the population median of 70 kg (Rekic 2011 Methods Eq. 1). Used to scale CL/F with a fixed exponent of 0.75 and V/F with a fixed exponent of 1.",
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 82L,
-    n_studies     = 1L,
+    species = "human",
+    n_subjects = 82L,
+    n_studies = 1L,
     n_observations = "200 atazanavir steady-state plasma samples and 361 bilirubin observations (Rekic 2011 Methods 'The Data').",
-    age_range     = "adults (specific age distribution not tabulated in the paper)",
-    weight_range  = "median body weight 70 kg (Rekic 2011 Methods, reference body weight for the allometric scaling); individual weight range not tabulated in the paper",
+    age_range = "adults (specific age distribution not tabulated in the paper)",
+    weight_range = "median body weight 70 kg (Rekic 2011 Methods, reference body weight for the allometric scaling); individual weight range not tabulated in the paper",
     sex_female_pct = NA_real_,
     disease_state = "Antiretroviral-naive HIV-1-seropositive adults with normal baseline bilirubin (< 20 umol/L) starting atazanavir/ritonavir-based combination antiretroviral therapy in the NORTHIV trial.",
-    dose_range    = "300 mg atazanavir + 100 mg ritonavir orally once daily; nucleoside reverse transcriptase inhibitor backbone allowed to vary per Swedish national guidelines, with a few protocol-permitted dose adjustments for clinical practice.",
-    regions       = "Sweden and Norway (NORTHIV trial; multicentre, ICH-GCP, declaration of Helsinki).",
-    notes         = "Atazanavir plasma sampling at trial weeks 4, 12, 48, 96, and 144; bilirubin measured at baseline and at the matching atazanavir time points. Baseline bilirubin mean (+/- SD) was 7.8 (+/- 3.3) umol/L; new steady-state bilirubin reached 34 (+/- 18.6) umol/L on therapy."
+    dose_range = "300 mg atazanavir + 100 mg ritonavir orally once daily; nucleoside reverse transcriptase inhibitor backbone allowed to vary per Swedish national guidelines, with a few protocol-permitted dose adjustments for clinical practice.",
+    regions = "Sweden and Norway (NORTHIV trial; multicentre, ICH-GCP, declaration of Helsinki).",
+    notes = "Atazanavir plasma sampling at trial weeks 4, 12, 48, 96, and 144; bilirubin measured at baseline and at the matching atazanavir time points. Baseline bilirubin mean (+/- SD) was 7.8 (+/- 3.3) umol/L; new steady-state bilirubin reached 34 (+/- 18.6) umol/L on therapy."
   )
 
   ini({

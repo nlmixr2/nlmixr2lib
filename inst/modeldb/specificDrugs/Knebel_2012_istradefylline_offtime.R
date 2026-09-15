@@ -63,75 +63,75 @@ Knebel_2012_istradefylline_offtime <- function() {
   paper_specific_etas <- c("etae0", "etaemax_dppr", "etaemax_drug")
 
   units <- list(
-    time          = "day",
-    dosing        = "(none; istradefylline exposure enters as the AUC_ISTRA covariate in ng*hr/mL, not as dosing events)",
+    time = "day",
+    dosing = "(none; istradefylline exposure enters as the AUC_ISTRA covariate in ng*hr/mL, not as dosing events)",
     concentration = "(percent of awake time spent in the OFF state; observation pctofftime)"
   )
 
   covariateData <- list(
     AUC_ISTRA = list(
-      description        = "Individual predicted istradefylline area under the plasma concentration-time curve at steady state over one dosing interval (24 h; istradefylline is dosed once daily).",
-      units              = "ng*hr/mL",
-      type               = "continuous",
+      description = "Individual predicted istradefylline area under the plasma concentration-time curve at steady state over one dosing interval (24 h; istradefylline is dosed once daily).",
+      units = "ng*hr/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input; time-fixed per subject. Set to 0 for placebo-treated subjects, which reduces the model to the DP-PR component alone. In the source paper this column is the individual empirical-Bayes predicted AUCss from the companion istradefylline population PK model (a 2-compartment model with first-order absorption; Knebel 2012 reference 6), not an observed AUC. That PK model is not currently in nlmixr2lib, so AUC_ISTRA must be supplied by the user. Anchors reported in Knebel 2012 for the dose-to-exposure mapping: a median exposure of 1690 ng*hr/mL corresponds to a 5 mg/d dose (Discussion), and approximately 2500 ng*hr/mL is the approximate median exposure at 10 mg/d (Results, Figure 2); the per-dose distribution is shown graphically in Figure 4, bottom panel. Smoking decreases AUCss by 38 percent and CYP3A4 inhibitors increase it by 35 percent (Discussion), effects that live in the PK model rather than in this PD model.",
-      source_name        = "AUC"
+      notes = "Required input; time-fixed per subject. Set to 0 for placebo-treated subjects, which reduces the model to the DP-PR component alone. In the source paper this column is the individual empirical-Bayes predicted AUCss from the companion istradefylline population PK model (a 2-compartment model with first-order absorption; Knebel 2012 reference 6), not an observed AUC. That PK model is not currently in nlmixr2lib, so AUC_ISTRA must be supplied by the user. Anchors reported in Knebel 2012 for the dose-to-exposure mapping: a median exposure of 1690 ng*hr/mL corresponds to a 5 mg/d dose (Discussion), and approximately 2500 ng*hr/mL is the approximate median exposure at 10 mg/d (Results, Figure 2); the per-dose distribution is shown graphically in Figure 4, bottom panel. Smoking decreases AUCss by 38 percent and CYP3A4 inhibitors increase it by 35 percent (Discussion), effects that live in the PK model rather than in this PD model.",
+      source_name = "AUC"
     ),
     SCORE_UPDRS_II = list(
-      description        = "Unified Parkinson's Disease Rating Scale (UPDRS) subscale 2 score (activities of daily living).",
-      units              = "(UPDRS subscale 2 units, score 0-52)",
-      type               = "continuous",
+      description = "Unified Parkinson's Disease Rating Scale (UPDRS) subscale 2 score (activities of daily living).",
+      units = "(UPDRS subscale 2 units, score 0-52)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Enters E0, EmaxP and EmaxI as the normalised power term (SCORE_UPDRS_II / 17)^exponent; 17 is the cohort median (Knebel 2012 Table I: mean 17.6, median 17, range 1-40). The Knebel 2012 Table II row labels write the normaliser as 'UPDS/17'.",
-      source_name        = "UPDS"
+      notes = "Time-fixed per subject. Enters E0, EmaxP and EmaxI as the normalised power term (SCORE_UPDRS_II / 17)^exponent; 17 is the cohort median (Knebel 2012 Table I: mean 17.6, median 17, range 1-40). The Knebel 2012 Table II row labels write the normaliser as 'UPDS/17'.",
+      source_name = "UPDS"
     ),
     T_MOTORCOMPL = list(
-      description        = "Time since the onset of levodopa-related motor response complications.",
-      units              = "year",
-      type               = "continuous",
+      description = "Time since the onset of levodopa-related motor response complications.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Enters E0, EmaxP and EmaxI as the normalised power term (T_MOTORCOMPL / 2.8)^exponent; 2.8 is the rounded cohort median (Knebel 2012 Table I: mean 3.74, median 2.76, range 0.04-29.9 years). Knebel 2012 retained this covariate in preference to time since diagnosis of Parkinson disease (TPD) and time since start of levodopa therapy (LYRS), which were collinear with it (pairwise correlation at least 0.64) and gave similar estimates but a higher objective function; TPD and LYRS are recorded in covariatesDataExcluded.",
-      source_name        = "TOMC"
+      notes = "Time-fixed per subject. Enters E0, EmaxP and EmaxI as the normalised power term (T_MOTORCOMPL / 2.8)^exponent; 2.8 is the rounded cohort median (Knebel 2012 Table I: mean 3.74, median 2.76, range 0.04-29.9 years). Knebel 2012 retained this covariate in preference to time since diagnosis of Parkinson disease (TPD) and time since start of levodopa therapy (LYRS), which were collinear with it (pairwise correlation at least 0.64) and gave similar estimates but a higher objective function; TPD and LYRS are recorded in covariatesDataExcluded.",
+      source_name = "TOMC"
     ),
     OFFTIME_BL = list(
-      description        = "Baseline daily OFF time, i.e. the absolute number of awake hours per day spent in the OFF state before treatment.",
-      units              = "hr",
-      type               = "continuous",
+      description = "Baseline daily OFF time, i.e. the absolute number of awake hours per day spent in the OFF state before treatment.",
+      units = "hr",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Enters EmaxP and EmaxI (but NOT E0) as the normalised power term (OFFTIME_BL / 6.3)^exponent; 6.3 is the cohort median (Knebel 2012 Table I: mean 6.39, median 6.3, range 0.25-17.8 hr). Distinct from the model's endpoint, which is the PERCENTAGE of awake time spent OFF rather than an absolute number of hours; the two are related through each subject's awake-time denominator, which Knebel 2012 does not report. Knebel 2012 Table II writes the normaliser as 'BOFF/6.3'.",
-      source_name        = "BOFF"
+      notes = "Time-fixed per subject. Enters EmaxP and EmaxI (but NOT E0) as the normalised power term (OFFTIME_BL / 6.3)^exponent; 6.3 is the cohort median (Knebel 2012 Table I: mean 6.39, median 6.3, range 0.25-17.8 hr). Distinct from the model's endpoint, which is the PERCENTAGE of awake time spent OFF rather than an absolute number of hours; the two are related through each subject's awake-time denominator, which Knebel 2012 does not report. Knebel 2012 Table II writes the normaliser as 'BOFF/6.3'.",
+      source_name = "BOFF"
     ),
     CONMED_DOPA_AGONIST = list(
-      description        = "Concomitant dopamine-agonist use. 1 = the subject is receiving a dopamine agonist; 0 = not.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant dopamine-agonist use. 1 = the subject is receiving a dopamine agonist; 0 = not.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant dopamine agonist).",
-      notes              = "Time-fixed per subject. Applied multiplicatively as e_conmed_dopa_agonist_<param>^CONMED_DOPA_AGONIST, so the level 0 carries a unit multiplier and the reported theta is the level-1 multiplier. The most prevalent concomitant medication in the cohort at 63 percent of patients (Knebel 2012 Results). Agents pooled under this indicator in Knebel 2012 Table III: ropinirole, pramipexole, pergolide, bromocriptine.",
-      source_name        = "DOPA"
+      notes = "Time-fixed per subject. Applied multiplicatively as e_conmed_dopa_agonist_<param>^CONMED_DOPA_AGONIST, so the level 0 carries a unit multiplier and the reported theta is the level-1 multiplier. The most prevalent concomitant medication in the cohort at 63 percent of patients (Knebel 2012 Results). Agents pooled under this indicator in Knebel 2012 Table III: ropinirole, pramipexole, pergolide, bromocriptine.",
+      source_name = "DOPA"
     ),
     CONMED_COMTI = list(
-      description        = "Concomitant catechol-O-methyl transferase (COMT) inhibitor use. 1 = the subject is receiving a COMT inhibitor; 0 = not.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant catechol-O-methyl transferase (COMT) inhibitor use. 1 = the subject is receiving a COMT inhibitor; 0 = not.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant COMT inhibitor).",
-      notes              = "Time-fixed per subject. Applied multiplicatively as e_conmed_comti_<param>^CONMED_COMTI. Present in 36 percent of the cohort (Knebel 2012 Results). Agents pooled under this indicator in Knebel 2012 Table III: entacapone, tolcapone. Knebel 2012 flags this effect as internally inconsistent -- the estimate increases EmaxI in istradefylline-treated patients while decreasing EmaxP in placebo-treated patients -- and both estimates carry wide bootstrap intervals; see the validation vignette's Assumptions and deviations section.",
-      source_name        = "COMT"
+      notes = "Time-fixed per subject. Applied multiplicatively as e_conmed_comti_<param>^CONMED_COMTI. Present in 36 percent of the cohort (Knebel 2012 Results). Agents pooled under this indicator in Knebel 2012 Table III: entacapone, tolcapone. Knebel 2012 flags this effect as internally inconsistent -- the estimate increases EmaxI in istradefylline-treated patients while decreasing EmaxP in placebo-treated patients -- and both estimates carry wide bootstrap intervals; see the validation vignette's Assumptions and deviations section.",
+      source_name = "COMT"
     ),
     CONMED_SELEGILINE = list(
-      description        = "Concomitant selegiline use. 1 = the subject is receiving selegiline; 0 = not.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant selegiline use. 1 = the subject is receiving selegiline; 0 = not.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant selegiline).",
-      notes              = "Time-fixed per subject. Applied multiplicatively as e_conmed_selegiline_<param>^CONMED_SELEGILINE. Present in 13 percent of the cohort (Knebel 2012 Results), the least prevalent of the four concomitant-medication indicators, and correspondingly the least precisely estimated (the EmaxP bootstrap interval runs from 8.60e-11 to 1.72).",
-      source_name        = "SELG"
+      notes = "Time-fixed per subject. Applied multiplicatively as e_conmed_selegiline_<param>^CONMED_SELEGILINE. Present in 13 percent of the cohort (Knebel 2012 Results), the least prevalent of the four concomitant-medication indicators, and correspondingly the least precisely estimated (the EmaxP bootstrap interval runs from 8.60e-11 to 1.72).",
+      source_name = "SELG"
     ),
     CONMED_AMANTADINE = list(
-      description        = "Concomitant amantadine use. 1 = the subject is receiving amantadine; 0 = not.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant amantadine use. 1 = the subject is receiving amantadine; 0 = not.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant amantadine).",
-      notes              = "Time-fixed per subject. Applied multiplicatively as e_conmed_amantadine_<param>^CONMED_AMANTADINE. Present in 26 percent of the cohort (Knebel 2012 Results).",
-      source_name        = "AMAT"
+      notes = "Time-fixed per subject. Applied multiplicatively as e_conmed_amantadine_<param>^CONMED_AMANTADINE. Present in 26 percent of the cohort (Knebel 2012 Results).",
+      source_name = "AMAT"
     )
   )
 
@@ -147,39 +147,39 @@ Knebel_2012_istradefylline_offtime <- function() {
   covariatesDataExcluded <- list(
     T_DIAG_PD = list(
       description = "Time since diagnosis of Parkinson disease.",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Knebel 2012 Table I: mean 9.17, median 8.32, range 0.09-36.8 years. Screened in a separate full covariate model but not retained; collinear with T_MOTORCOMPL and with time since start of levodopa therapy (pairwise correlation at least 0.64), and T_MOTORCOMPL gave the lower objective function. No point estimate is reported for its effect, so it cannot be encoded.",
+      units = "year",
+      type = "continuous",
+      notes = "Knebel 2012 Table I: mean 9.17, median 8.32, range 0.09-36.8 years. Screened in a separate full covariate model but not retained; collinear with T_MOTORCOMPL and with time since start of levodopa therapy (pairwise correlation at least 0.64), and T_MOTORCOMPL gave the lower objective function. No point estimate is reported for its effect, so it cannot be encoded.",
       source_name = "TPD"
     ),
     T_LEVODOPA = list(
       description = "Time since the start of levodopa therapy.",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Knebel 2012 Table I: mean 7.54, median 6.79, range 0.45-31.8 years. Screened in a separate full covariate model but not retained, for the same collinearity reason as T_DIAG_PD. No point estimate is reported.",
+      units = "year",
+      type = "continuous",
+      notes = "Knebel 2012 Table I: mean 7.54, median 6.79, range 0.45-31.8 years. Screened in a separate full covariate model but not retained, for the same collinearity reason as T_DIAG_PD. No point estimate is reported.",
       source_name = "LYRS"
     ),
     HY_STAGE = list(
       description = "Hoehn and Yahr stage of Parkinson disease severity.",
-      units       = "(stage, 1-5)",
-      type        = "categorical",
-      notes       = "Knebel 2012 Results reports the distribution only (missing 37 percent; stage 2 in 17 percent, stage 2.5 in 18 percent, stage 3 in 22 percent, stage 4 in 6 percent). Not listed among the covariates evaluated in Table III and never entered any reported model, so no effect estimate exists.",
+      units = "(stage, 1-5)",
+      type = "categorical",
+      notes = "Knebel 2012 Results reports the distribution only (missing 37 percent; stage 2 in 17 percent, stage 2.5 in 18 percent, stage 3 in 22 percent, stage 4 in 6 percent). Not listed among the covariates evaluated in Table III and never entered any reported model, so no effect estimate exists.",
       source_name = "HY"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1760L,
-    n_studies      = 6L,
-    age_range      = "not reported in Knebel 2012 (Table I tabulates only the five continuous covariates used in the PD analysis; study design and demographics are reported in the companion population PK paper, Knebel 2012 reference 6)",
-    weight_range   = "not reported in Knebel 2012",
+    species = "human",
+    n_subjects = 1760L,
+    n_studies = 6L,
+    age_range = "not reported in Knebel 2012 (Table I tabulates only the five continuous covariates used in the PD analysis; study design and demographics are reported in the companion population PK paper, Knebel 2012 reference 6)",
+    weight_range = "not reported in Knebel 2012",
     sex_female_pct = NA_real_,
     race_ethnicity = "not reported in Knebel 2012",
-    disease_state  = "Parkinson disease with levodopa-related motor response complications, on levodopa/carbidopa therapy. Baseline OFF time mean 6.39 hr/day (median 6.3, range 0.25-17.8); UPDRS subscale 2 (activities of daily living) score mean 17.6 (median 17, range 1-40); time since diagnosis of Parkinson disease mean 9.17 years; time since onset of motor complications mean 3.74 years; time since start of levodopa therapy mean 7.54 years (Knebel 2012 Table I). Hoehn and Yahr stage was missing for 37 percent of patients; among those recorded, stage 2 in 17 percent, 2.5 in 18 percent, 3 in 22 percent and 4 in 6 percent.",
-    dose_range     = "Istradefylline 5 to 60 mg once daily across the six phase 2/3 studies, plus placebo. Knebel 2012 additionally simulated an 80 mg/d dose by linear extrapolation from the 60 mg results.",
-    regions        = "not reported in Knebel 2012",
-    notes          = "Percentage OFF time database: 1760 patients contributing 9108 measurements, of whom 1181 received istradefylline and 579 received placebo (Knebel 2012 Results). Concomitant anti-Parkinson medications: dopamine agonists 63 percent, COMT inhibitors 36 percent, amantadine 26 percent, selegiline 13 percent. Approximately 90 percent of patients were receiving a concomitant dopaminergic therapy in addition to levodopa (Knebel 2012 Discussion). The safety/tolerability database is a slightly different, larger cohort (1198 istradefylline plus 591 placebo patients) and is described in the three companion adverse-event model files. Model fit in NONMEM VI level 1.1 with FOCE-INT; a full covariate model was estimated without stepwise hypothesis testing, and precision was assessed by a stratified nonparametric bootstrap of 1000 replicates."
+    disease_state = "Parkinson disease with levodopa-related motor response complications, on levodopa/carbidopa therapy. Baseline OFF time mean 6.39 hr/day (median 6.3, range 0.25-17.8); UPDRS subscale 2 (activities of daily living) score mean 17.6 (median 17, range 1-40); time since diagnosis of Parkinson disease mean 9.17 years; time since onset of motor complications mean 3.74 years; time since start of levodopa therapy mean 7.54 years (Knebel 2012 Table I). Hoehn and Yahr stage was missing for 37 percent of patients; among those recorded, stage 2 in 17 percent, 2.5 in 18 percent, 3 in 22 percent and 4 in 6 percent.",
+    dose_range = "Istradefylline 5 to 60 mg once daily across the six phase 2/3 studies, plus placebo. Knebel 2012 additionally simulated an 80 mg/d dose by linear extrapolation from the 60 mg results.",
+    regions = "not reported in Knebel 2012",
+    notes = "Percentage OFF time database: 1760 patients contributing 9108 measurements, of whom 1181 received istradefylline and 579 received placebo (Knebel 2012 Results). Concomitant anti-Parkinson medications: dopamine agonists 63 percent, COMT inhibitors 36 percent, amantadine 26 percent, selegiline 13 percent. Approximately 90 percent of patients were receiving a concomitant dopaminergic therapy in addition to levodopa (Knebel 2012 Discussion). The safety/tolerability database is a slightly different, larger cohort (1198 istradefylline plus 591 placebo patients) and is described in the three companion adverse-event model files. Model fit in NONMEM VI level 1.1 with FOCE-INT; a full covariate model was estimated without stepwise hypothesis testing, and precision was assessed by a stratified nonparametric bootstrap of 1000 replicates."
   )
 
   ini({

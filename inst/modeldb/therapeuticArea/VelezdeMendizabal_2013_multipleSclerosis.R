@@ -11,52 +11,52 @@ VelezdeMendizabal_2013_multipleSclerosis <- function() {
   )
   vignette <- "VelezdeMendizabal_2013_multipleSclerosis"
   units <- list(
-    time          = "month",
-    dosing        = "(none; corticosteroid effect enters as a binary per-record covariate)",
+    time = "month",
+    dosing = "(none; corticosteroid effect enters as a binary per-record covariate)",
     concentration = "(count of contrast-enhancing lesions per monthly MRI; unitless integer)"
   )
 
   covariateData <- list(
     PDV = list(
-      description        = "Observed CEL count at the previous monthly MRI; first-order Markov-state covariate for the negative-binomial count likelihood. Convention: PDV = 0 at the first monthly observation (no prior month) so the first-order Markov contribution is zero; for every subsequent observation, set PDV to the observed CEL count from the immediately preceding month.",
-      units              = "(count, non-negative integer)",
-      type               = "count",
+      description = "Observed CEL count at the previous monthly MRI; first-order Markov-state covariate for the negative-binomial count likelihood. Convention: PDV = 0 at the first monthly observation (no prior month) so the first-order Markov contribution is zero; for every subsequent observation, set PDV to the observed CEL count from the immediately preceding month.",
+      units = "(count, non-negative integer)",
+      type = "count",
       reference_category = NULL,
-      notes              = "Source column PDV (canonical name matches the paper's PDV). Per the Velez de Mendizabal 2013 Methods section vi (Negative Binomial Markov elements) and equation 5, PDV 'takes the value of the previous dependent variable'. Enters the model as a linear coefficient on theta_pdv (or, during corticosteroid-treated months, on theta_pdv_s); see model() block. Existing canonical entry from inst/references/covariate-columns.md; PDV was originally registered for the Schoemaker 2018 levetiracetam seizure-count model and is reused here for monthly MS CEL counts (the canonical concept -- a per-record Markov-feedback observed count -- generalises across count-likelihood Markov-feedback PD models).",
-      source_name        = "PDV"
+      notes = "Source column PDV (canonical name matches the paper's PDV). Per the Velez de Mendizabal 2013 Methods section vi (Negative Binomial Markov elements) and equation 5, PDV 'takes the value of the previous dependent variable'. Enters the model as a linear coefficient on theta_pdv (or, during corticosteroid-treated months, on theta_pdv_s); see model() block. Existing canonical entry from inst/references/covariate-columns.md; PDV was originally registered for the Schoemaker 2018 levetiracetam seizure-count model and is reused here for monthly MS CEL counts (the canonical concept -- a per-record Markov-feedback observed count -- generalises across count-likelihood Markov-feedback PD models).",
+      source_name = "PDV"
     ),
     PPDV = list(
-      description        = "Observed CEL count two monthly MRIs prior; second-order Markov-state covariate for the negative-binomial count likelihood. Convention: PPDV = 0 at the first two monthly observations (no second-prior month) so the second-order Markov contribution is zero; for every subsequent observation, set PPDV to the observed CEL count two months prior.",
-      units              = "(count, non-negative integer)",
-      type               = "count",
+      description = "Observed CEL count two monthly MRIs prior; second-order Markov-state covariate for the negative-binomial count likelihood. Convention: PPDV = 0 at the first two monthly observations (no second-prior month) so the second-order Markov contribution is zero; for every subsequent observation, set PPDV to the observed CEL count two months prior.",
+      units = "(count, non-negative integer)",
+      type = "count",
       reference_category = NULL,
-      notes              = "Source column PPDV (canonical name matches the paper's PPDV). New canonical entry registered alongside this model in inst/references/covariate-columns.md, parallel to the existing PDV entry; PPDV captures the second-order Markov state of the count likelihood. Enters the model as a linear coefficient on theta_ppdv (equation 5). Velez de Mendizabal 2013 observed a decreasing magnitude pattern theta_PDV > theta_PPDV > theta_PPPDV across the first, second, and third Markov orders (Table 1), with the third-order fit improvement no longer statistically significant; the final selected model includes the first and second orders only.",
-      source_name        = "PPDV"
+      notes = "Source column PPDV (canonical name matches the paper's PPDV). New canonical entry registered alongside this model in inst/references/covariate-columns.md, parallel to the existing PDV entry; PPDV captures the second-order Markov state of the count likelihood. Enters the model as a linear coefficient on theta_ppdv (equation 5). Velez de Mendizabal 2013 observed a decreasing magnitude pattern theta_PDV > theta_PPDV > theta_PPPDV across the first, second, and third Markov orders (Table 1), with the third-order fit improvement no longer statistically significant; the final selected model includes the first and second orders only.",
+      source_name = "PPDV"
     ),
     CONMED_STEROID = list(
-      description        = "Indicator for systemic corticosteroid administration in the current monthly record. In the Velez de Mendizabal 2013 cohort, six of the nine patients received corticosteroids (intravenous methylprednisolone 1 g/day for 3-5 days or oral prednisone taper) for the treatment of clinical relapses; the column is 1 in months in which such a course was administered and 0 otherwise.",
-      units              = "(binary, 0 / 1)",
-      type               = "binary",
+      description = "Indicator for systemic corticosteroid administration in the current monthly record. In the Velez de Mendizabal 2013 cohort, six of the nine patients received corticosteroids (intravenous methylprednisolone 1 g/day for 3-5 days or oral prednisone taper) for the treatment of clinical relapses; the column is 1 in months in which such a course was administered and 0 otherwise.",
+      units = "(binary, 0 / 1)",
+      type = "binary",
       reference_category = "0 (no corticosteroid administration this month)",
-      notes              = "Source column STEROID. Canonical name CONMED_STEROID from inst/references/covariate-columns.md. The existing CONMED_STEROID register entry describes a baseline / time-fixed corticosteroid-use indicator (Narwal 2013 / Zheng 2016 sifalimumab SLE / asthma cohorts where systemic steroids are standard of care at study entry); in Velez de Mendizabal 2013 the same canonical concept is used time-varying (per monthly MRI record, on / off depending on whether the patient received a relapse-treatment course that month). The register entry's description was generalised to cover both temporal grains alongside this extraction. Effect: switches the first-order Markov coefficient from theta_pdv (no corticosteroids, 0.447) to theta_pdv_s (with corticosteroids, 0.145) in equation 5 -- about a 67 percent reduction; the source authors interpret this as steroids contributing to the inflammatory resolution of persistent (older) CELs without affecting the appearance of newly active lesions in the same month. Source paper Table 3, RSE 32.06 percent for theta_PDV_S. The authors evaluated whether the effect carried over to the immediately following month and found no significant lag-1 carry-over; that extension is not encoded here.",
-      source_name        = "STEROID"
+      notes = "Source column STEROID. Canonical name CONMED_STEROID from inst/references/covariate-columns.md. The existing CONMED_STEROID register entry describes a baseline / time-fixed corticosteroid-use indicator (Narwal 2013 / Zheng 2016 sifalimumab SLE / asthma cohorts where systemic steroids are standard of care at study entry); in Velez de Mendizabal 2013 the same canonical concept is used time-varying (per monthly MRI record, on / off depending on whether the patient received a relapse-treatment course that month). The register entry's description was generalised to cover both temporal grains alongside this extraction. Effect: switches the first-order Markov coefficient from theta_pdv (no corticosteroids, 0.447) to theta_pdv_s (with corticosteroids, 0.145) in equation 5 -- about a 67 percent reduction; the source authors interpret this as steroids contributing to the inflammatory resolution of persistent (older) CELs without affecting the appearance of newly active lesions in the same month. Source paper Table 3, RSE 32.06 percent for theta_PDV_S. The authors evaluated whether the effect carried over to the immediately following month and found no significant lag-1 carry-over; that extension is not encoded here.",
+      source_name = "STEROID"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 9L,
-    n_studies      = 1L,
-    age_range      = "(adult MS cohort; specific age range not tabulated in the paper -- refer to Bagnato et al. 2003 reference [25] for the full demographic detail)",
-    age_median     = "(not reported in the Velez de Mendizabal 2013 publication)",
-    weight_range   = "(not reported)",
-    weight_median  = "(not reported)",
+    species = "human",
+    n_subjects = 9L,
+    n_studies = 1L,
+    age_range = "(adult MS cohort; specific age range not tabulated in the paper -- refer to Bagnato et al. 2003 reference [25] for the full demographic detail)",
+    age_median = "(not reported in the Velez de Mendizabal 2013 publication)",
+    weight_range = "(not reported)",
+    weight_median = "(not reported)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Relapsing-remitting multiple sclerosis. Patients were immunomodulator- and immunosuppressant-naive at enrollment except for intravenous methylprednisolone (1 g/day for 3-5 days) or oral prednisone taper for clinical relapses; required to have been steroid-free for at least one month at study entry. Six of the nine model-building patients received corticosteroids during the 48-month observation window for relapse treatment.",
-    dose_range     = "(no planned drug regimen; corticosteroids administered on a per-relapse basis only, encoded here as the binary CONMED_STEROID covariate)",
-    regions        = "United States (NIH Bethesda, MD)",
-    notes          = "Model-building cohort: n = 9 MS patients sequentially enrolled at the NIH Intramural Program (study approved by the Intramural Research Board of NINDS); patients underwent monthly 1.5 T T1-weighted post-contrast MRI for 48 months. The total CEL count per month was 'the sum of all the CELs that were enhancing at that month for the last time' (each CEL counted only once across the study; Methods, Patients and MRI Scans). External-validation cohort (Figure S1): n = 14 relapsing-remitting MS patients with monthly MRIs during a 6-month pre-therapy phase, none of whom received immunosuppressive therapy before the first scan; mean CEL count per patient per month 4.08 in the validation cohort vs 3.26 in the model-building cohort (Discussion). EDSS time-courses are shown alongside the CEL counts in Figure 1 but EDSS was not retained as a covariate in the final NB nested MAK2 model; the only retained covariate effect is the binary corticosteroid indicator on the first-order Markov term."
+    disease_state = "Relapsing-remitting multiple sclerosis. Patients were immunomodulator- and immunosuppressant-naive at enrollment except for intravenous methylprednisolone (1 g/day for 3-5 days) or oral prednisone taper for clinical relapses; required to have been steroid-free for at least one month at study entry. Six of the nine model-building patients received corticosteroids during the 48-month observation window for relapse treatment.",
+    dose_range = "(no planned drug regimen; corticosteroids administered on a per-relapse basis only, encoded here as the binary CONMED_STEROID covariate)",
+    regions = "United States (NIH Bethesda, MD)",
+    notes = "Model-building cohort: n = 9 MS patients sequentially enrolled at the NIH Intramural Program (study approved by the Intramural Research Board of NINDS); patients underwent monthly 1.5 T T1-weighted post-contrast MRI for 48 months. The total CEL count per month was 'the sum of all the CELs that were enhancing at that month for the last time' (each CEL counted only once across the study; Methods, Patients and MRI Scans). External-validation cohort (Figure S1): n = 14 relapsing-remitting MS patients with monthly MRIs during a 6-month pre-therapy phase, none of whom received immunosuppressive therapy before the first scan; mean CEL count per patient per month 4.08 in the validation cohort vs 3.26 in the model-building cohort (Discussion). EDSS time-courses are shown alongside the CEL counts in Figure 1 but EDSS was not retained as a covariate in the final NB nested MAK2 model; the only retained covariate effect is the binary corticosteroid indicator on the first-order Markov term."
   )
 
   ini({

@@ -13,67 +13,67 @@ CohenWolkowiez_2012_metronidazole <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; missing weights carried forward up to 7 days. Cohort median (range) 1.495 (0.678-3.850) kg. Reference 1.5 kg used in the linear weight scaling of CL and V (Cohen-Wolkowiez 2012 Table 4).",
-      source_name        = "WT"
+      notes = "Time-varying; missing weights carried forward up to 7 days. Cohort median (range) 1.495 (0.678-3.850) kg. Reference 1.5 kg used in the linear weight scaling of CL and V (Cohen-Wolkowiez 2012 Table 4).",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Cohort median (range) 32 (24-43) weeks PMA; converted to canonical months as PAGE = PMA_weeks / 4.35. Drives the CL maturation power term; reference is 32 weeks = 32/4.35 months. Reparameterised inside model() as (PAGE * 4.35 / 32)^theta_CL_PMA so the published 32-week reference is preserved.",
-      source_name        = "PMA"
+      notes = "Time-varying. Cohort median (range) 32 (24-43) weeks PMA; converted to canonical months as PAGE = PMA_weeks / 4.35. Drives the CL maturation power term; reference is 32 weeks = 32/4.35 months. Reparameterised inside model() as (PAGE * 4.35 / 32)^theta_CL_PMA so the published 32-week reference is preserved.",
+      source_name = "PMA"
     )
   )
 
   covariatesDataExcluded <- list(
     SCAV = list(
       description = "Indicator (0 = blood draw, 1 = scavenged sample) used in the publication's residual-error / bias structure",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Cohen-Wolkowiez 2012 Table 4 reports a multiplicative scavenged-sample bias factor theta_SCAV = 0.713 (95% CI 0.581-0.899) and an elevated proportional residual error for scavenged samples (29.0 vs 13.5 CV% for blood draws). These are sample-quality artifacts of the scavenged sampling design rather than structural drug PK; this model retains only the blood-draw residual error so that simulations represent the underlying drug concentration time-course without the 30% scavenged-sample underestimation. The omitted artifacts are reported verbatim in the vignette 'Assumptions and deviations' section."
+      units = "(binary)",
+      type = "binary",
+      notes = "Cohen-Wolkowiez 2012 Table 4 reports a multiplicative scavenged-sample bias factor theta_SCAV = 0.713 (95% CI 0.581-0.899) and an elevated proportional residual error for scavenged samples (29.0 vs 13.5 CV% for blood draws). These are sample-quality artifacts of the scavenged sampling design rather than structural drug PK; this model retains only the blood-draw residual error so that simulations represent the underlying drug concentration time-course without the 30% scavenged-sample underestimation. The omitted artifacts are reported verbatim in the vignette 'Assumptions and deviations' section."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Univariable analysis (Cohen-Wolkowiez 2012 Table 3) showed CL = theta_CL * (WT/1.5) * (0.5/SCR)^theta_CL_SCR reduced OFV by 14.3; however, in the multivariable analysis SCR did not improve goodness of fit beyond PMA and was excluded from the final model. The authors attribute the SCR-CL association to a single SCR=4.7 mg/dL outlier and to the strong PMA-SCR correlation in preterm infants."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Univariable analysis (Cohen-Wolkowiez 2012 Table 3) showed CL = theta_CL * (WT/1.5) * (0.5/SCR)^theta_CL_SCR reduced OFV by 14.3; however, in the multivariable analysis SCR did not improve goodness of fit beyond PMA and was excluded from the final model. The authors attribute the SCR-CL association to a single SCR=4.7 mg/dL outlier and to the strong PMA-SCR correlation in preterm infants."
     ),
     BGA = list(
       description = "Gestational age at birth",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = "Screened during covariate analysis. Effect on CL was captured indirectly through PMA (PMA = BGA + PNA/7), so BGA is not a retained covariate in the final model. Cohort median (range) 27 (22-32) weeks."
+      units = "weeks",
+      type = "continuous",
+      notes = "Screened during covariate analysis. Effect on CL was captured indirectly through PMA (PMA = BGA + PNA/7), so BGA is not a retained covariate in the final model. Cohort median (range) 27 (22-32) weeks."
     ),
     PNA = list(
       description = "Postnatal age",
-      units       = "days",
-      type        = "continuous",
-      notes       = "Univariable analysis (Cohen-Wolkowiez 2012 Table 3) showed CL = theta_CL * (WT/1.5) * (PNA/57)^theta_CL_PNA reduced OFV by 11.6, but PMA produced a larger OFV drop and was retained in the final model. Cohort median (range) 41 (0-97) days."
+      units = "days",
+      type = "continuous",
+      notes = "Univariable analysis (Cohen-Wolkowiez 2012 Table 3) showed CL = theta_CL * (WT/1.5) * (PNA/57)^theta_CL_PNA reduced OFV by 11.6, but PMA produced a larger OFV drop and was retained in the final model. Cohort median (range) 41 (0-97) days."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 32L,
-    n_studies        = 1L,
-    age_range        = "0-97 days postnatal; 22-32 weeks gestational age at birth; 24-43 weeks postmenstrual age",
-    age_median       = "PNA 41 days; PMA 32 weeks; BGA 27 weeks",
-    weight_range     = "678-3850 g",
-    weight_median    = "1495 g",
-    sex_female_pct   = 53,
-    race_ethnicity   = c(White = 50, Black_or_other = 50),
-    disease_state    = "Preterm infants (gestational age at birth <= 32 weeks; <120 days postnatal) receiving intravenous metronidazole as part of routine clinical care in the neonatal intensive care unit. Indications included anaerobic bacteremia, central nervous system infections, complicated intra-abdominal infections (e.g., necrotizing enterocolitis).",
-    dose_range       = "Intravenous metronidazole at the dose and frequency prescribed by routine clinical care; cohort median dose 8 mg/kg (range 4-15 mg/kg); median dosing interval 12 h (range 5.9-48 h).",
-    regions          = "United States (5 centers)",
-    renal_function   = "Serum creatinine median (range) 0.5 (0.1-4.7) mg/dL",
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "0-97 days postnatal; 22-32 weeks gestational age at birth; 24-43 weeks postmenstrual age",
+    age_median = "PNA 41 days; PMA 32 weeks; BGA 27 weeks",
+    weight_range = "678-3850 g",
+    weight_median = "1495 g",
+    sex_female_pct = 53,
+    race_ethnicity = c(White = 50, Black_or_other = 50),
+    disease_state = "Preterm infants (gestational age at birth <= 32 weeks; <120 days postnatal) receiving intravenous metronidazole as part of routine clinical care in the neonatal intensive care unit. Indications included anaerobic bacteremia, central nervous system infections, complicated intra-abdominal infections (e.g., necrotizing enterocolitis).",
+    dose_range = "Intravenous metronidazole at the dose and frequency prescribed by routine clinical care; cohort median dose 8 mg/kg (range 4-15 mg/kg); median dosing interval 12 h (range 5.9-48 h).",
+    regions = "United States (5 centers)",
+    renal_function = "Serum creatinine median (range) 0.5 (0.1-4.7) mg/dL",
     n_concentrations = 116L,
     n_concentrations_scavenged = 104L,
-    notes            = "5-center prospective open-label PK study (Antimicrobial PK in High-Risk Infants trial, Pediatric Pharmacology Research Unit). 116 plasma metronidazole concentrations were used; 104/116 (90%) were scavenged from discarded routine clinical specimens and 12 were timed blood draws. NONMEM 7 / FOCE-I with WINGS for NONMEM 7.03. Baseline demographics per Cohen-Wolkowiez 2012 Table 2; 16 (50%) White, 4 (9%) Hispanic."
+    notes = "5-center prospective open-label PK study (Antimicrobial PK in High-Risk Infants trial, Pediatric Pharmacology Research Unit). 116 plasma metronidazole concentrations were used; 104/116 (90%) were scavenged from discarded routine clinical specimens and 12 were timed blood draws. NONMEM 7 / FOCE-I with WINGS for NONMEM 7.03. Baseline demographics per Cohen-Wolkowiez 2012 Table 2; 16 (50%) White, 4 (9%) Hispanic."
   )
 
   ini({

@@ -9,66 +9,66 @@ Sathe_2024_sacituzumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central          = list(analyte = "SG", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "SG", units = "mg", specimen = "plasma", verified = FALSE),
-    central_sn38     = list(analyte = "SN-38", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "SG", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "SG", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sn38 = list(analyte = "SN-38", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_sn38 = list(analyte = "SN-38", units = "mg", specimen = "plasma", verified = FALSE),
-    central_tab      = list(analyte = "tAB", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1_tab  = list(analyte = "tAB", units = "mg", specimen = "plasma", verified = FALSE)
+    central_tab = list(analyte = "tAB", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_tab = list(analyte = "tAB", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight used for allometric scaling of CL/Q and V1/V2 of SG, free SN-38, and tAB; reference 70 kg.",
-      source_name        = "WT"
+      notes = "Baseline body weight used for allometric scaling of CL/Q and V1/V2 of SG, free SN-38, and tAB; reference 70 kg.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline serum albumin used as a power covariate on SG CL (exponent -0.355) and tAB CL (exponent -0.735); reference 38 g/L. Source paper uses 'BALB' (baseline albumin) for the column name; mapped to canonical ALB.",
-      source_name        = "BALB"
+      notes = "Baseline serum albumin used as a power covariate on SG CL (exponent -0.355) and tAB CL (exponent -0.735); reference 38 g/L. Source paper uses 'BALB' (baseline albumin) for the column name; mapped to canonical ALB.",
+      source_name = "BALB"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female)",
-      notes              = "Source paper analysis dataset uses SEXF directly. Effect applies on tAB V1 only: V1 is +12.1% in males (SEXF = 0) relative to females (the reference). Effect coded as `1 + e_sex_vc_tab * (1 - SEXF)` to match the source's male-deviation parameterization.",
-      source_name        = "SEXF"
+      notes = "Source paper analysis dataset uses SEXF directly. Effect applies on tAB V1 only: V1 is +12.1% in males (SEXF = 0) relative to females (the reference). Effect coded as `1 + e_sex_vc_tab * (1 - SEXF)` to match the source's male-deviation parameterization.",
+      source_name = "SEXF"
     ),
     TUMTP_OTHER = list(
-      description        = "Tumor-type indicator: 1 = 'Other' epithelial cancer (NSCLC, SCLC, colorectal, esophageal, pancreatic ductal adenocarcinoma, etc.); 0 = mTNBC, mUC, or HR+/HER2- mBC",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator: 1 = 'Other' epithelial cancer (NSCLC, SCLC, colorectal, esophageal, pancreatic ductal adenocarcinoma, etc.); 0 = mTNBC, mUC, or HR+/HER2- mBC",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (mTNBC, mUC, or HR+/HER2- mBC)",
-      notes              = "Effect on tAB CL only: -13.4% CL when TUMTP_OTHER = 1 (Sathe 2024 Table 3). Source column PAT2 takes integer levels (1 = mTNBC, 2 = mUC or HR+/HER2- mBC, 4 = Other) and the source NONMEM control stream collapses PAT2 = 1 and PAT2 = 2 into the reference (no effect). Composition of 'Other' in this analysis = small-cell lung cancer, non-small-cell lung cancer, colorectal cancer, esophageal cancer, pancreatic ductal adenocarcinoma, etc. (Sathe 2024 Methods 2.4 and Table S2). Scope is paper-specific: a different paper's 'Other' tumor pool is not interchangeable.",
-      source_name        = "PAT2 (recoded: 4 -> 1, 1/2 -> 0)"
+      notes = "Effect on tAB CL only: -13.4% CL when TUMTP_OTHER = 1 (Sathe 2024 Table 3). Source column PAT2 takes integer levels (1 = mTNBC, 2 = mUC or HR+/HER2- mBC, 4 = Other) and the source NONMEM control stream collapses PAT2 = 1 and PAT2 = 2 into the reference (no effect). Composition of 'Other' in this analysis = small-cell lung cancer, non-small-cell lung cancer, colorectal cancer, esophageal cancer, pancreatic ductal adenocarcinoma, etc. (Sathe 2024 Methods 2.4 and Table S2). Scope is paper-specific: a different paper's 'Other' tumor pool is not interchangeable.",
+      source_name = "PAT2 (recoded: 4 -> 1, 1/2 -> 0)"
     )
   )
 
   population <- list(
-    n_subjects     = 529,
-    n_studies      = 2,
-    age_range      = "27-88 years",
-    age_median     = "58 years",
-    weight_range   = "37-140 kg",
-    weight_median  = "70 kg",
+    n_subjects = 529,
+    n_studies = 2,
+    age_range = "27-88 years",
+    age_median = "58 years",
+    weight_range = "37-140 kg",
+    weight_median = "70 kg",
     sex_female_pct = 78,
     race_ethnicity = c(White = 84, Black_or_African_American = 7, Asian = 2, Other = 6),
-    disease_state  = "Metastatic triple-negative breast cancer (mTNBC, n = 277), metastatic urothelial cancer (mUC, n = 36), HR+/HER2- metastatic breast cancer (n = 32), and other solid tumors (n = 184; epithelial cancers including small-cell lung, non-small-cell lung, colorectal, esophageal, pancreatic ductal adenocarcinoma, etc.).",
-    dose_range     = "Phase I/II (IMMU-132-01): 8, 10, 12, or 18 mg/kg IV on days 1 and 8 of 21-day cycles. Phase III (ASCENT): 10 mg/kg IV on days 1 and 8 of 21-day cycles.",
-    regions        = "Multinational pooled analysis (IMMU-132-01 + ASCENT)",
-    studies        = "IMMU-132-01 (NCT01631552, n = 276 of which mTNBC = 24, mUC = 36, HR+/HER2- mBC = 32, other = 184) and ASCENT (NCT02574455, n = 253; all mTNBC).",
+    disease_state = "Metastatic triple-negative breast cancer (mTNBC, n = 277), metastatic urothelial cancer (mUC, n = 36), HR+/HER2- metastatic breast cancer (n = 32), and other solid tumors (n = 184; epithelial cancers including small-cell lung, non-small-cell lung, colorectal, esophageal, pancreatic ductal adenocarcinoma, etc.).",
+    dose_range = "Phase I/II (IMMU-132-01): 8, 10, 12, or 18 mg/kg IV on days 1 and 8 of 21-day cycles. Phase III (ASCENT): 10 mg/kg IV on days 1 and 8 of 21-day cycles.",
+    regions = "Multinational pooled analysis (IMMU-132-01 + ASCENT)",
+    studies = "IMMU-132-01 (NCT01631552, n = 276 of which mTNBC = 24, mUC = 36, HR+/HER2- mBC = 32, other = 184) and ASCENT (NCT02574455, n = 253; all mTNBC).",
     baseline_albumin_median = "38 g/L (range 19-50)",
-    baseline_clcr_median    = "91 mL/min (range 22-262); 51% normal (>= 90), 38% mild impairment (60 to < 90), 11% moderate impairment (30 to < 60), <1% severe impairment.",
-    notes          = "Sacituzumab govitecan is an ADC of an anti-Trop-2 humanized monoclonal antibody (hRS7) covalently linked to the topoisomerase 1 inhibitor SN-38 via a hydrolyzable linker (average drug-to-antibody ratio = 8). Per Sathe 2024 Methods 2.3, the tAB model was fit using the SG dose directly, then the 'true' tAB CL/V were obtained by multiplying the model estimates by 0.92 (mass ratio of naked antibody to SG). The CL/V values stored in this model are the model-fit estimates intended to be used with the SG dose, not the 0.92-scaled 'true' values. Demographics summary: Sathe 2024 Section 3.1 and Table S2.",
-    dosing_note    = "Each SG infusion event generates inputs to both the SG compartment and the tAB compartment. To simulate, provide TWO dose events per infusion: one with cmt = 'central' and one with cmt = 'central_tab', sharing the same amt, rate (or dur), time, and ii/addl. The vignette demonstrates this convention."
+    baseline_clcr_median = "91 mL/min (range 22-262); 51% normal (>= 90), 38% mild impairment (60 to < 90), 11% moderate impairment (30 to < 60), <1% severe impairment.",
+    notes = "Sacituzumab govitecan is an ADC of an anti-Trop-2 humanized monoclonal antibody (hRS7) covalently linked to the topoisomerase 1 inhibitor SN-38 via a hydrolyzable linker (average drug-to-antibody ratio = 8). Per Sathe 2024 Methods 2.3, the tAB model was fit using the SG dose directly, then the 'true' tAB CL/V were obtained by multiplying the model estimates by 0.92 (mass ratio of naked antibody to SG). The CL/V values stored in this model are the model-fit estimates intended to be used with the SG dose, not the 0.92-scaled 'true' values. Demographics summary: Sathe 2024 Section 3.1 and Table S2.",
+    dosing_note = "Each SG infusion event generates inputs to both the SG compartment and the tAB compartment. To simulate, provide TWO dose events per infusion: one with cmt = 'central' and one with cmt = 'central_tab', sharing the same amt, rate (or dur), time, and ii/addl. The vignette demonstrates this convention."
   )
 
   ini({

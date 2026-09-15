@@ -39,38 +39,38 @@ Sherwin_2012_risperidone <- function() {
     sep = " "
   )
   vignette <- "Sherwin_2012_risperidone"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "risperidone", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "risperidone", units = "mg", specimen = "plasma", verified = FALSE),
     central_9oh = list(analyte = "+/-)-9-hydroxyrisperidone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline in Sherwin 2012; cohort range 16.8-110 kg",
         "(mean 43, SD 20.2; Table 1). Reference 70 kg with fixed allometric",
         "exponents 0.75 on apparent CL/F and CLM/F and 1.0 on apparent Vd/F",
         "(Methods, Equation 3 and surrounding text)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CYP2D6_PM = list(
-      description        = "CYP2D6 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (intermediate or extensive metabolizer; both CYP2D6_PM and CYP2D6_EM = 0 indicates IM)",
-      notes              = paste(
+      notes = paste(
         "1 = subject is a CYP2D6 poor metabolizer, 0 otherwise. Paired with",
         "CYP2D6_EM to encode the three-level PM / IM / EM phenotype with two",
         "binary indicators on the SLCO1B1_HAP15_HET / SLCO1B1_HAP15_HOM",
@@ -83,54 +83,54 @@ Sherwin_2012_risperidone <- function() {
         "Sherwin 2012 cohort) the source paper inferred phenotype from the",
         "mixture-model posterior rather than fixing it from external data."
       ),
-      source_name        = "P1 (mixture-model PM subpopulation fraction); Table 1 'CYP2D6 phenotype' for genotyped subjects"
+      source_name = "P1 (mixture-model PM subpopulation fraction); Table 1 'CYP2D6 phenotype' for genotyped subjects"
     ),
     CYP2D6_EM = list(
-      description        = "CYP2D6 extensive-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 extensive-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (intermediate or poor metabolizer; both CYP2D6_PM and CYP2D6_EM = 0 indicates IM)",
-      notes              = paste(
+      notes = paste(
         "1 = subject is a CYP2D6 extensive metabolizer, 0 otherwise. Paired",
         "with CYP2D6_PM; IM is the implicit reference (both indicators = 0).",
         "In the Sherwin 2012 cohort the mixture-model assignment estimated",
         "37.2% PM, 15.9% IM, and 46.9% EM (Table 2 P1 and P2; IM proportion",
         "= 1 - P1 - P2)."
       ),
-      source_name        = "P2 (mixture-model EM subpopulation fraction); Table 1 'CYP2D6 phenotype' for genotyped subjects"
+      source_name = "P2 (mixture-model EM subpopulation fraction); Table 1 'CYP2D6 phenotype' for genotyped subjects"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 45L,
-    n_observations  = 497L,
-    n_studies       = 3L,
-    age_range       = "3-18.3 years (mean 9.6, SD 3.7; Table 1)",
-    age_median      = "9.6 years (mean +/- SD reported, not median)",
-    weight_range    = "16.8-110 kg (mean 43, SD 20.2; Table 1)",
-    weight_median   = "43 kg (mean +/- SD reported, not median)",
-    sex_female_pct  = 11.1,
-    race_ethnicity  = c(White = 93.3, `White + Black (mixed)` = 6.7),
-    ethnicity       = "100% non-Hispanic (Table 1)",
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 45L,
+    n_observations = 497L,
+    n_studies = 3L,
+    age_range = "3-18.3 years (mean 9.6, SD 3.7; Table 1)",
+    age_median = "9.6 years (mean +/- SD reported, not median)",
+    weight_range = "16.8-110 kg (mean 43, SD 20.2; Table 1)",
+    weight_median = "43 kg (mean +/- SD reported, not median)",
+    sex_female_pct = 11.1,
+    race_ethnicity = c(White = 93.3, `White + Black (mixed)` = 6.7),
+    ethnicity = "100% non-Hispanic (Table 1)",
+    disease_state = paste(
       "Neuropsychiatric disorders treated with stable maintenance oral",
       "risperidone; autistic disorder was the predominant diagnosis",
       "(Results)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Oral risperidone tablet (n = 34) or liquid (n = 6) at the patient's",
       "clinician-prescribed dose; total daily dose 0.25-6.00 mg (mean 2.0,",
       "SD 1.5); most subjects (n = 39) dosed twice daily (Results)."
     ),
-    regions         = "USA (Cincinnati OH, Columbus OH, Cleveland OH)",
+    regions = "USA (Cincinnati OH, Columbus OH, Cleveland OH)",
     cyp2d6_distribution = paste(
       "Mixture-model assignment in the final model: 37.2% PM, 15.9% IM,",
       "46.9% EM (Table 2 P1 and P2 with IM = 1 - P1 - P2). For the 28",
       "subjects with confirmed CYP2D6 genotype, the observed phenotype",
       "distribution was 15 EM, 6 IM, 7 PM (Table 1)."
     ),
-    notes           = paste(
+    notes = paste(
       "Steady-state oral risperidone after at least 4 weeks at the same",
       "dose; samples taken pre-dose, 1, 2, 4, and 7 hours post-dose",
       "(Materials and Methods). One outlier subject was removed from the",

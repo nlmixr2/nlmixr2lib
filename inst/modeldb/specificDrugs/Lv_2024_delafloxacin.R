@@ -10,8 +10,8 @@ Lv_2024_delafloxacin <- function() {
   )
   vignette <- "Lv_2024_delafloxacin"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -22,18 +22,18 @@ Lv_2024_delafloxacin <- function() {
   # model"), which declare COMP=(CENTRAL), COMP=(PERIPH1), COMP=(PERIPH2) with
   # S1 = V1, S2 = V2, S3 = V3 so every state is an amount in mg.
   compartmentData <- list(
-    central     = list(analyte = "delafloxacin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "delafloxacin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "delafloxacin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "delafloxacin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained by the stepwise covariate model (Lv 2024 Results",
         "'Delafloxacin PopPK modeling'). The Methods 'Covariate analysis' quote forward",
         "P < 0.05 and backward P < 0.01; the SCM configuration in the supplement uses",
@@ -50,25 +50,25 @@ Lv_2024_delafloxacin <- function() {
         "VM and KM carry no covariate. Cohort range 45.0-81.2 kg.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 58L,
-    n_studies      = 1L,
-    age_range      = "18-43 years",
-    age_median     = "28 years",
-    weight_range   = "45.0-81.2 kg",
-    weight_median  = "61.9 kg",
+    species = "human",
+    n_subjects = 58L,
+    n_studies = 1L,
+    age_range = "18-43 years",
+    age_median = "28 years",
+    weight_range = "45.0-81.2 kg",
+    weight_median = "61.9 kg",
     sex_female_pct = 46.6,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Healthy volunteers. Inclusion required men weighing >= 50 kg and women >= 45 kg, aged 18-75 years, in good overall health by medical history, physical examination, vital signs, 12-lead ECG and laboratory tests (Lv 2024 Methods 'Subjects'; exclusion criteria in the supplement). No subject had renal or hepatic impairment: median renal creatinine clearance 126 mL/min (range 85.0-173, Cockcroft-Gault) and median eGFR 135 mL/min/1.73 m^2 (range 85.7-215, modified MDRD for Chinese).",
+    disease_state = "Healthy volunteers. Inclusion required men weighing >= 50 kg and women >= 45 kg, aged 18-75 years, in good overall health by medical history, physical examination, vital signs, 12-lead ECG and laboratory tests (Lv 2024 Methods 'Subjects'; exclusion criteria in the supplement). No subject had renal or hepatic impairment: median renal creatinine clearance 126 mL/min (range 85.0-173, Cockcroft-Gault) and median eGFR 135 mL/min/1.73 m^2 (range 85.7-215, modified MDRD for Chinese).",
     renal_function = "Normal; the cohort contained no subjects with renal insufficiency, which is why renal function was not tested as a covariate on CL (Lv 2024 Discussion).",
-    dose_range     = "Single ascending intravenous doses of 150 mg (N = 12), 300 mg (N = 23) and 600 mg (N = 11), plus a multiple-dose arm of 300 mg q12h (N = 12) dosed on the evening of day 1, morning and evening of days 2-5 and the morning of day 6. Every dose was a 1-hour intravenous infusion. The 300 mg single-dose group additionally served a 2-period cross-over bioequivalence comparison against Baxdela.",
-    regions        = "China (Sir Run Run Hospital, Nanjing Medical University); trial registration CTR20213308.",
-    notes          = "Demographics from Lv 2024 Table 1 (main paper) and Table S1 (supplement). 60 subjects were enrolled; one 300 mg single-dose subject withdrew for concomitant medication and one 600 mg subject withdrew for a vasovagal reaction, leaving 58 subjects in the PK concentration set that the model was fit to. Below-quantification-limit records were fewer than 10% of observations and were discarded (M1 method); the assay LLOQ was 0.04 ug/mL."
+    dose_range = "Single ascending intravenous doses of 150 mg (N = 12), 300 mg (N = 23) and 600 mg (N = 11), plus a multiple-dose arm of 300 mg q12h (N = 12) dosed on the evening of day 1, morning and evening of days 2-5 and the morning of day 6. Every dose was a 1-hour intravenous infusion. The 300 mg single-dose group additionally served a 2-period cross-over bioequivalence comparison against Baxdela.",
+    regions = "China (Sir Run Run Hospital, Nanjing Medical University); trial registration CTR20213308.",
+    notes = "Demographics from Lv 2024 Table 1 (main paper) and Table S1 (supplement). 60 subjects were enrolled; one 300 mg single-dose subject withdrew for concomitant medication and one 600 mg subject withdrew for a vasovagal reaction, leaving 58 subjects in the PK concentration set that the model was fit to. Below-quantification-limit records were fewer than 10% of observations and were discarded (M1 method); the assay LLOQ was 0.04 ug/mL."
   )
 
   ini({

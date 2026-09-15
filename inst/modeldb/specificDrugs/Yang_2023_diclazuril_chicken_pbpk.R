@@ -1,48 +1,48 @@
 Yang_2023_diclazuril_chicken_pbpk <- function() {
   description <- "PBPK (whole-body, flow-limited; broiler chicken). Nine-compartment physiologically based pharmacokinetic model for the anticoccidial diclazuril in broiler chickens after continuous oral exposure via medicated feed or drinking water, comprising intestinal contents (absorption site), liver, kidney, lumped skin + fat, muscle, a lumped rest-of-body compartment, lung, arterial plasma and venous plasma; all tissues are perfusion (flow) limited with tissue:plasma partition coefficients, absorption from the gut lumen is first order (Ka) in competition with first-order fecal loss of unabsorbed drug (Kgut), and elimination is hepatic (Clhe) plus fecal excretion. Built to predict edible-tissue residues and withdrawal periods against Chinese and European maximum residue limits (Yang 2023)."
-  reference   <- "Yang F, Zhang M, Jin Y-G, Chen J-C, Duan M-H, Liu Y, Li Z-E, Li X-P, Yang F. Development and Application of a Physiologically Based Pharmacokinetic Model for Diclazuril in Broiler Chickens. Animals (Basel). 2023;13(9):1512. doi:10.3390/ani13091512"
-  vignette    <- "Yang_2023_diclazuril"
-  units       <- list(time = "h", dosing = "ug", concentration = "ug/L")
+  reference <- "Yang F, Zhang M, Jin Y-G, Chen J-C, Duan M-H, Liu Y, Li Z-E, Li X-P, Yang F. Development and Application of a Physiologically Based Pharmacokinetic Model for Diclazuril in Broiler Chickens. Animals (Basel). 2023;13(9):1512. doi:10.3390/ani13091512"
+  vignette <- "Yang_2023_diclazuril"
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    a_gut    = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
-    liver    = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
-    kidney   = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
+    a_gut = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
+    liver = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
+    kidney = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
     skin_fat = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
-    muscle   = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
-    other    = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
-    lung     = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
+    muscle = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
+    other = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
+    lung = list(analyte = "diclazuril", units = "ug", specimen = "tissue", verified = FALSE),
     arterial = list(analyte = "diclazuril", units = "ug", specimen = "bile", verified = FALSE),
-    venous   = list(analyte = "diclazuril", units = "ug", specimen = "bile", verified = FALSE)
+    venous = list(analyte = "diclazuril", units = "ug", specimen = "bile", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Scales every compartment volume (Vxx = Vcxx * WT) and cardiac output (Qtot = CO * WT), and converts the hepatic clearance from L/h/kg to L/h (CLhe = Clhe * WT). Yang 2023 held body weight constant over the whole treatment and simulation period because breed-specific growth data were unavailable (Yang 2023 Section 2.3 and Table 3 footnote 1); the supplementary acslX code sets `constant bw = 1.5`, with 1.34 kg and 1.52 kg used for the two Wen/He datasets. Per-study values are 1.52 kg (refs [1,19]), 1.34 kg (ref [20]), 1.5 kg (ref [22]) and 1.23 kg (ref [21]) (Yang 2023 Table 1).",
-      source_name        = "BW"
+      notes = "Scales every compartment volume (Vxx = Vcxx * WT) and cardiac output (Qtot = CO * WT), and converts the hepatic clearance from L/h/kg to L/h (CLhe = Clhe * WT). Yang 2023 held body weight constant over the whole treatment and simulation period because breed-specific growth data were unavailable (Yang 2023 Section 2.3 and Table 3 footnote 1); the supplementary acslX code sets `constant bw = 1.5`, with 1.34 kg and 1.52 kg used for the two Wen/He datasets. Per-study values are 1.52 kg (refs [1,19]), 1.34 kg (ref [20]), 1.5 kg (ref [22]) and 1.23 kg (ref [21]) (Yang 2023 Table 1).",
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "broiler chicken (Gallus gallus domesticus; Lingnan Yellow Chicken and Ross 308 broilers)",
-    n_subjects     = NA_integer_,
-    n_studies      = 4L,
-    age_range      = "15-50 days (15, 21, 30 and 50 days across the four contributing studies; Yang 2023 Table 1)",
-    weight_range   = "1.23-1.52 kg (study mean body weights; Yang 2023 Table 1)",
+    species = "broiler chicken (Gallus gallus domesticus; Lingnan Yellow Chicken and Ross 308 broilers)",
+    n_subjects = NA_integer_,
+    n_studies = 4L,
+    age_range = "15-50 days (15, 21, 30 and 50 days across the four contributing studies; Yang 2023 Table 1)",
+    weight_range = "1.23-1.52 kg (study mean body weights; Yang 2023 Table 1)",
     sex_female_pct = NA_real_,
-    disease_state  = "Healthy (coccidiosis-free) broilers; diclazuril given prophylactically",
-    dose_range     = "Single oral gavage 80 ug/kg BW or 1 mg/kg BW; medicated feed 730 ug/kg or 1 mg/kg; medicated water 0.5-1 mg/L (recommended) or 3 mg/L (validation study), for 7-10 consecutive days (Yang 2023 Table 1 and Section 2.6)",
-    regions        = "China (Lingnan Yellow Chicken studies) and Europe (Ross 308 study, Mortier et al.)",
+    disease_state = "Healthy (coccidiosis-free) broilers; diclazuril given prophylactically",
+    dose_range = "Single oral gavage 80 ug/kg BW or 1 mg/kg BW; medicated feed 730 ug/kg or 1 mg/kg; medicated water 0.5-1 mg/L (recommended) or 3 mg/L (validation study), for 7-10 consecutive days (Yang 2023 Table 1 and Section 2.6)",
+    regions = "China (Lingnan Yellow Chicken studies) and Europe (Ross 308 study, Mortier et al.)",
     n_observations = NA_integer_,
-    notes          = "Model built by digitising / tabulating published plasma and tissue concentration-time data from five datasets in four source studies (Yang 2023 Table 1): three sets for parameter optimisation (refs [1,19] single 1 mg/kg BW gavage plus 7-day medicated feed at 1 mg/kg; ref [21] single 80 ug/kg BW gavage) and two for external validation (ref [20] medicated water 3 mg/L for 9 days; ref [22] medicated feed 730 ug/kg for 10 days). Physiological parameters are population means for broilers from the Wang et al. 2020 review (Yang 2023 ref [24]); no individual-level data were fitted, so the model carries no inter-individual random effects. Yang 2023 propagated parameter uncertainty instead through a 1000-iteration Monte Carlo analysis over the normal distributions in Yang 2023 Table 4. Light regime governs daily exposure duration because chickens stop eating and drinking in the dark: 12/12 h (refs [1,19,20]), 21/3 h (ref [22]) and 18/6 h (ref [21]). Daily intake was assumed to be 1.1 kg feed and 0.5 L water per bird, evenly spread over the light hours (Yang 2023 Section 2.2)."
+    notes = "Model built by digitising / tabulating published plasma and tissue concentration-time data from five datasets in four source studies (Yang 2023 Table 1): three sets for parameter optimisation (refs [1,19] single 1 mg/kg BW gavage plus 7-day medicated feed at 1 mg/kg; ref [21] single 80 ug/kg BW gavage) and two for external validation (ref [20] medicated water 3 mg/L for 9 days; ref [22] medicated feed 730 ug/kg for 10 days). Physiological parameters are population means for broilers from the Wang et al. 2020 review (Yang 2023 ref [24]); no individual-level data were fitted, so the model carries no inter-individual random effects. Yang 2023 propagated parameter uncertainty instead through a 1000-iteration Monte Carlo analysis over the normal distributions in Yang 2023 Table 4. Light regime governs daily exposure duration because chickens stop eating and drinking in the dark: 12/12 h (refs [1,19,20]), 21/3 h (ref [22]) and 18/6 h (ref [21]). Daily intake was assumed to be 1.1 kg feed and 0.5 L water per bird, evenly spread over the light hours (Yang 2023 Section 2.2)."
   )
 
   ini({

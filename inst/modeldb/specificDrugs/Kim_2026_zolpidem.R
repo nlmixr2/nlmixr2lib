@@ -28,7 +28,7 @@ Kim_2026_zolpidem <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   compartmentData <- list(
-    depot   = list(analyte = "zolpidem", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "zolpidem", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "zolpidem", units = "mg", specimen = "plasma", verified = TRUE)
   )
 

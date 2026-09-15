@@ -12,19 +12,19 @@ Boone_2025_vinylchloride_pbpk <- function() {
   vignette <- "Boone_2025_vinylchloride"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L",
-    amount        = "mg",
-    weight        = "kg"
+    amount = "mg",
+    weight = "kg"
   )
 
   covariateData <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "The Berkeley Madonna listing hard-codes BW = 70.0 kg (cited to Clewell et al. 2000)",
         "and every published simulation in the paper uses that reference adult. Carried here as",
         "a covariate so the model can be re-scaled: all seven tissue volumes are linear in body",
@@ -38,31 +38,31 @@ Boone_2025_vinylchloride_pbpk <- function() {
   )
 
   compartmentData <- list(
-    a_venous             = list(analyte = "Vinyl chloride", units = "mg", specimen = "whole blood", verified = TRUE),
-    a_rapidly_perfused   = list(analyte = "Vinyl chloride", units = "mg", specimen = "tissue",       verified = TRUE),
-    a_slowly_perfused    = list(analyte = "Vinyl chloride", units = "mg", specimen = "tissue",       verified = TRUE),
-    a_fat                = list(analyte = "Vinyl chloride", units = "mg", specimen = "tissue",       verified = TRUE),
-    a_liver              = list(analyte = "Vinyl chloride", units = "mg", specimen = "tissue",       verified = TRUE),
-    a_kidney             = list(analyte = "Vinyl chloride", units = "mg", specimen = "tissue",       verified = TRUE),
-    a_skin               = list(analyte = "Vinyl chloride", units = "mg", specimen = "tissue",       verified = TRUE),
-    a_metabolized        = list(analyte = "Vinyl chloride", units = "mg", specimen = "not applicable",     verified = TRUE),
-    a_inhaled            = list(analyte = "Vinyl chloride", units = "mg", specimen = "not applicable",         verified = TRUE),
-    a_exhaled            = list(analyte = "Vinyl chloride", units = "mg", specimen = "not applicable",         verified = TRUE),
-    a_oral               = list(analyte = "Vinyl chloride", units = "mg", specimen = "not applicable",        verified = TRUE),
-    a_dermal_absorbed    = list(analyte = "Vinyl chloride", units = "mg", specimen = "not applicable",   verified = TRUE),
-    a_dermal_eliminated  = list(analyte = "Vinyl chloride", units = "mg", specimen = "not applicable",  verified = TRUE)
+    a_venous = list(analyte = "Vinyl chloride", units = "mg", specimen = "whole blood", verified = TRUE),
+    a_rapidly_perfused = list(analyte = "Vinyl chloride", units = "mg", specimen = "tissue", verified = TRUE),
+    a_slowly_perfused = list(analyte = "Vinyl chloride", units = "mg", specimen = "tissue", verified = TRUE),
+    a_fat = list(analyte = "Vinyl chloride", units = "mg", specimen = "tissue", verified = TRUE),
+    a_liver = list(analyte = "Vinyl chloride", units = "mg", specimen = "tissue", verified = TRUE),
+    a_kidney = list(analyte = "Vinyl chloride", units = "mg", specimen = "tissue", verified = TRUE),
+    a_skin = list(analyte = "Vinyl chloride", units = "mg", specimen = "tissue", verified = TRUE),
+    a_metabolized = list(analyte = "Vinyl chloride", units = "mg", specimen = "not applicable", verified = TRUE),
+    a_inhaled = list(analyte = "Vinyl chloride", units = "mg", specimen = "not applicable", verified = TRUE),
+    a_exhaled = list(analyte = "Vinyl chloride", units = "mg", specimen = "not applicable", verified = TRUE),
+    a_oral = list(analyte = "Vinyl chloride", units = "mg", specimen = "not applicable", verified = TRUE),
+    a_dermal_absorbed = list(analyte = "Vinyl chloride", units = "mg", specimen = "not applicable", verified = TRUE),
+    a_dermal_eliminated = list(analyte = "Vinyl chloride", units = "mg", specimen = "not applicable", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 0L,
-    n_studies      = 0L,
-    age_range      = "adult (single 70 kg reference adult; no age term in the model)",
-    weight_range   = "70 kg (Berkeley Madonna listing, BW = 70.0, cited to Clewell et al. 2000)",
+    species = "human",
+    n_subjects = 0L,
+    n_studies = 0L,
+    age_range = "adult (single 70 kg reference adult; no age term in the model)",
+    weight_range = "70 kg (Berkeley Madonna listing, BW = 70.0, cited to Clewell et al. 2000)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "healthy reference adult",
-    dose_range     = paste(
+    disease_state = "healthy reference adult",
+    dose_range = paste(
       "Inhalation only in the published simulations. Acute Exposure Guideline Level (AEGL)",
       "air concentrations of 70-12,000 ppm over 10 min to 8 h (Table 4 / Table S5), and",
       "measured Paulsboro air concentrations of 0.19-1649.2 ppm simulated as 24 h exposures",
@@ -70,8 +70,8 @@ Boone_2025_vinylchloride_pbpk <- function() {
       "are switched off in every published simulation (pdose = 0, Cliq = 0, skin_time = 0).",
       sep = " "
     ),
-    regions        = "United States (ATSDR / CDC; case study in Paulsboro, New Jersey)",
-    notes          = paste(
+    regions = "United States (ATSDR / CDC; case study in Paulsboro, New Jersey)",
+    notes = paste(
       "This is a forward EXPOSURE-RECONSTRUCTION simulation, not a fit, so n_subjects = 0.",
       "ATSDR recoded the published Clewell et al. vinyl-chloride PBPK model into a generic",
       "volatile-organic-compound structure on the Berkeley Madonna platform; the paper states",

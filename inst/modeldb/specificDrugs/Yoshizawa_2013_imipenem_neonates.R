@@ -30,7 +30,7 @@ Yoshizawa_2013_imipenem_neonates <- function() {
     sep = " "
   )
   vignette <- "Zhang_2025_imipenem_model_review"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = FALSE because the primary publication is
@@ -41,11 +41,11 @@ Yoshizawa_2013_imipenem_neonates <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Body weight is not a screened-and-retained covariate in this model;",
         "it is a structural normalisation. Zhang 2025 Table 2 reports every",
         "disposition parameter for this cohort per kilogram -- CLr in",
@@ -60,27 +60,27 @@ Yoshizawa_2013_imipenem_neonates <- function() {
         "no covariate effect beyond this normalisation can be reconstructed.",
         "Cohort mean weight 2.93 +/- 0.7 kg (Zhang 2025 Table 1)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 60L,
-    n_studies        = 1L,
-    age_mean         = "0.0288 +/- 0.0227 years (mean +/- SD), i.e. about 10.5 +/- 8.3 days",
-    weight_mean      = "2.93 +/- 0.7 kg (mean +/- SD)",
-    sex_female_pct   = 50.0,
-    race_ethnicity   = NULL,
-    disease_state    = "Neonates receiving imipenem-cilastatin",
-    dose_range       = paste(
+    species = "human",
+    n_subjects = 60L,
+    n_studies = 1L,
+    age_mean = "0.0288 +/- 0.0227 years (mean +/- SD), i.e. about 10.5 +/- 8.3 days",
+    weight_mean = "2.93 +/- 0.7 kg (mean +/- SD)",
+    sex_female_pct = 50.0,
+    race_ethnicity = NULL,
+    disease_state = "Neonates receiving imipenem-cilastatin",
+    dose_range = paste(
       "10.0-37.3 mg/kg imipenem intravenously (Zhang 2025 Supplementary",
       "Table S1). Neither the dosing interval nor the infusion duration is",
       "reported by the review."
     ),
-    regions          = "Japan",
+    regions = "Japan",
     n_concentrations = 443L,
-    notes            = paste(
+    notes = paste(
       "Retrospective study (Zhang 2025 Table 1, study 3). The neonatal",
       "cohort contributed 335 blood and 108 urinary samples (443 total);",
       "sex split 30 male / 30 female. Sampling times and assay method are",

@@ -1,38 +1,58 @@
 Almquist_2016_ticagrelor <- function() {
   description <- "Preclinical (mouse, C57Bl/6 male). Mechanistic interaction PK model for ticagrelor, its active metabolite (TAM, AR-C124910XX), and the ticagrelor-neutralising Fab antibody fragment MEDI2452 in mouse (Almquist 2016). Three-compartment disposition for ticagrelor and TAM (shared plasma V, tissue V1, V2; V1 in instantaneous equilibrium with V); MEDI2452 lives in plasma V only and reversibly binds the free fractions of ticagrelor and TAM with rate kon and dissociation constant Kd; both free MEDI2452 and the two MEDI2452-drug complexes are eliminated together at the Fab clearance Cl_f (no recycling). Naive-pooled fit (no IIV); multiplicative log-normal residual error on five plasma assays."
-  reference   <- "Almquist J, Penney M, Pehrsson S, Sandinge AS, Janefeldt A, Maqbool S, Madalli S, Goodman J, Nylander S, Gennemark P. Unraveling the Pharmacokinetic Interaction of Ticagrelor and MEDI2452 (Ticagrelor Antidote) by Mathematical Modeling. CPT Pharmacometrics Syst Pharmacol. 2016;5(6):313-323. doi:10.1002/psp4.12089"
-  vignette    <- "Almquist_2016_ticagrelor"
-  units       <- list(time = "min", dosing = "nmol/kg", concentration = "nmol/L")
+  reference <- "Almquist J, Penney M, Pehrsson S, Sandinge AS, Janefeldt A, Maqbool S, Madalli S, Goodman J, Nylander S, Gennemark P. Unraveling the Pharmacokinetic Interaction of Ticagrelor and MEDI2452 (Ticagrelor Antidote) by Mathematical Modeling. CPT Pharmacometrics Syst Pharmacol. 2016;5(6):313-323. doi:10.1002/psp4.12089"
+  vignette <- "Almquist_2016_ticagrelor"
+  units <- list(time = "min", dosing = "nmol/kg", concentration = "nmol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central         = list(analyte = "ticagrelor", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "ticagrelor", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral2     = list(analyte = "ticagrelor", units = NA_character_, specimen = "plasma", verified = FALSE),
-    central_tam     = list(analyte = "TAM (AR-C124910XX)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1_tam = list(analyte = "TAM (AR-C124910XX)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral2_tam = list(analyte = "TAM (AR-C124910XX)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    target          = list(analyte = "MEDI2452", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    complex         = list(analyte = "ticagrelor and MEDI2452 complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    complex_tam     = list(analyte = "TAM (AR-C124910XX) and MEDI2452 complex", units = NA_character_, specimen = "plasma", verified = FALSE)
+    central = list(analyte = "ticagrelor", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ticagrelor", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "ticagrelor", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_tam = list(analyte = "TAM (AR-C124910XX)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1_tam = list(
+      analyte = "TAM (AR-C124910XX)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral2_tam = list(
+      analyte = "TAM (AR-C124910XX)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    target = list(analyte = "MEDI2452", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    complex = list(
+      analyte = "ticagrelor and MEDI2452 complex",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    complex_tam = list(
+      analyte = "TAM (AR-C124910XX) and MEDI2452 complex",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (C57Bl/6 male)",
-    n_subjects     = "Four validation/refinement studies in non-fasted male C57Bl/6 mice (Charles River, Sulzfeld, Germany; body weight 15-25 g); per-study group sizes summarised in Figure 1 and Supplementary Text S1.",
-    n_studies      = 4,
-    age_range      = "not reported",
-    weight_range   = "15-25 g",
+    species = "mouse (C57Bl/6 male)",
+    n_subjects = "Four validation/refinement studies in non-fasted male C57Bl/6 mice (Charles River, Sulzfeld, Germany; body weight 15-25 g); per-study group sizes summarised in Figure 1 and Supplementary Text S1.",
+    n_studies = 4,
+    age_range = "not reported",
+    weight_range = "15-25 g",
     sex_female_pct = 0,
-    disease_state  = "Healthy mice (preclinical antidote pharmacology); also includes a Sprague-Dawley rat MEDI2452 pre-study (1000 mg/kg IV bolus) used to seed the allometrically scaled MEDI2452 parameters before re-estimation in mouse.",
-    dose_range     = "Ticagrelor: IV infusion 240 ug/min/kg for 5 min then 30 ug/min/kg for 15 min (steady-state design used in studies 1-4); ticagrelor pre-study IV bolus 2000 ug/kg. MEDI2452: IV bolus 25-300 mg/kg (study 4 dose range).",
-    regions        = "Preclinical (AstraZeneca R&D Molndal, Sweden; MedImmune, Cambridge, UK)",
-    notes          = "Naive-pooled estimation in MATLAB (fminsearch) with maximum-likelihood multiplicative log-normal residual error; bootstrapping (N = 300) for parameter uncertainty. Final parameter values from Table 1 'Estimated value' column (refined model)."
+    disease_state = "Healthy mice (preclinical antidote pharmacology); also includes a Sprague-Dawley rat MEDI2452 pre-study (1000 mg/kg IV bolus) used to seed the allometrically scaled MEDI2452 parameters before re-estimation in mouse.",
+    dose_range = "Ticagrelor: IV infusion 240 ug/min/kg for 5 min then 30 ug/min/kg for 15 min (steady-state design used in studies 1-4); ticagrelor pre-study IV bolus 2000 ug/kg. MEDI2452: IV bolus 25-300 mg/kg (study 4 dose range).",
+    regions = "Preclinical (AstraZeneca R&D Molndal, Sweden; MedImmune, Cambridge, UK)",
+    notes = "Naive-pooled estimation in MATLAB (fminsearch) with maximum-likelihood multiplicative log-normal residual error; bootstrapping (N = 300) for parameter uncertainty. Final parameter values from Table 1 'Estimated value' column (refined model)."
   )
 
   ini({

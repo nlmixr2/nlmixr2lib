@@ -19,34 +19,34 @@ Patel_2025_radamts13_count_ldh <- function() {
   paper_specific_etas <- c("etab1")
 
   units <- list(
-    time          = "n/a (the count is accumulated over a whole prophylaxis period, roughly 6 months; the model has no time argument and no ODE states)",
-    dosing        = "n/a (no drug-dosing events; the drug input is the CAV data covariate, in IU/mL)",
+    time = "n/a (the count is accumulated over a whole prophylaxis period, roughly 6 months; the model has no time argument and no ODE states)",
+    dosing = "n/a (no drug-dosing events; the drug input is the CAV data covariate, in IU/mL)",
     concentration = "IU/mL (the CAV covariate; 1 IU/mL = 100% of normal plasma ADAMTS13 activity)"
   )
 
   covariateData <- list(
     CAV = list(
-      description        = "Mean average plasma ADAMTS13 activity over a dosing interval for the patient in the prophylaxis period being scored (IU/mL).",
-      units              = "IU/mL",
-      type               = "continuous",
+      description = "Mean average plasma ADAMTS13 activity over a dosing interval for the patient in the prophylaxis period being scored (IU/mL).",
+      units = "IU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. One value per patient per prophylaxis period, not a time-varying column: the paper derives a Cave after each dose in each patient from the companion PopPK model's individual post hoc parameters, then averages those within Period 1 and within Period 2 (paper Methods, 'Exposure-response count modeling'). 1 IU/mL = 100% of normal ADAMTS13 activity. Enters this model log-linearly on the untransformed IU/mL scale, so the fitted slope of -5.12 is per IU/mL: across the observed Cave range of roughly 0.015-0.43 IU/mL it multiplies the expected count by between 0.93 and 0.11. The companion PopPK model modellib('Patel_2025_radamts13') returns Cc in IU/L, so a solve of that model must be divided by 1000 before it is used here; the validation vignette does this explicitly.",
-      source_name        = "Cave"
+      notes = "Required input. One value per patient per prophylaxis period, not a time-varying column: the paper derives a Cave after each dose in each patient from the companion PopPK model's individual post hoc parameters, then averages those within Period 1 and within Period 2 (paper Methods, 'Exposure-response count modeling'). 1 IU/mL = 100% of normal ADAMTS13 activity. Enters this model log-linearly on the untransformed IU/mL scale, so the fitted slope of -5.12 is per IU/mL: across the observed Cave range of roughly 0.015-0.43 IU/mL it multiplies the expected count by between 0.93 and 0.11. The companion PopPK model modellib('Patel_2025_radamts13') returns Cc in IU/L, so a solve of that model must be divided by 1000 before it is used here; the validation vignette does this explicitly.",
+      source_name = "Cave"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41L,
-    n_studies      = 1L,
-    age_range      = "All ages (the all-ages final model, as for the thrombocytopenia count model).",
-    weight_range   = "Not reported separately for the 41-patient exposure-response set; the parent PK analysis set spans 18.3-130.0 kg (Table 2).",
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
+    age_range = "All ages (the all-ages final model, as for the thrombocytopenia count model).",
+    weight_range = "Not reported separately for the 41-patient exposure-response set; the parent PK analysis set spans 18.3-130.0 kg (Table 2).",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported separately for the 41-patient exposure-response set.",
-    disease_state  = "Congenital thrombotic thrombocytopenic purpura (cTTP). Endpoint: elevated LDH, defined as LDH raised to more than 1.5 times the baseline value or more than 1.5 times the upper limit of normal, used as a marker of microangiopathic hemolytic anemia (paper Methods, 'Exposure-response analyses').",
-    dose_range     = "rADAMTS13 40 IU/kg IV Q1W or Q2W; PBT approximately 10 IU/kg IV.",
-    regions        = "Multinational phase III crossover study NCT03393975.",
-    notes          = "Same 41-patient cohort, periods and exposure metric as modellib('Patel_2025_radamts13_count_thrombocytopenia'); only the endpoint and the retained drug-effect form differ. Baseline LDH in the parent PK analysis set was a median of 178 U/L (range 106-1,030) (Table 2)."
+    disease_state = "Congenital thrombotic thrombocytopenic purpura (cTTP). Endpoint: elevated LDH, defined as LDH raised to more than 1.5 times the baseline value or more than 1.5 times the upper limit of normal, used as a marker of microangiopathic hemolytic anemia (paper Methods, 'Exposure-response analyses').",
+    dose_range = "rADAMTS13 40 IU/kg IV Q1W or Q2W; PBT approximately 10 IU/kg IV.",
+    regions = "Multinational phase III crossover study NCT03393975.",
+    notes = "Same 41-patient cohort, periods and exposure metric as modellib('Patel_2025_radamts13_count_thrombocytopenia'); only the endpoint and the retained drug-effect form differ. Baseline LDH in the parent PK analysis set was a median of 178 U/L (range 106-1,030) (Table 2)."
   )
 
   ini({

@@ -7,7 +7,13 @@ LopezArguello_2023_doripenem_qsp <- function() {
   # Mechanistic per-cell molecule counts: six penicillin-binding proteins plus the
   # periplasmic drug pool. None map onto a canonical PK compartment name.
   paper_specific_compartments <- c(
-    "npbp1a", "npbp1b", "npbp2", "npbp3", "npbp4", "npbp56", "nperi"
+    "npbp1a",
+    "npbp1b",
+    "npbp2",
+    "npbp3",
+    "npbp4",
+    "npbp56",
+    "nperi"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -17,11 +23,11 @@ LopezArguello_2023_doripenem_qsp <- function() {
   compartmentData <- list(
     npbp1a = list(analyte = "doripenem", units = NA_character_, specimen = "administration site", verified = FALSE),
     npbp1b = list(analyte = "doripenem", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp2  = list(analyte = "doripenem", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp3  = list(analyte = "doripenem", units = NA_character_, specimen = "administration site", verified = FALSE),
-    npbp4  = list(analyte = "doripenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    npbp2 = list(analyte = "doripenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    npbp3 = list(analyte = "doripenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    npbp4 = list(analyte = "doripenem", units = NA_character_, specimen = "administration site", verified = FALSE),
     npbp56 = list(analyte = "doripenem", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nperi  = list(analyte = "doripenem", units = NA_character_, specimen = "administration site", verified = FALSE)
+    nperi = list(analyte = "doripenem", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(

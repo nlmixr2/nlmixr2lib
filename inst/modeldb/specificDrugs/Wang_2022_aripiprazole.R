@@ -28,79 +28,79 @@ Wang_2022_aripiprazole <- function() {
   # biological matrix. verified = TRUE means checked against the source paper
   # (Wang 2022 Table 1 and Results, "Base Model Development").
   compartmentData <- list(
-    depot       = list(analyte = "aripiprazole", units = "mg", specimen = "administration site",   verified = TRUE),
-    depot2      = list(analyte = "aripiprazole", units = "mg", specimen = "administration site",   verified = TRUE),
-    central     = list(analyte = "aripiprazole", units = "mg", specimen = "plasma",                               verified = TRUE),
-    peripheral1 = list(analyte = "aripiprazole", units = "mg", specimen = "not applicable",                       verified = TRUE),
-    peripheral2 = list(analyte = "aripiprazole", units = "mg", specimen = "not applicable",                       verified = TRUE)
+    depot = list(analyte = "aripiprazole", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "aripiprazole", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "aripiprazole", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "aripiprazole", units = "mg", specimen = "not applicable", verified = TRUE),
+    peripheral2 = list(analyte = "aripiprazole", units = "mg", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     BMI = list(
-      description        = "Body mass index.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input for AOM (intramuscular) dosing; enters the AOM absorption rate constant as a power function normalised to 28 kg/m^2 (Wang 2022 Table 1 footnote, 'Related equations': AOM Ka = 0.000904 * (BMI/28)^-0.975 * (1 + 0.346 * Male)). The exponent is negative, so the AOM absorption rate constant falls and the AOM absorption half-life lengthens as BMI increases. Observed BMI range in the popPK analysis population was 15 to 61 kg/m^2 (Wang 2022 Discussion). BMI was not retained on any disposition parameter, and the paper reports that the model-predicted steady-state exposures showed no trend with BMI across that range. Time-fixed per subject in this encoding.",
-      source_name        = "BMI"
+      notes = "Required input for AOM (intramuscular) dosing; enters the AOM absorption rate constant as a power function normalised to 28 kg/m^2 (Wang 2022 Table 1 footnote, 'Related equations': AOM Ka = 0.000904 * (BMI/28)^-0.975 * (1 + 0.346 * Male)). The exponent is negative, so the AOM absorption rate constant falls and the AOM absorption half-life lengthens as BMI increases. Observed BMI range in the popPK analysis population was 15 to 61 kg/m^2 (Wang 2022 Discussion). BMI was not retained on any disposition parameter, and the paper reports that the model-predicted steady-state exposures showed no trend with BMI across that range. Time-fixed per subject in this encoding.",
+      source_name = "BMI"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female) -- see notes; the source parameterises the shift on men",
-      notes              = "The source paper's covariate equation is written on a male indicator: AOM Ka = 0.000904 * (BMI/28)^-0.975 * (1 + 0.346 * Male) (Wang 2022 Table 1 footnote). The canonical column is SEXF (1 = female), so the effect is applied here as (1 + e_sexf_ka_im * (1 - SEXF)), i.e. women carry the reference AOM absorption rate constant and men are 34.6% faster. This reproduces the paper's own reported AOM absorption half-lives at BMI 28 kg/m^2 exactly: 0.693/0.000904 = 766.6 h = 31.9 days for women (paper: about 32 days) and 0.693/(0.000904 * 1.346) = 569.7 h = 23.7 days for men (paper: about 24 days). Same (1 - SEXF) inversion idiom as Sathe_2024_sacituzumab.R, Kuchimanchi_2024_dostarlimab.R and Zufferey_2018_fondaparinux.R. Sex was screened on oral Ka, CL/F and Vc/F and was not retained on any of them.",
-      source_name        = "Male"
+      notes = "The source paper's covariate equation is written on a male indicator: AOM Ka = 0.000904 * (BMI/28)^-0.975 * (1 + 0.346 * Male) (Wang 2022 Table 1 footnote). The canonical column is SEXF (1 = female), so the effect is applied here as (1 + e_sexf_ka_im * (1 - SEXF)), i.e. women carry the reference AOM absorption rate constant and men are 34.6% faster. This reproduces the paper's own reported AOM absorption half-lives at BMI 28 kg/m^2 exactly: 0.693/0.000904 = 766.6 h = 31.9 days for women (paper: about 32 days) and 0.693/(0.000904 * 1.346) = 569.7 h = 23.7 days for men (paper: about 24 days). Same (1 - SEXF) inversion idiom as Sathe_2024_sacituzumab.R, Kuchimanchi_2024_dostarlimab.R and Zufferey_2018_fondaparinux.R. Sex was screened on oral Ka, CL/F and Vc/F and was not retained on any of them.",
+      source_name = "Male"
     ),
     CYP2D6_PM = list(
-      description        = "CYP2D6 poor-metabolizer phenotype indicator, 1 = poor metabolizer, 0 = extensive metabolizer.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 poor-metabolizer phenotype indicator, 1 = poor metabolizer, 0 = extensive metabolizer.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2D6 extensive metabolizer)",
-      notes              = "Selects between the two separately estimated apparent oral clearances, CL/F = 3.71 L/h for extensive metabolizers and 1.88 L/h for poor metabolizers (Wang 2022 Table 1; Table 1 footnote equation CL/F = (3.71 * EM + 1.88 * PM) * (1 - 0.511 * CYP2D6) * (1 - 0.237 * CYP3A4)). Only two phenotype levels appear in the source model, so the companion CYP2D6_EM / CYP2D6_IM / CYP2D6_UM indicators are not needed: EM is simply CYP2D6_PM = 0. In the source analysis, phenotype was measured for part of the cohort and imputed for the remainder with a NONMEM mixture model that assigned the most probable status assuming 90% extensive metabolizers in the general population (Wang 2022 Methods, 'Population Pharmacokinetic Model Development'); the mixture step is an estimation device for subjects with unknown status and is not part of the final structural model, so this extraction carries the phenotype as an ordinary observed covariate. Of the 663 subjects in the model development data set, 621 were classified extensive and 42 poor metabolizers (Wang 2022 Results, 'Model Simulations'). Time-fixed per subject (germline genotype-derived phenotype).",
-      source_name        = "PM / EM"
+      notes = "Selects between the two separately estimated apparent oral clearances, CL/F = 3.71 L/h for extensive metabolizers and 1.88 L/h for poor metabolizers (Wang 2022 Table 1; Table 1 footnote equation CL/F = (3.71 * EM + 1.88 * PM) * (1 - 0.511 * CYP2D6) * (1 - 0.237 * CYP3A4)). Only two phenotype levels appear in the source model, so the companion CYP2D6_EM / CYP2D6_IM / CYP2D6_UM indicators are not needed: EM is simply CYP2D6_PM = 0. In the source analysis, phenotype was measured for part of the cohort and imputed for the remainder with a NONMEM mixture model that assigned the most probable status assuming 90% extensive metabolizers in the general population (Wang 2022 Methods, 'Population Pharmacokinetic Model Development'); the mixture step is an estimation device for subjects with unknown status and is not part of the final structural model, so this extraction carries the phenotype as an ordinary observed covariate. Of the 663 subjects in the model development data set, 621 were classified extensive and 42 poor metabolizers (Wang 2022 Results, 'Model Simulations'). Time-fixed per subject (germline genotype-derived phenotype).",
+      source_name = "PM / EM"
     ),
     CONMED_CYP2D6_INH = list(
-      description        = "Concomitant CYP2D6 inhibitor coadministration indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP2D6 inhibitor coadministration indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant CYP2D6 inhibitor)",
-      notes              = "Multiplies apparent oral clearance by (1 - 0.511), i.e. a 51.1% reduction, matching the paper's statement that CL/F in the presence of strong CYP2D6 inhibitors is approximately half that of CYP2D6 extensive metabolizers (Wang 2022 Abstract and Table 1). The = 1 category is populated exclusively by the STRONG CYP2D6 inhibitors administered in the dedicated phase 1 drug-interaction studies (Wang 2022 Discussion: 'phase 1 trials designed to evaluate the effect of CYP2D6 and CYP3A4 inhibitors'); the paper does not name the individual agents, so the strength tier of the pooled category is 'strong only' and no weaker inhibitors contribute. The class-level canonical is used rather than a hypothetical CONMED_CYP2D6_INH_STRONG because the source's own model term and Table 1 row are unstratified ('proportional change in CL/F for CYP2D6 inhibitor'). Distinct from CYP2D6_PM, which is intrinsic phenotype rather than a drug-drug interaction; the two enter multiplicatively, so a poor metabolizer on a CYP2D6 inhibitor gets both reductions. Per-record time-varying in a fixed-sequence interaction study. In the model development cohort, 13 CYP2D6 extensive metabolizers took a CYP2D6 inhibitor (Wang 2022 Results, 'Model Simulations').",
-      source_name        = "CYP2D6"
+      notes = "Multiplies apparent oral clearance by (1 - 0.511), i.e. a 51.1% reduction, matching the paper's statement that CL/F in the presence of strong CYP2D6 inhibitors is approximately half that of CYP2D6 extensive metabolizers (Wang 2022 Abstract and Table 1). The = 1 category is populated exclusively by the STRONG CYP2D6 inhibitors administered in the dedicated phase 1 drug-interaction studies (Wang 2022 Discussion: 'phase 1 trials designed to evaluate the effect of CYP2D6 and CYP3A4 inhibitors'); the paper does not name the individual agents, so the strength tier of the pooled category is 'strong only' and no weaker inhibitors contribute. The class-level canonical is used rather than a hypothetical CONMED_CYP2D6_INH_STRONG because the source's own model term and Table 1 row are unstratified ('proportional change in CL/F for CYP2D6 inhibitor'). Distinct from CYP2D6_PM, which is intrinsic phenotype rather than a drug-drug interaction; the two enter multiplicatively, so a poor metabolizer on a CYP2D6 inhibitor gets both reductions. Per-record time-varying in a fixed-sequence interaction study. In the model development cohort, 13 CYP2D6 extensive metabolizers took a CYP2D6 inhibitor (Wang 2022 Results, 'Model Simulations').",
+      source_name = "CYP2D6"
     ),
     CONMED_CYP3A4_INH = list(
-      description        = "Concomitant CYP3A4 inhibitor coadministration indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A4 inhibitor coadministration indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant CYP3A4 inhibitor)",
-      notes              = "Multiplies apparent oral clearance by (1 - 0.237), i.e. a 23.7% reduction, matching the paper's statement that CL/F in the presence of strong CYP3A4 inhibitors is about 24% lower than in CYP2D6 extensive metabolizers (Wang 2022 Abstract, Results and Table 1). As for CONMED_CYP2D6_INH, the = 1 category comprises only the STRONG CYP3A4 inhibitors used in the dedicated phase 1 drug-interaction studies; the paper does not name them. The class-level canonical is used rather than CONMED_CYP3A4_INH_STRONG so that the two inhibitor covariates in this model are encoded symmetrically and match the unstratified Table 1 row labels. The effect is consistent with the independent Koue 2007 oral-aripiprazole popPK analysis cited in the Wang 2022 Discussion, which found a 14% CL/F reduction with itraconazole coadministration. In the model development cohort, 25 CYP2D6 extensive metabolizers took a CYP3A4 inhibitor (Wang 2022 Results, 'Model Simulations').",
-      source_name        = "CYP3A4"
+      notes = "Multiplies apparent oral clearance by (1 - 0.237), i.e. a 23.7% reduction, matching the paper's statement that CL/F in the presence of strong CYP3A4 inhibitors is about 24% lower than in CYP2D6 extensive metabolizers (Wang 2022 Abstract, Results and Table 1). As for CONMED_CYP2D6_INH, the = 1 category comprises only the STRONG CYP3A4 inhibitors used in the dedicated phase 1 drug-interaction studies; the paper does not name them. The class-level canonical is used rather than CONMED_CYP3A4_INH_STRONG so that the two inhibitor covariates in this model are encoded symmetrically and match the unstratified Table 1 row labels. The effect is consistent with the independent Koue 2007 oral-aripiprazole popPK analysis cited in the Wang 2022 Discussion, which found a 14% CL/F reduction with itraconazole coadministration. In the model development cohort, 25 CYP2D6 extensive metabolizers took a CYP3A4 inhibitor (Wang 2022 Results, 'Model Simulations').",
+      source_name = "CYP3A4"
     ),
     STUDY_ARI_PHASE3 = list(
-      description        = "Study-phase indicator for the observation record, 1 = the sparse-sampling phase 3 study 31-07-246, 0 = one of the four rich-sampling phase 1 studies (31-98-206, 31-98-207, CN138020, 31-05-244).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-phase indicator for the observation record, 1 = the sparse-sampling phase 3 study 31-07-246, 0 = one of the four rich-sampling phase 1 studies (31-98-206, 31-98-207, CN138020, 31-05-244).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (phase 1 observation record)",
-      notes              = "Record-level study-design property rather than a subject-level covariate: it selects the proportional residual-error magnitude only (24.23% for phase 1, 28.11% for phase 3; Wang 2022 Table 1, 'Phase 1 RV (%CV)' and 'Phase 3 RV (%CV)'). The phase 3 study contributed only predose samples plus single samples on days 7, 14 and 28 after dosing (Wang 2022 Results, 'Base Model Development'), which is the usual reason a sparse arm carries the larger residual. Follows the STUDY_<drug>_<phase> convention established by STUDY_NMV_PHASE23, STUDY_NIPOCALIMAB_PHASE1, STUDY_FARLETUZUMAB_PHASE2 and STUDY_POSA_PHASE3. Not collinear with route: the phase 1 studies contributed both oral and AOM records, and the phase 3 study contributed both oral lead-in and AOM records.",
-      source_name        = "study phase"
+      notes = "Record-level study-design property rather than a subject-level covariate: it selects the proportional residual-error magnitude only (24.23% for phase 1, 28.11% for phase 3; Wang 2022 Table 1, 'Phase 1 RV (%CV)' and 'Phase 3 RV (%CV)'). The phase 3 study contributed only predose samples plus single samples on days 7, 14 and 28 after dosing (Wang 2022 Results, 'Base Model Development'), which is the usual reason a sparse arm carries the larger residual. Follows the STUDY_<drug>_<phase> convention established by STUDY_NMV_PHASE23, STUDY_NIPOCALIMAB_PHASE1, STUDY_FARLETUZUMAB_PHASE2 and STUDY_POSA_PHASE3. Not collinear with route: the phase 1 studies contributed both oral and AOM records, and the phase 3 study contributed both oral lead-in and AOM records.",
+      source_name = "study phase"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 663L,
-    n_studies      = 5L,
+    species = "human",
+    n_subjects = 663L,
+    n_studies = 5L,
     n_observations = "6153 aripiprazole plasma concentration records in the model development data set (Wang 2022 Methods, 'Population PK Analysis Source Data').",
-    age_range      = "Adults; the per-study age distribution is in Wang 2022 Table S2 (supplement not on disk -- see the vignette Errata).",
-    weight_range   = "Not reported in the main text; per-study body-weight summaries are in Wang 2022 Table S2 (supplement not on disk).",
-    bmi_range      = "15 to 61 kg/m^2 in the popPK analysis population (Wang 2022 Discussion, 'Population PK Analysis').",
+    age_range = "Adults; the per-study age distribution is in Wang 2022 Table S2 (supplement not on disk -- see the vignette Errata).",
+    weight_range = "Not reported in the main text; per-study body-weight summaries are in Wang 2022 Table S2 (supplement not on disk).",
+    bmi_range = "15 to 61 kg/m^2 in the popPK analysis population (Wang 2022 Discussion, 'Population PK Analysis').",
     sex_female_pct = NA_real_,
     race_ethnicity = "Self-reported race category (interpreted per US FDA guidance) was screened as a covariate on CL/F and was not retained. The distribution is in Wang 2022 Table S3 (supplement not on disk).",
-    disease_state  = "52 healthy subjects (oral aripiprazole only) and 611 subjects with schizophrenia or schizoaffective disorder (Wang 2022 Methods).",
-    dose_range     = "Oral aripiprazole tablets and AOM intramuscular injections. The model development data set contained no AOM dose below 300 mg; the phase 3 arms used 400 mg AOM with one permitted reduction to 300 mg. Doses of 50/25 mg AOM (study 31-07-247) were shown NOT to be adequately described by this model and were excluded from the source paper's own downstream analyses.",
-    regions        = "Not reported in the main text.",
-    cyp2d6_status  = "621 CYP2D6 extensive metabolizers and 42 poor metabolizers; 13 extensive metabolizers were taking a CYP2D6 inhibitor and 25 a CYP3A4 inhibitor (Wang 2022 Results, 'Model Simulations').",
-    notes          = "Pooled from five studies: phase 1 studies 31-98-206, 31-98-207, CN138020 and 31-05-244 (serial PK sampling) and phase 3 study 31-07-246 (sparse PK sampling). All AOM doses were given in the gluteus maximus except in CN138020 (13 subjects) where they were given in the nondominant arm or the midlateral thigh; injection site was screened on AOM Ka and was not retained. A sixth study, phase 3 study 31-07-247, was used only for external validation. The final model met the external-validation criteria for the 400/300 mg AOM arm (median %PPE -6.8%, median |%PPE| 29.2%) but not for the 50/25 mg arm (median |%PPE| 41.3%, 75th percentile 74.6%), so this model must NOT be extrapolated to AOM doses below 300 mg. Model development used NONMEM VI level 2.0 with FOCE-I; all analyses were run in 2011. Minimum objective function value 48892.907."
+    disease_state = "52 healthy subjects (oral aripiprazole only) and 611 subjects with schizophrenia or schizoaffective disorder (Wang 2022 Methods).",
+    dose_range = "Oral aripiprazole tablets and AOM intramuscular injections. The model development data set contained no AOM dose below 300 mg; the phase 3 arms used 400 mg AOM with one permitted reduction to 300 mg. Doses of 50/25 mg AOM (study 31-07-247) were shown NOT to be adequately described by this model and were excluded from the source paper's own downstream analyses.",
+    regions = "Not reported in the main text.",
+    cyp2d6_status = "621 CYP2D6 extensive metabolizers and 42 poor metabolizers; 13 extensive metabolizers were taking a CYP2D6 inhibitor and 25 a CYP3A4 inhibitor (Wang 2022 Results, 'Model Simulations').",
+    notes = "Pooled from five studies: phase 1 studies 31-98-206, 31-98-207, CN138020 and 31-05-244 (serial PK sampling) and phase 3 study 31-07-246 (sparse PK sampling). All AOM doses were given in the gluteus maximus except in CN138020 (13 subjects) where they were given in the nondominant arm or the midlateral thigh; injection site was screened on AOM Ka and was not retained. A sixth study, phase 3 study 31-07-247, was used only for external validation. The final model met the external-validation criteria for the 400/300 mg AOM arm (median %PPE -6.8%, median |%PPE| 29.2%) but not for the 50/25 mg arm (median |%PPE| 41.3%, 75th percentile 74.6%), so this model must NOT be extrapolated to AOM doses below 300 mg. Model development used NONMEM VI level 2.0 with FOCE-I; all analyses were run in 2011. Minimum objective function value 48892.907."
   )
 
   ini({

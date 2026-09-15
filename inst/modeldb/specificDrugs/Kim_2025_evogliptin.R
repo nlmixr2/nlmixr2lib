@@ -1,39 +1,39 @@
 Kim_2025_evogliptin <- function() {
   description <- "Population PK/PD model for evogliptin, a CYP3A4-metabolized dipeptidyl peptidase-4 (DPP-4) inhibitor, in adults spanning normal renal function through end-stage renal disease on hemodialysis (Kim 2025). Plasma evogliptin is described by a two-compartment model with first-order oral absorption, parameterized as apparent clearance CL/F, apparent central and peripheral volumes Vc/F and Vp/F, apparent inter-compartmental clearance Q/F, and absorption rate constant Ka. Body weight enters CL/F, Vc/F, Q/F, and Vp/F through fixed allometric exponents (0.75 on the clearances, 1 on the volumes) referenced to 65 kg. The only covariate effects retained after stepwise selection act on relative bioavailability F1, which is anchored to 1 at the healthy-subject median biochemistry (amylase 59.5 IU/L, triglyceride 112.5 mg/dL) and scaled by the power function F1 = (AMYL/59.5)^0.363 * (TRIG/112.5)^0.268. Both markers rise with worsening renal impairment, so the model expresses the paper's central finding that uremia inhibits the first-pass metabolism of a CYP3A4 substrate and thereby raises its bioavailability. A direct-link sigmoid Emax model maps the model-predicted plasma concentration onto percent inhibition of blood DPP-4 activity with no effect-compartment delay, reflecting the absence of hysteresis in the observed concentration-effect data."
-  reference   <- "Kim B, Kim JE, Lee S, Oh J, Cho J-Y, Jang I-J, Lee S, Chung J-Y, Yoon S. Population pharmacokinetic and pharmacodynamic model of evogliptin: Severe uremia increases the bioavailability of evogliptin. CPT Pharmacometrics Syst Pharmacol. 2025;14(2):246-256. doi:10.1002/psp4.13263. Final NONMEM control streams for the PK and PD models are reproduced in Supporting Information (PSP4-14-246-s002.docx)."
-  vignette    <- "Kim_2025_evogliptin"
-  units       <- list(time = "h", dosing = "ug", concentration = "ug/L")
+  reference <- "Kim B, Kim JE, Lee S, Oh J, Cho J-Y, Jang I-J, Lee S, Chung J-Y, Yoon S. Population pharmacokinetic and pharmacodynamic model of evogliptin: Severe uremia increases the bioavailability of evogliptin. CPT Pharmacometrics Syst Pharmacol. 2025;14(2):246-256. doi:10.1002/psp4.13263. Final NONMEM control streams for the PK and PD models are reproduced in Supporting Information (PSP4-14-246-s002.docx)."
+  vignette <- "Kim_2025_evogliptin"
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   compartmentData <- list(
-    depot       = list(analyte = "evogliptin", units = "ug", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "evogliptin", units = "ug", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "evogliptin", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "evogliptin", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "evogliptin", units = "ug", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (single-dose studies). Applied as fixed allometric scaling to CL/F, Vc/F, Q/F, and Vp/F referenced to 65 kg, before any other covariate was tested (Kim 2025 Table 1 footnote d; supplement Table S4 model 5). Cohort mean weights ranged 60.8-69.8 kg across the five renal-function groups (supplement Table S3).",
-      source_name        = "WT"
+      notes = "Time-fixed (single-dose studies). Applied as fixed allometric scaling to CL/F, Vc/F, Q/F, and Vp/F referenced to 65 kg, before any other covariate was tested (Kim 2025 Table 1 footnote d; supplement Table S4 model 5). Cohort mean weights ranged 60.8-69.8 kg across the five renal-function groups (supplement Table S3).",
+      source_name = "WT"
     ),
     AMYL = list(
-      description        = "Blood amylase activity",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Blood amylase activity",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed; the arithmetic mean of the screening and Day 1 (pre-dose) clinical-laboratory values was used to damp transient variability (Kim 2025 Methods, 'Development of the covariate PK model'). Enters relative bioavailability as (AMYL / 59.5)^0.363, where 59.5 IU/L is the healthy-subject median. Amylase rises as renal function falls because it is renally cleared (cohort means 57.6 and 61.7 IU/L in the two healthy groups versus 124.3 in severe renal impairment and 145.4 in ESRD on hemodialysis; supplement Table S3), so in this model it acts as a surrogate for uremic burden rather than for pancreatic disease.",
-      source_name        = "AMYL"
+      notes = "Time-fixed; the arithmetic mean of the screening and Day 1 (pre-dose) clinical-laboratory values was used to damp transient variability (Kim 2025 Methods, 'Development of the covariate PK model'). Enters relative bioavailability as (AMYL / 59.5)^0.363, where 59.5 IU/L is the healthy-subject median. Amylase rises as renal function falls because it is renally cleared (cohort means 57.6 and 61.7 IU/L in the two healthy groups versus 124.3 in severe renal impairment and 145.4 in ESRD on hemodialysis; supplement Table S3), so in this model it acts as a surrogate for uremic burden rather than for pancreatic disease.",
+      source_name = "AMYL"
     ),
     TRIG = list(
-      description        = "Blood triglyceride concentration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Blood triglyceride concentration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed; the arithmetic mean of the screening and Day 1 (pre-dose) clinical-laboratory values was used (Kim 2025 Methods, 'Development of the covariate PK model'). Enters relative bioavailability as (TRIG / 112.5)^0.268, where 112.5 mg/dL is the healthy-subject median. Hypertriglyceridemia is the hallmark of uremic dyslipidemia, so triglyceride is interpreted as a uremia-severity surrogate; note it rises monotonically with renal impairment (means 119.3, 124.5, 163.1, 191.4 mg/dL from healthy to severe) but falls again in ESRD patients on hemodialysis (108.4 mg/dL), which is the mechanism by which the model predicts lower bioavailability in dialysed patients than in severe non-dialysed CKD (Kim 2025 Discussion). Units are load-bearing: the reference 112.5 is in mg/dL, not mmol/L.",
-      source_name        = "TG"
+      notes = "Time-fixed; the arithmetic mean of the screening and Day 1 (pre-dose) clinical-laboratory values was used (Kim 2025 Methods, 'Development of the covariate PK model'). Enters relative bioavailability as (TRIG / 112.5)^0.268, where 112.5 mg/dL is the healthy-subject median. Hypertriglyceridemia is the hallmark of uremic dyslipidemia, so triglyceride is interpreted as a uremia-severity surrogate; note it rises monotonically with renal impairment (means 119.3, 124.5, 163.1, 191.4 mg/dL from healthy to severe) but falls again in ESRD patients on hemodialysis (108.4 mg/dL), which is the mechanism by which the model predicts lower bioavailability in dialysed patients than in severe non-dialysed CKD (Kim 2025 Discussion). Units are load-bearing: the reference 112.5 is in mg/dL, not mmol/L.",
+      source_name = "TG"
     )
   )
 
@@ -45,44 +45,44 @@ Kim_2025_evogliptin <- function() {
   covariatesDataExcluded <- list(
     AST = list(
       description = "Serum aspartate aminotransferase activity",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Tested on CL/F and on F1 in the stepwise analysis (supplement Table S2); not retained in the final model."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Tested on CL/F and on F1 in the stepwise analysis (supplement Table S2); not retained in the final model."
     ),
     CHLORIDE = list(
       description = "Blood chloride concentration",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Tested on F1 as a candidate uremic-toxin surrogate (supplement Table S2); not retained. Supplement Table S3 shows chloride rising with renal impairment (cohort means 102.9, 105.3, 106.3 mmol/L for mild, moderate, severe) but falling in ESRD patients on hemodialysis (95.6 mmol/L)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Tested on F1 as a candidate uremic-toxin surrogate (supplement Table S2); not retained. Supplement Table S3 shows chloride rising with renal impairment (cohort means 102.9, 105.3, 106.3 mmol/L for mild, moderate, severe) but falling in ESRD patients on hemodialysis (95.6 mmol/L)."
     ),
     CRCL = list(
       description = "Estimated glomerular filtration rate (CKD-EPI 2021 equation)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Used only to stratify subjects into CKD groups for cohort assignment, VPC stratification, and goodness-of-fit stratification; never retained as a covariate on any structural parameter. The paper's thesis is precisely that the biochemical consequences of uremia (amylase, triglyceride), rather than GFR itself, carry the bioavailability signal. The CKD-EPI 2021 equation is reproduced in the supplement."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Used only to stratify subjects into CKD groups for cohort assignment, VPC stratification, and goodness-of-fit stratification; never retained as a covariate on any structural parameter. The paper's thesis is precisely that the biochemical consequences of uremia (amylase, triglyceride), rather than GFR itself, carry the bioavailability signal. The CKD-EPI 2021 equation is reproduced in the supplement."
     ),
     RRT_HEMODIAL_STATUS = list(
       description = "Hemodialysis status",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a categorical covariate (Kim 2025 Methods); not retained in the final model. Its effect is captured indirectly through the lower triglyceride levels observed in dialysed patients."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a categorical covariate (Kim 2025 Methods); not retained in the final model. Its effect is captured indirectly through the lower triglyceride levels observed in dialysed patients."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 46L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 46L,
+    n_studies = 2L,
     n_observations = "688 plasma evogliptin concentrations and 598 blood DPP-4 activity measurements (Kim 2025 Abstract and Results).",
-    age_range      = "Cohort means 45.6-59.1 years (supplement Table S3)",
-    weight_range   = "Cohort means 60.8-69.8 kg (supplement Table S3)",
+    age_range = "Cohort means 45.6-59.1 years (supplement Table S3)",
+    weight_range = "Cohort means 60.8-69.8 kg (supplement Table S3)",
     sex_female_pct = 47,
     race_ethnicity = c(Korean = 100),
-    disease_state  = "Five strata by renal function: normal renal function (16 subjects pooled across the two studies), and mild (8), moderate (8), severe (6) renal impairment plus end-stage renal disease on hemodialysis (8 contributing PK data). Groups were assigned by MDRD-eGFR; EPI-GFR was recalculated for the population analysis. Cohort mean MDRD-eGFR was 100.2, 70.8, 50.5, 22.4, and 6.4 mL/min/1.73 m^2 respectively.",
-    dose_range     = "Single oral 5 mg evogliptin",
-    regions        = "Republic of Korea (Seoul National University Hospital)",
+    disease_state = "Five strata by renal function: normal renal function (16 subjects pooled across the two studies), and mild (8), moderate (8), severe (6) renal impairment plus end-stage renal disease on hemodialysis (8 contributing PK data). Groups were assigned by MDRD-eGFR; EPI-GFR was recalculated for the population analysis. Cohort mean MDRD-eGFR was 100.2, 70.8, 50.5, 22.4, and 6.4 mL/min/1.73 m^2 respectively.",
+    dose_range = "Single oral 5 mg evogliptin",
+    regions = "Republic of Korea (Seoul National University Hospital)",
     renal_function = "Normal through end-stage renal disease on hemodialysis; the ESRD cohort was dosed both after (period 1) and before (period 2) a hemodialysis session, and only period 1 data entered the model.",
-    notes          = "Pooled from two phase I studies, DA1229_RI_I (NCT02214693; renal-impairment cohorts and matched healthy subjects, sampled to 120 h) and DA1229_ESRD_I (NCT04195919; ESRD-on-hemodialysis cohort and matched healthy subjects, sampled to 48 h). Baseline demographics are tabulated in supplement Table S3. Sex percentage is the pooled female fraction across all six reported cohorts (22 of 47 enrolled = 46.8%); one ESRD subject dropped out before treatment, giving the 46 subjects who contributed data, and Table S3 does not state that subject's sex, so the fraction among the 46 is 45.7% or 47.8%. Assay LLOQ was 0.5 ug/L (DA1229_RI_I) and 0.2 ug/L (DA1229_ESRD_I); below-quantification values were treated as missing and not substituted."
+    notes = "Pooled from two phase I studies, DA1229_RI_I (NCT02214693; renal-impairment cohorts and matched healthy subjects, sampled to 120 h) and DA1229_ESRD_I (NCT04195919; ESRD-on-hemodialysis cohort and matched healthy subjects, sampled to 48 h). Baseline demographics are tabulated in supplement Table S3. Sex percentage is the pooled female fraction across all six reported cohorts (22 of 47 enrolled = 46.8%); one ESRD subject dropped out before treatment, giving the 46 subjects who contributed data, and Table S3 does not state that subject's sex, so the fraction among the 46 is 45.7% or 47.8%. Assay LLOQ was 0.5 ug/L (DA1229_RI_I) and 0.2 ug/L (DA1229_ESRD_I); below-quantification values were treated as missing and not substituted."
   )
 
   ini({

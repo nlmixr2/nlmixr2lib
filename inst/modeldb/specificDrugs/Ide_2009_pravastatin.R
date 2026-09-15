@@ -17,52 +17,52 @@ Ide_2009_pravastatin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit5    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit6    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit7    = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "pravastatin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit6 = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit7 = list(analyte = "pravastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "pravastatin", units = "mg", specimen = "plasma", verified = FALSE),
     gallbladder = list(analyte = "pravastatin", units = "mg", specimen = "bile", verified = FALSE)
   )
 
   covariateData <- list(
     SLCO1B1_HAP15_HET = list(
-      description        = "SLCO1B1 *15 haplotype heterozygote indicator: 1 if subject carries exactly one *15 allele (diplotype *1a/*15 or *1b/*15), 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SLCO1B1 *15 haplotype heterozygote indicator: 1 if subject carries exactly one *15 allele (diplotype *1a/*15 or *1b/*15), 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (*15-noncarrier: *1a/*1a, *1a/*1b, or *1b/*1b)",
-      notes              = "Time-fixed germline haplotype. The *15 haplotype is defined by the cis combination of the 388A>G (rs2306283, N130D) and 521T>C (rs4149056, V174A) variants. Paper covariate equation Eq. on p. 1311: Pi = TVP * theta1^HT * theta2^HM where HT = SLCO1B1_HAP15_HET and HM = SLCO1B1_HAP15_HOM. Paired with SLCO1B1_HAP15_HOM. Distribution in Ide 2009 (Table I, n = 57): 28 noncarriers (49%), 23 heterozygotes (40%), 6 homozygotes (11%).",
-      source_name        = "HT"
+      notes = "Time-fixed germline haplotype. The *15 haplotype is defined by the cis combination of the 388A>G (rs2306283, N130D) and 521T>C (rs4149056, V174A) variants. Paper covariate equation Eq. on p. 1311: Pi = TVP * theta1^HT * theta2^HM where HT = SLCO1B1_HAP15_HET and HM = SLCO1B1_HAP15_HOM. Paired with SLCO1B1_HAP15_HOM. Distribution in Ide 2009 (Table I, n = 57): 28 noncarriers (49%), 23 heterozygotes (40%), 6 homozygotes (11%).",
+      source_name = "HT"
     ),
     SLCO1B1_HAP15_HOM = list(
-      description        = "SLCO1B1 *15 haplotype homozygote indicator: 1 if subject carries two *15 alleles (diplotype *15/*15), 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SLCO1B1 *15 haplotype homozygote indicator: 1 if subject carries two *15 alleles (diplotype *15/*15), 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (*15-noncarrier: *1a/*1a, *1a/*1b, or *1b/*1b)",
-      notes              = "Time-fixed germline haplotype. See SLCO1B1_HAP15_HET notes for the *15 haplotype definition and the paper's covariate equation. Paired with SLCO1B1_HAP15_HET to encode a three-level haplotype categorical (noncarrier / heterozygote / homozygote) with *15-noncarrier as the implicit reference (both indicators = 0). Distribution in Ide 2009 (Table I): 6 of 57 (10.5%) homozygotes.",
-      source_name        = "HM"
+      notes = "Time-fixed germline haplotype. See SLCO1B1_HAP15_HET notes for the *15 haplotype definition and the paper's covariate equation. Paired with SLCO1B1_HAP15_HET to encode a three-level haplotype categorical (noncarrier / heterozygote / homozygote) with *15-noncarrier as the implicit reference (both indicators = 0). Distribution in Ide 2009 (Table I): 6 of 57 (10.5%) homozygotes.",
+      source_name = "HM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 57L,
+    species = "human",
+    n_subjects = 57L,
     n_observations = 636L,
-    n_studies      = 1L,
-    age_range      = "20-40 years",
-    weight_range   = "49.7-97.8 kg",
+    n_studies = 1L,
+    age_range = "20-40 years",
+    weight_range = "49.7-97.8 kg",
     sex_female_pct = 0,
     race_ethnicity = "Japanese (100%)",
-    disease_state  = "Healthy volunteers; pooled from three previous studies by the same group (Nishizato 2003, Maeda 2006, Suwannakul 2008) prescreened by SLCO1B1 haplotype to enrich for *15 carriers.",
-    dose_range     = "Single 10 mg oral dose (Daiichi-Sankyo Co Ltd, Tokyo) with 150 mL water after overnight fast; food given 4 hours post-dose.",
-    regions        = "Japan (Kyushu University, Kyushu Pharmacology Research Clinic, Tottori University, University of Tokyo).",
+    disease_state = "Healthy volunteers; pooled from three previous studies by the same group (Nishizato 2003, Maeda 2006, Suwannakul 2008) prescreened by SLCO1B1 haplotype to enrich for *15 carriers.",
+    dose_range = "Single 10 mg oral dose (Daiichi-Sankyo Co Ltd, Tokyo) with 150 mL water after overnight fast; food given 4 hours post-dose.",
+    regions = "Japan (Kyushu University, Kyushu Pharmacology Research Clinic, Tottori University, University of Tokyo).",
     genotype_distribution = "SLCO1B1 (Table I): 7 *1a/*1a, 6 *1a/*1b, 15 *1b/*1b, 7 *1a/*15, 16 *1b/*15, 6 *15/*15. ABCC2 -24C>T: 40 C/C, 17 C/T, 0 T/T. ABCC2 1249G>A: 43 G/G, 12 G/A, 2 A/A. ABCC2 1446C>G: 57 C/C, 0 C/G, 0 G/G. ABCC2 3972C>T: 37 C/C, 19 C/T, 1 T/T.",
     sampling_window = "Rich sampling at 0, 0.25, 0.5, 0.75, 1, 2, 3, 4, 5, 6, 8, 12, 24 h post-dose in 33 subjects and 0, 0.25, 0.5, 0.75, 1, 2, 4, 6, 8, 12, 24 h post-dose in 24 subjects (Methods).",
-    notes          = "Haplotype frequencies were not natural Japanese-population frequencies; subjects were recruited from a pool of approximately 100 prescreened Japanese volunteers to enrich for *15 carriers. BQL rates: 52 of 636 (8.2%) pravastatin observations and 92 of 636 (14.5%) RMS-416 observations were below LLOQ and omitted. The paper analysed pravastatin parent kinetics only; RMS-416 (3'alpha-isopravastatin, the inactive gastric biotransformation product) was used to construct the apparent-bioavailability correction Fa but was not separately modelled. Body weight was tested as a covariate and rejected (no significant effect on disposition)."
+    notes = "Haplotype frequencies were not natural Japanese-population frequencies; subjects were recruited from a pool of approximately 100 prescreened Japanese volunteers to enrich for *15 carriers. BQL rates: 52 of 636 (8.2%) pravastatin observations and 92 of 636 (14.5%) RMS-416 observations were below LLOQ and omitted. The paper analysed pravastatin parent kinetics only; RMS-416 (3'alpha-isopravastatin, the inactive gastric biotransformation product) was used to construct the apparent-bioavailability correction Fa but was not separately modelled. Body weight was tested as a covariate and rejected (no significant effect on disposition)."
   )
 
   # Implementation notes (see vignette 'Assumptions and deviations' for the

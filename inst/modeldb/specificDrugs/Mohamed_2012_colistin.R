@@ -15,10 +15,17 @@ Mohamed_2012_colistin <- function() {
   )
   vignette <- "Mohamed_2012_colistin"
   paper_specific_compartments <- c(
-    "central_cms", "peripheral_cms", "central_col", "bact_s", "bact_r"
+    "central_cms",
+    "peripheral_cms",
+    "central_col",
+    "bact_s",
+    "bact_r"
   )
   paper_specific_residual_sds <- c(
-    "addSd_Ccms", "propSd_Ccms", "addSd_Cc_col", "propSd_Cc_col"
+    "addSd_Ccms",
+    "propSd_Ccms",
+    "addSd_Cc_col",
+    "propSd_Cc_col"
   )
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
@@ -34,90 +41,100 @@ Mohamed_2012_colistin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central_cms    = list(analyte = "colistin methanesulfonate (CMS)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral_cms = list(analyte = "colistin methanesulfonate (CMS)", units = "mg", specimen = "tissue", verified = FALSE),
-    central_col    = list(analyte = "colistin", units = "mg", specimen = "plasma", verified = FALSE),
-    bact_s         = list(analyte = "Pseudomonas aeruginosa", units = "mg", specimen = "not applicable", verified = FALSE),
-    bact_r         = list(analyte = "Pseudomonas aeruginosa", units = "mg", specimen = "not applicable", verified = FALSE)
+    central_cms = list(
+      analyte = "colistin methanesulfonate (CMS)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral_cms = list(
+      analyte = "colistin methanesulfonate (CMS)",
+      units = "mg",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    central_col = list(analyte = "colistin", units = "mg", specimen = "plasma", verified = FALSE),
+    bact_s = list(analyte = "Pseudomonas aeruginosa", units = "mg", specimen = "not applicable", verified = FALSE),
+    bact_r = list(analyte = "Pseudomonas aeruginosa", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the stepwise covariate model (SCM); not retained. Body weight range 60-140 kg (Table 1).",
-      source_name        = "WT"
+      notes = "Screened in the stepwise covariate model (SCM); not retained. Body weight range 60-140 kg (Table 1).",
+      source_name = "WT"
     ),
     IBW = list(
-      description        = "Ideal body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Ideal body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in SCM; not retained. Ideal body weights 60-110 kg (Table 1).",
-      source_name        = "IBW"
+      notes = "Screened in SCM; not retained. Ideal body weights 60-110 kg (Table 1).",
+      source_name = "IBW"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in SCM; not retained. Age range 32-88 years, mean 55.4 (Results).",
-      source_name        = "AGE"
+      notes = "Screened in SCM; not retained. Age range 32-88 years, mean 55.4 (Results).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened in SCM; not retained. 6 males / 4 females in the n=10 prospective cohort.",
-      source_name        = "GENDER"
+      notes = "Screened in SCM; not retained. 6 males / 4 females in the n=10 prospective cohort.",
+      source_name = "GENDER"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate measured on days 1, 7, 14, and 21 (Methods). Screened in SCM; not retained.",
-      source_name        = "CREAT"
+      notes = "Time-varying covariate measured on days 1, 7, 14, and 21 (Methods). Screened in SCM; not retained.",
+      source_name = "CREAT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Cockcroft-Gault CrCL; capped at 130 mL/min (7.8 L/h) and modeled as time-varying when explored (Methods).",
         "Renal function correlation with CL_CMS was explored exhaustively (Eqs 1 and 2 in the paper).",
         "Reduction in OFV was only 3.6 (P > 0.05); CrCL did not meet the predefined dOFV > 10.83 inclusion criterion and was not retained (Results, Table 3)."
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     ),
     ALB = list(
-      description        = "Serum albumin",
+      description = "Serum albumin",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in SCM; not retained. Baseline albumin 1.9-3.8 g/dL (Table 1).",
-      source_name        = "ALB"
+      notes = "Screened in SCM; not retained. Baseline albumin 1.9-3.8 g/dL (Table 1).",
+      source_name = "ALB"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 28L,
-    n_studies      = 2L,
-    age_range      = "32-88 years",
-    age_median     = "55.4 years (mean of the n=10 prospective cohort)",
-    weight_range   = "60-140 kg (actual); 60-110 kg (ideal)",
+    species = "human",
+    n_subjects = 28L,
+    n_studies = 2L,
+    age_range = "32-88 years",
+    age_median = "55.4 years (mean of the n=10 prospective cohort)",
+    weight_range = "60-140 kg (actual); 60-110 kg (ideal)",
     sex_female_pct = 40,
-    disease_state  = "critically ill adults with infections caused by multidrug-resistant Gram-negative bacteria (most commonly ventilator-associated pneumonia); APACHE II scores 7-23",
-    dose_range     = "Loading dose 480 mg (6 MU) CMS as 15-min IV infusion, then maintenance 80-240 mg (1-3 MU) q8h or 30-90 mg q12h (Materials and Methods)",
-    regions        = "Greece (prospective cohort, Attikon University Hospital, Athens)",
-    notes          = paste(
+    disease_state = "critically ill adults with infections caused by multidrug-resistant Gram-negative bacteria (most commonly ventilator-associated pneumonia); APACHE II scores 7-23",
+    dose_range = "Loading dose 480 mg (6 MU) CMS as 15-min IV infusion, then maintenance 80-240 mg (1-3 MU) q8h or 30-90 mg q12h (Materials and Methods)",
+    regions = "Greece (prospective cohort, Attikon University Hospital, Athens)",
+    notes = paste(
       "Combined analysis of the n=10 loading-dose cohort enrolled at Attikon",
       "University Hospital July 2009 - January 2010 (Table 1) plus the n=18",
       "patients from Plachouras et al. 2009 (Antimicrob Agents Chemother",

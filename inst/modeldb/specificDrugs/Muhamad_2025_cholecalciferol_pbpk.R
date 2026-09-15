@@ -40,8 +40,8 @@ Muhamad_2025_cholecalciferol_pbpk <- function() {
   # and the nmol/L assay scale line up; an oral dose stated in ug must be
   # divided by the cholecalciferol molar mass before use (see the vignette).
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
 
@@ -52,46 +52,62 @@ Muhamad_2025_cholecalciferol_pbpk <- function() {
   # venous 25(OH)D3 compartment.
   compartmentData <- list(
     depot = list(
-      analyte = "cholecalciferol", units = "nmol",
-      specimen = "administration site", verified = TRUE
+      analyte = "cholecalciferol",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     venous = list(
-      analyte = "cholecalciferol", units = "nmol",
-      specimen = "whole blood", verified = TRUE
+      analyte = "cholecalciferol",
+      units = "nmol",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     liver = list(
-      analyte = "cholecalciferol", units = "nmol",
-      specimen = "tissue", verified = TRUE
+      analyte = "cholecalciferol",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
     ),
     venous_25d3 = list(
-      analyte = "25-hydroxyvitamin D3", units = "nmol",
-      specimen = "serum", verified = TRUE
+      analyte = "25-hydroxyvitamin D3",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
     ),
     arterial_25d3 = list(
-      analyte = "25-hydroxyvitamin D3", units = "nmol",
-      specimen = "whole blood", verified = TRUE
+      analyte = "25-hydroxyvitamin D3",
+      units = "nmol",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     liver_25d3 = list(
-      analyte = "25-hydroxyvitamin D3", units = "nmol",
-      specimen = "tissue", verified = TRUE
+      analyte = "25-hydroxyvitamin D3",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
     ),
     adipose_25d3 = list(
-      analyte = "25-hydroxyvitamin D3", units = "nmol",
-      specimen = "tissue", verified = TRUE
+      analyte = "25-hydroxyvitamin D3",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
     ),
     other_25d3 = list(
-      analyte = "25-hydroxyvitamin D3", units = "nmol",
-      specimen = "tissue", verified = TRUE
+      analyte = "25-hydroxyvitamin D3",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Muhamad 2025 Section 2.3 and Table S5 (models 7-10)",
         "interpolate weight linearly between the baseline and the 3-year",
         "measurement, WTcur = WT + (WT3Y - WT) * time / (24*365*3), and use",
@@ -107,14 +123,14 @@ Muhamad_2025_cholecalciferol_pbpk <- function() {
         "is the lumping weight of Table S3, and equals the fitted cohort's",
         "mean baseline weight of 30.57 kg (Table S1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     BMIZ = list(
-      description        = "BMI-for-age Z-score",
-      units              = "unitless (z-score)",
-      type               = "continuous",
+      description = "BMI-for-age Z-score",
+      units = "unitless (z-score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Computed per child in the WHO 2007 Z-score calculator (Muhamad 2025",
         "Section 2.7, reference [24]). Measured once, at baseline, and",
         "carried as time-constant. Drives the fraction of body weight that is",
@@ -125,14 +141,14 @@ Muhamad_2025_cholecalciferol_pbpk <- function() {
         "-3 to -2 1.30%, -2 to -1 9.09%, -1 to +1 63.64%, +1 to +2 18.18%,",
         "+2 to +3 7.79%."
       ),
-      source_name        = "ZBMI"
+      source_name = "ZBMI"
     ),
     D25OH_BL = list(
-      description        = "Baseline (pre-supplementation) serum 25-hydroxyvitamin D concentration",
-      units              = "nmol/L",
-      type               = "continuous",
+      description = "Baseline (pre-supplementation) serum 25-hydroxyvitamin D concentration",
+      units = "nmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per child. Plays the same dual role as the endogenous",
         "baseline in the authors' healthy-adult model (Muhamad 2025 Section",
         "3.1): it is the initial condition of every 25(OH)D3 compartment",
@@ -144,7 +160,7 @@ Muhamad_2025_cholecalciferol_pbpk <- function() {
         "reference [17]); fitted cohort mean 64.67 nmol/L, SD 14.85 (Table",
         "S1). Source symbol D25BASE."
       ),
-      source_name        = "D25BASE"
+      source_name = "D25BASE"
     )
   )
 
@@ -159,9 +175,9 @@ Muhamad_2025_cholecalciferol_pbpk <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Section 2.6 fits baseline weight against age to infer sex-specific",
         "mean weight gain (boys 3.0 kg/year, girls 3.4 kg/year) used when",
         "simulating the Mongolian and European cohorts, and Table S5 model 5",
@@ -173,9 +189,9 @@ Muhamad_2025_cholecalciferol_pbpk <- function() {
     ),
     COMPLIANCE = list(
       description = "Received doses divided by number of weeks",
-      units       = "fraction",
-      type        = "continuous",
-      notes       = paste(
+      units = "fraction",
+      type = "continuous",
+      notes = paste(
         "Defined in Section 2.6 and Figure S13. Muhamad 2025 fits and",
         "simulates each child from that child's actual dosing record",
         "(Section 2.1.1: 'Dosing records for each participant were used for",
@@ -188,19 +204,19 @@ Muhamad_2025_cholecalciferol_pbpk <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 77,
-    n_studies      = 1,
-    age_range      = "6-11 years",
-    age_median     = "8.94 years (mean; SD 1.29)",
-    weight_median  = "30.57 kg (mean; SD 8.99)",
-    height_median  = "149 cm (mean; SD 10.91)",
-    bmi_median     = "17.75 kg/m^2 (mean; SD 3.46)",
+    species = "human",
+    n_subjects = 77,
+    n_studies = 1,
+    age_range = "6-11 years",
+    age_median = "8.94 years (mean; SD 1.29)",
+    weight_median = "30.57 kg (mean; SD 8.99)",
+    height_median = "149 cm (mean; SD 10.91)",
+    bmi_median = "17.75 kg/m^2 (mean; SD 3.46)",
     sex_female_pct = 61.04,
-    disease_state  = "healthy schoolchildren (no vitamin D-related disease)",
-    dose_range     = "250 ug (10,000 IU) oral vitamin D3 once weekly for 3 years",
-    regions        = "Klipfontein district, Cape Town, South Africa",
-    notes          = paste(
+    disease_state = "healthy schoolchildren (no vitamin D-related disease)",
+    dose_range = "250 ug (10,000 IU) oral vitamin D3 once weekly for 3 years",
+    regions = "Klipfontein district, Cape Town, South Africa",
+    notes = paste(
       "Baseline characteristics from Muhamad 2025 Table S1 (n = 77, the",
       "children with serum 25(OH)D at baseline and at 1, 2 and 3 years, who",
       "were used to fit the model). Baseline serum 25(OH)D 64.67 nmol/L, SD",

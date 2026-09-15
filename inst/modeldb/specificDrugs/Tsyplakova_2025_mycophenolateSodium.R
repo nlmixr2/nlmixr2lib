@@ -12,11 +12,11 @@ Tsyplakova_2025_mycophenolateSodium <- function() {
 
   covariateData <- list(
     POD = list(
-      description        = "Post-transplant time (days elapsed since renal transplantation)",
-      units              = "days",
-      type               = "continuous",
+      description = "Post-transplant time (days elapsed since renal transplantation)",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tsyplakova 2025 reports this covariate in MONTHS ('Diff_in_months' in Eq. 8; 'PTP',",
         "post-transplant time). The canonical POD column is in DAYS, so model() divides by",
         "30.4375 days/month before forming the paper's ratio. The EC-MPS normalisation constant",
@@ -30,14 +30,14 @@ Tsyplakova_2025_mycophenolateSodium <- function() {
         "hepatic glucuronidation.",
         sep = " "
       ),
-      source_name        = "Diff_in_months / PTP"
+      source_name = "Diff_in_months / PTP"
     ),
     DOSE_MPA_MGD = list(
-      description        = "Total daily dose of mycophenolic acid, on the MPA-equivalent mass scale",
-      units              = "mg/d",
-      type               = "continuous",
+      description = "Total daily dose of mycophenolic acid, on the MPA-equivalent mass scale",
+      units = "mg/d",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tsyplakova 2025 Eq. 8 'TDD', normalised to 1500 mg/day. The two formulations were placed",
         "on a common MPA-equivalent scale by converting MMF doses with a factor of 0.72 (Section",
         "2.1), and both the EC-MPS and the MMF model use the same 1500 mg/day constant, which is",
@@ -50,14 +50,14 @@ Tsyplakova_2025_mycophenolateSodium <- function() {
         "clearance, and that TDD may partly proxy for body weight, which was not recorded.",
         sep = " "
       ),
-      source_name        = "TDD"
+      source_name = "TDD"
     ),
     OCC = list(
-      description        = "Occasion index; each monthly follow-up visit is a separate occasion",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion index; each monthly follow-up visit is a separate occasion",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tsyplakova 2025 Section 2.3: 'Inter-occasion variability (IOV) was also incorporated,",
         "treating each subsequent visit as a separate occasion.' Section 2.2: patients were",
         "monitored for six months with MPA measured monthly, so occasions run 1..6; the paper does",
@@ -68,25 +68,25 @@ Tsyplakova_2025_mycophenolateSodium <- function() {
         "occasions (Table 2 gamma), so occasions 2-6 are fixed to the occasion-1 variance.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 63,
-    n_studies      = 1,
-    age_median     = "51 years (IQR 14; whole 76-patient cohort)",
+    species = "human",
+    n_subjects = 63,
+    n_studies = 1,
+    age_median = "51 years (IQR 14; whole 76-patient cohort)",
     sex_female_pct = 34.2,
-    disease_state  = "adult renal transplant recipients, at least 3 months post-transplant with stable graft function, on mycophenolate + tacrolimus + low-dose prednisone",
-    dose_range     = "360-1440 mg/day enteric-coated mycophenolate sodium, given twice daily",
-    regions        = "Serbia (University Clinical Centre of Nis)",
-    notes          = paste(
+    disease_state = "adult renal transplant recipients, at least 3 months post-transplant with stable graft function, on mycophenolate + tacrolimus + low-dose prednisone",
+    dose_range = "360-1440 mg/day enteric-coated mycophenolate sodium, given twice daily",
+    regions = "Serbia (University Clinical Centre of Nis)",
+    notes = paste(
       "Tsyplakova 2025 Table 1: 76 patients total contributed 209 MPA plasma samples and 65 saliva",
       "samples; 63 (82.9%) received EC-MPS and 13 (17.1%) received MMF, so this EC-MPS model is",
       "based on the 63-patient subgroup. Median post-transplantation time 70 months (IQR 84.3);",

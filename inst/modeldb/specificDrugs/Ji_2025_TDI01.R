@@ -34,8 +34,8 @@ Ji_2025_TDI01 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "TDI01", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "TDI01", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "TDI01", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "TDI01", units = "mg", specimen = "plasma", verified = FALSE),
     gallbladder = list(analyte = "TDI01", units = "mg", specimen = "bile", verified = FALSE)
   )
 
@@ -50,16 +50,16 @@ Ji_2025_TDI01 <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 39L,
+    species = "human",
+    n_subjects = 39L,
     n_observations = 776L,
-    n_studies      = 1L,
-    disease_state  = "Healthy volunteers.",
-    dose_range     = paste(
+    n_studies = 1L,
+    disease_state = "Healthy volunteers.",
+    dose_range = paste(
       "Oral TDI01. Single-dose regimens: 400 mg, 800 mg, and 1,200 mg.",
       "Multiple-dose regimens: 200 mg QD for 7 days and 400 mg QD for 7 days."
     ),
-    regions        = "China (Institute of Clinical Pharmacology, Peking University First Hospital, Beijing; sponsor Beijing Tide Pharmaceutical Co., Ltd.).",
+    regions = "China (Institute of Clinical Pharmacology, Peking University First Hospital, Beijing; sponsor Beijing Tide Pharmaceutical Co., Ltd.).",
     sampling_window = paste(
       "Single-dose groups: 0 (pre-dose), 1, 2, 3, 3.5, 4, 5, 6, 8, 10, 12, 24, 36, 48, 72 h post-dose.",
       "Multiple-dose groups: 0, 1, 2, 3, 3.5, 4, 5, 6, 8, 10, 12, 24, 48, 72, 96, 120, 144, 145, 146,",

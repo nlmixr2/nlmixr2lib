@@ -40,18 +40,18 @@ Chan_2025_atezolizumab_aeg35 <- function() {
   )
   vignette <- "Chan_2025_atezolizumab_sc_nsclc"
   units <- list(
-    time          = "n/a (static Cycle-1 landmark safety regression; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the AUC_ATEZO data column)",
+    time = "n/a (static Cycle-1 landmark safety regression; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the AUC_ATEZO data column)",
     concentration = "prob_aeg35 (probability of a grade 3-5 adverse event, 0-1; also logit_aeg35)"
   )
 
   covariateData <- list(
     AUC_ATEZO = list(
-      description        = "Model-predicted Cycle-1 atezolizumab AUC from day 0 to day 21",
-      units              = "ug*day/mL",
-      type               = "continuous",
+      description = "Model-predicted Cycle-1 atezolizumab AUC from day 0 to day 21",
+      units = "ug*day/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters LINEARLY and is SCALED BY 1000, not centred: Chan 2025",
         "Table S10F labels the row 'AUC0-21d (Increase by 1000",
         "ug*day/mL)', so the coefficient 0.0879 is the log-odds per 1000",
@@ -65,14 +65,14 @@ Chan_2025_atezolizumab_aeg35 <- function() {
         "mean 2907 ug*day/mL (geoCV 35.9 percent), median 2974, range",
         "666-6572."
       ),
-      source_name        = "AUC0-21d"
+      source_name = "AUC0-21d"
     ),
     CRP = list(
-      description        = "Baseline C-reactive protein",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline C-reactive protein",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters LINEARLY and is SCALED BY 10, not centred: Chan 2025",
         "Table S10F labels the row 'CRP (Increase by 10 mg/L)', so the",
         "coefficient 0.166 is the log-odds per 10 mg/L (odds ratio 1.18).",
@@ -81,17 +81,17 @@ Chan_2025_atezolizumab_aeg35 <- function() {
         "also appears in the companion SAE, PFS and OS models. Reported",
         "in mg/L (SI)."
       ),
-      source_name        = "CRP"
+      source_name = "CRP"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 246,
-    n_studies      = 1,
-    disease_state  = "locally advanced or metastatic non-small cell lung cancer",
-    dose_range     = "subcutaneous atezolizumab 1875 mg every 3 weeks in the thigh, as a ready-to-use co-formulation with recombinant human hyaluronidase PH20",
-    notes          = paste(
+    species = "human",
+    n_subjects = 246,
+    n_studies = 1,
+    disease_state = "locally advanced or metastatic non-small cell lung cancer",
+    dose_range = "subcutaneous atezolizumab 1875 mg every 3 weeks in the thigh, as a ready-to-use co-formulation with recombinant human hyaluronidase PH20",
+    notes = paste(
       "Cohort 5 of the phase III (part 2) portion of IMscin001",
       "(NCT03735121). Exposure-response was assessed on the subcutaneous",
       "arm ONLY -- Chan 2025 Methods notes that intravenous",

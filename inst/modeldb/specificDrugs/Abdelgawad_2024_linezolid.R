@@ -43,26 +43,32 @@ Abdelgawad_2024_linezolid <- function() {
   # (dA(3)/dt = KE0*(PPC*C2 - A(3))), so its units are mg/L and not mg.
   compartmentData <- list(
     depot = list(
-      analyte = "linezolid", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "linezolid",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "linezolid", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "linezolid",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     csf = list(
-      analyte = "linezolid", units = "mg/L",
-      specimen = "CSF", verified = TRUE
+      analyte = "linezolid",
+      units = "mg/L",
+      specimen = "CSF",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass, computed from sex, total body weight, and height by the Janmahasatian (2005) formula",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass, computed from sex, total body weight, and height by the Janmahasatian (2005) formula",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size descriptor for both maximal clearance CLmax",
         "(exponent 0.75) and central volume V (exponent 1), with a fixed",
         "reference of 45 kg -- the cohort median fat-free mass (Abdelgawad",
@@ -82,14 +88,14 @@ Abdelgawad_2024_linezolid <- function() {
         "original fit, not part of the structural model; users should supply",
         "a measured or Janmahasatian-derived FFM column directly."
       ),
-      source_name        = "FFMNEW"
+      source_name = "FFMNEW"
     ),
     CSF_TPRO = list(
-      description        = "Total protein concentration in lumbar cerebrospinal fluid",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total protein concentration in lumbar cerebrospinal fluid",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives the pseudo-partition coefficient PPC through a piecewise-",
         "linear (broken-stick) function: PPC rises linearly from 0 and",
         "plateaus at PPCmax once CSF total protein reaches the estimated",
@@ -105,14 +111,14 @@ Abdelgawad_2024_linezolid <- function() {
         "0.22-54.7 g/L; the paper explicitly marks PPC values outside the",
         "observed range as extrapolation (Figure 2 dashed line)."
       ),
-      source_name        = "CSF_PROTEIN"
+      source_name = "CSF_PROTEIN"
     ),
     OCC = list(
-      description        = "Sampling-occasion index used for the between-occasion and between-visit random effects",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Sampling-occasion index used for the between-occasion and between-visit random effects",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Five occasions, matching the control stream's",
         "IF (OCC==1) ... IF (OCC==5) multiplexers over ETA(6)-ETA(10) for ka",
         "and ETA(11)-ETA(15) for mean transit time. The occasion-to-visit map",
@@ -126,36 +132,36 @@ Abdelgawad_2024_linezolid <- function() {
         "index of each dosing interval; a single-occasion simulation may use",
         "OCC = 1 throughout."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30L,
-    n_studies      = 1L,
-    age_range      = "27-56 years (median 40 at the day-3 visit)",
-    age_median     = "40 years",
-    weight_range   = "30-96 kg (median 58 at the day-3 visit)",
-    weight_median  = "58 kg",
-    ffm_range      = "30-59 kg (median 45 at the day-3 visit)",
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "27-56 years (median 40 at the day-3 visit)",
+    age_median = "40 years",
+    weight_range = "30-96 kg (median 58 at the day-3 visit)",
+    weight_median = "58 kg",
+    ffm_range = "30-59 kg (median 45 at the day-3 visit)",
     sex_female_pct = 40,
     race_ethnicity = "Not reported; the cohort was enrolled at four public hospitals in Cape Town and Gqeberha, South Africa",
-    disease_state  = paste(
+    disease_state = paste(
       "HIV-associated tuberculous meningitis (TBM). All participants were",
       "living with HIV; median CD4 count 137 cells/mm3 (range 2-890). Median",
       "CSF total protein 1.46 g/L at day 3 and 0.750 g/L at day 28; median",
       "CSF glucose 2.9 and 3.2 mmol/L. All received adjunctive dexamethasone."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Linezolid 1200 mg orally once daily for the first 28 days, then",
       "600 mg once daily to day 56. At the day-3 visit all 30 participants",
       "were on 1200 mg; at the day-28 visit 13 were on 1200 mg and 4 on",
       "600 mg. Co-administered with high-dose rifampicin (35 mg/kg) plus",
       "isoniazid, pyrazinamide, and ethambutol, with or without aspirin."
     ),
-    regions        = "South Africa (Cape Town and Gqeberha)",
-    notes          = paste(
+    regions = "South Africa (Cape Town and Gqeberha)",
+    notes = paste(
       "LASER-TBM phase IIb open-label trial PK substudy",
       "(ClinicalTrials.gov NCT03927313). Thirty participants underwent PK",
       "sampling on day 3 and 17 on day 28, contributing 247 plasma",

@@ -10,28 +10,28 @@ Ahmed_2016_lorenzosOil <- function() {
 
   covariateData <- list(
     CP_ER_MGL = list(
-      description        = "Instantaneous plasma erucic acid concentration as a time-varying PD driver",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Instantaneous plasma erucic acid concentration as a time-varying PD driver",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying input. Observed plasma erucic acid concentration in X-ALD patients receiving Lorenzo's oil. The paper does not develop a PK model for erucic acid; observed values are supplied directly per observation record. Median pretreatment 0.5 mg/L (range 0.22-1.94, n=97); median post-treatment 18.63 mg/L (range 0.21-336.1) (Ahmed 2016 Table 1). Values > 30 mg/L were censored in the paper's time-to-event analysis as transient peak post-dose concentrations not reflective of steady-state brain exposure.",
-      source_name        = "ER"
+      notes = "Time-varying input. Observed plasma erucic acid concentration in X-ALD patients receiving Lorenzo's oil. The paper does not develop a PK model for erucic acid; observed values are supplied directly per observation record. Median pretreatment 0.5 mg/L (range 0.22-1.94, n=97); median post-treatment 18.63 mg/L (range 0.21-336.1) (Ahmed 2016 Table 1). Values > 30 mg/L were censored in the paper's time-to-event analysis as transient peak post-dose concentrations not reflective of steady-state brain exposure.",
+      source_name = "ER"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 104L,
-    n_studies       = 1L,
-    age_range       = "0.068-8.92 years",
-    age_median      = "2.79 years",
-    weight_range    = "9.40-40.60 kg",
-    weight_median   = "14.90 kg",
-    sex_female_pct  = 0,
-    disease_state   = "Asymptomatic X-linked adrenoleukodystrophy (X-ALD); diagnosis confirmed by SVLCFAs assay. Subjects with baseline neurological or radiological abnormality, brain tumour, another peroxisomal disorder, or non-adherence to LO were excluded.",
-    dose_range      = "Approximately 2-3 mg/kg/day of Lorenzo's oil providing 20% of caloric intake; halted and replaced by glyceryl trioleate at the same dosage on clinically significant platelet drop, then resumed at a lower dose with gradual return to target",
-    regions         = "John Hopkins Research Hospital (United States); enrollment 2000-2014",
-    notes           = "Open-label single-arm trial (ClinicalTrials.gov NCT02233257). 2384 paired C26:0 and erucic acid plasma measurements over a mean follow-up of 4.88 +/- 2.76 years (range 0-10.26). Sampling: baseline plus monthly for the first 6 months, then every 3-6 months. Pretreatment and post-treatment plasma C26:0 medians were 1.06 mg/L and 0.402 mg/L respectively (Table 1). Estimation in NONMEM 7.3 with FOCE-I; final model evaluated by prediction- and variability-corrected VPC (Figure 1) and 1000-replicate non-parametric bootstrap (Table 2). The accompanying Weibull time-to-event analyses (hazard of brain MRI abnormality vs. LAUCER and LAUCC26:0) were conducted in SAS PROC LIFEREG using per-subject summary LAUC values; those analyses are an auxiliary regression on a summary statistic and are not extracted as a separate nlmixr2 model file. See the vignette for the AFT-Weibull point estimates (Tables 3, 4) and a discussion of why they sit outside the popPD scope."
+    species = "human",
+    n_subjects = 104L,
+    n_studies = 1L,
+    age_range = "0.068-8.92 years",
+    age_median = "2.79 years",
+    weight_range = "9.40-40.60 kg",
+    weight_median = "14.90 kg",
+    sex_female_pct = 0,
+    disease_state = "Asymptomatic X-linked adrenoleukodystrophy (X-ALD); diagnosis confirmed by SVLCFAs assay. Subjects with baseline neurological or radiological abnormality, brain tumour, another peroxisomal disorder, or non-adherence to LO were excluded.",
+    dose_range = "Approximately 2-3 mg/kg/day of Lorenzo's oil providing 20% of caloric intake; halted and replaced by glyceryl trioleate at the same dosage on clinically significant platelet drop, then resumed at a lower dose with gradual return to target",
+    regions = "John Hopkins Research Hospital (United States); enrollment 2000-2014",
+    notes = "Open-label single-arm trial (ClinicalTrials.gov NCT02233257). 2384 paired C26:0 and erucic acid plasma measurements over a mean follow-up of 4.88 +/- 2.76 years (range 0-10.26). Sampling: baseline plus monthly for the first 6 months, then every 3-6 months. Pretreatment and post-treatment plasma C26:0 medians were 1.06 mg/L and 0.402 mg/L respectively (Table 1). Estimation in NONMEM 7.3 with FOCE-I; final model evaluated by prediction- and variability-corrected VPC (Figure 1) and 1000-replicate non-parametric bootstrap (Table 2). The accompanying Weibull time-to-event analyses (hazard of brain MRI abnormality vs. LAUCER and LAUCC26:0) were conducted in SAS PROC LIFEREG using per-subject summary LAUC values; those analyses are an auxiliary regression on a summary statistic and are not extracted as a separate nlmixr2 model file. See the vignette for the AFT-Weibull point estimates (Tables 3, 4) and a discussion of why they sit outside the popPD scope."
   )
 
   ini({

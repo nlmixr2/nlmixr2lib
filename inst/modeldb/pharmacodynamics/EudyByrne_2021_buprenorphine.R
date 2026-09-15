@@ -15,8 +15,8 @@ EudyByrne_2021_buprenorphine <- function() {
   )
   vignette <- "EudyByrne_2021_buprenorphine"
   units <- list(
-    time          = "h",
-    dosing        = "N/A (PD-only; buprenorphine concentration is a required input covariate)",
+    time = "h",
+    dosing = "N/A (PD-only; buprenorphine concentration is a required input covariate)",
     concentration = "MOTHER NAS score (observation, unitless integer scale); ng/mL (buprenorphine input covariate)"
   )
 
@@ -27,42 +27,47 @@ EudyByrne_2021_buprenorphine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    nows = list(analyte = "MOTHER NAS severity scores", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    nows = list(
+      analyte = "MOTHER NAS severity scores",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     Cbuprenorphine = list(
-      description        = "Buprenorphine plasma concentration (central compartment) driving the drug effect in the indirect-response NAS-score PD model. Time-varying; carried in the event-table `covariates` block.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Buprenorphine plasma concentration (central compartment) driving the drug effect in the indirect-response NAS-score PD model. Time-varying; carried in the event-table `covariates` block.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Paper equation (Results / Model development): EFFECTdrug = EMAX * C2 / (EC50 + C2) + 1, with `C2` the buprenorphine concentration and EC50 = 0.942 ng/mL. Observed BBORN concentrations ranged from < 0.1 ng/mL (LLQ) to 0.6 ng/mL, mean 0.249 (SD 0.101) ng/mL; BPHORE observed mean 0.275 (SD 0.243) ng/mL, LLQ 0.05 ng/mL (paper Methods). This is an EXTERNAL input to the PD model -- the upstream Moore 2018 PK model (2-compartment, PNA covariate on CL) is not packaged in nlmixr2lib. Not in inst/references/covariate-columns.md because it is a paper-specific PD driver rather than a demographic column.",
-      source_name        = "C2 (Eudy-Byrne 2021 Results / Model development, equation for EFFECTdrug)"
+      notes = "Paper equation (Results / Model development): EFFECTdrug = EMAX * C2 / (EC50 + C2) + 1, with `C2` the buprenorphine concentration and EC50 = 0.942 ng/mL. Observed BBORN concentrations ranged from < 0.1 ng/mL (LLQ) to 0.6 ng/mL, mean 0.249 (SD 0.101) ng/mL; BPHORE observed mean 0.275 (SD 0.243) ng/mL, LLQ 0.05 ng/mL (paper Methods). This is an EXTERNAL input to the PD model -- the upstream Moore 2018 PK model (2-compartment, PNA covariate on CL) is not packaged in nlmixr2lib. Not in inst/references/covariate-columns.md because it is a paper-specific PD driver rather than a demographic column.",
+      source_name = "C2 (Eudy-Byrne 2021 Results / Model development, equation for EFFECTdrug)"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological age since birth). Time-varying; increments with the simulation clock and drives the natural NAS decay term NOWST = NOWSMAX * exp(-NOWSM * PNA_days).",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological age since birth). Time-varying; increments with the simulation clock and drives the natural NAS decay term NOWST = NOWSMAX * exp(-NOWSM * PNA_days).",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Canonical PNA in inst/references/covariate-columns.md is in MONTHS. The Eudy-Byrne 2021 paper reports NOWSM in units of 1/DAY (Table S3), so inside model() PNA (months) is converted to days via `pna_days <- PNA * 30.4375` before use in the exponential decay term. Observed BBORN age at last dose 21.1 (SD 11.6) days = 0.693 (SD 0.381) months; BPHORE 25.5 (SD 9.2) days = 0.838 (SD 0.302) months (Table S2).",
-      source_name        = "PNA (Eudy-Byrne 2021 Results / Model development, NOWST equation)"
+      notes = "Canonical PNA in inst/references/covariate-columns.md is in MONTHS. The Eudy-Byrne 2021 paper reports NOWSM in units of 1/DAY (Table S3), so inside model() PNA (months) is converted to days via `pna_days <- PNA * 30.4375` before use in the exponential decay term. Observed BBORN age at last dose 21.1 (SD 11.6) days = 0.693 (SD 0.381) months; BPHORE 25.5 (SD 9.2) days = 0.838 (SD 0.302) months (Table S2).",
+      source_name = "PNA (Eudy-Byrne 2021 Results / Model development, NOWST equation)"
     )
   )
 
   population <- list(
-    species        = "human (neonates)",
-    n_subjects     = 28L,
-    n_studies      = 1L,
-    age_range      = "postnatal age at last dose: BBORN 21.1 (SD 11.6) days; BPHORE 25.5 (SD 9.2) days",
-    weight_range   = "birth weight: BBORN 3.10 (SD 0.430) kg; BPHORE 3.10 (SD 0.292) kg",
+    species = "human (neonates)",
+    n_subjects = 28L,
+    n_studies = 1L,
+    age_range = "postnatal age at last dose: BBORN 21.1 (SD 11.6) days; BPHORE 25.5 (SD 9.2) days",
+    weight_range = "birth weight: BBORN 3.10 (SD 0.430) kg; BPHORE 3.10 (SD 0.292) kg",
     sex_female_pct = 39,
     race_ethnicity = NULL,
-    disease_state  = "neonatal opioid withdrawal syndrome (NOWS) / neonatal abstinence syndrome (NAS) in infants greater than 36 weeks gestation exposed to opioids in utero (predominantly maternal methadone).",
-    dose_range     = "sublingual buprenorphine; BBORN starting 5.3 microgram/kg q8h (max 20 microgram/kg q8h = 60 microgram/kg/day) with 25% up-titration and 10% down-titration; BPHORE starting 8 microgram/kg q8h (max 25 microgram/kg q8h = 75 microgram/kg/day) with 33% up-titration and 15% down-titration (Table S1). PD model uses buprenorphine concentrations directly, not doses.",
-    regions        = "USA (Thomas Jefferson University, Philadelphia; BBORN NCT01452789 and BPHORE NCT03608696)",
-    n_pk_obs       = 117L,
-    n_pd_obs       = 3609L,
-    notes          = "PD model was estimated on N = 28 BBORN infants who received buprenorphine (paper 'Clinical data used in model-based analysis'). 117 buprenorphine concentrations and 3609 MOTHER NAS score observations were used; observations coincident with phenobarbital or clonidine adjunct therapy, or below LLQ, were excluded (paper Methods). BPHORE (N = 10) was used to validate simulation-based dosing recommendations, not to re-estimate the model. Reference categories for covariates are not applicable (no covariates on structural parameters were reported)."
+    disease_state = "neonatal opioid withdrawal syndrome (NOWS) / neonatal abstinence syndrome (NAS) in infants greater than 36 weeks gestation exposed to opioids in utero (predominantly maternal methadone).",
+    dose_range = "sublingual buprenorphine; BBORN starting 5.3 microgram/kg q8h (max 20 microgram/kg q8h = 60 microgram/kg/day) with 25% up-titration and 10% down-titration; BPHORE starting 8 microgram/kg q8h (max 25 microgram/kg q8h = 75 microgram/kg/day) with 33% up-titration and 15% down-titration (Table S1). PD model uses buprenorphine concentrations directly, not doses.",
+    regions = "USA (Thomas Jefferson University, Philadelphia; BBORN NCT01452789 and BPHORE NCT03608696)",
+    n_pk_obs = 117L,
+    n_pd_obs = 3609L,
+    notes = "PD model was estimated on N = 28 BBORN infants who received buprenorphine (paper 'Clinical data used in model-based analysis'). 117 buprenorphine concentrations and 3609 MOTHER NAS score observations were used; observations coincident with phenobarbital or clonidine adjunct therapy, or below LLQ, were excluded (paper Methods). BPHORE (N = 10) was used to validate simulation-based dosing recommendations, not to re-estimate the model. Reference categories for covariates are not applicable (no covariates on structural parameters were reported)."
   )
 
   ini({

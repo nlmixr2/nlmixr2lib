@@ -27,8 +27,8 @@ Cao_2017_dha_troph_early <- function() {
   vignette <- "Cao_2017_dha_artemisinin_stress_model"
   paper_specific_compartments <- c("stress", "parasites")
   units <- list(
-    time          = "h",
-    dosing        = "nM (initial DHA concentration deposited into central)",
+    time = "h",
+    dosing = "nM (initial DHA concentration deposited into central)",
     concentration = "nM (central DHA); unitless fraction (parasites = viability)"
   )
 
@@ -37,30 +37,35 @@ Cao_2017_dha_troph_early <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central   = list(analyte = "DHA", units = NA_character_, specimen = "plasma", verified = FALSE),
-    stress    = list(analyte = "dynamic stress variable S(t)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    central = list(analyte = "DHA", units = NA_character_, specimen = "plasma", verified = FALSE),
+    stress = list(
+      analyte = "dynamic stress variable S(t)",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
     parasites = list(analyte = "viable parasites", units = NA_character_, specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "in vitro (P. falciparum 3D7 laboratory strain)",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    disease_state  = paste(
+    species = "in vitro (P. falciparum 3D7 laboratory strain)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    disease_state = paste(
       "Tightly age-synchronized 3D7 parasites (>80% within a 1-h age window) at the",
       "early trophozoite stage (24 h post-infection per Klonis et al 2013, Cao 2017",
       "reference 7). Cultures grown in human red blood cells; viability assayed in the",
       "trophozoite stage of the following life cycle, 48 h after pulse start, with M3",
       "censoring at the 0.005 limit of detection."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Initial DHA pulse concentrations approximately 39 nM and 300 nM in Cao 2017 Fig 1,",
       "with additional concentrations in the supplemental data of Klonis 2013 (Cao 2017",
       "reference 7); pulse durations 1, 2, 4, and 6 h."
     ),
-    notes          = paste(
+    notes = paste(
       "Trophozoite stages exhibit higher alpha and faster lambda than ring stages",
       "(Fig 4); early trophozoite has the highest alpha across all four stages",
       "(5.7434 /h vs 1.6915, 1.1224, 2.8626 for early-ring, mid-ring, late-trophozoite",

@@ -8,44 +8,44 @@ Zheng_2018_azithromycin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at sampling time.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at sampling time.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric exponents fixed a priori at 0.75 on CL and Q and at 1 on V1 and V2 (Zheng 2018 Methods 'Covariate analysis'). Reference weight 21.5 kg is the population median (Zheng 2018 Table 1 and Table 3 footnote).",
-      source_name        = "WT"
+      notes = "Allometric exponents fixed a priori at 0.75 on CL and Q and at 1 on V1 and V2 (Zheng 2018 Methods 'Covariate analysis'). Reference weight 21.5 kg is the population median (Zheng 2018 Table 1 and Table 3 footnote).",
+      source_name = "WT"
     ),
     ALT = list(
-      description        = "Serum alanine aminotransferase activity.",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Serum alanine aminotransferase activity.",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Binarized inline as fliver <- (ALT > 40) per Zheng 2018 Table 3: F_liver = 0 if ALT <= 40, F_liver = 1 if ALT > 40. Multiplicative power-form effect on CL: 0.761^F_liver (a 24 percent reduction when ALT > 40 IU/L).",
-      source_name        = "ALT"
+      notes = "Binarized inline as fliver <- (ALT > 40) per Zheng 2018 Table 3: F_liver = 0 if ALT <= 40, F_liver = 1 if ALT > 40. Multiplicative power-form effect on CL: 0.761^F_liver (a 24 percent reduction when ALT > 40 IU/L).",
+      source_name = "ALT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 95,
-    n_studies       = 1,
-    age_range       = "2.1-11.7 years",
-    age_median      = "5.9 years",
-    weight_range    = "11.0-51.0 kg",
-    weight_median   = "21.5 kg",
-    sex_female_pct  = 44.2,
-    disease_state   = "Hospitalized pediatric patients with suspected or confirmed community-acquired pneumonia (CAP).",
-    dose_range      = "10 mg/kg intravenous infusion over 60 min once daily.",
-    regions         = "China (multicenter: Beijing Children's Hospital, Children's Hospital of Hebei Province, Shandong Provincial Qianfoshan Hospital, Xintai People's Hospital).",
-    n_observations  = "140 plasma azithromycin concentrations from 95 patients.",
-    alt_range       = "3.3-374.4 IU/L (median 20.3; mean 26.8 +/- 40.2).",
-    notes           = "Demographic counts and ranges reproduced from Zheng 2018 Table 1. Sex counts: 53 males / 42 females. An external validation cohort of 28 additional children (age 2.0-11.0 years, weight 10.0-50.0 kg) is reported separately in the source paper but was not used in model building."
+    species = "human",
+    n_subjects = 95,
+    n_studies = 1,
+    age_range = "2.1-11.7 years",
+    age_median = "5.9 years",
+    weight_range = "11.0-51.0 kg",
+    weight_median = "21.5 kg",
+    sex_female_pct = 44.2,
+    disease_state = "Hospitalized pediatric patients with suspected or confirmed community-acquired pneumonia (CAP).",
+    dose_range = "10 mg/kg intravenous infusion over 60 min once daily.",
+    regions = "China (multicenter: Beijing Children's Hospital, Children's Hospital of Hebei Province, Shandong Provincial Qianfoshan Hospital, Xintai People's Hospital).",
+    n_observations = "140 plasma azithromycin concentrations from 95 patients.",
+    alt_range = "3.3-374.4 IU/L (median 20.3; mean 26.8 +/- 40.2).",
+    notes = "Demographic counts and ranges reproduced from Zheng 2018 Table 1. Sex counts: 53 males / 42 females. An external validation cohort of 28 additional children (age 2.0-11.0 years, weight 10.0-50.0 kg) is reported separately in the source paper but was not used in model building."
   )
 
   ini({

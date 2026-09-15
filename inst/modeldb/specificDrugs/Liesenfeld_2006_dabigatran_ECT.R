@@ -39,8 +39,8 @@ Liesenfeld_2006_dabigatran_ECT <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "dabigatran ECT", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "dabigatran ECT", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "dabigatran ECT", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dabigatran ECT", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dabigatran ECT", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -49,55 +49,55 @@ Liesenfeld_2006_dabigatran_ECT <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age (years)",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened by GAM + forward inclusion / backward elimination on ECT model parameters and not retained (Liesenfeld 2006 Methods, Results)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened by GAM + forward inclusion / backward elimination on ECT model parameters and not retained (Liesenfeld 2006 Methods, Results)."
     ),
     WT = list(
       description = "Body weight (kg)",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened and not retained (Liesenfeld 2006 Results)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened and not retained (Liesenfeld 2006 Results)."
     ),
     SEXF = list(
       description = "Biological sex (1 = female)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (paper covariate 'gender') and not retained (Liesenfeld 2006 Results)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (paper covariate 'gender') and not retained (Liesenfeld 2006 Results)."
     ),
     HT = list(
       description = "Height (cm)",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened and not retained (Liesenfeld 2006 Results)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened and not retained (Liesenfeld 2006 Results)."
     ),
     BMI = list(
       description = "Body mass index (kg/m^2)",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened and not retained (Liesenfeld 2006 Results)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened and not retained (Liesenfeld 2006 Results)."
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened (paper covariate 'serum creatinine clearance') and not retained (Liesenfeld 2006 Results)."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened (paper covariate 'serum creatinine clearance') and not retained (Liesenfeld 2006 Results)."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 287L,
-    n_observations  = 5060L,
-    n_studies       = 1L,
-    age_range       = "35-88 years (mean 67)",
-    weight_range    = "49-130 kg (mean 78)",
-    sex_female_pct  = 52.6,
-    race_ethnicity  = "Not reported in the source paper.",
-    disease_state   = "Adults undergoing elective total hip replacement surgery receiving oral dabigatran etexilate for venous thromboembolism prophylaxis 4-8 h after surgery and continuing for 6-10 days.",
-    dose_range      = "Oral dabigatran etexilate 12.5, 25, 50, 100, 150, 200, or 300 mg twice daily, or 150 or 300 mg once daily. Per-subgroup N ranged 20-46 (Liesenfeld 2006 Table 1).",
-    regions         = "BISTRO I: multicentre, open-label, dose-escalating Phase IIa study (Eriksson et al., reference [8] of the source paper).",
-    notes           = "Baseline demographics from Liesenfeld 2006 Table 1. Of 289 patients enrolled in BISTRO I, 287 contributed to the ECT analysis with 5060 paired PK-PD observations. Sampling per protocol: predose + 4 h on the day of surgery; predose + 2 h on each subsequent dosing day; frequent sampling at steady state (typically day 4) with predose + 0.5, 1, 2, 4, 8, 12 h in a 21-patient subset. ECT was measured on a Biomatic B10 coagulometer (Desaga). Covariates screened (gender, age, height, body mass index, serum creatinine clearance, standard clinical laboratory parameters, comedications) -- none retained in the final model."
+    species = "human",
+    n_subjects = 287L,
+    n_observations = 5060L,
+    n_studies = 1L,
+    age_range = "35-88 years (mean 67)",
+    weight_range = "49-130 kg (mean 78)",
+    sex_female_pct = 52.6,
+    race_ethnicity = "Not reported in the source paper.",
+    disease_state = "Adults undergoing elective total hip replacement surgery receiving oral dabigatran etexilate for venous thromboembolism prophylaxis 4-8 h after surgery and continuing for 6-10 days.",
+    dose_range = "Oral dabigatran etexilate 12.5, 25, 50, 100, 150, 200, or 300 mg twice daily, or 150 or 300 mg once daily. Per-subgroup N ranged 20-46 (Liesenfeld 2006 Table 1).",
+    regions = "BISTRO I: multicentre, open-label, dose-escalating Phase IIa study (Eriksson et al., reference [8] of the source paper).",
+    notes = "Baseline demographics from Liesenfeld 2006 Table 1. Of 289 patients enrolled in BISTRO I, 287 contributed to the ECT analysis with 5060 paired PK-PD observations. Sampling per protocol: predose + 4 h on the day of surgery; predose + 2 h on each subsequent dosing day; frequent sampling at steady state (typically day 4) with predose + 0.5, 1, 2, 4, 8, 12 h in a 21-patient subset. ECT was measured on a Biomatic B10 coagulometer (Desaga). Covariates screened (gender, age, height, body mass index, serum creatinine clearance, standard clinical laboratory parameters, comedications) -- none retained in the final model."
   )
 
   ini({

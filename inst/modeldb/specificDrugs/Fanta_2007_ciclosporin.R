@@ -9,73 +9,73 @@ Fanta_2007_ciclosporin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; allometric scaling with reference weight 13 kg (population median per Fanta 2007 Table 2 footnote). Fixed exponent 3/4 on clearance parameters (CL, Q3, Q4) and 1 on volume parameters (V2, V3, V4) per Fanta 2007 Results 'Covariate model'.",
-      source_name        = "BW"
+      notes = "Time-varying; allometric scaling with reference weight 13 kg (population median per Fanta 2007 Table 2 footnote). Fixed exponent 3/4 on clearance parameters (CL, Q3, Q4) and 1 on volume parameters (V2, V3, V4) per Fanta 2007 Results 'Covariate model'.",
+      source_name = "BW"
     ),
     TCHOL = list(
-      description        = "Total plasma cholesterol (fasting)",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Total plasma cholesterol (fasting)",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect (1 - 0.0542 * (TCHOL - 5.4)) applied identically to CL, Q3, Q4, V2, V3, V4 per Fanta 2007 Table 2 footnote and Results 'Covariate model'. Reference 5.4 mmol/L is the population median fasting plasma cholesterol.",
-      source_name        = "CHOL"
+      notes = "Linear-deviation effect (1 - 0.0542 * (TCHOL - 5.4)) applied identically to CL, Q3, Q4, V2, V3, V4 per Fanta 2007 Table 2 footnote and Results 'Covariate model'. Reference 5.4 mmol/L is the population median fasting plasma cholesterol.",
+      source_name = "CHOL"
     ),
     HCT = list(
-      description        = "Haematocrit",
-      units              = "%",
-      type               = "continuous",
+      description = "Haematocrit",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect (1 - 0.00732 * (HCT - 31)) applied identically to CL, Q3, Q4, V2, V3, V4 per Fanta 2007 Table 2 footnote and Results 'Covariate model'. Reference 31% is the population median haematocrit.",
-      source_name        = "haematocrit"
+      notes = "Linear-deviation effect (1 - 0.00732 * (HCT - 31)) applied identically to CL, Q3, Q4, V2, V3, V4 per Fanta 2007 Table 2 footnote and Results 'Covariate model'. Reference 31% is the population median haematocrit.",
+      source_name = "haematocrit"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect (1 + 0.000214 * (CREAT - 524)) applied identically to CL, Q3, Q4, V2, V3, V4 per Fanta 2007 Table 2 footnote and Results 'Covariate model'. Reference 524 umol/L is the population median serum creatinine.",
-      source_name        = "serum creatinine"
+      notes = "Linear-deviation effect (1 + 0.000214 * (CREAT - 524)) applied identically to CL, Q3, Q4, V2, V3, V4 per Fanta 2007 Table 2 footnote and Results 'Covariate model'. Reference 524 umol/L is the population median serum creatinine.",
+      source_name = "serum creatinine"
     ),
     ROUTE_IV = list(
-      description        = "Indicator for intravenous (IV) administration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for intravenous (IV) administration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral, microemulsion formulation)",
-      notes              = "Per-occasion dosing-route indicator (1 = IV infusion, 0 = oral microemulsion). Fanta 2007 carried a 23% lower typical CL on oral occasions than on IV occasions to correct an assay artifact (the monoclonal-RIA cross-reacts with ciclosporin metabolites that are formed more abundantly after oral than after IV administration); the effect is encoded as exp(e_route_iv_cl * ROUTE_IV), so the lcl parameter represents the apparent PO clearance and ROUTE_IV = 1 multiplies it by exp(0.2614) = 1/0.77 to recover the IV typical CL of 6.1 L/h. Distinct from the rxode2 cmt event column (cmt = central for IV doses, cmt = depot for oral doses).",
-      source_name        = "route"
+      notes = "Per-occasion dosing-route indicator (1 = IV infusion, 0 = oral microemulsion). Fanta 2007 carried a 23% lower typical CL on oral occasions than on IV occasions to correct an assay artifact (the monoclonal-RIA cross-reacts with ciclosporin metabolites that are formed more abundantly after oral than after IV administration); the effect is encoded as exp(e_route_iv_cl * ROUTE_IV), so the lcl parameter represents the apparent PO clearance and ROUTE_IV = 1 multiplies it by exp(0.2614) = 1/0.77 to recover the IV typical CL of 6.1 L/h. Distinct from the rxode2 cmt event column (cmt = central for IV doses, cmt = depot for oral doses).",
+      source_name = "route"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 162L,
-    n_observations   = 2437L,
-    n_studies        = 1L,
-    study            = "Single-centre pretransplantation pharmacokinetic study at Hospital for Children and Adolescents, University of Helsinki (1988-2005); 166 patients enrolled, 162 eligible for the population analysis.",
-    age_range        = "0.36-17.5 years",
-    age_median       = "3.8 years",
-    weight_range     = "6.9-64 kg",
-    weight_mean      = "22.2 +/- 15.7 kg (mean +/- SD; Fanta 2007 Table 1)",
-    sex_female_pct   = 34.0,
-    race_ethnicity   = c(White_Finnish = 161/162 * 100, EastAfrican = 1/162 * 100),
-    disease_state    = "Paediatric renal transplant candidates with renal disease (congenital nephrosis of the Finnish type, urethral valve, polycystic renal disease, nephronophtisis, other) waiting for renal transplantation; all on continuous ambulatory or continuous cycling peritoneal dialysis.",
-    dose_range       = "IV 3 mg/kg as a 4-hour infusion (Sandimmun, Novartis); oral 10 mg/kg single dose as the microemulsion formulation (Sandimmun Neoral, Novartis). One patient was accidentally given 1 mg/kg orally. IV given to all 162 patients; oral microemulsion data contributed by 89 patients (the 73 patients who received the conventional oral formulation are excluded from the population PK model since that formulation is no longer used).",
-    regions          = "Finland (Helsinki)",
-    sampling         = "Whole blood ciclosporin samples (1 mL EDTA) drawn at 0, 1, 2, 3, 4, 6, 9, 12, 16, 24 h after oral dose; and at 0 (pre-dose), 2 (mid-infusion), 4 (end of infusion), 1, 2, 3, 4, 6, 9, 12, 16, 24 h after end of infusion. Assayed by specific monoclonal radioimmunoassay (Sandoz Sandimmune Kit until May 1994; Incstar/DiaSorin CycloTrac thereafter; detection limit ~5 ug/L; within- and between-run CV < 7% for concentrations > 30 ug/L).",
+    species = "human",
+    n_subjects = 162L,
+    n_observations = 2437L,
+    n_studies = 1L,
+    study = "Single-centre pretransplantation pharmacokinetic study at Hospital for Children and Adolescents, University of Helsinki (1988-2005); 166 patients enrolled, 162 eligible for the population analysis.",
+    age_range = "0.36-17.5 years",
+    age_median = "3.8 years",
+    weight_range = "6.9-64 kg",
+    weight_mean = "22.2 +/- 15.7 kg (mean +/- SD; Fanta 2007 Table 1)",
+    sex_female_pct = 34.0,
+    race_ethnicity = c(White_Finnish = 161 / 162 * 100, EastAfrican = 1 / 162 * 100),
+    disease_state = "Paediatric renal transplant candidates with renal disease (congenital nephrosis of the Finnish type, urethral valve, polycystic renal disease, nephronophtisis, other) waiting for renal transplantation; all on continuous ambulatory or continuous cycling peritoneal dialysis.",
+    dose_range = "IV 3 mg/kg as a 4-hour infusion (Sandimmun, Novartis); oral 10 mg/kg single dose as the microemulsion formulation (Sandimmun Neoral, Novartis). One patient was accidentally given 1 mg/kg orally. IV given to all 162 patients; oral microemulsion data contributed by 89 patients (the 73 patients who received the conventional oral formulation are excluded from the population PK model since that formulation is no longer used).",
+    regions = "Finland (Helsinki)",
+    sampling = "Whole blood ciclosporin samples (1 mL EDTA) drawn at 0, 1, 2, 3, 4, 6, 9, 12, 16, 24 h after oral dose; and at 0 (pre-dose), 2 (mid-infusion), 4 (end of infusion), 1, 2, 3, 4, 6, 9, 12, 16, 24 h after end of infusion. Assayed by specific monoclonal radioimmunoassay (Sandoz Sandimmune Kit until May 1994; Incstar/DiaSorin CycloTrac thereafter; detection limit ~5 ug/L; within- and between-run CV < 7% for concentrations > 30 ug/L).",
     reference_subject = "Body weight 13 kg, total plasma cholesterol 5.4 mmol/L, haematocrit 31%, serum creatinine 524 umol/L (population medians per Fanta 2007 Table 2 footnote).",
-    notes            = "Comedications: 8 patients on potentially interacting drugs (1 carbamazepine, 2 oxcarbazepine, 5 phenobarbital); removing them did not change the final parameter estimates and they were retained in the dataset. 23% of patients had 1-4 ciclosporin concentration data points missing. Patients with polycystic renal disease and severe hepatic involvement were excluded."
+    notes = "Comedications: 8 patients on potentially interacting drugs (1 carbamazepine, 2 oxcarbazepine, 5 phenobarbital); removing them did not change the final parameter estimates and they were retained in the dataset. 23% of patients had 1-4 ciclosporin concentration data points missing. Patients with polycystic renal disease and severe hepatic involvement were excluded."
   )
 
   ini({

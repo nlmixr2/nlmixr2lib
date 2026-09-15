@@ -13,36 +13,36 @@ Veinstein_2013_gentamicin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Veinstein 2013 Table 3: actual body weight 54.5-102 kg (mean 75.6 +/- 15.8 across the 10 subjects). Used as a linear (exponent = 1) structural scaler on CL_NHD, CL_HD, and V because the paper reports the population typical values in per-kg units (Table 4 footnotes a and b). The exponent is fixed at 1 because the paper's parameterisation literally normalises by body weight; the typical-value form lcl <- log(per-kg-value) plus cl <- exp(lcl + etalcl) * WT reproduces Table 4 exactly. Weight as an estimable covariate effect on V was tested in the model-building step and not retained (Results, Population PK/PD analysis: 'including weight or ideal body weight in the model combined as factors influencing V did not improve the model fit').",
-      source_name        = "WT"
+      notes = "Veinstein 2013 Table 3: actual body weight 54.5-102 kg (mean 75.6 +/- 15.8 across the 10 subjects). Used as a linear (exponent = 1) structural scaler on CL_NHD, CL_HD, and V because the paper reports the population typical values in per-kg units (Table 4 footnotes a and b). The exponent is fixed at 1 because the paper's parameterisation literally normalises by body weight; the typical-value form lcl <- log(per-kg-value) plus cl <- exp(lcl + etalcl) * WT reproduces Table 4 exactly. Weight as an estimable covariate effect on V was tested in the model-building step and not retained (Results, Population PK/PD analysis: 'including weight or ideal body weight in the model combined as factors influencing V did not improve the model fit').",
+      source_name = "WT"
     ),
     RRT_HEMODIAL_ACTIVE = list(
-      description        = "Hemodialysis-active indicator (1 during a dialysis session, 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hemodialysis-active indicator (1 during a dialysis session, 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (interdialytic / no dialysis running)",
-      notes              = "Time-varying within subject. Gates the additive hemodialysis-arm clearance cl_hemodialysis: the dialyzer contribution is added to the interdialytic body clearance only while a session is running. Veinstein 2013 protocol (Methods, Experimental design): a 4-h intermittent-hemodialysis session was started 30 min after the end of the 30-min 6 mg/kg gentamicin infusion, so RRT_HEMODIAL_ACTIVE = 1 from t = 1 h to t = 5 h after the start of the infusion. The hemodialysis apparatus was a Gambro AK 200 Ultra S with a Toray B3 polymethylmethacrylate dialyzer, blood flow 200-300 mL/min, mean session length 236 +/- 13 min. The estimated typical-value cl_hemodialysis lumps the dialyzer-mediated clearance into a single THETA rather than parameterising it as a Michaels-equation function of blood and dialysate flow rates (cf. Liesenfeld 2013 dabigatran).",
-      source_name        = "DIAL"
+      notes = "Time-varying within subject. Gates the additive hemodialysis-arm clearance cl_hemodialysis: the dialyzer contribution is added to the interdialytic body clearance only while a session is running. Veinstein 2013 protocol (Methods, Experimental design): a 4-h intermittent-hemodialysis session was started 30 min after the end of the 30-min 6 mg/kg gentamicin infusion, so RRT_HEMODIAL_ACTIVE = 1 from t = 1 h to t = 5 h after the start of the infusion. The hemodialysis apparatus was a Gambro AK 200 Ultra S with a Toray B3 polymethylmethacrylate dialyzer, blood flow 200-300 mL/min, mean session length 236 +/- 13 min. The estimated typical-value cl_hemodialysis lumps the dialyzer-mediated clearance into a single THETA rather than parameterising it as a Michaels-equation function of blood and dialysate flow rates (cf. Liesenfeld 2013 dabigatran).",
+      source_name = "DIAL"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 10L,
-    n_studies        = 1L,
-    age_range        = "approx 54-75 years (mean 64.5 +/- 10.1; Results, Patients' characteristics)",
-    weight_range     = "54.5-102 kg (mean 72.7 +/- 16.4 on admission; mean 75.6 +/- 15.8 for the dialysed cohort in Table 3)",
-    sex_female_pct   = 0,
-    race_ethnicity   = "Not reported (single-centre medical ICU at the University Hospital of Poitiers, France)",
-    disease_state    = "Critically ill adult ICU patients with acute kidney injury requiring intermittent hemodialysis and suffering from a community-acquired or nosocomial infection requiring treatment with gentamicin. Severity scores: SOFA 3-15 (median approx 11), SAPS II 34-65 (median approx 49). 8/10 received mechanical ventilation; 8/10 received pressor amines (Table 2). Infections included pyelonephritis (n=2), VAP / mediastinitis / fasciitis / lower-limb ischemia / septic thrombophlebitis (nosocomial, n=5), and angiocholitis / peritonitis (community-acquired, n=2). Pathogens identified included Escherichia coli, Serratia marcescens, MSSA, Pseudomonas aeruginosa, and Enterococcus faecium; MICs for gentamicin where available ranged 0.5-2 mg/L (Table 2).",
-    dose_range       = "Gentamicin 6 mg/kg actual body weight, IV infusion over 30 min via syringe pump (Schering-Plough SAS), administered 30 min before the start of a 4-h intermittent hemodialysis session. Per-subject administered doses 300-600 mg with infused doses 360 +/- 99 mg on average (Table 3). Concurrent antibacterial therapy varied per indication (piperacillin-tazobactam, ceftriaxone, vancomycin, levofloxacin, amoxicillin, oxacillin, teicoplanin, metronidazole; Table 2).",
-    regions          = "France (single-centre medical ICU, University Hospital of Poitiers)",
-    renal_function   = "Acute kidney injury requiring intermittent hemodialysis; baseline renal function not separately quantified. Estimated post-dialysis non-hemodialysis clearance CL_NHD in the published cohort was 4.7-22.7 mL/min (Table 3), substantially below normal native CrCL.",
-    notes            = "Baseline demographics from Veinstein 2013 Results (Patients' characteristics) and Tables 2-3. Hemodialysis apparatus: Gambro AK 200 Ultra S with a Toray B3 polymethylmethacrylate dialyzer (Toray Medical Co.); blood flow 200-300 mL/min (mean 283 +/- 20); mean session length 236 +/- 13 min. Bioanalytical method: cloned enzyme donor immunoassay (CEDIA; Microgenics / Thermo Scientific) on a modular Roche analyzer; LLOQ 0.24 ug/mL; between-run imprecision 2.1-4.0%."
+    species = "human",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "approx 54-75 years (mean 64.5 +/- 10.1; Results, Patients' characteristics)",
+    weight_range = "54.5-102 kg (mean 72.7 +/- 16.4 on admission; mean 75.6 +/- 15.8 for the dialysed cohort in Table 3)",
+    sex_female_pct = 0,
+    race_ethnicity = "Not reported (single-centre medical ICU at the University Hospital of Poitiers, France)",
+    disease_state = "Critically ill adult ICU patients with acute kidney injury requiring intermittent hemodialysis and suffering from a community-acquired or nosocomial infection requiring treatment with gentamicin. Severity scores: SOFA 3-15 (median approx 11), SAPS II 34-65 (median approx 49). 8/10 received mechanical ventilation; 8/10 received pressor amines (Table 2). Infections included pyelonephritis (n=2), VAP / mediastinitis / fasciitis / lower-limb ischemia / septic thrombophlebitis (nosocomial, n=5), and angiocholitis / peritonitis (community-acquired, n=2). Pathogens identified included Escherichia coli, Serratia marcescens, MSSA, Pseudomonas aeruginosa, and Enterococcus faecium; MICs for gentamicin where available ranged 0.5-2 mg/L (Table 2).",
+    dose_range = "Gentamicin 6 mg/kg actual body weight, IV infusion over 30 min via syringe pump (Schering-Plough SAS), administered 30 min before the start of a 4-h intermittent hemodialysis session. Per-subject administered doses 300-600 mg with infused doses 360 +/- 99 mg on average (Table 3). Concurrent antibacterial therapy varied per indication (piperacillin-tazobactam, ceftriaxone, vancomycin, levofloxacin, amoxicillin, oxacillin, teicoplanin, metronidazole; Table 2).",
+    regions = "France (single-centre medical ICU, University Hospital of Poitiers)",
+    renal_function = "Acute kidney injury requiring intermittent hemodialysis; baseline renal function not separately quantified. Estimated post-dialysis non-hemodialysis clearance CL_NHD in the published cohort was 4.7-22.7 mL/min (Table 3), substantially below normal native CrCL.",
+    notes = "Baseline demographics from Veinstein 2013 Results (Patients' characteristics) and Tables 2-3. Hemodialysis apparatus: Gambro AK 200 Ultra S with a Toray B3 polymethylmethacrylate dialyzer (Toray Medical Co.); blood flow 200-300 mL/min (mean 283 +/- 20); mean session length 236 +/- 13 min. Bioanalytical method: cloned enzyme donor immunoassay (CEDIA; Microgenics / Thermo Scientific) on a modular Roche analyzer; LLOQ 0.24 ug/mL; between-run imprecision 2.1-4.0%."
   )
 
   ini({

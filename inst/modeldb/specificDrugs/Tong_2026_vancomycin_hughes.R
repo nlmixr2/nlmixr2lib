@@ -28,57 +28,57 @@ Tong_2026_vancomycin_hughes <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tong 2026 Table 1, BMI >= 40 kg/m2 cohort: median 133.0 kg (range 43.8-318.0). Does NOT enter",
         "the disposition parameters directly. It is an input to the two internally derived quantities",
         "that do: body mass index (BMI = WT / (HT/100)^2) and, through that, Janmahasatian fat-free",
         "mass. Using FFM rather than total weight is the point of this model in an obese cohort.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     HT = list(
-      description        = "Body height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tong 2026 Table 1, BMI >= 40 kg/m2 cohort: median 167.6 cm (range 93.3-200.7). The control",
         "stream divides by 100 to obtain metres before squaring (BMI = WT / ((HT/100)**2)), which",
         "fixes the unit as cm. Enters only through BMI and hence fat-free mass.",
         sep = " "
       ),
-      source_name        = "HT"
+      source_name = "HT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tong 2026 Table 1, BMI >= 40 kg/m2 cohort: median 60.0 years (range 18.2 to 90+; ages above",
         "90 are aggregated for de-identification). Used only inside the internal fat-free-mass-based",
         "Cockcroft-Gault creatinine-clearance calculation.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Tong 2026 Table 1, BMI >= 40 kg/m2 cohort: 1272 male / 1692 female treatment courses (57.1%",
         "female). The supplement control stream uses the OPPOSITE polarity, SEX with 1 = male: the",
         "default fat-free-mass line uses the male Janmahasatian coefficients (6680, 216) and",
@@ -89,14 +89,14 @@ Tong_2026_vancomycin_hughes <- function() {
         "0.85^SEXF.",
         sep = " "
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tong 2026 Table 1, BMI >= 40 kg/m2 cohort: median 0.95 mg/dL (range 0.10-10.9). Used as the",
         "denominator of the Cockcroft-Gault equation with the 72 constant, which fixes the unit as",
         "mg/dL. NOTE: unlike the sibling modified-Goti stream, this stream applies NO cap to the",
@@ -104,32 +104,32 @@ Tong_2026_vancomycin_hughes <- function() {
         "computed value.",
         sep = " "
       ),
-      source_name        = "CR"
+      source_name = "CR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2709L,
-    n_studies      = 19L,
-    age_range      = "18.2 to 90+ years",
-    age_median     = "60.0 years",
-    weight_range   = "43.8-318.0 kg",
-    weight_median  = "133.0 kg",
+    species = "human",
+    n_subjects = 2709L,
+    n_studies = 19L,
+    age_range = "18.2 to 90+ years",
+    age_median = "60.0 years",
+    weight_range = "43.8-318.0 kg",
+    weight_median = "133.0 kg",
     sex_female_pct = 57.1,
     race_ethnicity = "Not reported",
-    disease_state  = paste(
+    disease_state = paste(
       "Hospitalized adults (>= 18 years) with BMI >= 40 kg/m2 receiving intravenous vancomycin under",
       "routine model-informed precision dosing; at least two doses and at least one measured",
       "concentration required. Patients undergoing haemodialysis at any point during treatment were",
       "excluded, as were patients dosed with a model other than their site's default.",
       sep = " "
     ),
-    dose_range     = "Intravenous vancomycin per routine clinical practice; initial doses selected a priori, subsequent doses adapted by MAP Bayesian posterior estimates",
-    regions        = "United States (19 hospital systems, patients beginning treatment August 2022 to December 2024)",
+    dose_range = "Intravenous vancomycin per routine clinical practice; initial doses selected a priori, subsequent doses adapted by MAP Bayesian posterior estimates",
+    regions = "United States (19 hospital systems, patients beginning treatment August 2022 to December 2024)",
     renal_function = "Serum creatinine median 0.95 mg/dL (range 0.10-10.9); haemodialysis patients excluded",
     n_concentrations = 6572L,
-    notes          = paste(
+    notes = paste(
       "APPLICATION population from Tong 2026 Table 1 (BMI >= 40 kg/m2 cohort: 2709 patients, 2964",
       "treatment courses, 6572 samples), i.e. the cohort this model was USED to dose as the",
       "post-intervention default -- NOT the cohort it was estimated from. The DEVELOPMENT population",

@@ -22,8 +22,8 @@ Ward_2026_magnesium_pbpk <- function() {
   )
   vignette <- "Ward_2026_magnesium_pbpk"
   units <- list(
-    time          = "day",
-    dosing        = "(none -- Mg enters as two zero-order rates: diet and implant corrosion)",
+    time = "day",
+    dosing = "(none -- Mg enters as two zero-order rates: diet and implant corrosion)",
     concentration = "mmol/L"
   )
 
@@ -35,11 +35,15 @@ Ward_2026_magnesium_pbpk <- function() {
   compartmentData <- list(
     serum = list(
       analyte = "Magnesium(II) ion, exposed (exchangeable) fraction",
-      units = "mmol/L", specimen = "serum", verified = TRUE
+      units = "mmol/L",
+      specimen = "serum",
+      verified = TRUE
     ),
     bone = list(
       analyte = "Magnesium(II) ion, exposed (exchangeable) fraction",
-      units = "mmol/L", specimen = "tissue", verified = TRUE
+      units = "mmol/L",
+      specimen = "tissue",
+      verified = TRUE
     ),
     # The paper's bulk soft-tissue store T (muscle + soft tissue + liver, lumped
     # because they carry similar Mg concentrations) maps onto the canonical
@@ -49,19 +53,23 @@ Ward_2026_magnesium_pbpk <- function() {
     # the paper's own `tissue` wording (v_tissue, q_serum_tissue, ...).
     other = list(
       analyte = "Magnesium(II) ion, exposed (exchangeable) fraction",
-      units = "mmol/L", specimen = "tissue", verified = TRUE
+      units = "mmol/L",
+      specimen = "tissue",
+      verified = TRUE
     ),
     implant_zone = list(
       analyte = "Magnesium(II) ion, exposed (exchangeable) fraction",
-      units = "mmol/L", specimen = "tissue", verified = TRUE
+      units = "mmol/L",
+      specimen = "tissue",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species     = "human",
-    n_subjects  = NA_integer_,
-    n_studies   = NA_integer_,
-    age_range   = "adult",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    age_range = "adult",
     weight_median = "70 kg",
     disease_state = paste(
       "Healthy adult reference physiology (Table 1). Reduced renal function is",

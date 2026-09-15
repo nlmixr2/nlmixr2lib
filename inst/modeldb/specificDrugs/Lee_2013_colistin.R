@@ -8,50 +8,50 @@ Lee_2013_colistin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "colistin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "colistin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "colistin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Computed by the Cockcroft-Gault equation from age, body weight, and serum creatinine, expressed in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 128 mL/min (cohort median, Lee 2013 Table 1; range 22.6-309 mL/min). The CRCL effect enters the relative fraction of CMS converted to colistin: RFM = 1 - theta4 * (CRCL/128); the apparent CL and Vc of colistin are then divided by RFM (effective CL = (CL/fm*) / RFM; effective Vc = (Vc/fm*) / RFM).",
-      source_name        = "CLCR"
+      notes = "Source column CLCR. Computed by the Cockcroft-Gault equation from age, body weight, and serum creatinine, expressed in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 128 mL/min (cohort median, Lee 2013 Table 1; range 22.6-309 mL/min). The CRCL effect enters the relative fraction of CMS converted to colistin: RFM = 1 - theta4 * (CRCL/128); the apparent CL and Vc of colistin are then divided by RFM (effective CL = (CL/fm*) / RFM; effective Vc = (Vc/fm*) / RFM).",
+      source_name = "CLCR"
     ),
     DIS_EDEMA = list(
-      description        = "Clinically-evident peripheral edema indicator (puffy face and pitting edema in the legs, per clinical exam on Day 1 of CMS administration)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Clinically-evident peripheral edema indicator (puffy face and pitting edema in the legs, per clinical exam on Day 1 of CMS administration)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no clinical edema)",
-      notes              = "Source column EDEMA. Stored under canonical DIS_EDEMA per inst/references/covariate-columns.md (DIS_EDEMA entry added in this PR alongside the Lee 2013 extraction; operator-resolved sidecar request-001 / response-001 on the canonical name). Lee 2013 records edema as a single clinical diagnosis on Day 1 of CMS administration (Table 1 footnote d). 18 of 50 enrolled patients were edematous at baseline. Time-fixed per subject in this paper (no serial reassessment). The covariate enters as an additive linear deviation on the CMS-to-colistin turnover rate constant TR: TR = theta3 - theta5 * DIS_EDEMA, reducing TR from 0.796 (non-edematous) to 0.371 h^-1 (edematous).",
-      source_name        = "EDEMA"
+      notes = "Source column EDEMA. Stored under canonical DIS_EDEMA per inst/references/covariate-columns.md (DIS_EDEMA entry added in this PR alongside the Lee 2013 extraction; operator-resolved sidecar request-001 / response-001 on the canonical name). Lee 2013 records edema as a single clinical diagnosis on Day 1 of CMS administration (Table 1 footnote d). 18 of 50 enrolled patients were edematous at baseline. Time-fixed per subject in this paper (no serial reassessment). The covariate enters as an additive linear deviation on the CMS-to-colistin turnover rate constant TR: TR = theta3 - theta5 * DIS_EDEMA, reducing TR from 0.796 (non-edematous) to 0.371 h^-1 (edematous).",
+      source_name = "EDEMA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50L,
-    n_studies      = 1L,
-    age_range      = "26-80 years",
-    age_median     = "48 years (mean, SD 13)",
-    weight_range   = "50-98 kg",
-    weight_median  = "65.8 kg (mean, SD 10.3)",
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
+    age_range = "26-80 years",
+    age_median = "48 years (mean, SD 13)",
+    weight_range = "50-98 kg",
+    weight_median = "65.8 kg (mean, SD 10.3)",
     sex_female_pct = 22,
     race_ethnicity = "Not reported (single-center South Korean burn-ICU cohort)",
-    disease_state  = "Adult burn patients with 4-85% total body surface area affected (median TBSA 50.5%, SD 21.8); treated for nosocomial multidrug-resistant Gram-negative bacterial infections (Acinetobacter baumannii, Pseudomonas aeruginosa, etc.) in a burn intensive care unit.",
-    dose_range     = "150 mg CMS as colistin base activity (CBA) by IV infusion over 30 min, every 12 h. PK sampling started >=3 days after the first dose (steady-state assumption).",
-    regions        = "South Korea (single center: Burn Intensive Care Unit, Hangang Sacred Heart Hospital, Hallym University Medical Center)",
-    abs_i          = "ABSI 9.82 (SD 2.34, range 5-14)",
+    disease_state = "Adult burn patients with 4-85% total body surface area affected (median TBSA 50.5%, SD 21.8); treated for nosocomial multidrug-resistant Gram-negative bacterial infections (Acinetobacter baumannii, Pseudomonas aeruginosa, etc.) in a burn intensive care unit.",
+    dose_range = "150 mg CMS as colistin base activity (CBA) by IV infusion over 30 min, every 12 h. PK sampling started >=3 days after the first dose (steady-state assumption).",
+    regions = "South Korea (single center: Burn Intensive Care Unit, Hangang Sacred Heart Hospital, Hallym University Medical Center)",
+    abs_i = "ABSI 9.82 (SD 2.34, range 5-14)",
     days_post_burn = "15.5 days median (SD 10.4, range 3-58) from burn injury to first CMS dose",
     renal_function = "Cockcroft-Gault CRCL 128 mL/min (SD 75.2, range 22.6-309); raw, not BSA-normalized",
-    crrt_pct       = "17/50 (34%) on continuous renal replacement therapy at baseline",
-    sepsis_pct     = "29/50 (58%) with sepsis at baseline",
-    edema_pct      = "18/50 (36%) clinically edematous at baseline",
-    albumin        = "Serum albumin 2.5 g/dL (SD 0.3, range 1.9-3.1); low across cohort",
-    notes          = "Baseline demographics per Lee 2013 Table 1. 50 burn-ICU adults enrolled June 2010 - May 2011. Burn etiology: 39 flame, 5 electrical, 3 scalding, 2 chemical, 1 contact. All but one patient had TBSA 11-85% (the one outlier had a 4% electrical burn). Patients < 18 years, pregnant / breastfeeding, or allergic to CMS / colistin were excluded. The cohort spans a wide renal-function range, which drives the CRCL covariate effect on RFM in the final model. CRRT was tested as a covariate but not retained -- individual CL and RFM in CRRT vs non-CRRT patients did not differ in t tests (Lee 2013 Discussion paragraph 6)."
+    crrt_pct = "17/50 (34%) on continuous renal replacement therapy at baseline",
+    sepsis_pct = "29/50 (58%) with sepsis at baseline",
+    edema_pct = "18/50 (36%) clinically edematous at baseline",
+    albumin = "Serum albumin 2.5 g/dL (SD 0.3, range 1.9-3.1); low across cohort",
+    notes = "Baseline demographics per Lee 2013 Table 1. 50 burn-ICU adults enrolled June 2010 - May 2011. Burn etiology: 39 flame, 5 electrical, 3 scalding, 2 chemical, 1 contact. All but one patient had TBSA 11-85% (the one outlier had a 4% electrical burn). Patients < 18 years, pregnant / breastfeeding, or allergic to CMS / colistin were excluded. The cohort spans a wide renal-function range, which drives the CRCL covariate effect on RFM in the final model. CRRT was tested as a covariate but not retained -- individual CL and RFM in CRRT vs non-CRRT patients did not differ in t tests (Lee 2013 Discussion paragraph 6)."
   )
 
   ini({

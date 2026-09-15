@@ -41,18 +41,18 @@ Parasrampuria_2025_temsavir_hivrna_day8 <- function() {
   )
   vignette <- "Parasrampuria_2025_temsavir"
   units <- list(
-    time          = "n/a (static landmark exposure-response regression at Day 8; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
+    time = "n/a (static landmark exposure-response regression at Day 8; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
     concentration = "d_viral_load (change in plasma HIV-1 RNA from Day 1 to Day 8, log10 c/mL; negative = a decline)"
   )
 
   covariateData <- list(
     CTROUGH = list(
-      description        = "Individual steady-state plasma temsavir concentration at the end of the dosing interval (Ctau), per subject. Supplied as data: this model has no PK layer.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual steady-state plasma temsavir concentration at the end of the dosing interval (Ctau), per subject. Supplied as data: this model has no PK layer.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TOTAL (not unbound) plasma temsavir at STEADY STATE, on the",
         "approved fostemsavir 600 mg BID regimen, so the dosing interval",
         "is 12 h. Parasrampuria 2025 Methods 2.3: post-hoc PK parameter",
@@ -76,14 +76,14 @@ Parasrampuria_2025_temsavir_hivrna_day8 <- function() {
         "Ctau < 10 ng/mL achieved a > 0.5 log10 decline while some with",
         "Ctau > 4000 ng/mL did not."
       ),
-      source_name        = "Ctau"
+      source_name = "Ctau"
     ),
     HIV_VLOAD = list(
-      description        = "Baseline (Day 1) plasma HIV-1 RNA concentration.",
-      units              = "copies/mL (c/mL)",
-      type               = "continuous",
+      description = "Baseline (Day 1) plasma HIV-1 RNA concentration.",
+      units = "copies/mL (c/mL)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Carried LINEAR in c/mL, as the <VIRUS>_VLOAD family requires, and",
         "normalised inside model() to the cohort median. The Table 3 Note",
         "writes the term as (BHIVRNA/44940)^theta1, so the centring",
@@ -101,14 +101,14 @@ Parasrampuria_2025_temsavir_hivrna_day8 <- function() {
         "CD4+ below 20 cells/mm3, virologic response was 33.4% lower at a",
         "baseline of 1000 c/mL than at the 44,940 c/mL median."
       ),
-      source_name        = "BHIVRNA"
+      source_name = "BHIVRNA"
     ),
     CD4_ABS = list(
-      description        = "Baseline (Day 1) absolute peripheral-blood CD4+ T-lymphocyte count.",
-      units              = "cells/mm^3",
-      type               = "continuous",
+      description = "Baseline (Day 1) absolute peripheral-blood CD4+ T-lymphocyte count.",
+      units = "cells/mm^3",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Carried as the CONTINUOUS count and DICHOTOMISED INSIDE model()",
         "at 20 cells/mm3, following the pattern the register prescribes",
         "for HCV_VLOAD and ALP: a pre-binarised dataset column would hide",
@@ -130,74 +130,74 @@ Parasrampuria_2025_temsavir_hivrna_day8 <- function() {
         "Day 8 cohort (N = 258): 69 subjects (27%) below 20 cells/mm3;",
         "median 98.5 cells/mm3, range 0-1160 (Table S2)."
       ),
-      source_name        = "BSL (derived from baseline CD4+ count)"
+      source_name = "BSL (derived from baseline CD4+ count)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened for the Day 8 efficacy exposure-response model (Table 1) and rejected: Results 3.2.1 state that 'other tested covariates (virologic, immunologic, and demographic factors) did not affect exposure-virologic response relationships.' Day 8 cohort median 48 years, range 18-73 (Table S2)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened for the Day 8 efficacy exposure-response model (Table 1) and rejected: Results 3.2.1 state that 'other tested covariates (virologic, immunologic, and demographic factors) did not affect exposure-virologic response relationships.' Day 8 cohort median 48 years, range 18-73 (Table S2)."
     ),
     SEXF = list(
       description = "Female sex indicator; 1 = female, 0 = male.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (Table 1, as 'gender') and rejected. Day 8 cohort 67 female (26%), 191 male (74%) (Table S2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (Table 1, as 'gender') and rejected. Day 8 cohort 67 female (26%), 191 male (74%) (Table S2)."
     ),
     RACE_BLACK = list(
       description = "Black / African American race indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (Table 1, as 'race') and rejected. Day 8 cohort 60 (23%) (Table S2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (Table 1, as 'race') and rejected. Day 8 cohort 60 (23%) (Table S2)."
     ),
     WT = list(
       description = "Baseline body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened (Table 1) and rejected. Day 8 cohort median 70 kg, range 38-146 (Table S2). Body weight does act on exposure through the companion population PK model; it simply adds nothing once Ctau is in the model."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened (Table 1) and rejected. Day 8 cohort median 70 kg, range 38-146 (Table S2). Body weight does act on exposure through the companion population PK model; it simply adds nothing once Ctau is in the model."
     ),
     REGION = list(
       description = "Geographic region of the enrolling site.",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened (Table 1, as 'geographic region') and rejected. Day 8 cohort: North America 105 (41%), South America 97 (38%), Europe 49 (19%), other 7 (3%) (Table S2). Not a register canonical -- listed here for provenance only, since covariatesDataExcluded is documentation."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened (Table 1, as 'geographic region') and rejected. Day 8 cohort: North America 105 (41%), South America 97 (38%), Europe 49 (19%), other 7 (3%) (Table S2). Not a register canonical -- listed here for provenance only, since covariatesDataExcluded is documentation."
     ),
     IC50_TMR = list(
       description = "Baseline phenotypic 50% inhibitory concentration of temsavir against the subject's own virus.",
-      units       = "nM",
-      type        = "continuous",
-      notes       = "Screened as a baseline virologic-sensitivity covariate and, in the exposure-metric screen, as the denominators PBIC50 / PBIC90 / IC50-fold-change; none improved the fit (Results 3.2.1: 'Evaluating Ctau by IC50 and IC90 adjusted for protein binding (Ctau/PBIC50, Ctau/PBIC90) did not improve model fits'). Day 8 cohort median 0.88 nM, range 0.04-6000 (0.417 ng/mL, range 0.019-2841). Table 1 gives the protein-binding adjustment: PBIC50 = 473.48 * (IC50/fu), where 473.48 g/mol is the molecular weight of free-base temsavir and fu = 0.12 is the mean estimated unbound fraction in vivo. Not a register canonical -- documentation only."
+      units = "nM",
+      type = "continuous",
+      notes = "Screened as a baseline virologic-sensitivity covariate and, in the exposure-metric screen, as the denominators PBIC50 / PBIC90 / IC50-fold-change; none improved the fit (Results 3.2.1: 'Evaluating Ctau by IC50 and IC90 adjusted for protein binding (Ctau/PBIC50, Ctau/PBIC90) did not improve model fits'). Day 8 cohort median 0.88 nM, range 0.04-6000 (0.417 ng/mL, range 0.019-2841). Table 1 gives the protein-binding adjustment: PBIC50 = 473.48 * (IC50/fu), where 473.48 g/mol is the molecular weight of free-base temsavir and fu = 0.12 is the mean estimated unbound fraction in vivo. Not a register canonical -- documentation only."
     ),
     GP160_SUBS = list(
       description = "Number of pre-defined genotypic substitutions of interest within the HIV-1 gp160 domain at baseline.",
-      units       = "(count)",
-      type        = "count",
-      notes       = "Screened (Table 1) and rejected. Day 8 cohort: 0 substitutions 141 (55%), 1 substitution 102 (40%), 2 substitutions 15 (6%) (Table S2). Not a register canonical -- documentation only."
+      units = "(count)",
+      type = "count",
+      notes = "Screened (Table 1) and rejected. Day 8 cohort: 0 substitutions 141 (55%), 1 substitution 102 (40%), 2 substitutions 15 (6%) (Table S2). Not a register canonical -- documentation only."
     ),
     CD8_ABS = list(
       description = "Baseline absolute CD8+ T-lymphocyte count.",
-      units       = "cells/mm^3",
-      type        = "continuous",
-      notes       = "Screened (Table 1) and rejected. Day 8 cohort median 653 cells/mm3, range 61-2700 (Table S2). Not a register canonical -- documentation only."
+      units = "cells/mm^3",
+      type = "continuous",
+      notes = "Screened (Table 1) and rejected. Day 8 cohort median 653 cells/mm3, range 61-2700 (Table S2). Not a register canonical -- documentation only."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 258L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 258L,
+    n_studies = 1L,
     n_observations = "258 Day 8 change-from-Day-1 plasma HIV-1 RNA records (one per subject; landmark analysis, no repeated measures)",
-    age_range      = "18-73 years (median 48) (Table S2)",
-    weight_range   = "38-146 kg (median 70) (Table S2)",
+    age_range = "18-73 years (median 48) (Table S2)",
+    weight_range = "38-146 kg (median 70) (Table S2)",
     sex_female_pct = 26.0,
     race_ethnicity = c(White = 66.0, `Black or African American` = 23.0, Asian = 1.0, Other = 10.0),
-    disease_state  = "heavily treatment-experienced (HTE) adults with multidrug-resistant HIV-1 infection failing their current antiretroviral regimen, from the randomised cohort of the phase 3 BRIGHTE study; median baseline plasma HIV-1 RNA 44,943 c/mL (4.65 log10 c/mL, range 1.59-6.91), median baseline CD4+ count 98.5 cells/mm3 (range 0-1160) with 69 subjects (27%) below 20 cells/mm3",
-    dose_range     = "fostemsavir extended-release 600 mg twice daily (193 subjects) or matching placebo (65 subjects), both added to the failing regimen during the 8-day functional-monotherapy period",
-    regions        = "North America 105 (41%), South America 97 (38%), Europe 49 (19%), other 7 (3%) (Table S2)",
-    notes          = paste0(
+    disease_state = "heavily treatment-experienced (HTE) adults with multidrug-resistant HIV-1 infection failing their current antiretroviral regimen, from the randomised cohort of the phase 3 BRIGHTE study; median baseline plasma HIV-1 RNA 44,943 c/mL (4.65 log10 c/mL, range 1.59-6.91), median baseline CD4+ count 98.5 cells/mm3 (range 0-1160) with 69 subjects (27%) below 20 cells/mm3",
+    dose_range = "fostemsavir extended-release 600 mg twice daily (193 subjects) or matching placebo (65 subjects), both added to the failing regimen during the 8-day functional-monotherapy period",
+    regions = "North America 105 (41%), South America 97 (38%), Europe 49 (19%), other 7 (3%) (Table S2)",
+    notes = paste0(
       "The exposure-response analysis was deliberately restricted to the ",
       "phase 3 study because that is the target population. Subjects ",
       "needed both a PK sample and Day 8 plasma HIV-1 RNA data. Fitted ",

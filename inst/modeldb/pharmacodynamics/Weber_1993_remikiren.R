@@ -22,38 +22,38 @@ Weber_1993_remikiren <- function() {
 
   covariateData <- list(
     CP_REM_NGML = list(
-      description        = "Instantaneous remikiren (Ro 42-5892) plasma concentration at the time of each PD observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Instantaneous remikiren (Ro 42-5892) plasma concentration at the time of each PD observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying per event row. Drives the Hill / Emax expression APR = Imax * CP_REM_NGML^hill / (IC50^hill + CP_REM_NGML^hill).",
         "In Weber 1993 this was the observed plasma remikiren concentration measured by HPLC with fluorescence or coulometric electrochemical detection or by a protein-binding assay (Methods, 'Remikiren concentrations' section); the source NONMEM column name is Cp.",
         "Reference values observed: mean Cmax was 4-6 ng/mL after 200 mg oral, 23-27 ng/mL after 300 mg oral, 47-83 ng/mL after 600-800 mg oral, with substantial intersubject variability (Weber 1993 Table 1).",
         "Set to 0 outside the drug-exposure window (the inhibition term then collapses to 0)."
       ),
-      source_name        = "Cp"
+      source_name = "Cp"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 144L,
-    n_studies      = 3L,
-    age_range      = "24-69 years across the three studies (Study A: 30-64 y; Study B: 24-69 y; Study C: 38-64 y)",
-    age_median     = NA_character_,
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = 144L,
+    n_studies = 3L,
+    age_range = "24-69 years across the three studies (Study A: 30-64 y; Study B: 24-69 y; Study C: 38-64 y)",
+    age_median = NA_character_,
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Mild-to-moderate essential hypertension (entry sitting diastolic BP in the range 95-115 mm Hg depending on study)",
-    dose_range     = paste(
+    disease_state = "Mild-to-moderate essential hypertension (entry sitting diastolic BP in the range 95-115 mm Hg depending on study)",
+    dose_range = paste(
       "Study A: 100, 200, 400, or 800 mg po qd for 8 days as oral solution in orange juice, always on an empty stomach (n = 47 evaluable on active treatment across four dose levels).",
       "Study B: 300 or 600 mg po qd for 8 days as 100 mg capsules on an empty stomach (n = 17 per active dose level), with a 100 mg i.v. dose 4 h after the last oral dose (n = 16 placebo).",
       "Study C: 600 mg po qd for 8 days as 100 mg capsules 1-2 h after breakfast (n = 12 active, n = 12 placebo), with a 100 mg i.v. dose or i.v. placebo 4 h after the last oral dose."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Three double-blind, randomized, placebo-controlled, parallel-group clinical pharmacology studies conducted by F. Hoffmann-La Roche (Basel, Switzerland).",
       "Study A: 70 male volunteers enrolled; Study B: 51 volunteers (26 male, 25 female); Study C: 24 male volunteers.",
       "Plasma renin activity (PRA) and immunoreactive renin (IRR) were measured up to 24 h post-dose on the first and last days of oral treatment, alongside plasma remikiren concentrations.",

@@ -14,149 +14,152 @@ Ahn_2023_vupanorsen <- function() {
   # proportional error models rather than one (Methods "Base PK model"). The
   # applicable pair is selected inside `model()` from the study indicators.
   paper_specific_residual_sds <- c(
-    "propSdPhase1", "addSdPhase1", "propSdPhase2", "addSdPhase2"
+    "propSdPhase1",
+    "addSdPhase1",
+    "propSdPhase2",
+    "addSdPhase2"
   )
 
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with FIXED exponents 0.75 on CL/F and Q/F and 1 on Vc/F and Vp/F, normalised to an 88 kg reference (Ahn 2023 Equations 11-14; Methods 'Base PK model' states the allometry constants were fixed). The 88 kg constant is the value printed in the equations; the pooled cohort mean was 89.15 kg (Table 1).",
-      source_name        = "BWT"
+      notes = "Allometric scaling with FIXED exponents 0.75 on CL/F and Q/F and 1 on Vc/F and Vp/F, normalised to an 88 kg reference (Ahn 2023 Equations 11-14; Methods 'Base PK model' states the allometry constants were fixed). The 88 kg constant is the value printed in the equations; the pooled cohort mean was 89.15 kg (Table 1).",
+      source_name = "BWT"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = non-Asian (White, Black, or missing)",
-      notes              = "Retained on both CL/F and Vc/F in the final model (Ahn 2023 Equations 11-12). Asian participants were 9.3% of the pooled cohort (42/451, Table 1), all 12 phase I Japanese volunteers plus 30 in the Western / phase II studies. The Discussion notes the bootstrapped 95% CI for the CL/F effect included the null value of 1 while the parametric CI did not; the covariate was retained because it was still of interest.",
-      source_name        = "Asian"
+      notes = "Retained on both CL/F and Vc/F in the final model (Ahn 2023 Equations 11-12). Asian participants were 9.3% of the pooled cohort (42/451, Table 1), all 12 phase I Japanese volunteers plus 30 in the Western / phase II studies. The Discussion notes the bootstrapped 95% CI for the CL/F effect included the null value of 1 while the parametric CI did not; the covariate was retained because it was still of interest.",
+      source_name = "Asian"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = "Retained on CL/F only (Ahn 2023 Equation 11). Female participants were 40.6% of the pooled cohort (183/451, Table 1). The effect is after accounting for body weight, which is already in the model allometrically (Discussion).",
-      source_name        = "Female"
+      notes = "Retained on CL/F only (Ahn 2023 Equation 11). Female participants were 40.6% of the pooled cohort (183/451, Table 1). The effect is after accounting for body weight, which is already in the model allometrically (Discussion).",
+      source_name = "Female"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody positive indicator, stationary (subject-level) definition",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positive indicator, stationary (subject-level) definition",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = ADA-negative or not assessed",
-      notes              = "Stationary definition: positive if any post-treatment ADA sample was positive, negative if none were (Methods 'Full PK model'). ADA was not assessed in the phase I studies and those subjects were assumed ADA-negative, because the median onset of treatment-emergent ADA was at least 164 days in the phase IIa study (Methods 'Missing data and imputations'). A time-varying ADA definition was also constructed but the stationary one was used for the model. Retained on CL/F (Ahn 2023 Equation 11).",
-      source_name        = "ADAP"
+      notes = "Stationary definition: positive if any post-treatment ADA sample was positive, negative if none were (Methods 'Full PK model'). ADA was not assessed in the phase I studies and those subjects were assumed ADA-negative, because the median onset of treatment-emergent ADA was at least 164 days in the phase IIa study (Methods 'Missing data and imputations'). A time-varying ADA definition was also constructed but the stationary one was used for the model. Retained on CL/F (Ahn 2023 Equation 11).",
+      source_name = "ADAP"
     ),
     DOSE = list(
-      description        = "Vupanorsen dose level of the treatment arm",
-      units              = "mg",
-      type               = "continuous",
+      description = "Vupanorsen dose level of the treatment arm",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used only to build the binary 160 mg indicator that multiplies Q/F (Ahn 2023 Equation 13); all other dose levels share the reference Q/F. The effect captures a greater-than-dose-proportional exposure increase seen only in the 160 mg cohort of the Japanese phase I study, which the authors attribute to possible partial saturation of asialoglycoprotein-receptor-mediated hepatic uptake (Methods 'Full PK model'; Discussion). Supply the arm's nominal dose level in mg; the model tests DOSE == 160.",
-      source_name        = "160mg"
+      notes = "Used only to build the binary 160 mg indicator that multiplies Q/F (Ahn 2023 Equation 13); all other dose levels share the reference Q/F. The effect captures a greater-than-dose-proportional exposure increase seen only in the 160 mg cohort of the Japanese phase I study, which the authors attribute to possible partial saturation of asialoglycoprotein-receptor-mediated hepatic uptake (Methods 'Full PK model'; Discussion). Supply the arm's nominal dose level in mg; the model tests DOSE == 160.",
+      source_name = "160mg"
     ),
     STUDY_PHASE2A = list(
-      description        = "Phase IIa study indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase IIa study indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = phase I studies (the PD reference population) or the phase IIb study",
-      notes              = "NCT03371355, dose-finding in patients with hypertriglyceridemia, type 2 diabetes and nonalcoholic fatty liver disease (N = 105, Table 1). Carries its own baseline factor for each of the three PD endpoints (Ahn 2023 Equation 17, Table 3), and shares the single phase II potency factor with STUDY_PHASE2B (Equation 16). PK parameters do not depend on it.",
-      source_name        = "Phase IIa"
+      notes = "NCT03371355, dose-finding in patients with hypertriglyceridemia, type 2 diabetes and nonalcoholic fatty liver disease (N = 105, Table 1). Carries its own baseline factor for each of the three PD endpoints (Ahn 2023 Equation 17, Table 3), and shares the single phase II potency factor with STUDY_PHASE2B (Equation 16). PK parameters do not depend on it.",
+      source_name = "Phase IIa"
     ),
     STUDY_PHASE2B = list(
-      description        = "Phase IIb (TRANSLATE-TIMI 70) study indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase IIb (TRANSLATE-TIMI 70) study indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = phase I studies (the PD reference population) or the phase IIa study",
-      notes              = "NCT04516291, TRANSLATE-TIMI 70, dose-ranging in statin-treated patients with dyslipidemia (N = 286, Table 1). Carries its own baseline factor for each of the three PD endpoints (Ahn 2023 Equation 17, Table 3), and shares the single phase II potency factor with STUDY_PHASE2A (Equation 16). PK parameters do not depend on it.",
-      source_name        = "Phase IIb"
+      notes = "NCT04516291, TRANSLATE-TIMI 70, dose-ranging in statin-treated patients with dyslipidemia (N = 286, Table 1). Carries its own baseline factor for each of the three PD endpoints (Ahn 2023 Equation 17, Table 3), and shares the single phase II potency factor with STUDY_PHASE2A (Equation 16). PK parameters do not depend on it.",
+      source_name = "Phase IIb"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Baseline age. Screened on CL/F in the full PK model as a power term (Ahn 2023 Equation 6, normalised to 60 years) and removed from the final model.",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age. Screened on CL/F in the full PK model as a power term (Ahn 2023 Equation 6, normalised to 60 years) and removed from the final model.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Judged not clinically important: the bootstrapped estimate lay close to the null value of 0 for a power exponent and the 95% CI was wide and included it (Results 'Full PK model'; Figure 2). Removing age, eGFR and Black race together raised the objective function by only about 2.5. The point estimate is reported graphically in Figure 2 only, so no usable value is available even for documentation. Cohort mean 59.5 years (SD 9.9), range 21-87 (Table 1)."
+      notes = "Judged not clinically important: the bootstrapped estimate lay close to the null value of 0 for a power exponent and the 95% CI was wide and included it (Results 'Full PK model'; Figure 2). Removing age, eGFR and Black race together raised the objective function by only about 2.5. The point estimate is reported graphically in Figure 2 only, so no usable value is available even for documentation. Cohort mean 59.5 years (SD 9.9), range 21-87 (Table 1)."
     ),
     CRCL = list(
-      description        = "Baseline estimated glomerular filtration rate. Screened on CL/F in the full PK model as a power term (Ahn 2023 Equation 6, normalised to 94 mL/min/1.73 m^2) and removed from the final model.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline estimated glomerular filtration rate. Screened on CL/F in the full PK model as a power term (Ahn 2023 Equation 6, normalised to 94 mL/min/1.73 m^2) and removed from the final model.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Judged not clinically important on the same grounds as AGE (Results 'Full PK model'; Figure 2). The paper does not state which estimating equation produced the eGFR values. Point estimate reported graphically in Figure 2 only. Cohort mean 91.30 mL/min/1.73 m^2 (SD 17.18), range 30.0-136.8 (Table 1)."
+      notes = "Judged not clinically important on the same grounds as AGE (Results 'Full PK model'; Figure 2). The paper does not state which estimating equation produced the eGFR values. Point estimate reported graphically in Figure 2 only. Cohort mean 91.30 mL/min/1.73 m^2 (SD 17.18), range 30.0-136.8 (Table 1)."
     ),
     RACE_BLACK = list(
-      description        = "Black race indicator. Screened on CL/F in the full PK model (Ahn 2023 Equation 6) and removed from the final model.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black race indicator. Screened on CL/F in the full PK model (Ahn 2023 Equation 6) and removed from the final model.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = non-Black",
-      notes              = "Judged not clinically important: the estimate lay close to the null value of 1 and the 95% CI was wide and included it (Results 'Full PK model'; Figure 2). Point estimate reported graphically in Figure 2 only. Black participants were 5.1% of the pooled cohort (23/451, Table 1). Note that RACE_ASIAN, screened in the same equation, WAS retained."
+      notes = "Judged not clinically important: the estimate lay close to the null value of 1 and the 95% CI was wide and included it (Results 'Full PK model'; Figure 2). Point estimate reported graphically in Figure 2 only. Black participants were 5.1% of the pooled cohort (23/451, Table 1). Note that RACE_ASIAN, screened in the same equation, WAS retained."
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte  = "vupanorsen",
-      units    = "mg",
+      analyte = "vupanorsen",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "vupanorsen",
-      units    = "mg",
+      analyte = "vupanorsen",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "vupanorsen",
-      units    = "mg",
+      analyte = "vupanorsen",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     angptl3 = list(
-      analyte  = "angiopoietin-like 3 protein",
-      units    = "ng/mL",
+      analyte = "angiopoietin-like 3 protein",
+      units = "ng/mL",
       specimen = "serum",
       verified = TRUE
     ),
     tg = list(
-      analyte  = "triglycerides",
-      units    = "mg/dL",
+      analyte = "triglycerides",
+      units = "mg/dL",
       specimen = "serum",
       verified = TRUE
     ),
     nonhdlc = list(
-      analyte  = "non-high-density-lipoprotein cholesterol",
-      units    = "mg/dL",
+      analyte = "non-high-density-lipoprotein cholesterol",
+      units = "mg/dL",
       specimen = "serum",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 451,
-    n_studies      = 4,
-    age_range      = "21-87 years",
-    age_median     = "mean 59.5 years (SD 9.9)",
-    weight_range   = "52.0-138.0 kg",
-    weight_median  = "mean 89.15 kg (SD 17.00)",
+    species = "human",
+    n_subjects = 451,
+    n_studies = 4,
+    age_range = "21-87 years",
+    age_median = "mean 59.5 years (SD 9.9)",
+    weight_range = "52.0-138.0 kg",
+    weight_median = "mean 89.15 kg (SD 17.00)",
     sex_female_pct = 40.6,
     race_ethnicity = c(White = 84.7, Black = 5.1, Asian = 9.3, Missing = 0.9),
-    disease_state  = "elevated triglycerides in otherwise healthy volunteers (phase I); hypertriglyceridemia with type 2 diabetes and nonalcoholic fatty liver disease (phase IIa); statin-treated dyslipidemia (phase IIb)",
-    dose_range     = "20-120 mg subcutaneous single dose and 10-60 mg weekly in phase I; every-2-week and every-4-week regimens up to 160 mg in phase II",
-    regions        = "Western (phase I NCT02709850, phase IIa NCT03371355, phase IIb NCT04516291) and Japan (phase I NCT04459767)",
+    disease_state = "elevated triglycerides in otherwise healthy volunteers (phase I); hypertriglyceridemia with type 2 diabetes and nonalcoholic fatty liver disease (phase IIa); statin-treated dyslipidemia (phase IIb)",
+    dose_range = "20-120 mg subcutaneous single dose and 10-60 mg weekly in phase I; every-2-week and every-4-week regimens up to 160 mg in phase II",
+    regions = "Western (phase I NCT02709850, phase IIa NCT03371355, phase IIb NCT04516291) and Japan (phase I NCT04459767)",
     renal_function = "baseline eGFR mean 91.30 mL/min/1.73 m^2 (SD 17.18), range 30.0-136.8",
-    co_medication  = "baseline statin use in 74.1% of the pooled cohort (334/451); all 286 phase IIb participants were statin-treated",
-    notes          = "Baseline demographics from Ahn 2023 Table 1 (N = 451 including placebo recipients). The PK analysis used 2531 concentrations from 364 vupanorsen-treated participants plus one placebo participant with two quantifiable concentrations; the PD analysis used 3312 ANGPTL3, 3551 triglyceride and 3551 non-HDL-cholesterol observations from 451 participants (Results 'Observed data'). Observed baseline means were ANGPTL3 103.65 ng/mL (SD 35.11), triglycerides 248.6 mg/dL (SD 148.5) and non-HDL-cholesterol 149.72 mg/dL (SD 39.35) (Table S3); the model-estimated typical baselines in Table 3 differ from these because they are conditioned on the study-population factors."
+    co_medication = "baseline statin use in 74.1% of the pooled cohort (334/451); all 286 phase IIb participants were statin-treated",
+    notes = "Baseline demographics from Ahn 2023 Table 1 (N = 451 including placebo recipients). The PK analysis used 2531 concentrations from 364 vupanorsen-treated participants plus one placebo participant with two quantifiable concentrations; the PD analysis used 3312 ANGPTL3, 3551 triglyceride and 3551 non-HDL-cholesterol observations from 451 participants (Results 'Observed data'). Observed baseline means were ANGPTL3 103.65 ng/mL (SD 35.11), triglycerides 248.6 mg/dL (SD 148.5) and non-HDL-cholesterol 149.72 mg/dL (SD 39.35) (Table S3); the model-estimated typical baselines in Table 3 differ from these because they are conditioned on the study-population factors."
   )
 
   ini({

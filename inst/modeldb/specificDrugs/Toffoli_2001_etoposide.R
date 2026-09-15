@@ -8,71 +8,71 @@ Toffoli_2001_etoposide <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "etoposide", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "etoposide", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "etoposide", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "etoposide", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "etoposide", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated by the Jelliffe (1973) method, reported as absolute mL/min (NOT BSA-normalized). Precedent for a raw-mL/min value under the CRCL canonical is Delattre_2010_amikacin (Cockcroft-Gault).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the Jelliffe (1973) method, reported as absolute mL/min (NOT BSA-normalized). Precedent for a raw-mL/min value under the CRCL canonical is Delattre_2010_amikacin (Cockcroft-Gault).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (baseline). Median 70 mL/min, range 22-121 in the Toffoli 2001 cohort (Table 1). Enters CL via the additive linear equation CL (L/h) = 0.74 + 0.0057 * CRCL (Toffoli 2001 Equation 2, page 4). The intercept-slope form is preserved rather than converted to a proportional form to remain faithful to the source. The Eq. 2 slope 0.0057 is calibrated to raw mL/min values (not BSA-normalized); do NOT feed BSA-normalized eGFR (mL/min/1.73 m^2) into this model without rescaling.",
-      source_name        = "CLCR"
+      notes = "Time-fixed per subject (baseline). Median 70 mL/min, range 22-121 in the Toffoli 2001 cohort (Table 1). Enters CL via the additive linear equation CL (L/h) = 0.74 + 0.0057 * CRCL (Toffoli 2001 Equation 2, page 4). The intercept-slope form is preserved rather than converted to a proportional form to remain faithful to the source. The Eq. 2 slope 0.0057 is calibrated to raw mL/min values (not BSA-normalized); do NOT feed BSA-normalized eGFR (mL/min/1.73 m^2) into this model without rescaling.",
+      source_name = "CLCR"
     )
   )
 
   covariatesDataExcluded <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reported as significant on Vc and k12 in Table 2 (final population model) but no covariate-effect coefficient is given in the paper text or in Equations 2-5. Cannot be encoded in the model without the coefficient; documented here for provenance.",
-      source_name        = "BSA"
+      notes = "Reported as significant on Vc and k12 in Table 2 (final population model) but no covariate-effect coefficient is given in the paper text or in Equations 2-5. Cannot be encoded in the model without the coefficient; documented here for provenance.",
+      source_name = "BSA"
     ),
     FU = list(
-      description        = "Unbound fraction of etoposide in plasma (100% - percent protein binding). Per-subject value determined by ultrafiltration of the Cmax sample.",
-      units              = "fraction",
-      type               = "continuous",
+      description = "Unbound fraction of etoposide in plasma (100% - percent protein binding). Per-subject value determined by ultrafiltration of the Cmax sample.",
+      units = "fraction",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reported as significant on Vc and k12 (via %PB) in Table 2 but no covariate-effect coefficient is given. Population mean protein binding 91.5% (fu = 0.085), CV 5%, range 79-98% (i.e., fu range 0.02-0.21). Documented here for provenance.",
-      source_name        = "%PB"
+      notes = "Reported as significant on Vc and k12 (via %PB) in Table 2 but no covariate-effect coefficient is given. Population mean protein binding 91.5% (fu = 0.085), CV 5%, range 79-98% (i.e., fu range 0.02-0.21). Documented here for provenance.",
+      source_name = "%PB"
     ),
     TBILI = list(
-      description        = "Serum total bilirubin",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum total bilirubin",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a candidate covariate on CL (Table 2 'Covariables' column) but did not further reduce residual variability once CRCL was in the model; not retained in the final CL relationship (page 4, 'Influence of hepatic function on clearance').",
-      source_name        = "bili"
+      notes = "Screened as a candidate covariate on CL (Table 2 'Covariables' column) but did not further reduce residual variability once CRCL was in the model; not retained in the final CL relationship (page 4, 'Influence of hepatic function on clearance').",
+      source_name = "bili"
     ),
     AGE = list(
-      description        = "Age at study entry",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at study entry",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Correlates with CL (via correlation with CRCL, Eq. 3) and with free AUCp.o. (Eq. 4) but not retained as an independent covariate after CRCL is accounted for (stepwise regression; page 5).",
-      source_name        = "AGE"
+      notes = "Correlates with CL (via correlation with CRCL, Eq. 3) and with free AUCp.o. (Eq. 4) but not retained as an independent covariate after CRCL is accounted for (stepwise regression; page 5).",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50,
-    n_studies      = 1,
-    age_range      = "50-83 years",
-    age_median     = "65 years (pooled across tumour types)",
-    weight_range   = NULL,
-    weight_median  = NULL,
+    species = "human",
+    n_subjects = 50,
+    n_studies = 1,
+    age_range = "50-83 years",
+    age_median = "65 years (pooled across tumour types)",
+    weight_range = NULL,
+    weight_median = NULL,
     sex_female_pct = 26,
     race_ethnicity = NULL,
-    disease_state  = "Advanced solid tumours (hepatocellular carcinoma n=17, non-small-cell lung cancer n=19, gastric cancer n=5, breast cancer n=6, other n=3)",
-    dose_range     = "100 mg oral soft-gelatin capsule (Vepesid or Lastet) daily for 14 days every 3 weeks. One oral dose replaced by 50 mg 1-h IV infusion on day 1 or day 7 (crossover; day randomized).",
-    regions        = "Italy (Aviano)",
-    notes          = "Prospective open-label bioavailability study, recruitment 1994-1998, single-center (Centro di Riferimento Oncologico, Aviano). Baseline creatinine clearance median 70 mL/min (per Table 1 medians across tumour groups, Jelliffe method). 728 plasma concentration samples across 50 patients (page 4)."
+    disease_state = "Advanced solid tumours (hepatocellular carcinoma n=17, non-small-cell lung cancer n=19, gastric cancer n=5, breast cancer n=6, other n=3)",
+    dose_range = "100 mg oral soft-gelatin capsule (Vepesid or Lastet) daily for 14 days every 3 weeks. One oral dose replaced by 50 mg 1-h IV infusion on day 1 or day 7 (crossover; day randomized).",
+    regions = "Italy (Aviano)",
+    notes = "Prospective open-label bioavailability study, recruitment 1994-1998, single-center (Centro di Riferimento Oncologico, Aviano). Baseline creatinine clearance median 70 mL/min (per Table 1 medians across tumour groups, Jelliffe method). 728 plasma concentration samples across 50 patients (page 4)."
   )
 
   ini({

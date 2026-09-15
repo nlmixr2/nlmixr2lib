@@ -40,11 +40,11 @@ Demetri_2009_imatinib <- function() {
 
   covariateData <- list(
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters CL/F as (ALB/38.3)^1.66 and Vc/F as (ALB/38.3)^1.66 (Yang ",
         "2025 Table 1). Yang 2025 Table 1 abbreviation list: 'ALB albumin ",
         "(g/L)', matching the canonical ALB unit. The reference 38.3 g/L ",
@@ -63,14 +63,14 @@ Demetri_2009_imatinib <- function() {
         "mainly on CL/F, so the risk to the model's principal use is ",
         "limited."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     WBC = list(
-      description        = "White blood cell count",
-      units              = "10^9 cells/L",
-      type               = "continuous",
+      description = "White blood cell count",
+      units = "10^9 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters CL/F as (WBC/7)^-0.418 and Vc/F as (WBC/7)^-0.418 (Yang ",
         "2025 Table 1). Yang 2025 Table 1 abbreviation list: 'WBC white ",
         "blood cell count (10^9/L)'. The reference 7 x 10^9/L is the ",
@@ -80,14 +80,14 @@ Demetri_2009_imatinib <- function() {
         "the ALB note above for the transcription caveat about the exponent ",
         "being repeated on Vc/F."
       ),
-      source_name        = "WBC"
+      source_name = "WBC"
     ),
     OCC = list(
-      description        = "Occasion indicator: 1 = the day-1 (first-dose) occasion, 2 = the day-29-or-later occasion",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion indicator: 1 = the day-1 (first-dose) occasion, 2 = the day-29-or-later occasion",
+      units = "(count)",
+      type = "categorical",
       reference_category = "1 (day 1, first dose)",
-      notes              = paste0(
+      notes = paste0(
         "Yang 2025 Table 1 attaches footnote b to this model's Vc/F term ",
         "'(168 + 58.5 x OCC)'. Footnote b reads 'Occasion (OCC) with ",
         "OCC = 0 for day 1 and OCC = 1 (used in this current validation ",
@@ -100,21 +100,21 @@ Demetri_2009_imatinib <- function() {
         "shift, not inter-occasion variability. Same column and coding as ",
         "Schmidli_2005_imatinib.R and Petain_2008_imatinib.R."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 73L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 73L,
+    n_studies = 1L,
     n_observations = "not reported in Yang 2025 Table 1",
-    age_range      = "25-79 years",
-    disease_state  = "Adults with unresectable or metastatic gastrointestinal stromal tumor (GIST)",
-    dose_range     = "Oral imatinib 400 or 600 mg total daily dose",
-    regions        = "Europe and USA",
-    bioanalytical  = "LC-MS, limit of quantification 4 ng/mL (Yang 2025 Table 1)",
-    notes          = paste0(
+    age_range = "25-79 years",
+    disease_state = "Adults with unresectable or metastatic gastrointestinal stromal tumor (GIST)",
+    dose_range = "Oral imatinib 400 or 600 mg total daily dose",
+    regions = "Europe and USA",
+    bioanalytical = "LC-MS, limit of quantification 4 ng/mL (Yang 2025 Table 1)",
+    notes = paste0(
       "This model was one of only four whose ORIGINAL (unscaled) form met ",
       "Yang 2025's bias criterion of a median prediction error within ",
       "+/- 15% on their external dataset (-13.71%, Table 3); its precision ",

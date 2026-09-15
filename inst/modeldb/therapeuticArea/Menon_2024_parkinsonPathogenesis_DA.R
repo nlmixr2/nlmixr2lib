@@ -43,8 +43,8 @@ Menon_2024_parkinsonPathogenesis_DA <- function() {
   paper_specific_compartments <- c("alpha_syn", "ros", "da_ves", "da_cyto")
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; mechanistic DA-compartmentalization variant, no drug input)",
+    time = "h",
+    dosing = "(none; mechanistic DA-compartmentalization variant, no drug input)",
     concentration = "(alpha_syn and ROS dimensionless with 50 pM scale factor per Supinfo2 Section 1.4; DA states da_ves, da_cyto in uM per Supinfo2 Section 1.6)"
   )
 
@@ -53,26 +53,46 @@ Menon_2024_parkinsonPathogenesis_DA <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    alpha_syn = list(analyte = "misfolded alpha-synuclein monomer", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    ros       = list(analyte = "cytoplasmic reactive oxygen species", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    da_ves    = list(analyte = "vesicular dopamine", units = NA_character_, specimen = "administration site", verified = FALSE),
-    da_cyto   = list(analyte = "cytoplasmic dopamine", units = NA_character_, specimen = "administration site", verified = FALSE)
+    alpha_syn = list(
+      analyte = "misfolded alpha-synuclein monomer",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    ros = list(
+      analyte = "cytoplasmic reactive oxygen species",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    da_ves = list(
+      analyte = "vesicular dopamine",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    da_cyto = list(
+      analyte = "cytoplasmic dopamine",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "in silico (dopaminergic neuron cell-level mechanistic model)",
-    n_subjects     = NA_integer_,
-    n_studies      = 0L,
-    age_range      = "(not applicable)",
-    weight_range   = "(not applicable)",
+    species = "in silico (dopaminergic neuron cell-level mechanistic model)",
+    n_subjects = NA_integer_,
+    n_studies = 0L,
+    age_range = "(not applicable)",
+    weight_range = "(not applicable)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Parkinson's disease pathogenesis, DA-compartmentalization variant. The paper demonstrates that reducing DA transport from extracellular space into the cytoplasm (parameter tr3) lowers steady-state cytoplasmic DA and raises the bistable-switching threshold in alpha_syn -- a mechanism for targeting DA transporters therapeutically.",
-    dose_range     = "(not applicable)",
-    regions        = "(not applicable)",
-    notes          = "Extracted from Menon 2024 Supinfo2 Section 1.6 (Equations 6-9) and Supinfo3 Figure S8(B) parameter table. The DA-compartmentalization variant does NOT include the proteasomal-sequestration module (the combined 5-ODE model is the companion Menon_2024_parkinsonPathogenesis). Extracellular DA (D_ex) is a boundary condition held constant per the paper's simplification ('For simplicity, in our analysis we assume that D_ex is maintained at a fixed level of the order of 1 nM'). The tr3 parameter's Supinfo3 entry '40, 20, 0.4 (x10^3)' encodes three scenarios in the Fig S8(B) sweep -- default here is the high-transport 40000 h^-1 baseline; the vignette also runs the low-transport 400 h^-1 scenario to show the switching-threshold effect. Not extracted here: the extracellular DA feedback inhibition variant (Fig S8(C), k_synth = alpha/(beta + D_ex)) is described in the vignette Errata for downstream users to construct if needed."
+    disease_state = "Parkinson's disease pathogenesis, DA-compartmentalization variant. The paper demonstrates that reducing DA transport from extracellular space into the cytoplasm (parameter tr3) lowers steady-state cytoplasmic DA and raises the bistable-switching threshold in alpha_syn -- a mechanism for targeting DA transporters therapeutically.",
+    dose_range = "(not applicable)",
+    regions = "(not applicable)",
+    notes = "Extracted from Menon 2024 Supinfo2 Section 1.6 (Equations 6-9) and Supinfo3 Figure S8(B) parameter table. The DA-compartmentalization variant does NOT include the proteasomal-sequestration module (the combined 5-ODE model is the companion Menon_2024_parkinsonPathogenesis). Extracellular DA (D_ex) is a boundary condition held constant per the paper's simplification ('For simplicity, in our analysis we assume that D_ex is maintained at a fixed level of the order of 1 nM'). The tr3 parameter's Supinfo3 entry '40, 20, 0.4 (x10^3)' encodes three scenarios in the Fig S8(B) sweep -- default here is the high-transport 40000 h^-1 baseline; the vignette also runs the low-transport 400 h^-1 scenario to show the switching-threshold effect. Not extracted here: the extracellular DA feedback inhibition variant (Fig S8(C), k_synth = alpha/(beta + D_ex)) is described in the vignette Errata for downstream users to construct if needed."
   )
 
   ini({

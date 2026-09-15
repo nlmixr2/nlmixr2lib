@@ -37,15 +37,15 @@ AbdullahKoolmees_2024_voriconazole_pbpk <- function() {
     sep = " "
   )
   vignette <- "AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     FU = list(
-      description        = "Fraction of voriconazole unbound in plasma",
-      units              = "fraction (unitless)",
-      type               = "continuous",
+      description = "Fraction of voriconazole unbound in plasma",
+      units = "fraction (unitless)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Scenario-level, not per-subject-measured. Table 4 assigns 0.42 to",
         "the healthy volunteer, to the case patient and to every",
         "flucloxacillin-DDI scenario (plasma albumin median 40 g/L), and",
@@ -57,14 +57,14 @@ AbdullahKoolmees_2024_voriconazole_pbpk <- function() {
         "hepatic and renal clearance. Supply it as a data column so the",
         "published scenarios are reproducible without editing the model."
       ),
-      source_name        = "fup"
+      source_name = "fup"
     ),
     CONMED_FLUCLOXACILLIN = list(
-      description        = "Concomitant flucloxacillin administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant flucloxacillin administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no flucloxacillin)",
-      notes              = paste(
+      notes = paste(
         "1 = flucloxacillin co-administered. Flucloxacillin binds the",
         "pregnane X receptor, which upregulates CYP3A4, CYP2C9 and CYP2C19",
         "(Introduction and Discussion). The source implements this as a",
@@ -73,14 +73,14 @@ AbdullahKoolmees_2024_voriconazole_pbpk <- function() {
         "(t > 24)'; supplement source `if (t < 24) ... else ...`). The",
         "covariate gates that switch; tind sets when it fires."
       ),
-      source_name        = "flucloxacillin"
+      source_name = "flucloxacillin"
     ),
     DIS_INFECT_ACTIVE = list(
-      description        = "Active severe infection / inflammation episode indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active severe infection / inflammation episode indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no active severe infection)",
-      notes              = paste(
+      notes = paste(
         "1 = the record falls inside a severe infectious-disease episode.",
         "Clinical criterion in this source is the C-reactive-protein band",
         "used to define the simulated patients in Table 4 (bacterial",
@@ -92,46 +92,46 @@ AbdullahKoolmees_2024_voriconazole_pbpk <- function() {
         "Table 5 Vmax column is carried here as an explicitly gated,",
         "off-by-default extension. See the vignette Errata."
       ),
-      source_name        = "CRP band"
+      source_name = "CRP band"
     )
   )
 
   compartmentData <- list(
-    depot    = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = TRUE),
-    gut      = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    liver    = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney   = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    lung     = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    adipose  = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    heart    = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    brain    = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    bone     = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle   = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    spleen   = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    other    = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    venous   = list(analyte = "voriconazole", units = "mg", specimen = "whole blood", verified = TRUE),
+    depot = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = TRUE),
+    gut = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    lung = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    adipose = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    bone = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "voriconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    venous = list(analyte = "voriconazole", units = "mg", specimen = "whole blood", verified = TRUE),
     arterial = list(analyte = "voriconazole", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1L,
-    n_studies      = 1L,
-    age_range      = "48 years (the index case patient)",
-    weight_range   = "50-70 kg for the case patient; 73 kg reference adult used for the physiology",
+    species = "human",
+    n_subjects = 1L,
+    n_studies = 1L,
+    age_range = "48 years (the index case patient)",
+    weight_range = "50-70 kg for the case patient; 73 kg reference adult used for the physiology",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Relapsed acute myeloid leukaemia with Staphylococcus aureus",
       "cellulitis and probable pulmonary aspergillosis, treated in the",
       "intensive care unit"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral voriconazole 400 mg twice daily as a 24-h loading dose",
       "followed by 200 mg twice daily maintenance, with intravenous",
       "flucloxacillin 6 g daily throughout"
     ),
-    regions        = "Netherlands (Amsterdam UMC)",
-    notes          = paste(
+    regions = "Netherlands (Amsterdam UMC)",
+    notes = paste(
       "Deterministic single-patient simulation model, not a population fit.",
       "The authors state explicitly that no pharmacokinetic variability or",
       "covariate variance could be included because of the retrospective",

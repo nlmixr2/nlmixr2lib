@@ -16,24 +16,24 @@ Karlsson_2009_voriconazole <- function() {
     "doi:10.1128/AAC.00751-08"
   )
   vignette <- "Karlsson_2009_voriconazole"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Karlsson 2009 Methods: 'The parameters CL, Vc, Q, and Vp were",
         "modeled as directly proportional to weight.' All four disposition",
         "parameters scale linearly with WT (no reference-weight",
@@ -41,14 +41,14 @@ Karlsson_2009_voriconazole <- function() {
         "10.8 to 54.9 kg with an average of 22.8 kg (paper Methods 'Study",
         "data')."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power covariate on CL: CL = TVCL * (ALT / 26.5)^(-0.0931). The",
         "reference ALT 26.5 IU/L is the population median used by Karlsson",
         "2009 for the typical subject (paper Table 2 footnote a, page 941:",
@@ -61,14 +61,14 @@ Karlsson_2009_voriconazole <- function() {
         "baseline ALT was 7-242 IU/L with average 40.7 IU/L (paper",
         "Methods)."
       ),
-      source_name        = "ALT"
+      source_name = "ALT"
     ),
     CYP2C19_IM = list(
-      description        = "CYP2C19 intermediate-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 intermediate-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (EM, UM, PM, or RM); when paired with CYP2C19_PM = 0, reference is the extensive metabolizer (EM) phenotype (Karlsson 2009: 58 of 82 patients)",
-      notes              = paste(
+      notes = paste(
         "Karlsson 2009 only had three CYP2C19 poor metabolizers in the",
         "dataset, so the 21 heterozygous extensive metabolizers (HEMs) and",
         "the 3 PMs were pooled into a single 'HEM/PM' group estimated as",
@@ -81,14 +81,14 @@ Karlsson_2009_voriconazole <- function() {
         "final-model rows 'Residual error (EMs)' and 'Residual error",
         "(HEMs/PMs)')."
       ),
-      source_name        = "CYP2C19 == 'HEM'"
+      source_name = "CYP2C19 == 'HEM'"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (EM, UM, IM, or RM); when paired with CYP2C19_IM = 0, reference is the extensive metabolizer (EM) phenotype",
-      notes              = paste(
+      notes = paste(
         "Karlsson 2009 had only 3 PMs (of 82 total patients) and pooled",
         "them with the 21 HEMs into a single 'HEM/PM' covariate group; the",
         "PM-specific effect was therefore not separately estimated. The",
@@ -97,22 +97,22 @@ Karlsson_2009_voriconazole <- function() {
         "estimate. The pooled group also stratifies the residual error",
         "(see CYP2C19_IM notes and Table 1 final-model column)."
       ),
-      source_name        = "CYP2C19 == 'PM'"
+      source_name = "CYP2C19 == 'PM'"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 82L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 82L,
+    n_studies = 3L,
     n_observations = 1274L,
-    age_range      = "2 to <12 years",
-    weight_range   = "10.8-54.9 kg (mean 22.8)",
-    weight_mean    = "22.8 kg",
+    age_range = "2 to <12 years",
+    weight_range = "10.8-54.9 kg (mean 22.8)",
+    weight_mean = "22.8 kg",
     sex_female_pct = 42.7,
-    cyp2c19_dist   = c(EM_pct = 70.7, HEM_pct = 25.6, PM_pct = 3.7),
+    cyp2c19_dist = c(EM_pct = 70.7, HEM_pct = 25.6, PM_pct = 3.7),
     race_ethnicity = c(White = 69.5, Black = 7.3, Asian = 4.9, Other = 18.3),
-    disease_state  = paste(
+    disease_state = paste(
       "Pediatric patients aged 2 to <12 years with serious fungal",
       "infections, predominantly immunocompromised due to underlying",
       "hematologic malignancy or bone marrow transplantation. Disease",
@@ -120,7 +120,7 @@ Karlsson_2009_voriconazole <- function() {
       "(47.6%), 2 lymphoma (2.4%), 1 aplastic anemia (1.2%), 9 other",
       "(11.0%). Mucositis was present in 57 patients (69.5%)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Pooled from three studies. Study A (n=11): single 3 or 4 mg/kg i.v.",
       "doses. Study B (n=28): loading 6 mg/kg BID i.v. on day 1, then 3",
       "mg/kg BID days 2-4 and 4 mg/kg BID days 4-8. Study C (n=43, two",
@@ -130,9 +130,9 @@ Karlsson_2009_voriconazole <- function() {
       "BID i.v. days 5-8, then 6 mg/kg BID p.o. days 9-12. i.v. infusions",
       "0.5-3.5 h. Average 15.5 plasma samples per subject."
     ),
-    alt_range      = "7-242 IU/L (mean 40.7; population median 26.5 per Table 2 footnote)",
-    alp_range      = "46-309 IU/L (mean 135)",
-    notes          = paste(
+    alt_range = "7-242 IU/L (mean 40.7; population median 26.5 per Table 2 footnote)",
+    alp_range = "46-309 IU/L (mean 135)",
+    notes = paste(
       "Karlsson 2009 Methods: 5 of the original 87 patients were excluded",
       "due to missing CYP2C19 genotype (4 from study B and 1 from study C),",
       "yielding the n=82 analyzed cohort. NONMEM V level 1.1 with FOCE",

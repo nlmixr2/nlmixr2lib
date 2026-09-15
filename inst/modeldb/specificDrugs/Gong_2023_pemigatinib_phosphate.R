@@ -46,15 +46,15 @@ Gong_2023_pemigatinib_phosphate <- function() {
   # sibling model Gong_2023_pemigatinib_creatinine uses the same convention
   # (operator decision, sidecar request 001 q2: keep the paper-named form).
   paper_specific_compartments <- c("phosChange")
-  units    <- list(time = "h", dosing = "mg", concentration = "nM")
+  units <- list(time = "h", dosing = "mg", concentration = "nM")
 
   covariateData <- list(
     AUC_PEMI = list(
-      description        = "Per-subject steady-state pemigatinib AUC over the 24 h dosing interval",
-      units              = "h*nM",
-      type               = "continuous",
+      description = "Per-subject steady-state pemigatinib AUC over the 24 h dosing interval",
+      units = "h*nM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Static (time-fixed) drug-exposure covariate. Gong 2023 Methods",
         "'Exposure-response evaluation': NONMEM 7.5 was used to simulate a",
         "dense steady-state post hoc concentration-time profile for each",
@@ -71,14 +71,14 @@ Gong_2023_pemigatinib_phosphate <- function() {
         "(Figure 3b). Set AUC_PEMI = 0 to recover the untreated condition,",
         "where the Emax term vanishes."
       ),
-      source_name        = "AUCss"
+      source_name = "AUCss"
     ),
     PHOS = list(
-      description        = "Baseline serum phosphate concentration",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Baseline serum phosphate concentration",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed pretreatment value. Gong 2023 Methods,",
         "'Exposure-response evaluation': 'Serum phosphate at baseline was",
         "entered into the model as a covariate.' It is the third parameter",
@@ -100,27 +100,27 @@ Gong_2023_pemigatinib_phosphate <- function() {
         "logistic model is not packaged because its intercept is not",
         "reported."
       ),
-      source_name        = "PHOS (in mg/dL; convert to canonical mmol/L by multiplying by 0.3229)"
+      source_name = "PHOS (in mg/dL; convert to canonical mmol/L by multiplying by 0.3229)"
     )
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 300,
-    n_studies     = 3,
+    species = "human",
+    n_subjects = 300,
+    n_studies = 3,
     disease_state = paste(
       "Patients with advanced malignancies receiving pemigatinib",
       "monotherapy, pooled across FIGHT-101, FIGHT-102, and FIGHT-202."
     ),
-    dose_range    = "1-20 mg orally once daily (continuous and 2-weeks-on / 1-week-off regimens)",
-    endpoint      = paste(
+    dose_range = "1-20 mg orally once daily (continuous and 2-weeks-on / 1-week-off regimens)",
+    endpoint = paste(
       "Change from baseline in mean serum phosphate concentration, where",
       "the on-treatment value is the mean of cycle 1 day 8 (C1D8) and",
       "cycle 1 day 15 (C1D15). Serum phosphate was measured as part of a",
       "comprehensive serum chemistry assessment in FIGHT-101, FIGHT-102,",
       "and FIGHT-202 (Gong 2023 Methods, 'Studies and end points')."
     ),
-    notes         = paste(
+    notes = paste(
       "The same 300-patient monotherapy pool was used for the companion",
       "serum-creatinine exposure-response analysis",
       "(see modellib('Gong_2023_pemigatinib_creatinine')). Gong 2023",

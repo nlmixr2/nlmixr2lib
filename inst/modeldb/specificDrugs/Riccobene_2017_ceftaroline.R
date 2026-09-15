@@ -1,6 +1,6 @@
 Riccobene_2017_ceftaroline <- function() {
   description <- "Joint two-compartment ceftaroline fosamil (prodrug) plus two-compartment ceftaroline (active metabolite) population PK model for children and adults, fitted to 6633 plasma concentrations from 305 children aged 1 day to under 18 years pooled with healthy adults, adults with renal impairment and adult patients with ABSSSI or CABP (Riccobene 2017). Ceftaroline fosamil is assumed to be converted completely to ceftaroline, so the whole prodrug elimination clearance CLcf enters the ceftaroline central compartment. Body weight enters allometrically on all clearances (0.75) and volumes (1). Ceftaroline clearance additionally carries a BSA-normalised creatinine clearance term active only below 80 mL/min/1.73 m2, an age term active only above 50 years, a hemodialysis term, a healthy-versus-patient multiplier, and, for children aged 2 years or younger, a Rhodin-style postmenstrual-age renal maturation function that replaces the creatinine clearance term. Ceftaroline central volume carries the same healthy-versus-patient multiplier plus an exponentially decaying postmenstrual-age maturation excess in children aged 2 years or younger. An intramuscular depot (first-order ka, bioavailability fixed to 1) is carried from the upstream adult model; every study contributing to this analysis dosed intravenously. This model supported the FDA and EMA pediatric dose regimens for ceftaroline fosamil."
-  reference   <- paste(
+  reference <- paste(
     "Riccobene TA, Khariton T, Knebel W, Das S, Li J, Jandourek A, Carrothers TJ, Bradley JS.",
     "Population PK modeling and target attainment simulations to support dosing of ceftaroline",
     "fosamil in pediatric patients with acute bacterial skin and skin structure infections and",
@@ -15,105 +15,115 @@ Riccobene_2017_ceftaroline <- function() {
     "that abstract is a conference abstract and is not in nlmixr2lib.",
     sep = " "
   )
-  vignette    <- "Riccobene_2017_ceftaroline"
+  vignette <- "Riccobene_2017_ceftaroline"
 
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling of every clearance (exponent 0.75) and every volume (exponent 1) of both ceftaroline fosamil and ceftaroline, referenced to 70 kg. Supplemental Table S2 prints the scaling terms as (WT/70)^0.75 and (WT/70)^1 under each structural parameter and Supplemental Equation S1 writes them out explicitly. Weights ranged 1.5 to 100 kg among the 305 children (Results, Study Population).",
-      source_name        = "WT"
+      notes = "Allometric scaling of every clearance (exponent 0.75) and every volume (exponent 1) of both ceftaroline fosamil and ceftaroline, referenced to 70 kg. Supplemental Table S2 prints the scaling terms as (WT/70)^0.75 and (WT/70)^1 under each structural parameter and Supplemental Equation S1 writes them out explicitly. Weights ranged 1.5 to 100 kg among the 305 children (Results, Study Population).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at study entry.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at study entry.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters ceftaroline clearance twice. (1) Power term (AGE/50)^-0.807, active only above 50 years (Supplemental Equation S1: 'For AGE greater than 50, COV5 = (AGE/50)^-0.807'; COV5 is 1 otherwise). Encoded with max(AGE, 50) so the term is exactly 1 at and below the 50-year pivot. (2) Gate on the two maturation terms: Supplemental Equation S1 activates COV8 (renal maturation on CL) and COV9 (volume maturation on Vcc) only 'For age <= 2'. The gate is a step, so typical clearance is discontinuous at exactly 2 years; that is the published model and is reproduced here (see vignette Errata).",
-      source_name        = "AGE"
+      notes = "Enters ceftaroline clearance twice. (1) Power term (AGE/50)^-0.807, active only above 50 years (Supplemental Equation S1: 'For AGE greater than 50, COV5 = (AGE/50)^-0.807'; COV5 is 1 otherwise). Encoded with max(AGE, 50) so the term is exactly 1 at and below the 50-year pivot. (2) Gate on the two maturation terms: Supplemental Equation S1 activates COV8 (renal maturation on CL) and COV9 (volume maturation on Vcc) only 'For age <= 2'. The gate is a step, so typical clearance is discontinuous at exactly 2 years; that is the published model and is reproduced here (see vignette Errata).",
+      source_name = "AGE"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (postnatal age plus gestational age at birth).",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (postnatal age plus gestational age at birth).",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Supplemental Equation S1 defines PMA_i = AGEW_i + GAGE_i, i.e. postnatal age in weeks plus gestational age at birth in weeks, and uses it in two maturation terms that are active only for AGE <= 2 years: the Rhodin-style renal maturation Hill function FPMA = PMA^1.6/(47.7^1.6 + PMA^1.6) on ceftaroline clearance, and the exponentially decaying volume excess 1 + 1.71*exp(-(PMA - 33)*log(2)/5.51) on ceftaroline central volume. Units here are WEEKS, matching the paper and the Germovsek_2018_meropenem precedent, not the months given as the register default; the reference values 47.7, 33 and 5.51 are all in weeks. Must be supplied for every subject (for an adult it is age in weeks plus 40); it is inert outside the AGE <= 2 gate.",
-      source_name        = "PMA"
+      notes = "Supplemental Equation S1 defines PMA_i = AGEW_i + GAGE_i, i.e. postnatal age in weeks plus gestational age at birth in weeks, and uses it in two maturation terms that are active only for AGE <= 2 years: the Rhodin-style renal maturation Hill function FPMA = PMA^1.6/(47.7^1.6 + PMA^1.6) on ceftaroline clearance, and the exponentially decaying volume excess 1 + 1.71*exp(-(PMA - 33)*log(2)/5.51) on ceftaroline central volume. Units here are WEEKS, matching the paper and the Germovsek_2018_meropenem precedent, not the months given as the register default; the reference values 47.7, 33 and 5.51 are all in weeks. Must be supplied for every subject (for an adult it is age in weeks plus 40); it is inert outside the AGE <= 2 gate.",
+      source_name = "PMA"
     ),
     CRCL = list(
-      description        = "Creatinine clearance normalised by body surface area.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Creatinine clearance normalised by body surface area.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Estimated by the Cockcroft-Gault equation on total body weight for adults and by the bedside Schwartz equation for children (Methods, Population PK Model). Enters ceftaroline clearance in two mutually exclusive ways. For AGE > 2 years: the power term (nCRCL/80)^0.472, active only below the 80 mL/min/1.73 m^2 reference and only in subjects not on a hemodialysis programme (Supplemental Equation S1 COV3). For AGE <= 2 years the creatinine clearance term is replaced by the postmenstrual-age maturation function (Methods, Population PK Model), and mild renal impairment is represented by scaling that maturation function linearly by CRCL/80 (Methods, Simulations: 'The FPMA was scaled from CrCL scaling of 0.625 (50/80) to 0.988 (79/80) for mild renal impairment'). Both forms are encoded with min(CRCL, 80) so they saturate at the reference and are exactly 1 for normal renal function. Source column nCRCL in the supplement.",
-      source_name        = "nCRCL"
+      notes = "Estimated by the Cockcroft-Gault equation on total body weight for adults and by the bedside Schwartz equation for children (Methods, Population PK Model). Enters ceftaroline clearance in two mutually exclusive ways. For AGE > 2 years: the power term (nCRCL/80)^0.472, active only below the 80 mL/min/1.73 m^2 reference and only in subjects not on a hemodialysis programme (Supplemental Equation S1 COV3). For AGE <= 2 years the creatinine clearance term is replaced by the postmenstrual-age maturation function (Methods, Population PK Model), and mild renal impairment is represented by scaling that maturation function linearly by CRCL/80 (Methods, Simulations: 'The FPMA was scaled from CrCL scaling of 0.625 (50/80) to 0.988 (79/80) for mild renal impairment'). Both forms are encoded with min(CRCL, 80) so they saturate at the reference and are exactly 1 for normal renal function. Source column nCRCL in the supplement.",
+      source_name = "nCRCL"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant indicator (1 = healthy adult subject, 0 = patient with an infection).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant indicator (1 = healthy adult subject, 0 = patient with an infection).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (healthy adult subject; the pooled phase 1 healthy-volunteer and renal-impairment cohort)",
-      notes              = "Supplemental Table S2 prints the multiplicative terms theta16^PAT = 3.23 on ceftaroline clearance and theta15^PAT = 4.33 on ceftaroline central volume, and Supplemental Equation S1 introduces both with the line 'For patients'. The source column is PAT (1 = patient, 0 = healthy subject) and is re-expressed here as PAT = 1 - DIS_HEALTHY, so the printed typical values CLc = 3.28 L/h and Vcc = 3.6 L are the HEALTHY-subject reference and the multipliers move them to the patient state. That orientation is the one that reproduces the paper's own simulation tables: every age band of Tables 3 to 5, all of which are patients, lands within about 13 percent of Dose/CL under it and about 4-fold off under the opposite orientation (see vignette Errata). Note this is the opposite orientation from the sibling model Riccobene_2016_ceftaroline, whose all-healthy ELF cohort required the multipliers to be active.",
-      source_name        = "PAT"
+      notes = "Supplemental Table S2 prints the multiplicative terms theta16^PAT = 3.23 on ceftaroline clearance and theta15^PAT = 4.33 on ceftaroline central volume, and Supplemental Equation S1 introduces both with the line 'For patients'. The source column is PAT (1 = patient, 0 = healthy subject) and is re-expressed here as PAT = 1 - DIS_HEALTHY, so the printed typical values CLc = 3.28 L/h and Vcc = 3.6 L are the HEALTHY-subject reference and the multipliers move them to the patient state. That orientation is the one that reproduces the paper's own simulation tables: every age band of Tables 3 to 5, all of which are patients, lands within about 13 percent of Dose/CL under it and about 4-fold off under the opposite orientation (see vignette Errata). Note this is the opposite orientation from the sibling model Riccobene_2016_ceftaroline, whose all-healthy ELF cohort required the multipliers to be active.",
+      source_name = "PAT"
     ),
     RRT_HEMODIAL_STATUS = list(
-      description        = "Intermittent-hemodialysis treatment-status indicator (1 = subject is on an intermittent hemodialysis programme, 0 = not).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intermittent-hemodialysis treatment-status indicator (1 = subject is on an intermittent hemodialysis programme, 0 = not).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on hemodialysis)",
-      notes              = "Multiplicative power-form effect 0.331^RRT_HEMODIAL_STATUS on ceftaroline clearance between dialysis sessions, and it switches off the creatinine clearance term (Supplemental Equation S1 scopes COV3 to 'non-dialysis patients' and COV4 = 0.331 to 'dialysis patients during non-dialysis period'). Supplemental Table S2 labels the source column ESRD (end-stage renal disease, 1 = yes), so within this model the ESRD flag and the on-a-hemodialysis-programme flag are operationally the same column; the canonical RRT name is used because the term's scope is dialysis, not renal disease generally. No child in this analysis had end-stage renal disease, so the coefficient is informed by the pooled adult renal-impairment data.",
-      source_name        = "ESRD"
+      notes = "Multiplicative power-form effect 0.331^RRT_HEMODIAL_STATUS on ceftaroline clearance between dialysis sessions, and it switches off the creatinine clearance term (Supplemental Equation S1 scopes COV3 to 'non-dialysis patients' and COV4 = 0.331 to 'dialysis patients during non-dialysis period'). Supplemental Table S2 labels the source column ESRD (end-stage renal disease, 1 = yes), so within this model the ESRD flag and the on-a-hemodialysis-programme flag are operationally the same column; the canonical RRT name is used because the term's scope is dialysis, not renal disease generally. No child in this analysis had end-stage renal disease, so the coefficient is informed by the pooled adult renal-impairment data.",
+      source_name = "ESRD"
     ),
     RRT_HEMODIAL_ACTIVE = list(
-      description        = "Hemodialysis-active indicator (1 while a dialysis session is running, 0 in the interdialytic interval and in non-dialysed subjects).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hemodialysis-active indicator (1 while a dialysis session is running, 0 in the interdialytic interval and in non-dialysed subjects).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no dialysis session running)",
-      notes              = "Time-varying per-session gate. Supplemental Equation S1 REPLACES ceftaroline clearance entirely during a session (CLc_i = 10.9 L/h, with no covariate or eta terms) rather than adding a dialyser arm to the body clearance, so the model composes the two arms as cl_interdialytic*(1 - RRT_HEMODIAL_ACTIVE) + cl_hemodialysis*RRT_HEMODIAL_ACTIVE. No child in this analysis was dialysed.",
-      source_name        = "(dialysis period flag, unnamed in the supplement)"
+      notes = "Time-varying per-session gate. Supplemental Equation S1 REPLACES ceftaroline clearance entirely during a session (CLc_i = 10.9 L/h, with no covariate or eta terms) rather than adding a dialyser arm to the body clearance, so the model composes the two arms as cl_interdialytic*(1 - RRT_HEMODIAL_ACTIVE) + cl_hemodialysis*RRT_HEMODIAL_ACTIVE. No child in this analysis was dialysed.",
+      source_name = "(dialysis period flag, unnamed in the supplement)"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "ceftaroline fosamil", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "ceftaroline fosamil",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "ceftaroline fosamil", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "ceftaroline fosamil",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "ceftaroline fosamil", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "ceftaroline fosamil",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_ceftaroline = list(
-      analyte = "ceftaroline", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "ceftaroline",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_ceftaroline = list(
-      analyte = "ceftaroline", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "ceftaroline",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 720L,
-    n_studies      = 5L,
-    age_range      = "Children 1 day to under 18 years (including full-term neonates under 28 days and preterm neonates of 32 to 37 weeks gestational age); adults from the pooled healthy-subject, renal-impairment and phase 2/3 patient studies of the upstream analysis",
-    weight_range   = "1.5-100 kg among the 305 children",
+    species = "human",
+    n_subjects = 720L,
+    n_studies = 5L,
+    age_range = "Children 1 day to under 18 years (including full-term neonates under 28 days and preterm neonates of 32 to 37 weeks gestational age); adults from the pooled healthy-subject, renal-impairment and phase 2/3 patient studies of the upstream analysis",
+    weight_range = "1.5-100 kg among the 305 children",
     sex_female_pct = 100 * 132 / 305,
     race_ethnicity = "Not reported for the pooled analysis dataset",
-    disease_state  = "Children with acute bacterial skin and skin structure infections, community-acquired bacterial pneumonia, complicated community-acquired bacterial pneumonia, or another suspected or confirmed infection requiring antibiotic therapy, plus healthy adult subjects, adults with varying degrees of renal impairment, and adult patients with ABSSSI or CABP. All children except one had normal renal function or mild renal impairment: of those aged 28 days or older, 241 had CrCL of 80 mL/(min 1.73 m^2) or more and 40 had CrCL of 50 to under 80 mL/(min 1.73 m^2).",
-    dose_range     = "Children: single doses of 8, 10, 12 or 15 mg/kg (maximum 600 mg) as 1- to 1.5-h infusions, and multiple doses of 8, 10, 12 or 15 mg/kg q8h (maximum 400 or 600 mg) as 1- or 2-h infusions. Adults: 50 to 1000 mg ceftaroline fosamil, including the approved 600 mg q12h regimen.",
-    regions        = "Multinational; the five pediatric studies are NCT00633126, NCT01298843, NCT01400867, NCT01530763 and NCT01669980",
+    disease_state = "Children with acute bacterial skin and skin structure infections, community-acquired bacterial pneumonia, complicated community-acquired bacterial pneumonia, or another suspected or confirmed infection requiring antibiotic therapy, plus healthy adult subjects, adults with varying degrees of renal impairment, and adult patients with ABSSSI or CABP. All children except one had normal renal function or mild renal impairment: of those aged 28 days or older, 241 had CrCL of 80 mL/(min 1.73 m^2) or more and 40 had CrCL of 50 to under 80 mL/(min 1.73 m^2).",
+    dose_range = "Children: single doses of 8, 10, 12 or 15 mg/kg (maximum 600 mg) as 1- to 1.5-h infusions, and multiple doses of 8, 10, 12 or 15 mg/kg q8h (maximum 400 or 600 mg) as 1- or 2-h infusions. Adults: 50 to 1000 mg ceftaroline fosamil, including the approved 600 mg q12h regimen.",
+    regions = "Multinational; the five pediatric studies are NCT00633126, NCT01298843, NCT01400867, NCT01530763 and NCT01669980",
     n_observations = "6633 measurable plasma concentrations (1799 ceftaroline fosamil, 4834 ceftaroline), of which 974 (234 ceftaroline fosamil, 740 ceftaroline) came from the 305 children",
-    notes          = "n_subjects counts the 525 patients plus 195 healthy subjects or subjects with various degrees of renal impairment reported in Results, Study Population; 305 of the 525 patients were children. n_studies counts the five pediatric studies of Table 1 that this analysis added; the adult data come from a previously pooled dataset of healthy-subject and phase 2/3 patient studies. The children were 173 males and 132 females; the sex split above is therefore the pediatric split, not the whole-dataset split, which is not reported. Concentrations below the limit of quantification (0.01 or 0.05 mg/L) were excluded. Analysis was run in NONMEM 7.3."
+    notes = "n_subjects counts the 525 patients plus 195 healthy subjects or subjects with various degrees of renal impairment reported in Results, Study Population; 305 of the 525 patients were children. n_studies counts the five pediatric studies of Table 1 that this analysis added; the adult data come from a previously pooled dataset of healthy-subject and phase 2/3 patient studies. The children were 173 males and 132 females; the sex split above is therefore the pediatric split, not the whole-dataset split, which is not reported. Concentrations below the limit of quantification (0.01 or 0.05 mg/L) were excluded. Analysis was run in NONMEM 7.3."
   )
 
   ini({

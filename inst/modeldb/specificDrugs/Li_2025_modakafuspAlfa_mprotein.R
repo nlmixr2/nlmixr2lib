@@ -17,61 +17,76 @@ Li_2025_modakafuspAlfa_mprotein <- function() {
   )
   vignette <- "Li_2025_modakafuspAlfa"
   units <- list(
-    time          = "day",
-    dosing        = "nmol",
+    time = "day",
+    dosing = "nmol",
     concentration = "g/L (serum M-protein, the fitted endpoint; the derived unbound modakafusp alfa concentration Cc is in ng/mL)"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight, time-varying. Enters the typical value of the central volume as a power function centred on 80.8 kg.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight, time-varying. Enters the typical value of the central volume as a power function centred on 80.8 kg.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Carried unchanged from the population PK layer; see modellib('Li_2025_modakafuspAlfa'). Li 2025 Methods used the CURRENT body weight at the start of each treatment cycle rather than the baseline weight, because weight-based doses were re-calculated each cycle.",
-      source_name        = "WTKG"
+      notes = "Carried unchanged from the population PK layer; see modellib('Li_2025_modakafuspAlfa'). Li 2025 Methods used the CURRENT body weight at the start of each treatment cycle rather than the baseline weight, because weight-based doses were re-calculated each cycle.",
+      source_name = "WTKG"
     ),
     ADA_TITER = list(
-      description        = "Anti-drug-antibody titer carried on the log3 scale and rounded to the nearest integer, time-varying. Drives both the total ADA target pool and the drug-ADA dissociation rate constant in the PK layer.",
-      units              = "log3(reciprocal dilution), rounded to the nearest integer (a value of 4 is a reciprocal titer of 81)",
-      type               = "continuous",
+      description = "Anti-drug-antibody titer carried on the log3 scale and rounded to the nearest integer, time-varying. Drives both the total ADA target pool and the drug-ADA dissociation rate constant in the PK layer.",
+      units = "log3(reciprocal dilution), rounded to the nearest integer (a value of 4 is a reciprocal titer of 81)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "ZERO-ENCODING: ADA-negative is encoded as 0 on this log3 scale, and the model gates every ADA term on ADA_TITER > 3 (the NONMEM stream's L3OFFTITER = 3.0), so the ADA pool is exactly zero for ADA-negative records and for reciprocal titers at or below 27. Carried unchanged from the population PK layer; see modellib('Li_2025_modakafuspAlfa').",
-      source_name        = "L3TITER"
+      notes = "ZERO-ENCODING: ADA-negative is encoded as 0 on this log3 scale, and the model gates every ADA term on ADA_TITER > 3 (the NONMEM stream's L3OFFTITER = 3.0), so the ADA pool is exactly zero for ADA-negative records and for reciprocal titers at or below 27. Carried unchanged from the population PK layer; see modellib('Li_2025_modakafuspAlfa').",
+      source_name = "L3TITER"
     ),
     ALB = list(
-      description        = "Baseline serum albumin. Enters the typical value of the baseline serum M-protein concentration as a power function.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin. Enters the typical value of the baseline serum M-protein concentration as a power function.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "TIME-FIXED baseline value, not a time-varying laboratory value: the source data column is ALB0 and the effect is on the M-protein baseline, not on a disposition parameter. UNIT CONVERSION: Li 2025 reports albumin in g/dL (mean 3.75 g/dL, SD 0.57, range 1.9-4.6 in the M-protein analysis population; Table 1) and Table 3 footnote a centres the effect on 3.6 g/dL. The nlmixr2lib canonical unit for ALB is g/L, so the reference used here is 36 g/L and any ALB column must be supplied in g/L (multiply a g/dL value by 10). The power ratio is unchanged by the conversion because it is a ratio of two albumin values. Albumin on baseline M-protein was the only covariate retained in the PK-PD model (p < 0.00001).",
-      source_name        = "ALB0"
+      notes = "TIME-FIXED baseline value, not a time-varying laboratory value: the source data column is ALB0 and the effect is on the M-protein baseline, not on a disposition parameter. UNIT CONVERSION: Li 2025 reports albumin in g/dL (mean 3.75 g/dL, SD 0.57, range 1.9-4.6 in the M-protein analysis population; Table 1) and Table 3 footnote a centres the effect on 3.6 g/dL. The nlmixr2lib canonical unit for ALB is g/L, so the reference used here is 36 g/L and any ALB column must be supplied in g/L (multiply a g/dL value by 10). The power ratio is unchanged by the conversion because it is a ratio of two albumin values. Albumin on baseline M-protein was the only covariate retained in the PK-PD model (p < 0.00001).",
+      source_name = "ALB0"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "modakafusp alfa (unbound; the species measured by the ELISA)", units = "nmol", specimen = "serum", verified = TRUE),
+    central = list(
+      analyte = "modakafusp alfa (unbound; the species measured by the ELISA)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
     peripheral1 = list(analyte = "modakafusp alfa (unbound)", units = "nmol", specimen = "serum", verified = TRUE),
-    complex     = list(analyte = "modakafusp alfa bound to anti-drug antibody", units = "nM", specimen = "serum", verified = TRUE),
-    mprotein    = list(analyte = "serum M-protein (monoclonal immunoglobulin, a marker of multiple myeloma tumor burden)", units = "g/L", specimen = "serum", verified = TRUE)
+    complex = list(
+      analyte = "modakafusp alfa bound to anti-drug antibody",
+      units = "nM",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    mprotein = list(
+      analyte = "serum M-protein (monoclonal immunoglobulin, a marker of multiple myeloma tumor burden)",
+      units = "g/L",
+      specimen = "serum",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 60L,
-    n_studies      = 1L,
-    age_range      = "34-84 years",
-    age_mean       = "63.1 years (SD 10.4)",
-    weight_range   = "40-168 kg",
-    weight_mean    = "80.3 kg (SD 22.5)",
+    species = "human",
+    n_subjects = 60L,
+    n_studies = 1L,
+    age_range = "34-84 years",
+    age_mean = "63.1 years (SD 10.4)",
+    weight_range = "40-168 kg",
+    weight_mean = "80.3 kg (SD 22.5)",
     sex_female_pct = 42.4,
     race_ethnicity = c(Caucasian = 77.8, Black = 15.2, Asian = 4.0, Other_or_missing = 3.0),
-    disease_state  = "Relapsed or refractory multiple myeloma with a baseline serum M-protein concentration of at least 5 g/L, after at least three prior lines of therapy.",
-    dose_range     = "0.001 to 6.0 mg/kg intravenously on weekly, every-2-week, every-3-week and every-4-week schedules.",
-    regions        = "Multicenter; Phase 1/2 iinnovate-1 trial (NCT03215030), Parts 1 (dose escalation) and 2 (dose expansion), data cutoff 30 May 2022.",
+    disease_state = "Relapsed or refractory multiple myeloma with a baseline serum M-protein concentration of at least 5 g/L, after at least three prior lines of therapy.",
+    dose_range = "0.001 to 6.0 mg/kg intravenously on weekly, every-2-week, every-3-week and every-4-week schedules.",
+    regions = "Multicenter; Phase 1/2 iinnovate-1 trial (NCT03215030), Parts 1 (dose escalation) and 2 (dose expansion), data cutoff 30 May 2022.",
     baseline_albumin = "3.75 g/dL (SD 0.57), range 1.9-4.6, i.e. 37.5 g/L (SD 5.7), range 19-46.",
     n_observations = "492 serum M-protein observations, 86 (17.4%) of which were below the 0.1 g/L SPEP limit of quantification and were handled as censored data.",
-    notes          = "The serum M-protein evaluable population is the 60 patients with a baseline serum M-protein of at least 5 g/L. Demographics are quoted from Li 2025 Table 1, 'Serum M-protein analysis population' column; note that the sex, ECOG and race counts in that column sum to 99 rather than 60, so the column appears to describe a wider PK-PD-evaluable set than the 60 patients the Results text reports for the final M-protein fit (see the vignette Errata). Estimation used NONMEM 7.4.4 with the first-order conditional estimation method with interaction and the Laplacian option; individual post hoc PK parameters from the population PK run were fixed as the drug-exposure driver."
+    notes = "The serum M-protein evaluable population is the 60 patients with a baseline serum M-protein of at least 5 g/L. Demographics are quoted from Li 2025 Table 1, 'Serum M-protein analysis population' column; note that the sex, ECOG and race counts in that column sum to 99 rather than 60, so the column appears to describe a wider PK-PD-evaluable set than the 60 patients the Results text reports for the final M-protein fit (see the vignette Errata). Estimation used NONMEM 7.4.4 with the first-order conditional estimation method with interaction and the Laplacian option; individual post hoc PK parameters from the population PK run were fixed as the drug-exposure driver."
   )
 
   ini({

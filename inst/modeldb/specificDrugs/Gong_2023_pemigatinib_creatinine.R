@@ -42,15 +42,15 @@ Gong_2023_pemigatinib_creatinine <- function() {
   # name. Declared here so checkModelConventions() treats it as a documented
   # paper-mechanistic output rather than a naming deviation.
   paper_specific_compartments <- c("creatPctChange")
-  units    <- list(time = "h", dosing = "mg", concentration = "nM")
+  units <- list(time = "h", dosing = "mg", concentration = "nM")
 
   covariateData <- list(
     AUC_PEMI = list(
-      description        = "Per-subject steady-state pemigatinib AUC over the 24 h dosing interval",
-      units              = "h*nM",
-      type               = "continuous",
+      description = "Per-subject steady-state pemigatinib AUC over the 24 h dosing interval",
+      units = "h*nM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Static (time-fixed) drug-exposure covariate. Gong 2023 Methods",
         "'Exposure-response evaluation': NONMEM 7.5 was used to simulate a",
         "dense steady-state post hoc concentration-time profile for each",
@@ -65,26 +65,26 @@ Gong_2023_pemigatinib_creatinine <- function() {
         "condition, where the Emax term vanishes and the predicted change",
         "from baseline is zero."
       ),
-      source_name        = "AUCss"
+      source_name = "AUCss"
     )
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 300,
-    n_studies     = 3,
+    species = "human",
+    n_subjects = 300,
+    n_studies = 3,
     disease_state = paste(
       "Patients with advanced malignancies receiving pemigatinib",
       "monotherapy, pooled across FIGHT-101, FIGHT-102, and FIGHT-202."
     ),
-    dose_range    = "1-20 mg orally once daily (continuous and 2-weeks-on / 1-week-off regimens)",
-    endpoint      = paste(
+    dose_range = "1-20 mg orally once daily (continuous and 2-weeks-on / 1-week-off regimens)",
+    endpoint = paste(
       "Percentage change from baseline in serum creatinine concentration.",
       "Serum creatinine was measured as part of a comprehensive serum",
       "chemistry assessment in FIGHT-101, FIGHT-102, and FIGHT-202",
       "(Gong 2023 Methods, 'Studies and end points')."
     ),
-    notes         = paste(
+    notes = paste(
       "The same 300-patient monotherapy pool was used for the companion",
       "serum-phosphate exposure-response analysis. Gong 2023 Discussion",
       "attributes the creatinine rise to reversible inhibition of the",

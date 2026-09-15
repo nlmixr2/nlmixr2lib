@@ -16,48 +16,48 @@ Sidhu_1998_artemisinin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "artemisinin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at study inclusion.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at study inclusion.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Sidhu 1998 Table 1: paediatric median 20 kg (range 8-32), adult median 46.5 kg (range 34-56). WT scales CL/F and V/F in children only (per-kg parameterisation; see footnote b of Table 2); adult typical values are not WT-scaled.",
-      source_name        = "WT"
+      notes = "Sidhu 1998 Table 1: paediatric median 20 kg (range 8-32), adult median 46.5 kg (range 34-56). WT scales CL/F and V/F in children only (per-kg parameterisation; see footnote b of Table 2); adult typical values are not WT-scaled.",
+      source_name = "WT"
     ),
     CHILD = list(
-      description        = "Age-group indicator (1 = paediatric subject aged 2-12 y, 0 = adult subject aged 16-45 y).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Age-group indicator (1 = paediatric subject aged 2-12 y, 0 = adult subject aged 16-45 y).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult, 16-45 y)",
-      notes              = "Sidhu 1998 Results: 'A one-compartment model with separate pharmacokinetic estimates for children and adults was found best to describe the disposition of artemisinin' (Table 2). The categorical age-group covariate selected over total body weight in adults; in children, WT was retained as an additional within-group covariate (footnote b of Table 2). Age cutoffs: paediatric = 2-12 y, adult = 16-45 y.",
-      source_name        = "patient group (adults / children)"
+      notes = "Sidhu 1998 Results: 'A one-compartment model with separate pharmacokinetic estimates for children and adults was found best to describe the disposition of artemisinin' (Table 2). The categorical age-group covariate selected over total body weight in adults; in children, WT was retained as an additional within-group covariate (footnote b of Table 2). Age cutoffs: paediatric = 2-12 y, adult = 16-45 y.",
+      source_name = "patient group (adults / children)"
     ),
     OCC = list(
-      description        = "Integer-valued occasion / period indicator for inter-occasion-variability and the systematic time-dependent change in bioavailability.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator for inter-occasion-variability and the systematic time-dependent change in bioavailability.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Values 1 = Day 1 (first oral dose of the 5-day regimen) and 2 = Day 5 (last oral dose). Decomposed inside model() into binary indicators oc1 and oc2 that (a) multiplex the IOV etas on log CL/F and log V/F per Sidhu 1998 Table 2 (pi_CL/F = 53%, pi_V/F = 86%) and (b) gate the 6.9-fold systematic decrease in oral bioavailability between Day 1 and Day 5 (delta_F_Day1_to_Day5 = 6.9 in Table 2).",
-      source_name        = "OCC (Day-1 vs Day-5 sampling occasion)"
+      notes = "Values 1 = Day 1 (first oral dose of the 5-day regimen) and 2 = Day 5 (last oral dose). Decomposed inside model() into binary indicators oc1 and oc2 that (a) multiplex the IOV etas on log CL/F and log V/F per Sidhu 1998 Table 2 (pi_CL/F = 53%, pi_V/F = 86%) and (b) gate the 6.9-fold systematic decrease in oral bioavailability between Day 1 and Day 5 (delta_F_Day1_to_Day5 = 6.9 in Table 2).",
+      source_name = "OCC (Day-1 vs Day-5 sampling occasion)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 54L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 54L,
+    n_studies = 1L,
     n_observations = 140L,
-    age_range      = "2-45 years",
-    weight_range   = "8-56 kg",
+    age_range = "2-45 years",
+    weight_range = "8-56 kg",
     sex_female_pct = 35,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "uncomplicated Plasmodium falciparum malaria",
-    dose_range     = paste(
+    disease_state = "uncomplicated Plasmodium falciparum malaria",
+    dose_range = paste(
       "Oral artemisinin 10 mg/kg/day for 5 days.",
       "Paediatric subjects: 10 mg/kg single dose on Days 1 and 5",
       "(morning), 5 mg/kg twice daily (approx 07:00 and 19:00) on Days 2-4.",
@@ -65,8 +65,8 @@ Sidhu_1998_artemisinin <- function() {
       "1 x 250 mg twice daily on Days 2-4. Hard gelatine capsules",
       "(25, 50, 100, 150 or 250 mg strengths)."
     ),
-    regions        = "Vietnam (Phu Rieng rubber plantation, Song Be Province)",
-    notes          = paste(
+    regions = "Vietnam (Phu Rieng rubber plantation, Song Be Province)",
+    notes = paste(
       "Sidhu 1998 Table 1: 23 paediatric subjects (16 M / 7 F, age 2-12 y,",
       "weight 8-32 kg; 10 in the 2-7 y stratum and 13 in the 8-12 y stratum)",
       "and 31 adult subjects (19 M / 12 F, age 16-45 y, weight 34-56 kg;",

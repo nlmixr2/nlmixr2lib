@@ -10,7 +10,7 @@ Taylor_2026_methotrexate <- function() {
     sep = " "
   )
   vignette <- "Taylor_2026_methotrexate"
-  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Serum methotrexate concentrations were quantified by
@@ -18,17 +18,17 @@ Taylor_2026_methotrexate <- function() {
   # umol/L throughout Taylor 2026 (Sect. 2.1, Tables 3 and 4), so the amount
   # unit that pairs with the published V1 (L) and CL (L/h) is umol.
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate from the CKD-EPI creatinine-cystatin C 2021 equation (time-varying)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate from the CKD-EPI creatinine-cystatin C 2021 equation (time-varying)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "BSA-normalized eGFR computed with the CKD-EPI creatinine-cystatin C 2021 equation from paired serum",
         "creatinine and serum cystatin C (Taylor 2026 Sect. 2.2.2). Modelled as a LONGITUDINAL (baseline and",
         "time-dependent) covariate: creatinine and cystatin C were drawn alongside each methotrexate sample",
@@ -47,14 +47,14 @@ Taylor_2026_methotrexate <- function() {
         "inter-individual variability in CL (Taylor 2026 Sect. 3.2.2).",
         sep = " "
       ),
-      source_name        = "eGFR (CKD-EPI Cr-CysC)"
+      source_name = "eGFR (CKD-EPI Cr-CysC)"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Taylor 2026 reports albumin in US-convention g/dL (cohort median 3.8 g/dL, IQR 3.5-4.2; Table 1) and",
         "centers Eq. 1 on 4 g/dL. The canonical register unit is SI g/L, so model() applies the inline",
         "conversion 'alb_gdL <- ALB * 0.1' before the power term; supply this column as 40 g/L to sit at the",
@@ -66,7 +66,7 @@ Taylor_2026_methotrexate <- function() {
         "The exponent is POSITIVE (0.69): higher albumin predicts faster methotrexate clearance.",
         sep = " "
       ),
-      source_name        = "Alb"
+      source_name = "Alb"
     )
   )
 
@@ -76,9 +76,9 @@ Taylor_2026_methotrexate <- function() {
   covariatesDataExcluded <- list(
     CREAT = list(
       description = "Serum creatinine (time-varying)",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Cohort baseline 0.8 +/- 0.4 mg/dL (Taylor 2026 Table 1). Statistically associated with CL in the",
         "univariate screen and carried into stepwise covariate modelling, but rejected: as a raw laboratory",
         "value it reached OFV = 13.5 versus -25.5 for serum cystatin C (ESM Table S2 models 5 and 4; the",
@@ -92,9 +92,9 @@ Taylor_2026_methotrexate <- function() {
     ),
     CYSC = list(
       description = "Serum cystatin C (time-varying)",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Cohort baseline 1.1 +/- 0.5 mg/dL (Taylor 2026 Table 1; note the paper reports cystatin C in mg/dL,",
         "whereas mg/L is the more common clinical convention -- the numeric values, ~1 in a cohort with near-normal",
         "renal function, are those of mg/L). Outperformed serum creatinine as a raw laboratory covariate on CL",
@@ -107,9 +107,9 @@ Taylor_2026_methotrexate <- function() {
     ),
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Median 68.6 years (IQR 59.3-75.9); 64% of the cohort was 65 or older (Taylor 2026 Table 1).",
         "Statistically associated with CL in the univariate screen and tested as '(Age/65)^theta'",
         "(dOFV = -21.7; ESM Table S2 model 2), but once the CKD-EPI Cr-CysC eGFR was in the model age added",
@@ -120,52 +120,52 @@ Taylor_2026_methotrexate <- function() {
     ),
     WT = list(
       description = "Body weight at baseline",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Median 80.5 kg (IQR 69.7-92.3; Taylor 2026 Table 1). Screened as a demographic covariate and NOT advanced to stepwise covariate modelling. Note that this model therefore carries no body-size term at all -- neither allometric nor BSA-normalized -- on any structural parameter.",
+      units = "kg",
+      type = "continuous",
+      notes = "Median 80.5 kg (IQR 69.7-92.3; Taylor 2026 Table 1). Screened as a demographic covariate and NOT advanced to stepwise covariate modelling. Note that this model therefore carries no body-size term at all -- neither allometric nor BSA-normalized -- on any structural parameter.",
       source_name = "WT"
     ),
     BSA = list(
       description = "Body surface area at baseline (Du Bois method)",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Median 1.97 m^2 (IQR 1.80-2.14; 2.04 in men, 1.77 in women; Taylor 2026 Table 1 and Sect. 3.1). Used only to convert the protocol dose (g/m^2) into a delivered dose (g); screened as a covariate on CL and V1 and NOT advanced to stepwise covariate modelling.",
+      units = "m^2",
+      type = "continuous",
+      notes = "Median 1.97 m^2 (IQR 1.80-2.14; 2.04 in men, 1.77 in women; Taylor 2026 Table 1 and Sect. 3.1). Used only to convert the protocol dose (g/m^2) into a delivered dose (g); screened as a covariate on CL and V1 and NOT advanced to stepwise covariate modelling.",
       source_name = "BSA"
     ),
     BMI = list(
       description = "Body mass index at baseline",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened both as a continuous variable and as a categorical variable using the CDC adult underweight / healthy / overweight / obese bands (Taylor 2026 Sect. 2.2.2); not advanced to stepwise covariate modelling.",
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened both as a continuous variable and as a categorical variable using the CDC adult underweight / healthy / overweight / obese bands (Taylor 2026 Sect. 2.2.2); not advanced to stepwise covariate modelling.",
       source_name = "BMI"
     ),
     SEXF = list(
       description = "Female sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "54 of 80 (68%) of the cohort were male, i.e. 32% female (Taylor 2026 Table 1). Screened as a demographic covariate and not advanced to stepwise covariate modelling.",
+      units = "(binary)",
+      type = "categorical",
+      notes = "54 of 80 (68%) of the cohort were male, i.e. 32% female (Taylor 2026 Table 1). Screened as a demographic covariate and not advanced to stepwise covariate modelling.",
       source_name = "Sex"
     )
   )
 
   population <- list(
-    species           = "human",
-    n_subjects        = 80L,
-    n_studies         = 1L,
+    species = "human",
+    n_subjects = 80L,
+    n_studies = 1L,
     n_administrations = 80L,
-    n_observations    = 427L,
-    age_range         = "adults aged >= 18 years; median 68.6 years (IQR 59.3-75.9), 64% aged 65 or older",
-    age_median        = "68.6 years",
-    weight_range      = "median 80.5 kg (IQR 69.7-92.3)",
-    weight_median     = "80.5 kg",
-    bsa_median        = "1.97 m^2 (IQR 1.80-2.14), Du Bois method",
-    sex_female_pct    = 32,
-    race_ethnicity    = "74 of 80 (93%) Caucasian; race was not evaluated as a covariate",
-    disease_state     = "Histologically confirmed lymphoma: diffuse large B-cell lymphoma 57%, primary DLBCL of the CNS 30%, EBV-positive DLBCL of the elderly 8%, other 9%. Disease burden systemic 46%, CNS 38%, both 16%. Bone marrow involvement in 12.5%.",
-    dose_range        = "Protocol dose 1.5 g/m^2 (11%), 3.5 g/m^2 (43%) or 8 g/m^2 (46%) intravenously over a 4 h infusion. Delivered dose median 7.55 g (IQR 4.83-11.25); 5.1 g (IQR 3.4-6.9) in the <= 3.5 g/m^2 stratum and 11.5 g (IQR 9.1-13.75) in the 8 g/m^2 stratum. Regimens: HDMTX 8 g/m^2 with rituximab and temozolomide (46%), HDMTX 3.5 g/m^2 with R-CHOP (36%), HDMTX monotherapy (18%).",
-    renal_function    = "No patient had AKI of any stage at baseline and none were on renal replacement therapy (exclusion criteria). Five patients (6%) had a history of chronic kidney disease. Baseline serum creatinine 0.8 +/- 0.4 mg/dL, cystatin C 1.1 +/- 0.5 mg/dL; baseline CKD-EPI creatinine-cystatin C eGFR 88 +/- 24, CKD-EPI creatinine 93 +/- 27, CKD-EPI cystatin C 83 +/- 26 mL/min/1.73 m^2, Cockcroft-Gault eCrCl 99 +/- 46 mL/min (Taylor 2026 Table 1).",
-    regions           = "Single center: Mayo Clinic, Rochester, MN, USA",
-    notes             = paste(
+    n_observations = 427L,
+    age_range = "adults aged >= 18 years; median 68.6 years (IQR 59.3-75.9), 64% aged 65 or older",
+    age_median = "68.6 years",
+    weight_range = "median 80.5 kg (IQR 69.7-92.3)",
+    weight_median = "80.5 kg",
+    bsa_median = "1.97 m^2 (IQR 1.80-2.14), Du Bois method",
+    sex_female_pct = 32,
+    race_ethnicity = "74 of 80 (93%) Caucasian; race was not evaluated as a covariate",
+    disease_state = "Histologically confirmed lymphoma: diffuse large B-cell lymphoma 57%, primary DLBCL of the CNS 30%, EBV-positive DLBCL of the elderly 8%, other 9%. Disease burden systemic 46%, CNS 38%, both 16%. Bone marrow involvement in 12.5%.",
+    dose_range = "Protocol dose 1.5 g/m^2 (11%), 3.5 g/m^2 (43%) or 8 g/m^2 (46%) intravenously over a 4 h infusion. Delivered dose median 7.55 g (IQR 4.83-11.25); 5.1 g (IQR 3.4-6.9) in the <= 3.5 g/m^2 stratum and 11.5 g (IQR 9.1-13.75) in the 8 g/m^2 stratum. Regimens: HDMTX 8 g/m^2 with rituximab and temozolomide (46%), HDMTX 3.5 g/m^2 with R-CHOP (36%), HDMTX monotherapy (18%).",
+    renal_function = "No patient had AKI of any stage at baseline and none were on renal replacement therapy (exclusion criteria). Five patients (6%) had a history of chronic kidney disease. Baseline serum creatinine 0.8 +/- 0.4 mg/dL, cystatin C 1.1 +/- 0.5 mg/dL; baseline CKD-EPI creatinine-cystatin C eGFR 88 +/- 24, CKD-EPI creatinine 93 +/- 27, CKD-EPI cystatin C 83 +/- 26 mL/min/1.73 m^2, Cockcroft-Gault eCrCl 99 +/- 46 mL/min (Taylor 2026 Table 1).",
+    regions = "Single center: Mayo Clinic, Rochester, MN, USA",
+    notes = paste(
       "Prospective single-center study of consecutive adults admitted for intravenous HDMTX between January 2018",
       "and December 2019 (Taylor 2026 Table 1 and Sect. 2.1). Patients were excluded if the infusion extended",
       "beyond 4 h, if they had AKI of any stage at baseline, or if they were on renal replacement therapy.",

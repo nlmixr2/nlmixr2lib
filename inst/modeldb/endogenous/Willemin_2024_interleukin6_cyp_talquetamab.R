@@ -1,75 +1,75 @@
 Willemin_2024_interleukin6_cyp_talquetamab <- function() {
   description <- "Reduced from a Simcyp Simulator V21 minimal-PBPK analysis. Interleukin-6 (IL-6) disposition driving concentration- and time-dependent modulation of five hepatic cytochrome P450 activities (CYP1A2, 2C9, 2C19, 3A4, 3A5), developed to assess the drug-interaction risk created by the transient IL-6 elevation of cytokine release syndrome after talquetamab (GPRC5D x CD3 bispecific antibody) step-up and first treatment dosing in MonumenTAL-1, at both recommended phase 2 doses (0.4 mg/kg weekly and 0.8 mg/kg every other week). Talquetamab itself is never modelled: because IL-6 is endogenous, its appearance is represented by a series of zero-order IV IL-6 infusions whose rates the authors adjusted to recover the observed MonumenTAL-1 IL-6 profile, so the model is an IL-6 exposure driver rather than a talquetamab PK model. IL-6 is described here as a two-compartment IV model recovered from the paper's own simulated IL-6 profiles (Figs 1 and 2); a one-compartment reduction cannot reproduce them. Each CYP activity follows the enzyme-turnover equation d(E)/dt = kdeg * (1 + emax * C / (ec50 + C) - E) with activity relative to an untreated baseline of 1, suppressing activity for CYP2C9, 2C19, 3A4 and 3A5 and inducing it for CYP1A2. The downstream victim-drug exposure ratios (caffeine, S-warfarin, omeprazole, midazolam, cyclosporine, simvastatin) are NOT part of this model: those used proprietary Simcyp V21 compound files whose in vivo dispositions cannot be reconstructed from the published inputs."
-  reference   <- "Willemin ME, Gong J, Hilder BW, Masterson T, Tolbert J, Renaud T, Heuck C, Kane C, De Zwart L, Girgis S, Ma X, Ouellet D. Evaluation of drug-drug interaction potential of talquetamab, a T-cell-redirecting GPRC5D x CD3 bispecific antibody, as a result of cytokine release syndrome in patients with relapsed/refractory multiple myeloma in MonumenTAL-1, using a physiologically based pharmacokinetic model. Target Oncol. 2024;19(6):965-975. doi:10.1007/s11523-024-01093-6. IL-6 disposition recovered from the simulated profiles of Figs 1 and 2; hepatic CYP turnover rate constants recovered from the activity time courses of Figs 3 and 4 and gated against Table 3. The IL-6 model itself is stated by this paper to be the previously published one of Willemin ME et al. CPT Pharmacometrics Syst Pharmacol. 2024;13(7):1117-1129 (doi:10.1002/psp4.13144), from which the interaction potencies (Indmax, IndC50) are carried; those in turn are attributed to Dickmann LJ et al. Drug Metab Dispos. 2011;39:1415-1422 and Jiang X et al. AAPS J. 2016;18:767-776, and the turnover equation form to Machavaram KK et al. Clin Pharmacol Ther. 2013;94:260-268."
-  vignette    <- "Willemin_2024_interleukin6_cyp_talquetamab"
-  units       <- list(time = "h", dosing = "mg", concentration = "pg/mL")
+  reference <- "Willemin ME, Gong J, Hilder BW, Masterson T, Tolbert J, Renaud T, Heuck C, Kane C, De Zwart L, Girgis S, Ma X, Ouellet D. Evaluation of drug-drug interaction potential of talquetamab, a T-cell-redirecting GPRC5D x CD3 bispecific antibody, as a result of cytokine release syndrome in patients with relapsed/refractory multiple myeloma in MonumenTAL-1, using a physiologically based pharmacokinetic model. Target Oncol. 2024;19(6):965-975. doi:10.1007/s11523-024-01093-6. IL-6 disposition recovered from the simulated profiles of Figs 1 and 2; hepatic CYP turnover rate constants recovered from the activity time courses of Figs 3 and 4 and gated against Table 3. The IL-6 model itself is stated by this paper to be the previously published one of Willemin ME et al. CPT Pharmacometrics Syst Pharmacol. 2024;13(7):1117-1129 (doi:10.1002/psp4.13144), from which the interaction potencies (Indmax, IndC50) are carried; those in turn are attributed to Dickmann LJ et al. Drug Metab Dispos. 2011;39:1415-1422 and Jiang X et al. AAPS J. 2016;18:767-776, and the turnover equation form to Machavaram KK et al. Clin Pharmacol Ther. 2013;94:260-268."
+  vignette <- "Willemin_2024_interleukin6_cyp_talquetamab"
+  units <- list(time = "h", dosing = "mg", concentration = "pg/mL")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The IL-6 volumes are expressed per kilogram, so both compartment volumes scale linearly with body weight; this is the scaling implied by the L/kg unit of the source IL-6 model, not a fitted allometric exponent. Clearances are absolute and are NOT weight-scaled. The vignette uses 70 kg, the weight at which the reduction reproduces the published IL-6 peaks.",
-      source_name        = "WT"
+      notes = "The IL-6 volumes are expressed per kilogram, so both compartment volumes scale linearly with body weight; this is the scaling implied by the L/kg unit of the source IL-6 model, not a fitted allometric exponent. Clearances are absolute and are NOT weight-scaled. The vignette uses 70 kg, the weight at which the reduction reproduces the published IL-6 peaks.",
+      source_name = "WT"
     )
   )
 
   compartmentData <- list(
     central = list(
-      analyte  = "interleukin-6",
-      units    = "mg",
+      analyte = "interleukin-6",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "interleukin-6",
-      units    = "mg",
+      analyte = "interleukin-6",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     enzyme_1a2 = list(
-      analyte  = "cytochrome P450 1A2",
-      units    = "fraction of baseline activity",
+      analyte = "cytochrome P450 1A2",
+      units = "fraction of baseline activity",
       specimen = "tissue",
       verified = TRUE
     ),
     enzyme_2c9 = list(
-      analyte  = "cytochrome P450 2C9",
-      units    = "fraction of baseline activity",
+      analyte = "cytochrome P450 2C9",
+      units = "fraction of baseline activity",
       specimen = "tissue",
       verified = TRUE
     ),
     enzyme_2c19 = list(
-      analyte  = "cytochrome P450 2C19",
-      units    = "fraction of baseline activity",
+      analyte = "cytochrome P450 2C19",
+      units = "fraction of baseline activity",
       specimen = "tissue",
       verified = TRUE
     ),
     enzyme_3a4 = list(
-      analyte  = "cytochrome P450 3A4",
-      units    = "fraction of baseline activity",
+      analyte = "cytochrome P450 3A4",
+      units = "fraction of baseline activity",
       specimen = "tissue",
       verified = TRUE
     ),
     enzyme_3a5 = list(
-      analyte  = "cytochrome P450 3A5",
-      units    = "fraction of baseline activity",
+      analyte = "cytochrome P450 3A5",
+      units = "fraction of baseline activity",
       specimen = "tissue",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 195,
-    n_studies      = 1,
-    age_range      = "20-50 years (Simcyp healthy-volunteer simulation population)",
+    species = "human",
+    n_subjects = 195,
+    n_studies = 1,
+    age_range = "20-50 years (Simcyp healthy-volunteer simulation population)",
     sex_female_pct = 50,
-    disease_state  = "relapsed/refractory multiple myeloma with cytokine release syndrome (source of the observed IL-6 data); the simulations themselves were run in a healthy-volunteer population",
-    dose_range     = "talquetamab 0.01 and 0.06 mg/kg step-up doses then 0.4 mg/kg subcutaneous weekly; or 0.01, 0.06 and 0.3 mg/kg step-up doses then 0.8 mg/kg subcutaneous every other week (the IL-6 source regimens). IL-6 itself is dosed as a series of zero-order IV infusions.",
-    regions        = "MonumenTAL-1 was a multinational phase I/II study (NCT03399799 / NCT04634552)",
-    notes          = "Observed IL-6 concentration-time data come from 100 patients in the 0.4 mg/kg weekly cohort and 95 patients in the 0.8 mg/kg every-other-week cohort who experienced cytokine release syndrome and who either received no tocilizumab in cycle 1 or whose IL-6 Cmax occurred before tocilizumab was given. Two IL-6 scenarios are modelled per dosing schedule: scenario 1 is the median IL-6 profile (Cmax 18.4 pg/mL weekly, 7.07 pg/mL every other week) and scenario 2 is the single patient with the highest observed IL-6 Cmax (213 and 3503 pg/mL respectively). Prospective simulations used five trials of 100 subjects aged 20-50 years, 50 percent female. Cycle 1 (the first full treatment dose) begins 96 h after the first step-up dose on the weekly schedule and 168 h after it on the every-other-week schedule; those are the time origins for the Table 3 enzyme-activity timings."
+    disease_state = "relapsed/refractory multiple myeloma with cytokine release syndrome (source of the observed IL-6 data); the simulations themselves were run in a healthy-volunteer population",
+    dose_range = "talquetamab 0.01 and 0.06 mg/kg step-up doses then 0.4 mg/kg subcutaneous weekly; or 0.01, 0.06 and 0.3 mg/kg step-up doses then 0.8 mg/kg subcutaneous every other week (the IL-6 source regimens). IL-6 itself is dosed as a series of zero-order IV infusions.",
+    regions = "MonumenTAL-1 was a multinational phase I/II study (NCT03399799 / NCT04634552)",
+    notes = "Observed IL-6 concentration-time data come from 100 patients in the 0.4 mg/kg weekly cohort and 95 patients in the 0.8 mg/kg every-other-week cohort who experienced cytokine release syndrome and who either received no tocilizumab in cycle 1 or whose IL-6 Cmax occurred before tocilizumab was given. Two IL-6 scenarios are modelled per dosing schedule: scenario 1 is the median IL-6 profile (Cmax 18.4 pg/mL weekly, 7.07 pg/mL every other week) and scenario 2 is the single patient with the highest observed IL-6 Cmax (213 and 3503 pg/mL respectively). Prospective simulations used five trials of 100 subjects aged 20-50 years, 50 percent female. Cycle 1 (the first full treatment dose) begins 96 h after the first step-up dose on the weekly schedule and 168 h after it on the every-other-week schedule; those are the time origins for the Table 3 enzyme-activity timings."
   )
 
   ini({

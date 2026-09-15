@@ -15,10 +15,10 @@ Kawamura_2018_eribulin <- function() {
   )
   vignette <- "Kawamura_2018_eribulin"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L",
-    anc           = "cells/uL"
+    anc = "cells/uL"
   )
   # Dosing unit note: dose is expected in milligrams of eribulin FREE BASE.
   # Convert from the clinical eribulin mesilate dose via D_free_base =
@@ -33,73 +33,73 @@ Kawamura_2018_eribulin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "Eribulin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "Eribulin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "Eribulin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "Eribulin", units = "mg", specimen = "plasma", verified = FALSE),
-    precursor1  = list(analyte = "Eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "Eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "Eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "Eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
-    circ        = list(analyte = "Neutrophil count", units = "mg", specimen = "whole blood", verified = FALSE)
+    precursor1 = list(analyte = "Eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "Eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "Eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "Eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ = list(analyte = "Neutrophil count", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on the Majid 2014 PK parameters with reference 68.7 kg (Kawamura 2018 section 2.3 equations): CL, Q2, Q3 scale as (WT/68.7)^0.75; V1, V2, V3 scale linearly as (WT/68.7). Kawamura 2018 Table 1 reports the dosing schedule per mg/m^2 (median 1.4 mg/m^2 eribulin mesilate, range 0.7-1.4) but does not tabulate body weight directly; users must supply WT as an explicit covariate per the underlying Majid 2014 model.",
-      source_name        = "WT"
+      notes = "Allometric scaling on the Majid 2014 PK parameters with reference 68.7 kg (Kawamura 2018 section 2.3 equations): CL, Q2, Q3 scale as (WT/68.7)^0.75; V1, V2, V3 scale linearly as (WT/68.7). Kawamura 2018 Table 1 reports the dosing schedule per mg/m^2 (median 1.4 mg/m^2 eribulin mesilate, range 0.7-1.4) but does not tabulate body weight directly; users must supply WT as an explicit covariate per the underlying Majid 2014 model.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin at baseline.",
+      description = "Serum albumin at baseline.",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 4.0 g/dL on both the Majid 2014 PK CL term (positive exponent 0.946, Kawamura 2018 section 2.3) and the Kawamura 2018 PD Kprol/MTT/Kout terms (Kawamura 2018 Table 2 footnote: MTT = tvMTT * (ALB/4)^thetaALBMTT; Kprol = tvKprol * (ALB/4)^thetaALBKprol * (1 + BNEU3 * thetaBNEU3Kprol); Kout = tvKout * (ALB/4)^thetaALBKout). Cohort median 3.9 g/dL, range 1.3-5.1 g/dL (Table 1).",
-      source_name        = "ALB"
+      notes = "Reference 4.0 g/dL on both the Majid 2014 PK CL term (positive exponent 0.946, Kawamura 2018 section 2.3) and the Kawamura 2018 PD Kprol/MTT/Kout terms (Kawamura 2018 Table 2 footnote: MTT = tvMTT * (ALB/4)^thetaALBMTT; Kprol = tvKprol * (ALB/4)^thetaALBKprol * (1 + BNEU3 * thetaBNEU3Kprol); Kout = tvKout * (ALB/4)^thetaALBKout). Cohort median 3.9 g/dL, range 1.3-5.1 g/dL (Table 1).",
+      source_name = "ALB"
     ),
     ALP = list(
-      description        = "Serum alkaline phosphatase at baseline.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alkaline phosphatase at baseline.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 132 U/L on the Majid 2014 PK CL term (negative exponent -0.209, Kawamura 2018 section 2.3). The Kawamura paper does not tabulate the cohort distribution for ALP but reports it was collected as part of postmarketing surveillance; 182 patients with missing ALB / ALP / BILI were excluded from the PD analysis (Kawamura 2018 Figure 2).",
-      source_name        = "ALP"
+      notes = "Reference 132 U/L on the Majid 2014 PK CL term (negative exponent -0.209, Kawamura 2018 section 2.3). The Kawamura paper does not tabulate the cohort distribution for ALP but reports it was collected as part of postmarketing surveillance; 182 patients with missing ALB / ALP / BILI were excluded from the PD analysis (Kawamura 2018 Figure 2).",
+      source_name = "ALP"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin at baseline.",
+      description = "Total serum bilirubin at baseline.",
       units = "umol/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 0.5 mg/dL on the Majid 2014 PK CL term (negative exponent -0.180, Kawamura 2018 section 2.3). Source column name in Kawamura 2018 is BILI; the canonical register uses TBILI. The Kawamura paper does not tabulate the cohort distribution for total bilirubin.",
-      source_name        = "BILI"
+      notes = "Reference 0.5 mg/dL on the Majid 2014 PK CL term (negative exponent -0.180, Kawamura 2018 section 2.3). Source column name in Kawamura 2018 is BILI; the canonical register uses TBILI. The Kawamura paper does not tabulate the cohort distribution for total bilirubin.",
+      source_name = "BILI"
     ),
     NEUT = list(
-      description        = "Per-subject baseline absolute neutrophil count (observed value before drug administration), used as the initial condition of the Friberg proliferation / transit / circulating compartments AND as the BNEU input to the homeostatic-feedback term (NEUT/circ)^gamma AND as the threshold input to the binary BNEU3 indicator (1 if NEUT < 3000 cells/uL, else 0) that multiplies Kprol.",
-      units              = "cells/uL",
-      type               = "continuous",
+      description = "Per-subject baseline absolute neutrophil count (observed value before drug administration), used as the initial condition of the Friberg proliferation / transit / circulating compartments AND as the BNEU input to the homeostatic-feedback term (NEUT/circ)^gamma AND as the threshold input to the binary BNEU3 indicator (1 if NEUT < 3000 cells/uL, else 0) that multiplies Kprol.",
+      units = "cells/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column name in Kawamura 2018 is BNEU (baseline neutrophils). Cohort median 3200 cells/uL, range 943-15 000 cells/uL (Table 1). The BNEU3 derived indicator in Kawamura 2018 Table 2 footnote uses threshold 3000 cells/uL (paper notation: 'If baseline neutrophil counts < 3000, then BNEU3 = 1; if >= 3000, then BNEU3 = 0'). The canonical NEUT register units are cells/mm^3 (= cells/uL numerically); this model documents cells/uL explicitly to match the paper's reporting convention.",
-      source_name        = "BNEU"
+      notes = "Source column name in Kawamura 2018 is BNEU (baseline neutrophils). Cohort median 3200 cells/uL, range 943-15 000 cells/uL (Table 1). The BNEU3 derived indicator in Kawamura 2018 Table 2 footnote uses threshold 3000 cells/uL (paper notation: 'If baseline neutrophil counts < 3000, then BNEU3 = 1; if >= 3000, then BNEU3 = 0'). The canonical NEUT register units are cells/mm^3 (= cells/uL numerically); this model documents cells/uL explicitly to match the paper's reporting convention.",
+      source_name = "BNEU"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 401L,
-    n_studies       = 1L,
-    age_range       = "26-84 years (median 58)",
-    weight_range    = "not tabulated in Kawamura 2018; the underlying Majid 2014 popPK reference weight is 68.7 kg",
-    sex_female_pct  = 100,
-    race_ethnicity  = c(Asian = 100),
-    disease_state   = "Recurrent or metastatic breast cancer (RBC/MBC) in Japanese patients receiving eribulin mesilate as a first eribulin treatment, with no concomitant granulocyte colony-stimulating factor (G-CSF). 401 of 608 surveyed patients met inclusion criteria (Kawamura 2018 Figure 2); 207 were excluded for missing ALB/ALP/BILI (n=182) or missing baseline neutrophil count (n=25).",
-    dose_range      = "Eribulin mesilate 0.7-1.4 mg/m^2 IV (median 1.4 mg/m^2), delivered on per-patient schedules including standard (day 1 + day 8 q21d, n=275), biweekly (day 1 + day 15 q28d, n=64), triweekly (day 1 q21d, n=50), and other schedules (n=12 excluded from the schedule simulation). Approximately 30% of patients had dosing-frequency reductions in cycle 1 due to neutropenic toxicity (Kawamura 2018 Discussion). Doses must be supplied to this model in milligrams of eribulin FREE BASE; conversion from the mesilate dose is D_free_base = D_mesilate * 1.23/1.4 (Kawamura 2018 section 2.3).",
-    regions         = "Japan (325 centers; postmarketing surveillance July-December 2011)",
+    species = "human",
+    n_subjects = 401L,
+    n_studies = 1L,
+    age_range = "26-84 years (median 58)",
+    weight_range = "not tabulated in Kawamura 2018; the underlying Majid 2014 popPK reference weight is 68.7 kg",
+    sex_female_pct = 100,
+    race_ethnicity = c(Asian = 100),
+    disease_state = "Recurrent or metastatic breast cancer (RBC/MBC) in Japanese patients receiving eribulin mesilate as a first eribulin treatment, with no concomitant granulocyte colony-stimulating factor (G-CSF). 401 of 608 surveyed patients met inclusion criteria (Kawamura 2018 Figure 2); 207 were excluded for missing ALB/ALP/BILI (n=182) or missing baseline neutrophil count (n=25).",
+    dose_range = "Eribulin mesilate 0.7-1.4 mg/m^2 IV (median 1.4 mg/m^2), delivered on per-patient schedules including standard (day 1 + day 8 q21d, n=275), biweekly (day 1 + day 15 q28d, n=64), triweekly (day 1 q21d, n=50), and other schedules (n=12 excluded from the schedule simulation). Approximately 30% of patients had dosing-frequency reductions in cycle 1 due to neutropenic toxicity (Kawamura 2018 Discussion). Doses must be supplied to this model in milligrams of eribulin FREE BASE; conversion from the mesilate dose is D_free_base = D_mesilate * 1.23/1.4 (Kawamura 2018 section 2.3).",
+    regions = "Japan (325 centers; postmarketing surveillance July-December 2011)",
     ecog_distribution = "ECOG performance status 0-1 / 2 / >=3 = 192 / 172 / 37 patients (Kawamura 2018 Table 1)",
     prior_chemotherapy = "Median 4 (range 0-13) prior chemotherapy regimens including taxanes; distribution 0 / 1 / 2-4 / >=5 = 11 / 31 / 194 / 165 patients (Kawamura 2018 Table 1)",
-    notes           = "Postmarketing-surveillance cohort with retrospective PD analysis. Patients with high myelosuppression, known hypersensitivity to eribulin mesilate, or pregnancy were excluded from the surveillance per Good Post-Marketing Study Practice. 5199 neutrophil count measurements across 401 patients fed the PD analysis. Bootstrap validation: 182/200 runs converged, mean/final-estimate ratios 97.5-142.8% (Kawamura 2018 Table 2 right columns). Estimation was performed in Phoenix NLME 7.0 (FO method). Model parameter estimates were 'similar to those previously reported using premarketing clinical trial data' (the upstream van Hasselt 2013 eribulin-neutropenia popPK/PD analysis cited as ref 13)."
+    notes = "Postmarketing-surveillance cohort with retrospective PD analysis. Patients with high myelosuppression, known hypersensitivity to eribulin mesilate, or pregnancy were excluded from the surveillance per Good Post-Marketing Study Practice. 5199 neutrophil count measurements across 401 patients fed the PD analysis. Bootstrap validation: 182/200 runs converged, mean/final-estimate ratios 97.5-142.8% (Kawamura 2018 Table 2 right columns). Estimation was performed in Phoenix NLME 7.0 (FO method). Model parameter estimates were 'similar to those previously reported using premarketing clinical trial data' (the upstream van Hasselt 2013 eribulin-neutropenia popPK/PD analysis cited as ref 13)."
   )
 
   ini({

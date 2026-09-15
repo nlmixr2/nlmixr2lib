@@ -67,7 +67,9 @@ Aoki_2024_intratarget_microdosing_pbpk <- function() {
   # the same treatment `occupancy` gets in the sibling model
   # Aoki_2024_bosentan_pbpk.R.
   paper_specific_compartments <- c(
-    "auc_occupancy", "auc_central", "auc_int_tumor"
+    "auc_occupancy",
+    "auc_central",
+    "auc_int_tumor"
   )
 
   # Time in hours. The published code works in molar units throughout: the
@@ -95,23 +97,28 @@ Aoki_2024_intratarget_microdosing_pbpk <- function() {
   # hepatic spaces take the generic `tissue` specimen because the specimen
   # vocabulary does not resolve extracellular fluid from hepatocyte.
   compartmentData <- list(
-    central       = list(analyte = "drug", units = "umol/L", specimen = "plasma", verified = TRUE),
-    is_liver      = list(analyte = "drug", units = "umol/L", specimen = "tissue", verified = TRUE),
-    int_liver     = list(analyte = "drug", units = "umol/L", specimen = "tissue", verified = TRUE),
-    muscle        = list(analyte = "drug", units = "umol/L", specimen = "tissue", verified = TRUE),
-    skin          = list(analyte = "drug", units = "umol/L", specimen = "tissue", verified = TRUE),
-    adipose       = list(analyte = "drug", units = "umol/L", specimen = "tissue", verified = TRUE),
-    is_tumor      = list(analyte = "drug", units = "umol/L", specimen = "tumor", verified = TRUE),
-    int_tumor     = list(analyte = "drug", units = "umol/L", specimen = "tumor", verified = TRUE),
-    target        = list(analyte = "free receptor", units = "umol", specimen = "tumor", verified = TRUE),
-    complex       = list(analyte = "drug-receptor complex", units = "umol", specimen = "tumor", verified = TRUE),
-    auc_occupancy = list(analyte = "fractional receptor occupancy", units = "h", specimen = "not applicable", verified = TRUE),
-    auc_central   = list(analyte = "drug", units = "umol*h/L", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "drug", units = "umol/L", specimen = "plasma", verified = TRUE),
+    is_liver = list(analyte = "drug", units = "umol/L", specimen = "tissue", verified = TRUE),
+    int_liver = list(analyte = "drug", units = "umol/L", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "drug", units = "umol/L", specimen = "tissue", verified = TRUE),
+    skin = list(analyte = "drug", units = "umol/L", specimen = "tissue", verified = TRUE),
+    adipose = list(analyte = "drug", units = "umol/L", specimen = "tissue", verified = TRUE),
+    is_tumor = list(analyte = "drug", units = "umol/L", specimen = "tumor", verified = TRUE),
+    int_tumor = list(analyte = "drug", units = "umol/L", specimen = "tumor", verified = TRUE),
+    target = list(analyte = "free receptor", units = "umol", specimen = "tumor", verified = TRUE),
+    complex = list(analyte = "drug-receptor complex", units = "umol", specimen = "tumor", verified = TRUE),
+    auc_occupancy = list(
+      analyte = "fractional receptor occupancy",
+      units = "h",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    auc_central = list(analyte = "drug", units = "umol*h/L", specimen = "plasma", verified = TRUE),
     auc_int_tumor = list(analyte = "drug", units = "umol*h/L", specimen = "tumor", verified = TRUE)
   )
 
   population <- list(
-    species    = "human",
+    species = "human",
     n_subjects = paste(
       "No human subjects. 10,000 simulated 'virtual compounds' in the main",
       "analysis (Methods, 'Summarize the success rate of the ITM'), plus",

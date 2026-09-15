@@ -16,49 +16,49 @@ Zeng_2010_mycophenolic_acid <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline per the source paper's analysis. Enters CL/F as the linear scaling factor (1 + theta_WT * WT / 27.9) where 27.9 kg is the cohort median (Zeng 2010 Table 2 model 3 footnote: 'The population CL term was standardized to 27.9 kg, which represents the median value of weight in this study group.'). Cohort range 3.4-87.7 kg, median 27.9 kg (Table 1). Zeng 2010 Section 'Covariate analysis' reports that linear weight scaling outperformed allometric scaling with a fixed 0.75 exponent (delta-OFV -17.40 vs -4.92 and IIV reduction 54.3 -> 36.9 vs 54.3 -> 46.8) so the linear form is what the final model uses.",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline per the source paper's analysis. Enters CL/F as the linear scaling factor (1 + theta_WT * WT / 27.9) where 27.9 kg is the cohort median (Zeng 2010 Table 2 model 3 footnote: 'The population CL term was standardized to 27.9 kg, which represents the median value of weight in this study group.'). Cohort range 3.4-87.7 kg, median 27.9 kg (Table 1). Zeng 2010 Section 'Covariate analysis' reports that linear weight scaling outperformed allometric scaling with a fixed 0.75 exponent (delta-OFV -17.40 vs -4.92 and IIV reduction 54.3 -> 36.9 vs 54.3 -> 46.8) so the linear form is what the final model uses.",
+      source_name = "WT"
     ),
     CONMED_CSA = list(
-      description        = "Concomitant ciclosporin (CsA) indicator: 1 if the patient was co-administered ciclosporin as the calcineurin inhibitor (CNI), 0 if the patient was on tacrolimus (the alternative CNI in the source cohort).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant ciclosporin (CsA) indicator: 1 if the patient was co-administered ciclosporin as the calcineurin inhibitor (CNI), 0 if the patient was on tacrolimus (the alternative CNI in the source cohort).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (concomitant tacrolimus; lower MPA CL/F)",
-      notes              = "Time-fixed per patient in the Zeng 2010 cohort because subjects were on one CNI regimen across the sampling window. Source column CYTA in Zeng 2010 carries the INVERTED value convention: CYTA = 0 if patient is on ciclosporin, CYTA = 1 if patient is without ciclosporin (i.e. on tacrolimus); the canonical CONMED_CSA flips this so that 1 = ciclosporin, matching the deWinter 2009 mycophenolic-acid precedent and the broader CONMED_* register convention (1 = exposed to the named conmed). The source paper's covariate coefficient e_csa_cl = theta_8 = -0.60 acts on the absence-of-ciclosporin indicator, so the model() block applies it via (1 - CONMED_CSA) to recover the paper's CYTA encoding. Ciclosporin inhibits MRP2-mediated biliary efflux of MPAG and suppresses enterohepatic recirculation of MPA, producing approximately 2.5x higher MPA CL/F under ciclosporin than under tacrolimus in this paediatric cohort (Zeng 2010 Discussion: 'co-administered ciclosporin as opposed to tacrolimus resulted in a mean increase in MPA CL of 63%'; the 2.5x ratio reflects both the direct CNI effect on EHC and the WT * CYTA interaction at the median weight). Cohort distribution: 23 patients on ciclosporin, 15 on tacrolimus (Table 1).",
-      source_name        = "CYTA (inverted: CYTA = 1 - CONMED_CSA)"
+      notes = "Time-fixed per patient in the Zeng 2010 cohort because subjects were on one CNI regimen across the sampling window. Source column CYTA in Zeng 2010 carries the INVERTED value convention: CYTA = 0 if patient is on ciclosporin, CYTA = 1 if patient is without ciclosporin (i.e. on tacrolimus); the canonical CONMED_CSA flips this so that 1 = ciclosporin, matching the deWinter 2009 mycophenolic-acid precedent and the broader CONMED_* register convention (1 = exposed to the named conmed). The source paper's covariate coefficient e_csa_cl = theta_8 = -0.60 acts on the absence-of-ciclosporin indicator, so the model() block applies it via (1 - CONMED_CSA) to recover the paper's CYTA encoding. Ciclosporin inhibits MRP2-mediated biliary efflux of MPAG and suppresses enterohepatic recirculation of MPA, producing approximately 2.5x higher MPA CL/F under ciclosporin than under tacrolimus in this paediatric cohort (Zeng 2010 Discussion: 'co-administered ciclosporin as opposed to tacrolimus resulted in a mean increase in MPA CL of 63%'; the 2.5x ratio reflects both the direct CNI effect on EHC and the WT * CYTA interaction at the median weight). Cohort distribution: 23 patients on ciclosporin, 15 on tacrolimus (Table 1).",
+      source_name = "CYTA (inverted: CYTA = 1 - CONMED_CSA)"
     )
   )
 
   population <- list(
-    species            = "human",
-    n_subjects         = 38L,
-    n_studies          = 1L,
-    n_observations     = 859L,
-    age_range          = "0.4-19.9 years",
-    age_median         = "8.4 years (Table 1)",
-    weight_range       = "3.4-87.7 kg",
-    weight_median      = "27.9 kg (Table 1)",
-    sex_female_pct     = NA_real_,
-    race_ethnicity     = "Not reported in source paper.",
-    disease_state      = "Children and young people receiving mycophenolate mofetil (MMF) after blood or marrow (n = 23), kidney (n = 5), or liver (n = 10) transplantation at The Children's Hospital at Westmead, Sydney. All subjects received MMF as part of an immunosuppressive regimen alongside either ciclosporin (n = 23) or tacrolimus (n = 15) as the calcineurin inhibitor; 9 also received concomitant acyclovir.",
-    dose_range         = "MMF 10-15 mg/kg IV (2 h infusion) or oral, twice or three times daily.",
-    regions            = "Australia (single centre: The Children's Hospital at Westmead, Sydney, NSW).",
-    transplant_mix     = "Blood or marrow transplant: 23; kidney transplant: 5; liver transplant: 10 (Table 1). 13 patients had IV dosing only, 18 oral only, 7 received both routes.",
-    sampling_design    = "Age-specific sampling protocol over 8-12 h: weighed > 20 kg children had 13-14 intensive samples per dose interval; weighed <= 20 kg children had a sparse 5-6 sample design. The remaining cohort had randomly timed but accurately recorded blood samples. All samples were collected at steady state.",
-    cni_distribution   = "Concomitant ciclosporin: 23 patients (60.5%); concomitant tacrolimus: 15 patients (39.5%).",
-    iov_structure      = "Inter-occasion variability (IOV) on CL/F (5.8% CV) was identified in addition to the diagonal IIV (Zeng 2010 Table 3 final-model). This model file does NOT encode IOV structurally -- the source paper does not define an operational occasion column for the model-library use case ('each occasion was defined as 7 days in patients who were administered MMF daily'). Downstream users who want to simulate IOV can add an OCC indicator in their event dataset and a per-occasion eta in rxode2; see vignette Assumptions and deviations.",
-    notes              = "Prospective single-centre observational study. Total MPA was measured by HPLC (LLOQ 0.07 mg/L). 859 MPA concentrations from 38 subjects, median 23 samples/patient (range 2-49). 13 patients had intensive sampling and 25 had sparse or random sampling. Enterohepatic recirculation was observed in 9 of the 13 intensively sampled patients but could not be modelled separately given the limited number of such patients; this likely inflates the residual error in the final model (Zeng 2010 Discussion). Patient characteristics from Table 1."
+    species = "human",
+    n_subjects = 38L,
+    n_studies = 1L,
+    n_observations = 859L,
+    age_range = "0.4-19.9 years",
+    age_median = "8.4 years (Table 1)",
+    weight_range = "3.4-87.7 kg",
+    weight_median = "27.9 kg (Table 1)",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "Not reported in source paper.",
+    disease_state = "Children and young people receiving mycophenolate mofetil (MMF) after blood or marrow (n = 23), kidney (n = 5), or liver (n = 10) transplantation at The Children's Hospital at Westmead, Sydney. All subjects received MMF as part of an immunosuppressive regimen alongside either ciclosporin (n = 23) or tacrolimus (n = 15) as the calcineurin inhibitor; 9 also received concomitant acyclovir.",
+    dose_range = "MMF 10-15 mg/kg IV (2 h infusion) or oral, twice or three times daily.",
+    regions = "Australia (single centre: The Children's Hospital at Westmead, Sydney, NSW).",
+    transplant_mix = "Blood or marrow transplant: 23; kidney transplant: 5; liver transplant: 10 (Table 1). 13 patients had IV dosing only, 18 oral only, 7 received both routes.",
+    sampling_design = "Age-specific sampling protocol over 8-12 h: weighed > 20 kg children had 13-14 intensive samples per dose interval; weighed <= 20 kg children had a sparse 5-6 sample design. The remaining cohort had randomly timed but accurately recorded blood samples. All samples were collected at steady state.",
+    cni_distribution = "Concomitant ciclosporin: 23 patients (60.5%); concomitant tacrolimus: 15 patients (39.5%).",
+    iov_structure = "Inter-occasion variability (IOV) on CL/F (5.8% CV) was identified in addition to the diagonal IIV (Zeng 2010 Table 3 final-model). This model file does NOT encode IOV structurally -- the source paper does not define an operational occasion column for the model-library use case ('each occasion was defined as 7 days in patients who were administered MMF daily'). Downstream users who want to simulate IOV can add an OCC indicator in their event dataset and a per-occasion eta in rxode2; see vignette Assumptions and deviations.",
+    notes = "Prospective single-centre observational study. Total MPA was measured by HPLC (LLOQ 0.07 mg/L). 859 MPA concentrations from 38 subjects, median 23 samples/patient (range 2-49). 13 patients had intensive sampling and 25 had sparse or random sampling. Enterohepatic recirculation was observed in 9 of the 13 intensively sampled patients but could not be modelled separately given the limited number of such patients; this likely inflates the residual error in the final model (Zeng 2010 Discussion). Patient characteristics from Table 1."
   )
 
   ini({

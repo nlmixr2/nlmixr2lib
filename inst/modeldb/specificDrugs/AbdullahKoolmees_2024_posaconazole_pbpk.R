@@ -34,15 +34,15 @@ AbdullahKoolmees_2024_posaconazole_pbpk <- function() {
     sep = " "
   )
   vignette <- "AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     FU = list(
-      description        = "Fraction of posaconazole unbound in plasma",
-      units              = "fraction (unitless)",
-      type               = "continuous",
+      description = "Fraction of posaconazole unbound in plasma",
+      units = "fraction (unitless)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Scenario-level, not per-subject-measured, and constant at 0.02",
         "across every simulated scenario. Table 1 gives fraction unbound",
         "0.02 and the Results state explicitly that 'the fraction unbound",
@@ -54,14 +54,14 @@ AbdullahKoolmees_2024_posaconazole_pbpk <- function() {
         "to a tissue:plasma Kp (Appendix I equation 7, Kp = Kpu * Fu) and",
         "it selects the unbound drug presented to hepatic clearance."
       ),
-      source_name        = "FuP"
+      source_name = "FuP"
     ),
     CONMED_FLUCLOXACILLIN = list(
-      description        = "Concomitant flucloxacillin administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant flucloxacillin administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no flucloxacillin)",
-      notes              = paste(
+      notes = paste(
         "1 = flucloxacillin co-administered. Declared and carried at its",
         "reference value only: this covariate has NO structural effect in",
         "the posaconazole model, and that is the paper's finding rather",
@@ -79,46 +79,46 @@ AbdullahKoolmees_2024_posaconazole_pbpk <- function() {
         "Discussion cites of posaconazole levels falling on flucloxacillin,",
         "which this model deliberately does not reproduce."
       ),
-      source_name        = "flucloxacillin"
+      source_name = "flucloxacillin"
     )
   )
 
   compartmentData <- list(
-    depot    = list(analyte = "posaconazole", units = "mg", specimen = "administration site", verified = TRUE),
-    gut      = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    liver    = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney   = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    lung     = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    adipose  = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    heart    = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    brain    = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    bone     = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle   = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    spleen   = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    other    = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
-    venous   = list(analyte = "posaconazole", units = "mg", specimen = "whole blood", verified = TRUE),
+    depot = list(analyte = "posaconazole", units = "mg", specimen = "administration site", verified = TRUE),
+    gut = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    lung = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    adipose = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    bone = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "posaconazole", units = "mg", specimen = "tissue", verified = TRUE),
+    venous = list(analyte = "posaconazole", units = "mg", specimen = "whole blood", verified = TRUE),
     arterial = list(analyte = "posaconazole", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1L,
-    n_studies      = 1L,
-    age_range      = "48 years (the index case patient)",
-    weight_range   = "50-70 kg for the case patient; 73 kg reference adult used for the physiology",
+    species = "human",
+    n_subjects = 1L,
+    n_studies = 1L,
+    age_range = "48 years (the index case patient)",
+    weight_range = "50-70 kg for the case patient; 73 kg reference adult used for the physiology",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Relapsed acute myeloid leukaemia with Staphylococcus aureus",
       "cellulitis and probable pulmonary aspergillosis, treated in the",
       "intensive care unit; posaconazole was substituted for voriconazole",
       "after an undetectable voriconazole trough"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral posaconazole 300 mg twice daily in the case patient (Fig. 4B);",
       "the tissue-comparison simulation used 400 mg once daily"
     ),
-    regions        = "Netherlands (Amsterdam UMC)",
-    notes          = paste(
+    regions = "Netherlands (Amsterdam UMC)",
+    notes = paste(
       "Deterministic single-patient simulation model, not a population fit;",
       "no IIV and no residual-error estimate are reported. Posaconazole",
       "trough concentrations measured in the index case were 2.35 mg/L",

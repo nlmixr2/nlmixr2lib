@@ -18,90 +18,95 @@ Bender_2024_mosunetuzumab <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power model normalised to the cohort median of 78 kg, on CLss, V1 and V2 only. Bender 2024 Table S3 $PK: CLBWT=(BBWT/78)**THETA(8), VBWT=(BBWT/78)**THETA(9), V2BWT=(BBWT/78)**THETA(11). The weight effect on Q, THETA(10), was fixed to 0 and is therefore absent here. Note the $THETA comment block mislabels THETA(8) as 'WT_CLbase', but the code applies it to TVCLSS; Table 2 and the Results text both name the affected parameter as CLss.",
-      source_name        = "BWT"
+      notes = "Power model normalised to the cohort median of 78 kg, on CLss, V1 and V2 only. Bender 2024 Table S3 $PK: CLBWT=(BBWT/78)**THETA(8), VBWT=(BBWT/78)**THETA(9), V2BWT=(BBWT/78)**THETA(11). The weight effect on Q, THETA(10), was fixed to 0 and is therefore absent here. Note the $THETA comment block mislabels THETA(8) as 'WT_CLbase', but the code applies it to TVCLSS; Table 2 and the Results text both name the affected parameter as CLss.",
+      source_name = "BWT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power model normalised to the cohort median of 39 g/L, acting on both CLbase and V1. Bender 2024 Table S3 $PK: CL0ALBUM=(ALBUMT/39.00)**THETA(12) and V1ALBUM=(ALBUMT/39.00)**THETA(16). The control stream guards a unit-error record with IF(ALBUM.GT.200) ALBUMT=39.00, visible in Table 1 as an implausible 480 g/L maximum; that guard is a data-cleaning step and is not reproduced in model().",
-      source_name        = "ALBUM"
+      notes = "Power model normalised to the cohort median of 39 g/L, acting on both CLbase and V1. Bender 2024 Table S3 $PK: CL0ALBUM=(ALBUMT/39.00)**THETA(12) and V1ALBUM=(ALBUMT/39.00)**THETA(16). The control stream guards a unit-error record with IF(ALBUM.GT.200) ALBUMT=39.00, visible in Table 1 as an implausible 480 g/L maximum; that guard is a data-cleaning step and is not reproduced in model().",
+      source_name = "ALBUM"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male (SEXF = 0)",
-      notes              = "Bender 2024 Table S3 codes SEX = 2 for male (the reference, 64.7% of the cohort) and SEX = 1 for female, and applies the effect as the linear multiplier (1 + THETA), not as a power or exponential term. SEXF = 1 - (SEX == 2) recovers the canonical coding with no change of reference level, so the printed coefficients carry over unchanged.",
-      source_name        = "SEX"
+      notes = "Bender 2024 Table S3 codes SEX = 2 for male (the reference, 64.7% of the cohort) and SEX = 1 for female, and applies the effect as the linear multiplier (1 + THETA), not as a power or exponential term. SEXF = 1 - (SEX == 2) recovers the canonical coding with no change of reference level, so the printed coefficients carry over unchanged.",
+      source_name = "SEX"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor burden, sum of the products of perpendicular diameters (SPD)",
-      units              = "mm^2",
-      type               = "continuous",
+      description = "Baseline tumor burden, sum of the products of perpendicular diameters (SPD)",
+      units = "mm^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters on CLss as a power model in the SQUARE ROOT of SPD, normalised to 54.5 mm: Bender 2024 Table S3 $PK LTS2=SQRT(LTS1); CLSSBSPD=(LTS2/54.5)**THETA(14). The reference is exactly sqrt(2970 mm^2) = 54.5 mm, the cohort median SPD of Table 1, and Figure 2 plots the square root of tumor size on its x-axis for this reason. Units are mm^2 SPD, matching the anti-CD20 sibling model Gibiansky_2014_obinutuzumab.R for the same disease.",
-      source_name        = "BSPD"
+      notes = "Enters on CLss as a power model in the SQUARE ROOT of SPD, normalised to 54.5 mm: Bender 2024 Table S3 $PK LTS2=SQRT(LTS1); CLSSBSPD=(LTS2/54.5)**THETA(14). The reference is exactly sqrt(2970 mm^2) = 54.5 mm, the cohort median SPD of Table 1, and Figure 2 plots the square root of tumor size on its x-axis for this reason. Units are mm^2 SPD, matching the anti-CD20 sibling model Gibiansky_2014_obinutuzumab.R for the same disease.",
+      source_name = "BSPD"
     ),
     CP_RITUXIMAB_UGML = list(
-      description        = "Observed predose (baseline) plasma rituximab concentration remaining from prior therapy",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Observed predose (baseline) plasma rituximab concentration remaining from prior therapy",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "BASELINE usage: read once at t = 0 to seed the initial condition of the `ritux` state (Bender 2024 Table S3 $PK: A_0(3) = BLRITUX), which then decays at a fixed 24-day terminal half-life. It does NOT carry the clearance covariate effect -- that acts on the composite CP_ACD20_UGML. 195 of 439 patients had detectable residual rituximab; the reported values are floored at the 0.5 ug/mL assay LOQ (Table 1 median 0.500, maximum 151).",
-      source_name        = "BLRITUX"
+      notes = "BASELINE usage: read once at t = 0 to seed the initial condition of the `ritux` state (Bender 2024 Table S3 $PK: A_0(3) = BLRITUX), which then decays at a fixed 24-day terminal half-life. It does NOT carry the clearance covariate effect -- that acts on the composite CP_ACD20_UGML. 195 of 439 patients had detectable residual rituximab; the reported values are floored at the 0.5 ug/mL assay LOQ (Table 1 median 0.500, maximum 151).",
+      source_name = "BLRITUX"
     ),
     CP_OBINUTUZUMAB_UGML = list(
-      description        = "Observed predose (baseline) plasma obinutuzumab concentration remaining from prior therapy",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Observed predose (baseline) plasma obinutuzumab concentration remaining from prior therapy",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "BASELINE usage: read once at t = 0 to seed the initial condition of the `obin` state (Bender 2024 Table S3 $PK: A_0(5) = BLOBIN), which then decays at a fixed 28-day terminal half-life. 35 of 439 patients had detectable residual obinutuzumab; Table 1 reports a median of 0 with a maximum of 305 ug/mL. Set to 0 for a patient with no prior obinutuzumab exposure.",
-      source_name        = "BLOBIN"
+      notes = "BASELINE usage: read once at t = 0 to seed the initial condition of the `obin` state (Bender 2024 Table S3 $PK: A_0(5) = BLOBIN), which then decays at a fixed 28-day terminal half-life. 35 of 439 patients had detectable residual obinutuzumab; Table 1 reports a median of 0 with a maximum of 305 ug/mL. Set to 0 for a patient with no prior obinutuzumab exposure.",
+      source_name = "BLOBIN"
     ),
     CP_ACD20_UGML = list(
-      description        = "Composite baseline anti-CD20 drug concentration: the maximum of the predose rituximab and obinutuzumab concentrations",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Composite baseline anti-CD20 drug concentration: the maximum of the predose rituximab and obinutuzumab concentrations",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Bender 2024 Table 1 footnote e: 'aCD20 is the maximum concentration between rituximab and obinutuzumab'; Table S3 derives it as IF(BLOBIN.GT.BLRITUX2) ACD20=BLOBIN / IF(BLRITUX2.GT.BLOBIN) ACD20=BLRITUX2. Supplied as a column rather than computed with max() inside model() because the control stream feeds the covariate an NHL-type-dependent IMPUTED rituximab value (aggressive or unknown NHL -> 2105 ng/mL, indolent NHL -> 500 ng/mL) for the 4.6% of patients with a missing measurement, while seeding the ODE from the raw value. The effect enters as a ratio of LOGARITHMS on the ng/mL scale and is therefore not scale-invariant; see the conversion comment in model().",
-      source_name        = "ACD20"
+      notes = "Bender 2024 Table 1 footnote e: 'aCD20 is the maximum concentration between rituximab and obinutuzumab'; Table S3 derives it as IF(BLOBIN.GT.BLRITUX2) ACD20=BLOBIN / IF(BLRITUX2.GT.BLOBIN) ACD20=BLRITUX2. Supplied as a column rather than computed with max() inside model() because the control stream feeds the covariate an NHL-type-dependent IMPUTED rituximab value (aggressive or unknown NHL -> 2105 ng/mL, indolent NHL -> 500 ng/mL) for the 4.6% of patients with a missing measurement, while seeding the ODE from the raw value. The effect enters as a ratio of LOGARITHMS on the ng/mL scale and is therefore not scale-invariant; see the conversion comment in model().",
+      source_name = "ACD20"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "mosunetuzumab", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "mosunetuzumab", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "mosunetuzumab", units = "mg", specimen = "plasma", verified = TRUE),
-    ritux       = list(analyte = "rituximab", units = "ug/mL", specimen = "plasma", verified = TRUE),
-    obin        = list(analyte = "obinutuzumab", units = "ug/mL", specimen = "plasma", verified = TRUE),
-    auc         = list(analyte = "mosunetuzumab", units = "ug/mL*day", specimen = "not applicable", verified = TRUE),
-    auc_ro      = list(analyte = "mosunetuzumab", units = "%*day", specimen = "not applicable", verified = TRUE)
+    ritux = list(analyte = "rituximab", units = "ug/mL", specimen = "plasma", verified = TRUE),
+    obin = list(analyte = "obinutuzumab", units = "ug/mL", specimen = "plasma", verified = TRUE),
+    auc = list(analyte = "mosunetuzumab", units = "ug/mL*day", specimen = "not applicable", verified = TRUE),
+    auc_ro = list(analyte = "mosunetuzumab", units = "%*day", specimen = "not applicable", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 439,
-    n_studies      = 2,
-    age_range      = "19-96 years",
-    age_median     = "63 years",
-    weight_range   = "37.1-163 kg",
-    weight_median  = "77.9 kg",
+    species = "human",
+    n_subjects = 439,
+    n_studies = 2,
+    age_range = "19-96 years",
+    age_median = "63 years",
+    weight_range = "37.1-163 kg",
+    weight_median = "77.9 kg",
     sex_female_pct = 35.3,
-    race_ethnicity = c(White = 75.9, Asian = 17.5, Black = 2.7,
-                       `American Indian/Alaskan Native` = 0.5, Multiple = 0.5,
-                       Unknown = 3.0),
-    disease_state  = "relapsed/refractory B-cell non-Hodgkin lymphoma (61.5% aggressive, 38.3% indolent; DLBCL 35.8%, FL 37.1%, MCL 8.9%, transformed FL 13.0%)",
-    dose_range     = "0.05-2.8 mg IV q3w fixed dosing (Group A, n = 32) and 0.4/1/2.8 up to 1/2/60/30 mg IV q3w Cycle 1 step-up dosing (Group B, n = 407); 19 dose levels; approved regimen 1/2/60/30 mg IV q3w",
+    race_ethnicity = c(
+      White = 75.9,
+      Asian = 17.5,
+      Black = 2.7,
+      `American Indian/Alaskan Native` = 0.5,
+      Multiple = 0.5,
+      Unknown = 3.0
+    ),
+    disease_state = "relapsed/refractory B-cell non-Hodgkin lymphoma (61.5% aggressive, 38.3% indolent; DLBCL 35.8%, FL 37.1%, MCL 8.9%, transformed FL 13.0%)",
+    dose_range = "0.05-2.8 mg IV q3w fixed dosing (Group A, n = 32) and 0.4/1/2.8 up to 1/2/60/30 mg IV q3w Cycle 1 step-up dosing (Group B, n = 407); 19 dose levels; approved regimen 1/2/60/30 mg IV q3w",
     albumin_median = "39 g/L (range 19-480; the 480 g/L maximum is a unit-error record guarded in the control stream)",
-    tumor_median   = "SPD 2970 mm^2 (range 96.0-70,900)",
-    prior_therapy  = "median 3 prior lines; ~50% of patients carried residual anti-CD20 drug at baseline (rituximab n = 195, obinutuzumab n = 35, both n = 7)",
-    notes          = "Study GO29781 (phase I/II), 7250 PK observations from 439 patients after exclusions. Baseline characteristics from Bender 2024 Table 1. Fitted in NONMEM 7.4.3 with ADVAN13/TRANS1 and FOCE-I (Table S3)."
+    tumor_median = "SPD 2970 mm^2 (range 96.0-70,900)",
+    prior_therapy = "median 3 prior lines; ~50% of patients carried residual anti-CD20 drug at baseline (rituximab n = 195, obinutuzumab n = 35, both n = 7)",
+    notes = "Study GO29781 (phase I/II), 7250 PK observations from 439 patients after exclusions. Baseline characteristics from Bender 2024 Table 1. Fitted in NONMEM 7.4.3 with ADVAN13/TRANS1 and FOCE-I (Table S3)."
   )
 
   ini({

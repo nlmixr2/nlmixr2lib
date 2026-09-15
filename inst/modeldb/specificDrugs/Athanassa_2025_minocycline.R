@@ -37,12 +37,16 @@ Athanassa_2025_minocycline <- function() {
   # compartment, scaled by the apparent volume V/F to give the observation Cc.
   compartmentData <- list(
     depot = list(
-      analyte = "minocycline", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "minocycline",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "minocycline", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "minocycline",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
@@ -58,70 +62,70 @@ Athanassa_2025_minocycline <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age at study onset.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Athanassa 2025 Table 1: median 69.5 years (IQR 63-76.5). Screened on CL/F and V/F; not significant at P < 0.01 and not retained (Results, 'Covariate analysis')."
+      units = "years",
+      type = "continuous",
+      notes = "Athanassa 2025 Table 1: median 69.5 years (IQR 63-76.5). Screened on CL/F and V/F; not significant at P < 0.01 and not retained (Results, 'Covariate analysis')."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Athanassa 2025 Table 1 reports 17 male of 24 patients, i.e. 7 female (29.2%). The table's printed male percentage of 70.1% appears to be a typographical slip for 70.8% (17/24). Screened on CL/F and V/F; not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Athanassa 2025 Table 1 reports 17 male of 24 patients, i.e. 7 female (29.2%). The table's printed male percentage of 70.1% appears to be a typographical slip for 70.8% (17/24). Screened on CL/F and V/F; not retained."
     ),
     WT = list(
       description = "Total body weight at study onset.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Athanassa 2025 Table 1: median 85.0 kg (IQR 70.0-106.5). Screened on CL/F and V/F; not retained. Note that no allometric scaling is present in the final model either -- the paper reports CL/F and V/F as unscaled population values."
+      units = "kg",
+      type = "continuous",
+      notes = "Athanassa 2025 Table 1: median 85.0 kg (IQR 70.0-106.5). Screened on CL/F and V/F; not retained. Note that no allometric scaling is present in the final model either -- the paper reports CL/F and V/F as unscaled population values."
     ),
     BMI = list(
       description = "Body mass index at study onset.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Athanassa 2025 Table 1: median 25 kg/m^2 (IQR 23.95-32.5). Screened on CL/F and V/F; not retained. Obesity was among the most frequent comorbidities in the cohort (Results, 'Patient characteristics')."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Athanassa 2025 Table 1: median 25 kg/m^2 (IQR 23.95-32.5). Screened on CL/F and V/F; not retained. Obesity was among the most frequent comorbidities in the cohort (Results, 'Patient characteristics')."
     ),
     ALB = list(
       description = "Serum albumin at study onset. Reported by the source in g/dL; the register canonical ALB is g/L (multiply by 10).",
-      units       = "g/dL (as reported by the source; canonical ALB is g/L)",
-      type        = "continuous",
-      notes       = "Athanassa 2025 Table 1: median 2.45 g/dL (IQR 2.20-2.62), i.e. 24.5 g/L. This was the ONLY covariate to reach statistical significance, entering as a power function on the apparent volume of distribution with an estimated exponent of -3.57. The authors rejected it from the final model on plausibility grounds: 'the estimated exponent of -3.57 indicated an excessively strong reciprocal dependence of the volume of distribution on albumin levels. This extreme sensitivity, where a 20% difference in albumin resulted in a 2-fold change in volume, could not be justified' (Results, 'Covariate analysis'). The Discussion attributes the implausible magnitude to the narrow albumin range in this hypoalbuminaemic ICU cohort. The exponent is recorded here for provenance only; it is deliberately NOT implemented in model()."
+      units = "g/dL (as reported by the source; canonical ALB is g/L)",
+      type = "continuous",
+      notes = "Athanassa 2025 Table 1: median 2.45 g/dL (IQR 2.20-2.62), i.e. 24.5 g/L. This was the ONLY covariate to reach statistical significance, entering as a power function on the apparent volume of distribution with an estimated exponent of -3.57. The authors rejected it from the final model on plausibility grounds: 'the estimated exponent of -3.57 indicated an excessively strong reciprocal dependence of the volume of distribution on albumin levels. This extreme sensitivity, where a 20% difference in albumin resulted in a 2-fold change in volume, could not be justified' (Results, 'Covariate analysis'). The Discussion attributes the implausible magnitude to the narrow albumin range in this hypoalbuminaemic ICU cohort. The exponent is recorded here for provenance only; it is deliberately NOT implemented in model()."
     ),
     CREAT = list(
       description = "Serum creatinine at study onset.",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Athanassa 2025 Table 1: median 1.00 mg/dL (IQR 0.600-1.98). Screened on CL/F and V/F; not retained."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Athanassa 2025 Table 1: median 1.00 mg/dL (IQR 0.600-1.98). Screened on CL/F and V/F; not retained."
     ),
     CRCL = list(
       description = "Creatinine clearance, measured directly by 24-hour urine collection (raw mL/min, NOT BSA-normalized).",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Athanassa 2025 Table 1: median 57.7 mL/min (IQR 28.5-104); 11 of 24 patients had CLCR < 50 mL/min without renal replacement therapy. The Methods note the choice of measured rather than estimated CrCl 'for its accuracy in critically ill patients, where serum creatinine-based equations may be less reliable'. Screened on CL/F and V/F; not retained -- consistent with the Discussion's citation of Carney et al. that minocycline is cleared mainly by gastrointestinal excretion rather than renally."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Athanassa 2025 Table 1: median 57.7 mL/min (IQR 28.5-104); 11 of 24 patients had CLCR < 50 mL/min without renal replacement therapy. The Methods note the choice of measured rather than estimated CrCl 'for its accuracy in critically ill patients, where serum creatinine-based equations may be less reliable'. Screened on CL/F and V/F; not retained -- consistent with the Discussion's citation of Carney et al. that minocycline is cleared mainly by gastrointestinal excretion rather than renally."
     ),
     HCT = list(
       description = "Haematocrit at study onset.",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Athanassa 2025 Table 1: median 28.2% (IQR 25.6-32.2). Screened on CL/F and V/F; not retained."
+      units = "%",
+      type = "continuous",
+      notes = "Athanassa 2025 Table 1: median 28.2% (IQR 25.6-32.2). Screened on CL/F and V/F; not retained."
     ),
     SOFA = list(
       description = "Sequential Organ Failure Assessment score at ICU admission, a 0-24 composite of six organ-system sub-scores.",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = "Athanassa 2025 Table 1: median 9 (IQR 8-10), indicating severe organ dysfunction. Screened on CL/F and V/F; not retained. SOFA is NOT currently a canonical entry in inst/references/covariate-columns.md (the registered ICU severity scores are SAPS_II and APACHE_II). No new canonical is proposed here because the covariate was rejected by the source authors and is never referenced in model(); covariatesDataExcluded is documentation only and is not validated against the register. A future extraction that RETAINS a SOFA effect should propose SOFA as a canonical at that time."
+      units = "(score)",
+      type = "continuous",
+      notes = "Athanassa 2025 Table 1: median 9 (IQR 8-10), indicating severe organ dysfunction. Screened on CL/F and V/F; not retained. SOFA is NOT currently a canonical entry in inst/references/covariate-columns.md (the registered ICU severity scores are SAPS_II and APACHE_II). No new canonical is proposed here because the covariate was rejected by the source authors and is never referenced in model(); covariatesDataExcluded is documentation only and is not validated against the register. A future extraction that RETAINS a SOFA effect should propose SOFA as a canonical at that time."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 24,
+    n_studies = 1,
     n_observations = 172,
-    age_median     = "69.5 years (IQR 63-76.5)",
-    weight_median  = "85.0 kg (IQR 70.0-106.5)",
-    bmi_median     = "25 kg/m^2 (IQR 23.95-32.5)",
+    age_median = "69.5 years (IQR 63-76.5)",
+    weight_median = "85.0 kg (IQR 70.0-106.5)",
+    bmi_median = "25 kg/m^2 (IQR 23.95-32.5)",
     sex_female_pct = 29.2,
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill mechanically-ventilated ICU adults with",
       "ventilator-associated pneumonia caused by multidrug-resistant",
       "Acinetobacter baumannii; median SOFA score 9 (IQR 8-10) at admission;",
@@ -133,10 +137,10 @@ Athanassa_2025_minocycline <- function() {
       "57.7 mL/min (IQR 28.5-104); 11 of 24 patients had CLCR < 50 mL/min,",
       "none on renal replacement therapy"
     ),
-    dose_range     = "200 mg oral loading dose, then 100 mg every 12 h for at least 5 days",
-    co_medication  = "Colistin 67%, meropenem 29%, ampicillin-sulbactam 29%",
-    regions        = "Greece (single centre: Sismanogleio General Hospital, Athens; August 2021 to April 2023)",
-    notes          = paste(
+    dose_range = "200 mg oral loading dose, then 100 mg every 12 h for at least 5 days",
+    co_medication = "Colistin 67%, meropenem 29%, ampicillin-sulbactam 29%",
+    regions = "Greece (single centre: Sismanogleio General Hospital, Athens; August 2021 to April 2023)",
+    notes = paste(
       "Baseline demographics from Athanassa 2025 Table 1. 182 plasma",
       "minocycline concentrations were collected; 10 (5.49%) below the limit",
       "of quantification were discarded, leaving 172 used for model",

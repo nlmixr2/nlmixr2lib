@@ -32,11 +32,11 @@ Wang_2024_ionizableLipid_rat_pbpk <- function() {
 
   covariateData <- list(
     FORM_LNP_SM102 = list(
-      description        = "1 = LNP formulated with the ionizable lipid SM-102; 0 otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = LNP formulated with the ionizable lipid SM-102; 0 otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (DLin-MC3-DMA / MC3 reference formulation)",
-      notes              = paste(
+      notes = paste(
         "Selects the SM-102 column of Wang 2024 Figure 4A. SM-102 shares the",
         "MC3 liver permeability (the paper states 'the permeability rate of MC3",
         "applies to SM-102') but has its own spleen and 'other' permeabilities,",
@@ -44,20 +44,20 @@ Wang_2024_ionizableLipid_rat_pbpk <- function() {
         "kin / kdis / kel. Set FORM_LNP_SM102 = FORM_LNP_LIPID5 = 0 for MC3;",
         "exactly one of the two may be 1."
       ),
-      source_name        = "SM-102"
+      source_name = "SM-102"
     ),
     FORM_LNP_LIPID5 = list(
-      description        = "1 = LNP formulated with the ionizable lipid Lipid 5; 0 otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = LNP formulated with the ionizable lipid Lipid 5; 0 otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (DLin-MC3-DMA / MC3 reference formulation)",
-      notes              = paste(
+      notes = paste(
         "Selects the Lipid 5 column of Wang 2024 Figure 4A. Unlike SM-102,",
         "Lipid 5 required a down-regulated liver permeability (paper section",
         "3.1.2: 'that of Lipid 5 had to be down-regulated to get a satisfactory",
         "fitting'). Mutually exclusive with FORM_LNP_SM102."
       ),
-      source_name        = "Lipid 5"
+      source_name = "Lipid 5"
     )
   )
 
@@ -67,27 +67,27 @@ Wang_2024_ionizableLipid_rat_pbpk <- function() {
   # by LNP disassembly, per the registered `np` (nanoparticle-conjugated
   # species) suffix convention.
   compartmentData <- list(
-    venous_np      = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
-    arterial_np    = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
-    vp_lung_np     = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
-    vp_liver_np    = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
-    is_liver_np    = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "tissue", verified = TRUE),
-    int_liver_np   = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "tissue", verified = TRUE),
-    int_liver      = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "tissue", verified = TRUE),
-    vp_spleen_np   = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
-    is_spleen_np   = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "tissue", verified = TRUE),
-    int_spleen_np  = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "tissue", verified = TRUE),
-    int_spleen     = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "tissue", verified = TRUE),
-    vp_other_np    = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
-    int_other_np   = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "tissue", verified = TRUE)
+    venous_np = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
+    arterial_np = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
+    vp_lung_np = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
+    vp_liver_np = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
+    is_liver_np = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "tissue", verified = TRUE),
+    int_liver_np = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "tissue", verified = TRUE),
+    int_liver = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "tissue", verified = TRUE),
+    vp_spleen_np = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
+    is_spleen_np = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "tissue", verified = TRUE),
+    int_spleen_np = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "tissue", verified = TRUE),
+    int_spleen = list(analyte = "ionizable lipid (free)", units = "mg", specimen = "tissue", verified = TRUE),
+    vp_other_np = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
+    int_other_np = list(analyte = "ionizable lipid (in LNP)", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   population <- list(
-    species      = "rat (Sprague-Dawley)",
-    n_subjects   = NA_integer_,
-    n_studies    = 2L,
+    species = "rat (Sprague-Dawley)",
+    n_subjects = NA_integer_,
+    n_studies = 2L,
     weight_range = "225-250 g (0.2375 kg reference body weight, Table 1)",
-    dose_range   = paste(
+    dose_range = paste(
       "0.2 mg/kg mRNA as a single intravenous mRNA-LNP dose, equivalent to",
       "about 2.23 mg/kg MC3 and 2.46 mg/kg SM-102 or Lipid 5 (Figure 4A legend)"
     ),

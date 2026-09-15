@@ -4,8 +4,12 @@ Wilbaux_2014_ovarianCancer_ca125 <- function() {
   vignette <- "Wilbaux_2014_ovarianCancer_ca125"
   paper_specific_compartments <- c("ca125")
   paper_specific_etas <- c(
-    "etalkprol", "etala50", "etalkreduc",
-    "etalkprod1", "etalkprod2", "etalk2",
+    "etalkprol",
+    "etala50",
+    "etalkreduc",
+    "etalkprod1",
+    "etalkprod2",
+    "etalk2",
     "etalrbase_ca125"
   )
   paper_specific_residual_sds <- c("addSd_ca125", "lambda_ca125")
@@ -20,10 +24,15 @@ Wilbaux_2014_ovarianCancer_ca125 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit1   = list(analyte = "chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit1 = list(
+      analyte = "chemotherapy",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
     tumor_size = list(analyte = "tumour size", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    ca125      = list(analyte = "CA-125", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    ca125 = list(analyte = "CA-125", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list()

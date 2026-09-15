@@ -5,8 +5,8 @@ Li_2017_brentuximab <- function() {
   paper_specific_compartments <- c("pathway_proteolytic", "pathway_deconjugation")
 
   units <- list(
-    time          = "day",
-    dosing        = "nmol",
+    time = "day",
+    dosing = "nmol",
     concentration = "pmol/mL"
   )
 
@@ -15,58 +15,78 @@ Li_2017_brentuximab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central               = list(analyte = "brentuximab vedotin", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1           = list(analyte = "brentuximab vedotin", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral2           = list(analyte = "brentuximab vedotin", units = "nmol", specimen = "plasma", verified = FALSE),
-    central_mmae          = list(analyte = "monomethyl auristatin E (MMAE)", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1_mmae      = list(analyte = "monomethyl auristatin E (MMAE)", units = "nmol", specimen = "plasma", verified = FALSE),
-    pathway_proteolytic   = list(analyte = "brentuximab vedotin", units = "nmol", specimen = "administration site", verified = FALSE),
-    pathway_deconjugation = list(analyte = "monomethyl auristatin E (MMAE)", units = "nmol", specimen = "administration site", verified = FALSE)
+    central = list(analyte = "brentuximab vedotin", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "brentuximab vedotin", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "brentuximab vedotin", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_mmae = list(
+      analyte = "monomethyl auristatin E (MMAE)",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1_mmae = list(
+      analyte = "monomethyl auristatin E (MMAE)",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    pathway_proteolytic = list(
+      analyte = "brentuximab vedotin",
+      units = "nmol",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pathway_deconjugation = list(
+      analyte = "monomethyl auristatin E (MMAE)",
+      units = "nmol",
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effects on ADC (CL, V1, V2, V3, Q2, Q3) and MMAE (CLM, V4, V5, Q5) parameters; reference 75 kg per Li 2017 Table 3/4 (pooled-population median 74.8 kg rounded to 75 kg in the reference-subject definition).",
-      source_name        = "BW"
+      notes = "Time-fixed baseline value. Power effects on ADC (CL, V1, V2, V3, Q2, Q3) and MMAE (CLM, V4, V5, Q5) parameters; reference 75 kg per Li 2017 Table 3/4 (pooled-population median 74.8 kg rounded to 75 kg in the reference-subject definition).",
+      source_name = "BW"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Enters only on ADC V1 with a multiplicative ratio e_sexf_vc = 0.873 for females (males are the reference). Paper reports 136/314 = 43% female.",
-      source_name        = "SEX"
+      notes = "Time-fixed. Enters only on ADC V1 with a multiplicative ratio e_sexf_vc = 0.873 for females (males are the reference). Paper reports 136/314 = 43% female.",
+      source_name = "SEX"
     ),
     CYCLE = list(
-      description        = "Treatment cycle number, 1 = first dosing cycle, 2 = second, ... (integer count, time-varying across a multi-cycle treatment course)",
-      units              = "(count)",
-      type               = "count",
+      description = "Treatment cycle number, 1 = first dosing cycle, 2 = second, ... (integer count, time-varying across a multi-cycle treatment course)",
+      units = "(count)",
+      type = "count",
       reference_category = NULL,
-      notes              = "Required for the MMAE submodel only: Fmc = CYCLE^Fm with Fm = -0.261 captures the cycle-over-cycle decline in ADC-to-MMAE proteolytic conversion thought to reflect tumor-burden reduction. Increment CYCLE at the start of each new dosing cycle; leave CYCLE >= 1 throughout (CYCLE^Fm is undefined at 0). Does not affect ADC PK or MMAE deconjugation flux.",
-      source_name        = "CYCLE"
+      notes = "Required for the MMAE submodel only: Fmc = CYCLE^Fm with Fm = -0.261 captures the cycle-over-cycle decline in ADC-to-MMAE proteolytic conversion thought to reflect tumor-burden reduction. Increment CYCLE at the start of each new dosing cycle; leave CYCLE >= 1 throughout (CYCLE^Fm is undefined at 0). Does not affect ADC PK or MMAE deconjugation flux.",
+      source_name = "CYCLE"
     )
   )
 
   population <- list(
-    n_subjects     = 314L,
-    n_studies      = 5L,
-    age_range      = "12-87 years (median 35)",
-    age_median     = "35 years",
-    weight_range   = "41.4-168 kg (median 74.8)",
-    weight_median  = "75 kg (reference-subject value; pooled-population median 74.8 kg)",
+    n_subjects = 314L,
+    n_studies = 5L,
+    age_range = "12-87 years (median 35)",
+    age_median = "35 years",
+    weight_range = "41.4-168 kg (median 74.8)",
+    weight_median = "75 kg (reference-subject value; pooled-population median 74.8 kg)",
     sex_female_pct = 43.3,
     race_ethnicity = c(White = 85, Other = 15),
-    disease_state  = "Relapsed/refractory CD30-expressing hematologic malignancies: Hodgkin lymphoma (HL, 77%), systemic anaplastic large cell lymphoma (sALCL, 21%), other (2%).",
-    dose_range     = "0.1-3.6 mg/kg IV every 3 weeks (Studies 1, 3, 4, 5) or 0.4-1.4 mg/kg IV weekly for 3 weeks of each 4-week cycle (Study 2); 30-minute or 2-hour infusion. Dose capped at 180 mg (equivalent to 1.8 mg/kg for a 100-kg subject). Licensed regimen is 1.8 mg/kg IV every 3 weeks.",
-    regions        = "Global (North America, Europe, Canada).",
-    study_phase    = "2 phase 1 dose-ranging studies, 2 pivotal phase 2 studies (HL, sALCL), 1 phase 1 clinical pharmacology study (5 studies total).",
+    disease_state = "Relapsed/refractory CD30-expressing hematologic malignancies: Hodgkin lymphoma (HL, 77%), systemic anaplastic large cell lymphoma (sALCL, 21%), other (2%).",
+    dose_range = "0.1-3.6 mg/kg IV every 3 weeks (Studies 1, 3, 4, 5) or 0.4-1.4 mg/kg IV weekly for 3 weeks of each 4-week cycle (Study 2); 30-minute or 2-hour infusion. Dose capped at 180 mg (equivalent to 1.8 mg/kg for a 100-kg subject). Licensed regimen is 1.8 mg/kg IV every 3 weeks.",
+    regions = "Global (North America, Europe, Canada).",
+    study_phase = "2 phase 1 dose-ranging studies, 2 pivotal phase 2 studies (HL, sALCL), 1 phase 1 clinical pharmacology study (5 studies total).",
     n_observations = "7081 ADC concentrations + 7452 MMAE concentrations across 314 subjects.",
     reference_subject = "75 kg male, Cycle 1 (WT / 75)^exponent and CYCLE^Fm both equal 1.",
-    notes          = "Baseline characteristics reported in Li 2017 Table 2; data collected November 2006 - June 2011. Renal function (creatinine clearance 22-150 mL/min, median 122), hepatic function (ALT, AST, bilirubin, albumin), tumor size, age, race, and manufacturing process were evaluated as candidate covariates and were not statistically significant (only body weight on ADC CL/V1/V2/V3/Q2/Q3 and sex on ADC V1 were retained)."
+    notes = "Baseline characteristics reported in Li 2017 Table 2; data collected November 2006 - June 2011. Renal function (creatinine clearance 22-150 mL/min, median 122), hepatic function (ALT, AST, bilirubin, albumin), tumor size, age, race, and manufacturing process were evaluated as candidate covariates and were not statistically significant (only body weight on ADC CL/V1/V2/V3/Q2/Q3 and sex on ADC V1 were retained)."
   )
 
   ini({

@@ -69,31 +69,45 @@ Benson_2010_reboxetine_qsp <- function() {
   compartmentData <- list(
     target = list(
       analyte = "free (unoccupied) human noradrenaline transporter, hNET",
-      units = "nM", specimen = "not applicable", verified = TRUE
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     tracer = list(
       analyte = "free [3H]-desmethylimipramine (radioligand tracer)",
-      units = "nM", specimen = "not applicable", verified = TRUE
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     complex = list(
       analyte = "hNET-[3H]-desmethylimipramine complex (RT); the measured species",
-      units = "nM", specimen = "not applicable", verified = TRUE
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     reboxetine_ss = list(
       analyte = "free SS-reboxetine",
-      units = "nM", specimen = "not applicable", verified = TRUE
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     complex_ss = list(
       analyte = "hNET-SS-reboxetine complex (RSS)",
-      units = "nM", specimen = "not applicable", verified = TRUE
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     reboxetine_rr = list(
       analyte = "free RR-reboxetine",
-      units = "nM", specimen = "not applicable", verified = TRUE
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     complex_rr = list(
       analyte = "hNET-RR-reboxetine complex (RRR)",
-      units = "nM", specimen = "not applicable", verified = TRUE
+      units = "nM",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
@@ -104,20 +118,22 @@ Benson_2010_reboxetine_qsp <- function() {
   # radioligand tracer pool).
   paper_specific_compartments <- c(
     "tracer",
-    "reboxetine_ss", "complex_ss",
-    "reboxetine_rr", "complex_rr"
+    "reboxetine_ss",
+    "complex_ss",
+    "reboxetine_rr",
+    "complex_rr"
   )
 
   population <- list(
-    species        = "in vitro (HEK-293 cell membrane homogenate expressing recombinant human noradrenaline transporter, hNET; assay buffer 20 mM HEPES, 120 mM NaCl, 5 mM KCl, pH 7.4, room temperature ~25 C)",
-    n_subjects     = 53L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "in vitro (HEK-293 cell membrane homogenate expressing recombinant human noradrenaline transporter, hNET; assay buffer 20 mM HEPES, 120 mM NaCl, 5 mM KCl, pH 7.4, room temperature ~25 C)",
+    n_subjects = 53L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "In vitro radioligand binding assay; not a clinical population.",
-    dose_range     = paste(
+    disease_state = "In vitro radioligand binding assay; not a clinical population.",
+    dose_range = paste(
       "Experiment 3 (competition kinetics, the source of the reboxetine",
       "estimates): unlabelled competitor at 0.1, 0.3 and 1 nM for racemic",
       "reboxetine and SS-reboxetine, and 1, 3, 10 and 30 nM for RR-reboxetine,",
@@ -127,8 +143,8 @@ Benson_2010_reboxetine_qsp <- function() {
       "c. 0.1 nM hNET. [3H]-SS-reboxetine saturation: 0.004 to 16 nM against",
       "c. 0.12 nM hNET."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "The mixed-effects 'individual' is an EXPERIMENT, not a subject: all",
       "data from Experiments 1-3 were analysed in a single NONMEM VI FOCE-I",
       "step over 1500 data points from 53 experiments (Benson 2010 Results).",
@@ -144,7 +160,7 @@ Benson_2010_reboxetine_qsp <- function() {
       "approximately 40 pmol/mg; the fitted Bmax of 72.4 pM corresponds to",
       "approximately 28 pmol/mg."
     ),
-    n_experiments  = 53L,
+    n_experiments = 53L,
     n_observations = 1500L
   )
 

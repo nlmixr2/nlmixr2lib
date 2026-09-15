@@ -13,11 +13,11 @@ Maleki_2024_brepocitinib <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline body weight. Allometric scaling referenced to 70 kg,",
         "with exponents fixed at 0.75 on CL/F and Q/F and 1 on Vc/F and Vp/F",
         "(Maleki 2024 Table 3 rows 'Effect of BWT on CL/F and Q/F' and 'Effect of",
@@ -26,40 +26,40 @@ Maleki_2024_brepocitinib <- function() {
         "the Discussion states 'the typical values of 70 kg and 22 U/L were used",
         "for BWT and BAST'. Observed range 42-204 kg."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     AST = list(
-      description        = "Baseline aspartate aminotransferase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline aspartate aminotransferase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline value entered as a power function referenced to",
         "22 U/L (Maleki 2024 Table 3 footnote e). As with body weight, 22 U/L is",
         "a rounded reference rather than the observed median of 19 U/L (Table 1);",
         "the Discussion states the rounded values were used deliberately.",
         "Observed range 8-133 U/L; the paper notes the normal range is 8-33 U/L."
       ),
-      source_name        = "BAST"
+      source_name = "BAST"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian; the pooled White and Other groups)",
-      notes              = paste(
+      notes = paste(
         "Maleki 2024 Table 3 footnote e: RACE is 1 for the Asian population and 0",
         "for others. Asians were 7% of the analysis population (52 of 775);",
         "White 85% and Other 8% form the reference group. The effect is on CL/F only."
       ),
-      source_name        = "RACE"
+      source_name = "RACE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female) for this model",
-      notes              = paste(
+      notes = paste(
         "The source column is a male indicator (Maleki 2024 Table 3 footnote f:",
         "'SEX is 1 for male population'), so SEXF = 1 - SEX. Females are the",
         "paper's reference category -- the typical Vc/F of 88.52 L is a female",
@@ -69,28 +69,28 @@ Maleki_2024_brepocitinib <- function() {
         "reference category was 'selected alphabetically' (Discussion), not by",
         "group size: males were 59% of the cohort."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     DIS_UC = list(
-      description        = "Ulcerative colitis disease-state indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Ulcerative colitis disease-state indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy participants and the AA / HS / PsA / PsO / vitiligo cohorts pooled)",
-      notes              = paste(
+      notes = paste(
         "Maleki 2024 Table 3 footnote d: TA is 1 for patients with UC and 0 for",
         "everyone else. Patients with UC were 19% of the analysis population",
         "(145 of 775). The effect is additive on Ka (Ka is a normally distributed",
         "parameter in Table 2), not multiplicative, and is the only structural",
         "effect of disease state on the typical parameters."
       ),
-      source_name        = "TA"
+      source_name = "TA"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient; the pooled AA / HS / PsA / PsO / UC / vitiligo cohorts)",
-      notes              = paste(
+      notes = paste(
         "Healthy participants were 12% of the analysis population (92 of 775).",
         "This covariate does not change any typical structural parameter. It",
         "gates (i) the magnitude of the interindividual variability on CL/F and",
@@ -102,28 +102,28 @@ Maleki_2024_brepocitinib <- function() {
         "patient indicator ('Health status (healthy vs patient)', Table 2), so",
         "both effects are applied on (1 - DIS_HEALTHY)."
       ),
-      source_name        = "Health status"
+      source_name = "Health status"
     ),
     FORM_TABLET = list(
-      description        = "Tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral suspension)",
-      notes              = paste(
+      notes = paste(
         "Maleki 2024 Table 3 footnote b: 'Tlag = 0 for suspension formulation'.",
         "The lag time of 0.26 h therefore applies only when FORM_TABLET = 1.",
         "Tablet was 92% of the analysis population; the non-tablet comparator is",
         "the oral suspension used in the phase I relative-bioavailability arm",
         "(NCT02310750)."
       ),
-      source_name        = "Drug formulation"
+      source_name = "Drug formulation"
     ),
     DOSE_HIGH = list(
-      description        = "Daily-dose-above-100-mg indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Daily-dose-above-100-mg indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (administered daily dose of 100 mg or less)",
-      notes              = paste(
+      notes = paste(
         "Maleki 2024 Table 3 footnote c: 'D100 is 1 when the administered dose",
         ">100 and 0 for other dose levels', with dose in mg/day. In this analysis",
         "the >100 mg/day cohorts were the 175 and 200 mg phase I arms, 5% of the",
@@ -132,16 +132,16 @@ Maleki_2024_brepocitinib <- function() {
         "and hence 1.3-fold higher dose-normalized AUCtau and Cmax above 100 mg",
         "(Discussion). Time-fixed per subject in this design."
       ),
-      source_name        = "D100"
+      source_name = "D100"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Reported as a baseline demographic in Maleki 2024 Table 1 (median 43,",
         "range 18-75 years) and covered by the univariate covariate screen, but",
         "not retained in the final covariate model (Table 2 lists only the",
@@ -151,9 +151,9 @@ Maleki_2024_brepocitinib <- function() {
     ),
     ALB = list(
       description = "Baseline serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/dL",
+      type = "continuous",
+      notes = paste(
         "Reported as a baseline demographic in Maleki 2024 Table 1 (median 4.5,",
         "range 3.2-5.6 g/dL) but not retained in the final covariate model.",
         "Documentation only; not referenced in model()."
@@ -161,9 +161,9 @@ Maleki_2024_brepocitinib <- function() {
     ),
     CRCL = list(
       description = "Baseline creatinine clearance (Cockcroft-Gault)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Reported as a baseline demographic in Maleki 2024 Table 1 (median 119,",
         "range 41.4-357 mL/min; Table 1 footnote a cites Cockcroft and Gault) but",
         "not retained in the final covariate model. Not BSA-normalized in the",
@@ -173,30 +173,30 @@ Maleki_2024_brepocitinib <- function() {
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "brepocitinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "brepocitinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "brepocitinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "brepocitinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "brepocitinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 775,
-    n_studies      = 9,
+    species = "human",
+    n_subjects = 775,
+    n_studies = 9,
     n_observations = 8552,
-    age_range      = "18-75 years",
-    age_median     = "43 years",
-    weight_range   = "42-204 kg",
-    weight_median  = "81 kg",
+    age_range = "18-75 years",
+    age_median = "43 years",
+    weight_range = "42-204 kg",
+    weight_median = "81 kg",
     sex_female_pct = 41,
     race_ethnicity = c(White = 85, Asian = 7, Other = 8),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy participants (12%) pooled with patients with alopecia areata (8%),",
       "hidradenitis suppurativa (5%), psoriatic arthritis (24%), plaque psoriasis",
       "(26%), ulcerative colitis (19%), and non-segmental vitiligo (7%)"
     ),
-    dose_range     = "1-200 mg oral, single dose or once daily (one 50 mg twice-daily phase I arm); tablet (92%) or suspension",
-    regions        = "Not reported by region; includes a dedicated phase I study in healthy Japanese participants (NCT03236493)",
-    notes          = paste(
+    dose_range = "1-200 mg oral, single dose or once daily (one 50 mg twice-daily phase I arm); tablet (92%) or suspension",
+    regions = "Not reported by region; includes a dedicated phase I study in healthy Japanese participants (NCT03236493)",
+    notes = paste(
       "Baseline demographics from Maleki 2024 Table 1; study-level detail from",
       "Table S1 of the supplement. Three phase I studies (NCT02310750,",
       "NCT03236493, NCT03656952) and six phase II studies (NCT02969018,",

@@ -1,8 +1,8 @@
 Axelsen_2024_selexipag_pediatric <- function() {
   description <- "Joint two-compartment parent + two-compartment metabolite population PK model for oral selexipag and its active metabolite JNJ-68006861 (ACT-333679) in pediatric patients aged 2 to <18 years with pulmonary arterial hypertension (Axelsen 2024, pediatric column of Table 1; NCT03492177). Structurally identical to the companion adult model, updated by NONMEM BAYES estimation using the adult parameter estimates as priors. First-order absorption into a two-compartment selexipag disposition; selexipag leaves the central compartment by a linear apparent clearance CL/F AND, in parallel, by the first-order metabolite-formation rate constant kmet, so total apparent selexipag clearance is CL/F + Vp/F * kmet. The metabolite has its own two-compartment disposition with first-order elimination km. The absorption lag time is logit-bounded on (0, 2) h with a fixed typical value of 0.668 h. Body weight (power on CL/F, Vp/F and Vm/F), total bilirubin (power on CL/F), male sex (exponential on km) and a four-level PAH-comedication categorical (naive / ERA only / PDE5 inhibitor only / ERA + PDE5; exponential on km) are the retained covariates. The body-weight exponent on CL/F updated from 0.546 to 0.828, close to the standard allometric 0.75."
-  reference   <- "Axelsen LN, Kummel A, Perez Ruixo JJ, Russu A. Population pharmacokinetics of selexipag for dose selection and confirmation in pediatric patients with pulmonary arterial hypertension. CPT Pharmacometrics Syst Pharmacol. 2024;13(12):2185-2195. doi:10.1002/psp4.13231"
-  vignette    <- "Axelsen_2024_selexipag"
-  units       <- list(time = "h", dosing = "ug", concentration = "ng/mL")
+  reference <- "Axelsen LN, Kummel A, Perez Ruixo JJ, Russu A. Population pharmacokinetics of selexipag for dose selection and confirmation in pediatric patients with pulmonary arterial hypertension. CPT Pharmacometrics Syst Pharmacol. 2024;13(12):2185-2195. doi:10.1002/psp4.13231"
+  vignette <- "Axelsen_2024_selexipag"
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 
   # Unit convention is stated verbatim at the head of the Supplementary
   # Table S3 NONMEM control stream: "Dose: ug / Concentration: ng/mL /
@@ -10,78 +10,78 @@ Axelsen_2024_selexipag_pediatric <- function() {
   # error "(ug/mL)"; both are typographical slips -- see the vignette
   # Errata section.
   compartmentData <- list(
-    depot           = list(analyte = "selexipag",     units = "ug", specimen = "administration site", verified = TRUE),
-    central         = list(analyte = "selexipag",     units = "ug", specimen = "plasma",              verified = TRUE),
-    peripheral1     = list(analyte = "selexipag",     units = "ug", specimen = "plasma",              verified = TRUE),
-    central_act     = list(analyte = "JNJ-68006861",  units = "ug", specimen = "plasma",              verified = TRUE),
-    peripheral1_act = list(analyte = "JNJ-68006861",  units = "ug", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "selexipag", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "selexipag", units = "ug", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "selexipag", units = "ug", specimen = "plasma", verified = TRUE),
+    central_act = list(analyte = "JNJ-68006861", units = "ug", specimen = "plasma", verified = TRUE),
+    peripheral1_act = list(analyte = "JNJ-68006861", units = "ug", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects on selexipag CL/F (exponent 0.828), selexipag Vp/F (exponent 0.805) and JNJ-68006861 Vm/F (exponent 0.542). Reference body weight 70 kg, hard-coded as log(WEIGHTBL/70) in the Supplementary Table S3 control stream MU_3 / MU_4 / MU_10 blocks and stated as 'centered around 70 kg' in Axelsen 2024 Table 1. Baseline (not time-varying) weight was used deliberately: Axelsen 2024 Methods states weight change over the 12-week PK sampling window was expected to be limited. Observed pediatric range 9.9-93.5 kg. Note the 70 kg reference lies well above the pediatric cohort, so the weight term is an extrapolation downwards for every subject.",
-      source_name        = "WEIGHTBL"
+      notes = "Power-form effects on selexipag CL/F (exponent 0.828), selexipag Vp/F (exponent 0.805) and JNJ-68006861 Vm/F (exponent 0.542). Reference body weight 70 kg, hard-coded as log(WEIGHTBL/70) in the Supplementary Table S3 control stream MU_3 / MU_4 / MU_10 blocks and stated as 'centered around 70 kg' in Axelsen 2024 Table 1. Baseline (not time-varying) weight was used deliberately: Axelsen 2024 Methods states weight change over the 12-week PK sampling window was expected to be limited. Observed pediatric range 9.9-93.5 kg. Note the 70 kg reference lies well above the pediatric cohort, so the weight term is an extrapolation downwards for every subject.",
+      source_name = "WEIGHTBL"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin at baseline.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin at baseline.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form negative effect on selexipag CL/F (exponent -0.363); reference 10 umol/L, hard-coded as log(BILIBL/10) in the Supplementary Table S3 control stream MU_3 block. Observed pediatric means (SD) [range] by age cohort were 15.1 (16.8) [3-84], 10.4 (6.77) [3-32] and 7.9 (5.57) [3-23] umol/L for the 12-17, 6-11 and 2-5 year cohorts respectively (Table S3). Already in SI units in the source, so no mg/dL conversion is applied.",
-      source_name        = "BILIBL"
+      notes = "Power-form negative effect on selexipag CL/F (exponent -0.363); reference 10 umol/L, hard-coded as log(BILIBL/10) in the Supplementary Table S3 control stream MU_3 block. Observed pediatric means (SD) [range] by age cohort were 15.1 (16.8) [3-84], 10.4 (6.77) [3-32] and 7.9 (5.57) [3-23] umol/L for the 12-17, 6-11 and 2-5 year cohorts respectively (Table S3). Already in SI units in the source, so no mg/dL conversion is applied.",
+      source_name = "BILIBL"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female). The Supplementary Table S3 control stream builds SEXN_0 (' ; reference: 1') as the indicator for SEXN == 0, and Axelsen 2024 Table 1 labels the coefficient 'Gender male on km' -- so females are the reference and the coefficient is carried on the male indicator.",
-      notes              = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.145 * (1 - SEXF)). To preserve the paper's female-reference parameterisation while using the canonical SEXF column (1 = female), the model() block applies the coefficient to the male indicator (1 - SEXF). The pediatric cohort was 57.1% female overall (Table S1).",
-      source_name        = "SEXN (0 = male, 1 = female), entering the control stream as the derived indicator SEXN_0 = as.integer(SEXN == 0)"
+      notes = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.145 * (1 - SEXF)). To preserve the paper's female-reference parameterisation while using the canonical SEXF column (1 = female), the model() block applies the coefficient to the male indicator (1 - SEXF). The pediatric cohort was 57.1% female overall (Table S1).",
+      source_name = "SEXN (0 = male, 1 = female), entering the control stream as the derived indicator SEXN_0 = as.integer(SEXN == 0)"
     ),
     CONMED_ERA = list(
-      description        = "Concomitant endothelin-receptor-antagonist (ERA) monotherapy indicator (1 = on an ERA but not on a PDE5 inhibitor, 0 = otherwise). One of three orthogonal mutually-exclusive indicators decomposing a four-level PAH-comedication categorical whose reference level is PAH-comedication-naive (all three indicators = 0).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant endothelin-receptor-antagonist (ERA) monotherapy indicator (1 = on an ERA but not on a PDE5 inhibitor, 0 = otherwise). One of three orthogonal mutually-exclusive indicators decomposing a four-level PAH-comedication categorical whose reference level is PAH-comedication-naive (all three indicators = 0).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the PAH-comedication-naive stratum; mutually exclusive with CONMED_PDE5I and CONMED_ERA_PDE5I).",
-      notes              = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.186 * CONMED_ERA), i.e. +20.4% relative to PAH-comedication-naive (Axelsen 2024 Table 1, beta_km(COPAH1_1) = 0.186, RSE 34.8%). ERA-only prevalence in the pediatric cohort was 14.3% / 9.52% / 10% across the 12-17, 6-11 and 2-5 year cohorts (Table S3).",
-      source_name        = "COPAH1"
+      notes = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.186 * CONMED_ERA), i.e. +20.4% relative to PAH-comedication-naive (Axelsen 2024 Table 1, beta_km(COPAH1_1) = 0.186, RSE 34.8%). ERA-only prevalence in the pediatric cohort was 14.3% / 9.52% / 10% across the 12-17, 6-11 and 2-5 year cohorts (Table S3).",
+      source_name = "COPAH1"
     ),
     CONMED_PDE5I = list(
-      description        = "Concomitant phosphodiesterase type 5 inhibitor (PDE5I) monotherapy indicator (1 = on a PDE5I but not on an ERA, 0 = otherwise). One of three orthogonal mutually-exclusive indicators decomposing a four-level PAH-comedication categorical whose reference level is PAH-comedication-naive.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phosphodiesterase type 5 inhibitor (PDE5I) monotherapy indicator (1 = on a PDE5I but not on an ERA, 0 = otherwise). One of three orthogonal mutually-exclusive indicators decomposing a four-level PAH-comedication categorical whose reference level is PAH-comedication-naive.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the PAH-comedication-naive stratum; mutually exclusive with CONMED_ERA and CONMED_ERA_PDE5I).",
-      notes              = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.0495 * CONMED_PDE5I), i.e. +5.1% relative to PAH-comedication-naive (Axelsen 2024 Table 1, beta_km(COPAH2_1) = 0.0495). The coefficient is imprecise (RSE 116%) but is retained because the four-level PAH-comedication categorical was kept intact end-to-end. PDE5I-only prevalence was 23.8% / 57.1% / 15% across the three age cohorts (Table S3).",
-      source_name        = "COPAH2"
+      notes = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.0495 * CONMED_PDE5I), i.e. +5.1% relative to PAH-comedication-naive (Axelsen 2024 Table 1, beta_km(COPAH2_1) = 0.0495). The coefficient is imprecise (RSE 116%) but is retained because the four-level PAH-comedication categorical was kept intact end-to-end. PDE5I-only prevalence was 23.8% / 57.1% / 15% across the three age cohorts (Table S3).",
+      source_name = "COPAH2"
     ),
     CONMED_ERA_PDE5I = list(
-      description        = "Concomitant ERA + PDE5-inhibitor combination indicator (1 = on both an ERA and a PDE5 inhibitor, 0 = otherwise). One of three orthogonal mutually-exclusive indicators decomposing a four-level PAH-comedication categorical whose reference level is PAH-comedication-naive.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant ERA + PDE5-inhibitor combination indicator (1 = on both an ERA and a PDE5 inhibitor, 0 = otherwise). One of three orthogonal mutually-exclusive indicators decomposing a four-level PAH-comedication categorical whose reference level is PAH-comedication-naive.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the PAH-comedication-naive stratum; mutually exclusive with CONMED_ERA and CONMED_PDE5I).",
-      notes              = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.368 * CONMED_ERA_PDE5I), i.e. +44.5% relative to PAH-comedication-naive (Axelsen 2024 Table 1, beta_km(COPAH3_1) = 0.368, RSE 15.3%). This is by far the most common stratum in the pediatric cohort (52.4% / 28.6% / 75% across the three age cohorts, Table S3); only 3 of 59 pediatric participants with full PK profiles received no PAH comedication at all.",
-      source_name        = "COPAH3"
+      notes = "Exponential effect on the JNJ-68006861 elimination rate constant km: km *= exp(0.368 * CONMED_ERA_PDE5I), i.e. +44.5% relative to PAH-comedication-naive (Axelsen 2024 Table 1, beta_km(COPAH3_1) = 0.368, RSE 15.3%). This is by far the most common stratum in the pediatric cohort (52.4% / 28.6% / 75% across the three age cohorts, Table S3); only 3 of 59 pediatric participants with full PK profiles received no PAH comedication at all.",
+      source_name = "COPAH3"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 59,
-    n_studies      = 1,
-    age_range      = "2-17 years (inclusion >=2 to <18 years), enrolled in three age cohorts: >=12 to <18 years (N = 21), >=6 to <12 years (N = 21), >=2 to <6 years (N = 17 with full PK profiles, +3 with trough concentrations only). Cohort mean (SD) ages 14.1 (1.71), 8.57 (1.43) and 3.8 (1.28) years (Table S3).",
-    weight_range   = "9.9-93.5 kg. Cohort mean (SD) [range] baseline weights 51.1 (14.3) [30-93.5], 25.0 (6.49) [16.8-36.4] and 16.4 (6.95) [9.9-41.5] kg for the 12-17, 6-11 and 2-5 year cohorts (Table S3).",
+    species = "human",
+    n_subjects = 59,
+    n_studies = 1,
+    age_range = "2-17 years (inclusion >=2 to <18 years), enrolled in three age cohorts: >=12 to <18 years (N = 21), >=6 to <12 years (N = 21), >=2 to <6 years (N = 17 with full PK profiles, +3 with trough concentrations only). Cohort mean (SD) ages 14.1 (1.71), 8.57 (1.43) and 3.8 (1.28) years (Table S3).",
+    weight_range = "9.9-93.5 kg. Cohort mean (SD) [range] baseline weights 51.1 (14.3) [30-93.5], 25.0 (6.49) [16.8-36.4] and 16.4 (6.95) [9.9-41.5] kg for the 12-17, 6-11 and 2-5 year cohorts (Table S3).",
     sex_female_pct = "57.1% female overall (36/63 enrolled; Table S1). By age cohort: 66.7%, 52.4% and 50.0% female for the 12-17, 6-11 and 2-5 year cohorts (Table S3).",
     race_ethnicity = "White 61.9%, Asian 25.4%, Other 3.2%, Unknown 9.5%; Hispanic or Latino 1.6% (Table S1, all 63 enrolled participants). Race was not tested as a covariate.",
-    disease_state  = "Pediatric pulmonary arterial hypertension: idiopathic PAH, heritable PAH, PAH associated with congenital heart disease, and PAH associated with HIV, connective tissue disease, or drug/toxin exposure; WHO Functional Class II or III.",
-    dose_range     = "Body-weight-banded starting doses twice daily -- 100 ug for >=9 to <25 kg, 150 ug for >=25 to <50 kg, 200 ug for >=50 kg -- up-titrated weekly in increments equal to the starting dose over a 12-week titration period to the individual maximum tolerated dose, capped at 8-fold the starting dose (800 / 1200 / 1600 ug twice daily). Observed doses ranged 50-1600 ug twice daily; one participant assigned 100 ug initially received 50 ug in error.",
-    regions        = "Prospective, multicenter, open-label, single-arm phase II study NCT03492177.",
-    co_medication  = "PAH-specific comedication as a four-level categorical (naive / ERA only / PDE5 inhibitor only / ERA + PDE5), reference = naive. Only 3 of 59 participants (5.1%) with full PK profiles received no other PAH comedication, versus roughly 20% in the adult GRIPHON study.",
+    disease_state = "Pediatric pulmonary arterial hypertension: idiopathic PAH, heritable PAH, PAH associated with congenital heart disease, and PAH associated with HIV, connective tissue disease, or drug/toxin exposure; WHO Functional Class II or III.",
+    dose_range = "Body-weight-banded starting doses twice daily -- 100 ug for >=9 to <25 kg, 150 ug for >=25 to <50 kg, 200 ug for >=50 kg -- up-titrated weekly in increments equal to the starting dose over a 12-week titration period to the individual maximum tolerated dose, capped at 8-fold the starting dose (800 / 1200 / 1600 ug twice daily). Observed doses ranged 50-1600 ug twice daily; one participant assigned 100 ug initially received 50 ug in error.",
+    regions = "Prospective, multicenter, open-label, single-arm phase II study NCT03492177.",
+    co_medication = "PAH-specific comedication as a four-level categorical (naive / ERA only / PDE5 inhibitor only / ERA + PDE5), reference = naive. Only 3 of 59 participants (5.1%) with full PK profiles received no other PAH comedication, versus roughly 20% in the adult GRIPHON study.",
     n_observations = "1167 selexipag and JNJ-68006861 observations analysed, of 1198 in the dataset; 31 (2.6%) were excluded, 27 of them (2.3%) because selexipag concentrations were below the 0.01 ng/mL limit of quantification.",
-    notes          = "Parameters were obtained by NONMEM BAYES estimation (500 burn-in, 2000 iterations) using the adult model estimates as priors -- normal on the natural logarithm of the fixed effects and inverse-Wishart for the variances (Supplementary Table S3 $PRIOR NWPRI / $THETAP / $OMEGAP / $SIGMAP blocks). No additional covariate search was performed; the covariate set was inherited from the adult model. Serial PK profiles (predose and 1, 2, 4, 6, 8 and 12 h postdose) were taken at steady state either at Week 1 (first five participants per cohort) or Week 12, plus three steady-state troughs per participant during titration. Selexipag was given after a light meal on PK days. Shrinkage is high for omega(kmet) (76.2%) and omega(Vm) (79.6%), so those two IIV terms are weakly informed by the pediatric data and are effectively carried from the adult prior."
+    notes = "Parameters were obtained by NONMEM BAYES estimation (500 burn-in, 2000 iterations) using the adult model estimates as priors -- normal on the natural logarithm of the fixed effects and inverse-Wishart for the variances (Supplementary Table S3 $PRIOR NWPRI / $THETAP / $OMEGAP / $SIGMAP blocks). No additional covariate search was performed; the covariate set was inherited from the adult model. Serial PK profiles (predose and 1, 2, 4, 6, 8 and 12 h postdose) were taken at steady state either at Week 1 (first five participants per cohort) or Week 12, plus three steady-state troughs per participant during titration. Selexipag was given after a light meal on PK days. Shrinkage is high for omega(kmet) (76.2%) and omega(Vm) (79.6%), so those two IIV terms are weakly informed by the pediatric data and are effectively carried from the adult prior."
   )
 
   ini({

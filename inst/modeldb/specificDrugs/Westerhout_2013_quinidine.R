@@ -45,8 +45,8 @@ Westerhout_2013_quinidine <- function() {
   vignette <- "Westerhout_2013_quinidine"
 
   units <- list(
-    time          = "min",
-    dosing        = "ng",
+    time = "min",
+    dosing = "ng",
     concentration = paste(
       "ng/mL (unbound plasma quinidine after correction for plasma",
       "protein binding; unbound brain ECF / CSF concentrations after",
@@ -61,20 +61,20 @@ Westerhout_2013_quinidine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central       = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
-    peripheral1   = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
-    peripheral2   = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
-    brain_deep    = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
-    brain_ecf     = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
-    brain_csf_lv  = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
+    central = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
+    brain_deep = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
+    brain_ecf = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
+    brain_csf_lv = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
     brain_csf_tfv = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
-    brain_csf_cm  = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
+    brain_csf_cm = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
     brain_csf_sas = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_TARIQUIDAR = list(
-      description        = paste(
+      description = paste(
         "Indicator for tariquidar (XR9576) pre-administration:",
         "1 = rat received a 15 mg/kg IV tariquidar infusion in 5%",
         "glucose / saline vehicle (100 uL/min/kg over 10 min) 30 min",
@@ -86,10 +86,10 @@ Westerhout_2013_quinidine <- function() {
         "page 339: '50-fold higher than the IC50 value up to 3 h after",
         "administration')."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (vehicle co-administration; no tariquidar; P-gp fully active)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per animal in Westerhout 2013. Source paper",
         "Materials and Methods 'Experimental set-up' (page 329)",
         "describes the tariquidar dosing protocol; Methods 'Animals'",
@@ -103,19 +103,19 @@ Westerhout_2013_quinidine <- function() {
         "(efflux) or subtract (influx hindrance) per the Westerhout",
         "Appendix mass-balance equations."
       ),
-      source_name        = "TARIQUIDAR"
+      source_name = "TARIQUIDAR"
     )
   )
 
   population <- list(
-    species        = "rat (male Wistar WU, Charles River Maastricht NL)",
-    n_subjects     = 48L,
-    n_studies      = 1L,
-    age_range      = "adult (not reported in days; rats arrived weighing 225-275 g and were housed >= 5-7 days then individually housed for 7 days post-surgery)",
-    weight_range   = "225-275 g body weight on arrival",
+    species = "rat (male Wistar WU, Charles River Maastricht NL)",
+    n_subjects = 48L,
+    n_studies = 1L,
+    age_range = "adult (not reported in days; rats arrived weighing 225-275 g and were housed >= 5-7 days then individually housed for 7 days post-surgery)",
+    weight_range = "225-275 g body weight on arrival",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult male Wistar WU rats with chronically implanted",
       "femoral arterial and venous cannulae (blood sampling and IV",
       "drug administration) and two CMA/12 microdialysis guides in",
@@ -125,7 +125,7 @@ Westerhout_2013_quinidine <- function() {
       "total brain concentrations used to back-calculate deep brain",
       "(brain intracellular) concentrations."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single IV quinidine infusion of 10 or 20 mg/kg in saline",
       "delivered at 100 uL/min/kg over 10 min (e.g., 250 ug/min over",
       "10 min in a 250 g rat for the 10 mg/kg arm), with infusion",
@@ -134,8 +134,8 @@ Westerhout_2013_quinidine <- function() {
       "arm: 15 mg/kg IV in 5% glucose / saline at 100 uL/min/kg over",
       "10 min, 30 min before quinidine."
     ),
-    regions        = "preclinical (in-vivo rat); Leiden / Amsterdam Center for Drug Research, The Netherlands",
-    notes          = paste(
+    regions = "preclinical (in-vivo rat); Leiden / Amsterdam Center for Drug Research, The Netherlands",
+    notes = paste(
       "60 male Wistar WU rats total: 12 dedicated to the in-vivo",
       "microdialysis probe recovery determination (reverse",
       "dialysis, retrodialysis calibration), 48 to the brain",

@@ -19,28 +19,28 @@ Brill_2014_midazolam <- function() {
     sep = " "
   )
   vignette <- "Brill_2014_midazolam"
-  units    <- list(time = "min", dosing = "ug", concentration = "microgram/L")
+  units <- list(time = "min", dosing = "ug", concentration = "microgram/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column 'TBW' (total body weight, kg) maps to the canonical WT.",
         "Time-fixed at baseline. Enters the model with two distinct functional",
         "forms, both centred at 127 kg (the published reference): linear-",
@@ -51,14 +51,14 @@ Brill_2014_midazolam <- function() {
         "($PK lines `TVV2= THETA(3)*(1+THETA(8)*(TBW-127))` and",
         "`TVV3= THETA(5)*(TBW/127)**THETA(9)`)."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = "BMI <= 40 (non-morbidly-obese reference cohort).",
-      notes              = paste(
+      notes = paste(
         "Used as a binary stratifier `OBES = as.integer(BMI > 40)` per Brill",
         "2014 Methods 2.1 (morbid obesity inclusion threshold) and the .docx",
         "supplementary control stream's OBES indicator in the $INPUT block",
@@ -72,19 +72,19 @@ Brill_2014_midazolam <- function() {
         "model() rather than registering a separate canonical obesity-status",
         "column."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 2L,
-    age_range      = "Morbidly obese 26-57 years (mean 43.6, SD 7.6); healthy volunteers 18-27 years (mean 22.0, SD 3.1)",
-    weight_range   = "Morbidly obese 112-186 kg (mean 144.4, SD 21.7); healthy volunteers 63-93 kg (mean 76.0, SD 8.7)",
-    weight_median  = "127 kg (pooled-cohort reference for covariate centring)",
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 2L,
+    age_range = "Morbidly obese 26-57 years (mean 43.6, SD 7.6); healthy volunteers 18-27 years (mean 22.0, SD 3.1)",
+    weight_range = "Morbidly obese 112-186 kg (mean 144.4, SD 21.7); healthy volunteers 63-93 kg (mean 76.0, SD 8.7)",
+    weight_median = "127 kg (pooled-cohort reference for covariate centring)",
     sex_female_pct = 37.5,
-    disease_state  = paste(
+    disease_state = paste(
       "Morbidly obese cohort: BMI > 40 kg/m^2 (mean 47.1, range 40-68),",
       "undergoing laparoscopic gastric bypass or sleeve surgery. Healthy-",
       "volunteer control cohort: non-obese (mean BMI 22.3, range 19-26).",
@@ -93,14 +93,14 @@ Brill_2014_midazolam <- function() {
       "in morbidly obese subjects were within three times the upper limit of",
       "normal."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Morbidly obese: 7.5 mg midazolam oral tablet (Dormicum, Roche), then",
       "~159 min later 5 mg IV bolus (Midazolam Actavis 5 mg/mL).",
       "Healthy volunteers: 2 mg midazolam oral solution (Synthon), then",
       "150 min later 1 mg IV (Midazolam, Synthon)."
     ),
-    regions        = "Netherlands",
-    notes          = paste(
+    regions = "Netherlands",
+    notes = paste(
       "Pooled analysis of 20 morbidly obese surgical patients (NTC01519726 /",
       "EudraCT 2011-003293-93, St. Antonius Hospital, Nieuwegein) and 12",
       "non-obese male healthy volunteers (EudraCT 2009-010331-40) receiving",

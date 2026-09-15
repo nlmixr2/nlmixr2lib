@@ -38,18 +38,18 @@ Han_2024_ainuovirine_virologic_ctrough <- function() {
   )
   vignette <- "Han_2024_ainuovirine"
   units <- list(
-    time          = "n/a (static landmark exposure-efficacy regression at week 48; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
+    time = "n/a (static landmark exposure-efficacy regression at week 48; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
     concentration = "prob_hivrna_lt50 (probability of HIV-RNA < 50 copies/mL at week 48, 0-1; also logit_hivrna_lt50)"
   )
 
   covariateData <- list(
     CTROUGH = list(
-      description        = "Individual steady-state trough plasma concentration of ainuovirine (Ctrough), per subject. Supplied as data: this model has no PK layer.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual steady-state trough plasma concentration of ainuovirine (Ctrough), per subject. Supplied as data: this model has no PK layer.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TOTAL (not unbound) plasma concentration at STEADY STATE. Han",
         "2024 Methods: 'Individual steady-state trough concentration",
         "(Ctrough) and area under the steady-state curve (AUCtau) were",
@@ -75,23 +75,23 @@ Han_2024_ainuovirine_virologic_ctrough <- function() {
         "Han 2024 does not tabulate the observed Ctrough distribution; the",
         "quartile boundaries used for Figure 4C are not printed."
       ),
-      source_name        = "Ctrough (steady-state trough concentration)"
+      source_name = "Ctrough (steady-state trough concentration)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 309L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 309L,
+    n_studies = 1L,
     n_observations = "One binary virologic-response record per subject at week 48. NOTE: Han 2024 never states the exposure-response analysis-set size. 309 is the number of phase 3 ADYY-ACC007-301 participants in the population PK dataset (Table 1, Table 2); the week-48 endpoint exists only in that trial, so the phase 1 subjects cannot contribute. The true analysis set may be smaller if any participant lacked a week-48 HIV-RNA result",
-    age_range      = "mean 31.03 years (SD 9.95) in the phase 3 trial (Han 2024 Table 2)",
-    weight_range   = "mean 67.06 kg (SD 11.42) in the phase 3 trial (Han 2024 Table 2)",
+    age_range = "mean 31.03 years (SD 9.95) in the phase 3 trial (Han 2024 Table 2)",
+    weight_range = "mean 67.06 kg (SD 11.42) in the phase 3 trial (Han 2024 Table 2)",
     sex_female_pct = 5.83,
     race_ethnicity = "Not reported; single Chinese centre (Beijing Youan Hospital, Capital Medical University)",
-    disease_state  = "Antiretroviral-therapy-naive people living with HIV-1, randomised to an ainuovirine-based regimen (the comparator arm received an efavirenz-based regimen and is not part of this exposure-response analysis)",
-    dose_range     = "Ainuovirine 150 mg orally once daily at bedtime on an empty stomach for 48 weeks",
-    regions        = "Single centre, Beijing, China",
-    notes          = paste0(
+    disease_state = "Antiretroviral-therapy-naive people living with HIV-1, randomised to an ainuovirine-based regimen (the comparator arm received an efavirenz-based regimen and is not part of this exposure-response analysis)",
+    dose_range = "Ainuovirine 150 mg orally once daily at bedtime on an empty stomach for 48 weeks",
+    regions = "Single centre, Beijing, China",
+    notes = paste0(
       "The phase 3 trial's primary objective was non-inferiority of the ",
       "ainuovirine regimen against the efavirenz regimen for the ",
       "proportion of participants reaching HIV-RNA < 50 copies/mL at ",

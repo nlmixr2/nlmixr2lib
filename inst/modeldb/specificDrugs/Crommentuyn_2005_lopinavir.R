@@ -34,17 +34,17 @@ Crommentuyn_2005_lopinavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_RTV_AUC_12H = list(
-      description        = "Per-subject ritonavir AUC over the 12 h dosing interval (BID ritonavir)",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Per-subject ritonavir AUC over the 12 h dosing interval (BID ritonavir)",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-subject (time-fixed within an evaluated regimen) ritonavir",
         "AUC over the 12 h dosing interval. In Crommentuyn 2005 the value",
         "is computed per-subject as DOSE_RTV / CL_RTV using individual",
@@ -60,14 +60,14 @@ Crommentuyn_2005_lopinavir <- function() {
         "observed ritonavir AUC, the cohort median 3.58 reproduces",
         "typical-value behaviour."
       ),
-      source_name        = "AUC12h"
+      source_name = "AUC12h"
     ),
     CONMED_NNRTI = list(
-      description        = "Concomitant CYP3A4-inducing NNRTI (efavirenz or nevirapine) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A4-inducing NNRTI (efavirenz or nevirapine) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant NNRTI; typically NRTI-only nucleoside backbone)",
-      notes              = paste(
+      notes = paste(
         "Time-varying per occasion in Crommentuyn 2005 (8% of patients",
         "on efavirenz across 59 samples, 13% on nevirapine across 73",
         "samples; per-occasion flagging). Pooled class indicator -- the",
@@ -79,33 +79,33 @@ Crommentuyn_2005_lopinavir <- function() {
         "CL/F is multiplicative: cl *= (1 + 0.39 * CONMED_NNRTI)",
         "(Crommentuyn 2005 Table 2 row IND = 1.39 and Results page 7)."
       ),
-      source_name        = "IND"
+      source_name = "IND"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 122L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 122L,
+    n_studies = 1L,
     n_observations = 748L,
-    age_range      = "median 42 years (IQR 36-46)",
-    weight_range   = "median 72 kg (IQR 63-80)",
+    age_range = "median 42 years (IQR 36-46)",
+    weight_range = "median 72 kg (IQR 63-80)",
     sex_female_pct = 15,
     race_ethnicity = c(Caucasian = 75, Black = 12, Asian = 9, Latino = 4),
-    disease_state  = "HIV-1 infection on a lopinavir/ritonavir-containing antiretroviral regimen",
-    dose_range     = paste(
+    disease_state = "HIV-1 infection on a lopinavir/ritonavir-containing antiretroviral regimen",
+    dose_range = paste(
       "Oral co-formulated lopinavir/ritonavir capsules (133/33 mg each),",
       "400/100 mg to 666/166 mg twice daily (3-5 capsules BID)."
     ),
-    regions        = "Netherlands (Slotervaart Hospital outpatient clinic, Amsterdam)",
-    iov_structure  = paste(
+    regions = "Netherlands (Slotervaart Hospital outpatient clinic, Amsterdam)",
+    iov_structure = paste(
       "Crommentuyn 2005 Table 2 reports IOV on relative bioavailability F",
       "of 17.5% CV. This model file does NOT encode IOV structurally --",
       "the model-library convention is to omit IOV when no occasion column",
       "is defined for downstream simulation (Andrews 2017 / Brooks 2021",
       "precedent); see vignette Assumptions and deviations."
     ),
-    notes          = paste(
+    notes = paste(
       "Retrospective TDM analysis (February 2001 - March 2004). 748",
       "lopinavir + 748 ritonavir plasma concentrations: 14 full",
       "pharmacokinetic profiles plus 568 single-time-point random samples;",
@@ -127,32 +127,84 @@ Crommentuyn_2005_lopinavir <- function() {
   # skill's covariatesDataExcluded convention so they do not trigger the
   # "declared but unused" convention warning.
   covariatesDataExcluded <- list(
-    WT       = list(description = "Body weight", units = "kg", type = "continuous",
-                    notes = "Median 72 kg (IQR 63-80) per Table 1; screened but not retained on CL/F or V/F."),
-    AGE      = list(description = "Subject age", units = "years", type = "continuous",
-                    notes = "Median 42 years (IQR 36-46) per Table 1; screened but not retained."),
-    SEXF     = list(description = "Sex (1 = female, 0 = male)", units = "(binary)", type = "binary",
-                    notes = "15% female (18 of 122) per Table 1; screened but not retained."),
-    RACE_BLACK    = list(description = "Black-race indicator", units = "(binary)", type = "binary",
-                         notes = "12% (14 of 122) per Table 1; screened but not retained."),
-    RACE_ASIAN    = list(description = "Asian-race indicator", units = "(binary)", type = "binary",
-                         notes = "9% (11 of 122) per Table 1; screened but not retained."),
-    RACE_LATINO   = list(description = "Latino-race indicator", units = "(binary)", type = "binary",
-                         notes = "4% (5 of 122) per Table 1; screened but not retained."),
-    ALAT     = list(description = "Alanine aminotransferase", units = "U/L", type = "continuous",
-                    notes = "Median 35 U/L (IQR 22-49) per Table 1; screened but not retained."),
-    ASAT     = list(description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
-                    notes = "Median 30 U/L (IQR 22-43) per Table 1; screened but not retained."),
-    AP       = list(description = "Alkaline phosphatase", units = "U/L", type = "continuous",
-                    notes = "Median 80 U/L (IQR 63-94) per Table 1; screened but not retained."),
-    TBR      = list(description = "Serum total bilirubin", units = "umol/L", type = "continuous",
-                    notes = "Median 11 umol/L (IQR 8-14) per Table 1; screened but not retained."),
-    HCV      = list(description = "Chronic hepatitis C indicator", units = "(binary)", type = "binary",
-                    notes = "11% (13 of 122) per Table 1; screened but not retained."),
-    HBV      = list(description = "Chronic hepatitis B indicator", units = "(binary)", type = "binary",
-                    notes = "7% (8 of 122) per Table 1; screened but not retained."),
-    CONMED_TENOFOVIR = list(description = "Concomitant tenofovir indicator", units = "(binary)", type = "binary",
-                            notes = "23% (28 of 122) per Table 1; tested on CL/F and V/F per Results page 7 and not retained.")
+    WT = list(
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
+      notes = "Median 72 kg (IQR 63-80) per Table 1; screened but not retained on CL/F or V/F."
+    ),
+    AGE = list(
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
+      notes = "Median 42 years (IQR 36-46) per Table 1; screened but not retained."
+    ),
+    SEXF = list(
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
+      notes = "15% female (18 of 122) per Table 1; screened but not retained."
+    ),
+    RACE_BLACK = list(
+      description = "Black-race indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = "12% (14 of 122) per Table 1; screened but not retained."
+    ),
+    RACE_ASIAN = list(
+      description = "Asian-race indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = "9% (11 of 122) per Table 1; screened but not retained."
+    ),
+    RACE_LATINO = list(
+      description = "Latino-race indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = "4% (5 of 122) per Table 1; screened but not retained."
+    ),
+    ALAT = list(
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Median 35 U/L (IQR 22-49) per Table 1; screened but not retained."
+    ),
+    ASAT = list(
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Median 30 U/L (IQR 22-43) per Table 1; screened but not retained."
+    ),
+    AP = list(
+      description = "Alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Median 80 U/L (IQR 63-94) per Table 1; screened but not retained."
+    ),
+    TBR = list(
+      description = "Serum total bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Median 11 umol/L (IQR 8-14) per Table 1; screened but not retained."
+    ),
+    HCV = list(
+      description = "Chronic hepatitis C indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = "11% (13 of 122) per Table 1; screened but not retained."
+    ),
+    HBV = list(
+      description = "Chronic hepatitis B indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = "7% (8 of 122) per Table 1; screened but not retained."
+    ),
+    CONMED_TENOFOVIR = list(
+      description = "Concomitant tenofovir indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = "23% (28 of 122) per Table 1; tested on CL/F and V/F per Results page 7 and not retained."
+    )
   )
 
   ini({

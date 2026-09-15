@@ -13,7 +13,7 @@ oncology_xenograft_simeoni_2004 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    cycling_cells  = list(analyte = "tumor cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    cycling_cells = list(analyte = "tumor cells", units = NA_character_, specimen = "tumor", verified = FALSE),
     damaged_cells1 = list(analyte = "dead tumor cells", units = NA_character_, specimen = "tumor", verified = FALSE),
     damaged_cells2 = list(analyte = "dead tumor cells", units = NA_character_, specimen = "tumor", verified = FALSE),
     damaged_cells3 = list(analyte = "dead tumor cells", units = NA_character_, specimen = "tumor", verified = FALSE)
@@ -49,5 +49,8 @@ oncology_xenograft_simeoni_2004 <- function() {
   })
 }
 
-attr(oncology_xenograft_simeoni_2004, "message") <- "You can modify the number of damaged cell compartments in the model using the function updateOncologyXenograftSimeoni2004(model, ncmt)"
+attr(
+  oncology_xenograft_simeoni_2004,
+  "message"
+) <- "You can modify the number of damaged cell compartments in the model using the function updateOncologyXenograftSimeoni2004(model, ncmt)"
 oncology_xenograft_simeoni_2004

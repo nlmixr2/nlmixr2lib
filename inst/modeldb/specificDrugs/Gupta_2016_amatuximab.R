@@ -8,44 +8,44 @@ Gupta_2016_amatuximab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "amatuximab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "amatuximab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "amatuximab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on central volume (Vc); reference weight 70 kg from Gupta 2016 Table 2 covariate equation Vc = ThetaVc * (WGT/70)^ThetaWGT.",
-      source_name        = "WGT"
+      notes = "Power covariate on central volume (Vc); reference weight 70 kg from Gupta 2016 Table 2 covariate equation Vc = ThetaVc * (WGT/70)^ThetaWGT.",
+      source_name = "WGT"
     ),
     ADA_POS = list(
-      description        = "Antidrug-antibody (ADA) indicator with study-specific threshold: 1 = ADA titer > 64, 0 = otherwise (ADA-negative or titer <= 64)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Antidrug-antibody (ADA) indicator with study-specific threshold: 1 = ADA titer > 64, 0 = otherwise (ADA-negative or titer <= 64)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0L,
-      notes              = "Multiplicative effect on linear CL (CL = ThetaCL * ThetaADA^ADA). Gupta 2016 categorized ADA positivity at five candidate titer thresholds (>1, >4, >64, >160, any positive); >64 was the retained form in the final model (Gupta 2016 p. 738 and Table 2). Time-varying in principle (titer changes during treatment) but entered as a single covariate value per record in NONMEM.",
-      source_name        = "ADA"
+      notes = "Multiplicative effect on linear CL (CL = ThetaCL * ThetaADA^ADA). Gupta 2016 categorized ADA positivity at five candidate titer thresholds (>1, >4, >64, >160, any positive); >64 was the retained form in the final model (Gupta 2016 p. 738 and Table 2). Time-varying in principle (titer changes during treatment) but entered as a single covariate value per record in NONMEM.",
+      source_name = "ADA"
     )
   )
 
   population <- list(
-    n_subjects     = 199L,
-    n_studies      = 4L,
-    age_range      = "33-90 years",
-    age_median     = "65 years",
-    weight_range   = "35-134 kg",
-    weight_median  = "74 kg",
+    n_subjects = 199L,
+    n_studies = 4L,
+    age_range = "33-90 years",
+    age_median = "65 years",
+    weight_range = "35-134 kg",
+    weight_median = "74 kg",
     sex_female_pct = 35.7,
     race_ethnicity = "Caucasian 81.4% (162/199); Japanese 8.54% (17/199); Other 8.04% (16/199); missing 2.01% (4/199)",
-    disease_state  = "Advanced mesothelin-expressing cancers (malignant pleural mesothelioma [MPM], pancreatic cancer, other solid tumors) pooled across four clinical studies.",
-    dose_range     = "Amatuximab IV infusion: Phase I dose-escalation 12.5-400 mg/m^2 weekly (US) and 50-200 mg/m^2 weekly (Japan); Phase II pancreatic cancer 5 mg/kg weekly; Phase II MPM 5 mg/kg on Days 1 and 8 of each 21-day cycle (plus pemetrexed + cisplatin).",
-    regions        = "North America, Japan, and international Phase II sites",
+    disease_state = "Advanced mesothelin-expressing cancers (malignant pleural mesothelioma [MPM], pancreatic cancer, other solid tumors) pooled across four clinical studies.",
+    dose_range = "Amatuximab IV infusion: Phase I dose-escalation 12.5-400 mg/m^2 weekly (US) and 50-200 mg/m^2 weekly (Japan); Phase II pancreatic cancer 5 mg/kg weekly; Phase II MPM 5 mg/kg on Days 1 and 8 of each 21-day cycle (plus pemetrexed + cisplatin).",
+    regions = "North America, Japan, and international Phase II sites",
     baseline_albumin = "3.80 +/- 0.53 g/dL (median 3.80, range 2.38-5.46)",
-    ecog_status    = "ECOG 0: 59.8%; ECOG 1: 39.2%; ECOG 2: 1%",
-    notes          = paste(
+    ecog_status = "ECOG 0: 59.8%; ECOG 1: 39.2%; ECOG 2: 1%",
+    notes = paste(
       "Pooled analysis across four studies: US Phase I (NCT00325494, 24 patients),",
       "Japanese Phase I (NCT01018784, 17 patients), Phase II pancreatic cancer",
       "(NCT00570713, 71 patients contributing PK data), and Phase II MPM",

@@ -8,75 +8,75 @@ Hu_2026_clesrovimab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "clesrovimab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "clesrovimab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "clesrovimab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "clesrovimab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "clesrovimab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; used for allometric scaling with reference weight 5 kg.",
-      source_name        = "WT"
+      notes = "Time-varying; used for allometric scaling with reference weight 5 kg.",
+      source_name = "WT"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological time since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological time since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; combined with GA to produce the adjusted postnatal age used in the CL maturation function.",
-      source_name        = "PNA"
+      notes = "Time-varying; combined with GA to produce the adjusted postnatal age used in the CL maturation function.",
+      source_name = "PNA"
     ),
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject; used together with PNA to adjust postnatal age for prematurity via (GA - 40)/4.345.",
-      source_name        = "GA"
+      notes = "Time-fixed per subject; used together with PNA to adjust postnatal age for prematurity via (GA - 40)/4.345.",
+      source_name = "GA"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White/Other race)",
-      notes              = "Multiplicative race effect on CL/F relative to the White/Other reference group.",
-      source_name        = "ASIAN"
+      notes = "Multiplicative race effect on CL/F relative to the White/Other reference group.",
+      source_name = "ASIAN"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White/Other race)",
-      notes              = "Multiplicative race effect on CL/F relative to the White/Other reference group.",
-      source_name        = "BLACK"
+      notes = "Multiplicative race effect on CL/F relative to the White/Other reference group.",
+      source_name = "BLACK"
     ),
     RACE_MULTI = list(
-      description        = "Multiracial race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Multiracial race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White/Other race)",
-      notes              = "Multiplicative race effect on CL/F relative to the White/Other reference group.",
-      source_name        = "MULTIRACIAL"
+      notes = "Multiplicative race effect on CL/F relative to the White/Other reference group.",
+      source_name = "MULTIRACIAL"
     )
   )
 
   population <- list(
-    n_subjects     = "TODO: from source paper",
-    n_studies      = "TODO: from source paper",
-    age_range      = "TODO: from source paper",
-    age_median     = "TODO: from source paper",
-    weight_range   = "TODO: from source paper",
-    weight_median  = "TODO: from source paper",
+    n_subjects = "TODO: from source paper",
+    n_studies = "TODO: from source paper",
+    age_range = "TODO: from source paper",
+    age_median = "TODO: from source paper",
+    weight_range = "TODO: from source paper",
+    weight_median = "TODO: from source paper",
     sex_female_pct = "TODO: from source paper",
     race_ethnicity = "TODO: from source paper",
-    disease_state  = "Preterm and full-term infants at risk for RSV (clesrovimab population PK analysis).",
-    dose_range     = "TODO: from source paper",
-    regions        = "TODO: from source paper",
-    notes          = "TODO: from source paper; baseline demographics per Hu 2026."
+    disease_state = "Preterm and full-term infants at risk for RSV (clesrovimab population PK analysis).",
+    dose_range = "TODO: from source paper",
+    regions = "TODO: from source paper",
+    notes = "TODO: from source paper; baseline demographics per Hu 2026."
   )
 
   ini({

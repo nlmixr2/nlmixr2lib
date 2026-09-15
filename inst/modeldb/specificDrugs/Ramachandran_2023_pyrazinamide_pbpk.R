@@ -37,31 +37,31 @@ Ramachandran_2023_pyrazinamide_pbpk <- function() {
     "rifampin in mice. Antimicrob Agents Chemother. 2013;57(4):1763-1771."
   )
   vignette <- "Ramachandran_2023_tuberculosis_eptb_pbpk"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot     = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
-    lung      = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    pleura    = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    brain     = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    heart     = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    adipose   = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    muscle    = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    skin      = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    other     = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    bone      = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    spleen    = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    kidney    = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    gut       = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    liver     = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    depot = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    lung = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    pleura = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    brain = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    heart = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    adipose = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    skin = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    other = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    bone = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    spleen = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    gut = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    liver = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
     gut_lumen = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    lnode     = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
-    arterial  = list(analyte = "pyrazinamide", units = "mg", specimen = "blood cell", verified = FALSE),
-    venous    = list(analyte = "pyrazinamide", units = "mg", specimen = "blood cell", verified = FALSE)
+    lnode = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE),
+    arterial = list(analyte = "pyrazinamide", units = "mg", specimen = "blood cell", verified = FALSE),
+    venous = list(analyte = "pyrazinamide", units = "mg", specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list()
@@ -74,11 +74,11 @@ Ramachandran_2023_pyrazinamide_pbpk <- function() {
   # while passing the checkModelConventions() unused-covariate check.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Fixed at the 70-kg 'assumed male individual' of Appendix S1",
         "Table S2. Tissue volumes are fractions of body weight and the",
         "pleural volume / pleural flow are per-kg quantities (0.3 mL/kg,",
@@ -87,31 +87,31 @@ Ramachandran_2023_pyrazinamide_pbpk <- function() {
         "reference subject; users wanting other body sizes must rescale",
         "the physiological constants in model()."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    age_range      = "adult",
-    weight_range   = "70-kg reference male (Appendix S1 Table S2, 'Physiological parameters for the assumed male individual')",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    age_range = "adult",
+    weight_range = "70-kg reference male (Appendix S1 Table S2, 'Physiological parameters for the assumed male individual')",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Drug-susceptible tuberculosis is assumed. The paper simulates a",
       "healthy 70-kg reference adult male physiology and states that the",
       "pharmacokinetics of the drugs are taken to be similar in people with",
       "and without TB; age-dependent PK properties are not considered."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral pyrazinamide. 2000 mg single dose for model calibration",
       "(Figure 2); 1500 mg for plasma, pleura, and lung validation",
       "(Figures 3-5); 1600 mg for the Day 7 EPTB site simulations",
       "(Figure 6)."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "No individual-level data were fit. ka and CL were estimated by",
       "weighted least squares (fitnlm, MATLAB 2020) against digitised mean",
       "plasma concentration-time data from previously published studies",

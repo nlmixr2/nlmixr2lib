@@ -20,16 +20,16 @@ Yao_2025_flurbiprofen_s <- function() {
   # S(+) enantiomer of flurbiprofen in both plasma and CSF.
   compartmentData <- list(
     central = list(analyte = "S(+)-flurbiprofen", units = "mg", specimen = "plasma", verified = TRUE),
-    csf     = list(analyte = "S(+)-flurbiprofen", units = "mg", specimen = "CSF", verified = TRUE)
+    csf = list(analyte = "S(+)-flurbiprofen", units = "mg", specimen = "CSF", verified = TRUE)
   )
 
   covariateData <- list(
     SNP_ABCB1_RS1045642_GA = list(
-      description        = "ABCB1 rs1045642 heterozygous GA genotype indicator (1 = GA, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ABCB1 rs1045642 heterozygous GA genotype indicator (1 = GA, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the paper's AA reference genotype group, n = 12 of 67)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (germline genotype). Yao 2025 Table 1 reports rs1045642 as",
         "AA/GA/GG = 12/40/15 and Table 2 estimates a separate CL coefficient for GA and for GG,",
         "so AA is the reference category. Effect enters CL multiplicatively as",
@@ -40,14 +40,14 @@ Yao_2025_flurbiprofen_s <- function() {
         "orientation. Not directly composable with the pooled carrier indicator",
         "SNP_ABCB1_RS1045642, whose reference is the c.3435CC wild type."
       ),
-      source_name        = "ABCB1 (rs1045642) GA"
+      source_name = "ABCB1 (rs1045642) GA"
     ),
     SNP_ABCB1_RS1045642_GG = list(
-      description        = "ABCB1 rs1045642 homozygous GG genotype indicator (1 = GG, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ABCB1 rs1045642 homozygous GG genotype indicator (1 = GG, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the paper's AA reference genotype group, n = 12 of 67)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (germline genotype). Paired with SNP_ABCB1_RS1045642_GA; the two",
         "indicators are mutually exclusive and both are 0 for the AA reference group. Effect enters",
         "CL multiplicatively as exp(e_snp_abcb1_rs1045642_gg_cl) = exp(0.19) = 1.21, i.e. GG",
@@ -56,7 +56,7 @@ Yao_2025_flurbiprofen_s <- function() {
         "GG genotype increases its clearance rate'. The non-monotonic GA/GG pattern is reported",
         "as-is; the AA reference group had only 12 subjects."
       ),
-      source_name        = "ABCB1 (rs1045642) GG"
+      source_name = "ABCB1 (rs1045642) GG"
     )
   )
 
@@ -73,105 +73,105 @@ Yao_2025_flurbiprofen_s <- function() {
   covariatesDataExcluded <- list(
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Median 2.6 m^2 (IQR 2.5-2.7, range 2.0-3.2; Yao 2025 Table 1). Entered the S(+) model on the volume of distribution during forward inclusion but was removed in backward elimination and does not appear in Table 2. Retained in the companion R(-) model on Vc."
+      units = "m^2",
+      type = "continuous",
+      notes = "Median 2.6 m^2 (IQR 2.5-2.7, range 2.0-3.2; Yao 2025 Table 1). Entered the S(+) model on the volume of distribution during forward inclusion but was removed in backward elimination and does not appear in Table 2. Retained in the companion R(-) model on Vc."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Median 27.1 kg/m^2 (IQR 25.1-29.4, range 18.4-40.1; Yao 2025 Table 1). Screened as a candidate covariate; not retained."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Median 27.1 kg/m^2 (IQR 25.1-29.4, range 18.4-40.1; Yao 2025 Table 1). Screened as a candidate covariate; not retained."
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Median 70 kg (IQR 64-78, range 47-96; Yao 2025 Table 1). Screened; Discussion states weight showed no substantial impact on either enantiomer."
+      units = "kg",
+      type = "continuous",
+      notes = "Median 70 kg (IQR 64-78, range 47-96; Yao 2025 Table 1). Screened; Discussion states weight showed no substantial impact on either enantiomer."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Median 161 cm (IQR 158-164, range 140-180; Yao 2025 Table 1, reported in m). Screened; not retained."
+      units = "cm",
+      type = "continuous",
+      notes = "Median 161 cm (IQR 158-164, range 140-180; Yao 2025 Table 1, reported in m). Screened; not retained."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Median 70 years (IQR 67-75, range 49-83; Yao 2025 Table 1). Screened; not retained."
+      units = "years",
+      type = "continuous",
+      notes = "Median 70 years (IQR 67-75, range 49-83; Yao 2025 Table 1). Screened; not retained."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "57 of 67 subjects female (85.1%; Yao 2025 Table 1). Screened; Discussion states gender showed no substantial impact."
+      units = "(binary)",
+      type = "binary",
+      notes = "57 of 67 subjects female (85.1%; Yao 2025 Table 1). Screened; Discussion states gender showed no substantial impact."
     ),
     SNP_PXR_RS3814055 = list(
       description = "PXR (NR1I2) rs3814055 genotype",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "CC/CT/TT = 28/32/7 (Yao 2025 Table 1). Screened as a candidate covariate on CL and Vd; not retained in the final S(+) model."
+      units = "(binary)",
+      type = "categorical",
+      notes = "CC/CT/TT = 28/32/7 (Yao 2025 Table 1). Screened as a candidate covariate on CL and Vd; not retained in the final S(+) model."
     ),
     SNP_PXR_RS1523127 = list(
       description = "PXR (NR1I2) rs1523127 genotype",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "AA/CA/CC = 3/60/4 (Yao 2025 Table 1); deviates from Hardy-Weinberg equilibrium in this cohort. Screened; not retained."
+      units = "(binary)",
+      type = "categorical",
+      notes = "AA/CA/CC = 3/60/4 (Yao 2025 Table 1); deviates from Hardy-Weinberg equilibrium in this cohort. Screened; not retained."
     ),
     SNP_POR_RS1057868 = list(
       description = "POR rs1057868 (POR*28) genotype",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "AA/GA/GG = 17/41/9 (Yao 2025 Table 1); deviates from Hardy-Weinberg equilibrium in this cohort. Retained on CL in the companion R(-) model but not in the S(+) model."
+      units = "(binary)",
+      type = "categorical",
+      notes = "AA/GA/GG = 17/41/9 (Yao 2025 Table 1); deviates from Hardy-Weinberg equilibrium in this cohort. Retained on CL in the companion R(-) model but not in the S(+) model."
     ),
     SNP_POR_RS1135612 = list(
       description = "POR rs1135612 genotype",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "CC/CT/TT = 7/33/27 (Yao 2025 Table 1). Screened; not retained."
+      units = "(binary)",
+      type = "categorical",
+      notes = "CC/CT/TT = 7/33/27 (Yao 2025 Table 1). Screened; not retained."
     ),
     SNP_ABCB1_RS4148738 = list(
       description = "ABCB1 rs4148738 genotype",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "AA/GA/GG = 15/37/15 (Yao 2025 Table 1). Screened; not retained."
+      units = "(binary)",
+      type = "categorical",
+      notes = "AA/GA/GG = 15/37/15 (Yao 2025 Table 1). Screened; not retained."
     ),
     SNP_CYP2C9_MONOMORPHIC = list(
       description = "CYP2C9 rs1057910 / rs1799853 / rs182132442 genotypes",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "All 67 subjects were homozygous wild type at every assayed CYP2C9 locus (Yao 2025 Table 1 and Results: 'All patients were homozygous for the wild-type CYP2C9 allele'), so the locus was monomorphic and could not be evaluated even though CYP2C9 is the principal flurbiprofen-metabolising enzyme."
+      units = "(binary)",
+      type = "categorical",
+      notes = "All 67 subjects were homozygous wild type at every assayed CYP2C9 locus (Yao 2025 Table 1 and Results: 'All patients were homozygous for the wild-type CYP2C9 allele'), so the locus was monomorphic and could not be evaluated even though CYP2C9 is the principal flurbiprofen-metabolising enzyme."
     ),
     SNP_UGT1A9_RS28898617 = list(
       description = "UGT1A9 rs28898617 genotype",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "All 67 subjects TT (Yao 2025 Table 1); monomorphic, excluded from analysis per Results."
+      units = "(binary)",
+      type = "categorical",
+      notes = "All 67 subjects TT (Yao 2025 Table 1); monomorphic, excluded from analysis per Results."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 67L,
-    n_studies      = 1L,
-    age_range      = "49-83 years",
-    age_median     = "70 years (IQR 67-75; mean 71)",
-    weight_range   = "47-96 kg",
-    weight_median  = "70 kg (IQR 64-78; mean 71)",
-    height_range   = "1.40-1.80 m",
-    height_median  = "1.61 m (IQR 1.58-1.64; mean 1.62)",
-    bmi_range      = "18.4-40.1 kg/m^2",
-    bmi_median     = "27.1 kg/m^2 (IQR 25.1-29.4; mean 27.3)",
-    bsa_range      = "2.0-3.2 m^2",
-    bsa_median     = "2.6 m^2 (IQR 2.5-2.7; mean 2.6)",
+    species = "human",
+    n_subjects = 67L,
+    n_studies = 1L,
+    age_range = "49-83 years",
+    age_median = "70 years (IQR 67-75; mean 71)",
+    weight_range = "47-96 kg",
+    weight_median = "70 kg (IQR 64-78; mean 71)",
+    height_range = "1.40-1.80 m",
+    height_median = "1.61 m (IQR 1.58-1.64; mean 1.62)",
+    bmi_range = "18.4-40.1 kg/m^2",
+    bmi_median = "27.1 kg/m^2 (IQR 25.1-29.4; mean 27.3)",
+    bsa_range = "2.0-3.2 m^2",
+    bsa_median = "2.6 m^2 (IQR 2.5-2.7; mean 2.6)",
     sex_female_pct = 85.1,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Adults aged 18-85 years, ASA physical status I-III, scheduled for elective unilateral joint replacement surgery under spinal (subarachnoid) anaesthesia, treated for postoperative pain. Patients with asthma, hepatic or renal dysfunction, peptic ulcer, NSAID allergy, recent NSAID or CYP2C9 inhibitor/inducer exposure, or subnormal plasma total protein or albumin were excluded. Ethics approval #2019PHB169-01 (Peking University People's Hospital); ClinicalTrials.gov NCT04128410.",
-    dose_range     = "Single 100 mg intravenous injection of flurbiprofen axetil (FEX, 5050E; Beijing Tide Pharmaceutical) infused at 2 mL/min, given after 1 mg intravenous midazolam and before subarachnoid ropivacaine. Flurbiprofen axetil is a lipid-microsphere prodrug hydrolysed by carboxylesterase to flurbiprofen within about 5 minutes.",
-    regions        = "China (single centre, Peking University People's Hospital, Beijing).",
+    disease_state = "Adults aged 18-85 years, ASA physical status I-III, scheduled for elective unilateral joint replacement surgery under spinal (subarachnoid) anaesthesia, treated for postoperative pain. Patients with asthma, hepatic or renal dysfunction, peptic ulcer, NSAID allergy, recent NSAID or CYP2C9 inhibitor/inducer exposure, or subnormal plasma total protein or albumin were excluded. Ethics approval #2019PHB169-01 (Peking University People's Hospital); ClinicalTrials.gov NCT04128410.",
+    dose_range = "Single 100 mg intravenous injection of flurbiprofen axetil (FEX, 5050E; Beijing Tide Pharmaceutical) infused at 2 mL/min, given after 1 mg intravenous midazolam and before subarachnoid ropivacaine. Flurbiprofen axetil is a lipid-microsphere prodrug hydrolysed by carboxylesterase to flurbiprofen within about 5 minutes.",
+    regions = "China (single centre, Peking University People's Hospital, Beijing).",
     n_observations = "134 concentrations (67 plasma + 67 CSF) from 67 patients. Medical-ethics constraints allowed only ONE CSF sample per participant, so patients were block-randomised into 10 groups of about 7 and each group was sampled at a single nominal post-dose time (5, 10, 15, 20, 25, 30, 35, 40, 45 or 50 min); the paired venous plasma sample was drawn simultaneously from the contralateral median cubital vein. Assay LLOQ 0.1 ug/mL (plasma, linear 0.1-10 ug/mL) and 1 ng/mL (CSF, linear 1-100 ng/mL) by enantioselective LC-MS/MS on a CHIRALPAK-IG3 column.",
-    notes          = "70 patients enrolled October 2019 to June 2020; 67 analysed (3 excluded for undetectable genotypes). Phoenix NLME 8.3 with FOCE-ELS. Validated by 1000-replicate bootstrap and visual predictive check. The extremely sparse one-sample-per-subject design means the reported inter-individual variances are weakly identified. Concomitant midazolam and ropivacaine were not modelled."
+    notes = "70 patients enrolled October 2019 to June 2020; 67 analysed (3 excluded for undetectable genotypes). Phoenix NLME 8.3 with FOCE-ELS. Validated by 1000-replicate bootstrap and visual predictive check. The extremely sparse one-sample-per-subject design means the reported inter-individual variances are weakly identified. Concomitant midazolam and ropivacaine were not modelled."
   )
 
   ini({

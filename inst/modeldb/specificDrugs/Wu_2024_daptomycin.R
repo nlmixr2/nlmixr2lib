@@ -37,17 +37,17 @@ Wu_2024_daptomycin <- function() {
   # high-performance liquid chromatography-tandem mass spectrometry method",
   # LLOQ 0.05 ug/mL, daptomycin-d5 internal standard).
   compartmentData <- list(
-    central     = list(analyte = "daptomycin", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "daptomycin", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "daptomycin", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column CCR. Wu 2024 Methods: 'The patient's creatinine",
         "clearance (CLCR) was calculated according to the Cockcroft-Gault",
         "formula based on serum creatinine at steady state on day 3' -- so the",
@@ -72,14 +72,14 @@ Wu_2024_daptomycin <- function() {
         "RRT_CRRT_STATUS = 1.",
         collapse = " "
       ),
-      source_name        = "CCR"
+      source_name = "CCR"
     ),
     RRT_CRRT_STATUS = list(
-      description        = "Subject-level binary indicator for continuous renal replacement therapy during the PK sampling period",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Subject-level binary indicator for continuous renal replacement therapy during the PK sampling period",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Source concept CRRT. 1 = subject was receiving continuous renal",
         "replacement therapy; 0 = not on CRRT. Table 1: 39/64 (60.9%) on CRRT,",
         "25/64 (39.1%) not on CRRT. Filters used were MultiFiltrate Kit Ci-Ca",
@@ -97,7 +97,7 @@ Wu_2024_daptomycin <- function() {
         "non-renal clearance term.",
         collapse = " "
       ),
-      source_name        = "CRRT"
+      source_name = "CRRT"
     )
   )
 
@@ -108,9 +108,9 @@ Wu_2024_daptomycin <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Tested on CL and on volume of distribution; not retained. Table 1",
         "median 64.5 kg (range 45-170; 63 of 64 patients were 45-90 kg and one",
         "was 170 kg). Wu 2024 Discussion attributes the null weight effect on",
@@ -120,21 +120,21 @@ Wu_2024_daptomycin <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Tested as a body-size descriptor on CL; not retained. Table 1 median 23.0 kg/m^2 (range 16.5-52.5)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Tested as a body-size descriptor on CL; not retained. Table 1 median 23.0 kg/m^2 (range 16.5-52.5)."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested on CL; not retained. Supplementary Table S1 model 5 (base + AGE on CL): dOFV = -1.631, p > 0.05. Table 1 mean 57.5 +/- 16.5 years."
+      units = "years",
+      type = "continuous",
+      notes = "Tested on CL; not retained. Supplementary Table S1 model 5 (base + AGE on CL): dOFV = -1.631, p > 0.05. Table 1 mean 57.5 +/- 16.5 years."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested on the volume of distribution. Supplementary Table S1 model 4",
         "(base + GEND on VP) gave dOFV = -5.098 (p < 0.05) so it entered during",
         "forward inclusion, and the Results note the peripheral volume of males",
@@ -148,21 +148,21 @@ Wu_2024_daptomycin <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Tested on CL; not retained (Results: 'no relationships were identified between the CL, VC, or VP of daptomycin and APACHE II score, age, or serum albumin concentration'). Table 1 median 32.8 g/L (range 19.6-46.8)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Tested on CL; not retained (Results: 'no relationships were identified between the CL, VC, or VP of daptomycin and APACHE II score, age, or serum albumin concentration'). Table 1 median 32.8 g/L (range 19.6-46.8)."
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation II score",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = "Tested on CL; not retained. Table 1 median 24 (range 12-47)."
+      units = "(score)",
+      type = "continuous",
+      notes = "Tested on CL; not retained. Table 1 median 24 (range 12-47)."
     ),
     ECMO_STATUS = list(
       description = "Extracorporeal membrane oxygenation treatment-status indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Wu 2024 Discussion: 'no effect of the combined use of extracorporeal",
         "membrane oxygenation on the pharmacokinetics in critically ill adult",
         "patients was observed'. Table 1: 6/64 (9.4%) on ECMO, of whom 4 were",
@@ -173,9 +173,9 @@ Wu_2024_daptomycin <- function() {
     ),
     SOFA = list(
       description = "Sequential Organ Failure Assessment score",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(score)",
+      type = "continuous",
+      notes = paste(
         "Tested on CL and rejected: Results state the SOFA score 'was",
         "marginally associated with individual-specific CL and was excluded",
         "from the backward elimination process', and Supplementary Table S1",
@@ -194,17 +194,17 @@ Wu_2024_daptomycin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 64L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 64L,
+    n_studies = 1L,
     n_observations = 737L,
-    age_range      = "Not reported as a range; mean 57.5 +/- 16.5 years (Table 1). Inclusion required age >= 18 years.",
-    age_median     = "Not reported (Table 1 gives mean +/- SD, not median)",
-    weight_range   = "45-170 kg (Table 1 range; 63 of 64 patients weighed 45-90 kg and one patient was extremely obese at 170 kg)",
-    weight_median  = "64.5 kg",
+    age_range = "Not reported as a range; mean 57.5 +/- 16.5 years (Table 1). Inclusion required age >= 18 years.",
+    age_median = "Not reported (Table 1 gives mean +/- SD, not median)",
+    weight_range = "45-170 kg (Table 1 range; 63 of 64 patients weighed 45-90 kg and one patient was extremely obese at 170 kg)",
+    weight_median = "64.5 kg",
     sex_female_pct = 32.8,
     race_ethnicity = "Han Chinese (single-centre Chinese ICU cohort; the paper describes the population as 'critically ill adult Han Chinese patients')",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill adults in a medical/surgical ICU treated with",
       "intravenous daptomycin for proven or probable Gram-positive infection",
       "unresponsive to or intolerant of other antimicrobials. Severity at",
@@ -214,12 +214,12 @@ Wu_2024_daptomycin <- function() {
       "data before and after treatment.",
       collapse = " "
     ),
-    dose_range     = "Daptomycin 500 mg every 24 h, administered as a 30-min intravenous infusion in 100 mL normal saline (Jiangsu Hengrui Medicine Co., Ltd.). All subjects received the same regimen; the 400/500/600/700 mg daily doses appearing in Table 3 are simulated, not administered.",
-    regions        = "China (single centre: intensive care unit of Zhongnan Hospital of Wuhan University, Wuhan; ethics approval LYL2019018)",
+    dose_range = "Daptomycin 500 mg every 24 h, administered as a 30-min intravenous infusion in 100 mL normal saline (Jiangsu Hengrui Medicine Co., Ltd.). All subjects received the same regimen; the 400/500/600/700 mg daily doses appearing in Table 3 are simulated, not administered.",
+    regions = "China (single centre: intensive care unit of Zhongnan Hospital of Wuhan University, Wuhan; ethics approval LYL2019018)",
     renal_function = "Creatinine clearance (Cockcroft-Gault, day-3 serum creatinine) median 54.25 mL/min (range 8.3-200.2); serum creatinine median 106 umol/L (range 21.7-845.4). 39/64 (60.9%) were on CRRT.",
     extracorporeal = "CRRT 39/64 (60.9%); ECMO 6/64 (9.4%), of which 2 ECMO alone and 4 ECMO with CRRT. CRRT filters: MultiFiltrate Kit Ci-Ca AV1000S (n = 17), Ultraflux AV600S (n = 2), Prismaflex M100AN69 (n = 20); blood flow 95-350 mL/min, effluent flow 1600-2000 mL/h.",
     hepatic_function = "Albumin median 32.8 g/L (19.6-46.8); total bilirubin median 35.3 umol/L (5.2-312); ALT median 63 U/L (8-2581); AST median 71 U/L (11-3845).",
-    notes          = paste(
+    notes = paste(
       "Baseline demographics per Wu 2024 Table 1; the footnote states",
       "categorical variables are n (%) and the remaining variables are median",
       "(range), except age, which is printed as mean +/- SD. Sampling: day 1 at",

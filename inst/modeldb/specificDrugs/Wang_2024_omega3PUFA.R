@@ -8,42 +8,42 @@ Wang_2024_omega3PUFA <- function() {
   # biological matrix. Verified against Wang 2024 Methods (oral intake, plasma
   # omega-3 PUFA measured by ELISA) and the printed final-model equations.
   compartmentData <- list(
-    depot   = list(analyte = "omega-3 PUFA", units = "g", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "omega-3 PUFA", units = "g", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "omega-3 PUFA", units = "g", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "omega-3 PUFA", units = "g", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     HDLC = list(
-      description        = "Serum high-density lipoprotein cholesterol",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Serum high-density lipoprotein cholesterol",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. The only covariate retained in the final model.",
         "Enters Ka, V and CL as a power function normalised to the cohort mean of",
         "1.38 mmol/L (Wang 2024 Table 1: HDL 1.38 +/- 0.38 mmol/L, median 1.28,",
         "range 0.77-2.49). The Ka exponent (0.007) is numerically negligible but is",
         "retained because the paper prints it as part of the final model."
       ),
-      source_name        = "HDL"
+      source_name = "HDL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 161L,
-    n_studies      = 1L,
-    study          = "Two-centre prospective community cohort, Fuzhou, China, 2020-2021 (ChiCTR2000036210)",
-    age_range      = "43-85 years (mean 67.16, median 67)",
-    height_range   = "136-184 cm (mean 159.91, median 159)",
-    weight_range   = "39-102 kg (mean 63.52, median 63)",
-    bmi_range      = "16.02-43.79 kg/m^2 (mean 24.82, median 24.61)",
+    species = "human",
+    n_subjects = 161L,
+    n_studies = 1L,
+    study = "Two-centre prospective community cohort, Fuzhou, China, 2020-2021 (ChiCTR2000036210)",
+    age_range = "43-85 years (mean 67.16, median 67)",
+    height_range = "136-184 cm (mean 159.91, median 159)",
+    weight_range = "39-102 kg (mean 63.52, median 63)",
+    bmi_range = "16.02-43.79 kg/m^2 (mean 24.82, median 24.61)",
     sex_female_pct = 60.2,
     race_ethnicity = "Not reported; recruited from two communities in Fuzhou, Fujian Province, China",
-    disease_state  = "Type 2 diabetes, community-dwelling, aged 18 years or older on a regular diet",
-    dose_range     = "Habitual dietary omega-3 PUFA intake 0.036-6.426 g/day (mean 1.14, median 0.774), quantified by food-frequency questionnaire",
-    regions        = "China (Fuzhou, Fujian Province)",
-    notes          = paste(
+    disease_state = "Type 2 diabetes, community-dwelling, aged 18 years or older on a regular diet",
+    dose_range = "Habitual dietary omega-3 PUFA intake 0.036-6.426 g/day (mean 1.14, median 0.774), quantified by food-frequency questionnaire",
+    regions = "China (Fuzhou, Fujian Province)",
+    notes = paste(
       "Baseline demographics from Wang 2024 Table 1. Baseline HbA1c 6.31 +/- 1.91 %",
       "(median 5.7, range 2-14.1); plasma omega-3 PUFA 0.0319 +/- 0.0091 g/L",
       "(median 0.0299, range 0.0107-0.0508). Sex 64 male / 97 female. A further 49",

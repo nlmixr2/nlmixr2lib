@@ -22,8 +22,8 @@ Feng_2011_escitalopram <- function() {
   # Methods describe "a simulated (observed) plasma drug concentration (Cobs)"
   # after "oral administration".
   compartmentData <- list(
-    depot       = list(analyte = "escitalopram", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "escitalopram", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "escitalopram", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "escitalopram", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "escitalopram", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
@@ -34,13 +34,13 @@ Feng_2011_escitalopram <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 65,
-    n_studies      = 1,
-    disease_state  = "Chronic psychiatric disorders; unipolar depression cohort of the NIMH-sponsored 'Depression: the search for treatment relevant phenotypes' trial (Frank 2008, Feng 2011 ref 12)",
-    dose_range     = "10 mg oral once daily (Feng 2011 Table 3, 'Dose (mg): Long half-life drug (10)')",
-    regions        = "United States (University of Pittsburgh) and Italy (Pisa); Pittsburgh-Pisa phenotypes study",
-    notes          = paste(
+    species = "human",
+    n_subjects = 65,
+    n_studies = 1,
+    disease_state = "Chronic psychiatric disorders; unipolar depression cohort of the NIMH-sponsored 'Depression: the search for treatment relevant phenotypes' trial (Frank 2008, Feng 2011 ref 12)",
+    dose_range = "10 mg oral once daily (Feng 2011 Table 3, 'Dose (mg): Long half-life drug (10)')",
+    regions = "United States (University of Pittsburgh) and Italy (Pisa); Pittsburgh-Pisa phenotypes study",
+    notes = paste(
       "Feng 2011 is a trial-simulation study. The 65 subjects supplied the",
       "'true' dosage histories via Medication Event Monitoring System (MEMS)",
       "caps -- 863 clinic-visit records over the first 6 months -- and set the",

@@ -29,101 +29,363 @@ ChandralayamAyyappaMenon_2026_teclistamab_qsp <- function() {
   units <- list(time = "day", dosing = "nmol", concentration = "nM")
 
   paper_specific_compartments <- c(
-    "drug_cd3cd4", "drug_cd3cd8", "drug_bcma", "drug_cd38", "drug_cd38_other",
-    "trimer_cd3cd4_bcma", "trimer_cd3cd8_bcma", "trimer_cd3cd4_cd38",
-    "trimer_cd3cd8_cd38", "trimer_bcma_cd38", "trimer_cd3cd4_cd38other",
-    "trimer_cd3cd8_cd38other", "tetramer_cd3cd4", "tetramer_cd3cd8",
-    "complex_sbcma", "complex_scd38", "complex_cd3cd4_sbcma",
-    "complex_cd3cd8_sbcma", "complex_sbcma_cd38", "complex_cd3cd4_scd38",
-    "complex_cd3cd8_scd38", "complex_sbcma_scd38",
-    "complex_cd3cd4_sbcma_cd38", "complex_cd3cd8_sbcma_cd38",
-    "drug_cd3cd4_bonemarrow", "drug_cd3cd8_bonemarrow", "drug_bcma_bonemarrow",
-    "drug_cd38_bonemarrow", "trimer_cd3cd4_bcma_bonemarrow",
-    "trimer_cd3cd8_bcma_bonemarrow", "trimer_cd3cd4_cd38_bonemarrow",
-    "trimer_cd3cd8_cd38_bonemarrow", "trimer_bcma_cd38_bonemarrow",
-    "tetramer_cd3cd4_bonemarrow", "tetramer_cd3cd8_bonemarrow",
-    "complex_sbcma_bonemarrow", "complex_scd38_bonemarrow",
-    "complex_cd3cd4_sbcma_bonemarrow", "complex_cd3cd8_sbcma_bonemarrow",
-    "complex_sbcma_cd38_bonemarrow", "complex_cd3cd4_scd38_bonemarrow",
-    "complex_cd3cd8_scd38_bonemarrow", "complex_sbcma_scd38_bonemarrow",
-    "complex_cd3cd4_sbcma_cd38_bonemarrow", "complex_cd3cd8_sbcma_cd38_bonemarrow"
+    "drug_cd3cd4",
+    "drug_cd3cd8",
+    "drug_bcma",
+    "drug_cd38",
+    "drug_cd38_other",
+    "trimer_cd3cd4_bcma",
+    "trimer_cd3cd8_bcma",
+    "trimer_cd3cd4_cd38",
+    "trimer_cd3cd8_cd38",
+    "trimer_bcma_cd38",
+    "trimer_cd3cd4_cd38other",
+    "trimer_cd3cd8_cd38other",
+    "tetramer_cd3cd4",
+    "tetramer_cd3cd8",
+    "complex_sbcma",
+    "complex_scd38",
+    "complex_cd3cd4_sbcma",
+    "complex_cd3cd8_sbcma",
+    "complex_sbcma_cd38",
+    "complex_cd3cd4_scd38",
+    "complex_cd3cd8_scd38",
+    "complex_sbcma_scd38",
+    "complex_cd3cd4_sbcma_cd38",
+    "complex_cd3cd8_sbcma_cd38",
+    "drug_cd3cd4_bonemarrow",
+    "drug_cd3cd8_bonemarrow",
+    "drug_bcma_bonemarrow",
+    "drug_cd38_bonemarrow",
+    "trimer_cd3cd4_bcma_bonemarrow",
+    "trimer_cd3cd8_bcma_bonemarrow",
+    "trimer_cd3cd4_cd38_bonemarrow",
+    "trimer_cd3cd8_cd38_bonemarrow",
+    "trimer_bcma_cd38_bonemarrow",
+    "tetramer_cd3cd4_bonemarrow",
+    "tetramer_cd3cd8_bonemarrow",
+    "complex_sbcma_bonemarrow",
+    "complex_scd38_bonemarrow",
+    "complex_cd3cd4_sbcma_bonemarrow",
+    "complex_cd3cd8_sbcma_bonemarrow",
+    "complex_sbcma_cd38_bonemarrow",
+    "complex_cd3cd4_scd38_bonemarrow",
+    "complex_cd3cd8_scd38_bonemarrow",
+    "complex_sbcma_scd38_bonemarrow",
+    "complex_cd3cd4_sbcma_cd38_bonemarrow",
+    "complex_cd3cd8_sbcma_cd38_bonemarrow"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "teclistamab (Data S1 Dose_sc)", units = "nmol", specimen = "administration site", verified = TRUE),
-    plasma      = list(analyte = "teclistamab, free (Data S1 Drug)", units = "nM", specimen = "plasma", verified = TRUE),
-    tight       = list(analyte = "teclistamab, free (Data S1 Drug_t)", units = "nM", specimen = "tissue", verified = TRUE),
-    leaky       = list(analyte = "teclistamab, free (Data S1 Drug_L)", units = "nM", specimen = "tissue", verified = TRUE),
-    lymph       = list(analyte = "teclistamab, free (Data S1 Drug_ly)", units = "nM", specimen = "lymph", verified = TRUE),
-    bonemarrow  = list(analyte = "teclistamab, free (Data S1 Drug_bm)", units = "nM", specimen = "tumor", verified = TRUE),
+    depot = list(
+      analyte = "teclistamab (Data S1 Dose_sc)",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    plasma = list(analyte = "teclistamab, free (Data S1 Drug)", units = "nM", specimen = "plasma", verified = TRUE),
+    tight = list(analyte = "teclistamab, free (Data S1 Drug_t)", units = "nM", specimen = "tissue", verified = TRUE),
+    leaky = list(analyte = "teclistamab, free (Data S1 Drug_L)", units = "nM", specimen = "tissue", verified = TRUE),
+    lymph = list(analyte = "teclistamab, free (Data S1 Drug_ly)", units = "nM", specimen = "lymph", verified = TRUE),
+    bonemarrow = list(
+      analyte = "teclistamab, free (Data S1 Drug_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
 
-    drug_cd3cd4     = list(analyte = "teclistamab-CD3(CD4+ T cell) dimer (Data S1 CX1)", units = "nM", specimen = "plasma", verified = TRUE),
-    drug_cd3cd8     = list(analyte = "teclistamab-CD3(CD8+ T cell) dimer (Data S1 CX2)", units = "nM", specimen = "plasma", verified = TRUE),
-    drug_bcma       = list(analyte = "teclistamab-membrane BCMA dimer (Data S1 CX3)", units = "nM", specimen = "plasma", verified = TRUE),
-    drug_cd38       = list(analyte = "teclistamab-membrane CD38 dimer, plasma cell (Data S1 CX4)", units = "nM", specimen = "plasma", verified = TRUE),
-    drug_cd38_other = list(analyte = "teclistamab-CD38 dimer on monocyte/NK/neutrophil (Data S1 CX5)", units = "nM", specimen = "plasma", verified = TRUE),
+    drug_cd3cd4 = list(
+      analyte = "teclistamab-CD3(CD4+ T cell) dimer (Data S1 CX1)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    drug_cd3cd8 = list(
+      analyte = "teclistamab-CD3(CD8+ T cell) dimer (Data S1 CX2)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    drug_bcma = list(
+      analyte = "teclistamab-membrane BCMA dimer (Data S1 CX3)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    drug_cd38 = list(
+      analyte = "teclistamab-membrane CD38 dimer, plasma cell (Data S1 CX4)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    drug_cd38_other = list(
+      analyte = "teclistamab-CD38 dimer on monocyte/NK/neutrophil (Data S1 CX5)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
 
-    trimer_cd3cd4_bcma      = list(analyte = "teclistamab-CD3(CD4+)-BCMA trimer (Data S1 TX1)", units = "nM", specimen = "plasma", verified = TRUE),
-    trimer_cd3cd8_bcma      = list(analyte = "teclistamab-CD3(CD8+)-BCMA trimer (Data S1 TX2)", units = "nM", specimen = "plasma", verified = TRUE),
-    trimer_cd3cd4_cd38      = list(analyte = "teclistamab-CD3(CD4+)-CD38 trimer (Data S1 TX3)", units = "nM", specimen = "plasma", verified = TRUE),
-    trimer_cd3cd8_cd38      = list(analyte = "teclistamab-CD3(CD8+)-CD38 trimer (Data S1 TX4)", units = "nM", specimen = "plasma", verified = TRUE),
-    trimer_bcma_cd38        = list(analyte = "teclistamab-BCMA-CD38 trimer, both on tumour cell (Data S1 TX5)", units = "nM", specimen = "plasma", verified = TRUE),
-    trimer_cd3cd4_cd38other = list(analyte = "teclistamab-CD3(CD4+)-CD38 trimer, off-tumour CD38 (Data S1 TX6)", units = "nM", specimen = "plasma", verified = TRUE),
-    trimer_cd3cd8_cd38other = list(analyte = "teclistamab-CD3(CD8+)-CD38 trimer, off-tumour CD38 (Data S1 TX7)", units = "nM", specimen = "plasma", verified = TRUE),
-    tetramer_cd3cd4         = list(analyte = "teclistamab-CD3(CD4+)-BCMA-CD38 tetramer (Data S1 TeX1)", units = "nM", specimen = "plasma", verified = TRUE),
-    tetramer_cd3cd8         = list(analyte = "teclistamab-CD3(CD8+)-BCMA-CD38 tetramer (Data S1 TeX2)", units = "nM", specimen = "plasma", verified = TRUE),
+    trimer_cd3cd4_bcma = list(
+      analyte = "teclistamab-CD3(CD4+)-BCMA trimer (Data S1 TX1)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    trimer_cd3cd8_bcma = list(
+      analyte = "teclistamab-CD3(CD8+)-BCMA trimer (Data S1 TX2)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    trimer_cd3cd4_cd38 = list(
+      analyte = "teclistamab-CD3(CD4+)-CD38 trimer (Data S1 TX3)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    trimer_cd3cd8_cd38 = list(
+      analyte = "teclistamab-CD3(CD8+)-CD38 trimer (Data S1 TX4)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    trimer_bcma_cd38 = list(
+      analyte = "teclistamab-BCMA-CD38 trimer, both on tumour cell (Data S1 TX5)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    trimer_cd3cd4_cd38other = list(
+      analyte = "teclistamab-CD3(CD4+)-CD38 trimer, off-tumour CD38 (Data S1 TX6)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    trimer_cd3cd8_cd38other = list(
+      analyte = "teclistamab-CD3(CD8+)-CD38 trimer, off-tumour CD38 (Data S1 TX7)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    tetramer_cd3cd4 = list(
+      analyte = "teclistamab-CD3(CD4+)-BCMA-CD38 tetramer (Data S1 TeX1)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    tetramer_cd3cd8 = list(
+      analyte = "teclistamab-CD3(CD8+)-BCMA-CD38 tetramer (Data S1 TeX2)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
 
-    complex_sbcma             = list(analyte = "teclistamab-soluble BCMA dimer (Data S1 sCX1)", units = "nM", specimen = "plasma", verified = TRUE),
-    complex_scd38             = list(analyte = "teclistamab-soluble CD38 dimer (Data S1 sCX2)", units = "nM", specimen = "plasma", verified = TRUE),
-    complex_cd3cd4_sbcma      = list(analyte = "teclistamab-CD3(CD4+)-soluble BCMA (Data S1 sTX1)", units = "nM", specimen = "plasma", verified = TRUE),
-    complex_cd3cd8_sbcma      = list(analyte = "teclistamab-CD3(CD8+)-soluble BCMA (Data S1 sTX2)", units = "nM", specimen = "plasma", verified = TRUE),
-    complex_sbcma_cd38        = list(analyte = "teclistamab-soluble BCMA-membrane CD38 (Data S1 sTX3)", units = "nM", specimen = "plasma", verified = TRUE),
-    complex_cd3cd4_scd38      = list(analyte = "teclistamab-CD3(CD4+)-soluble CD38 (Data S1 sTX4)", units = "nM", specimen = "plasma", verified = TRUE),
-    complex_cd3cd8_scd38      = list(analyte = "teclistamab-CD3(CD8+)-soluble CD38 (Data S1 sTX5)", units = "nM", specimen = "plasma", verified = TRUE),
-    complex_sbcma_scd38       = list(analyte = "teclistamab-soluble BCMA-soluble CD38 (Data S1 sTX6)", units = "nM", specimen = "plasma", verified = TRUE),
-    complex_cd3cd4_sbcma_cd38 = list(analyte = "teclistamab-CD3(CD4+)-soluble BCMA-membrane CD38 (Data S1 sTeX1)", units = "nM", specimen = "plasma", verified = TRUE),
-    complex_cd3cd8_sbcma_cd38 = list(analyte = "teclistamab-CD3(CD8+)-soluble BCMA-membrane CD38 (Data S1 sTeX2)", units = "nM", specimen = "plasma", verified = TRUE),
+    complex_sbcma = list(
+      analyte = "teclistamab-soluble BCMA dimer (Data S1 sCX1)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    complex_scd38 = list(
+      analyte = "teclistamab-soluble CD38 dimer (Data S1 sCX2)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    complex_cd3cd4_sbcma = list(
+      analyte = "teclistamab-CD3(CD4+)-soluble BCMA (Data S1 sTX1)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    complex_cd3cd8_sbcma = list(
+      analyte = "teclistamab-CD3(CD8+)-soluble BCMA (Data S1 sTX2)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    complex_sbcma_cd38 = list(
+      analyte = "teclistamab-soluble BCMA-membrane CD38 (Data S1 sTX3)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    complex_cd3cd4_scd38 = list(
+      analyte = "teclistamab-CD3(CD4+)-soluble CD38 (Data S1 sTX4)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    complex_cd3cd8_scd38 = list(
+      analyte = "teclistamab-CD3(CD8+)-soluble CD38 (Data S1 sTX5)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    complex_sbcma_scd38 = list(
+      analyte = "teclistamab-soluble BCMA-soluble CD38 (Data S1 sTX6)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    complex_cd3cd4_sbcma_cd38 = list(
+      analyte = "teclistamab-CD3(CD4+)-soluble BCMA-membrane CD38 (Data S1 sTeX1)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    complex_cd3cd8_sbcma_cd38 = list(
+      analyte = "teclistamab-CD3(CD8+)-soluble BCMA-membrane CD38 (Data S1 sTeX2)",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
 
-    drug_cd3cd4_bonemarrow = list(analyte = "teclistamab-CD3(CD4+ T cell) dimer (Data S1 CX1_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    drug_cd3cd8_bonemarrow = list(analyte = "teclistamab-CD3(CD8+ T cell) dimer (Data S1 CX2_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    drug_bcma_bonemarrow   = list(analyte = "teclistamab-membrane BCMA dimer (Data S1 CX3_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    drug_cd38_bonemarrow   = list(analyte = "teclistamab-membrane CD38 dimer (Data S1 CX4_bm)", units = "nM", specimen = "tumor", verified = TRUE),
+    drug_cd3cd4_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD4+ T cell) dimer (Data S1 CX1_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    drug_cd3cd8_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD8+ T cell) dimer (Data S1 CX2_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    drug_bcma_bonemarrow = list(
+      analyte = "teclistamab-membrane BCMA dimer (Data S1 CX3_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    drug_cd38_bonemarrow = list(
+      analyte = "teclistamab-membrane CD38 dimer (Data S1 CX4_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
 
-    trimer_cd3cd4_bcma_bonemarrow = list(analyte = "teclistamab-CD3(CD4+)-BCMA trimer (Data S1 TX1_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    trimer_cd3cd8_bcma_bonemarrow = list(analyte = "teclistamab-CD3(CD8+)-BCMA trimer (Data S1 TX2_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    trimer_cd3cd4_cd38_bonemarrow = list(analyte = "teclistamab-CD3(CD4+)-CD38 trimer (Data S1 TX3_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    trimer_cd3cd8_cd38_bonemarrow = list(analyte = "teclistamab-CD3(CD8+)-CD38 trimer (Data S1 TX4_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    trimer_bcma_cd38_bonemarrow   = list(analyte = "teclistamab-BCMA-CD38 trimer, both on tumour cell (Data S1 TX5_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    tetramer_cd3cd4_bonemarrow    = list(analyte = "teclistamab-CD3(CD4+)-BCMA-CD38 tetramer (Data S1 TeX1_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    tetramer_cd3cd8_bonemarrow    = list(analyte = "teclistamab-CD3(CD8+)-BCMA-CD38 tetramer (Data S1 TeX2_bm)", units = "nM", specimen = "tumor", verified = TRUE),
+    trimer_cd3cd4_bcma_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD4+)-BCMA trimer (Data S1 TX1_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    trimer_cd3cd8_bcma_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD8+)-BCMA trimer (Data S1 TX2_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    trimer_cd3cd4_cd38_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD4+)-CD38 trimer (Data S1 TX3_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    trimer_cd3cd8_cd38_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD8+)-CD38 trimer (Data S1 TX4_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    trimer_bcma_cd38_bonemarrow = list(
+      analyte = "teclistamab-BCMA-CD38 trimer, both on tumour cell (Data S1 TX5_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    tetramer_cd3cd4_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD4+)-BCMA-CD38 tetramer (Data S1 TeX1_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    tetramer_cd3cd8_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD8+)-BCMA-CD38 tetramer (Data S1 TeX2_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
 
-    complex_sbcma_bonemarrow             = list(analyte = "teclistamab-soluble BCMA dimer (Data S1 sCX1_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    complex_scd38_bonemarrow             = list(analyte = "teclistamab-soluble CD38 dimer (Data S1 sCX2_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    complex_cd3cd4_sbcma_bonemarrow      = list(analyte = "teclistamab-CD3(CD4+)-soluble BCMA (Data S1 sTX1_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    complex_cd3cd8_sbcma_bonemarrow      = list(analyte = "teclistamab-CD3(CD8+)-soluble BCMA (Data S1 sTX2_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    complex_sbcma_cd38_bonemarrow        = list(analyte = "teclistamab-soluble BCMA-membrane CD38 (Data S1 sTX3_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    complex_cd3cd4_scd38_bonemarrow      = list(analyte = "teclistamab-CD3(CD4+)-soluble CD38 (Data S1 sTX4_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    complex_cd3cd8_scd38_bonemarrow      = list(analyte = "teclistamab-CD3(CD8+)-soluble CD38 (Data S1 sTX5_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    complex_sbcma_scd38_bonemarrow       = list(analyte = "teclistamab-soluble BCMA-soluble CD38 (Data S1 sTX6_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    complex_cd3cd4_sbcma_cd38_bonemarrow = list(analyte = "teclistamab-CD3(CD4+)-soluble BCMA-membrane CD38 (Data S1 sTeX1_bm)", units = "nM", specimen = "tumor", verified = TRUE),
-    complex_cd3cd8_sbcma_cd38_bonemarrow = list(analyte = "teclistamab-CD3(CD8+)-soluble BCMA-membrane CD38 (Data S1 sTeX2_bm)", units = "nM", specimen = "tumor", verified = TRUE)
+    complex_sbcma_bonemarrow = list(
+      analyte = "teclistamab-soluble BCMA dimer (Data S1 sCX1_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    complex_scd38_bonemarrow = list(
+      analyte = "teclistamab-soluble CD38 dimer (Data S1 sCX2_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    complex_cd3cd4_sbcma_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD4+)-soluble BCMA (Data S1 sTX1_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    complex_cd3cd8_sbcma_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD8+)-soluble BCMA (Data S1 sTX2_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    complex_sbcma_cd38_bonemarrow = list(
+      analyte = "teclistamab-soluble BCMA-membrane CD38 (Data S1 sTX3_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    complex_cd3cd4_scd38_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD4+)-soluble CD38 (Data S1 sTX4_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    complex_cd3cd8_scd38_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD8+)-soluble CD38 (Data S1 sTX5_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    complex_sbcma_scd38_bonemarrow = list(
+      analyte = "teclistamab-soluble BCMA-soluble CD38 (Data S1 sTX6_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    complex_cd3cd4_sbcma_cd38_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD4+)-soluble BCMA-membrane CD38 (Data S1 sTeX1_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    complex_cd3cd8_sbcma_cd38_bonemarrow = list(
+      analyte = "teclistamab-CD3(CD8+)-soluble BCMA-membrane CD38 (Data S1 sTeX2_bm)",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    )
   )
 
   # The published QSP model carries no covariate columns: it is a deterministic
   # typical-patient model.
 
   population <- list(
-    species        = "human",
-    n_subjects     = "Not reported in this source: the teclistamab parameters were calibrated to digitised published phase 1 PK and dose-escalation profiles rather than to individual patients.",
-    n_studies      = 1,
-    disease_state  = "Relapsed and/or refractory multiple myeloma (RRMM)",
-    dose_range     = paste(
+    species = "human",
+    n_subjects = "Not reported in this source: the teclistamab parameters were calibrated to digitised published phase 1 PK and dose-escalation profiles rather than to individual patients.",
+    n_studies = 1,
+    disease_state = "Relapsed and/or refractory multiple myeloma (RRMM)",
+    dose_range = paste(
       "Digitised intravenous PK at 270 and 720 ug/kg and subcutaneous PK at 720 and 1,500 ug/kg were used for calibration.",
       "Published clinically efficacious dose range 80-1,500 ug/kg/week SC; first clinical response during dose escalation at 38.4 ug/kg IV;",
       "step-up doses 60 and 300 ug/kg and target dose 1,500 ug/kg weekly SC.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Teclistamab enters this paper purely as the clinical benchmark: the mouse ECx range that reproduced the patient",
       "bone-marrow nACT achieved by teclistamab at its first-response dose (38.4 ug/kg IV, equivalent to mouse EC17)",
       "was the reference used to derive the ISB 2001 minimum pharmacologically active dose.",

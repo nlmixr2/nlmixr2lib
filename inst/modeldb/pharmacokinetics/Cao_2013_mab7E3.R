@@ -10,23 +10,23 @@ Cao_2013_mab7E3 <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     plasma = list(analyte = "7E3", units = "mg", specimen = "plasma", verified = FALSE),
-    tight  = list(analyte = "7E3", units = "mg", specimen = "tissue", verified = FALSE),
-    leaky  = list(analyte = "7E3", units = "mg", specimen = "tissue", verified = FALSE),
-    lymph  = list(analyte = "7E3", units = "mg", specimen = "lymph", verified = FALSE)
+    tight = list(analyte = "7E3", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky = list(analyte = "7E3", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph = list(analyte = "7E3", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "Mouse (Mus musculus); preclinical PK study (Cao 2013 mPBPK fit; underlying data Garg 2007).",
-    n_subjects     = NA_integer_,
-    n_studies      = 1,
-    weight_range   = "20 g body weight (Cao 2013 Table 1 footnote 'Assumed 20 g body weight')",
-    disease_state  = "Healthy mice; preclinical PK characterisation of 7E3, the parent murine anti-GPIIb/IIIa IgG1 mAb (chimeric Fab fragment is approved as abciximab).",
-    dose_range     = "8 mg/kg single IV (Cao 2013 Figure 2)",
-    regions        = "Preclinical (academic study, University at Buffalo)",
-    scope_note     = "Preclinical-only mPBPK fit. Filed under inst/modeldb/pharmacokinetics/ rather than specificDrugs/ because nlmixr2lib's specificDrugs tier is reserved for human drugs.",
-    notes          = "Cao 2013 Table 1, Model A. Parameters fit by Cao et al. to plasma concentration profiles from Garg A & Balthasar JP. J Pharmacokinet Pharmacodyn 2007;34:687-709 (PMID 17636457). The function name is mab7E3 because R identifiers cannot start with a digit; the antibody is referred to as 7E3 in the source publications. sigma_tight was fixed at 0.95 in Cao 2013 (footnote 'Assumed', CV reported as not applicable in Table 1)."
+    species = "Mouse (Mus musculus); preclinical PK study (Cao 2013 mPBPK fit; underlying data Garg 2007).",
+    n_subjects = NA_integer_,
+    n_studies = 1,
+    weight_range = "20 g body weight (Cao 2013 Table 1 footnote 'Assumed 20 g body weight')",
+    disease_state = "Healthy mice; preclinical PK characterisation of 7E3, the parent murine anti-GPIIb/IIIa IgG1 mAb (chimeric Fab fragment is approved as abciximab).",
+    dose_range = "8 mg/kg single IV (Cao 2013 Figure 2)",
+    regions = "Preclinical (academic study, University at Buffalo)",
+    scope_note = "Preclinical-only mPBPK fit. Filed under inst/modeldb/pharmacokinetics/ rather than specificDrugs/ because nlmixr2lib's specificDrugs tier is reserved for human drugs.",
+    notes = "Cao 2013 Table 1, Model A. Parameters fit by Cao et al. to plasma concentration profiles from Garg A & Balthasar JP. J Pharmacokinet Pharmacodyn 2007;34:687-709 (PMID 17636457). The function name is mab7E3 because R identifiers cannot start with a digit; the antibody is referred to as 7E3 in the source publications. sigma_tight was fixed at 0.95 in Cao 2013 (footnote 'Assumed', CV reported as not applicable in Table 1)."
   )
 
   ini({

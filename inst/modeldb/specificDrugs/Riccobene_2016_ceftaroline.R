@@ -1,6 +1,6 @@
 Riccobene_2016_ceftaroline <- function() {
   description <- "Joint two-compartment ceftaroline fosamil (prodrug) plus three-compartment ceftaroline (active metabolite) population PK model with an algebraic epithelial-lining-fluid (ELF) partition coefficient, developed on plasma and bronchoalveolar-lavage ELF data from 50 healthy adults given 600 mg ceftaroline fosamil as a 1-h IV infusion q12h or q8h to steady state (Riccobene 2016). Ceftaroline fosamil is assumed to be converted completely to ceftaroline, so the whole prodrug elimination clearance CLcf enters the ceftaroline central compartment. ELF concentrations are not a distribution compartment: the parallel decline of plasma and ELF made an ELF compartment unidentifiable, so ELF is modelled as the ceftaroline plasma concentration scaled by a partition coefficient (0.193) carrying inter-individual variability. Body weight enters allometrically on all clearances (0.75) and volumes (1); BSA-normalised creatinine clearance below 80 mL/min/1.73 m2, age, hemodialysis status and healthy-versus-patient status act on ceftaroline clearance, and healthy-versus-patient status acts on ceftaroline central volume. An intramuscular depot (first-order ka, bioavailability fixed to 1) is carried from the upstream adult model; the ELF study itself used IV dosing only."
-  reference   <- paste(
+  reference <- paste(
     "Riccobene TA, Pushkin R, Jandourek A, Knebel W, Khariton T.",
     "Penetration of ceftaroline into the epithelial lining fluid of healthy adult subjects.",
     "Antimicrob Agents Chemother. 2016;60(10):5849-5857. doi:10.1128/AAC.02755-15.",
@@ -13,101 +13,113 @@ Riccobene_2016_ceftaroline <- function() {
     "abstr P902); that abstract is not in nlmixr2lib.",
     sep = " "
   )
-  vignette    <- "Riccobene_2016_ceftaroline"
+  vignette <- "Riccobene_2016_ceftaroline"
 
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling of every clearance (exponent 0.75) and every volume (exponent 1) of both ceftaroline fosamil and ceftaroline, referenced to 70 kg. Supplemental Table 1 prints the scaling terms as (WT/70)^0.75 and (WT/70)^1 under each structural parameter, and Supplemental Equation 1 writes them as log(WT/70)*0.75 and log(WT/70) additive terms inside exp(). Weight ranged 58-102 kg in the ELF study (Results, Population pharmacokinetics in the lung).",
-      source_name        = "WT"
+      notes = "Allometric scaling of every clearance (exponent 0.75) and every volume (exponent 1) of both ceftaroline fosamil and ceftaroline, referenced to 70 kg. Supplemental Table 1 prints the scaling terms as (WT/70)^0.75 and (WT/70)^1 under each structural parameter, and Supplemental Equation 1 writes them as log(WT/70)*0.75 and log(WT/70) additive terms inside exp(). Weight ranged 58-102 kg in the ELF study (Results, Population pharmacokinetics in the lung).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at study entry.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at study entry.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on ceftaroline clearance, (AGE/36)^-0.278, applied to every subject (Supplemental Equation 1 COV5 = log(AGE/36)*theta13, with no conditional gate). The exponent was fixed from the upstream adult model because the ELF study enrolled nobody over 45 years (Methods, Population pharmacokinetics in the lung). Ages ranged 20-45 years.",
-      source_name        = "AGE"
+      notes = "Power effect on ceftaroline clearance, (AGE/36)^-0.278, applied to every subject (Supplemental Equation 1 COV5 = log(AGE/36)*theta13, with no conditional gate). The exponent was fixed from the upstream adult model because the ELF study enrolled nobody over 45 years (Methods, Population pharmacokinetics in the lung). Ages ranged 20-45 years.",
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "Creatinine clearance normalised by body surface area.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Creatinine clearance normalised by body surface area.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on ceftaroline clearance, (CRCL/80)^0.508, active ONLY below the 80 mL/min/1.73 m^2 reference and only in subjects not on hemodialysis; above 80 the term is 1. Encoded with min(CRCL, 80) so the term saturates at the reference. The exponent was fixed from the upstream adult model because no subject in the ELF study had a CRCL below 80 (Methods, Population pharmacokinetics in the lung). Source column nCLCR in the paper text and nCRCL in the supplement.",
-      source_name        = "nCRCL"
+      notes = "Power effect on ceftaroline clearance, (CRCL/80)^0.508, active ONLY below the 80 mL/min/1.73 m^2 reference and only in subjects not on hemodialysis; above 80 the term is 1. Encoded with min(CRCL, 80) so the term saturates at the reference. The exponent was fixed from the upstream adult model because no subject in the ELF study had a CRCL below 80 (Methods, Population pharmacokinetics in the lung). Source column nCLCR in the paper text and nCRCL in the supplement.",
+      source_name = "nCRCL"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant indicator (1 = healthy adult, 0 = patient with an infection).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant indicator (1 = healthy adult, 0 = patient with an infection).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with an infection; the pooled phase 2 / phase 3 infected-patient cohort of the upstream adult model)",
-      notes              = "Multiplicative power-form effects 3.32^DIS_HEALTHY on ceftaroline clearance and 3.67^DIS_HEALTHY on ceftaroline central volume. The source column is PAT (1 = patient, 0 = healthy) and is re-expressed here as DIS_HEALTHY = 1 - PAT, so lcl_ceftaroline and lvc_ceftaroline carry the PATIENT typical values printed in Supplemental Table 1 and the multipliers restore the healthy-adult values. See the vignette Errata: the supplement's footnote orientation is contradicted by the paper's own Table 2 noncompartmental results, which only reproduce when both multipliers are active for the ELF study's all-healthy cohort.",
-      source_name        = "PAT"
+      notes = "Multiplicative power-form effects 3.32^DIS_HEALTHY on ceftaroline clearance and 3.67^DIS_HEALTHY on ceftaroline central volume. The source column is PAT (1 = patient, 0 = healthy) and is re-expressed here as DIS_HEALTHY = 1 - PAT, so lcl_ceftaroline and lvc_ceftaroline carry the PATIENT typical values printed in Supplemental Table 1 and the multipliers restore the healthy-adult values. See the vignette Errata: the supplement's footnote orientation is contradicted by the paper's own Table 2 noncompartmental results, which only reproduce when both multipliers are active for the ELF study's all-healthy cohort.",
+      source_name = "PAT"
     ),
     RRT_HEMODIAL_STATUS = list(
-      description        = "Intermittent-hemodialysis treatment-status indicator (1 = subject is on an intermittent hemodialysis programme, 0 = not).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intermittent-hemodialysis treatment-status indicator (1 = subject is on an intermittent hemodialysis programme, 0 = not).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on hemodialysis)",
-      notes              = "Multiplicative power-form effect 0.372^RRT_HEMODIAL_STATUS on ceftaroline clearance between dialysis sessions, and it switches off the CRCL term. Supplemental Table 1 labels the source column ESRD (end-stage renal disease, 1 = yes) and Supplemental Equation 1 scopes the term to 'dialysis patients during non-dialysis periods', so within this model the ESRD flag and the on-a-hemodialysis-programme flag are operationally the same column; the canonical RRT name is used because the term's scope is dialysis, not renal disease generally. No subject in the ELF study had end-stage renal disease, so the coefficient is fixed from the upstream adult model.",
-      source_name        = "ESRD"
+      notes = "Multiplicative power-form effect 0.372^RRT_HEMODIAL_STATUS on ceftaroline clearance between dialysis sessions, and it switches off the CRCL term. Supplemental Table 1 labels the source column ESRD (end-stage renal disease, 1 = yes) and Supplemental Equation 1 scopes the term to 'dialysis patients during non-dialysis periods', so within this model the ESRD flag and the on-a-hemodialysis-programme flag are operationally the same column; the canonical RRT name is used because the term's scope is dialysis, not renal disease generally. No subject in the ELF study had end-stage renal disease, so the coefficient is fixed from the upstream adult model.",
+      source_name = "ESRD"
     ),
     RRT_HEMODIAL_ACTIVE = list(
-      description        = "Hemodialysis-active indicator (1 while a dialysis session is running, 0 in the interdialytic interval and in non-dialysed subjects).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hemodialysis-active indicator (1 while a dialysis session is running, 0 in the interdialytic interval and in non-dialysed subjects).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no dialysis session running)",
-      notes              = "Time-varying per-session gate. Supplemental Equation 1 REPLACES ceftaroline clearance entirely during a session (CLc_i = exp(theta14) = 9.97 L/h, with no covariate or eta terms) rather than adding a dialyser arm to the body clearance, so the model composes the two arms as cl_interdialytic*(1 - RRT_HEMODIAL_ACTIVE) + cl_hemodialysis*RRT_HEMODIAL_ACTIVE. No subject in the ELF study was dialysed, so the value is fixed from the upstream adult model.",
-      source_name        = "(dialysis period flag, unnamed in the supplement)"
+      notes = "Time-varying per-session gate. Supplemental Equation 1 REPLACES ceftaroline clearance entirely during a session (CLc_i = exp(theta14) = 9.97 L/h, with no covariate or eta terms) rather than adding a dialyser arm to the body clearance, so the model composes the two arms as cl_interdialytic*(1 - RRT_HEMODIAL_ACTIVE) + cl_hemodialysis*RRT_HEMODIAL_ACTIVE. No subject in the ELF study was dialysed, so the value is fixed from the upstream adult model.",
+      source_name = "(dialysis period flag, unnamed in the supplement)"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "ceftaroline fosamil", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "ceftaroline fosamil",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "ceftaroline fosamil", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "ceftaroline fosamil",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "ceftaroline fosamil", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "ceftaroline fosamil",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_ceftaroline = list(
-      analyte = "ceftaroline", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "ceftaroline",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_ceftaroline = list(
-      analyte = "ceftaroline", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "ceftaroline",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral2_ceftaroline = list(
-      analyte = "ceftaroline", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "ceftaroline",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50L,
-    n_studies      = 1L,
-    age_range      = "20-45 years (enrolled 19-45; mean 34.6 years in the q12h arm and 33.1 years in the q8h arm)",
-    weight_range   = "58-102 kg",
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
+    age_range = "20-45 years (enrolled 19-45; mean 34.6 years in the q12h arm and 33.1 years in the q8h arm)",
+    weight_range = "58-102 kg",
     sex_female_pct = 100 * 8 / 50,
     race_ethnicity = c(White = 81.1, Black = 13.2, Asian = 3.8, Other = 1.9),
-    disease_state  = "Healthy adult nonsmokers, body mass index 18-30 kg/m^2, no clinically significant disease; none had end-stage renal disease, none were on dialysis, none had a BSA-normalised creatinine clearance below 80 mL/min/1.73 m^2 and none were over 45 years of age.",
-    dose_range     = "600 mg ceftaroline fosamil as a 1-h IV infusion, q12h or q8h for 3 days plus a single dose on day 4",
-    regions        = "Single centre in the United States (Pulmonary Associates, Phoenix, AZ)",
+    disease_state = "Healthy adult nonsmokers, body mass index 18-30 kg/m^2, no clinically significant disease; none had end-stage renal disease, none were on dialysis, none had a BSA-normalised creatinine clearance below 80 mL/min/1.73 m^2 and none were over 45 years of age.",
+    dose_range = "600 mg ceftaroline fosamil as a 1-h IV infusion, q12h or q8h for 3 days plus a single dose on day 4",
+    regions = "Single centre in the United States (Pulmonary Associates, Phoenix, AZ)",
     n_observations = "856 measurable plasma concentrations (210 ceftaroline fosamil, 646 ceftaroline) and 49 measurable ELF concentrations (6 ceftaroline fosamil, 43 ceftaroline)",
-    notes          = "Phase 1, open-label, multiple-dose study; 53 subjects enrolled (Table 1 demographics: 26 q12h, 27 q8h), 50 completed and contributed to the population PK analysis (25 per arm). Race and sex percentages above are computed from the 53 enrolled subjects of Table 1 because Table 1 is the only demographic breakdown reported; the 50-subject analysis population is reported only as 42 males and 8 females (Results, Population pharmacokinetics in the lung), which is the sex split used here. Each subject underwent bronchoalveolar lavage at exactly one of five post-dose times, so ELF is a sparse, composite profile. The structural model and all covariate effects come from an upstream pooled adult analysis (10 phase 1, 1 phase 2, 4 phase 3 studies); effects that the ELF data carried no information on were fixed to their upstream values."
+    notes = "Phase 1, open-label, multiple-dose study; 53 subjects enrolled (Table 1 demographics: 26 q12h, 27 q8h), 50 completed and contributed to the population PK analysis (25 per arm). Race and sex percentages above are computed from the 53 enrolled subjects of Table 1 because Table 1 is the only demographic breakdown reported; the 50-subject analysis population is reported only as 42 males and 8 females (Results, Population pharmacokinetics in the lung), which is the sex split used here. Each subject underwent bronchoalveolar lavage at exactly one of five post-dose times, so ELF is a sparse, composite profile. The structural model and all covariate effects come from an upstream pooled adult analysis (10 phase 1, 1 phase 2, 4 phase 3 studies); effects that the ELF data carried no information on were fixed to their upstream values."
   )
 
   ini({

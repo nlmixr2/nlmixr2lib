@@ -49,14 +49,30 @@ Michelet_2025_BI754111_mpbpk <- function() {
   # as a shared metabolite/sibling-drug suffix (see the vignette's Assumptions
   # and deviations section).
   paper_specific_compartments <- c(
-    "tumor_vs", "tumor_is", "tumor_es_ub", "tumor_es_b",
-    "complex_tumor", "complex_tumor_int", "complex_blood", "complex_blood_int",
-    "target_tumor", "target_tumor_int", "target_blood", "target_blood_int",
+    "tumor_vs",
+    "tumor_is",
+    "tumor_es_ub",
+    "tumor_es_b",
+    "complex_tumor",
+    "complex_tumor_int",
+    "complex_blood",
+    "complex_blood_int",
+    "target_tumor",
+    "target_tumor_int",
+    "target_blood",
+    "target_blood_int",
     "fcrn",
-    "central_zr89", "peripheral1_zr89", "lnode_zr89",
-    "tumor_vs_zr89", "tumor_is_zr89", "tumor_es_ub_zr89", "tumor_es_b_zr89",
-    "complex_tumor_zr89", "complex_tumor_int_zr89",
-    "complex_blood_zr89", "complex_blood_int_zr89"
+    "central_zr89",
+    "peripheral1_zr89",
+    "lnode_zr89",
+    "tumor_vs_zr89",
+    "tumor_is_zr89",
+    "tumor_es_ub_zr89",
+    "tumor_es_b_zr89",
+    "complex_tumor_zr89",
+    "complex_tumor_int_zr89",
+    "complex_blood_zr89",
+    "complex_blood_int_zr89"
   )
 
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
@@ -66,59 +82,84 @@ Michelet_2025_BI754111_mpbpk <- function() {
   # deliberately mixes amount states (nmol) and concentration states (nM); that
   # mixture is preserved here so the equations match the published code.
   compartmentData <- list(
-    central                = list(analyte = "BI 754111", units = "nmol", specimen = "plasma", verified = TRUE),
-    peripheral1            = list(analyte = "BI 754111", units = "nmol", specimen = "plasma", verified = TRUE),
-    lnode                  = list(analyte = "BI 754111", units = "nmol", specimen = "lymph", verified = TRUE),
-    tumor_vs               = list(analyte = "BI 754111", units = "nmol", specimen = "tumor", verified = TRUE),
-    tumor_es_ub            = list(analyte = "BI 754111", units = "nM", specimen = "endosome", verified = TRUE),
-    tumor_es_b             = list(analyte = "BI 754111", units = "nM", specimen = "endosome", verified = TRUE),
-    tumor_is               = list(analyte = "BI 754111", units = "nmol", specimen = "tumor", verified = TRUE),
-    complex_tumor          = list(analyte = "BI 754111-LAG-3 complex", units = "nM", specimen = "tumor", verified = TRUE),
-    complex_tumor_int      = list(analyte = "BI 754111-LAG-3 complex", units = "nmol", specimen = "tumor", verified = TRUE),
-    complex_blood          = list(analyte = "BI 754111-LAG-3 complex", units = "nM", specimen = "whole blood", verified = TRUE),
-    complex_blood_int      = list(analyte = "BI 754111-LAG-3 complex", units = "nmol", specimen = "whole blood", verified = TRUE),
-    target_tumor           = list(analyte = "LAG-3", units = "nmol", specimen = "tumor", verified = TRUE),
-    target_tumor_int       = list(analyte = "LAG-3", units = "nM", specimen = "tumor", verified = TRUE),
-    target_blood           = list(analyte = "LAG-3", units = "nmol", specimen = "whole blood", verified = TRUE),
-    target_blood_int       = list(analyte = "LAG-3", units = "nM", specimen = "whole blood", verified = TRUE),
-    fcrn                   = list(analyte = "FcRn", units = "nM", specimen = "endosome", verified = TRUE),
-    central_zr89           = list(analyte = "89Zr-labeled BI 754111", units = "nmol", specimen = "plasma", verified = TRUE),
-    peripheral1_zr89       = list(analyte = "89Zr-labeled BI 754111", units = "nmol", specimen = "plasma", verified = TRUE),
-    lnode_zr89             = list(analyte = "89Zr-labeled BI 754111", units = "nmol", specimen = "lymph", verified = TRUE),
-    tumor_vs_zr89          = list(analyte = "89Zr-labeled BI 754111", units = "nmol", specimen = "tumor", verified = TRUE),
-    tumor_es_ub_zr89       = list(analyte = "89Zr-labeled BI 754111", units = "nM", specimen = "endosome", verified = TRUE),
-    tumor_es_b_zr89        = list(analyte = "89Zr-labeled BI 754111", units = "nM", specimen = "endosome", verified = TRUE),
-    tumor_is_zr89          = list(analyte = "89Zr-labeled BI 754111", units = "nmol", specimen = "tumor", verified = TRUE),
-    complex_tumor_zr89     = list(analyte = "89Zr-BI 754111-LAG-3 complex", units = "nM", specimen = "tumor", verified = TRUE),
-    complex_tumor_int_zr89 = list(analyte = "89Zr-BI 754111-LAG-3 complex", units = "nmol", specimen = "tumor", verified = TRUE),
-    complex_blood_zr89     = list(analyte = "89Zr-BI 754111-LAG-3 complex", units = "nM", specimen = "whole blood", verified = TRUE),
-    complex_blood_int_zr89 = list(analyte = "89Zr-BI 754111-LAG-3 complex", units = "nmol", specimen = "whole blood", verified = TRUE)
+    central = list(analyte = "BI 754111", units = "nmol", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "BI 754111", units = "nmol", specimen = "plasma", verified = TRUE),
+    lnode = list(analyte = "BI 754111", units = "nmol", specimen = "lymph", verified = TRUE),
+    tumor_vs = list(analyte = "BI 754111", units = "nmol", specimen = "tumor", verified = TRUE),
+    tumor_es_ub = list(analyte = "BI 754111", units = "nM", specimen = "endosome", verified = TRUE),
+    tumor_es_b = list(analyte = "BI 754111", units = "nM", specimen = "endosome", verified = TRUE),
+    tumor_is = list(analyte = "BI 754111", units = "nmol", specimen = "tumor", verified = TRUE),
+    complex_tumor = list(analyte = "BI 754111-LAG-3 complex", units = "nM", specimen = "tumor", verified = TRUE),
+    complex_tumor_int = list(analyte = "BI 754111-LAG-3 complex", units = "nmol", specimen = "tumor", verified = TRUE),
+    complex_blood = list(analyte = "BI 754111-LAG-3 complex", units = "nM", specimen = "whole blood", verified = TRUE),
+    complex_blood_int = list(
+      analyte = "BI 754111-LAG-3 complex",
+      units = "nmol",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    target_tumor = list(analyte = "LAG-3", units = "nmol", specimen = "tumor", verified = TRUE),
+    target_tumor_int = list(analyte = "LAG-3", units = "nM", specimen = "tumor", verified = TRUE),
+    target_blood = list(analyte = "LAG-3", units = "nmol", specimen = "whole blood", verified = TRUE),
+    target_blood_int = list(analyte = "LAG-3", units = "nM", specimen = "whole blood", verified = TRUE),
+    fcrn = list(analyte = "FcRn", units = "nM", specimen = "endosome", verified = TRUE),
+    central_zr89 = list(analyte = "89Zr-labeled BI 754111", units = "nmol", specimen = "plasma", verified = TRUE),
+    peripheral1_zr89 = list(analyte = "89Zr-labeled BI 754111", units = "nmol", specimen = "plasma", verified = TRUE),
+    lnode_zr89 = list(analyte = "89Zr-labeled BI 754111", units = "nmol", specimen = "lymph", verified = TRUE),
+    tumor_vs_zr89 = list(analyte = "89Zr-labeled BI 754111", units = "nmol", specimen = "tumor", verified = TRUE),
+    tumor_es_ub_zr89 = list(analyte = "89Zr-labeled BI 754111", units = "nM", specimen = "endosome", verified = TRUE),
+    tumor_es_b_zr89 = list(analyte = "89Zr-labeled BI 754111", units = "nM", specimen = "endosome", verified = TRUE),
+    tumor_is_zr89 = list(analyte = "89Zr-labeled BI 754111", units = "nmol", specimen = "tumor", verified = TRUE),
+    complex_tumor_zr89 = list(
+      analyte = "89Zr-BI 754111-LAG-3 complex",
+      units = "nM",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    complex_tumor_int_zr89 = list(
+      analyte = "89Zr-BI 754111-LAG-3 complex",
+      units = "nmol",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    complex_blood_zr89 = list(
+      analyte = "89Zr-BI 754111-LAG-3 complex",
+      units = "nM",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    complex_blood_int_zr89 = list(
+      analyte = "89Zr-BI 754111-LAG-3 complex",
+      units = "nmol",
+      specimen = "whole blood",
+      verified = TRUE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species         = "human",
-    n_subjects      = 6L,
-    n_studies       = 1L,
-    age_range       = "not reported in Michelet 2025 or its appendices",
-    weight_range    = "not reported in Michelet 2025 or its appendices",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = "not reported",
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 6L,
+    n_studies = 1L,
+    age_range = "not reported in Michelet 2025 or its appendices",
+    weight_range = "not reported in Michelet 2025 or its appendices",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "not reported",
+    disease_state = paste(
       "Advanced solid tumors having progressed on anti-PD-1 based treatment:",
       "non-small cell lung cancer (n = 4) and head and neck squamous cell",
       "carcinoma (n = 2). All participants continued anti-PD-1 treatment with",
       "ezabenlimab during the imaging study."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "4 mg 89Zr-labeled BI 754111 tracer dose in cycle 1; two weeks later a",
       "40 mg or 600 mg unlabeled BI 754111 mass dose followed by a second 4 mg",
       "tracer dose. The underlying popPK was developed on 4-600 mg IV doses in",
       "49 patients (phase I NCT03156114)."
     ),
-    regions         = "Netherlands (Amsterdam UMC); trial NCT03780725",
-    notes           = paste(
+    regions = "Netherlands (Amsterdam UMC); trial NCT03780725",
+    notes = paste(
       "PET scans were acquired < 2, 90 +/- 1 and 138 +/- 1 h after the cycle-1",
       "tracer injection and at 90 +/- 1 and 138 +/- 1 h after the cycle-2 tracer",
       "injection. The mPBPK layer is a deterministic platform model: it was",

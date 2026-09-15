@@ -39,57 +39,57 @@ Elmokadem_2023_mavoglurant_pbpk <- function() {
     sep = " "
   )
   vignette <- "Elmokadem_2023_mavoglurant_pbpk"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate. Drives the entire physiology: cardiac output",
         "is 187 * WT^0.81 mL/min and every organ volume is a fixed",
         "fraction of WT divided by that organ's density. Observed range",
         "61.9-103.5 kg over the 20 analysed subjects."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   compartmentData <- list(
-    lung     = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
-    heart    = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
-    brain    = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle   = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
-    adipose  = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
-    skin     = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
-    spleen   = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
+    lung = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
+    adipose = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
+    skin = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
     pancreas = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
-    liver    = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
-    stomach  = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
-    gut      = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
-    bone     = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney   = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
-    other    = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
+    stomach = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
+    gut = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
+    bone = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "mavoglurant", units = "mg", specimen = "tissue", verified = TRUE),
     arterial = list(analyte = "mavoglurant", units = "mg", specimen = "whole blood", verified = TRUE),
-    venous   = list(analyte = "mavoglurant", units = "mg", specimen = "whole blood", verified = TRUE)
+    venous = list(analyte = "mavoglurant", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20,
-    n_studies      = 1,
-    weight_range   = "61.9-103.5 kg",
-    weight_median  = "78.9 kg",
-    age_range      = "19-50 years",
-    age_median     = "30 years",
-    disease_state  = "healthy volunteers",
-    dose_range     = paste(
+    species = "human",
+    n_subjects = 20,
+    n_studies = 1,
+    weight_range = "61.9-103.5 kg",
+    weight_median = "78.9 kg",
+    age_range = "19-50 years",
+    age_median = "30 years",
+    disease_state = "healthy volunteers",
+    dose_range = paste(
       "single i.v. infusion of 25 mg (infusion rate 75 or 150 mg/h) or",
       "37.5 mg (infusion rate 225 mg/h); nominal 10 min infusion"
     ),
-    notes          = paste(
+    notes = paste(
       "DATA section of the paper: the mavoglurant PK data are from study",
       "A2121, a healthy-volunteer study of a 10 min i.v. infusion, shared",
       "publicly as a csv by the nlmixr team. The dataset holds 120",

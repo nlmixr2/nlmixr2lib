@@ -11,7 +11,7 @@ Wahlby_2004_pefloxacin <- function() {
     sep = " "
   )
   vignette <- "Wahlby_2004_time_varying_covariates"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -22,76 +22,76 @@ Wahlby_2004_pefloxacin <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance, time-varying within an individual (raw mL/min, NOT BSA-normalized).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, time-varying within an individual (raw mL/min, NOT BSA-normalized).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Table 2: mean 113.2, median 103.5, range 0.43-312.0 mL/min. Centered at 100 mL/min per Eq 6.",
-      source_name        = "CLC"
+      notes = "Time-varying. Table 2: mean 113.2, median 103.5, range 0.43-312.0 mL/min. Centered at 100 mL/min per Eq 6.",
+      source_name = "CLC"
     ),
     AGE = list(
-      description        = "Subject age (years).",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age (years).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Centered at 45 years per Eq 6.",
-      source_name        = "AGE"
+      notes = "Time-fixed at baseline. Centered at 45 years per Eq 6.",
+      source_name = "AGE"
     ),
     CEN = list(
-      description        = "Study-centre indicator (paper-specific 0/1; the source Wahlby 2004 references CEN to a single coefficient theta_CEN-CL without identifying which centre is 1 vs 0).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-centre indicator (paper-specific 0/1; the source Wahlby 2004 references CEN to a single coefficient theta_CEN-CL without identifying which centre is 1 vs 0).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0",
-      notes              = "Pefloxacin-specific (specific-scope) study-centre indicator carried over from Karlsson 1993. The Wahlby 2004 paper does not specify which centre corresponds to CEN = 1 versus CEN = 0; users supplying a virtual cohort should treat CEN as a sensitivity covariate.",
-      source_name        = "CEN"
+      notes = "Pefloxacin-specific (specific-scope) study-centre indicator carried over from Karlsson 1993. The Wahlby 2004 paper does not specify which centre corresponds to CEN = 1 versus CEN = 0; users supplying a virtual cohort should treat CEN as a sensitivity covariate.",
+      source_name = "CEN"
     ),
     WT = list(
-      description        = "Body weight, time-varying within an individual.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight, time-varying within an individual.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; enters the V model with effect e_wt_v centered at 65 kg (Eq 6 convention). Table 2: mean 69, median 67, range 42.7-125 kg.",
-      source_name        = "WT"
+      notes = "Time-varying; enters the V model with effect e_wt_v centered at 65 kg (Eq 6 convention). Table 2: mean 69, median 67, range 42.7-125 kg.",
+      source_name = "WT"
     ),
     WT_BASE = list(
-      description        = "Per-subject baseline body weight, time-fixed (BWT in the source paper).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Per-subject baseline body weight, time-fixed (BWT in the source paper).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject constant. Used in CL with a 'saturating up to median WT' qualifier (Methods): the effective WT in the CL model is min(WT_BASE, 65). Above 65 kg the effect plateaus. Table 2 BWT row: mean 68.8, median 67 kg.",
-      source_name        = "BWT"
+      notes = "Per-subject constant. Used in CL with a 'saturating up to median WT' qualifier (Methods): the effective WT in the CL model is min(WT_BASE, 65). Above 65 kg the effect plateaus. Table 2 BWT row: mean 68.8, median 67 kg.",
+      source_name = "BWT"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin, time-varying within an individual.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin, time-varying within an individual.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Used in the V model (carried from Karlsson 1993). Centered at 25 umol/L per Eq 6.",
-      source_name        = "BIL"
+      notes = "Time-varying. Used in the V model (carried from Karlsson 1993). Centered at 25 umol/L per Eq 6.",
+      source_name = "BIL"
     ),
     TBILI_BASE = list(
-      description        = "Per-subject baseline total serum bilirubin, time-fixed (BBIL in the source paper).",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Per-subject baseline total serum bilirubin, time-fixed (BBIL in the source paper).",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject constant. Replaces BIL in the final-model CL equation because BBIL was the better predictor (RSE 11% versus BIL RSE 18%). Centered at 25 umol/L (the reference value used in Eq 6 for BIL).",
-      source_name        = "BBIL"
+      notes = "Per-subject constant. Replaces BIL in the final-model CL equation because BBIL was the better predictor (RSE 11% versus BIL RSE 18%). Centered at 25 umol/L (the reference value used in Eq 6 for BIL).",
+      source_name = "BBIL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 74L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = "Table 2 WT range 42.7-125 kg",
+    species = "human",
+    n_subjects = 74L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = "Table 2 WT range 42.7-125 kg",
     sex_female_pct = NA_real_,
-    disease_state  = "Critically ill adult patients receiving intravenous 1-hour pefloxacin infusions over 1-28 days (median 6 days) across 1-4 treatment periods (separated by 2.5-14 days). Wahlby 2004 re-analyses a previously-reported cohort (Karlsson MO, Sheiner LB. J Pharmacokin Biopharm 1993;21(6):735-750).",
-    dose_range     = NA_character_,
+    disease_state = "Critically ill adult patients receiving intravenous 1-hour pefloxacin infusions over 1-28 days (median 6 days) across 1-4 treatment periods (separated by 2.5-14 days). Wahlby 2004 re-analyses a previously-reported cohort (Karlsson MO, Sheiner LB. J Pharmacokin Biopharm 1993;21(6):735-750).",
+    dose_range = NA_character_,
     n_observations = 337L,
-    follow_up      = "1-28 days per patient (median 6 days), with 1-4 treatment periods.",
-    regions        = NA_character_,
-    notes          = "The paper reports inter-occasion variability on CL (pi_CL = 0.32) and inter-individual variability in the CRCL effect coefficient (omega_CLC = 0.61) but no IIV on CL itself; see the vignette Errata for the IOV-vs-IIV encoding choice in this library entry."
+    follow_up = "1-28 days per patient (median 6 days), with 1-4 treatment periods.",
+    regions = NA_character_,
+    notes = "The paper reports inter-occasion variability on CL (pi_CL = 0.32) and inter-individual variability in the CRCL effect coefficient (omega_CLC = 0.61) but no IIV on CL itself; see the vignette Errata for the IOV-vs-IIV encoding choice in this library entry."
   )
 
   ini({

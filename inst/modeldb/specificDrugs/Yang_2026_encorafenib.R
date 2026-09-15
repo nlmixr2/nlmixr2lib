@@ -18,36 +18,36 @@ Yang_2026_encorafenib <- function() {
 
   covariateData <- list(
     AGE = list(
-      description        = "Baseline age.",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power model on CL/F day 1, centered on the analysis-population median of 58 years (Yang 2026 Eq. 6; Table 1 median age 58 years, range 19-94 years). Continuous covariates were entered as power models centered on the population median (Yang 2026 Methods 2.3.2).",
-      source_name        = "AGE"
+      notes = "Power model on CL/F day 1, centered on the analysis-population median of 58 years (Yang 2026 Eq. 6; Table 1 median age 58 years, range 19-94 years). Continuous covariates were entered as power models centered on the population median (Yang 2026 Methods 2.3.2).",
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Baseline body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power model on Vc/F, centered on the analysis-population median of 76 kg (Yang 2026 Eq. 7; Table 1 median body weight 76 kg, range 34-168 kg). Baseline (time-fixed), not time-varying; 3 of 1310 participants had body weight imputed to the population median (Yang 2026 Table 1 footnote a and Methods 2.3.5).",
-      source_name        = "BWT"
+      notes = "Power model on Vc/F, centered on the analysis-population median of 76 kg (Yang 2026 Eq. 7; Table 1 median body weight 76 kg, range 34-168 kg). Baseline (time-fixed), not time-varying; 3 of 1310 participants had body weight imputed to the population median (Yang 2026 Table 1 footnote a and Methods 2.3.5).",
+      source_name = "BWT"
     ),
     TUMTP_CRC = list(
-      description        = "Metastatic colorectal cancer tumor-type indicator (1 = metastatic CRC, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Metastatic colorectal cancer tumor-type indicator (1 = metastatic CRC, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = melanoma when TUMTP_OTHER is also 0 (melanoma is the reference tumor type in Yang 2026 Eq. 6)",
-      notes              = "n = 240 / 1310 (18%) of the pooled cohort (Yang 2026 Table 1), drawn from studies C4221001 (CLGX818X2103) and BEACON (C4221009). Enters CL/F day 1 as the linear categorical multiplier (1 + e_tumtp_crc_cl * TUMTP_CRC) with e_tumtp_crc_cl = -0.175, i.e. mCRC lowers CL/F day 1 by 17.5% relative to the melanoma reference. A subject may have at most one of TUMTP_CRC / TUMTP_OTHER set to 1; both zero means melanoma.",
-      source_name        = "mCRC"
+      notes = "n = 240 / 1310 (18%) of the pooled cohort (Yang 2026 Table 1), drawn from studies C4221001 (CLGX818X2103) and BEACON (C4221009). Enters CL/F day 1 as the linear categorical multiplier (1 + e_tumtp_crc_cl * TUMTP_CRC) with e_tumtp_crc_cl = -0.175, i.e. mCRC lowers CL/F day 1 by 17.5% relative to the melanoma reference. A subject may have at most one of TUMTP_CRC / TUMTP_OTHER set to 1; both zero means melanoma.",
+      source_name = "mCRC"
     ),
     TUMTP_OTHER = list(
-      description        = "Pooled 'other tumor type' indicator (1 = healthy participant, NSCLC, or other solid tumor; 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pooled 'other tumor type' indicator (1 = healthy participant, NSCLC, or other solid tumor; 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = melanoma when TUMTP_CRC is also 0 (melanoma is the reference tumor type in Yang 2026 Eq. 6)",
-      notes              = "Per-paper composition: healthy participants n = 15 (1%), lung / NSCLC n = 98 (7%), and other solid tumors n = 65 (5%), pooled to n = 178 / 1310 (13%) (Yang 2026 Table 1 and Methods 2.3.5, 'Tumor type was evaluated as melanoma versus CRC versus all other tumor types, which included healthy (1%), lung (7%), and other (5%)'). Enters CL/F day 1 as the linear categorical multiplier (1 + e_tumtp_other_cl * TUMTP_OTHER) with e_tumtp_other_cl = -0.0938. Because the pool mixes healthy volunteers with two solid-tumor groups, this column is not interchangeable with another paper's TUMTP_OTHER.",
-      source_name        = "other tumor"
+      notes = "Per-paper composition: healthy participants n = 15 (1%), lung / NSCLC n = 98 (7%), and other solid tumors n = 65 (5%), pooled to n = 178 / 1310 (13%) (Yang 2026 Table 1 and Methods 2.3.5, 'Tumor type was evaluated as melanoma versus CRC versus all other tumor types, which included healthy (1%), lung (7%), and other (5%)'). Enters CL/F day 1 as the linear categorical multiplier (1 + e_tumtp_other_cl * TUMTP_OTHER) with e_tumtp_other_cl = -0.0938. Because the pool mixes healthy volunteers with two solid-tumor groups, this column is not interchangeable with another paper's TUMTP_OTHER.",
+      source_name = "other tumor"
     )
   )
 
@@ -58,107 +58,107 @@ Yang_2026_encorafenib <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL/F, Vc/F, and Ka; not retained (Yang 2026 Results 3.2 and Discussion). Cohort was 594 (45%) female / 716 (55%) male (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL/F, Vc/F, and Ka; not retained (Yang 2026 Results 3.2 and Discussion). Cohort was 594 (45%) female / 716 (55%) male (Table 1)."
     ),
     ALB = list(
       description = "Baseline serum albumin.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Tested on CL/F as a hepatic-function marker; not statistically significant (Yang 2026 Discussion paragraph 6). Cohort median 42 g/L (Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Tested on CL/F as a hepatic-function marker; not statistically significant (Yang 2026 Discussion paragraph 6). Cohort median 42 g/L (Table 1)."
     ),
     TPRO = list(
       description = "Baseline total serum protein.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Tested on CL/F; not retained (Yang 2026 Discussion paragraph 4). Cohort median 70 g/L (Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Tested on CL/F; not retained (Yang 2026 Discussion paragraph 4). Cohort median 70 g/L (Table 1)."
     ),
     TBILI = list(
       description = "Baseline total bilirubin.",
-      units       = "mg/dL as reported by Yang 2026 Table 1 (canonical register unit is umol/L; multiply by 17.104 to convert)",
-      type        = "continuous",
-      notes       = "Tested on CL/F as a hepatic-function marker; not statistically significant (Yang 2026 Discussion paragraph 6). Cohort median 0.47 mg/dL (Table 1)."
+      units = "mg/dL as reported by Yang 2026 Table 1 (canonical register unit is umol/L; multiply by 17.104 to convert)",
+      type = "continuous",
+      notes = "Tested on CL/F as a hepatic-function marker; not statistically significant (Yang 2026 Discussion paragraph 6). Cohort median 0.47 mg/dL (Table 1)."
     ),
     AST = list(
       description = "Baseline aspartate aminotransferase.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested on CL/F as a hepatic-function marker; not statistically significant (Yang 2026 Discussion paragraph 6). Cohort median 20 U/L (Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested on CL/F as a hepatic-function marker; not statistically significant (Yang 2026 Discussion paragraph 6). Cohort median 20 U/L (Table 1)."
     ),
     ALT = list(
       description = "Baseline alanine aminotransferase.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "NOT tested, because of a correlation greater than 0.6 with AST (Yang 2026 Table 1 footnote d). Cohort median 17 U/L."
+      units = "U/L",
+      type = "continuous",
+      notes = "NOT tested, because of a correlation greater than 0.6 with AST (Yang 2026 Table 1 footnote d). Cohort median 17 U/L."
     ),
     LDH = list(
       description = "Baseline lactate dehydrogenase.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested on CL/F; not retained (Yang 2026 Discussion paragraph 4). Cohort median 207 U/L (Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested on CL/F; not retained (Yang 2026 Discussion paragraph 4). Cohort median 207 U/L (Table 1)."
     ),
     CRCL = list(
       description = "Baseline estimated glomerular filtration rate (MDRD formula).",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Tested on CL/F; not statistically significant, consistent with encorafenib's minimal renal clearance (Yang 2026 Discussion paragraph 5; Table 1 footnote c). Cohort median 91.62 mL/min/1.73 m^2."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Tested on CL/F; not statistically significant, consistent with encorafenib's minimal renal clearance (Yang 2026 Discussion paragraph 5; Table 1 footnote c). Cohort median 91.62 mL/min/1.73 m^2."
     ),
     WHO_PS = list(
       description = "Baseline ECOG performance status.",
-      units       = "(integer score 0-2)",
-      type        = "categorical",
-      notes       = "Tested on CL/F; not retained (Yang 2026 Results 3.2 and Discussion paragraph 4). Cohort: 0 in 797 (61%), 1 in 491 (37%), 2 in 7 (1%), missing in 15 (1%), with missing assigned to the most common value (Table 1, Methods 2.3.5)."
+      units = "(integer score 0-2)",
+      type = "categorical",
+      notes = "Tested on CL/F; not retained (Yang 2026 Results 3.2 and Discussion paragraph 4). Cohort: 0 in 797 (61%), 1 in 491 (37%), 2 in 7 (1%), missing in 15 (1%), with missing assigned to the most common value (Table 1, Methods 2.3.5)."
     ),
     CONMED_CYP3A4_INH = list(
       description = "Concomitant moderate or strong CYP3A inhibitor use.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL/F as absence-or-weak versus moderate-or-strong; not retained. The paper attributes the null result to the small number of exposed participants (moderate n = 149, strong n = 62) rather than to an absent interaction, and notes that a dedicated study showed encorafenib AUCinf increased 180% with a strong CYP3A inhibitor (Yang 2026 Table 1, Methods 2.3.5, Discussion paragraph 4). Concomitant CYP3A INDUCER was not tested at all, because 99% of participants had absent or only weak inducer use."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL/F as absence-or-weak versus moderate-or-strong; not retained. The paper attributes the null result to the small number of exposed participants (moderate n = 149, strong n = 62) rather than to an absent interaction, and notes that a dedicated study showed encorafenib AUCinf increased 180% with a strong CYP3A inhibitor (Yang 2026 Table 1, Methods 2.3.5, Discussion paragraph 4). Concomitant CYP3A INDUCER was not tested at all, because 99% of participants had absent or only weak inducer use."
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte  = "encorafenib",
-      units    = "mg",
+      analyte = "encorafenib",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "encorafenib",
-      units    = "mg",
+      analyte = "encorafenib",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "encorafenib",
-      units    = "mg",
+      analyte = "encorafenib",
+      units = "mg",
       specimen = "tissue",
       verified = TRUE
     ),
     enz_pool = list(
-      analyte  = "encorafenib-metabolizing enzyme pool (predominantly CYP3A4)",
-      units    = "fraction of baseline activity",
+      analyte = "encorafenib-metabolizing enzyme pool (predominantly CYP3A4)",
+      units = "fraction of baseline activity",
       specimen = "tissue",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1310L,
-    n_studies      = 9L,
-    age_range      = "19-94 years",
-    age_median     = "58 years",
-    weight_range   = "34-168 kg",
-    weight_median  = "76 kg",
+    species = "human",
+    n_subjects = 1310L,
+    n_studies = 9L,
+    age_range = "19-94 years",
+    age_median = "58 years",
+    weight_range = "34-168 kg",
+    weight_median = "76 kg",
     sex_female_pct = 45,
     race_ethnicity = c(White = 90, Black = 1, Asian = 6, Other = 3),
-    disease_state  = "BRAF V600-mutant solid tumors plus healthy participants: melanoma n = 892 (68%), metastatic colorectal cancer n = 240 (18%), lung / NSCLC n = 98 (7%), other solid tumors n = 65 (5%), healthy n = 15 (1%) (Yang 2026 Table 1).",
-    dose_range     = "Oral encorafenib 50-800 mg once daily (dose-escalation studies spanned 50-700 mg after a single dose), as monotherapy or in combination with binimetinib 45 mg twice daily or with cetuximab with or without mFOLFOX6. Approved regimens contributing most of the data are 450 mg once daily (melanoma / NSCLC with binimetinib) and 300 mg once daily (metastatic CRC with cetuximab).",
-    regions        = "Global; nine phase 1, 2, and 3 studies (ARRAY-162-105 part 1, COLUMBUS, POLARIS, C4221010, LOGIC 2, C4221001, BEACON, PHAROS, C4221005)",
-    notes          = "1310 participants enrolled; 1299 participants contributed 8651 evaluable observations after excluding 263 values below the limit of quantification or missing (from 11 participants) via the M1 method, and 3 further observations with CWRES > 6 were excluded from the final model (Yang 2026 Results 3.1 and 3.2). Combination therapy: none 372 (28%), binimetinib 689 (53%), other 249 (19%). Race was not evaluated as a covariate because 90% of participants were White."
+    disease_state = "BRAF V600-mutant solid tumors plus healthy participants: melanoma n = 892 (68%), metastatic colorectal cancer n = 240 (18%), lung / NSCLC n = 98 (7%), other solid tumors n = 65 (5%), healthy n = 15 (1%) (Yang 2026 Table 1).",
+    dose_range = "Oral encorafenib 50-800 mg once daily (dose-escalation studies spanned 50-700 mg after a single dose), as monotherapy or in combination with binimetinib 45 mg twice daily or with cetuximab with or without mFOLFOX6. Approved regimens contributing most of the data are 450 mg once daily (melanoma / NSCLC with binimetinib) and 300 mg once daily (metastatic CRC with cetuximab).",
+    regions = "Global; nine phase 1, 2, and 3 studies (ARRAY-162-105 part 1, COLUMBUS, POLARIS, C4221010, LOGIC 2, C4221001, BEACON, PHAROS, C4221005)",
+    notes = "1310 participants enrolled; 1299 participants contributed 8651 evaluable observations after excluding 263 values below the limit of quantification or missing (from 11 participants) via the M1 method, and 3 further observations with CWRES > 6 were excluded from the final model (Yang 2026 Results 3.1 and 3.2). Combination therapy: none 372 (28%), binimetinib 689 (53%), other 249 (19%). Race was not evaluated as a covariate because 90% of participants were White."
   )
 
   ini({

@@ -8,61 +8,61 @@ Moore_1999_lamivudine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight. Linear scaling (WT/70) on CL/F outside the renal-function power term (Table 2 footnote d). Reference 70 kg.",
-      source_name        = "WT"
+      notes = "Baseline body weight. Linear scaling (WT/70) on CL/F outside the renal-function power term (Table 2 footnote d). Reference 70 kg.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline age, entered into the Cockcroft-Gault-style renal-function index (140 - AGE)/(CREAT * 100). Cohort range 19-64 years, mean 35.7 years (Table 1).",
-      source_name        = "AGE"
+      notes = "Baseline age, entered into the Cockcroft-Gault-style renal-function index (140 - AGE)/(CREAT * 100). Cohort range 19-64 years, mean 35.7 years (Table 1).",
+      source_name = "AGE"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline serum creatinine in mg/dL (Table 1 mean 1.1 mg/dL, range 0.6-1.7). Enters the Cockcroft-Gault-style renal-function index (140 - AGE)/(CREAT * 100); the * 100 scaling centres the index near 1 for a typical adult with normal renal function (~0.95 at AGE=36, CREAT=1.1).",
-      source_name        = "serum creatinine"
+      notes = "Baseline serum creatinine in mg/dL (Table 1 mean 1.1 mg/dL, range 0.6-1.7). Enters the Cockcroft-Gault-style renal-function index (140 - AGE)/(CREAT * 100); the * 100 scaling centres the index near 1 for a typical adult with normal renal function (~0.95 at AGE=36, CREAT=1.1).",
+      source_name = "serum creatinine"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplies the renal-function index by the Cockcroft-Gault female factor 0.85 (Table 2 footnote d female branch). Encoded inline as (1 - 0.15 * SEXF) so the male reference recovers a factor of 1.",
-      source_name        = "gender"
+      notes = "Multiplies the renal-function index by the Cockcroft-Gault female factor 0.85 (Table 2 footnote d female branch). Encoded inline as (1 - 0.15 * SEXF) so the male reference recovers a factor of 1.",
+      source_name = "gender"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 394,
-    n_studies      = 2,
-    age_range      = "19-64 years (mean 35.7)",
-    age_median     = "mean 35.7 years",
-    weight_range   = "37.2-138.5 kg (mean 74.2)",
-    weight_median  = "mean 74.2 kg",
+    species = "human",
+    n_subjects = 394,
+    n_studies = 2,
+    age_range = "19-64 years (mean 35.7)",
+    age_median = "mean 35.7 years",
+    weight_range = "37.2-138.5 kg (mean 74.2)",
+    weight_median = "mean 74.2 kg",
     sex_female_pct = 13,
     race_ethnicity = c(Caucasian = 62, Black = 15, Hispanic = 22, Other = 1),
-    disease_state  = "HIV-1-infected adults; CDC class A 62%, B 32%, C 6%; mean CD4 306 cells/mm3; 81% HIV-1 RNA PCR < 50,000 copies/mL.",
-    dose_range     = "Oral lamivudine 150 mg BID (two 75-mg tablets) or 300 mg BID (one 300-mg tablet), administered approximately 8 am and 4 pm; given alone or in combination with zidovudine 200 mg TID.",
-    regions        = "United States (47 sites combined across NUCA3001 and NUCA3002).",
+    disease_state = "HIV-1-infected adults; CDC class A 62%, B 32%, C 6%; mean CD4 306 cells/mm3; 81% HIV-1 RNA PCR < 50,000 copies/mL.",
+    dose_range = "Oral lamivudine 150 mg BID (two 75-mg tablets) or 300 mg BID (one 300-mg tablet), administered approximately 8 am and 4 pm; given alone or in combination with zidovudine 200 mg TID.",
+    regions = "United States (47 sites combined across NUCA3001 and NUCA3002).",
     n_observations = 1477,
     renal_function = "Mean calculated Cockcroft-Gault CrCl 97.4 mL/min; only 3 patients had CrCl < 60 mL/min.",
-    notes          = "Pooled antiretroviral-therapy-naive (NUCA3001, n=245) and zidovudine-experienced (NUCA3002, n=149) cohorts with adequate dosing and sample-time documentation. Demographics in Table 1; the NUCA3001 / NUCA3002 trial designs are described in references 2 and 5 of the source paper."
+    notes = "Pooled antiretroviral-therapy-naive (NUCA3001, n=245) and zidovudine-experienced (NUCA3002, n=149) cohorts with adequate dosing and sample-time documentation. Demographics in Table 1; the NUCA3001 / NUCA3002 trial designs are described in references 2 and 5 of the source paper."
   )
 
   ini({

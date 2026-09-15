@@ -25,52 +25,52 @@ Wallender_2021_piperaquine <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; children were followed monthly from 8 to 156 weeks of age. Allometrically scaled a priori (not estimated) with exponent 0.75 on all clearance parameters and 1 on all volume parameters, normalised to the study-median weight of 8.6 kg (Methods, 'Population PK model'). Body weight was explicitly REMOVED from the covariate screen because the allometry was applied a priori (Peer Review File, response to reviewer comment on line 140).",
-      source_name        = "WEIGHT"
+      notes = "Time-varying; children were followed monthly from 8 to 156 weeks of age. Allometrically scaled a priori (not estimated) with exponent 0.75 on all clearance parameters and 1 on all volume parameters, normalised to the study-median weight of 8.6 kg (Methods, 'Population PK model'). Body weight was explicitly REMOVED from the covariate screen because the allometry was applied a priori (Peer Review File, response to reviewer comment on line 140).",
+      source_name = "WEIGHT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age at birth plus postnatal age).",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age at birth plus postnatal age).",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "WEEKS, not the register-default months -- Eq. 1 and the maturation half-time of 96 weeks are only meaningful on the week scale. Time-varying. Drives the Emax maturation function PMA / (PMA + 96) on clearance, representing CYP3A4 ontogeny during infancy (piperaquine is primarily metabolised by CYP3A4). Observed range approximately 42 to 196 weeks: gestational age at birth had a median of 39.9 weeks (2.5-97.5 percentile 33.2-41.4) in the every-12-weeks arm and 39.0 weeks (33.0-41.8) in the every-4-weeks arm (Table 1), and postnatal age spanned 8 to 156 weeks.",
-      source_name        = "Post menstrual age"
+      notes = "WEEKS, not the register-default months -- Eq. 1 and the maturation half-time of 96 weeks are only meaningful on the week scale. Time-varying. Drives the Emax maturation function PMA / (PMA + 96) on clearance, representing CYP3A4 ontogeny during infancy (piperaquine is primarily metabolised by CYP3A4). Observed range approximately 42 to 196 weeks: gestational age at birth had a median of 39.9 weeks (2.5-97.5 percentile 33.2-41.4) in the every-12-weeks arm and 39.0 weeks (33.0-41.8) in the every-4-weeks arm (Table 1), and postnatal age spanned 8 to 156 weeks.",
+      source_name = "Post menstrual age"
     ),
     WAZ = list(
-      description        = "Weight-for-age z-score against the WHO Child Growth Standards.",
-      units              = "unitless (z-score)",
-      type               = "continuous",
+      description = "Weight-for-age z-score against the WHO Child Growth Standards.",
+      units = "unitless (z-score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "TIME-VARYING -- the paper explicitly uses the z-score measured at the time of DP dosing, not a baseline value (Methods lists 'time-varying WAZ' among the screened covariates, and the reviewer request that drove this is answered in the Peer Review File). Enters relative oral bioavailability as the linear-deviation term (1 + 0.113 * (WAZ - (-0.5))), centred on the cohort median WAZ of -0.5 given verbatim in Eq. 2; each 1 z-score DECREASE lowers F by 11.3%. Table 1 reports the WAZ at 8 weeks of age as a median of -0.22 (2.5-97.5 percentile -2.92 to 1.36) in the every-12-weeks arm and -0.31 (-3.75 to 1.21) in the every-4-weeks arm. WAZ was selected over HAZ and WHZ because it gave the largest drop in objective function, the largest effect size, and the best visual predictive check; see covariatesDataExcluded for the two that were screened but not retained.",
-      source_name        = "WAZ"
+      notes = "TIME-VARYING -- the paper explicitly uses the z-score measured at the time of DP dosing, not a baseline value (Methods lists 'time-varying WAZ' among the screened covariates, and the reviewer request that drove this is answered in the Peer Review File). Enters relative oral bioavailability as the linear-deviation term (1 + 0.113 * (WAZ - (-0.5))), centred on the cohort median WAZ of -0.5 given verbatim in Eq. 2; each 1 z-score DECREASE lowers F by 11.3%. Table 1 reports the WAZ at 8 weeks of age as a median of -0.22 (2.5-97.5 percentile -2.92 to 1.36) in the every-12-weeks arm and -0.31 (-3.75 to 1.21) in the every-4-weeks arm. WAZ was selected over HAZ and WHZ because it gave the largest drop in objective function, the largest effect size, and the best visual predictive check; see covariatesDataExcluded for the two that were screened but not retained.",
+      source_name = "WAZ"
     ),
     SELFADMIN = list(
-      description        = "Self-administered dosing-occasion indicator: 1 = the DP course was taken at home without direct observation, 0 = every daily dose of the course was directly observed.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Self-administered dosing-occasion indicator: 1 = the DP course was taken at home without direct observation, 0 = every daily dose of the course was directly observed.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (directly observed therapy)",
-      notes              = "PER DOSING OCCASION and time-varying within a subject. Trial design: the first of the three daily DP doses was given in the study clinic and the remaining two were handed to the guardian for home administration, so routine IPT courses have SELFADMIN = 1; all three doses were directly observed for the 32 children in the intensive PK substudy, so those courses have SELFADMIN = 0. The multiplier 0.397 means apparent bioavailability was 60% lower on unobserved courses. The authors read this as an ADHERENCE effect rather than a true absorption effect: 'the magnitude of the association with self-administration is most consistent with a low adherence effect' (Discussion). A mixture model was tested to see whether distinct high- and low-bioavailability subpopulations existed and none could be identified.",
-      source_name        = "Self-administered DP"
+      notes = "PER DOSING OCCASION and time-varying within a subject. Trial design: the first of the three daily DP doses was given in the study clinic and the remaining two were handed to the guardian for home administration, so routine IPT courses have SELFADMIN = 1; all three doses were directly observed for the 32 children in the intensive PK substudy, so those courses have SELFADMIN = 0. The multiplier 0.397 means apparent bioavailability was 60% lower on unobserved courses. The authors read this as an ADHERENCE effect rather than a true absorption effect: 'the magnitude of the association with self-administration is most consistent with a low adherence effect' (Discussion). A mixture model was tested to see whether distinct high- and low-bioavailability subpopulations existed and none could be identified.",
+      source_name = "Self-administered DP"
     ),
     OCC = list(
-      description        = "Integer-valued occasion index identifying the DP treatment course, for between-occasion variability on relative oral bioavailability.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion index identifying the DP treatment course, for between-occasion variability on relative oral bioavailability.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "One occasion per three-day DP course. Between-occasion variability on F was estimated at 66.9% (5.9% RSE, 95% CI 62.3-71.3%) in Table 2 and is the largest single variance component of the PK model. rxode2 has no NONMEM-style '| occ' variability level, so occasions 1 to 25 are multiplexed inside model() by binary indicators onto etaiov_fdepot_1 .. etaiov_fdepot_25 sharing one variance (the equivalent of NONMEM $OMEGA BLOCK(1) SAME). The cap of 25 covers the trial exactly: the every-4-weeks arm received a DP course every 4 weeks from 8 to 104 weeks of age, which is 25 courses. OCC = 0, or any value outside 1..25, zeroes every indicator and yields the occasion-free typical value. Simulating more than 25 courses requires adding further etaiov_fdepot_<n> terms.",
-      source_name        = "OCC"
+      notes = "One occasion per three-day DP course. Between-occasion variability on F was estimated at 66.9% (5.9% RSE, 95% CI 62.3-71.3%) in Table 2 and is the largest single variance component of the PK model. rxode2 has no NONMEM-style '| occ' variability level, so occasions 1 to 25 are multiplexed inside model() by binary indicators onto etaiov_fdepot_1 .. etaiov_fdepot_25 sharing one variance (the equivalent of NONMEM $OMEGA BLOCK(1) SAME). The cap of 25 covers the trial exactly: the every-4-weeks arm received a DP course every 4 weeks from 8 to 104 weeks of age, which is 25 courses. OCC = 0, or any value outside 1..25, zeroes every indicator and yields the occasion-free typical value. Simulating more than 25 courses requires adding further etaiov_fdepot_<n> terms.",
+      source_name = "OCC"
     ),
     SAMPLE_CAPILLARY = list(
-      description        = "Per-observation sampling-site indicator: 1 = capillary finger-prick sample, 0 = venous plasma sample.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Per-observation sampling-site indicator: 1 = capillary finger-prick sample, 0 = venous plasma sample.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (venous plasma)",
-      notes              = "PER OBSERVATION. The authors first built a model for venous plasma PPQ and then added capillary concentrations to form a joint model, linked by the log-linear relationship ln([PPQ]capillary) = 0.922 * ln([PPQ]venous) (Table 2 footnote c and Supplementary Figure 2, from 70 children with paired samples). The relationship did not vary with age over the study period. This indicator selects which prediction the residual error is applied to; unlike the other registered uses of SAMPLE_CAPILLARY it does NOT switch the residual magnitude, because separate capillary and venous residual errors were tested and the data did not support them (Peer Review File, response to reviewer 3 comment on line 133). Routine study visits used capillary sampling except at 40 and 104 weeks of age; the intensive substudy used venipuncture for the first 24 h and finger-prick thereafter.",
-      source_name        = "sample matrix"
+      notes = "PER OBSERVATION. The authors first built a model for venous plasma PPQ and then added capillary concentrations to form a joint model, linked by the log-linear relationship ln([PPQ]capillary) = 0.922 * ln([PPQ]venous) (Table 2 footnote c and Supplementary Figure 2, from 70 children with paired samples). The relationship did not vary with age over the study period. This indicator selects which prediction the residual error is applied to; unlike the other registered uses of SAMPLE_CAPILLARY it does NOT switch the residual magnitude, because separate capillary and venous residual errors were tested and the data did not support them (Peer Review File, response to reviewer 3 comment on line 133). Routine study visits used capillary sampling except at 40 and 104 weeks of age; the intensive substudy used venipuncture for the first 24 h and finger-prick thereafter.",
+      source_name = "sample matrix"
     )
   )
 
@@ -80,56 +80,56 @@ Wallender_2021_piperaquine <- function() {
   # these to be referenced in model(). See the vignette Assumptions section.
   covariatesDataExcluded <- list(
     HAZ = list(
-      description        = "Height-for-age z-score (stunting axis).",
-      units              = "unitless (z-score)",
-      type               = "continuous",
+      description = "Height-for-age z-score (stunting axis).",
+      units = "unitless (z-score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a time-varying covariate on relative oral bioavailability and found significant (delta-OFV -5.93), with each 1 z-score decrease lowering bioavailability by 4.7%. Not retained: WAZ gave the greatest statistical significance, the greatest effect size and the best visual predictive check, and only one malnutrition index was carried into the final model. Table 1 median height-for-age z-score at 8 weeks: 0.03 (2.5-97.5 percentile -3.27 to 2.06) every 12 weeks, -0.39 (-4.38 to 1.18) every 4 weeks."
+      notes = "Screened as a time-varying covariate on relative oral bioavailability and found significant (delta-OFV -5.93), with each 1 z-score decrease lowering bioavailability by 4.7%. Not retained: WAZ gave the greatest statistical significance, the greatest effect size and the best visual predictive check, and only one malnutrition index was carried into the final model. Table 1 median height-for-age z-score at 8 weeks: 0.03 (2.5-97.5 percentile -3.27 to 2.06) every 12 weeks, -0.39 (-4.38 to 1.18) every 4 weeks."
     ),
     WHZ = list(
-      description        = "Weight-for-height z-score (wasting axis).",
-      units              = "unitless (z-score)",
-      type               = "continuous",
+      description = "Weight-for-height z-score (wasting axis).",
+      units = "unitless (z-score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a time-varying covariate on relative oral bioavailability and found significant (delta-OFV -6.47), with each 1 z-score decrease lowering bioavailability by 4.4%. Not retained, for the same reason as HAZ."
+      notes = "Screened as a time-varying covariate on relative oral bioavailability and found significant (delta-OFV -6.47), with each 1 z-score decrease lowering bioavailability by 4.4%. Not retained, for the same reason as HAZ."
     ),
     SEXF = list(
-      description        = "Female sex indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened in the stepwise covariate model building (Methods, 'Population PK model'); not retained. Table 1 reports 50% female in the every-12-weeks arm and 47% in the every-4-weeks arm."
+      notes = "Screened in the stepwise covariate model building (Methods, 'Population PK model'); not retained. Table 1 reports 50% female in the every-12-weeks arm and 47% in the every-4-weeks arm."
     ),
     MUAC = list(
-      description        = "Mid-upper arm circumference.",
-      units              = "mm",
-      type               = "continuous",
+      description = "Mid-upper arm circumference.",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "NOT COLLECTED in this trial and therefore not screenable, although the authors identify it as a malnutrition marker linked to antimalarial exposure elsewhere in the literature (Peer Review File, response to the reviewer question on MUAC; Discussion). Recorded here so the gap is visible rather than silent."
+      notes = "NOT COLLECTED in this trial and therefore not screenable, although the authors identify it as a malnutrition marker linked to antimalarial exposure elsewhere in the literature (Peer Review File, response to the reviewer question on MUAC; Discussion). Recorded here so the gap is visible rather than silent."
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 280L,
-    n_studies      = 1L,
-    age_range      = "2 to 36 months (dosed from 8 to 104 weeks of age; PK sampled from 12 to 104 weeks)",
-    weight_median  = "8.6 kg (study median, used as the allometric reference)",
+    species = "human",
+    n_subjects = 280L,
+    n_studies = 1L,
+    age_range = "2 to 36 months (dosed from 8 to 104 weeks of age; PK sampled from 12 to 104 weeks)",
+    weight_median = "8.6 kg (study median, used as the allometric reference)",
     sex_female_pct = 48.9,
-    disease_state  = "Healthy Ugandan infants and toddlers born to mothers enrolled in a trial of intermittent preventive treatment in pregnancy, receiving intermittent preventive treatment against Plasmodium falciparum malaria in a high-transmission setting.",
-    dose_range     = "Weight-band dosed dihydroartemisinin-piperaquine once daily for three consecutive days per course: <6 kg 10/80 mg, 6-<11 kg 20/160 mg, 11-<15 kg 30/240 mg, 15-<20 kg 40/320 mg (manufacturer package insert; Supplementary Table 1). Courses were given every 4 weeks (n = 96) or every 12 weeks (n = 184) from 8 to 104 weeks of age.",
-    regions        = "Tororo District, Uganda",
+    disease_state = "Healthy Ugandan infants and toddlers born to mothers enrolled in a trial of intermittent preventive treatment in pregnancy, receiving intermittent preventive treatment against Plasmodium falciparum malaria in a high-transmission setting.",
+    dose_range = "Weight-band dosed dihydroartemisinin-piperaquine once daily for three consecutive days per course: <6 kg 10/80 mg, 6-<11 kg 20/160 mg, 11-<15 kg 30/240 mg, 15-<20 kg 40/320 mg (manufacturer package insert; Supplementary Table 1). Courses were given every 4 weeks (n = 96) or every 12 weeks (n = 184) from 8 to 104 weeks of age.",
+    regions = "Tororo District, Uganda",
     n_observations = 4573L,
-    notes          = "Randomised controlled trial NCT02163447; participant characteristics in Table 1. 4573 PPQ concentrations, of which 578 (12.6%) were below the 0.5 ng/mL lower limit of quantification and were handled by the M6 (BLQ/2) method with BLQ values set to 0.25 ng/mL. All 280 children contributed sparse samples (median 12 per child, range 1-20); a substudy of 32 children contributed intensive profiles at 32 and 104 weeks of age (median 31 per child, range 16-33). None of the children randomised to DP every 4 weeks were born to mothers who received sulfadoxine-pyrimethamine in pregnancy, by trial design. Median birth weight 3000 g (2.5-97.5 percentile 1932-3807) and 2965 g (1694-3688) in the two arms; 11.4% and 14.6% had low birth weight and 7.6% and 12.5% were preterm. Estimation in NONMEM 7.4."
+    notes = "Randomised controlled trial NCT02163447; participant characteristics in Table 1. 4573 PPQ concentrations, of which 578 (12.6%) were below the 0.5 ng/mL lower limit of quantification and were handled by the M6 (BLQ/2) method with BLQ values set to 0.25 ng/mL. All 280 children contributed sparse samples (median 12 per child, range 1-20); a substudy of 32 children contributed intensive profiles at 32 and 104 weeks of age (median 31 per child, range 16-33). None of the children randomised to DP every 4 weeks were born to mothers who received sulfadoxine-pyrimethamine in pregnancy, by trial design. Median birth weight 3000 g (2.5-97.5 percentile 1932-3807) and 2965 g (1694-3688) in the two arms; 11.4% and 14.6% had low birth weight and 7.6% and 12.5% were preterm. Estimation in NONMEM 7.4."
   )
 
   ini({

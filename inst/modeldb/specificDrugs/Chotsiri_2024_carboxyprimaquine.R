@@ -16,12 +16,12 @@ Chotsiri_2024_carboxyprimaquine <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline. Reference WT = 62.5 kg, 'according to median body weight in the population' (Methods, 'Population pharmacokinetic model'). Allometric exponents were fixed a priori, not estimated: 'Individual body-weight (BW_i) was introduced into the pharmacokinetic model as a fixed allometric function on all clearance (n = 0.75) and volume (n = 1.00) parameters'. Cohort weights ranged 44.0-83.0 kg across the three dose groups (Table 1). Source column BW.",
-      source_name        = "BW"
+      notes = "Baseline. Reference WT = 62.5 kg, 'according to median body weight in the population' (Methods, 'Population pharmacokinetic model'). Allometric exponents were fixed a priori, not estimated: 'Individual body-weight (BW_i) was introduced into the pharmacokinetic model as a fixed allometric function on all clearance (n = 0.75) and volume (n = 1.00) parameters'. Cohort weights ranged 44.0-83.0 kg across the three dose groups (Table 1). Source column BW.",
+      source_name = "BW"
     )
   )
 
@@ -32,56 +32,56 @@ Chotsiri_2024_carboxyprimaquine <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened, not retained. Range 18-50 years (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened, not retained. Range 18-50 years (Table 1)."
     ),
     PARA = list(
       description = "Plasmodium falciparum infection detected by PCR",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened as 'malaria status', not retained. 14 of 28 participants PCR-positive (Table 1)."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened as 'malaria status', not retained. 14 of 28 participants PCR-positive (Table 1)."
     ),
     G6PD_A_MINUS = list(
       description = "Glucose-6-phosphate dehydrogenase A- genotype (SNPs 202A and 376G) versus wild-type",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened, not retained. 16 A- and 12 wild-type (Table 1). Documentation only: not in the covariate register because no shipped model uses it."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened, not retained. 16 A- and 12 wild-type (Table 1). Documentation only: not in the covariate register because no shipped model uses it."
     ),
     G6PD_DEF = list(
       description = "G6PD-deficient phenotype by semi-quantitative test (0-6.5 U/g haemoglobin)",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened, not retained. 17 deficient and 10 normal (Table 1). Documentation only: not in the covariate register because no shipped model uses it."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened, not retained. 17 deficient and 10 normal (Table 1). Documentation only: not in the covariate register because no shipped model uses it."
     ),
     CYP2D6_PM = list(
       description = "CYP2D6 poor-metabolizer phenotype",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened as 'CYP2D6 phenotype', not retained. 1 poor, 13 intermediate, 13 extensive, 1 extensive/ultra-rapid metabolizer (Table 1)."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened as 'CYP2D6 phenotype', not retained. 1 poor, 13 intermediate, 13 extensive, 1 extensive/ultra-rapid metabolizer (Table 1)."
     )
   )
 
   compartmentData <- list(
-    depot    = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "administration site", verified = TRUE),
     transit1 = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "administration site", verified = TRUE),
     transit2 = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    central  = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "plasma", verified = TRUE)
+    central = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 28,
-    n_studies      = 1,
-    age_range      = "18-50 years",
-    age_median     = "20 years (group 1), 32 years (group 2), 39 years (group 3)",
-    weight_range   = "44.0-83.0 kg",
-    weight_median  = "62.5 kg",
+    species = "human",
+    n_subjects = 28,
+    n_studies = 1,
+    age_range = "18-50 years",
+    age_median = "20 years (group 1), 32 years (group 2), 39 years (group 3)",
+    weight_range = "44.0-83.0 kg",
+    weight_median = "62.5 kg",
     sex_female_pct = 0,
-    disease_state  = "Healthy adult males without microscopically detected malaria parasite infection; 17/28 G6PD-deficient and 10/28 G6PD-normal by semi-quantitative test, 16/28 carrying the G6PD A- genotype (SNPs 202A and 376G).",
-    dose_range     = "Single oral dose of primaquine 0.40 mg/kg (n = 7), 0.45 mg/kg (n = 7) or 0.50 mg/kg (n = 14), i.e. 17.6-41.5 mg. The metabolite model is dosed with the same amount expressed in moles.",
-    regions        = "Mali (Ouelessebougou area); adult arm (Part I) of an open-label, non-randomised dose-adjustment safety trial, ClinicalTrials.gov NCT02535767.",
-    notes          = "Baseline demographics from Table 1. Sampling: venous plasma pre-dose and at 1, 4, 8 and 24 h; capillary plasma at 2, 4 and 6 h; LLOQ 1 ng/mL for carboxy-primaquine and all 196 samples were above it. The 24-hour sampling window does not span the metabolite's terminal phase, which the authors flag explicitly as a limitation: 'the sampling schedule did not capture fully the elimination phase of CPQ' (Discussion). The resulting terminal half-life, median 469 h (325-1870), is therefore poorly determined and far longer than the 15.6 h reported in an earlier healthy-volunteer study."
+    disease_state = "Healthy adult males without microscopically detected malaria parasite infection; 17/28 G6PD-deficient and 10/28 G6PD-normal by semi-quantitative test, 16/28 carrying the G6PD A- genotype (SNPs 202A and 376G).",
+    dose_range = "Single oral dose of primaquine 0.40 mg/kg (n = 7), 0.45 mg/kg (n = 7) or 0.50 mg/kg (n = 14), i.e. 17.6-41.5 mg. The metabolite model is dosed with the same amount expressed in moles.",
+    regions = "Mali (Ouelessebougou area); adult arm (Part I) of an open-label, non-randomised dose-adjustment safety trial, ClinicalTrials.gov NCT02535767.",
+    notes = "Baseline demographics from Table 1. Sampling: venous plasma pre-dose and at 1, 4, 8 and 24 h; capillary plasma at 2, 4 and 6 h; LLOQ 1 ng/mL for carboxy-primaquine and all 196 samples were above it. The 24-hour sampling window does not span the metabolite's terminal phase, which the authors flag explicitly as a limitation: 'the sampling schedule did not capture fully the elimination phase of CPQ' (Discussion). The resulting terminal half-life, median 469 h (325-1870), is therefore poorly determined and far longer than the 15.6 h reported in an earlier healthy-volunteer study."
   )
 
   ini({

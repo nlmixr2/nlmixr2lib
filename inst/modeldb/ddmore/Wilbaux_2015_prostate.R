@@ -14,12 +14,12 @@ Wilbaux_2015_prostate <- function() {
   paper_specific_compartments <- c("chemo", "hormo", "latent_tumor", "ctc", "chemo_d", "hormo_d", "latent_tumor_d")
 
   units <- list(
-    time          = "day",
-    dosing        = "AU (arbitrary unit per treatment cycle; the K-PD chemo/hormo compartments accept AMT = 1 per administered cycle)",
+    time = "day",
+    dosing = "AU (arbitrary unit per treatment cycle; the K-PD chemo/hormo compartments accept AMT = 1 per administered cycle)",
     concentration = "ng/mL (PSA endpoint); CTC count reported as cells per 7.5 mL aliquot (alpha = 0.0015 scales total-body CTC to aliquot count)"
   )
 
-  ddmore_id    <- "DDMODEL00000261"
+  ddmore_id <- "DDMODEL00000261"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -27,14 +27,29 @@ Wilbaux_2015_prostate <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    chemo          = list(analyte = "Chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
-    hormo          = list(analyte = "Hormonotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
-    latent_tumor   = list(analyte = "Tumour burden", units = NA_character_, specimen = "tumor", verified = FALSE),
-    ctc            = list(analyte = "Circulating tumour cell count", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    chemo_d        = list(analyte = "Chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
-    hormo_d        = list(analyte = "Hormonotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
-    latent_tumor_d = list(analyte = "Tumour burden", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    psa            = list(analyte = "Prostate-specific antigen", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    chemo = list(analyte = "Chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
+    hormo = list(analyte = "Hormonotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
+    latent_tumor = list(analyte = "Tumour burden", units = NA_character_, specimen = "tumor", verified = FALSE),
+    ctc = list(
+      analyte = "Circulating tumour cell count",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    chemo_d = list(analyte = "Chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
+    hormo_d = list(
+      analyte = "Hormonotherapy",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    latent_tumor_d = list(
+      analyte = "Tumour burden",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    psa = list(analyte = "Prostate-specific antigen", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
@@ -46,15 +61,15 @@ Wilbaux_2015_prostate <- function() {
   )
 
   population <- list(
-    n_subjects     = 223L,
-    n_studies      = 1L,
-    age_range      = "adults with metastatic castration-resistant prostate cancer (mCRPC); detailed age distribution not extracted in this run (PMC text quoted only the n = 223 cohort summary)",
-    weight_range   = "not retained as a model covariate; not extracted",
+    n_subjects = 223L,
+    n_studies = 1L,
+    age_range = "adults with metastatic castration-resistant prostate cancer (mCRPC); detailed age distribution not extracted in this run (PMC text quoted only the n = 223 cohort summary)",
+    weight_range = "not retained as a model covariate; not extracted",
     sex_female_pct = 0,
-    disease_state  = "Metastatic castration-resistant prostate cancer (mCRPC) with frequent non-measurable bone metastases. Subjects received chemotherapy (most commonly docetaxel-based regimens) and/or hormonotherapy (most commonly abiraterone or enzalutamide) over a median follow-up of approximately six months (paper Methods; the .mod's K-PD compartments treat each cycle as an arbitrary AMT = 1 event with no chemical-distinction between agents).",
-    dose_range     = "Chemotherapy and/or hormonotherapy administered per cycle. The K-PD parameterization is dose-/concentration-agnostic: each treatment cycle enters the model as AMT = 1 in the corresponding K-PD compartment (CMT 1 = chemo, CMT 2 = hormo) at the cycle start time, plus an identical dose at AMT = 1 to the lagged copies (CMT 5, CMT 6) that share the same lag time LS = 58 days. The bundle's Simulated_KPD_CTC.count_PSA.csv encodes 1-cycle / 2-cycle / 3-cycle administration patterns at days 0, 21-35, 42-77, 85, 108-119 across two simulated subjects.",
-    biomarkers     = "Two longitudinal biomarkers: (i) CTC count per 7.5 mL aliquot (CellSearch system; non-negative integer; bundle CMT 4) and (ii) PSA concentration in plasma (ng/mL; bundle CMT 8 with DV recorded as log(PSA) in the simulated dataset). Latent tumour burden LV(t) is dimensionless and not directly observed.",
-    notes          = "n_subjects = 223 from Wilbaux 2015 paper text (Methods, via PMC4452933 abstract / Methods extract). Detailed baseline demographics (age distribution, ECOG, Gleason, prior therapy) are in the linked publication (CPT Pharmacometrics Syst Pharmacol 2015;4(5):277-285, doi:10.1002/psp4.34); the paper PDF was not on disk in /home/bill/github/mab_human_consensus/literature at extraction time, so this population block reports only fields that are directly recoverable from the PMC full-text Methods extract performed during extraction. The DDMORE bundle's Simulated_KPD_CTC.count_PSA.csv contains only two simulated subjects with very sparse observation schedules (intentionally minimal regression dataset, not representative of the published cohort)."
+    disease_state = "Metastatic castration-resistant prostate cancer (mCRPC) with frequent non-measurable bone metastases. Subjects received chemotherapy (most commonly docetaxel-based regimens) and/or hormonotherapy (most commonly abiraterone or enzalutamide) over a median follow-up of approximately six months (paper Methods; the .mod's K-PD compartments treat each cycle as an arbitrary AMT = 1 event with no chemical-distinction between agents).",
+    dose_range = "Chemotherapy and/or hormonotherapy administered per cycle. The K-PD parameterization is dose-/concentration-agnostic: each treatment cycle enters the model as AMT = 1 in the corresponding K-PD compartment (CMT 1 = chemo, CMT 2 = hormo) at the cycle start time, plus an identical dose at AMT = 1 to the lagged copies (CMT 5, CMT 6) that share the same lag time LS = 58 days. The bundle's Simulated_KPD_CTC.count_PSA.csv encodes 1-cycle / 2-cycle / 3-cycle administration patterns at days 0, 21-35, 42-77, 85, 108-119 across two simulated subjects.",
+    biomarkers = "Two longitudinal biomarkers: (i) CTC count per 7.5 mL aliquot (CellSearch system; non-negative integer; bundle CMT 4) and (ii) PSA concentration in plasma (ng/mL; bundle CMT 8 with DV recorded as log(PSA) in the simulated dataset). Latent tumour burden LV(t) is dimensionless and not directly observed.",
+    notes = "n_subjects = 223 from Wilbaux 2015 paper text (Methods, via PMC4452933 abstract / Methods extract). Detailed baseline demographics (age distribution, ECOG, Gleason, prior therapy) are in the linked publication (CPT Pharmacometrics Syst Pharmacol 2015;4(5):277-285, doi:10.1002/psp4.34); the paper PDF was not on disk in /home/bill/github/mab_human_consensus/literature at extraction time, so this population block reports only fields that are directly recoverable from the PMC full-text Methods extract performed during extraction. The DDMORE bundle's Simulated_KPD_CTC.count_PSA.csv contains only two simulated subjects with very sparse observation schedules (intentionally minimal regression dataset, not representative of the published cohort)."
   )
 
   ini({

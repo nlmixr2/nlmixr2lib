@@ -27,8 +27,8 @@ Thoueille_2023_tenofovir_alafenamide <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tenofovir alafenamide", units = "nmol", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tenofovir alafenamide", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tenofovir alafenamide", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tenofovir alafenamide", units = "nmol", specimen = "plasma", verified = FALSE),
     central_tfv = list(analyte = "tenofovir", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 

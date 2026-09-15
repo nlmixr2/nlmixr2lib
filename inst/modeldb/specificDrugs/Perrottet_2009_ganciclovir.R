@@ -8,85 +8,85 @@ Perrottet_2009_ganciclovir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; recorded on each sampling occasion. Linear ratio (WT / 70) on V1. Cohort median 72 kg, range 46-115 kg (Perrottet 2009 Table 1).",
-      source_name        = "BW"
+      notes = "Time-varying; recorded on each sampling occasion. Linear ratio (WT / 70) on V1. Cohort median 72 kg, range 46-115 kg (Perrottet 2009 Table 1).",
+      source_name = "BW"
     ),
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used to de-index MDRD-eGFR (mL/min/1.73 m^2) into GFR (L/h) inside model(). Reference BSA 1.73 m^2 (Perrottet 2009 simulation cohort).",
-      source_name        = "BSA"
+      notes = "Used to de-index MDRD-eGFR (mL/min/1.73 m^2) into GFR (L/h) inside model(). Reference BSA 1.73 m^2 (Perrottet 2009 simulation cohort).",
+      source_name = "BSA"
     ),
     CRCL = list(
-      description        = "MDRD-estimated glomerular filtration rate (four-variable MDRD formula)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "MDRD-estimated glomerular filtration rate (four-variable MDRD formula)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. The four-variable MDRD formula GFR = 175 * (Crs/88.4)^-1.154 * age^-0.203 * 0.742^SEXF returns mL/min/1.73 m^2; model() converts to L/h using individual BSA (Perrottet 2009 Methods, structural model and Discussion).",
-      source_name        = "GFR_MDRD"
+      notes = "Time-varying. The four-variable MDRD formula GFR = 175 * (Crs/88.4)^-1.154 * age^-0.203 * 0.742^SEXF returns mL/min/1.73 m^2; model() converts to L/h using individual BSA (Perrottet 2009 Methods, structural model and Discussion).",
+      source_name = "GFR_MDRD"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = "Multiplicative effects on both CL (theta_female = 1.21, females 21% higher) and V1 (theta_female = 0.78, females 22% lower). The CL sex effect is additional to the implicit sex correction inside the MDRD formula.",
-      source_name        = "sex"
+      notes = "Multiplicative effects on both CL (theta_female = 1.21, females 21% higher) and V1 (theta_female = 0.78, females 22% lower). The CL sex effect is additional to the implicit sex correction inside the MDRD formula.",
+      source_name = "sex"
     ),
     TX_HEART = list(
-      description        = "Heart-transplant recipient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Heart-transplant recipient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = non-heart solid-organ graft (kidney, lung, or liver)",
-      notes              = "Time-fixed per subject. Perrottet 2009 cohort: 10/65 patients (15%). Applied as a multiplicative effect on the CL-vs-GFR slope (theta_heart = 0.86 vs theta_kidney = 1.68).",
-      source_name        = "graft_type"
+      notes = "Time-fixed per subject. Perrottet 2009 cohort: 10/65 patients (15%). Applied as a multiplicative effect on the CL-vs-GFR slope (theta_heart = 0.86 vs theta_kidney = 1.68).",
+      source_name = "graft_type"
     ),
     TX_LUNG = list(
-      description        = "Lung-transplant recipient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Lung-transplant recipient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = non-lung solid-organ graft (kidney, heart, or liver)",
-      notes              = "Time-fixed per subject. Perrottet 2009 cohort: 12/65 patients (18%). Pooled with liver recipients under a shared CL slope (theta_lung/liver = 1.17 vs theta_kidney = 1.68).",
-      source_name        = "graft_type"
+      notes = "Time-fixed per subject. Perrottet 2009 cohort: 12/65 patients (18%). Pooled with liver recipients under a shared CL slope (theta_lung/liver = 1.17 vs theta_kidney = 1.68).",
+      source_name = "graft_type"
     ),
     TX_LIVER = list(
-      description        = "Liver-transplant recipient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Liver-transplant recipient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = non-liver solid-organ graft (kidney, heart, or lung)",
-      notes              = "Time-fixed per subject. Perrottet 2009 cohort: 2/65 patients (3%). Pooled with lung recipients under a shared CL slope (theta_lung/liver = 1.17 vs theta_kidney = 1.68).",
-      source_name        = "graft_type"
+      notes = "Time-fixed per subject. Perrottet 2009 cohort: 2/65 patients (3%). Pooled with lung recipients under a shared CL slope (theta_lung/liver = 1.17 vs theta_kidney = 1.68).",
+      source_name = "graft_type"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 65,
-    n_studies      = 1,
-    age_range      = "18-70 years (median 55)",
-    weight_range   = "46-115 kg (median 72)",
+    species = "human",
+    n_subjects = 65,
+    n_studies = 1,
+    age_range = "18-70 years (median 55)",
+    weight_range = "46-115 kg (median 72)",
     sex_female_pct = 31,
-    disease_state  = "Adult solid-organ transplant recipients receiving oral valganciclovir for CMV prophylaxis or treatment, or intravenous ganciclovir for CMV disease.",
+    disease_state = "Adult solid-organ transplant recipients receiving oral valganciclovir for CMV prophylaxis or treatment, or intravenous ganciclovir for CMV disease.",
     graft_breakdown = "Kidney 41 (63%), heart 10 (15%), lung 12 (18%), liver 2 (3%).",
-    serostatus     = "CMV D+/R- 22 (34%), D+/R+ 28 (43%), D-/R+ 15 (23%).",
+    serostatus = "CMV D+/R- 22 (34%), D+/R+ 28 (43%), D-/R+ 15 (23%).",
     renal_function = "Wide range; cohort serum creatinine 29-691 umol/L (median 108); Cockroft-Gault GFR 10-170 mL/min reported in Discussion.",
-    dose_range     = "Oral valganciclovir 450 mg or 900 mg QD (prophylaxis) up to 900 mg BID (treatment), each adjusted to renal function. Intravenous ganciclovir 5 mg/kg Q12H in two patients.",
-    regions        = "Switzerland (single-centre study: University Hospitals of Lausanne and Geneva).",
-    n_samples      = 437,
-    notes          = "Perrottet 2009 Table 1. Comorbidities included cardiopathy (19/65), overweight (9/65), and cystic fibrosis (1/65). Concomitant medications evaluated as covariates (none retained): calcineurin inhibitors, mycophenolate, cotrimoxazole, OAT inhibitors."
+    dose_range = "Oral valganciclovir 450 mg or 900 mg QD (prophylaxis) up to 900 mg BID (treatment), each adjusted to renal function. Intravenous ganciclovir 5 mg/kg Q12H in two patients.",
+    regions = "Switzerland (single-centre study: University Hospitals of Lausanne and Geneva).",
+    n_samples = 437,
+    notes = "Perrottet 2009 Table 1. Comorbidities included cardiopathy (19/65), overweight (9/65), and cystic fibrosis (1/65). Concomitant medications evaluated as covariates (none retained): calcineurin inhibitors, mycophenolate, cotrimoxazole, OAT inhibitors."
   )
 
   ini({

@@ -9,44 +9,44 @@ Maranchick_2026_ethambutol <- function() {
   # ('Study design': oral dosing; 'blood samples ... plasma aliquoted' and
   # quantified by LC-MS/MS).
   compartmentData <- list(
-    depot       = list(analyte = "ethambutol", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "ethambutol", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with estimated exponents on CL/F (0.70) and V1/F (0.62), normalised to a 15.1 kg reference weight, per Maranchick 2026 Results 'Ethambutol' paragraph 1: 'Cl/F: Cl/F*(Weight/15.1)^0.7 and V1/F: V1/F*(Weight/15.1)^0.62'. The paper reports no weight exponent on Q/F or V2/F, so those two parameters are left unscaled here; see the vignette Errata. The 15.1 kg normalisation constant is the value printed by the paper; it is close to but not identical to the cohort median weight of 16 kg (Table 1). Cohort weight range 4-60 kg.",
-      source_name        = "Weight"
+      notes = "Allometric scaling with estimated exponents on CL/F (0.70) and V1/F (0.62), normalised to a 15.1 kg reference weight, per Maranchick 2026 Results 'Ethambutol' paragraph 1: 'Cl/F: Cl/F*(Weight/15.1)^0.7 and V1/F: V1/F*(Weight/15.1)^0.62'. The paper reports no weight exponent on Q/F or V2/F, so those two parameters are left unscaled here; see the vignette Errata. The 15.1 kg normalisation constant is the value printed by the paper; it is close to but not identical to the cohort median weight of 16 kg (Table 1). Cohort weight range 4-60 kg.",
+      source_name = "Weight"
     ),
     HIV_POS = list(
-      description        = "HIV coinfection status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HIV coinfection status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HIV-negative; children with TB alone)",
-      notes              = "1 = TB/HIV coinfected, 0 = TB only. Time-fixed per subject. Applied as an exponential effect on apparent clearance: cl = cl_typ * exp(e_hiv_pos_cl * HIV_POS) with e_hiv_pos_cl = 0.22 (Maranchick 2026 Table 2, row 'Exponent, HIV+ on Cl/F'). exp(0.22) - 1 = 0.246, matching the Results statement that children with TB/HIV had clearance 25% faster than HIV-negative children. Adding HIV status dropped the objective function by 17 points. HIV medications were tested separately and did not enhance the model; lopinavir/ritonavir, which affected ethambutol in Tikiso et al., was used by only four participants here.",
-      source_name        = "HIV+"
+      notes = "1 = TB/HIV coinfected, 0 = TB only. Time-fixed per subject. Applied as an exponential effect on apparent clearance: cl = cl_typ * exp(e_hiv_pos_cl * HIV_POS) with e_hiv_pos_cl = 0.22 (Maranchick 2026 Table 2, row 'Exponent, HIV+ on Cl/F'). exp(0.22) - 1 = 0.246, matching the Results statement that children with TB/HIV had clearance 25% faster than HIV-negative children. Adding HIV status dropped the objective function by 17 points. HIV medications were tested separately and did not enhance the model; lopinavir/ritonavir, which affected ethambutol in Tikiso et al., was used by only four participants here.",
+      source_name = "HIV+"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 84L,
-    n_studies        = 1L,
-    age_range        = "0.3-14.5 years (median 5.0); 49.4% under 5 years, 18.8% under 2 years",
-    age_median       = "5.0 years",
-    weight_range     = "4-60 kg (median 16)",
-    weight_median    = "16 kg",
-    sex_female_pct   = 38.8,
+    species = "human",
+    n_subjects = 84L,
+    n_studies = 1L,
+    age_range = "0.3-14.5 years (median 5.0); 49.4% under 5 years, 18.8% under 2 years",
+    age_median = "5.0 years",
+    weight_range = "4-60 kg (median 16)",
+    weight_median = "16 kg",
+    sex_female_pct = 38.8,
     hiv_positive_pct = 51.8,
-    disease_state    = "Children with drug-susceptible tuberculosis, with TB alone or with TB/HIV coinfection. 24 (28.2%) of the enrolled 85 were malnourished (body-mass-index-for-age Z score below -2 SD). Of the TB/HIV participants, 65.9% received efavirenz-based antiretroviral therapy.",
-    dose_range       = "Ethambutol 20 mg/kg once daily (WHO target range 15-25 mg/kg); administered median 21.4 mg/kg (range 14.3-34.2) as part of the first-line HRZE regimen. Children under 25 kg received single dispersible EMB 100 mg tablets alongside dispersible HRZ; children 25 kg and over received adult HRZE 75/150/400/275 mg tablets.",
-    regions          = "Ghana (Komfo Anokye Teaching Hospital, Kumasi).",
-    notes            = "Two-arm PK study, enrolment February 2019 to June 2021, children 3 months to 14 years. PK sampling on one occasion after at least 4 weeks of HRZE therapy (steady state), with blood drawn at 0 (pre-dose), 1, 2, 4, 8 and 12 h post-dose after an overnight fast. 501 samples from 84 participants entered the final EMB model: one TB/HIV participant was removed because all samples were below or near the limit of quantification (suggesting a missed dose or post-dose vomiting), and six further samples were removed as apparently mislabelled out of order. LC-MS/MS quantification range 0.05-10 mg/L. Fitted in Monolix2024R1 by SAEM; a lognormal distribution was assumed for all parameters. A maturation function on clearance, inter-occasion variability and HIV-medication covariates were each tested and did not improve model fit. Demographics from Table 1 (whole cohort, n = 85); parameter estimates from Table 2."
+    disease_state = "Children with drug-susceptible tuberculosis, with TB alone or with TB/HIV coinfection. 24 (28.2%) of the enrolled 85 were malnourished (body-mass-index-for-age Z score below -2 SD). Of the TB/HIV participants, 65.9% received efavirenz-based antiretroviral therapy.",
+    dose_range = "Ethambutol 20 mg/kg once daily (WHO target range 15-25 mg/kg); administered median 21.4 mg/kg (range 14.3-34.2) as part of the first-line HRZE regimen. Children under 25 kg received single dispersible EMB 100 mg tablets alongside dispersible HRZ; children 25 kg and over received adult HRZE 75/150/400/275 mg tablets.",
+    regions = "Ghana (Komfo Anokye Teaching Hospital, Kumasi).",
+    notes = "Two-arm PK study, enrolment February 2019 to June 2021, children 3 months to 14 years. PK sampling on one occasion after at least 4 weeks of HRZE therapy (steady state), with blood drawn at 0 (pre-dose), 1, 2, 4, 8 and 12 h post-dose after an overnight fast. 501 samples from 84 participants entered the final EMB model: one TB/HIV participant was removed because all samples were below or near the limit of quantification (suggesting a missed dose or post-dose vomiting), and six further samples were removed as apparently mislabelled out of order. LC-MS/MS quantification range 0.05-10 mg/L. Fitted in Monolix2024R1 by SAEM; a lognormal distribution was assumed for all parameters. A maturation function on clearance, inter-occasion variability and HIV-medication covariates were each tested and did not improve model fit. Demographics from Table 1 (whole cohort, n = 85); parameter estimates from Table 2."
   )
 
   ini({

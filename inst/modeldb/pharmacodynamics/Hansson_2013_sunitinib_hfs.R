@@ -36,65 +36,65 @@ Hansson_2013_sunitinib_hfs <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     svegfr3 = list(analyte = "sVEGFR-3", units = "mg", specimen = "plasma", verified = FALSE),
-    bm      = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE)
+    bm = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Hansson 2013 e85 Methods describes sunitinib at 25-75 mg PO QD on 4/2, 2/2, 2/1, or continuous schedules. For typical-cohort vignette simulations the value is held at 50 mg during on-cycles of a 4/2 schedule.",
-      source_name        = "DOSE"
+      notes = "Hansson 2013 e85 Methods describes sunitinib at 25-75 mg PO QD on 4/2, 2/2, 2/1, or continuous schedules. For typical-cohort vignette simulations the value is held at 50 mg during on-cycles of a 4/2 schedule.",
+      source_name = "DOSE"
     ),
     CLI = list(
-      description        = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit. Per-subject, time-fixed.",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit. Per-subject, time-fixed.",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The companion Hansson_2013a / Hansson_2013c sunitinib model files use a typical-value reference of 32.819 L/h.",
-      source_name        = "CL"
+      notes = "Required input. The companion Hansson_2013a / Hansson_2013c sunitinib model files use a typical-value reference of 32.819 L/h.",
+      source_name = "CL"
     ),
     BAS_SVEGFR3 = list(
-      description        = "Individual posthoc baseline sVEGFR-3 (pg/mL) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; used as the initial condition for the in-model svegfr3 state and as the denominator in the relative-change driver bm_input = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3.",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Individual posthoc baseline sVEGFR-3 (pg/mL) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; used as the initial condition for the in-model svegfr3 state and as the denominator in the relative-change driver bm_input = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3.",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. Hansson 2013 e84 reports a typical sVEGFR-3 baseline of 63900 pg/mL.",
-      source_name        = "BAS3"
+      notes = "Required input. Hansson 2013 e84 reports a typical sVEGFR-3 baseline of 63900 pg/mL.",
+      source_name = "BAS3"
     ),
     MRT_SVEGFR3 = list(
-      description        = "Individual posthoc mean residence time of sVEGFR-3 (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; used as kout3 = 1 / MRT_SVEGFR3 inside model().",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual posthoc mean residence time of sVEGFR-3 (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; used as kout3 = 1 / MRT_SVEGFR3 inside model().",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013a typical sVEGFR-3 MRT is 401 h.",
-      source_name        = "MRT3"
+      notes = "Required input. The Hansson 2013a typical sVEGFR-3 MRT is 401 h.",
+      source_name = "MRT3"
     ),
     EC50_SVEGFR3 = list(
-      description        = "Individual posthoc EC50 of the simple-Imax drug effect on sVEGFR-3 (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; appears in the drug-effect term eff3 = auc / (EC50_SVEGFR3 + auc).",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Individual posthoc EC50 of the simple-Imax drug effect on sVEGFR-3 (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197). Per-subject, time-fixed; appears in the drug-effect term eff3 = auc / (EC50_SVEGFR3 + auc).",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013a typical IC50 is 1.0 mg*h/L.",
-      source_name        = "EC53"
+      notes = "Required input. The Hansson 2013a typical IC50 is 1.0 mg*h/L.",
+      source_name = "EC53"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 303L,
-    n_studies      = 4L,
-    age_range      = "adults with imatinib-resistant GIST (paper text reports n=303 pooled across phases I-III; per-cohort baseline-demographics table not in the trimmed PDF section)",
-    weight_range   = "not reported in the on-disk trimmed paper text",
+    species = "human",
+    n_subjects = 303L,
+    n_studies = 4L,
+    age_range = "adults with imatinib-resistant GIST (paper text reports n=303 pooled across phases I-III; per-cohort baseline-demographics table not in the trimmed PDF section)",
+    weight_range = "not reported in the on-disk trimmed paper text",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies (Demetri 2006, George 2009, Shirao 2010, Maki 2005).",
-    dose_range     = "sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 or continuous schedule (Table 1).",
-    regions        = "multinational (study 1004) and Japanese (study 1045).",
-    biomarkers     = "HFS grade per NCI-CTC v3 (ordinal: 0 = none, 1, 2, 3+ = grouped with grade 4 due to rare grade 4 events per paper Methods). Observed grade distribution per study: study 1004 (0: 83%, 1: 5.0%, 2: 6.9%, 3: 5.4%); study 1047 (0: 100%); study 1045 (0: 14%, 1: 20%, 2: 34%, 3: 31%); study 013 (NA). The upstream sVEGFR-3 biomarker dynamics are consumed as data covariates (BAS_SVEGFR3 + MRT_SVEGFR3 + EC50_SVEGFR3) rather than re-fitted.",
-    notes          = "n_subjects = 303 reported in Hansson 2013 e85 Methods. Per-cohort baseline demographics are not transcribed in the trimmed paper text. HFS grade 4 was reported in 0% of patients (Methods) so was grouped with grade 3 into a single category."
+    disease_state = "imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies (Demetri 2006, George 2009, Shirao 2010, Maki 2005).",
+    dose_range = "sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 or continuous schedule (Table 1).",
+    regions = "multinational (study 1004) and Japanese (study 1045).",
+    biomarkers = "HFS grade per NCI-CTC v3 (ordinal: 0 = none, 1, 2, 3+ = grouped with grade 4 due to rare grade 4 events per paper Methods). Observed grade distribution per study: study 1004 (0: 83%, 1: 5.0%, 2: 6.9%, 3: 5.4%); study 1047 (0: 100%); study 1045 (0: 14%, 1: 20%, 2: 34%, 3: 31%); study 013 (NA). The upstream sVEGFR-3 biomarker dynamics are consumed as data covariates (BAS_SVEGFR3 + MRT_SVEGFR3 + EC50_SVEGFR3) rather than re-fitted.",
+    notes = "n_subjects = 303 reported in Hansson 2013 e85 Methods. Per-cohort baseline demographics are not transcribed in the trimmed paper text. HFS grade 4 was reported in 0% of patients (Methods) so was grouped with grade 3 into a single category."
   )
 
   ini({

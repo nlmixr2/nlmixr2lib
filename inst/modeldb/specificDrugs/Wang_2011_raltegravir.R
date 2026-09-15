@@ -44,24 +44,24 @@ Wang_2011_raltegravir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
     transit1 = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
     transit2 = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "raltegravir", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "raltegravir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 6L,
-    n_studies      = 1L,
-    age_range      = "31-36 years",
-    age_median     = "33.5 years",
-    weight_range   = "56.5-87.1 kg",
-    weight_median  = "67.4 kg",
+    species = "human",
+    n_subjects = 6L,
+    n_studies = 1L,
+    age_range = "31-36 years",
+    age_median = "33.5 years",
+    weight_range = "56.5-87.1 kg",
+    weight_median = "67.4 kg",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy male volunteers (HIV-negative). Inclusion required",
       "smoking <10 cigarettes/day, hemoglobin >10.9 g/dl, platelet count",
       ">=125,000/mm^3, creatinine clearance >=60 mL/min, and lipase or",
@@ -70,7 +70,7 @@ Wang_2011_raltegravir <- function() {
       "chlorpheniramine / multivitamins were excluded.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 400 mg raltegravir orally with water under fasted",
       "conditions on study day 1. Paired blood samples for plasma and",
       "PBMC were collected predose (0 h) and at 4, 8, 12, 24, and 48 h",
@@ -79,9 +79,9 @@ Wang_2011_raltegravir <- function() {
       "computed assuming a cell volume of 0.4 pL.",
       sep = " "
     ),
-    regions        = "Singapore (single centre, National University Health System)",
+    regions = "Singapore (single centre, National University Health System)",
     age_eligibility = "21-65 years",
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Wang 2011 Results, 'Study population",
       "and safety' (page 4090) and 'Pharmacokinetic parameters' (page",
       "4091). Final population pharmacokinetic estimates are reported",

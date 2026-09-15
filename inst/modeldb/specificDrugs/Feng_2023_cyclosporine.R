@@ -14,11 +14,11 @@ Feng_2023_cyclosporine <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power scaling on both CL and V, normalised to the 16.5 kg cohort",
         "median (Feng 2023 Eq. 7 and Eq. 8; Table 1 reports body weight",
         "median 16.5 kg, range 8.0-64.5 kg). Baseline body weight; the paper",
@@ -27,14 +27,14 @@ Feng_2023_cyclosporine <- function() {
         "body weight were collinear and that body weight alone was kept in",
         "the final model."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     HCT = list(
-      description        = "Haematocrit",
-      units              = "%",
-      type               = "continuous",
+      description = "Haematocrit",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power scaling on V only, normalised to 28.8 % (Feng 2023 Eq. 8).",
         "The paper prints haematocrit on the percent scale throughout",
         "(Table 1 median 27.0 %, range 5.0-37.5 %; Figure 5 simulates 10 %,",
@@ -48,7 +48,7 @@ Feng_2023_cyclosporine <- function() {
         "erythrocyte-partitioned drug to bind, increasing distribution into",
         "fat and hence the apparent volume (Feng 2023 Discussion)."
       ),
-      source_name        = "HCT"
+      source_name = "HCT"
     )
   )
 
@@ -61,63 +61,152 @@ Feng_2023_cyclosporine <- function() {
   # negative finding forward; they are documentation only and are not
   # referenced in model().
   covariatesDataExcluded <- list(
-    AGE   = list(description = "Age", units = "years", type = "continuous",
-                 notes = "Table 1 median 6 years (range 1-17). Screened; dropped for collinearity with body weight (Discussion)."),
-    SEXF  = list(description = "Female sex indicator", units = "(binary)", type = "binary",
-                 reference_category = "male", notes = "Table 1: 89/251 female (35.5 %). Screened, not significant."),
-    ALB   = list(description = "Serum albumin", units = "g/L", type = "continuous",
-                 notes = "Table 1 median 36.9 g/L (28.1-44.1). Screened, not significant."),
-    TBILI = list(description = "Total bilirubin", units = "umol/L", type = "continuous",
-                 notes = "Table 1 median 16.0 umol/L (3.6-105.1). Screened, not significant."),
-    DBIL  = list(description = "Direct bilirubin", units = "umol/L", type = "continuous",
-                 notes = "Table 1 median 6.1 umol/L (0.9-82.7). Screened, not significant."),
-    ALT   = list(description = "Alanine aminotransferase", units = "U/L", type = "continuous",
-                 notes = "Table 1 median 51 U/L (3-1120). Screened, not significant."),
-    AST   = list(description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
-                 notes = "Table 1 median 26 U/L (1-606). Screened, not significant."),
-    ALP   = list(description = "Alkaline phosphatase", units = "U/L", type = "continuous",
-                 notes = "Table 1 median 119 U/L (46-291). Screened, not significant."),
-    CRP   = list(description = "Hypersensitive C-reactive protein", units = "mg/L", type = "continuous",
-                 notes = "Table 1 median 7.00 mg/L (0.20-263.40). Screened, not significant."),
-    HGB   = list(description = "Haemoglobin", units = "g/L", type = "continuous",
-                 notes = "Table 1 median 94 g/L (60-124). Screened, not significant; collinear with the retained HCT."),
-    RBC   = list(description = "Red blood cell count", units = "10^12/L", type = "continuous",
-                 notes = "Table 1 median 3.32 (2.12-5.28). Screened, not significant; collinear with the retained HCT."),
-    PLT   = list(description = "Platelet count", units = "10^9/L", type = "continuous",
-                 notes = "Table 1 median 24 (2-180). Screened, not significant."),
-    SNP_ABCB1_RS1045642  = list(description = "ABCB1 rs1045642 (3435C>T) genotype", units = "(genotype)", type = "categorical",
-                                reference_category = "GG", notes = "Table 2 genotype frequencies AA 0.15 / GA 0.43 / GG 0.42. Screened, not significant."),
-    SNP_ABCB1_RS1128503  = list(description = "ABCB1 rs1128503 (1236C>T) genotype", units = "(genotype)", type = "categorical",
-                                reference_category = "GG", notes = "Table 2 genotype frequencies AA 0.34 / AG 0.49 / GG 0.17. Screened, not significant."),
-    SNP_ABCB1_RS34800935 = list(description = "ABCB1 rs34800935 genotype", units = "(genotype)", type = "categorical",
-                                reference_category = "CC", notes = "Table 2 genotype frequencies CC 0.15 / TC 0.52 / TT 0.33. Screened, not significant."),
-    SNP_ABCB1_RS3842     = list(description = "ABCB1 rs3842 genotype", units = "(genotype)", type = "categorical",
-                                reference_category = "CC", notes = "Table 2 genotype frequencies CC 0.09 / TC 0.44 / TT 0.47. Screened, not significant."),
-    SNP_CYP3A4_RS2242480 = list(description = "CYP3A4*1G (rs2242480) genotype", units = "(genotype)", type = "categorical",
-                                reference_category = "CC", notes = "Table 2 genotype frequencies CC 0.50 / CT 0.43 / TT 0.08. Screened, not significant."),
-    SNP_CYP3A5_RS776746  = list(description = "CYP3A5*3 (rs776746) genotype", units = "(genotype)", type = "categorical",
-                                reference_category = "CC", notes = "Table 2 genotype frequencies CC 0.52 / CT 0.38 / TT 0.10. Screened, not significant."),
-    SNP_POR_RS17685      = list(description = "POR rs17685 genotype", units = "(genotype)", type = "categorical",
-                                reference_category = "GG", notes = "Table 2 genotype frequencies AA 0.12 / GA 0.52 / GG 0.37. Screened, not significant."),
-    SNP_NR1I3_RS2307424  = list(description = "NR1I3 (CAR) rs2307424 genotype", units = "(genotype)", type = "categorical",
-                                reference_category = "GG", notes = "Table 2 genotype frequencies AA 0.27 / AG 0.47 / GG 0.26. Screened, not significant.")
+    AGE = list(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Table 1 median 6 years (range 1-17). Screened; dropped for collinearity with body weight (Discussion)."
+    ),
+    SEXF = list(
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
+      reference_category = "male",
+      notes = "Table 1: 89/251 female (35.5 %). Screened, not significant."
+    ),
+    ALB = list(
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Table 1 median 36.9 g/L (28.1-44.1). Screened, not significant."
+    ),
+    TBILI = list(
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Table 1 median 16.0 umol/L (3.6-105.1). Screened, not significant."
+    ),
+    DBIL = list(
+      description = "Direct bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Table 1 median 6.1 umol/L (0.9-82.7). Screened, not significant."
+    ),
+    ALT = list(
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Table 1 median 51 U/L (3-1120). Screened, not significant."
+    ),
+    AST = list(
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Table 1 median 26 U/L (1-606). Screened, not significant."
+    ),
+    ALP = list(
+      description = "Alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Table 1 median 119 U/L (46-291). Screened, not significant."
+    ),
+    CRP = list(
+      description = "Hypersensitive C-reactive protein",
+      units = "mg/L",
+      type = "continuous",
+      notes = "Table 1 median 7.00 mg/L (0.20-263.40). Screened, not significant."
+    ),
+    HGB = list(
+      description = "Haemoglobin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Table 1 median 94 g/L (60-124). Screened, not significant; collinear with the retained HCT."
+    ),
+    RBC = list(
+      description = "Red blood cell count",
+      units = "10^12/L",
+      type = "continuous",
+      notes = "Table 1 median 3.32 (2.12-5.28). Screened, not significant; collinear with the retained HCT."
+    ),
+    PLT = list(
+      description = "Platelet count",
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Table 1 median 24 (2-180). Screened, not significant."
+    ),
+    SNP_ABCB1_RS1045642 = list(
+      description = "ABCB1 rs1045642 (3435C>T) genotype",
+      units = "(genotype)",
+      type = "categorical",
+      reference_category = "GG",
+      notes = "Table 2 genotype frequencies AA 0.15 / GA 0.43 / GG 0.42. Screened, not significant."
+    ),
+    SNP_ABCB1_RS1128503 = list(
+      description = "ABCB1 rs1128503 (1236C>T) genotype",
+      units = "(genotype)",
+      type = "categorical",
+      reference_category = "GG",
+      notes = "Table 2 genotype frequencies AA 0.34 / AG 0.49 / GG 0.17. Screened, not significant."
+    ),
+    SNP_ABCB1_RS34800935 = list(
+      description = "ABCB1 rs34800935 genotype",
+      units = "(genotype)",
+      type = "categorical",
+      reference_category = "CC",
+      notes = "Table 2 genotype frequencies CC 0.15 / TC 0.52 / TT 0.33. Screened, not significant."
+    ),
+    SNP_ABCB1_RS3842 = list(
+      description = "ABCB1 rs3842 genotype",
+      units = "(genotype)",
+      type = "categorical",
+      reference_category = "CC",
+      notes = "Table 2 genotype frequencies CC 0.09 / TC 0.44 / TT 0.47. Screened, not significant."
+    ),
+    SNP_CYP3A4_RS2242480 = list(
+      description = "CYP3A4*1G (rs2242480) genotype",
+      units = "(genotype)",
+      type = "categorical",
+      reference_category = "CC",
+      notes = "Table 2 genotype frequencies CC 0.50 / CT 0.43 / TT 0.08. Screened, not significant."
+    ),
+    SNP_CYP3A5_RS776746 = list(
+      description = "CYP3A5*3 (rs776746) genotype",
+      units = "(genotype)",
+      type = "categorical",
+      reference_category = "CC",
+      notes = "Table 2 genotype frequencies CC 0.52 / CT 0.38 / TT 0.10. Screened, not significant."
+    ),
+    SNP_POR_RS17685 = list(
+      description = "POR rs17685 genotype",
+      units = "(genotype)",
+      type = "categorical",
+      reference_category = "GG",
+      notes = "Table 2 genotype frequencies AA 0.12 / GA 0.52 / GG 0.37. Screened, not significant."
+    ),
+    SNP_NR1I3_RS2307424 = list(
+      description = "NR1I3 (CAR) rs2307424 genotype",
+      units = "(genotype)",
+      type = "categorical",
+      reference_category = "GG",
+      notes = "Table 2 genotype frequencies AA 0.27 / AG 0.47 / GG 0.26. Screened, not significant."
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 251L,
-    n_studies      = 1L,
-    age_range      = "1-17 years",
-    age_median     = "6 years",
-    weight_range   = "8.0-64.5 kg",
-    weight_median  = "16.5 kg",
+    species = "human",
+    n_subjects = 251L,
+    n_studies = 1L,
+    age_range = "1-17 years",
+    age_median = "6 years",
+    weight_range = "8.0-64.5 kg",
+    weight_median = "16.5 kg",
     sex_female_pct = 35.5,
     race_ethnicity = "Chinese (single-centre cohort, Guangzhou)",
-    disease_state  = "Paediatric recipients of allogeneic haematopoietic stem cell transplantation receiving cyclosporine A for acute graft-versus-host disease prophylaxis; 183/251 (72.9 %) beta-thalassaemia, 68/251 (27.1 %) other indications",
-    dose_range     = "Intravenous infusion, usually 3 mg/kg/day divided every 12 h starting on day 1 of transplantation; beta-thalassaemia patients commonly started 1.5 mg/kg/day every 12 h from 10 days before transplantation and were escalated to 3 mg/kg/day on day 1. Doses were then adjusted by therapeutic drug monitoring to a trough of 150-200 ng/mL.",
-    regions        = "Guangzhou, Guangdong, China (Guangzhou Women and Children's Medical Center)",
+    disease_state = "Paediatric recipients of allogeneic haematopoietic stem cell transplantation receiving cyclosporine A for acute graft-versus-host disease prophylaxis; 183/251 (72.9 %) beta-thalassaemia, 68/251 (27.1 %) other indications",
+    dose_range = "Intravenous infusion, usually 3 mg/kg/day divided every 12 h starting on day 1 of transplantation; beta-thalassaemia patients commonly started 1.5 mg/kg/day every 12 h from 10 days before transplantation and were escalated to 3 mg/kg/day on day 1. Doses were then adjusted by therapeutic drug monitoring to a trough of 150-200 ng/mL.",
+    regions = "Guangzhou, Guangdong, China (Guangzhou Women and Children's Medical Center)",
     n_observations = 865L,
-    notes          = paste(
+    notes = paste(
       "Retrospective single-centre analysis, January 2016 to December 2020,",
       "registered as ChiCTR2000040561. 865 whole-blood cyclosporine trough",
       "concentrations (Table 1 median C0 117.2 ng/mL, range 46.3-445.4)",

@@ -17,15 +17,20 @@ Sun_2025_paclitaxel <- function() {
   # biological matrix. verified = TRUE: analyte and specimen checked against
   # Figure 2 (model schematic) and Methods 2.1/2.4 of the source paper.
   compartmentData <- list(
-    central     = list(analyte = "paclitaxel", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "paclitaxel", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "paclitaxel", units = "mg", specimen = "plasma", verified = TRUE),
     # The effect compartment is a latent kinetic state, not a biological
     # matrix. Table 2's footnote labels its value in ng/mL ("The effect
     # compartment concentration across individual is 1.56 +/- 1.18 ng/mL"),
     # which is the paper's own label; see the dimensional note on `lke0` in
     # ini() and the vignette Errata.
-    effect      = list(analyte = "paclitaxel", units = "ng/mL", specimen = "not applicable", verified = TRUE),
-    cipn8       = list(analyte = "EORTC QLQ-CIPN20 sensory subscale score (CIPN8)", units = "score", specimen = "not applicable", verified = TRUE)
+    effect = list(analyte = "paclitaxel", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    cipn8 = list(
+      analyte = "EORTC QLQ-CIPN20 sensory subscale score (CIPN8)",
+      units = "score",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   # No covariate effects were retained in the final model: Table 2 reports only
@@ -36,17 +41,17 @@ Sun_2025_paclitaxel <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 60,
-    n_studies      = 1,
-    age_range      = "28-71 years",
-    age_median     = "52.30 years (mean)",
+    species = "human",
+    n_subjects = 60,
+    n_studies = 1,
+    age_range = "28-71 years",
+    age_median = "52.30 years (mean)",
     sex_female_pct = 100,
     race_ethnicity = c(White = 93.3, Black = 3.3, Asian = 3.3),
-    disease_state  = "stage I-III or oligometastatic breast cancer",
-    dose_range     = "80 mg/m2 IV weekly for 12 weeks (1-h infusion; 90-min for the first dose)",
-    regions        = "United States (University of Michigan Rogel Cancer Center)",
-    notes          = paste(
+    disease_state = "stage I-III or oligometastatic breast cancer",
+    dose_range = "80 mg/m2 IV weekly for 12 weeks (1-h infusion; 90-min for the first dose)",
+    regions = "United States (University of Michigan Rogel Cancer Center)",
+    notes = paste(
       "UMCC2014.002 observational study (NCT02338115); 65 enrolled, 60 analysed after 5",
       "exclusions for withdrawal or protocol violation (Results 3.1). Baseline demographics,",
       "dosing and exposure summarised in Table 1: mean Cmax 2364.16 ng/mL (range 907-4340),",

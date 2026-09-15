@@ -21,8 +21,8 @@ Taubert_2016_linezolid <- function() {
   )
   vignette <- "Taubert_2016_linezolid"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -30,106 +30,106 @@ Taubert_2016_linezolid <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "linezolid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "linezolid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "linezolid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-of-ratio scaling on Vc (exponent 1.31) with reference 76 kg",
         "(patient-group-1 median, Taubert 2016 Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     FIB = list(
-      description        = "Plasma fibrinogen concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Plasma fibrinogen concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-of-ratio scaling on CL (exponent 0.04) with reference",
         "13.0 umol/L (patient-group-1 median, Taubert 2016 Table 1).",
         "Time-varying covariate updated daily in the source data."
       ),
-      source_name        = "Fibrinogen"
+      source_name = "Fibrinogen"
     ),
     LACT = list(
-      description        = "Serum lactate concentration",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Serum lactate concentration",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-of-ratio scaling on CL (exponent -0.21) with reference",
         "1.91 mmol/L (patient-group-1 median, Taubert 2016 Table 1).",
         "Time-varying covariate updated daily in the source data."
       ),
-      source_name        = "Lactate"
+      source_name = "Lactate"
     ),
     DIS_ARDS = list(
-      description        = paste(
+      description = paste(
         "Acute respiratory distress syndrome status:",
         "1 = ARDS present, 0 = no ARDS."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "no ARDS = 0",
-      notes              = paste(
+      notes = paste(
         "Multiplicative factor on CL (1.82 when ARDS = 1, Taubert 2016",
         "page 5256). Time-varying covariate updated daily in the source",
         "data; ARDS was present in 15 of 52 patients (29 %) at baseline."
       ),
-      source_name        = "ARDS"
+      source_name = "ARDS"
     ),
     DIS_PERIT = list(
-      description        = paste(
+      description = paste(
         "Peritonitis status: 1 = peritonitis present, 0 = no peritonitis."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "no peritonitis = 0",
-      notes              = paste(
+      notes = paste(
         "Multiplicative factor on Vc (1.53 when peritonitis = 1, Taubert",
         "2016 page 5256). Peritonitis was present in 9 of 52 patients",
         "(17 %) at baseline."
       ),
-      source_name        = "Peritonitis"
+      source_name = "Peritonitis"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 52L,
-    n_studies      = 1L,
-    age_range      = "28-84 years",
-    age_median     = "58 years",
-    weight_range   = "44-120 kg",
-    weight_median  = "76 kg",
+    species = "human",
+    n_subjects = 52L,
+    n_studies = 1L,
+    age_range = "28-84 years",
+    age_median = "58 years",
+    weight_range = "44-120 kg",
+    weight_median = "76 kg",
     sex_female_pct = 36.5,
     race_ethnicity = "Not reported (single-centre German ICU cohort)",
-    disease_state  = paste(
+    disease_state = paste(
       "Medical-surgical critically ill adults with clinically suspected or",
       "confirmed severe infections; principal infection sites pneumonia",
       "(67 %), peritonitis (17 %) and other; subgroups with ARDS (29 %),",
       "peritonitis (17 %), liver transplantation (13 %) and lung",
       "transplantation (29 %)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Linezolid 600 mg b.i.d., short-duration intravenous infusion",
       "(10-120 min) or oral; before day 1, patients had received 0 to 4",
       "linezolid doses."
     ),
-    regions        = paste(
+    regions = paste(
       "Single centre at the Department of Anesthesiology, Hospital of the",
       "Ludwig Maximilians University of Munich, Germany",
       "(ClinicalTrials.gov NCT01793012)."
     ),
-    notes          = paste(
+    notes = paste(
       "Patient group 1 (n = 52) is the linezolid PK fit cohort; patient",
       "group 2 (n = 134, treated with meropenem, piperacillin-tazobactam,",
       "cefepime or ciprofloxacin) supplied covariate values for the 67 000-",

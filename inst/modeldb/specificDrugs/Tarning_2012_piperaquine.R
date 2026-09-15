@@ -34,30 +34,30 @@ Tarning_2012_piperaquine <- function() {
     sep = " "
   )
   vignette <- "Tarning_2012_dihydroartemisinin_piperaquine"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit5    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     PREG = list(
-      description        = "Pregnancy status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = pregnant (second or third trimester), 0 = non-pregnant.",
         "Time-fixed per subject. Tarning 2012 enrolled 24 pregnant women",
         "(estimated gestational age 13.1-33.4 weeks, median 25.3) and 24",
@@ -68,19 +68,19 @@ Tarning_2012_piperaquine <- function() {
         "= non-pregnant.",
         sep = " "
       ),
-      source_name        = "PREG"
+      source_name = "PREG"
     ),
     OCC = list(
-      description        = paste(
+      description = paste(
         "Integer-valued dose-occasion indicator for between-occasion",
         "variability on mean transit time (MTT) and relative",
         "bioavailability (F). Values 1, 2, 3 identify the three",
         "consecutive daily doses (0, 24, and 48 h post-treatment-start)."
       ),
-      units              = "(count)",
-      type               = "categorical",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Decomposed inside model() into binary indicators oc1, oc2, oc3",
         "that multiplex the BOV etas on MTT and on F (lfdepot).",
         "Tarning 2012 Results 'Pharmacokinetics of piperaquine':",
@@ -98,19 +98,19 @@ Tarning_2012_piperaquine <- function() {
         "OCC = 2 between dose 2 and dose 3, and OCC = 3 after dose 3.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 48L,
-    n_pregnant      = 24L,
-    n_studies       = 1L,
-    age_range       = "18-45 years (Table 1; median 25 pregnant, 27.5 non-pregnant)",
-    weight_range    = "36-78 kg (Table 1; median 51 pregnant, 48 non-pregnant)",
-    sex_female_pct  = 100,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 48L,
+    n_pregnant = 24L,
+    n_studies = 1L,
+    age_range = "18-45 years (Table 1; median 25 pregnant, 27.5 non-pregnant)",
+    weight_range = "36-78 kg (Table 1; median 51 pregnant, 48 non-pregnant)",
+    sex_female_pct = 100,
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria (or mixed P. falciparum +",
       "P. vivax) in pregnant women in their second or third trimester (GA",
       "13.1-33.4 weeks, median 25.3) and age- and parasitaemia-matched",
@@ -119,7 +119,7 @@ Tarning_2012_piperaquine <- function() {
       "women (Table 1).",
       sep = " "
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Holleypharm fixed-dose dihydroartemisinin-piperaquine tablet (40 mg",
       "dihydroartemisinin + 320 mg piperaquine tetraphosphate equivalent",
       "to 184 mg base per tablet); once daily by mouth for 3 days at 0,",
@@ -128,8 +128,8 @@ Tarning_2012_piperaquine <- function() {
       "non-pregnant women (Table 1).",
       sep = " "
     ),
-    regions         = "Thai-Myanmar border (Shoklo Malaria Research Unit, Wang Pha Clinic)",
-    notes           = paste(
+    regions = "Thai-Myanmar border (Shoklo Malaria Research Unit, Wang Pha Clinic)",
+    notes = paste(
       "Demographics from Tarning 2012 Table 1. 749 piperaquine samples in",
       "the pregnant cohort and 740 in the non-pregnant cohort were",
       "modelled (frequent venipuncture in the first 72 h and sparser",

@@ -25,24 +25,24 @@ Hajjar_2018_miglustat <- function() {
     "https://metrumrg.com/wp-content/uploads/Pubs/2018-ACCP-Population-PK-of-ATB200-AT221-in-Pompe-Patients_2018-09-18-Poster_L1e.pdf"
   )
   vignette <- "Hajjar_2018_pompe_disease"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "miglustat", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "miglustat", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "miglustat", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "miglustat", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "miglustat", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight (kg). Drives the allometric scaling of all",
         "apparent clearances (exponent 0.75 fixed) and all apparent",
         "volumes (exponent 1.0 fixed) with reference 70 kg per Hajjar",
@@ -53,17 +53,17 @@ Hajjar_2018_miglustat <- function() {
         "sex 10 M / 5 F across the 15 adults included in the modeling",
         "(Hajjar 2018 Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     BACT = list(
-      description        = "Prior enzyme-replacement-therapy experience indicator (1 = ERT-experienced with alglucosidase alfa; 0 = ERT-naive)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior enzyme-replacement-therapy experience indicator (1 = ERT-experienced with alglucosidase alfa; 0 = ERT-naive)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ERT-naive)",
-      notes              = paste(
+      notes = paste(
         "Screened as a categorical covariate on apparent CL/F via the",
         "model CL * theta_ERT (Hajjar 2018 Methods 'Modeling' last two",
         "bullets). NOT retained in the final model: the mean ERT",
@@ -74,19 +74,19 @@ Hajjar_2018_miglustat <- function() {
         "Documented here for covariate-screen provenance; not referenced",
         "inside model()."
       ),
-      source_name        = "ERT"
+      source_name = "ERT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 15L,
-    n_studies      = 1L,
-    age_range      = "24-66 years",
-    age_mean       = "49.4 years",
-    weight_range   = "not reported (paper states only that allometric scaling normalised to 70 kg)",
+    species = "human",
+    n_subjects = 15L,
+    n_studies = 1L,
+    age_range = "24-66 years",
+    age_mean = "49.4 years",
+    weight_range = "not reported (paper states only that allometric scaling normalised to 70 kg)",
     sex_female_pct = 100 * 6 / 15,
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with Pompe disease (genetic deficiency of acid",
       "alpha-glucosidase / GAA). 10 ERT-experienced adults previously",
       "treated with alglucosidase alfa (mean 4.8 years on prior ERT,",
@@ -97,15 +97,15 @@ Hajjar_2018_miglustat <- function() {
       "forced vital capacity (upright) 52% predicted (SD 13) vs 53%",
       "predicted (SD 20)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "ERT-experienced (n = 10): two AT2221 dose-occasion levels of",
       "130 mg and 260 mg, each co-administered with 20 mg/kg ATB200.",
       "ERT-naive (n = 5): a single 260 mg AT2221 dose co-administered",
       "with 20 mg/kg ATB200. Plasma samples collected over 24 h periods",
       "for both ATB200 and AT2221 concentration assays."
     ),
-    regions        = "United States; ATB200-02 (NCT02675465), a phase 1/2 study sponsored by Amicus Therapeutics.",
-    notes          = paste(
+    regions = "United States; ATB200-02 (NCT02675465), a phase 1/2 study sponsored by Amicus Therapeutics.",
+    notes = paste(
       "Adult cohort only; the same poster reports Monte-Carlo",
       "simulations forward-projecting to adolescents (12 to <18 years",
       "old). The structural model is fit to adult data only.",

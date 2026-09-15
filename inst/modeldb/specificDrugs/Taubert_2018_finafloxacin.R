@@ -36,20 +36,20 @@ Taubert_2018_finafloxacin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "finafloxacin", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2      = list(analyte = "finafloxacin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "finafloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "finafloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "finafloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "finafloxacin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "finafloxacin", units = "mg", specimen = "plasma", verified = FALSE),
-    urine       = list(analyte = "finafloxacin", units = "mg", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "finafloxacin", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power scaling on Vc with reference BSA = 1.829 m^2 computed by",
         "the Mosteller formula (sqrt(W * H / 3600)) from the reference",
         "weight 70 kg and reference height 172 cm explicitly stated in",
@@ -60,14 +60,14 @@ Taubert_2018_finafloxacin <- function() {
         "BSA was preferred over total body weight and lean body mass as",
         "the Vc scaling covariate (dOFV = -15.3 vs TBW)."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator: 1 = healthy adult volunteer (Trial I oral or Trial II IV), 0 = patient with complicated urinary tract infection (Trial III IV).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator: 1 = healthy adult volunteer (Trial I oral or Trial II IV), 0 = patient with complicated urinary tract infection (Trial III IV).",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Paper Table 3 reports a fractional",
         "patient-status effect on total CL of -0.29 (CL_patient = 0.71 x",
         "CL_healthy) and two separate FER point estimates (FER1 = 0.40",
@@ -81,33 +81,33 @@ Taubert_2018_finafloxacin <- function() {
         "reproduced exactly at both DIS_HEALTHY levels.",
         "Source column in the paper: PATIENT (1 = patient); DIS_HEALTHY = 1 - PATIENT."
       ),
-      source_name        = "PATIENT"
+      source_name = "PATIENT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 266L,
-    n_studies      = 3L,
-    age_range      = "19-90 years (Trial I 19-55 [median 42.5]; Trial II 19-63 [median 41.5]; Trial III 19-90 [median 61])",
-    weight_range   = "50.9-140 kg (Trial I 61-97.7; Trial II 50.9-112.4; Trial III 64-140)",
-    height_range   = "138-200 cm",
+    species = "human",
+    n_subjects = 266L,
+    n_studies = 3L,
+    age_range = "19-90 years (Trial I 19-55 [median 42.5]; Trial II 19-63 [median 41.5]; Trial III 19-90 [median 61])",
+    weight_range = "50.9-140 kg (Trial I 61-97.7; Trial II 50.9-112.4; Trial III 64-140)",
+    height_range = "138-200 cm",
     sex_female_pct = 50.4,
     race_ethnicity = "Not explicitly reported in the article.",
-    disease_state  = paste(
+    disease_state = paste(
       "Trial I and II: healthy adult volunteers (single and multiple",
       "ascending doses, oral or IV). Trial III: hospitalised patients with",
       "complicated urinary tract infections or acute complicated /",
       "uncomplicated pyelonephritis (predominantly female, mostly older",
       "than 60 years)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Trial I: oral 25 to 1,000 mg/day (single and multiple ascending).",
       "Trial II: IV 200 to 1,000 mg/day. Trial III: IV 800 mg once daily",
       "for 5 or 10 days delivered as 60-min short-duration infusions."
     ),
-    regions        = "Germany (Universities of Cologne, Kiel, and Giessen).",
-    notes          = paste(
+    regions = "Germany (Universities of Cologne, Kiel, and Giessen).",
+    notes = paste(
       "Pooled population PK analysis (NONMEM 7.3 FOCE-I; Perl-speaks-NONMEM",
       "bootstrap n = 1,000) of three phase I/II trials in healthy volunteers",
       "(Trials I oral and II IV) and cUTI patients (Trial III IV;",

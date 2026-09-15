@@ -65,35 +65,40 @@ MangasSanjuan_2016_axomadol <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot_r       = list(analyte = "axomadol (R)", units = "mg", specimen = "administration site", verified = FALSE),
-    liver_r       = list(analyte = "axomadol (R)", units = "mg", specimen = "tissue", verified = FALSE),
-    central_r     = list(analyte = "axomadol (R)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_r = list(analyte = "axomadol (R)", units = "mg", specimen = "administration site", verified = FALSE),
+    liver_r = list(analyte = "axomadol (R)", units = "mg", specimen = "tissue", verified = FALSE),
+    central_r = list(analyte = "axomadol (R)", units = "mg", specimen = "plasma", verified = FALSE),
     central_odm_r = list(analyte = "O-demethyl axomadol (R)", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_s       = list(analyte = "axomadol (S)", units = "mg", specimen = "administration site", verified = FALSE),
-    liver_s       = list(analyte = "axomadol (S)", units = "mg", specimen = "tissue", verified = FALSE),
-    central_s     = list(analyte = "axomadol (S)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_s = list(analyte = "axomadol (S)", units = "mg", specimen = "administration site", verified = FALSE),
+    liver_s = list(analyte = "axomadol (S)", units = "mg", specimen = "tissue", verified = FALSE),
+    central_s = list(analyte = "axomadol (S)", units = "mg", specimen = "plasma", verified = FALSE),
     central_odm_s = list(analyte = "O-demethyl axomadol (S)", units = "mg", specimen = "plasma", verified = FALSE),
-    effect_odm_r  = list(analyte = "O-demethyl axomadol (R) effect", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect_odm_r = list(
+      analyte = "O-demethyl axomadol (R) effect",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 74L,
-    n_studies      = 2L,
-    age_range      = "40-65 years (Study A 46-64, Study B 40-65)",
-    weight_range   = "48-100 kg (Study A 61.0-92.2, Study B 48-100)",
+    species = "human",
+    n_subjects = 74L,
+    n_studies = 2L,
+    age_range = "40-65 years (Study A 46-64, Study B 40-65)",
+    weight_range = "48-100 kg (Study A 61.0-92.2, Study B 48-100)",
     sex_female_pct = 51,
     race_ethnicity = c(White = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy volunteers, CYP2D6 extensive metabolizers. Subjects",
       "using CYP2D6 inhibitors within the previous 4 weeks were",
       "excluded; Study A genotyped via dextromethorphan urinary",
       "metabolic ratio and Study B via TaqMan CYP2D6 alleles *3, *4,",
       "*5, *6, *7, and *8."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral axomadol in Study A: 66 mg or 111 mg b.i.d. with a",
       "single-dose day-1 and day-8 PK profile around five days of",
       "twice-daily maintenance. Study B: dose-escalation from b.i.d.",
@@ -101,8 +106,8 @@ MangasSanjuan_2016_axomadol <- function() {
       "with a separate group at 150 b.i.d. day 1, 225 b.i.d. days",
       "2-4, and 225 morning of day 5."
     ),
-    regions        = "(not reported in the source publication)",
-    notes          = paste(
+    regions = "(not reported in the source publication)",
+    notes = paste(
       "Pooled analysis of two Caucasian-volunteer Phase I trials.",
       "Study A: n = 24 (12 male + 14 female), 2-period crossover.",
       "Study B: n = 48 (24 male + 24 female), parallel-group dose",

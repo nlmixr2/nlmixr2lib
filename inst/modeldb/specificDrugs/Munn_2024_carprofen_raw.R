@@ -19,7 +19,8 @@ Munn_2024_carprofen_raw <- function() {
     "units. This is the RAW carprofen fit; see",
     "Munn_2024_carprofen_moxidectinCorrected for the companion fit to the",
     "moxidectin-corrected concentrations.",
-    sep = " ")
+    sep = " "
+  )
   reference <- paste(
     "Munn R, Whittem T.",
     "Moxidectin is a candidate for use as an in vivo internal standard in",
@@ -34,7 +35,8 @@ Munn_2024_carprofen_raw <- function() {
     "pharmacodynamic parameters in the subcutaneous tissue cage model:",
     "as illustrated by carprofen in sheep.",
     "Front Vet Sci. 2022;9:905797. doi:10.3389/fvets.2022.905797.",
-    sep = " ")
+    sep = " "
+  )
   vignette <- "Munn_2024_carprofen_moxidectin_internal_standard"
 
   # `cage6` / `cage10` are paper-mechanistic states: they hold the drug
@@ -47,8 +49,8 @@ Munn_2024_carprofen_raw <- function() {
   paper_specific_compartments <- c("cage6", "cage10")
 
   units <- list(
-    time          = "h",
-    dosing        = "mg/kg",
+    time = "h",
+    dosing = "mg/kg",
     concentration = "ug/mL"
   )
 
@@ -57,33 +59,33 @@ Munn_2024_carprofen_raw <- function() {
   # mg/L == ug/mL, the units of the carprofen assay (calibration range
   # 0.25-100 ug/mL, Methods 2.1).
   compartmentData <- list(
-    central     = list(analyte = "carprofen", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "carprofen", units = "mg/kg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "carprofen", units = "mg/kg", specimen = "plasma", verified = TRUE),
     # The cage states hold a concentration, not an amount: they are driven
     # by Cc and never exchange mass with central (see model() note).
-    cage6       = list(analyte = "carprofen", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    cage10      = list(analyte = "carprofen", units = "ug/mL", specimen = "tissue", verified = TRUE)
+    cage6 = list(analyte = "carprofen", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    cage10 = list(analyte = "carprofen", units = "ug/mL", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "sheep (merino wether)",
-    n_subjects     = 8L,
-    n_studies      = 1L,
-    age_range      = "approximately 18 months",
-    weight_range   = "42-51.5 kg",
+    species = "sheep (merino wether)",
+    n_subjects = 8L,
+    n_studies = 1L,
+    age_range = "approximately 18 months",
+    weight_range = "42-51.5 kg",
     sex_female_pct = 0,
-    disease_state  = "Healthy (veterinary clinical examination plus routine haematology and biochemistry before enrolment)",
-    dose_range     = paste(
+    disease_state = "Healthy (veterinary clinical examination plus routine haematology and biochemistry before enrolment)",
+    dose_range = paste(
       "Single 4 mg/kg carprofen intravenous bolus into a cephalic vein at",
       "time zero. Separately, 0.2 mg/kg moxidectin (Cydectin) was injected",
       "subcutaneously into a hind limb 14 days before the experiment to",
       "serve as the in vivo internal standard; moxidectin is not a state",
       "in this model."
     ),
-    regions        = "Australia (University of Melbourne, Werribee, Victoria)",
-    notes          = paste(
+    regions = "Australia (University of Melbourne, Werribee, Victoria)",
+    notes = paste(
       "Two tissue cages (6 cm and 10 cm length) were implanted",
       "subcutaneously in the neck three weeks before the experiment, so",
       "every animal contributes both cage sizes simultaneously. Plasma and",

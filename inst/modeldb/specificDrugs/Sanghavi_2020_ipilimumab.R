@@ -8,79 +8,79 @@ Sanghavi_2020_ipilimumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ipilimumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ipilimumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ipilimumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL and Q (exponent CL_BBWT) and on VC and VP (exponent V_BBWT) with reference weight 80 kg (Sanghavi 2020 Figure 1 reference patient).",
-      source_name        = "BBWT"
+      notes = "Power scaling on CL and Q (exponent CL_BBWT) and on VC and VP (exponent V_BBWT) with reference weight 80 kg (Sanghavi 2020 Figure 1 reference patient).",
+      source_name = "BBWT"
     ),
     LDH = list(
-      description        = "Baseline serum lactate dehydrogenase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum lactate dehydrogenase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Effect on CL via the literal Sanghavi 2020 form (log(LDH)/log(217))^CL_logBLDH — a power of a ratio of logs, not the conventional (LDH/ref)^exponent. Reference 217 U/L (Figure 1 reference patient). The unusual functional form is what makes the BLDH effect span only ~10-15% across the 5th/95th LDH percentiles, matching the paper's narrative that the BLDH effect was <20% and not clinically meaningful; the conventional power-of-ratio form would inflate the effect to >100% at the same percentile range.",
-      source_name        = "BLDH"
+      notes = "Effect on CL via the literal Sanghavi 2020 form (log(LDH)/log(217))^CL_logBLDH — a power of a ratio of logs, not the conventional (LDH/ref)^exponent. Reference 217 U/L (Figure 1 reference patient). The unusual functional form is what makes the BLDH effect span only ~10-15% across the 5th/95th LDH percentiles, matching the paper's narrative that the BLDH effect was <20% and not clinically meaningful; the conventional power-of-ratio form would inflate the effect to >100% at the same percentile range.",
+      source_name = "BLDH"
     ),
     TUMTP_SCLC = list(
-      description        = "Tumor-type indicator for small cell lung cancer",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator for small cell lung cancer",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all other tumor types: melanoma, NSCLC, CRC, HCC, RCC)",
-      notes              = "Exponential effect on CL (Sanghavi 2020 Table 2: CL_SCLC). Derived from a categorical tumor-type column TUMTP as TUMTP_SCLC = as.integer(TUMTP == 'SCLC'). The reference group is melanoma; effects of NSCLC, CRC, HCC, and RCC vs. melanoma were tested in the full model but did not survive backward elimination.",
-      source_name        = "TUMTP"
+      notes = "Exponential effect on CL (Sanghavi 2020 Table 2: CL_SCLC). Derived from a categorical tumor-type column TUMTP as TUMTP_SCLC = as.integer(TUMTP == 'SCLC'). The reference group is melanoma; effects of NSCLC, CRC, HCC, and RCC vs. melanoma were tested in the full model but did not survive backward elimination.",
+      source_name = "TUMTP"
     ),
     LINE_1L = list(
-      description        = "Line-of-therapy indicator: 1 = first-line, 0 = second-line or greater",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Line-of-therapy indicator: 1 = first-line, 0 = second-line or greater",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (2L+, second-line or greater)",
-      notes              = "Exponential effect on CL (Sanghavi 2020 Table 2: CL_LINE = -0.0949). 1L treatment is associated with ~9% lower CL relative to 2L+.",
-      source_name        = "LINE"
+      notes = "Exponential effect on CL (Sanghavi 2020 Table 2: CL_LINE = -0.0949). 1L treatment is associated with ~9% lower CL relative to 2L+.",
+      source_name = "LINE"
     ),
     NIVO_1Q3W = list(
-      description        = "Nivolumab dose-regimen indicator: 1 = co-administered nivolumab 1 mg/kg every 3 weeks, 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Nivolumab dose-regimen indicator: 1 = co-administered nivolumab 1 mg/kg every 3 weeks, 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no nivolumab or any other nivolumab regimen)",
-      notes              = "Exponential effect on ipilimumab CL (Sanghavi 2020 Table 2: CL_N1Q3W = 0.0950). Derived from the source NIVO_REGIMEN column as NIVO_1Q3W = as.integer(NIVO_REGIMEN == '1 mg/kg Q3W'). Other nivolumab regimens (0.3 mg/kg Q3W, 1 mg/kg Q2W, 3 mg/kg Q3W) were tested but only the 1 mg/kg Q3W and 3 mg/kg Q2W indicators were retained in the final model.",
-      source_name        = "NIVO_REGIMEN"
+      notes = "Exponential effect on ipilimumab CL (Sanghavi 2020 Table 2: CL_N1Q3W = 0.0950). Derived from the source NIVO_REGIMEN column as NIVO_1Q3W = as.integer(NIVO_REGIMEN == '1 mg/kg Q3W'). Other nivolumab regimens (0.3 mg/kg Q3W, 1 mg/kg Q2W, 3 mg/kg Q3W) were tested but only the 1 mg/kg Q3W and 3 mg/kg Q2W indicators were retained in the final model.",
+      source_name = "NIVO_REGIMEN"
     ),
     NIVO_3Q2W = list(
-      description        = "Nivolumab dose-regimen indicator: 1 = co-administered nivolumab 3 mg/kg every 2 weeks, 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Nivolumab dose-regimen indicator: 1 = co-administered nivolumab 3 mg/kg every 2 weeks, 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no nivolumab or any other nivolumab regimen)",
-      notes              = "Exponential effect on ipilimumab CL (Sanghavi 2020 Table 2: CL_N3Q2W = 0.191). Derived from the source NIVO_REGIMEN column as NIVO_3Q2W = as.integer(NIVO_REGIMEN == '3 mg/kg Q2W'). Paired with NIVO_1Q3W; both indicators are 0 for ipilimumab monotherapy and for nivolumab regimens not retained in the final model.",
-      source_name        = "NIVO_REGIMEN"
+      notes = "Exponential effect on ipilimumab CL (Sanghavi 2020 Table 2: CL_N3Q2W = 0.191). Derived from the source NIVO_REGIMEN column as NIVO_3Q2W = as.integer(NIVO_REGIMEN == '3 mg/kg Q2W'). Paired with NIVO_1Q3W; both indicators are 0 for ipilimumab monotherapy and for nivolumab regimens not retained in the final model.",
+      source_name = "NIVO_REGIMEN"
     ),
     COMBO_NIVO = list(
-      description        = "Combination-therapy indicator: 1 = ipilimumab co-administered with any nivolumab regimen, 0 = ipilimumab monotherapy",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Combination-therapy indicator: 1 = ipilimumab co-administered with any nivolumab regimen, 0 = ipilimumab monotherapy",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ipilimumab monotherapy)",
-      notes              = "Additive effect on the cl_time_max parameter of the time-varying CL function (Sanghavi 2020 Table 2: Emax_COMBO = -0.202). Captures the greater decrease in ipilimumab CL over time observed when ipilimumab is given with nivolumab (any regimen) compared with monotherapy. Distinct from the per-regimen NIVO_1Q3W / NIVO_3Q2W indicators on baseline CL.",
-      source_name        = "COMBO"
+      notes = "Additive effect on the cl_time_max parameter of the time-varying CL function (Sanghavi 2020 Table 2: Emax_COMBO = -0.202). Captures the greater decrease in ipilimumab CL over time observed when ipilimumab is given with nivolumab (any regimen) compared with monotherapy. Distinct from the per-regimen NIVO_1Q3W / NIVO_3Q2W indicators on baseline CL.",
+      source_name = "COMBO"
     )
   )
 
   population <- list(
-    n_subjects     = 3411L,
-    n_studies      = 16L,
-    age_range      = "not tabulated in main-text Table 1 (pooled solid-tumor adult oncology population)",
-    weight_range   = "36.8-181 kg",
-    weight_median  = "76.8 kg",
-    disease_state  = "Advanced / metastatic solid tumors: melanoma 50.4%, non-small cell lung cancer 17.2%, renal cell carcinoma 13.1%, small cell lung cancer 5.2%, hepatocellular carcinoma 3.8%, colorectal cancer 3.6% (Sanghavi 2020 Table 1).",
-    dose_range     = "Ipilimumab 0.3-10 mg/kg IV; regimens included 1 mg/kg Q3W, 3 mg/kg Q3W, 1 mg/kg every 6 weeks, and 1 mg/kg every 12 weeks. Nivolumab co-administration regimens: 0.3 mg/kg Q3W, 1 mg/kg Q2W, 1 mg/kg Q3W, 3 mg/kg Q2W, or 3 mg/kg Q3W. Approved combination evaluated: ipilimumab 3 mg/kg Q3W + nivolumab 1 mg/kg Q3W for 4 doses.",
-    regions        = "Multinational (16 trials spanning two phase I, two phase I/II, eight phase II, three phase III, and one phase IIIb/IV).",
-    notes          = "Pooled data from 16 clinical trials, 12,545 ipilimumab serum concentrations. Monotherapy N = 893; combination with nivolumab N = 2,518. Baseline LDH median 217 U/L (range 74-6,245); baseline ALB median 4.1 g/dL (range 1.8-5.3); baseline tumor size median 6.29 cm. Performance status 0 in 57.3%, 1 in 41.3%, >=2 in 1.4%. Baseline demographics from Sanghavi 2020 Table 1."
+    n_subjects = 3411L,
+    n_studies = 16L,
+    age_range = "not tabulated in main-text Table 1 (pooled solid-tumor adult oncology population)",
+    weight_range = "36.8-181 kg",
+    weight_median = "76.8 kg",
+    disease_state = "Advanced / metastatic solid tumors: melanoma 50.4%, non-small cell lung cancer 17.2%, renal cell carcinoma 13.1%, small cell lung cancer 5.2%, hepatocellular carcinoma 3.8%, colorectal cancer 3.6% (Sanghavi 2020 Table 1).",
+    dose_range = "Ipilimumab 0.3-10 mg/kg IV; regimens included 1 mg/kg Q3W, 3 mg/kg Q3W, 1 mg/kg every 6 weeks, and 1 mg/kg every 12 weeks. Nivolumab co-administration regimens: 0.3 mg/kg Q3W, 1 mg/kg Q2W, 1 mg/kg Q3W, 3 mg/kg Q2W, or 3 mg/kg Q3W. Approved combination evaluated: ipilimumab 3 mg/kg Q3W + nivolumab 1 mg/kg Q3W for 4 doses.",
+    regions = "Multinational (16 trials spanning two phase I, two phase I/II, eight phase II, three phase III, and one phase IIIb/IV).",
+    notes = "Pooled data from 16 clinical trials, 12,545 ipilimumab serum concentrations. Monotherapy N = 893; combination with nivolumab N = 2,518. Baseline LDH median 217 U/L (range 74-6,245); baseline ALB median 4.1 g/dL (range 1.8-5.3); baseline tumor size median 6.29 cm. Performance status 0 in 57.3%, 1 in 41.3%, >=2 in 1.4%. Baseline demographics from Sanghavi 2020 Table 1."
   )
 
   ini({

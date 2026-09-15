@@ -8,57 +8,57 @@ Blair_2004_raltitrexed <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "raltitrexed", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "raltitrexed", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "raltitrexed", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "raltitrexed", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Computed by the Cockcroft-Gault formula in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md, following the raw-Cockcroft-Gault pattern of Delattre 2010 amikacin and Aoyama 2012 sepantronium. Population range 23.4-193.0 mL/min, median ~86.5 (Blair 2004 Table 1). Effect form: linear-additive on CL via CL = 0.54 + 0.02 * CRCL (Blair 2004 Table 3); missing CRCL values for 10 patients imputed at the cohort median.",
-      source_name        = "CLCR"
+      notes = "Source column CLCR. Computed by the Cockcroft-Gault formula in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md, following the raw-Cockcroft-Gault pattern of Delattre 2010 amikacin and Aoyama 2012 sepantronium. Population range 23.4-193.0 mL/min, median ~86.5 (Blair 2004 Table 1). Effect form: linear-additive on CL via CL = 0.54 + 0.02 * CRCL (Blair 2004 Table 3); missing CRCL values for 10 patients imputed at the cohort median.",
+      source_name = "CLCR"
     ),
     WT = list(
-      description        = "Body weight (baseline, at the start of each treatment course)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline, at the start of each treatment course)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Population range 39.0-145.0 kg, median 72.8 (Blair 2004 Table 1). Treatment courses considered as separate individuals per the paper's analysis (Methods: 'Clinical and pharmacokinetic data') with weights recorded per course; treat as baseline within each course. Effect form: linear-additive on V via V = 6.64 + 0.08 * WT - 0.16 * ALB (Blair 2004 Table 3).",
-      source_name        = "WT"
+      notes = "Population range 39.0-145.0 kg, median 72.8 (Blair 2004 Table 1). Treatment courses considered as separate individuals per the paper's analysis (Methods: 'Clinical and pharmacokinetic data') with weights recorded per course; treat as baseline within each course. Effect form: linear-additive on V via V = 6.64 + 0.08 * WT - 0.16 * ALB (Blair 2004 Table 3).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin concentration (baseline, at the start of each treatment course)",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration (baseline, at the start of each treatment course)",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "SI g/L unit (Blair 2004 Table 1 reports albumin in g/L; population range 20.0-47.0, median 36.9). Missing albumin values for 27 patients imputed at the cohort median. Effect form: linear-additive on V via V = 6.64 + 0.08 * WT - 0.16 * ALB (Blair 2004 Table 3); negative coefficient implies higher albumin reduces V, consistent with raltitrexed being >90% protein-bound (paper Discussion).",
-      source_name        = "ALB"
+      notes = "SI g/L unit (Blair 2004 Table 1 reports albumin in g/L; population range 20.0-47.0, median 36.9). Missing albumin values for 27 patients imputed at the cohort median. Effect form: linear-additive on V via V = 6.64 + 0.08 * WT - 0.16 * ALB (Blair 2004 Table 3); negative coefficient implies higher albumin reduces V, consistent with raltitrexed being >90% protein-bound (paper Discussion).",
+      source_name = "ALB"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 112L,
-    n_courses       = 135L,
-    n_studies       = 4L,
-    age_range       = "21-74 years",
-    age_median      = "55.5 years",
-    weight_range    = "39.0-145.0 kg",
-    weight_median   = "72.8 kg",
-    bsa_range       = "1.3-2.4 m^2",
-    bsa_median      = "1.8 m^2",
-    sex_female_pct  = 45.2,
-    race_ethnicity  = "Not reported in source",
-    disease_state   = "Advanced solid tumours, predominantly colorectal cancer; also breast and ovarian cancers",
-    dose_range      = "0.1-4.5 mg/m^2 raltitrexed as a 15-30 min IV infusion every 3 weeks; absolute doses 0.2-9.2 mg (Blair 2004 Table 1)",
-    regions         = "Pooled across one European Phase I dose-finding study, one US Phase I dose-finding study, a radiolabel mass-balance disposition study, and an open-label renal-function study",
-    renal_function  = "Cockcroft-Gault creatinine clearance 23.4-193.0 mL/min (median ~86.5); raw mL/min, NOT BSA-normalized",
+    species = "human",
+    n_subjects = 112L,
+    n_courses = 135L,
+    n_studies = 4L,
+    age_range = "21-74 years",
+    age_median = "55.5 years",
+    weight_range = "39.0-145.0 kg",
+    weight_median = "72.8 kg",
+    bsa_range = "1.3-2.4 m^2",
+    bsa_median = "1.8 m^2",
+    sex_female_pct = 45.2,
+    race_ethnicity = "Not reported in source",
+    disease_state = "Advanced solid tumours, predominantly colorectal cancer; also breast and ovarian cancers",
+    dose_range = "0.1-4.5 mg/m^2 raltitrexed as a 15-30 min IV infusion every 3 weeks; absolute doses 0.2-9.2 mg (Blair 2004 Table 1)",
+    regions = "Pooled across one European Phase I dose-finding study, one US Phase I dose-finding study, a radiolabel mass-balance disposition study, and an open-label renal-function study",
+    renal_function = "Cockcroft-Gault creatinine clearance 23.4-193.0 mL/min (median ~86.5); raw mL/min, NOT BSA-normalized",
     hepatic_function = "Baseline ALT 1-50 U/L (median ~14.7); AST 5-86 U/L (median ~20.5); total bilirubin 2-23 umol/L (median ~10.1); no significant correlation between liver function tests and raltitrexed clearance found in the analysis",
-    notes           = "Total cohort: 112 adult patients, 135 treatment courses, 2105 raltitrexed plasma concentration observations (3-23 per patient). 23 of 112 patients received a second course; each course was treated as a separate individual in the P-Pharm popPK analysis (Blair 2004 Methods). Data-splitting validation used a 2:1 random allocation into 90-patient (1374 observations) model-development and 45-patient (731 observations) model-validation datasets, then the final model was refit on the pooled total cohort (135 courses) for the parameter estimates reported here. Software: P-Pharm 1.5.1 (InnaPhase). Bioanalysis: radioimmunoassay with sheep antiserum, intra-assay CV 10.7%, inter-assay CV 12.9%, LLOQ 0.2 ng/mL. The clinical studies are referenced as Clarke 2000 (European Phase I, ref 6), Grem 1999 (US Phase I, ref 7), Beale 1998 (radiolabel mass-balance, ref 8) and Judson 1998 (renal-function study, ref 9)."
+    notes = "Total cohort: 112 adult patients, 135 treatment courses, 2105 raltitrexed plasma concentration observations (3-23 per patient). 23 of 112 patients received a second course; each course was treated as a separate individual in the P-Pharm popPK analysis (Blair 2004 Methods). Data-splitting validation used a 2:1 random allocation into 90-patient (1374 observations) model-development and 45-patient (731 observations) model-validation datasets, then the final model was refit on the pooled total cohort (135 courses) for the parameter estimates reported here. Software: P-Pharm 1.5.1 (InnaPhase). Bioanalysis: radioimmunoassay with sheep antiserum, intra-assay CV 10.7%, inter-assay CV 12.9%, LLOQ 0.2 ng/mL. The clinical studies are referenced as Clarke 2000 (European Phase I, ref 6), Grem 1999 (US Phase I, ref 7), Beale 1998 (radiolabel mass-balance, ref 8) and Judson 1998 (renal-function study, ref 9)."
   )
 
   ini({

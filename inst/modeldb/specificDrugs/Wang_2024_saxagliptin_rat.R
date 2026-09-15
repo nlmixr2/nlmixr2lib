@@ -41,28 +41,28 @@ Wang_2024_saxagliptin_rat <- function() {
   # biological matrix. Amounts are body-weight normalised (ng per kg) because
   # Wang 2024 reports V in mL/kg and CL in mL/h/kg (Table 11).
   compartmentData <- list(
-    depot       = list(analyte = "saxagliptin", units = "ng", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "saxagliptin", units = "ng", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "saxagliptin", units = "ng", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "saxagliptin", units = "ng", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "saxagliptin", units = "ng", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "rat (Sprague-Dawley)",
-    n_subjects    = 3L,
-    n_studies     = 1L,
+    species = "rat (Sprague-Dawley)",
+    n_subjects = 3L,
+    n_studies = 1L,
     sex_female_pct = 0,
-    weight_range  = "120-140 g at purchase",
+    weight_range = "120-140 g at purchase",
     disease_state = paste(
       "Type 2 diabetes mellitus induced by 4 weeks of high-fat diet followed by a single",
       "intraperitoneal injection of streptozocin 40 mg/kg in 0.1 mol/L citrate buffer (pH 4.2-4.5);",
       "rats qualified as T2DM with fasting blood glucose > 7.8 mmol/L and postprandial blood",
       "glucose > 16.7 mmol/L on days 3 and 7 after streptozocin"
     ),
-    dose_range    = "10 mg/kg saxagliptin in 0.5% CMC-Na, single intragastric dose",
-    regions       = "China",
-    notes         = paste(
+    dose_range = "10 mg/kg saxagliptin in 0.5% CMC-Na, single intragastric dose",
+    regions = "China",
+    notes = paste(
       "Materials and methods, 'Animals and study design' and 'Pharmacokinetic measurements'.",
       "Male SD rats from the Experimental Animal Center of Nantong University (SCXK (Su):2019-0001),",
       "housed at 22-25 degC on a 12 h light/dark cycle. A matched control group (n = 3) received",

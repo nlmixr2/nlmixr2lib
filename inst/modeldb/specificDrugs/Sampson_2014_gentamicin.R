@@ -18,7 +18,7 @@ Sampson_2014_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Sampson_2014_gentamicin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -29,11 +29,11 @@ Sampson_2014_gentamicin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (birth weight in the source cohorts).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (birth weight in the source cohorts).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on CL (fixed exponent 0.75) and linear scaling on",
         "V (exponent 1), each referenced to a 3.3 kg neonate. The 3.3 kg",
         "reference is the median birth weight in the Frymoyer 2013",
@@ -41,14 +41,14 @@ Sampson_2014_gentamicin <- function() {
         "(page 585). Cohort birth-weight range across the two Sampson 2014",
         "validation datasets: 1.9-4.6 kg (median 3.3)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CREAT = list(
-      description        = "Serum creatinine.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL with exponent -0.566 in the form",
         "CL = TVCL * (BW/3.3)^0.75 * (1/SCR)^0.566 (Sampson 2014 page 585;",
         "Frymoyer 2013 final model). The equation has no explicit SCR",
@@ -62,34 +62,34 @@ Sampson_2014_gentamicin <- function() {
         "584; analytical-method differences are discussed as a possible",
         "driver of the under-prediction observed in Validation B)."
       ),
-      source_name        = "SCR"
+      source_name = "SCR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 29L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 29L,
+    n_studies = 1L,
     n_observations = 47L,
-    ga_range       = "36-42 weeks (median 40) at birth",
-    pna_range      = "1-4 days (median 2) at the first PK sample",
-    weight_range   = "approx. 1.9-4.6 kg birth weight (median 3.3); model-development cohort range reported via the Frymoyer 2013 publication and reproduced in Sampson 2014",
+    ga_range = "36-42 weeks (median 40) at birth",
+    pna_range = "1-4 days (median 2) at the first PK sample",
+    weight_range = "approx. 1.9-4.6 kg birth weight (median 3.3); model-development cohort range reported via the Frymoyer 2013 publication and reproduced in Sampson 2014",
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "Term newborns with hypoxic-ischaemic encephalopathy treated with",
       "whole-body hypothermia (target core temperature 33.5 degC) per the",
       "standard NICHD/ICEH protocol (cooling for 72 h initiated within 6 h",
       "of birth, then 8 h of rewarming to normothermia)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Gentamicin IV given per institutional dosing during therapeutic drug",
       "monitoring. The Frymoyer 2013 model-development cohort received",
       "gentamicin as part of routine care at UCSF; the Sampson 2014",
       "validation cohorts used 5 mg/kg q36h (Validation A, UCSF) and 3.5-4",
       "mg/kg q24h or q36h (Validation B, Duke)."
     ),
-    regions        = "United States (UCSF; Frymoyer 2013 model-development cohort).",
-    notes          = paste(
+    regions = "United States (UCSF; Frymoyer 2013 model-development cohort).",
+    notes = paste(
       "This entry reproduces the published Frymoyer 2013 one-compartment IV",
       "popPK model as cited verbatim in Sampson 2014 Methods 'Pharmacokinetic",
       "Analysis' (page 585):",

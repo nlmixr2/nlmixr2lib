@@ -12,58 +12,58 @@ Ekobena_2025_bictegravir <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters apparent clearance as a power (the paper's 'log-linear') term centred on BWRef = 70 kg, the median reference value named in the Results text immediately below the final covariate equation. Note that 70 kg is a rounded reference, NOT the cohort median: Table 1 gives a cohort median body weight of 74 kg (range 37-135 kg). The exponent 0.35 is estimated, not fixed to an allometric 0.75. Self-check against the Results sentence: exp(0.35 * log(100/70)) = 1.133, i.e. the '13% increased CL' quoted for a 100 kg individual aged 51 years. Baseline weight; the paper draws it from the routine Swiss HIV Cohort Study visits (every 3-6 months) and does not describe it as time-varying in the model.",
-      source_name        = "BW"
+      notes = "Enters apparent clearance as a power (the paper's 'log-linear') term centred on BWRef = 70 kg, the median reference value named in the Results text immediately below the final covariate equation. Note that 70 kg is a rounded reference, NOT the cohort median: Table 1 gives a cohort median body weight of 74 kg (range 37-135 kg). The exponent 0.35 is estimated, not fixed to an allometric 0.75. Self-check against the Results sentence: exp(0.35 * log(100/70)) = 1.133, i.e. the '13% increased CL' quoted for a 100 kg individual aged 51 years. Baseline weight; the paper draws it from the routine Swiss HIV Cohort Study visits (every 3-6 months) and does not describe it as time-varying in the model.",
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters apparent clearance as the paper's 'linear model' form, which is linear in the FRACTIONAL deviation from the cohort median and sits inside the same exponential as the weight term: exp(beta_Age * (AGE - AgeM) / AgeM) with AgeM = 51 years, the median age of the study population (Table 1: 51 years, range 19-81). The division by AgeM is load-bearing and easy to drop -- without it the coefficient -0.20 applied to a raw 29-year deviation would give exp(-5.8), an 0.3% clearance. Self-check against the Results sentence: exp(-0.20 * (80 - 51) / 51) = 0.8925, i.e. the '11% decreased CL' quoted for an 80-year-old weighing 70 kg. Note the SIGN: older age lowers clearance and therefore RAISES exposure, which is the direction the paper's Table 3 simulations show (65-80 year olds have ~20% higher Ctrough than 20-65 year olds).",
-      source_name        = "age"
+      notes = "Enters apparent clearance as the paper's 'linear model' form, which is linear in the FRACTIONAL deviation from the cohort median and sits inside the same exponential as the weight term: exp(beta_Age * (AGE - AgeM) / AgeM) with AgeM = 51 years, the median age of the study population (Table 1: 51 years, range 19-81). The division by AgeM is load-bearing and easy to drop -- without it the coefficient -0.20 applied to a raw 29-year deviation would give exp(-5.8), an 0.3% clearance. Self-check against the Results sentence: exp(-0.20 * (80 - 51) / 51) = 0.8925, i.e. the '11% decreased CL' quoted for an 80-year-old weighing 70 kg. Note the SIGN: older age lowers clearance and therefore RAISES exposure, which is the direction the paper's Table 3 simulations show (65-80 year olds have ~20% higher Ctrough than 20-65 year olds).",
+      source_name = "age"
     )
   )
 
   covariatesDataExcluded <- list(
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened and statistically significant on CL in the univariate step (Ekobena 2025 Results, dBICc = -3.2), but discarded at the multivariate / backward-deletion step in favour of body weight (dBICc = -21.0), so it does not appear in the final model. Cohort median 24.5 kg/m^2, range 12.5-44.5 (Table 1). No coefficient is reported for it, so it cannot be encoded."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened and statistically significant on CL in the univariate step (Ekobena 2025 Results, dBICc = -3.2), but discarded at the multivariate / backward-deletion step in favour of body weight (dBICc = -21.0), so it does not appear in the final model. Cohort median 24.5 kg/m^2, range 12.5-44.5 (Table 1). No coefficient is reported for it, so it cannot be encoded."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Considered a priori because bictegravir is >99% protein bound, but not retained. The paper states why in the Discussion limitations: albumin measured within +/- 30 days of a bictegravir sample was available for only 34% of drug levels, and the available values were tightly clustered (median 45 g/L, range 28-55), 'limiting the statistical power to detect a potential effect'. No coefficient is reported."
+      units = "g/L",
+      type = "continuous",
+      notes = "Considered a priori because bictegravir is >99% protein bound, but not retained. The paper states why in the Discussion limitations: albumin measured within +/- 30 days of a bictegravir sample was available for only 34% of drug levels, and the available values were tightly clustered (median 45 g/L, range 28-55), 'limiting the statistical power to detect a potential effect'. No coefficient is reported."
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "bictegravir", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "bictegravir", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "bictegravir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 572L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 572L,
+    n_studies = 1L,
     n_observations = 708L,
-    age_range      = "19-81 years",
-    age_median     = "51 years",
-    weight_range   = "37-135 kg",
-    weight_median  = "74 kg",
+    age_range = "19-81 years",
+    age_median = "51 years",
+    weight_range = "37-135 kg",
+    weight_median = "74 kg",
     sex_female_pct = 31,
     race_ethnicity = c(White = 65, Black = 26, `Hispanic American` = 4, Asian = 4, `Other/missing` = 1),
-    disease_state  = "HIV infection; unselected real-world outpatients enrolled in the Swiss HIV Cohort Study and receiving bictegravir as part of routine care",
-    dose_range     = "bictegravir 50 mg once daily orally, available only as the fixed-dose bictegravir/emtricitabine/tenofovir alafenamide combination",
-    regions        = "Switzerland (therapeutic drug monitoring performed at Lausanne University Hospital, July 2019 to July 2024)",
-    notes          = paste(
+    disease_state = "HIV infection; unselected real-world outpatients enrolled in the Swiss HIV Cohort Study and receiving bictegravir as part of routine care",
+    dose_range = "bictegravir 50 mg once daily orally, available only as the fixed-dose bictegravir/emtricitabine/tenofovir alafenamide combination",
+    regions = "Switzerland (therapeutic drug monitoring performed at Lausanne University Hospital, July 2019 to July 2024)",
+    notes = paste(
       "Baseline characteristics from Ekobena 2025 Table 1 (n = 572). This is a",
       "sparse therapeutic-drug-monitoring dataset, not a rich PK study: 815",
       "concentrations were collected and 107 excluded (42 undetectable, most",

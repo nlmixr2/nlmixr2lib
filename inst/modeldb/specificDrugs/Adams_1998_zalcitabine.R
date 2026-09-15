@@ -21,7 +21,7 @@ Adams_1998_zalcitabine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "zalcitabine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "zalcitabine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "zalcitabine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -30,56 +30,56 @@ Adams_1998_zalcitabine <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Reported in Adams 1998 Table 2 (79.1 +/- 15.0 kg; range 46.5-123) and screened on V/F and CL/F, but did not improve the basic model fit and was not retained (Results p. 412 col 2; Discussion p. 412 col 2). The paper attributes the null finding partly to limited heterogeneity in the cohort."
+      units = "kg",
+      type = "continuous",
+      notes = "Reported in Adams 1998 Table 2 (79.1 +/- 15.0 kg; range 46.5-123) and screened on V/F and CL/F, but did not improve the basic model fit and was not retained (Results p. 412 col 2; Discussion p. 412 col 2). The paper attributes the null finding partly to limited heterogeneity in the cohort."
     ),
     AGE = list(
       description = "Subject age at enrolment.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Reported in Adams 1998 Table 2 (38.6 +/- 7.13 years; range 27-56) and screened on CL/F, but not retained."
+      units = "years",
+      type = "continuous",
+      notes = "Reported in Adams 1998 Table 2 (38.6 +/- 7.13 years; range 27-56) and screened on CL/F, but not retained."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Cohort 39 male / 5 female (Adams 1998 Table 2). Screened on CL/F, not retained. Heavy male predominance limits inference."
+      units = "(binary)",
+      type = "binary",
+      notes = "Cohort 39 male / 5 female (Adams 1998 Table 2). Screened on CL/F, not retained. Heavy male predominance limits inference."
     ),
     CRCL = list(
       description = "Calculated creatinine clearance (Cockcroft-Gault style, raw mL/min, NOT BSA-normalized).",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Reported in Adams 1998 Table 2 (89.1 +/- 21.5 mL/min; range 53.6-146). Screened on CL/F, not retained. The paper notes that despite the 54-146 mL/min range, many patients clustered around a similar CLCR (Discussion p. 412 col 2). Zalcitabine is primarily renally excreted and the absence of a retained CLCR-on-CL/F effect is attributed to limited heterogeneity in this cohort, not to a biological argument that the drug is renal-clearance-independent."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Reported in Adams 1998 Table 2 (89.1 +/- 21.5 mL/min; range 53.6-146). Screened on CL/F, not retained. The paper notes that despite the 54-146 mL/min range, many patients clustered around a similar CLCR (Discussion p. 412 col 2). Zalcitabine is primarily renally excreted and the absence of a retained CLCR-on-CL/F effect is attributed to limited heterogeneity in this cohort, not to a biological argument that the drug is renal-clearance-independent."
     ),
     FOOD_CONCOMITANT = list(
       description = "Administration of zalcitabine with food (1 = with food, 0 = fasted) at the index dose, captured by clinic questionnaire.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on CL/F, not retained (Adams 1998 Methods p. 410; Results p. 412 col 2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on CL/F, not retained (Adams 1998 Methods p. 410; Results p. 412 col 2)."
     ),
     ZDV_CONCOMITANT = list(
       description = "Concomitant zidovudine (AZT) co-administration (1 = co-administered, 0 = not).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on CL/F, not retained (Adams 1998 Methods p. 410; Results p. 412 col 2). Investigated because zidovudine + zalcitabine was a commonly-used combination antiretroviral regimen at the time."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on CL/F, not retained (Adams 1998 Methods p. 410; Results p. 412 col 2). Investigated because zidovudine + zalcitabine was a commonly-used combination antiretroviral regimen at the time."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 44L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 44L,
+    n_studies = 1L,
     n_observations = 81L,
-    age_range      = "27-56 years (mean 38.6 +/- 7.13 SD)",
-    weight_range   = "46.5-123 kg (mean 79.1 +/- 15.0 SD)",
-    crcl_range     = "53.6-146 mL/min (mean 89.1 +/- 21.5 SD; Cockcroft-Gault calculated)",
+    age_range = "27-56 years (mean 38.6 +/- 7.13 SD)",
+    weight_range = "46.5-123 kg (mean 79.1 +/- 15.0 SD)",
+    crcl_range = "53.6-146 mL/min (mean 89.1 +/- 21.5 SD; Cockcroft-Gault calculated)",
     sex_female_pct = 11.4,
     race_ethnicity = c(Caucasian = 73, AfricanAmerican = 9, Hispanic = 16, AmericanIndian = 2),
-    disease_state  = "HIV-infected adults in routine clinic follow-up at the Erie County Medical Center Immunodeficiency Clinic (Buffalo, NY).",
-    dose_range     = "0.375 mg or 0.75 mg oral every 8 hours (zalcitabine).",
-    regions        = "United States (Buffalo, NY and Rochester, NY).",
-    notes          = "Demographics from Adams 1998 Table 2. Sampling: 1.84 +/- 1.24 samples per patient (range 1-6), randomly timed during routine clinic visits; dosing-history and meal information obtained from clinic questionnaire. Risk-factor distribution: 64% homosexual activity, 16% intravenous drug use, 20% other or unknown. Observed zalcitabine concentrations ranged 2.01-8.57 ng/mL (assay LOQ = 2 ng/mL). HIV-infected adults; immunologic / virologic disease severity not stratified in the paper."
+    disease_state = "HIV-infected adults in routine clinic follow-up at the Erie County Medical Center Immunodeficiency Clinic (Buffalo, NY).",
+    dose_range = "0.375 mg or 0.75 mg oral every 8 hours (zalcitabine).",
+    regions = "United States (Buffalo, NY and Rochester, NY).",
+    notes = "Demographics from Adams 1998 Table 2. Sampling: 1.84 +/- 1.24 samples per patient (range 1-6), randomly timed during routine clinic visits; dosing-history and meal information obtained from clinic questionnaire. Risk-factor distribution: 64% homosexual activity, 16% intravenous drug use, 20% other or unknown. Observed zalcitabine concentrations ranged 2.01-8.57 ng/mL (assay LOQ = 2 ng/mL). HIV-infected adults; immunologic / virologic disease severity not stratified in the paper."
   )
 
   ini({

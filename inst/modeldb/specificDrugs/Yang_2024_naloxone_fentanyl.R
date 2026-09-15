@@ -45,57 +45,67 @@ Yang_2024_naloxone_fentanyl <- function() {
   )
   vignette <- "Yang_2024_naloxone_opioid_reversal"
   units <- list(
-    time          = "min",
-    dosing        = "ug",
+    time = "min",
+    dosing = "ug",
     concentration = "ng/mL"
   )
   dosing <- c("central", "depot_naloxone")
 
   compartmentData <- list(
-    central              = list(analyte = "fentanyl", units = "ug", specimen = "plasma", verified = TRUE),
-    peripheral1          = list(analyte = "fentanyl", units = "ug", specimen = "plasma", verified = TRUE),
-    effect               = list(analyte = "fentanyl biophase (effect-site) concentration", units = "ng/mL", specimen = "not applicable", verified = TRUE),
-    depot_naloxone       = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    transit1_naloxone    = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    transit2_naloxone    = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    transit3_naloxone    = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    central_naloxone     = list(analyte = "naloxone", units = "ug", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "fentanyl", units = "ug", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "fentanyl", units = "ug", specimen = "plasma", verified = TRUE),
+    effect = list(
+      analyte = "fentanyl biophase (effect-site) concentration",
+      units = "ng/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    depot_naloxone = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    transit1_naloxone = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    transit2_naloxone = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    transit3_naloxone = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    central_naloxone = list(analyte = "naloxone", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral1_naloxone = list(analyte = "naloxone", units = "ug", specimen = "plasma", verified = TRUE),
-    effect_naloxone      = list(analyte = "naloxone biophase (effect-site) concentration", units = "ng/mL", specimen = "not applicable", verified = TRUE)
+    effect_naloxone = list(
+      analyte = "naloxone biophase (effect-site) concentration",
+      units = "ng/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Acts only on naloxone apparent clearance:",
         "CL/F = 3.26 * (WT/70)^0.538 (Yang 2024 Table S4). The reference",
         "weight of 70 kg is explicit in control stream (C)",
         "('WT= 70 ; kg'). The fentanyl PK parameters carry no weight",
         "scaling in Yassen 2007."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 2L,
-    age_range      = "Healthy adults (naloxone layer 23-54 years)",
-    weight_range   = "Simulations fix WT = 70 kg; naloxone PK data spanned 57.2-100.2 kg",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 2L,
+    age_range = "Healthy adults (naloxone layer 23-54 years)",
+    weight_range = "Simulations fix WT = 70 kg; naloxone PK data spanned 57.2-100.2 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult volunteers. The fentanyl PK-PD layer comes from",
       "the Yassen 2007 healthy-volunteer study of fentanyl-induced",
       "respiratory depression; the naloxone PK layer is Yang 2024's own",
       "auto-injector population PK in 48 healthy adults."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Yang 2024 simulated IV fentanyl at 2.1, 23.1 and 44.1 ug/kg (the",
       "lowest corresponding to 50 percent ventilation suppression, the",
       "highest 21-fold higher and representing a lethal dose), each",
@@ -104,8 +114,8 @@ Yang_2024_naloxone_fentanyl <- function() {
       "prophylactic arm giving NAI 10 mg at 5, 15, 30 or 60 min BEFORE",
       "the 44.1 ug/kg fentanyl dose."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Yang 2024 validated this constructed model by digitising the",
       "ventilation-time profiles for fentanyl 0.15 and 0.3 mg/70 kg",
       "from Figure 1 of Yassen 2007 and confirming that the observed",

@@ -52,12 +52,26 @@ Roy_2023_erythropoiesis_qsp <- function() {
   # authors' species names (hyphens replaced by underscores so they are
   # valid R symbols) so the source trace is unambiguous.
   paper_specific_compartments <- c(
-    "HIFa", "EPO_plasma", "EPO_periphery", "EPO_receptor",
-    "EPO_LR_complex", "rhuEPO_LR_complex", "darbe_LR_complex",
-    "rhuEPO_SC_Dose", "rhuEPO_plasma", "rhuEPO_periphery",
-    "darbe_SC_Dose", "Darbe_plasma", "darbe_periphery",
-    "PHI_Dose_Gut", "PHI_Plasma", "PHI_periphery",
-    "Progenitors", "Precursors", "Retics_plasma", "RBCM"
+    "HIFa",
+    "EPO_plasma",
+    "EPO_periphery",
+    "EPO_receptor",
+    "EPO_LR_complex",
+    "rhuEPO_LR_complex",
+    "darbe_LR_complex",
+    "rhuEPO_SC_Dose",
+    "rhuEPO_plasma",
+    "rhuEPO_periphery",
+    "darbe_SC_Dose",
+    "Darbe_plasma",
+    "darbe_periphery",
+    "PHI_Dose_Gut",
+    "PHI_Plasma",
+    "PHI_periphery",
+    "Progenitors",
+    "Precursors",
+    "Retics_plasma",
+    "RBCM"
   )
 
   # Declared explicitly: buildModelDb() infers the registry's dosing column
@@ -67,8 +81,8 @@ Roy_2023_erythropoiesis_qsp <- function() {
   dosing <- c("rhuEPO_SC_Dose", "darbe_SC_Dose", "PHI_Dose_Gut")
 
   units <- list(
-    time          = "h",
-    dosing        = "ng (rHuEPO / darbepoetin SC) or ug (oral PHI)",
+    time = "h",
+    dosing = "ng (rHuEPO / darbepoetin SC) or ug (oral PHI)",
     concentration = "ng/mL"
   )
 
@@ -83,35 +97,80 @@ Roy_2023_erythropoiesis_qsp <- function() {
   # modelled in the central compartment, a caveat the Supplement states
   # explicitly; "blood cell" is the nearest specimen in the vocabulary.
   compartmentData <- list(
-    HIFa              = list(analyte = "hypoxia-inducible factor 1-alpha", units = "ng/mL", specimen = "tissue", verified = TRUE),
-    EPO_plasma        = list(analyte = "endogenous erythropoietin", units = "ng/mL", specimen = "plasma", verified = TRUE),
-    EPO_periphery     = list(analyte = "endogenous erythropoietin", units = "ng/mL", specimen = "tissue", verified = TRUE),
-    EPO_receptor      = list(analyte = "free erythropoietin receptor", units = "molecule/L", specimen = "blood cell", verified = TRUE),
-    EPO_LR_complex    = list(analyte = "endogenous EPO-EPOR complex", units = "molecule/L", specimen = "blood cell", verified = TRUE),
-    rhuEPO_LR_complex = list(analyte = "epoetin alfa-EPOR complex", units = "molecule/L", specimen = "blood cell", verified = TRUE),
-    darbe_LR_complex  = list(analyte = "darbepoetin alfa-EPOR complex", units = "molecule/L", specimen = "blood cell", verified = TRUE),
-    rhuEPO_SC_Dose    = list(analyte = "epoetin alfa", units = "ng", specimen = "administration site", verified = TRUE),
-    rhuEPO_plasma     = list(analyte = "epoetin alfa", units = "ng/mL", specimen = "plasma", verified = TRUE),
-    rhuEPO_periphery  = list(analyte = "epoetin alfa", units = "ng/mL", specimen = "tissue", verified = TRUE),
-    darbe_SC_Dose     = list(analyte = "darbepoetin alfa", units = "ng", specimen = "administration site", verified = TRUE),
-    Darbe_plasma      = list(analyte = "darbepoetin alfa", units = "ng/mL", specimen = "plasma", verified = TRUE),
-    darbe_periphery   = list(analyte = "darbepoetin alfa", units = "ng/mL", specimen = "tissue", verified = TRUE),
-    PHI_Dose_Gut      = list(analyte = "HIF prolyl-hydroxylase inhibitor (vadadustat or daprodustat)", units = "ug", specimen = "administration site", verified = TRUE),
-    PHI_Plasma        = list(analyte = "HIF prolyl-hydroxylase inhibitor (vadadustat or daprodustat)", units = "ng/mL", specimen = "plasma", verified = TRUE),
-    PHI_periphery     = list(analyte = "HIF prolyl-hydroxylase inhibitor (vadadustat or daprodustat)", units = "ng/mL", specimen = "tissue", verified = FALSE),
-    Progenitors       = list(analyte = "erythroid progenitor cells (CFU-E)", units = "molecule/L", specimen = "blood cell", verified = TRUE),
-    Precursors        = list(analyte = "erythroid precursor cells", units = "molecule/L", specimen = "blood cell", verified = TRUE),
-    Retics_plasma     = list(analyte = "reticulocytes", units = "molecule/L", specimen = "blood cell", verified = TRUE),
-    RBCM              = list(analyte = "mature erythrocytes", units = "molecule/L", specimen = "blood cell", verified = TRUE)
+    HIFa = list(analyte = "hypoxia-inducible factor 1-alpha", units = "ng/mL", specimen = "tissue", verified = TRUE),
+    EPO_plasma = list(analyte = "endogenous erythropoietin", units = "ng/mL", specimen = "plasma", verified = TRUE),
+    EPO_periphery = list(analyte = "endogenous erythropoietin", units = "ng/mL", specimen = "tissue", verified = TRUE),
+    EPO_receptor = list(
+      analyte = "free erythropoietin receptor",
+      units = "molecule/L",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    EPO_LR_complex = list(
+      analyte = "endogenous EPO-EPOR complex",
+      units = "molecule/L",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    rhuEPO_LR_complex = list(
+      analyte = "epoetin alfa-EPOR complex",
+      units = "molecule/L",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    darbe_LR_complex = list(
+      analyte = "darbepoetin alfa-EPOR complex",
+      units = "molecule/L",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    rhuEPO_SC_Dose = list(analyte = "epoetin alfa", units = "ng", specimen = "administration site", verified = TRUE),
+    rhuEPO_plasma = list(analyte = "epoetin alfa", units = "ng/mL", specimen = "plasma", verified = TRUE),
+    rhuEPO_periphery = list(analyte = "epoetin alfa", units = "ng/mL", specimen = "tissue", verified = TRUE),
+    darbe_SC_Dose = list(analyte = "darbepoetin alfa", units = "ng", specimen = "administration site", verified = TRUE),
+    Darbe_plasma = list(analyte = "darbepoetin alfa", units = "ng/mL", specimen = "plasma", verified = TRUE),
+    darbe_periphery = list(analyte = "darbepoetin alfa", units = "ng/mL", specimen = "tissue", verified = TRUE),
+    PHI_Dose_Gut = list(
+      analyte = "HIF prolyl-hydroxylase inhibitor (vadadustat or daprodustat)",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    PHI_Plasma = list(
+      analyte = "HIF prolyl-hydroxylase inhibitor (vadadustat or daprodustat)",
+      units = "ng/mL",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    PHI_periphery = list(
+      analyte = "HIF prolyl-hydroxylase inhibitor (vadadustat or daprodustat)",
+      units = "ng/mL",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    Progenitors = list(
+      analyte = "erythroid progenitor cells (CFU-E)",
+      units = "molecule/L",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    Precursors = list(
+      analyte = "erythroid precursor cells",
+      units = "molecule/L",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    Retics_plasma = list(analyte = "reticulocytes", units = "molecule/L", specimen = "blood cell", verified = TRUE),
+    RBCM = list(analyte = "mature erythrocytes", units = "molecule/L", specimen = "blood cell", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "human",
-    n_subjects    = 300,
-    n_studies     = 10,
-    age_range     = "not reported for the virtual population",
+    species = "human",
+    n_subjects = 300,
+    n_studies = 10,
+    age_range = "not reported for the virtual population",
     disease_state = paste(
       "Anemia due to chronic kidney disease. Five reference virtual",
       "patients span healthy and CKD stages 1.5, 3, 4 and 5. Virtual",
@@ -121,13 +180,13 @@ Roy_2023_erythropoiesis_qsp <- function() {
       "only, previously treated with rHuEPO, built around a CKD 5",
       "reference patient). Iron sufficiency is assumed throughout."
     ),
-    dose_range    = paste(
+    dose_range = paste(
       "rHuEPO (epoetin alfa) SC 10,000 IU QW, 20,000 IU Q2W,",
       "50 IU/kg TIW, 10,500 IU TIW and 40,000 IU QW;",
       "darbepoetin alfa SC 10-100 ug Q2W;",
       "vadadustat PO 150-600 mg QD; daprodustat PO 1-12 mg QD."
     ),
-    notes         = paste(
+    notes = paste(
       "This is a virtual population, not an observed cohort. Each",
       "virtual population is 300 patients filtered from 10,000",
       "plausible patients generated by log-normal resampling around a",

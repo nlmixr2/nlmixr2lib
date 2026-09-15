@@ -21,10 +21,10 @@ Hirt_2006_nelfinavir <- function() {
     "error in mg/L for each output."
   )
   reference <- "Hirt D, Urien S, Jullien V, Firtion G, Rey E, Pons G, Blanche S, Treluyer JM. Age-related effects on nelfinavir and M8 pharmacokinetics: a population study with 182 children. Antimicrob Agents Chemother. 2006;50(3):910-916. doi:10.1128/aac.50.3.910-916.2006"
-  vignette  <- "Hirt_2006_nelfinavir"
-  units     <- list(
-    time          = "h",
-    dosing        = "mg",
+  vignette <- "Hirt_2006_nelfinavir"
+  units <- list(
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -33,54 +33,54 @@ Hirt_2006_nelfinavir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "nelfinavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "nelfinavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "nelfinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "nelfinavir", units = "mg", specimen = "plasma", verified = FALSE),
     central_m8 = list(analyte = "M8 (hydroxy-tert-butylamide)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight; multiplier on the per-kg V/F and CL/F.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight; multiplier on the per-kg V/F and CL/F.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-kg parameterisation: V/F (L) = (V/F per kg) * WT and CL/F (L/h) = (CL/F per kg) * WT. Linear (exponent 1) scaling was retained over the theoretical allometric exponents 0.75 on CL and 1 on V because no significant OFV or goodness-of-fit improvement was observed (Results, 'Nelfinavir pharmacokinetic model building'). Cohort range 1.7-70 kg; median 21 kg.",
-      source_name        = "BW"
+      notes = "Per-kg parameterisation: V/F (L) = (V/F per kg) * WT and CL/F (L/h) = (CL/F per kg) * WT. Linear (exponent 1) scaling was retained over the theoretical allometric exponents 0.75 on CL and 1 on V because no significant OFV or goodness-of-fit improvement was observed (Results, 'Nelfinavir pharmacokinetic model building'). Cohort range 1.7-70 kg; median 21 kg.",
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Subject age in years; drives a shared power-form age effect on V/F and CL/F.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age in years; drives a shared power-form age effect on V/F and CL/F.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form (AGE/8.2)^-0.29 applied to BOTH V/F and CL/F. Reference age 8.2 years is the median of the 182-child cohort. Range in the source: 3 days (i.e., 0.0082 years) to 17 years. For neonates whose age is recorded in days, convert via AGE = days/365.25 before applying the model.",
-      source_name        = "AGE"
+      notes = "Power-form (AGE/8.2)^-0.29 applied to BOTH V/F and CL/F. Reference age 8.2 years is the median of the 182-child cohort. Range in the source: 3 days (i.e., 0.0082 years) to 17 years. For neonates whose age is recorded in days, convert via AGE = days/365.25 before applying the model.",
+      source_name = "AGE"
     ),
     CONMED_NNRTI_IND = list(
-      description        = "Pooled enzyme-inducing NNRTI coadministration indicator (1 = subject coadministered efavirenz or nevirapine, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pooled enzyme-inducing NNRTI coadministration indicator (1 = subject coadministered efavirenz or nevirapine, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Pooled because the source paper found the inducer effects of efavirenz and nevirapine on KM0 were statistically indistinguishable, and the two drugs were never administered simultaneously in the cohort (efavirenz n=10/53 obs; nevirapine n=33/133 obs). Drives the multiplicative form KM0 = 1.88 * (1 + 0.91 * CONMED_NNRTI_IND), consistent with CYP3A4 induction of M8 elimination. Saquinavir (n=10/48 obs) was tested but not significant; ritonavir (n=3/11 obs) was excluded from the final analysis (unstable model). For a future paper that needs to distinguish efavirenz vs. nevirapine effects separately, use CONMED_EFV and a (future) CONMED_NVP rather than this pooled indicator.",
-      source_name        = "NNI"
+      notes = "Pooled because the source paper found the inducer effects of efavirenz and nevirapine on KM0 were statistically indistinguishable, and the two drugs were never administered simultaneously in the cohort (efavirenz n=10/53 obs; nevirapine n=33/133 obs). Drives the multiplicative form KM0 = 1.88 * (1 + 0.91 * CONMED_NNRTI_IND), consistent with CYP3A4 induction of M8 elimination. Saquinavir (n=10/48 obs) was tested but not significant; ritonavir (n=3/11 obs) was excluded from the final analysis (unstable model). For a future paper that needs to distinguish efavirenz vs. nevirapine effects separately, use CONMED_EFV and a (future) CONMED_NVP rather than this pooled indicator.",
+      source_name = "NNI"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 182L,
-    n_studies       = 1L,
-    age_range       = "3 days to 17 years",
-    age_median      = "8.2 years",
-    weight_range    = "1.7-70 kg",
-    weight_median   = "21 kg",
-    sex_female_pct  = 47.8,
-    disease_state   = "Pediatric HIV-1 infection on oral nelfinavir as part of combination antiretroviral therapy. Nelfinavir given only as 250-mg tablets (crumbled in water and added to milk or food for children unable to swallow); powder formulation not used due to large administration volume, unpleasant consistency, and dissolution difficulties.",
-    dose_range      = "Per-administration mean (SD) by age cohort (Table 1): <2 mo BID 147 (61) mg / TID 130 (70) mg; 2 mo-2 yr BID 504 (137) mg / TID 233 (89) mg; 2-7 yr TID 416 (108) mg; >=8 yr BID 849 (278) mg / TID 655 (131) mg. Typical mg/kg doses 25-60 mg/kg per administration.",
-    regions         = "France (multicentre; Paris-area pediatric HIV clinics including Hopital Cochin-Saint-Vincent-de-Paul and Hopital Necker-Enfants Malades).",
-    n_observations  = "742 nelfinavir + 557 M8 plasma concentrations (median 3 nelfinavir and 2 M8 samples per patient). Most samples at steady state (>= 10 days of treatment); 18 plasma samples in neonates younger than 10 days were not at steady state.",
-    age_cohorts     = "Three pre-specified age cohorts for the FDA-recommendation evaluation: <2 mo (n=25); 2 mo-2 yr (n=36); 2-13 yr (n=121).",
-    co_medication   = "Coadministered antiretrovirals known to influence nelfinavir or M8: efavirenz (n=10 subjects, 53 samples), nevirapine (n=33, 133 samples), ritonavir (n=3, 11 samples; excluded from final analysis), saquinavir (n=10, 48 samples; tested, not significant).",
-    notes           = "Demographics from Hirt 2006 Table 1 and the Results 'Demographic data' paragraph. Therapeutic drug monitoring data; ethics committee approval not required under French TDM regulations at the time of the study. Concentrations < LOQ were set to half the LOQ (0.1 ug/mL). NONMEM v V level 1.1 with FOCE+I. Bootstrap validation: 1000 resamples (Table 2)."
+    species = "human",
+    n_subjects = 182L,
+    n_studies = 1L,
+    age_range = "3 days to 17 years",
+    age_median = "8.2 years",
+    weight_range = "1.7-70 kg",
+    weight_median = "21 kg",
+    sex_female_pct = 47.8,
+    disease_state = "Pediatric HIV-1 infection on oral nelfinavir as part of combination antiretroviral therapy. Nelfinavir given only as 250-mg tablets (crumbled in water and added to milk or food for children unable to swallow); powder formulation not used due to large administration volume, unpleasant consistency, and dissolution difficulties.",
+    dose_range = "Per-administration mean (SD) by age cohort (Table 1): <2 mo BID 147 (61) mg / TID 130 (70) mg; 2 mo-2 yr BID 504 (137) mg / TID 233 (89) mg; 2-7 yr TID 416 (108) mg; >=8 yr BID 849 (278) mg / TID 655 (131) mg. Typical mg/kg doses 25-60 mg/kg per administration.",
+    regions = "France (multicentre; Paris-area pediatric HIV clinics including Hopital Cochin-Saint-Vincent-de-Paul and Hopital Necker-Enfants Malades).",
+    n_observations = "742 nelfinavir + 557 M8 plasma concentrations (median 3 nelfinavir and 2 M8 samples per patient). Most samples at steady state (>= 10 days of treatment); 18 plasma samples in neonates younger than 10 days were not at steady state.",
+    age_cohorts = "Three pre-specified age cohorts for the FDA-recommendation evaluation: <2 mo (n=25); 2 mo-2 yr (n=36); 2-13 yr (n=121).",
+    co_medication = "Coadministered antiretrovirals known to influence nelfinavir or M8: efavirenz (n=10 subjects, 53 samples), nevirapine (n=33, 133 samples), ritonavir (n=3, 11 samples; excluded from final analysis), saquinavir (n=10, 48 samples; tested, not significant).",
+    notes = "Demographics from Hirt 2006 Table 1 and the Results 'Demographic data' paragraph. Therapeutic drug monitoring data; ethics committee approval not required under French TDM regulations at the time of the study. Concentrations < LOQ were set to half the LOQ (0.1 ug/mL). NONMEM v V level 1.1 with FOCE+I. Bootstrap validation: 1000 resamples (Table 2)."
   )
 
   ini({

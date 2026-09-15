@@ -15,77 +15,77 @@ Niebecker_2015_edoxaban <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "edoxaban", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "edoxaban", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "edoxaban", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling on CL/F, Vc/F, Vp/F, Q/F with reference weight 70 kg. Allometric exponents are fixed per Niebecker 2015 Table 3 footnote (paragraph mark mark): CL/F = (WT/70)^(3/4), Vc/F = (WT/70)^1, Vp/F = (WT/70)^(3/4), Q/F = (WT/70)^1. The Vp/F-at-3/4 and Q/F-at-1 assignment is published as printed; note that this is the opposite of the more common volume-at-1 / clearance-at-3/4 grouping. Hokusai-VTE patient weight: 60-108 kg (10th-90th percentile), median 80.5 kg.",
-      source_name        = "WT"
+      notes = "Used for allometric scaling on CL/F, Vc/F, Vp/F, Q/F with reference weight 70 kg. Allometric exponents are fixed per Niebecker 2015 Table 3 footnote (paragraph mark mark): CL/F = (WT/70)^(3/4), Vc/F = (WT/70)^1, Vp/F = (WT/70)^(3/4), Q/F = (WT/70)^1. The Vp/F-at-3/4 and Q/F-at-1 assignment is published as printed; note that this is the opposite of the more common volume-at-1 / clearance-at-3/4 grouping. Hokusai-VTE patient weight: 60-108 kg (10th-90th percentile), median 80.5 kg.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance, raw Cockcroft-Gault (mL/min), NOT BSA-normalized.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, raw Cockcroft-Gault (mL/min), NOT BSA-normalized.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Computed via Cockcroft-Gault per Niebecker 2015 Methods reference [21] (Cockcroft & Gault 1976). Truncated at 150 mL/min in the source analysis: values above 150 are clamped to 150 before entering the piecewise-linear effect on the renal component of CL/F. The piecewise breakpoint is at CRCL = 90 mL/min: slope1 = 0.202 L/h/(mL/min) below 90; slope2 = 0.0321 L/h/(mL/min) above 90 in the phase 1 healthy-volunteer pool, and slope2 = 0.0321 * (1 + 2.74) = 0.120 L/h/(mL/min) above 90 in the Hokusai-VTE phase 3 patient cohort. Hokusai-VTE patient CRCL: 57.5-151 mL/min (10th-90th percentile), median 99 mL/min, range 14.1-247.",
-      source_name        = "CLcr"
+      notes = "Computed via Cockcroft-Gault per Niebecker 2015 Methods reference [21] (Cockcroft & Gault 1976). Truncated at 150 mL/min in the source analysis: values above 150 are clamped to 150 before entering the piecewise-linear effect on the renal component of CL/F. The piecewise breakpoint is at CRCL = 90 mL/min: slope1 = 0.202 L/h/(mL/min) below 90; slope2 = 0.0321 L/h/(mL/min) above 90 in the phase 1 healthy-volunteer pool, and slope2 = 0.0321 * (1 + 2.74) = 0.120 L/h/(mL/min) above 90 in the Hokusai-VTE phase 3 patient cohort. Hokusai-VTE patient CRCL: 57.5-151 mL/min (10th-90th percentile), median 99 mL/min, range 14.1-247.",
+      source_name = "CLcr"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator (1 = Asian, 0 = non-Asian).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator (1 = Asian, 0 = non-Asian).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = "Multiplicative effect on Vc/F: Vc/F is 22.6% higher in Asian patients than non-Asians (Niebecker 2015 Table 3 final model: theta_Asian = 0.226). The source paper dichotomized race after finding that the clinically significant difference was between Asian and non-Asian subjects only (Results, 'Concerning the impact of race on Vc/F, a clinically significant difference was only found for Asians vs. non-Asians'). Asian fraction in Hokusai-VTE = 20.1% (740 of 3707 patients).",
-      source_name        = "Asian race indicator"
+      notes = "Multiplicative effect on Vc/F: Vc/F is 22.6% higher in Asian patients than non-Asians (Niebecker 2015 Table 3 final model: theta_Asian = 0.226). The source paper dichotomized race after finding that the clinically significant difference was between Asian and non-Asian subjects only (Results, 'Concerning the impact of race on Vc/F, a clinically significant difference was only found for Asians vs. non-Asians'). Asian fraction in Hokusai-VTE = 20.1% (740 of 3707 patients).",
+      source_name = "Asian race indicator"
     ),
     PGP_INH = list(
-      description        = "Concomitant P-glycoprotein inhibitor coadministration indicator (1 = on a P-gp inhibitor, 0 = no concomitant P-gp inhibitor).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant P-glycoprotein inhibitor coadministration indicator (1 = on a P-gp inhibitor, 0 = no concomitant P-gp inhibitor).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant P-gp inhibitor)",
-      notes              = "Niebecker 2015 pools the following P-gp inhibitors into the indicator: verapamil, quinidine, dronedarone, erythromycin, azithromycin, clarithromycin, ketoconazole, itraconazole (the 'selected strong P-gp inhibitors' that mandated 50% dose reduction in Hokusai-VTE). Additional P-gp inhibitors recorded but not triggering dose reduction (amiodarone, captopril, carvedilol, conivaptan, ciclosporin, diltiazem, felodipine, quercetin, ranolazin, ticagrelor) were tested in covariate analysis but not retained. Effects on CL/F (+33.4%) and F (+125%) are applied ONLY to phase 1 healthy-volunteer subjects (STUDY_HOKVTE = 0) per Table 3 final-model column. The phase 3 effect on CL/F (~12% decrease) did not meet clinical significance and is excluded from the final model.",
-      source_name        = "P-gp inhibitor co-administration"
+      notes = "Niebecker 2015 pools the following P-gp inhibitors into the indicator: verapamil, quinidine, dronedarone, erythromycin, azithromycin, clarithromycin, ketoconazole, itraconazole (the 'selected strong P-gp inhibitors' that mandated 50% dose reduction in Hokusai-VTE). Additional P-gp inhibitors recorded but not triggering dose reduction (amiodarone, captopril, carvedilol, conivaptan, ciclosporin, diltiazem, felodipine, quercetin, ranolazin, ticagrelor) were tested in covariate analysis but not retained. Effects on CL/F (+33.4%) and F (+125%) are applied ONLY to phase 1 healthy-volunteer subjects (STUDY_HOKVTE = 0) per Table 3 final-model column. The phase 3 effect on CL/F (~12% decrease) did not meet clinical significance and is excluded from the final model.",
+      source_name = "P-gp inhibitor co-administration"
     ),
     STUDY_HOKVTE = list(
-      description        = "Hokusai-VTE phase 3 cohort indicator (1 = subject in Hokusai-VTE phase 3 VTE-patient cohort, 0 = subject in the pooled phase 1 healthy-volunteer studies).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hokusai-VTE phase 3 cohort indicator (1 = subject in Hokusai-VTE phase 3 VTE-patient cohort, 0 = subject in the pooled phase 1 healthy-volunteer studies).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (phase 1 healthy-volunteer pool: 13 studies, 443 subjects, 8652 PK observations)",
-      notes              = "Hokusai-VTE: NCT00986154 phase 3 randomized double-blind double-dummy multicenter VTE study; 3707 patients with symptomatic DVT and/or PE receiving 60 mg edoxaban once daily (or 30 mg if dose-reduced for WT <= 60 kg, CLcr 30-50 mL/min, or concomitant P-gp inhibitor); 9531 PK observations sampled month 3 / month 12 / on-event. Used to switch (a) the upper-CLcr slope on the renal component of CL/F (+274% scaling relative to phase 1, so slope2_HV = 0.0321 -> slope2_phase3 = 0.120 L/h/(mL/min)) and (b) Q/F (+64.6% in patients vs healthy volunteers). Subject-level / time-fixed.",
-      source_name        = "Study phase (phase 1 vs phase 3 Hokusai-VTE)"
+      notes = "Hokusai-VTE: NCT00986154 phase 3 randomized double-blind double-dummy multicenter VTE study; 3707 patients with symptomatic DVT and/or PE receiving 60 mg edoxaban once daily (or 30 mg if dose-reduced for WT <= 60 kg, CLcr 30-50 mL/min, or concomitant P-gp inhibitor); 9531 PK observations sampled month 3 / month 12 / on-event. Used to switch (a) the upper-CLcr slope on the renal component of CL/F (+274% scaling relative to phase 1, so slope2_HV = 0.0321 -> slope2_phase3 = 0.120 L/h/(mL/min)) and (b) Q/F (+64.6% in patients vs healthy volunteers). Subject-level / time-fixed.",
+      source_name = "Study phase (phase 1 vs phase 3 Hokusai-VTE)"
     ),
     FED = list(
-      description        = "Fed-state-at-dosing indicator (1 = administered with food, 0 = administered fasted).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-state-at-dosing indicator (1 = administered with food, 0 = administered fasted).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "In Niebecker 2015 only study 6 (the dronedarone DDI crossover; Table 1 row 6) administered edoxaban under fed conditions; all other 12 phase 1 studies and the Hokusai-VTE phase 3 study used overnight-fast dosing. Two structural effects: ka is reduced 69% in the fed state (e_fed_ka = -0.690 in Niebecker's 'fractional change in ka study 6' notation) and apparent non-renal CL/F increases from 15.2 to 18.3 L/h (e_fed_cl_nonren = 0.204 = 18.3/15.2 - 1, in Niebecker's 'CLnr/F study 6' notation). The food-effect interpretation matches the Table 1 study-design column (Fed vs Overnight fast); the source paper used 'study 6' as the covariate name and did not separately mechanistically attribute the effect. For the targeted Hokusai-VTE phase 3 simulation population, FED = 0 always, so both effects contribute nothing.",
-      source_name        = "Study 6 indicator (the only Fed-state phase 1 study)"
+      notes = "In Niebecker 2015 only study 6 (the dronedarone DDI crossover; Table 1 row 6) administered edoxaban under fed conditions; all other 12 phase 1 studies and the Hokusai-VTE phase 3 study used overnight-fast dosing. Two structural effects: ka is reduced 69% in the fed state (e_fed_ka = -0.690 in Niebecker's 'fractional change in ka study 6' notation) and apparent non-renal CL/F increases from 15.2 to 18.3 L/h (e_fed_cl_nonren = 0.204 = 18.3/15.2 - 1, in Niebecker's 'CLnr/F study 6' notation). The food-effect interpretation matches the Table 1 study-design column (Fed vs Overnight fast); the source paper used 'study 6' as the covariate name and did not separately mechanistically attribute the effect. For the targeted Hokusai-VTE phase 3 simulation population, FED = 0 always, so both effects contribute nothing.",
+      source_name = "Study 6 indicator (the only Fed-state phase 1 study)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 4130L,
-    n_observations   = 17406L,
-    n_studies        = 14L,
-    age_range        = "Phase 1: 22.0-43.8 years (10th-90th percentile); Hokusai-VTE: 32.6-76.0 years (10th-90th); pooled mean 32 (range 18-67 across the analysis set; Hokusai-VTE mean 55.6).",
-    age_median       = "Phase 1 median 30.0 years; Hokusai-VTE median 57.0 years",
-    weight_range     = "Phase 1: 63.0-94.4 kg (10th-90th percentile); Hokusai-VTE: 60-108 kg (10th-90th); pooled mean 79 kg (range 50-111).",
-    weight_median    = "Phase 1 median 79.3 kg; Hokusai-VTE median 80.5 kg",
-    sex_female_pct   = 38,
-    race_ethnicity   = c(White = 60.6, Black = 8.6, Asian = 18.1, Other = 12.4),
-    disease_state    = "Hokusai-VTE: symptomatic deep-vein thrombosis (DVT) with or without pulmonary embolism (PE), or PE alone. Phase 1: healthy adult volunteers across 13 studies including a renal-impairment study and 5 P-gp DDI crossover studies.",
-    dose_range       = "Hokusai-VTE: 60 mg orally once daily (or 30 mg if dose-reduced for WT <= 60 kg, CLcr 30-50 mL/min, or concomitant P-gp inhibitor); Phase 1: 15-60 mg single or multiple oral doses across the 13 studies.",
-    regions          = "Hokusai-VTE: 439 centers across 37 countries; phase 1 studies in healthy-volunteer units in the US and Europe.",
-    notes            = "Pooled population PK analysis. Demographics from Niebecker 2015 Table 2; race distribution computed from the pooled cohort percentages (Hokusai-VTE: 71.0% White, 3.23% Black, 20.1% Asian, 5.48% Other, 0.244% Missing; phase 1: 43.6% White, 51.7% Black, 2.03% Asian-non-Japanese, 2.48% Other; pooled fractions weighted by subject count). Missing race in 9 Hokusai-VTE patients imputed as White. Final analysis dataset: 17,406 plasma concentrations from 4,130 individuals after exclusion of 633 phase 1 and 144 Hokusai-VTE below-LLOQ samples (LLOQ 0.764 ng/mL by the Advion LC-MS/MS assay; 1 ng/mL by the BioDynamics LC-MS/MS assay used for the renal-impairment phase 1 study)."
+    species = "human",
+    n_subjects = 4130L,
+    n_observations = 17406L,
+    n_studies = 14L,
+    age_range = "Phase 1: 22.0-43.8 years (10th-90th percentile); Hokusai-VTE: 32.6-76.0 years (10th-90th); pooled mean 32 (range 18-67 across the analysis set; Hokusai-VTE mean 55.6).",
+    age_median = "Phase 1 median 30.0 years; Hokusai-VTE median 57.0 years",
+    weight_range = "Phase 1: 63.0-94.4 kg (10th-90th percentile); Hokusai-VTE: 60-108 kg (10th-90th); pooled mean 79 kg (range 50-111).",
+    weight_median = "Phase 1 median 79.3 kg; Hokusai-VTE median 80.5 kg",
+    sex_female_pct = 38,
+    race_ethnicity = c(White = 60.6, Black = 8.6, Asian = 18.1, Other = 12.4),
+    disease_state = "Hokusai-VTE: symptomatic deep-vein thrombosis (DVT) with or without pulmonary embolism (PE), or PE alone. Phase 1: healthy adult volunteers across 13 studies including a renal-impairment study and 5 P-gp DDI crossover studies.",
+    dose_range = "Hokusai-VTE: 60 mg orally once daily (or 30 mg if dose-reduced for WT <= 60 kg, CLcr 30-50 mL/min, or concomitant P-gp inhibitor); Phase 1: 15-60 mg single or multiple oral doses across the 13 studies.",
+    regions = "Hokusai-VTE: 439 centers across 37 countries; phase 1 studies in healthy-volunteer units in the US and Europe.",
+    notes = "Pooled population PK analysis. Demographics from Niebecker 2015 Table 2; race distribution computed from the pooled cohort percentages (Hokusai-VTE: 71.0% White, 3.23% Black, 20.1% Asian, 5.48% Other, 0.244% Missing; phase 1: 43.6% White, 51.7% Black, 2.03% Asian-non-Japanese, 2.48% Other; pooled fractions weighted by subject count). Missing race in 9 Hokusai-VTE patients imputed as White. Final analysis dataset: 17,406 plasma concentrations from 4,130 individuals after exclusion of 633 phase 1 and 144 Hokusai-VTE below-LLOQ samples (LLOQ 0.764 ng/mL by the Advion LC-MS/MS assay; 1 ng/mL by the BioDynamics LC-MS/MS assay used for the renal-impairment phase 1 study)."
   )
 
   ini({

@@ -14,41 +14,41 @@ Eckernas_2023_dimethyltryptamine_alphaPower <- function() {
     sep = " "
   )
   vignette <- "Eckernas_2023_dimethyltryptamine_EEG"
-  units    <- list(time = "min", dosing = "nmol", concentration = "nmol/L")
+  units <- list(time = "min", dosing = "nmol", concentration = "nmol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "DMT", units = "nmol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "DMT", units = "nmol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "DMT", units = "nmol", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "DMT", units = "nmol", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "DMT", units = "nmol", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     OCC = list(
-      description        = "Integer-valued occasion indicator. In the Eckernas 2023 fixed-sequence study design each participant contributed two occasions: OCC = 1 is the placebo visit and OCC = 2 is the DMT visit one week later.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion indicator. In the Eckernas 2023 fixed-sequence study design each participant contributed two occasions: OCC = 1 is the placebo visit and OCC = 2 is the DMT visit one week later.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Constant within an occasion, time-varying within a subject. Decomposed inside model() into the binary indicators oc1 and oc2 that multiplex the two between-occasion etas on baseline alpha power. Appendix S1 carries the same construct as the two data columns OCC1 and OCC2 with `$OMEGA BLOCK (1) 0.102 ; OCC1` and `$OMEGA BLOCK (1) SAME ; OCC2`, i.e. a single shared between-occasion variance across the two occasions.",
-      source_name        = "OCC1 / OCC2"
+      notes = "Constant within an occasion, time-varying within a subject. Decomposed inside model() into the binary indicators oc1 and oc2 that multiplex the two between-occasion etas on baseline alpha power. Appendix S1 carries the same construct as the two data columns OCC1 and OCC2 with `$OMEGA BLOCK (1) 0.102 ; OCC1` and `$OMEGA BLOCK (1) SAME ; OCC2`, i.e. a single shared between-occasion variance across the two occasions.",
+      source_name = "OCC1 / OCC2"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 13L,                                                       # Eckernas 2023 Methods (Clinical study): 13 healthy subjects contributed plasma PK
-    n_studies      = 1L,                                                        # single placebo-controlled, single-blind, fixed-sequence pilot study
-    age_range      = "22-48 years",                                             # Eckernas 2023 Methods (Clinical study)
-    age_median     = "33 years",                                                # Eckernas 2023 Methods (Clinical study)
-    sex_female_pct = 46.2,                                                      # Eckernas 2023 Methods: seven men of 13 subjects; (13 - 7) / 13 = 46.2%
-    disease_state  = "healthy volunteers",                                      # Eckernas 2023 Methods (Clinical study)
-    dose_range     = "Placebo at visit 1 and a single intravenous bolus of 7 mg (n = 3), 14 mg (n = 4), 18 mg (n = 1) or 20 mg (n = 5) DMT fumarate at visit 2, one week later.",  # Eckernas 2023 Methods (Clinical study)
-    regions        = "United Kingdom (National Institute of Health Research Imperial Clinical Research Facility, London).",  # Eckernas 2023 Methods (Clinical study)
-    n_observations = "252 EEG observations after DMT and 238 after placebo were available across alpha power, beta power, delta power, theta power and LZc score (84, 63, 21 and 84 post-DMT observations for the 7, 14, 18 and 20 mg dose levels); the fixed PK model was built on 93 DMT plasma concentrations.",  # Eckernas 2023 Results, first paragraph
-    notes          = "EEG was recorded with a 32-channel Brainproducts system (EasycapMR 32) at 1000 Hz, band-pass filtered at 1-45 Hz, averaged across channels and summarised as mean values per minute for modelling; the alpha band is 8-13 Hz. EEG recordings from one participant who received 20 mg were excluded because of excessive movement artifacts, so the PD models were fitted to 12 participants. No covariate effects were explored because of the small sample size (Eckernas 2023 Discussion)."
+    species = "human",
+    n_subjects = 13L, # Eckernas 2023 Methods (Clinical study): 13 healthy subjects contributed plasma PK
+    n_studies = 1L, # single placebo-controlled, single-blind, fixed-sequence pilot study
+    age_range = "22-48 years", # Eckernas 2023 Methods (Clinical study)
+    age_median = "33 years", # Eckernas 2023 Methods (Clinical study)
+    sex_female_pct = 46.2, # Eckernas 2023 Methods: seven men of 13 subjects; (13 - 7) / 13 = 46.2%
+    disease_state = "healthy volunteers", # Eckernas 2023 Methods (Clinical study)
+    dose_range = "Placebo at visit 1 and a single intravenous bolus of 7 mg (n = 3), 14 mg (n = 4), 18 mg (n = 1) or 20 mg (n = 5) DMT fumarate at visit 2, one week later.", # Eckernas 2023 Methods (Clinical study)
+    regions = "United Kingdom (National Institute of Health Research Imperial Clinical Research Facility, London).", # Eckernas 2023 Methods (Clinical study)
+    n_observations = "252 EEG observations after DMT and 238 after placebo were available across alpha power, beta power, delta power, theta power and LZc score (84, 63, 21 and 84 post-DMT observations for the 7, 14, 18 and 20 mg dose levels); the fixed PK model was built on 93 DMT plasma concentrations.", # Eckernas 2023 Results, first paragraph
+    notes = "EEG was recorded with a 32-channel Brainproducts system (EasycapMR 32) at 1000 Hz, band-pass filtered at 1-45 Hz, averaged across channels and summarised as mean values per minute for modelling; the alpha band is 8-13 Hz. EEG recordings from one participant who received 20 mg were excluded because of excessive movement artifacts, so the PD models were fitted to 12 participants. No covariate effects were explored because of the small sample size (Eckernas 2023 Discussion)."
   )
 
   ini({

@@ -8,53 +8,53 @@ Wang_2020_ontamalimab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ontamalimab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ontamalimab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ontamalimab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ontamalimab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ontamalimab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 70 kg. Power effects: CL exp 0.0034, Vc exp 0.635, CLd exp 0.0034, Vp exp 0.635, Vmax exp 1.89 per Wang 2020 Table 2.",
-      source_name        = "WT"
+      notes = "Reference 70 kg. Power effects: CL exp 0.0034, Vc exp 0.635, CLd exp 0.0034, Vp exp 0.635, Vmax exp 1.89 per Wang 2020 Table 2.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 39 g/L (overall median). Power effect on CL with exponent -0.889 per Wang 2020 Table 2 and table footnote (ALB unit g/L).",
-      source_name        = "ALB"
+      notes = "Reference 39 g/L (overall median). Power effect on CL with exponent -0.889 per Wang 2020 Table 2 and table footnote (ALB unit g/L).",
+      source_name = "ALB"
     ),
     CRP = list(
-      description        = "Baseline C-reactive protein",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline C-reactive protein",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 0.837 mg/dL (overall median). Power effect on CL with exponent 0.147 per Wang 2020 Table 2 and table footnote (CRP unit mg/dL). Note: source unit is mg/dL, not the canonical mg/L; the reference value and effect coefficient are inseparable from the unit. 1 mg/dL = 10 mg/L; the equivalent reference in mg/L would be 8.37 mg/L.",
-      source_name        = "CRP"
+      notes = "Reference 0.837 mg/dL (overall median). Power effect on CL with exponent 0.147 per Wang 2020 Table 2 and table footnote (CRP unit mg/dL). Note: source unit is mg/dL, not the canonical mg/L; the reference value and effect coefficient are inseparable from the unit. 1 mg/dL = 10 mg/L; the equivalent reference in mg/L would be 8.37 mg/L.",
+      source_name = "CRP"
     )
   )
 
   population <- list(
-    n_subjects     = 440L,
+    n_subjects = 440L,
     n_observations = 2138L,
-    n_studies      = 2L,
-    age_range      = "18-68 years",
-    age_median     = "37 years",
-    weight_range   = "35.6-155 kg",
-    weight_median  = "68.8 kg",
+    n_studies = 2L,
+    age_range = "18-68 years",
+    age_median = "37 years",
+    weight_range = "35.6-155 kg",
+    weight_median = "68.8 kg",
     sex_female_pct = 51.1,
     race_ethnicity = c(White = 86.1, Asian = 10.0, Other = 3.9),
-    disease_state  = "Moderate-to-severe ulcerative colitis (UC, n = 249; 56.6%) or Crohn's disease (CD, n = 191; 43.4%) with prior failure or intolerance to immunosuppressants and/or anti-TNF agents.",
-    dose_range     = "Subcutaneous ontamalimab 7.5, 22.5, 75, or 225 mg every 4 weeks (3 doses; days 1, 28, 56) over a 12-week treatment / induction period.",
-    regions        = "Multi-regional (phase 2 OPERA NCT01276509 in CD and phase 2b TURANDOT NCT01620255 in UC).",
+    disease_state = "Moderate-to-severe ulcerative colitis (UC, n = 249; 56.6%) or Crohn's disease (CD, n = 191; 43.4%) with prior failure or intolerance to immunosuppressants and/or anti-TNF agents.",
+    dose_range = "Subcutaneous ontamalimab 7.5, 22.5, 75, or 225 mg every 4 weeks (3 doses; days 1, 28, 56) over a 12-week treatment / induction period.",
+    regions = "Multi-regional (phase 2 OPERA NCT01276509 in CD and phase 2b TURANDOT NCT01620255 in UC).",
     reference_subject = "70-kg patient with UC or CD, baseline albumin 39 g/L, baseline CRP 0.837 mg/dL (overall median values per Wang 2020 Table 2 footnote).",
-    notes          = "Pooled phase 2 dataset; 9.4% (202/2138) of ontamalimab samples were below the 10 ng/mL LLOQ and were treated as missing for the population PK analysis. Disease status (CD vs UC), sex, time-varying ADA status, AST, ALT, bilirubin, and age were tested as covariates and were not retained in the final model; only baseline albumin and baseline CRP entered the final CL/F covariate equation alongside allometric weight scaling."
+    notes = "Pooled phase 2 dataset; 9.4% (202/2138) of ontamalimab samples were below the 10 ng/mL LLOQ and were treated as missing for the population PK analysis. Disease status (CD vs UC), sex, time-varying ADA status, AST, ALT, bilirubin, and age were tested as covariates and were not retained in the final model; only baseline albumin and baseline CRP entered the final CL/F covariate equation alongside allometric weight scaling."
   )
 
   ini({

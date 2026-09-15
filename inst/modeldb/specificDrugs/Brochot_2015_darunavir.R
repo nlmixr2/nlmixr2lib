@@ -8,39 +8,39 @@ Brochot_2015_darunavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "darunavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "darunavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "darunavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "darunavir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "darunavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (per-visit / time-varying).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (per-visit / time-varying).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference weight 70 kg (adult) in allometric power scaling on CL/F and V2/F. Time-varying per NONMEM column WTV in supplement control stream.",
-      source_name        = "WTV"
+      notes = "Reference weight 70 kg (adult) in allometric power scaling on CL/F and V2/F. Time-varying per NONMEM column WTV in supplement control stream.",
+      source_name = "WTV"
     ),
     AAG = list(
-      description        = "Serum alpha-1 acid glycoprotein (orosomucoid) concentration.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum alpha-1 acid glycoprotein (orosomucoid) concentration.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Canonical AAG unit is g/L (100 mg/dL = 1 g/L). Paper Table 3 reports KAFF = 0.0304 dL/mg with AAG in mg/dL; converted to canonical L/g: e_aag_cl = 0.0304 * 100 = 3.04 L/g. Non-linear inverse-saturation effect on CL/F: CL/F is multiplied by 1 / (1 + e_aag_cl * AAG). Paper's pooled pediatric-cohort 5th/50th/95th percentiles were 0.564 / 0.912 / 1.57 g/L (56.4 / 91.2 / 157 mg/dL, Methods 'Simulations').",
-      source_name        = "AAG"
+      notes = "Canonical AAG unit is g/L (100 mg/dL = 1 g/L). Paper Table 3 reports KAFF = 0.0304 dL/mg with AAG in mg/dL; converted to canonical L/g: e_aag_cl = 0.0304 * 100 = 3.04 L/g. Non-linear inverse-saturation effect on CL/F: CL/F is multiplied by 1 / (1 + e_aag_cl * AAG). Paper's pooled pediatric-cohort 5th/50th/95th percentiles were 0.564 / 0.912 / 1.57 g/L (56.4 / 91.2 / 157 mg/dL, Methods 'Simulations').",
+      source_name = "AAG"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 102,
-    n_studies      = 5,
-    age_range      = "3-66 years",
-    weight_range   = "12-96 kg",
-    disease_state  = "HIV-1 infection (treatment-experienced and treatment-naive)",
-    dose_range     = "300-800 mg darunavir with 50-100 mg ritonavir boosting; once- or twice-daily oral",
-    notes          = paste(
+    species = "human",
+    n_subjects = 102,
+    n_studies = 5,
+    age_range = "3-66 years",
+    weight_range = "12-96 kg",
+    disease_state = "HIV-1 infection (treatment-experienced and treatment-naive)",
+    dose_range = "300-800 mg darunavir with 50-100 mg ritonavir boosting; once- or twice-daily oral",
+    notes = paste(
       "Pooled population-PK dataset (Brochot 2015 Table 1) from five studies:",
       "DUET-1 + DUET-2 (adults 18-66 y, N=30, DRV/r 600/100 mg BID);",
       "DELPHI (children 6-17 y, N=41, DRV/r 300-600/50-100 mg BID);",

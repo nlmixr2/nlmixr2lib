@@ -22,18 +22,18 @@ Helfer_2026_pentobarbital <- function() {
   # and "plasma pentobarbital concentrations were quantified using a validated
   # HPLC/MS-MS assay" over 50-50,000 ng/mL (0.05-50 mg/L).
   compartmentData <- list(
-    central     = list(analyte = "pentobarbital", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "pentobarbital", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "pentobarbital", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The only covariate in the final model. Allometric size descriptor normalised to a 70 kg reference (Equation 4: PAR_ij = theta_Pop,j * (WT_i / W_standard)^beta, with W_standard = 70 kg for total body weight). Exponents are fixed at 0.75 for CL and Q and 1 for V1 and V2. Table S1 records that estimating the exponents instead gave 0.758 for clearance - essentially the theoretical value - and about 1.3 for the volumes, but improved the fit by only dOFV = -2.427, so the fixed exponents were retained. Total body weight beat lean body mass (dOFV -52.642) and fat-free mass (dOFV -50.569) as the size descriptor, reaching the lowest OFV of 1195.373 (dOFV -52.984 versus the unscaled base model); the bodyweight-dependent allometric exponent of Wang 2012 was also tried but the covariance step failed and no RSEs were computed. Cohort weights span 3.14-65.0 kg with an overall median of 17.1 kg (Table 1), so the 70 kg reference itself sits above every subject in the analysis dataset. Body weight was recorded at or closest to the time of first sample collection, i.e. treated as a baseline value rather than a time-varying one.",
-      source_name        = "WT"
+      notes = "The only covariate in the final model. Allometric size descriptor normalised to a 70 kg reference (Equation 4: PAR_ij = theta_Pop,j * (WT_i / W_standard)^beta, with W_standard = 70 kg for total body weight). Exponents are fixed at 0.75 for CL and Q and 1 for V1 and V2. Table S1 records that estimating the exponents instead gave 0.758 for clearance - essentially the theoretical value - and about 1.3 for the volumes, but improved the fit by only dOFV = -2.427, so the fixed exponents were retained. Total body weight beat lean body mass (dOFV -52.642) and fat-free mass (dOFV -50.569) as the size descriptor, reaching the lowest OFV of 1195.373 (dOFV -52.984 versus the unscaled base model); the bodyweight-dependent allometric exponent of Wang 2012 was also tried but the covariance step failed and no RSEs were computed. Cohort weights span 3.14-65.0 kg with an overall median of 17.1 kg (Table 1), so the 70 kg reference itself sits above every subject in the analysis dataset. Body weight was recorded at or closest to the time of first sample collection, i.e. treated as a baseline value rather than a time-varying one.",
+      source_name = "WT"
     )
   )
 
@@ -46,62 +46,62 @@ Helfer_2026_pentobarbital <- function() {
   covariatesDataExcluded <- list(
     BMI = list(
       description = "Body mass index, and the derived paediatric obesity indicator",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened on both CL (dOFV -0.278) and V1 (dOFV -1.211) as a linear-deviation effect centred at the cohort median of 17.11 kg/m^2; neither reached the 3.84 forward-inclusion threshold. The binary obesity indicator derived from it - BMI at or above the 95th percentile for age and sex on the CDC 2000 growth charts, defined only for participants over 2 years, with missing treated as non-obese - was the one covariate that DID pass forward inclusion, on V1 only (dOFV -4.088), giving V1 = 94.9 L/70 kg in children with obesity versus 33.2 L/70 kg without. It was not retained during backward elimination and is absent from the final model. Only 5 of 39 participants (12.8%, or 18.5% of those aged 2 years and over) were classified as obese. The Discussion links this to the estimated volume exponent of about 1.3 and to pentobarbital's lipophilicity (log P 2.1)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened on both CL (dOFV -0.278) and V1 (dOFV -1.211) as a linear-deviation effect centred at the cohort median of 17.11 kg/m^2; neither reached the 3.84 forward-inclusion threshold. The binary obesity indicator derived from it - BMI at or above the 95th percentile for age and sex on the CDC 2000 growth charts, defined only for participants over 2 years, with missing treated as non-obese - was the one covariate that DID pass forward inclusion, on V1 only (dOFV -4.088), giving V1 = 94.9 L/70 kg in children with obesity versus 33.2 L/70 kg without. It was not retained during backward elimination and is absent from the final model. Only 5 of 39 participants (12.8%, or 18.5% of those aged 2 years and over) were classified as obese. The Discussion links this to the estimated volume exponent of about 1.3 and to pentobarbital's lipophilicity (log P 2.1)."
     ),
     PNA = list(
       description = "Postnatal age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on CL as a sigmoidal Emax maturation function, both with an estimated Hill coefficient (dOFV -2.53) and with the Hill coefficient fixed to 1 (dOFV -2.517); neither reached the forward-inclusion threshold. Figure S1B shows no trend of the shared eta against postnatal age. Results states that lower absolute CL and V1 in children under 6 years disappeared after adjusting for weight, 'demonstrating that age had no additional effect beyond weight'. Cohort ages span 2 days to 20.8 years, median 4.18 years (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on CL as a sigmoidal Emax maturation function, both with an estimated Hill coefficient (dOFV -2.53) and with the Hill coefficient fixed to 1 (dOFV -2.517); neither reached the forward-inclusion threshold. Figure S1B shows no trend of the shared eta against postnatal age. Results states that lower absolute CL and V1 in children under 6 years disappeared after adjusting for weight, 'demonstrating that age had no additional effect beyond weight'. Cohort ages span 2 days to 20.8 years, median 4.18 years (Table 1)."
     ),
     SEXF = list(
       description = "Sex, female",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a proportional shift relative to male on CL (dOFV -0.179) and V1 (dOFV -1.283); neither was significant. 17 of 39 participants (43.6%) were female (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a proportional shift relative to male on CL (dOFV -0.179) and V1 (dOFV -1.283); neither was significant. 17 of 39 participants (43.6%) were female (Table 1)."
     ),
     RACE_BLACK = list(
       description = "Black or African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part of the race screen, tested in three encodings, all relative to White (missing coded as White): a three-level shift for Black or African American / Asian / Multiple races on CL (dOFV -1.516) and V1 (dOFV -0.266); a single non-White indicator on CL (dOFV -0.348) and V1 (dOFV -0.006); and a two-level Black-or-African-American / other-non-White shift on CL (dOFV -1.44) and V1 (dOFV -0.008). No encoding reached the forward-inclusion threshold. 7 of 39 participants (17.9%) were Black or African American (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part of the race screen, tested in three encodings, all relative to White (missing coded as White): a three-level shift for Black or African American / Asian / Multiple races on CL (dOFV -1.516) and V1 (dOFV -0.266); a single non-White indicator on CL (dOFV -0.348) and V1 (dOFV -0.006); and a two-level Black-or-African-American / other-non-White shift on CL (dOFV -1.44) and V1 (dOFV -0.008). No encoding reached the forward-inclusion threshold. 7 of 39 participants (17.9%) were Black or African American (Table 1)."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as one level of the three-level race shift on CL and V1 described under RACE_BLACK; not significant. 2 of 39 participants (5.1%) were Asian (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as one level of the three-level race shift on CL and V1 described under RACE_BLACK; not significant. 2 of 39 participants (5.1%) were Asian (Table 1)."
     ),
     RACE_HISPANIC = list(
       description = "Hispanic or Latino ethnicity indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a proportional shift relative to not-Hispanic-or-Latino (missing coded as not Hispanic) on CL (dOFV -1.625) and V1 (dOFV -0.064); neither was significant. 9 of 39 participants (23.1%) were Hispanic or Latino (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a proportional shift relative to not-Hispanic-or-Latino (missing coded as not Hispanic) on CL (dOFV -1.625) and V1 (dOFV -0.064); neither was significant. 9 of 39 participants (23.1%) were Hispanic or Latino (Table 1)."
     ),
     ECMO_STATUS = list(
       description = "Receiving extracorporeal membrane oxygenation at the time of sampling",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on CL (dOFV -0.408) and V1 (dOFV -0.04); neither was significant. ECMO was nominally an exclusion criterion but 4 participants (10.3%) were on ECMO at data collection and were retained because they contributed 5 PK samples. The Discussion cautions that this sample size limits any conclusion that ECMO has no effect."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on CL (dOFV -0.408) and V1 (dOFV -0.04); neither was significant. ECMO was nominally an exclusion criterion but 4 participants (10.3%) were on ECMO at data collection and were retained because they contributed 5 PK samples. The Discussion cautions that this sample size limits any conclusion that ECMO has no effect."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 39L,
-    n_studies      = 1L,
-    age_range      = "0.01-20.8 years (youngest 2 days; all other participants at least 6 months)",
-    age_median     = "4.18 years",
-    weight_range   = "3.14-65.0 kg",
-    weight_median  = "17.1 kg",
+    species = "human",
+    n_subjects = 39L,
+    n_studies = 1L,
+    age_range = "0.01-20.8 years (youngest 2 days; all other participants at least 6 months)",
+    age_median = "4.18 years",
+    weight_range = "3.14-65.0 kg",
+    weight_median = "17.1 kg",
     sex_female_pct = 43.6,
     race_ethnicity = c(White = 74.4, Black = 17.9, Asian = 5.1, Multiple = 2.6),
-    disease_state  = "Children under 21 years receiving intravenous pentobarbital as part of standard of care. Sedation was the most common indication, followed by seizure control. 4 participants (10.3%) received vasopressors and 1 (2.6%) received valproic acid on the day of PK sampling; 4 (10.3%) were on ECMO. 5 participants (12.8%) met the paediatric obesity definition.",
-    dose_range     = "Intravenous bolus and/or continuous infusion. Median IV bolus dose 2 mg/kg (range 0.39-8.9), absolute 4.7-290 mg (median 45 mg); median IV infusion rate 2.4 mg/kg/h (range 0.00175-16.1). Median 5 doses per participant (range 1-45), median bolus interval 2.34 h (range 0-73.7), median infusion duration 7.2 h (range 0.3-146.42).",
-    regions        = "United States (multicentre; Pediatric Trials Network sites)",
-    notes          = "Opportunistically collected standard-of-care data from the POP01 study, 'Pharmacokinetics of Understudied Drugs Administered to Children Per Standard of Care' (NICHD-2011-POP01, ClinicalTrials.gov NCT01431326). 42 participants were enrolled; 3 were excluded (one who also received a single oral dose, one whose only sample was below the limit of quantification, and one with a negative infusion duration from a dosing-entry error), leaving 39 participants and 70 plasma samples (median 2 samples per participant, range 1-5). The data are sparse, which the authors identify as the main limitation on covariate detection. Metabolic panel values (direct and total bilirubin, serum creatinine, AST, ALT, albumin) were missing for more than 48.7% of participants and so were never evaluated - covariates with more than 10% missingness were excluded from testing by protocol. C-reactive protein, a significant covariate on CL in Ketharanathan 2023, was not collected."
+    disease_state = "Children under 21 years receiving intravenous pentobarbital as part of standard of care. Sedation was the most common indication, followed by seizure control. 4 participants (10.3%) received vasopressors and 1 (2.6%) received valproic acid on the day of PK sampling; 4 (10.3%) were on ECMO. 5 participants (12.8%) met the paediatric obesity definition.",
+    dose_range = "Intravenous bolus and/or continuous infusion. Median IV bolus dose 2 mg/kg (range 0.39-8.9), absolute 4.7-290 mg (median 45 mg); median IV infusion rate 2.4 mg/kg/h (range 0.00175-16.1). Median 5 doses per participant (range 1-45), median bolus interval 2.34 h (range 0-73.7), median infusion duration 7.2 h (range 0.3-146.42).",
+    regions = "United States (multicentre; Pediatric Trials Network sites)",
+    notes = "Opportunistically collected standard-of-care data from the POP01 study, 'Pharmacokinetics of Understudied Drugs Administered to Children Per Standard of Care' (NICHD-2011-POP01, ClinicalTrials.gov NCT01431326). 42 participants were enrolled; 3 were excluded (one who also received a single oral dose, one whose only sample was below the limit of quantification, and one with a negative infusion duration from a dosing-entry error), leaving 39 participants and 70 plasma samples (median 2 samples per participant, range 1-5). The data are sparse, which the authors identify as the main limitation on covariate detection. Metabolic panel values (direct and total bilirubin, serum creatinine, AST, ALT, albumin) were missing for more than 48.7% of participants and so were never evaluated - covariates with more than 10% missingness were excluded from testing by protocol. C-reactive protein, a significant covariate on CL in Ketharanathan 2023, was not collected."
   )
 
   ini({

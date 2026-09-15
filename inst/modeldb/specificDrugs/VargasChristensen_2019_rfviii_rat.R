@@ -38,8 +38,8 @@ VargasChristensen_2019_rfviii_rat <- function() {
   )
   vignette <- "VargasChristensen_2019_rfviii_rat"
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
 
@@ -48,18 +48,18 @@ VargasChristensen_2019_rfviii_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "rFVIII (unbound)", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "rFVIII (unbound)", units = "nmol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "rFVIII (unbound)", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "rFVIII (unbound)", units = "nmol", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "rFVIII:VWF complex", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric power scaling on CL of unbound rFVIII with fixed",
         "exponent 0.75 (Vargas Christensen 2019 Methods and Results,",
         "and Table 1). No effect on V. Reference weight is not",
@@ -71,19 +71,19 @@ VargasChristensen_2019_rfviii_rat <- function() {
         "reference; if it differs, simulated CL scales by",
         "(0.3 kg / actual_ref_kg)^0.75."
       ),
-      source_name        = "body weight"
+      source_name = "body weight"
     )
   )
 
   population <- list(
-    species        = "rat (hemophilia A)",
-    n_subjects     = 30L,
-    n_studies      = 1L,
-    age_range      = "8-14 weeks; mean 11 weeks",
-    weight_range   = "200-550 g; median 300 g",
+    species = "rat (hemophilia A)",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "8-14 weeks; mean 11 weeks",
+    weight_range = "200-550 g; median 300 g",
     sex_female_pct = 63.3,
-    disease_state  = "hemophilia A",
-    dose_range     = paste(
+    disease_state = "hemophilia A",
+    dose_range = paste(
       "Single IV bolus rFVIII into tail vein at four dose levels:",
       "17.5 IU/kg (n=8: 5 F / 3 M), 100 IU/kg (n=6: 4 F / 2 M),",
       "1000 IU/kg (n=8: 5 F / 3 M), and 5000 IU/kg (n=8: 5 F / 3 M).",
@@ -91,8 +91,8 @@ VargasChristensen_2019_rfviii_rat <- function() {
       "(Data S1). Samples drawn 2 min post-dose were excluded from",
       "the analysis (Methods)."
     ),
-    regions        = "Denmark (Novo Nordisk A/S, Maaloev)",
-    notes          = paste(
+    regions = "Denmark (Novo Nordisk A/S, Maaloev)",
+    notes = paste(
       "30 hemophilia A rats bred at Novo Nordisk A/S (Maaloev, Denmark)",
       "housed under standard conditions (20-23 C, 30-60% RH,",
       "12/12 light-dark cycle). All animal procedures approved by the",

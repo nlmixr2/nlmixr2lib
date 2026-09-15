@@ -34,8 +34,8 @@ Geldof_2008_fluvoxamine_sert_plasma_rat <- function() {
   vignette <- "Geldof_2008_fluvoxamine_sert_occupancy"
 
   units <- list(
-    time          = "min",
-    dosing        = "ng",
+    time = "min",
+    dosing = "ng",
     concentration = "ng/mL"
   )
 
@@ -43,7 +43,7 @@ Geldof_2008_fluvoxamine_sert_plasma_rat <- function() {
   # biological matrix. verified = TRUE: analyte and specimen confirmed against
   # the source paper (Methods, "Data analysis"; Table 1 caption).
   compartmentData <- list(
-    central     = list(analyte = "fluvoxamine", units = "ng", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "fluvoxamine", units = "ng", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "fluvoxamine", units = "ng", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "fluvoxamine", units = "ng", specimen = "plasma", verified = TRUE)
   )
@@ -59,9 +59,9 @@ Geldof_2008_fluvoxamine_sert_plasma_rat <- function() {
   covariatesDataExcluded <- list(
     DOSE_FLUVOXAMINE_MGKG = list(
       description = "Administered fluvoxamine dose level (1, 3.7 or 7.3 mg/kg, 30 min IV infusion)",
-      units       = "mg/kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/kg",
+      type = "continuous",
+      notes = paste(
         "Screened against the PD parameter estimates and against the plasma PK",
         "parameters; no significant correlation with either was found, so dose",
         "was not retained as a covariate (paper Results p1373-p1374)."
@@ -69,9 +69,9 @@ Geldof_2008_fluvoxamine_sert_plasma_rat <- function() {
     ),
     STUDY = list(
       description = "Source protocol (brain-sampling study vs microdialysis study)",
-      units       = NA,
-      type        = "categorical",
-      notes       = paste(
+      units = NA,
+      type = "categorical",
+      notes = paste(
         "Screened as a covariate on the plasma PK parameters; no difference",
         "between the two protocols could be detected (paper Results p1373).",
         "Table 1 nevertheless reports the per-protocol mean post-hoc estimates",
@@ -81,14 +81,14 @@ Geldof_2008_fluvoxamine_sert_plasma_rat <- function() {
   )
 
   population <- list(
-    species        = "rat (male Wistar, Charles River Wiga GmbH, Sulzfeld, Germany)",
-    n_subjects     = 47L,
-    n_studies      = 2L,
-    age_range      = "adult (specific age not reported; group-housed 1 week on arrival, then 2 days individually after cannulation surgery)",
-    weight_range   = "226-250 g body weight at the start of the experiments",
+    species = "rat (male Wistar, Charles River Wiga GmbH, Sulzfeld, Germany)",
+    n_subjects = 47L,
+    n_studies = 2L,
+    age_range = "adult (specific age not reported; group-housed 1 week on arrival, then 2 days individually after cannulation surgery)",
+    weight_range = "226-250 g body weight at the start of the experiments",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy rats prepared with a permanent right-jugular-vein cannula for",
       "fluvoxamine administration and a permanent left-femoral-artery cannula",
       "for serial arterial blood sampling. SERT occupancy in the frontal cortex",
@@ -98,7 +98,7 @@ Geldof_2008_fluvoxamine_sert_plasma_rat <- function() {
       "unoccupied transporters bind the radioligand, labelling is inversely",
       "related to occupancy."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 30 min IV infusion of fluvoxamine free base into the right",
       "jugular vein at 1 mg/kg (24 rats) or 7.3 mg/kg (23 rats) in the",
       "brain-sampling study that provided the SERT occupancy observations",
@@ -106,8 +106,8 @@ Geldof_2008_fluvoxamine_sert_plasma_rat <- function() {
       "study (26 rats) additionally used 3.7 mg/kg and contributed the brain",
       "ECF concentration data."
     ),
-    regions        = "preclinical (in-vivo rat); Leiden University, The Netherlands",
-    notes          = paste(
+    regions = "preclinical (in-vivo rat); Leiden University, The Netherlands",
+    notes = paste(
       "n_subjects = 47 counts the brain-sampling animals that contributed the",
       "ex vivo SERT occupancy observations used to fit the PD model (paper",
       "Figure 4 caption: 'the total population of 47 rats'). A further 26",

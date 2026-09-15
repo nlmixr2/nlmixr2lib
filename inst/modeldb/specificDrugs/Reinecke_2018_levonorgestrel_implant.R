@@ -31,26 +31,26 @@ Reinecke_2018_levonorgestrel_implant <- function() {
   )
   vignette <- "Reinecke_2018_levonorgestrel_contraceptives"
   units <- list(
-    time          = "h",
-    dosing        = "mg (levonorgestrel loaded in the subdermal implant)",
+    time = "h",
+    dosing = "mg (levonorgestrel loaded in the subdermal implant)",
     concentration = "ng/L (total and unbound LNG in serum); SHBG in nmol/L; residual implant content in mg"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "levonorgestrel", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "levonorgestrel", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
-    effect      = list(analyte = "levonorgestrel", units = "nmol/L", specimen = "not applicable", verified = TRUE),
-    shbg        = list(analyte = "SHBG", units = "nmol/L", specimen = "serum", verified = TRUE)
+    effect = list(analyte = "levonorgestrel", units = "nmol/L", specimen = "not applicable", verified = TRUE),
+    shbg = list(analyte = "SHBG", units = "nmol/L", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (kg). Power-function covariate on clearance of unbound levonorgestrel (increasing with weight) and on the SHBG baseline concentration (decreasing with weight). Both exponents are fixed to the final comprehensive model.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (kg). Power-function covariate on clearance of unbound levonorgestrel (increasing with weight) and on the SHBG baseline concentration (decreasing with weight). Both exponents are fixed to the final comprehensive model.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight, centred on 66 kg. The Implant Model section",
         "states this explicitly: 'Because only partial information on body",
         "weight was available, the covariate effect implemented in the",
@@ -62,20 +62,20 @@ Reinecke_2018_levonorgestrel_implant <- function() {
         "performed in the implant step because no age data were available",
         "and weight data were incomplete."
       ),
-      source_name        = "WGHT"
+      source_name = "WGHT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 471L,
-    n_studies      = 3L,
-    studies        = "Phase 3 studies 39, 41 and 42 (subdermal implant Jadelle, comprehensive records of levonorgestrel concentrations and residual content over 5 years of intended treatment)",
-    weight_range   = "39-87 kg (median 58 kg, among the 197 subjects with concentration data)",
+    species = "human",
+    n_subjects = 471L,
+    n_studies = 3L,
+    studies = "Phase 3 studies 39, 41 and 42 (subdermal implant Jadelle, comprehensive records of levonorgestrel concentrations and residual content over 5 years of intended treatment)",
+    weight_range = "39-87 kg (median 58 kg, among the 197 subjects with concentration data)",
     sex_female_pct = 100,
-    disease_state  = "Healthy premenopausal women using a levonorgestrel-releasing subdermal implant for contraception",
-    dose_range     = "Single subdermal placement of 2 rods containing 75 mg levonorgestrel each (150 mg total), indicated for up to 5 years",
-    notes          = paste(
+    disease_state = "Healthy premenopausal women using a levonorgestrel-releasing subdermal implant for contraception",
+    dose_range = "Single subdermal placement of 2 rods containing 75 mg levonorgestrel each (150 mg total), indicated for up to 5 years",
+    notes = paste(
       "Table 1 splits the implant cohort into 274 subjects contributing 275",
       "residual-content measurements and a separate 197 subjects",
       "contributing 1634 levonorgestrel concentrations; the two sets are",

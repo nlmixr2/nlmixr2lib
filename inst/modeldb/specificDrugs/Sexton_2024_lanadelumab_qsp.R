@@ -16,8 +16,8 @@ Sexton_2024_lanadelumab_qsp <- function() {
   )
   vignette <- "Sexton_2024_lanadelumab_qsp"
   units <- list(
-    time          = "h",
-    dosing        = "mg (lanadelumab SC into depot); nM increment (exogenous C1-INH into c1inh); unitless normalized attack severity (into trigger)",
+    time = "h",
+    dosing = "mg (lanadelumab SC into depot); nM increment (exogenous C1-INH into c1inh); unitless normalized attack severity (into trigger)",
     concentration = "ug/mL (lanadelumab plasma concentration Cc); nM (all KKS species); number/cell (surface receptor species)"
   )
 
@@ -28,123 +28,362 @@ Sexton_2024_lanadelumab_qsp <- function() {
   paper_specific_compartments <- c(
     "trigger",
     # vascular (plasma) space -- nM
-    "fxii", "fxiia", "c1inh", "hmwk", "chmwk", "prekal", "kal", "bk",
-    "prekal_hmwk", "kal_hmwk", "kal_chmwk", "c1inh_fxiia", "c1inh_kal",
-    "c1inh_kal_hmwk", "lana_kal", "lana_kal_hmwk",
+    "fxii",
+    "fxiia",
+    "c1inh",
+    "hmwk",
+    "chmwk",
+    "prekal",
+    "kal",
+    "bk",
+    "prekal_hmwk",
+    "kal_hmwk",
+    "kal_chmwk",
+    "c1inh_fxiia",
+    "c1inh_kal",
+    "c1inh_kal_hmwk",
+    "lana_kal",
+    "lana_kal_hmwk",
     # endothelial proximal space -- nM
-    "px_fxii", "px_fxiia", "px_c1inh", "px_prekal_hmwk", "px_kal_hmwk",
-    "px_c1inh_fxiia", "px_c1inh_kal_hmwk", "px_kal_chmwk", "px_bk",
+    "px_fxii",
+    "px_fxiia",
+    "px_c1inh",
+    "px_prekal_hmwk",
+    "px_kal_hmwk",
+    "px_c1inh_fxiia",
+    "px_c1inh_kal_hmwk",
+    "px_kal_chmwk",
+    "px_bk",
     "px_lana_kal_hmwk",
     # endothelial cell surface -- number/cell
-    "gc1qr", "bdkrb2", "fxii_gc1qr", "fxiia_gc1qr", "prekal_hmwk_gc1qr",
-    "kal_hmwk_gc1qr", "kal_chmwk_gc1qr", "c1inh_fxiia_gc1qr",
-    "c1inh_kal_hmwk_gc1qr", "lana_kal_hmwk_gc1qr", "bk_bdkrb2",
+    "gc1qr",
+    "bdkrb2",
+    "fxii_gc1qr",
+    "fxiia_gc1qr",
+    "prekal_hmwk_gc1qr",
+    "kal_hmwk_gc1qr",
+    "kal_chmwk_gc1qr",
+    "c1inh_fxiia_gc1qr",
+    "c1inh_kal_hmwk_gc1qr",
+    "lana_kal_hmwk_gc1qr",
+    "bk_bdkrb2",
     # degradation sinks (Table S4 lists these as model species; they carry the
     # mass-balance bookkeeping used by the vignette's mass-balance gate)
-    "prekal_deg", "kal_deg", "hmwk_deg", "chmwk_deg", "c1inh_deg", "fxii_deg",
-    "fxiia_deg", "bk_deg", "c1inh_kal_deg", "c1inh_kal_hmwk_deg",
-    "c1inh_fxiia_deg", "gc1qr_deg", "bdkrb2_deg", "bk_bdkrb2_deg",
-    "prekal_hmwk_gc1qr_deg", "kal_hmwk_gc1qr_deg", "kal_chmwk_gc1qr_deg",
-    "fxii_gc1qr_deg", "fxiia_gc1qr_deg", "c1inh_fxiia_gc1qr_deg",
-    "c1inh_kal_hmwk_gc1qr_deg", "lana_kal_hmwk_gc1qr_deg"
+    "prekal_deg",
+    "kal_deg",
+    "hmwk_deg",
+    "chmwk_deg",
+    "c1inh_deg",
+    "fxii_deg",
+    "fxiia_deg",
+    "bk_deg",
+    "c1inh_kal_deg",
+    "c1inh_kal_hmwk_deg",
+    "c1inh_fxiia_deg",
+    "gc1qr_deg",
+    "bdkrb2_deg",
+    "bk_bdkrb2_deg",
+    "prekal_hmwk_gc1qr_deg",
+    "kal_hmwk_gc1qr_deg",
+    "kal_chmwk_gc1qr_deg",
+    "fxii_gc1qr_deg",
+    "fxiia_gc1qr_deg",
+    "c1inh_fxiia_gc1qr_deg",
+    "c1inh_kal_hmwk_gc1qr_deg",
+    "lana_kal_hmwk_gc1qr_deg"
   )
 
   # Analyte / units / specimen per Supplementary Table S4 (verified against that table).
   compartmentData <- list(
-    depot   = list(analyte = "lanadelumab", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "lanadelumab", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "lanadelumab", units = "mg", specimen = "plasma", verified = TRUE),
-    trigger = list(analyte = "normalized HAE attack severity (fold-increase driver for FXII autoactivation)", units = "unitless", specimen = "not applicable", verified = TRUE),
+    trigger = list(
+      analyte = "normalized HAE attack severity (fold-increase driver for FXII autoactivation)",
+      units = "unitless",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
 
-    fxii           = list(analyte = "factor XII", units = "nM", specimen = "plasma", verified = TRUE),
-    fxiia          = list(analyte = "activated factor XII", units = "nM", specimen = "plasma", verified = TRUE),
-    c1inh          = list(analyte = "C1 esterase inhibitor", units = "nM", specimen = "plasma", verified = TRUE),
-    hmwk           = list(analyte = "high molecular weight kininogen", units = "nM", specimen = "plasma", verified = TRUE),
-    chmwk          = list(analyte = "cleaved high molecular weight kininogen", units = "nM", specimen = "plasma", verified = TRUE),
-    prekal         = list(analyte = "prekallikrein", units = "nM", specimen = "plasma", verified = TRUE),
-    kal            = list(analyte = "kallikrein", units = "nM", specimen = "plasma", verified = TRUE),
-    bk             = list(analyte = "bradykinin", units = "nM", specimen = "plasma", verified = TRUE),
-    prekal_hmwk    = list(analyte = "prekallikrein-HMWK complex", units = "nM", specimen = "plasma", verified = TRUE),
-    kal_hmwk       = list(analyte = "kallikrein-HMWK complex", units = "nM", specimen = "plasma", verified = TRUE),
-    kal_chmwk      = list(analyte = "kallikrein-cHMWK complex", units = "nM", specimen = "plasma", verified = TRUE),
-    c1inh_fxiia    = list(analyte = "C1-INH-FXIIa complex", units = "nM", specimen = "plasma", verified = TRUE),
-    c1inh_kal      = list(analyte = "C1-INH-kallikrein complex", units = "nM", specimen = "plasma", verified = TRUE),
-    c1inh_kal_hmwk = list(analyte = "C1-INH-kallikrein-HMWK complex", units = "nM", specimen = "plasma", verified = TRUE),
-    lana_kal       = list(analyte = "lanadelumab-kallikrein complex", units = "nM", specimen = "plasma", verified = TRUE),
-    lana_kal_hmwk  = list(analyte = "lanadelumab-kallikrein-HMWK complex", units = "nM", specimen = "plasma", verified = TRUE),
+    fxii = list(analyte = "factor XII", units = "nM", specimen = "plasma", verified = TRUE),
+    fxiia = list(analyte = "activated factor XII", units = "nM", specimen = "plasma", verified = TRUE),
+    c1inh = list(analyte = "C1 esterase inhibitor", units = "nM", specimen = "plasma", verified = TRUE),
+    hmwk = list(analyte = "high molecular weight kininogen", units = "nM", specimen = "plasma", verified = TRUE),
+    chmwk = list(
+      analyte = "cleaved high molecular weight kininogen",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    prekal = list(analyte = "prekallikrein", units = "nM", specimen = "plasma", verified = TRUE),
+    kal = list(analyte = "kallikrein", units = "nM", specimen = "plasma", verified = TRUE),
+    bk = list(analyte = "bradykinin", units = "nM", specimen = "plasma", verified = TRUE),
+    prekal_hmwk = list(analyte = "prekallikrein-HMWK complex", units = "nM", specimen = "plasma", verified = TRUE),
+    kal_hmwk = list(analyte = "kallikrein-HMWK complex", units = "nM", specimen = "plasma", verified = TRUE),
+    kal_chmwk = list(analyte = "kallikrein-cHMWK complex", units = "nM", specimen = "plasma", verified = TRUE),
+    c1inh_fxiia = list(analyte = "C1-INH-FXIIa complex", units = "nM", specimen = "plasma", verified = TRUE),
+    c1inh_kal = list(analyte = "C1-INH-kallikrein complex", units = "nM", specimen = "plasma", verified = TRUE),
+    c1inh_kal_hmwk = list(
+      analyte = "C1-INH-kallikrein-HMWK complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    lana_kal = list(analyte = "lanadelumab-kallikrein complex", units = "nM", specimen = "plasma", verified = TRUE),
+    lana_kal_hmwk = list(
+      analyte = "lanadelumab-kallikrein-HMWK complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
 
-    px_fxii            = list(analyte = "factor XII (endothelial proximal space)", units = "nM", specimen = "tissue", verified = TRUE),
-    px_fxiia           = list(analyte = "activated factor XII (endothelial proximal space)", units = "nM", specimen = "tissue", verified = TRUE),
-    px_c1inh           = list(analyte = "C1 esterase inhibitor (endothelial proximal space)", units = "nM", specimen = "tissue", verified = TRUE),
-    px_prekal_hmwk     = list(analyte = "prekallikrein-HMWK complex (endothelial proximal space)", units = "nM", specimen = "tissue", verified = TRUE),
-    px_kal_hmwk        = list(analyte = "kallikrein-HMWK complex (endothelial proximal space)", units = "nM", specimen = "tissue", verified = TRUE),
-    px_c1inh_fxiia     = list(analyte = "C1-INH-FXIIa complex (endothelial proximal space)", units = "nM", specimen = "tissue", verified = TRUE),
-    px_c1inh_kal_hmwk  = list(analyte = "C1-INH-kallikrein-HMWK complex (endothelial proximal space)", units = "nM", specimen = "tissue", verified = TRUE),
-    px_kal_chmwk       = list(analyte = "kallikrein-cHMWK complex (endothelial proximal space)", units = "nM", specimen = "tissue", verified = TRUE),
-    px_bk              = list(analyte = "bradykinin (endothelial proximal space)", units = "nM", specimen = "tissue", verified = TRUE),
-    px_lana_kal_hmwk   = list(analyte = "lanadelumab-kallikrein-HMWK complex (endothelial proximal space)", units = "nM", specimen = "tissue", verified = TRUE),
+    px_fxii = list(
+      analyte = "factor XII (endothelial proximal space)",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    px_fxiia = list(
+      analyte = "activated factor XII (endothelial proximal space)",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    px_c1inh = list(
+      analyte = "C1 esterase inhibitor (endothelial proximal space)",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    px_prekal_hmwk = list(
+      analyte = "prekallikrein-HMWK complex (endothelial proximal space)",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    px_kal_hmwk = list(
+      analyte = "kallikrein-HMWK complex (endothelial proximal space)",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    px_c1inh_fxiia = list(
+      analyte = "C1-INH-FXIIa complex (endothelial proximal space)",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    px_c1inh_kal_hmwk = list(
+      analyte = "C1-INH-kallikrein-HMWK complex (endothelial proximal space)",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    px_kal_chmwk = list(
+      analyte = "kallikrein-cHMWK complex (endothelial proximal space)",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    px_bk = list(
+      analyte = "bradykinin (endothelial proximal space)",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    px_lana_kal_hmwk = list(
+      analyte = "lanadelumab-kallikrein-HMWK complex (endothelial proximal space)",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
 
-    gc1qr                = list(analyte = "gC1q receptor complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    bdkrb2               = list(analyte = "bradykinin B2 receptor (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    fxii_gc1qr           = list(analyte = "FXII-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    fxiia_gc1qr          = list(analyte = "FXIIa-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    prekal_hmwk_gc1qr    = list(analyte = "prekallikrein-HMWK-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    kal_hmwk_gc1qr       = list(analyte = "kallikrein-HMWK-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    kal_chmwk_gc1qr      = list(analyte = "kallikrein-cHMWK-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    c1inh_fxiia_gc1qr    = list(analyte = "C1-INH-FXIIa-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    c1inh_kal_hmwk_gc1qr = list(analyte = "C1-INH-kallikrein-HMWK-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    lana_kal_hmwk_gc1qr  = list(analyte = "lanadelumab-kallikrein-HMWK-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    bk_bdkrb2            = list(analyte = "bradykinin-B2 receptor complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
+    gc1qr = list(
+      analyte = "gC1q receptor complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    bdkrb2 = list(
+      analyte = "bradykinin B2 receptor (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    fxii_gc1qr = list(
+      analyte = "FXII-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    fxiia_gc1qr = list(
+      analyte = "FXIIa-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    prekal_hmwk_gc1qr = list(
+      analyte = "prekallikrein-HMWK-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    kal_hmwk_gc1qr = list(
+      analyte = "kallikrein-HMWK-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    kal_chmwk_gc1qr = list(
+      analyte = "kallikrein-cHMWK-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    c1inh_fxiia_gc1qr = list(
+      analyte = "C1-INH-FXIIa-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    c1inh_kal_hmwk_gc1qr = list(
+      analyte = "C1-INH-kallikrein-HMWK-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    lana_kal_hmwk_gc1qr = list(
+      analyte = "lanadelumab-kallikrein-HMWK-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    bk_bdkrb2 = list(
+      analyte = "bradykinin-B2 receptor complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
 
-    prekal_deg               = list(analyte = "degraded prekallikrein", units = "nM", specimen = "plasma", verified = TRUE),
-    kal_deg                  = list(analyte = "degraded kallikrein", units = "nM", specimen = "plasma", verified = TRUE),
-    hmwk_deg                 = list(analyte = "degraded HMWK", units = "nM", specimen = "plasma", verified = TRUE),
-    chmwk_deg                = list(analyte = "degraded cHMWK", units = "nM", specimen = "plasma", verified = TRUE),
-    c1inh_deg                = list(analyte = "degraded C1-INH", units = "nM", specimen = "plasma", verified = TRUE),
-    fxii_deg                 = list(analyte = "degraded FXII", units = "nM", specimen = "plasma", verified = TRUE),
-    fxiia_deg                = list(analyte = "degraded FXIIa", units = "nM", specimen = "plasma", verified = TRUE),
-    bk_deg                   = list(analyte = "degraded bradykinin", units = "nM", specimen = "plasma", verified = TRUE),
-    c1inh_kal_deg            = list(analyte = "degraded C1-INH-kallikrein complex", units = "nM", specimen = "plasma", verified = TRUE),
-    c1inh_kal_hmwk_deg       = list(analyte = "degraded C1-INH-kallikrein-HMWK complex", units = "nM", specimen = "plasma", verified = TRUE),
-    c1inh_fxiia_deg          = list(analyte = "degraded C1-INH-FXIIa complex", units = "nM", specimen = "plasma", verified = TRUE),
-    gc1qr_deg                = list(analyte = "degraded gC1q receptor (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    bdkrb2_deg               = list(analyte = "degraded bradykinin B2 receptor (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    bk_bdkrb2_deg            = list(analyte = "degraded bradykinin-B2 receptor complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    prekal_hmwk_gc1qr_deg    = list(analyte = "degraded prekallikrein-HMWK-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    kal_hmwk_gc1qr_deg       = list(analyte = "degraded kallikrein-HMWK-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    kal_chmwk_gc1qr_deg      = list(analyte = "degraded kallikrein-cHMWK-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    fxii_gc1qr_deg           = list(analyte = "degraded FXII-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    fxiia_gc1qr_deg          = list(analyte = "degraded FXIIa-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    c1inh_fxiia_gc1qr_deg    = list(analyte = "degraded C1-INH-FXIIa-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    c1inh_kal_hmwk_gc1qr_deg = list(analyte = "degraded C1-INH-kallikrein-HMWK-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE),
-    lana_kal_hmwk_gc1qr_deg  = list(analyte = "degraded lanadelumab-kallikrein-HMWK-gC1qR complex (endothelial cell surface)", units = "number/cell", specimen = "tissue", verified = TRUE)
+    prekal_deg = list(analyte = "degraded prekallikrein", units = "nM", specimen = "plasma", verified = TRUE),
+    kal_deg = list(analyte = "degraded kallikrein", units = "nM", specimen = "plasma", verified = TRUE),
+    hmwk_deg = list(analyte = "degraded HMWK", units = "nM", specimen = "plasma", verified = TRUE),
+    chmwk_deg = list(analyte = "degraded cHMWK", units = "nM", specimen = "plasma", verified = TRUE),
+    c1inh_deg = list(analyte = "degraded C1-INH", units = "nM", specimen = "plasma", verified = TRUE),
+    fxii_deg = list(analyte = "degraded FXII", units = "nM", specimen = "plasma", verified = TRUE),
+    fxiia_deg = list(analyte = "degraded FXIIa", units = "nM", specimen = "plasma", verified = TRUE),
+    bk_deg = list(analyte = "degraded bradykinin", units = "nM", specimen = "plasma", verified = TRUE),
+    c1inh_kal_deg = list(
+      analyte = "degraded C1-INH-kallikrein complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    c1inh_kal_hmwk_deg = list(
+      analyte = "degraded C1-INH-kallikrein-HMWK complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    c1inh_fxiia_deg = list(
+      analyte = "degraded C1-INH-FXIIa complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    gc1qr_deg = list(
+      analyte = "degraded gC1q receptor (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    bdkrb2_deg = list(
+      analyte = "degraded bradykinin B2 receptor (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    bk_bdkrb2_deg = list(
+      analyte = "degraded bradykinin-B2 receptor complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    prekal_hmwk_gc1qr_deg = list(
+      analyte = "degraded prekallikrein-HMWK-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    kal_hmwk_gc1qr_deg = list(
+      analyte = "degraded kallikrein-HMWK-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    kal_chmwk_gc1qr_deg = list(
+      analyte = "degraded kallikrein-cHMWK-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    fxii_gc1qr_deg = list(
+      analyte = "degraded FXII-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    fxiia_gc1qr_deg = list(
+      analyte = "degraded FXIIa-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    c1inh_fxiia_gc1qr_deg = list(
+      analyte = "degraded C1-INH-FXIIa-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    c1inh_kal_hmwk_gc1qr_deg = list(
+      analyte = "degraded C1-INH-kallikrein-HMWK-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    lana_kal_hmwk_gc1qr_deg = list(
+      analyte = "degraded lanadelumab-kallikrein-HMWK-gC1qR complex (endothelial cell surface)",
+      units = "number/cell",
+      specimen = "tissue",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NA_character_,
-      notes              = paste(
+      notes = paste(
         "Allometric size descriptor on lanadelumab CL/F and V/F, normalised to 70 kg",
         "(MOESM6 virtual-patient sampler line 47:",
         "value = mean * (body_weight / 70)^WT_exponent * exp(eta)).",
         "The virtual population samples WT log-normally with mean 81.1 kg and",
         "CV 28.1%, truncated to 36.7-178 kg (MOESM7 weight_Param_info)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 1000,
-    n_studies     = 8,
+    species = "human",
+    n_subjects = 1000,
+    n_studies = 8,
     disease_state = "Hereditary angioedema (HAE) due to C1-inhibitor deficiency (type I / II), simulated during remission and during acute attacks; healthy-control behaviour is obtained by raising ksyn_c1inh from 11.883 to 39.608 nM/h (Param_HAE.r line 8).",
-    weight_range  = "36.7-178 kg (virtual population; log-normal mean 81.1 kg, CV 28.1%)",
-    dose_range    = "Lanadelumab 30, 100, 150, 300 and 400 mg SC Q2W or Q4W; fixed-dose C1-INH 1000 U IV twice weekly",
-    regions       = "Not stated (multinational phase 1a/1b/3 lanadelumab and C1-INH programmes)",
-    notes         = paste(
+    weight_range = "36.7-178 kg (virtual population; log-normal mean 81.1 kg, CV 28.1%)",
+    dose_range = "Lanadelumab 30, 100, 150, 300 and 400 mg SC Q2W or Q4W; fixed-dose C1-INH 1000 U IV twice weekly",
+    regions = "Not stated (multinational phase 1a/1b/3 lanadelumab and C1-INH programmes)",
+    notes = paste(
       "Virtual cohort of 1000 patients differing in lanadelumab PK, attack frequency,",
       "attack timing and attack severity. Baseline attack rate 3.5 attacks/month (HELP,",
       "NCT02586805); attacks are Poisson-timed with a normally distributed severity.",

@@ -23,8 +23,8 @@ Larsen_2018_factorviia_rat <- function() {
   )
   vignette <- "Larsen_2018_haemophilia_animal_popPK"
   units <- list(
-    time          = "h",
-    dosing        = "IU",
+    time = "h",
+    dosing = "IU",
     concentration = "IU/mL"
   )
 
@@ -32,36 +32,36 @@ Larsen_2018_factorviia_rat <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "factorviia", units = "IU", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "factorviia", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "factorviia", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (rat)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (rat)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-animal body weight. Used for within-species",
         "allometric scaling around the rat median weight of",
         "0.24 kg (Larsen 2018 Table 1). Range 0.18-0.34 kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "rat (Sprague-Dawley)",
-    n_subjects     = 37L,
-    n_studies      = NA_integer_,
-    weight_range   = "0.18-0.34 kg",
-    weight_median  = "0.24 kg",
+    species = "rat (Sprague-Dawley)",
+    n_subjects = 37L,
+    n_studies = NA_integer_,
+    weight_range = "0.18-0.34 kg",
+    weight_median = "0.24 kg",
     sex_female_pct = 0,
-    disease_state  = "healthy (non-haemophilic)",
-    dose_range     = "single IV bolus, 1000 or 3000 ug/kg rFVIIa (mass dose; user supplies the corresponding IU dose)",
-    regions        = "Denmark (Novo Nordisk in-house and published Karpf 2011)",
-    notes          = paste(
+    disease_state = "healthy (non-haemophilic)",
+    dose_range = "single IV bolus, 1000 or 3000 ug/kg rFVIIa (mass dose; user supplies the corresponding IU dose)",
+    regions = "Denmark (Novo Nordisk in-house and published Karpf 2011)",
+    notes = paste(
       "37 male Sprague-Dawley rats. Sampling up to 14 h",
       "post-dose. Endogenous rFVIIa was not detected in rats.",
       "Data sources: Karpf 2011 and Novo Nordisk historical",

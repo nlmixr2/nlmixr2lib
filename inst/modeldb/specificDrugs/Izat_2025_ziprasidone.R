@@ -37,7 +37,7 @@ Izat_2025_ziprasidone <- function() {
     sep = " "
   )
   vignette <- "Izat_2025_aldehyde_oxidase_substrates"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what the single ODE state holds, in what amount units, in
   # what biological matrix. Verified against Izat 2025 Table 1 (ziprasidone
@@ -47,8 +47,10 @@ Izat_2025_ziprasidone <- function() {
   # plasma concentrations.
   compartmentData <- list(
     central = list(
-      analyte = "ziprasidone", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "ziprasidone",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
@@ -67,7 +69,7 @@ Izat_2025_ziprasidone <- function() {
         "so neither is scaled."
       ),
       units = "kg",
-      type  = "continuous",
+      type = "continuous",
       notes = paste(
         "Implicit in the L/kg volume input; not carried. No body weight",
         "is printed anywhere in the paper or Appendix S1 -- Table S3",
@@ -79,16 +81,16 @@ Izat_2025_ziprasidone <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12L,
-    n_studies      = 1L,
-    age_range      = "19-37 years",
-    weight_median  = "70 kg (assumed reference weight for the L/kg volume input; not reported)",
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "19-37 years",
+    weight_median = "70 kg (assumed reference weight for the L/kg volume input; not reported)",
     sex_female_pct = 0,
-    disease_state  = "Healthy adult volunteers.",
-    dose_range     = "Single 5 mg intravenous infusion.",
-    route          = "intravenous",
-    studies        = paste(
+    disease_state = "Healthy adult volunteers.",
+    dose_range = "Single 5 mg intravenous infusion.",
+    route = "intravenous",
+    studies = paste(
       "Miceli JJ, Wilner KD, Swan SK, Tensfeldt TG. Pharmacokinetics,",
       "safety, and tolerability of intramuscular ziprasidone in healthy",
       "volunteers. J Clin Pharmacol 2005;45(6):620-630, cited as",
@@ -98,7 +100,7 @@ Izat_2025_ziprasidone <- function() {
       "the model-development dataset for the distribution parameter",
       "reproduced here."
     ),
-    notes          = paste(
+    notes = paste(
       "This is a PBPK analysis rather than a population-PK fit, so there",
       "is no pooled analysis dataset and no estimated variance",
       "components. The percent-CV figures in Table 1 and Appendix S1",

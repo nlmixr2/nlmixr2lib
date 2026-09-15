@@ -9,24 +9,24 @@ Kimura_2023_glucarpidase <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "MTX", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "MTX", units = "umol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "MTX", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "MTX", units = "umol", specimen = "plasma", verified = FALSE),
     central_cpg2 = list(analyte = "CPG2", units = "umol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 500L,
-    n_studies      = 0L,
-    age_range      = "adult model parameters; planned phase II included pediatric patients",
-    weight_range   = "60 kg (assumed for all virtual subjects)",
+    species = "human",
+    n_subjects = 500L,
+    n_studies = 0L,
+    age_range = "adult model parameters; planned phase II included pediatric patients",
+    weight_range = "60 kg (assumed for all virtual subjects)",
     sex_female_pct = NA_real_,
-    disease_state  = "Patients receiving high-dose methotrexate (1 g/m^2 over 4 h) with subsequent glucarpidase rescue.",
-    dose_range     = "MTX 1 g/m^2 IV over 4 h; CPG2 10-80 U/kg IV bolus (50 U/kg recommended).",
-    regions        = "Japan (planned phase II study; JMA-IIA00097).",
-    notes          = "Simulation-only study: PK parameters were taken from prior popPK / NCA publications (Fukahara 2008 for MTX, Table I ref 3; Phillips 2008 for CPG2, Table I ref 16) and the EMA Voraxaze assessment 2021 for Km and alpha (Table I ref 18). Monte-Carlo simulations of 500 virtual patients per arm sampled each PK parameter independently from the Normal distributions in Table II. Virtual subjects had body weight 60 kg, BSA 1.73 m^2, creatinine clearance 80 ml/min, and the MTX renal-only clearance fraction was 10% of the literature total CL."
+    disease_state = "Patients receiving high-dose methotrexate (1 g/m^2 over 4 h) with subsequent glucarpidase rescue.",
+    dose_range = "MTX 1 g/m^2 IV over 4 h; CPG2 10-80 U/kg IV bolus (50 U/kg recommended).",
+    regions = "Japan (planned phase II study; JMA-IIA00097).",
+    notes = "Simulation-only study: PK parameters were taken from prior popPK / NCA publications (Fukahara 2008 for MTX, Table I ref 3; Phillips 2008 for CPG2, Table I ref 16) and the EMA Voraxaze assessment 2021 for Km and alpha (Table I ref 18). Monte-Carlo simulations of 500 virtual patients per arm sampled each PK parameter independently from the Normal distributions in Table II. Virtual subjects had body weight 60 kg, BSA 1.73 m^2, creatinine clearance 80 ml/min, and the MTX renal-only clearance fraction was 10% of the literature total CL."
   )
 
   ini({

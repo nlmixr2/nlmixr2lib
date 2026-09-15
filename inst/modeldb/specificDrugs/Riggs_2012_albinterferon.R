@@ -20,168 +20,168 @@ Riggs_2012_albinterferon <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline, time-fixed per subject. Enters CL/F, V/F, and ka as a power function of TWT = WT / 75 kg (p. 479 'where' block). Reference 75 kg is the hypothetical reference individual of Table I footnote b. Observed range 38-166 kg (Results, 'Population PK Analysis'). The only covariate the authors judged clinically meaningful: relative to the 75 kg reference, exposure rises about 30% at 50 kg and falls about 20% and 30% at 100 and 125 kg.",
-      source_name        = "WT"
+      notes = "Baseline, time-fixed per subject. Enters CL/F, V/F, and ka as a power function of TWT = WT / 75 kg (p. 479 'where' block). Reference 75 kg is the hypothetical reference individual of Table I footnote b. Observed range 38-166 kg (Results, 'Population PK Analysis'). The only covariate the authors judged clinically meaningful: relative to the 75 kg reference, exposure rises about 30% at 50 kg and falls about 20% and 30% at 100 and 125 kg.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline, time-fixed per subject. Enters CL/F, V/F, and ka as a power function of TAGE = AGE / 45 y (p. 479 'where' block). Observed range 18-79 years.",
-      source_name        = "AGE"
+      notes = "Baseline, time-fixed per subject. Enters CL/F, V/F, and ka as a power function of TAGE = AGE / 45 y (p. 479 'where' block). Observed range 18-79 years.",
+      source_name = "AGE"
     ),
     ALB = list(
-      description        = "Baseline serum albumin.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (Table I footnote c, 'value at baseline'). The source calibrated the coefficients against US-convention g/dL with reference 4.3 g/dL (Table I footnote b and Figure 1 caption), so model() applies the register-mandated inline conversion alb_gdL <- ALB * 0.1 before forming TALB = alb_gdL / 4.3. NOTE: the p. 479 'where' block prints TALB with 'g/L' in both numerator and denominator while giving the denominator as 4.3, which is the g/dL value; the ratio is unit-free provided both sides use the same unit, and the reference individual definition in Table I footnote b resolves the intended unit as g/dL. Enters CL/F and V/F only.",
-      source_name        = "ALB"
+      notes = "Time-fixed per subject (Table I footnote c, 'value at baseline'). The source calibrated the coefficients against US-convention g/dL with reference 4.3 g/dL (Table I footnote b and Figure 1 caption), so model() applies the register-mandated inline conversion alb_gdL <- ALB * 0.1 before forming TALB = alb_gdL / 4.3. NOTE: the p. 479 'where' block prints TALB with 'g/L' in both numerator and denominator while giving the denominator as 4.3, which is the g/dL value; the ratio is unit-free provided both sides use the same unit, and the reference individual definition in Table I footnote b resolves the intended unit as g/dL. Enters CL/F and V/F only.",
+      source_name = "ALB"
     ),
     ALT = list(
-      description        = "Baseline serum alanine aminotransferase activity.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum alanine aminotransferase activity.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (Table I footnote c). Enters CL/F only, as a power function of TALT = ALT / 34 IU/L (p. 479 'where' block; reference from Table I footnote b, which prints '34 IU/mL' - a unit typo for IU/L, corrected in the Figure 1 caption's 'alanine transaminase (ALT), 34 IU/mL' and resolved by the equation block's explicit 'ALT (IU/L)_i / 34 IU/L'). IU/L and U/L are used interchangeably.",
-      source_name        = "ALT"
+      notes = "Time-fixed per subject (Table I footnote c). Enters CL/F only, as a power function of TALT = ALT / 34 IU/L (p. 479 'where' block; reference from Table I footnote b, which prints '34 IU/mL' - a unit typo for IU/L, corrected in the Figure 1 caption's 'alanine transaminase (ALT), 34 IU/mL' and resolved by the equation block's explicit 'ALT (IU/L)_i / 34 IU/L'). IU/L and U/L are used interchangeably.",
+      source_name = "ALT"
     ),
     CRCL = list(
-      description        = "Baseline estimated creatinine clearance.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline estimated creatinine clearance.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "RAW, NOT BSA-normalized (the source writes 'CRCN (mL/min)_i = CRCL (mL/min)_i', p. 479), so supply mL/min rather than the register's default mL/min/1.73 m^2 - same convention as Delattre_2010_amikacin.R and Chen_2023_nemonoxacin.R. Time-fixed per subject (Table I footnote c). The source CAPS the value at 150 mL/min before normalizing ('if CRCN >= 150 mL/min then CRCN = 150 mL/min'), and model() reproduces the cap. Enters CL/F only, as a power function of TCRL = CRCN / 120 mL/min.",
-      source_name        = "CRCL"
+      notes = "RAW, NOT BSA-normalized (the source writes 'CRCN (mL/min)_i = CRCL (mL/min)_i', p. 479), so supply mL/min rather than the register's default mL/min/1.73 m^2 - same convention as Delattre_2010_amikacin.R and Chen_2023_nemonoxacin.R. Time-fixed per subject (Table I footnote c). The source CAPS the value at 150 mL/min before normalizing ('if CRCN >= 150 mL/min then CRCN = 150 mL/min'), and model() reproduces the cap. Enters CL/F only, as a power function of TCRL = CRCN / 120 mL/min.",
+      source_name = "CRCL"
     ),
     SEXF = list(
-      description        = "Female sex indicator: 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator: 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female; the source's reference individual is a woman)",
-      notes              = "Time-fixed per subject. REFERENCE-CATEGORY INVERSION relative to the usual SEXF usage: the source's reference individual is a 45-year-old white WOMAN (Table I footnote b), and the estimated coefficients are MALE effects, so model() forms male <- 1 - SEXF and raises the coefficients to that indicator. Cohort 1189 men and 795 women (Results, 'Population PK Analysis'); note the source reports these counts in the order 'men and women' while its own total is 1984.",
-      source_name        = "Male (1 = male)"
+      notes = "Time-fixed per subject. REFERENCE-CATEGORY INVERSION relative to the usual SEXF usage: the source's reference individual is a 45-year-old white WOMAN (Table I footnote b), and the estimated coefficients are MALE effects, so model() forms male <- 1 - SEXF and raises the coefficients to that indicator. Cohort 1189 men and 795 women (Results, 'Population PK Analysis'); note the source reports these counts in the order 'men and women' while its own total is 1984.",
+      source_name = "Male (1 = male)"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator: 1 = Asian, 0 = other race category.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator: 1 = Asian, 0 = other race category.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White; the source's reference individual)",
-      notes              = "Time-fixed per subject. One of three mutually exclusive non-White indicators (RACE_ASIAN, RACE_BLACK, RACE_OTHER) whose common reference is White. Cohort 13% Asian. Enters CL/F, V/F, and ka.",
-      source_name        = "Asian"
+      notes = "Time-fixed per subject. One of three mutually exclusive non-White indicators (RACE_ASIAN, RACE_BLACK, RACE_OTHER) whose common reference is White. Cohort 13% Asian. Enters CL/F, V/F, and ka.",
+      source_name = "Asian"
     ),
     RACE_BLACK = list(
-      description        = "Black race indicator: 1 = Black, 0 = other race category.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black race indicator: 1 = Black, 0 = other race category.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White; the source's reference individual)",
-      notes              = "Time-fixed per subject. Cohort 5% Black. Enters CL/F, V/F, and ka.",
-      source_name        = "Black"
+      notes = "Time-fixed per subject. Cohort 5% Black. Enters CL/F, V/F, and ka.",
+      source_name = "Black"
     ),
     RACE_OTHER = list(
-      description        = "Race-category 'Other' indicator: 1 = a race other than White, Asian, or Black; 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race-category 'Other' indicator: 1 = a race other than White, Asian, or Black; 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White; the source's reference individual)",
-      notes              = "Time-fixed per subject. The source writes this indicator as 'Race = other' in the p. 479 equations. Cohort composition given as 81% White, 13% Asian, 5% Black, leaving about 1% 'Other'. Enters CL/F, V/F, and ka.",
-      source_name        = "Race = other"
+      notes = "Time-fixed per subject. The source writes this indicator as 'Race = other' in the p. 479 equations. Cohort composition given as 81% White, 13% Asian, 5% Black, leaving about 1% 'Other'. Enters CL/F, V/F, and ka.",
+      source_name = "Race = other"
     ),
     HCV_GT2 = list(
-      description        = "Hepatitis C virus genotype-2 indicator: 1 = HCV genotype 2, 0 = any other genotype.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hepatitis C virus genotype-2 indicator: 1 = HCV genotype 2, 0 = any other genotype.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HCV genotype 1; the source's reference individual)",
-      notes              = "Time-fixed per subject (genotype is determined at infection). One of three mutually exclusive non-genotype-1 indicators (HCV_GT2, HCV_GT3, HCV_GT4) whose common reference is genotype 1. 66% of the cohort had genotype 1; the remainder had genotype 2 or 3 apart from 5 patients with genotype 4. Enters CL/F, V/F, and ka.",
-      source_name        = "HCV genotype 2"
+      notes = "Time-fixed per subject (genotype is determined at infection). One of three mutually exclusive non-genotype-1 indicators (HCV_GT2, HCV_GT3, HCV_GT4) whose common reference is genotype 1. 66% of the cohort had genotype 1; the remainder had genotype 2 or 3 apart from 5 patients with genotype 4. Enters CL/F, V/F, and ka.",
+      source_name = "HCV genotype 2"
     ),
     HCV_GT3 = list(
-      description        = "Hepatitis C virus genotype-3 indicator: 1 = HCV genotype 3, 0 = any other genotype.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hepatitis C virus genotype-3 indicator: 1 = HCV genotype 3, 0 = any other genotype.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HCV genotype 1; the source's reference individual)",
-      notes              = "Time-fixed per subject. Enters CL/F, V/F, and ka.",
-      source_name        = "HCV genotype 3"
+      notes = "Time-fixed per subject. Enters CL/F, V/F, and ka.",
+      source_name = "HCV genotype 3"
     ),
     HCV_GT4 = list(
-      description        = "Hepatitis C virus genotype-4 indicator: 1 = HCV genotype 4, 0 = any other genotype.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hepatitis C virus genotype-4 indicator: 1 = HCV genotype 4, 0 = any other genotype.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HCV genotype 1; the source's reference individual)",
-      notes              = "Time-fixed per subject. Only 5 of 1984 patients carried genotype 4, and the authors retained the indicator specifically to quantify that lack of information rather than to declare the effect insignificant (Discussion, p. 484). The corresponding coefficients are correspondingly imprecise - the ka effect 0.202 has a bootstrap 95% CI of 0.102 to 1.4 - so simulations at HCV_GT4 = 1 are extrapolation, not estimation. Enters CL/F, V/F, and ka.",
-      source_name        = "HCV genotype 4"
+      notes = "Time-fixed per subject. Only 5 of 1984 patients carried genotype 4, and the authors retained the indicator specifically to quantify that lack of information rather than to declare the effect insignificant (Discussion, p. 484). The corresponding coefficients are correspondingly imprecise - the ka effect 0.202 has a bootstrap 95% CI of 0.102 to 1.4 - so simulations at HCV_GT4 = 1 are extrapolation, not estimation. Enters CL/F, V/F, and ka.",
+      source_name = "HCV genotype 4"
     ),
     HCV_VLOAD = list(
-      description        = "Baseline hepatitis C virus RNA concentration in serum.",
-      units              = "IU/mL",
-      type               = "continuous",
+      description = "Baseline hepatitis C virus RNA concentration in serum.",
+      units = "IU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (Table I footnote c, 'value at baseline'). The popPK model uses it only DICHOTOMIZED at 800,000 IU/mL: model() forms hcvHigh <- (HCV_VLOAD >= 800000), matching the source's '(theta)^{Baseline HCV RNA >= 800,000 IU/mL}' term. The reference individual has baseline HCV RNA < 800,000 IU/mL (Table I footnote b). Supplied as the continuous concentration rather than as a pre-binarized flag so the same column also drives the 400,000 / 800,000 three-level categorization used by the sister SVR exposure-response models. Enters CL/F, V/F, and ka.",
-      source_name        = "Baseline HCV RNA"
+      notes = "Time-fixed per subject (Table I footnote c, 'value at baseline'). The popPK model uses it only DICHOTOMIZED at 800,000 IU/mL: model() forms hcvHigh <- (HCV_VLOAD >= 800000), matching the source's '(theta)^{Baseline HCV RNA >= 800,000 IU/mL}' term. The reference individual has baseline HCV RNA < 800,000 IU/mL (Table I footnote b). Supplied as the continuous concentration rather than as a pre-binarized flag so the same column also drives the 400,000 / 800,000 three-level categorization used by the sister SVR exposure-response models. Enters CL/F, V/F, and ka.",
+      source_name = "Baseline HCV RNA"
     ),
     DOSE_RBV_MGD = list(
-      description        = "Total daily oral ribavirin dose administered concomitantly.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Total daily oral ribavirin dose administered concomitantly.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The source parameterizes ribavirin as TRIB = (number of 200 mg tablets per day) / 6, i.e. the daily dose normalized to 1200 mg/day (p. 479 'where' block); model() forms trib <- (DOSE_RBV_MGD / 200) / 6, so DOSE_RBV_MGD = 1200 gives TRIB = 1 and reproduces the reference individual. The effect is a SPLIT term: when TRIB > 0 the CL/F multiplier is TRIB^e_rbv_cl (Table I 'RBV present', 0.0436); when TRIB = 0 the multiplier is the separate constant e_norbv_cl (Table I 'RBV not present', 1.1). Ribavirin was given daily per the standard of care for each HCV genotype. Enters CL/F only.",
-      source_name        = "RIBA (# of 200 mg tabs/day)"
+      notes = "The source parameterizes ribavirin as TRIB = (number of 200 mg tablets per day) / 6, i.e. the daily dose normalized to 1200 mg/day (p. 479 'where' block); model() forms trib <- (DOSE_RBV_MGD / 200) / 6, so DOSE_RBV_MGD = 1200 gives TRIB = 1 and reproduces the reference individual. The effect is a SPLIT term: when TRIB > 0 the CL/F multiplier is TRIB^e_rbv_cl (Table I 'RBV present', 0.0436); when TRIB = 0 the multiplier is the separate constant e_norbv_cl (Table I 'RBV not present', 1.1). Ribavirin was given daily per the standard of care for each HCV genotype. Enters CL/F only.",
+      source_name = "RIBA (# of 200 mg tabs/day)"
     ),
     ADA_POS = list(
-      description        = "Anti-albinterferon immunogenicity status: 1 = positive for anti-interferon antibodies, 0 = negative.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-albinterferon immunogenicity status: 1 = positive for anti-interferon antibodies, 0 = negative.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (negative for immunogenicity; the source's reference individual)",
-      notes              = "The source's term is '(theta18)^{Positive for IFN immunogenicity}'. Treated as time-fixed per subject here because the source's equation carries no time index beyond the subject subscript and Table I reports a single coefficient. Enters CL/F only.",
-      source_name        = "Positive for IFN immunogenicity"
+      notes = "The source's term is '(theta18)^{Positive for IFN immunogenicity}'. Treated as time-fixed per subject here because the source's equation carries no time index beyond the subject subscript and Table I reports a single coefficient. Enters CL/F only.",
+      source_name = "Positive for IFN immunogenicity"
     ),
     CONMED_CYP2D6_INH = list(
-      description        = "Concomitant medication classified as a CYP2D6 inhibitor: 1 = the patient was using one, 0 = not.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant medication classified as a CYP2D6 inhibitor: 1 = the patient was using one, 0 = not.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP2D6-inhibitor comedication)",
-      notes              = "The source's term is '(theta42)^{Patient using con med classified as CYP2D6 inhibitor}'. The paper does not enumerate which agents were classified into the class. Note that albinterferon is an albumin-interferon fusion protein cleared by proteolysis rather than by cytochrome-P450 metabolism, so this is best read as a marker of comedication burden or of the underlying condition prompting it; the estimated effect (1.05, bootstrap 95% CI 0.979-1.12) sits well inside the authors' +/-25% no-clinical-relevance band. Enters CL/F only.",
-      source_name        = "Patient using con med classified as CYP2D6 inhibitor"
+      notes = "The source's term is '(theta42)^{Patient using con med classified as CYP2D6 inhibitor}'. The paper does not enumerate which agents were classified into the class. Note that albinterferon is an albumin-interferon fusion protein cleared by proteolysis rather than by cytochrome-P450 metabolism, so this is best read as a marker of comedication burden or of the underlying condition prompting it; the estimated effect (1.05, bootstrap 95% CI 0.979-1.12) sits well inside the authors' +/-25% no-clinical-relevance band. Enters CL/F only.",
+      source_name = "Patient using con med classified as CYP2D6 inhibitor"
     ),
     CONMED_CYP3A4_INH = list(
-      description        = "Concomitant medication classified as a CYP3A inhibitor: 1 = the patient was using one, 0 = not.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant medication classified as a CYP3A inhibitor: 1 = the patient was using one, 0 = not.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP3A-inhibitor comedication)",
-      notes              = "The source's term is '(theta43)^{Patient using con med classified as CYP3A inhibitor}'; Table I labels the row 'CYP 3A4 inhibitor present'. Same interpretive caveat as CONMED_CYP2D6_INH - albinterferon is not a CYP substrate - and the estimated effect (0.961, bootstrap 95% CI 0.9-1.04) is likewise inside the no-clinical-relevance band. Enters CL/F only.",
-      source_name        = "Patient using con med classified as CYP3A inhibitor"
+      notes = "The source's term is '(theta43)^{Patient using con med classified as CYP3A inhibitor}'; Table I labels the row 'CYP 3A4 inhibitor present'. Same interpretive caveat as CONMED_CYP2D6_INH - albinterferon is not a CYP substrate - and the estimated effect (0.961, bootstrap 95% CI 0.9-1.04) is likewise inside the no-clinical-relevance band. Enters CL/F only.",
+      source_name = "Patient using con med classified as CYP3A inhibitor"
     ),
     INJSITE_THIGH = list(
-      description        = "Subcutaneous injection-site indicator: 1 = thigh, 0 = abdomen.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Subcutaneous injection-site indicator: 1 = thigh, 0 = abdomen.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (abdomen; the source's reference individual)",
-      notes              = "albIFN was self-administered subcutaneously in the thigh or the abdomen. The site acts in TWO places: a multiplicative effect on ka (Table I 'Thigh as injection site', 1.09) and a relative-bioavailability effect on the depot (Table I 'Frel for thigh as injection site', 1.07, footnote d 'bioavailability relative to abdomen as injection site'). The source encodes the latter as the switch 'F1 = 1; if injection site = thigh, then F1 = theta44' (p. 479). Because CL/F and V/F are APPARENT parameters already carrying the abdomen bioavailability, e_injsite_thigh_fdepot is a RELATIVE bioavailability and lfdepot is anchored at log(1) for the abdomen reference.",
-      source_name        = "Injection site = thigh"
+      notes = "albIFN was self-administered subcutaneously in the thigh or the abdomen. The site acts in TWO places: a multiplicative effect on ka (Table I 'Thigh as injection site', 1.09) and a relative-bioavailability effect on the depot (Table I 'Frel for thigh as injection site', 1.07, footnote d 'bioavailability relative to abdomen as injection site'). The source encodes the latter as the switch 'F1 = 1; if injection site = thigh, then F1 = theta44' (p. 479). Because CL/F and V/F are APPARENT parameters already carrying the abdomen bioavailability, e_injsite_thigh_fdepot is a RELATIVE bioavailability and lfdepot is anchored at log(1) for the abdomen reference.",
+      source_name = "Injection site = thigh"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "albinterferon alfa-2b", units = "ug", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "albinterferon alfa-2b", units = "ug", specimen = "administration site", verified = TRUE),
     central = list(analyte = "albinterferon alfa-2b", units = "ug", specimen = "serum", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1984L,
-    n_studies      = 5L,
-    age_range      = "18-79 years",
-    weight_range   = "38-166 kg",
+    species = "human",
+    n_subjects = 1984L,
+    n_studies = 5L,
+    age_range = "18-79 years",
+    weight_range = "38-166 kg",
     sex_female_pct = 40.1,
     race_ethnicity = c(White = 81, Asian = 13, Black = 5, Other = 1),
-    disease_state  = "Chronic hepatitis C virus infection with detectable serum HCV RNA and compensated liver disease. 66% HCV genotype 1, the remainder genotype 2 or 3 apart from 5 patients with genotype 4. Interferon-treatment-naive except for one phase 2 trial (NCT00097435), which enrolled patients who had failed previous interferon alfa treatment.",
-    dose_range     = "900-1800 ug albinterferon alfa-2b, self-administered subcutaneously in the thigh or abdomen once every 2 weeks or once every 4 weeks, for 48 weeks (genotype 1) or 24 weeks (genotype 2/3); up to 72 weeks for late responders in NCT00097435. All patients also received daily oral ribavirin per the standard of care for their genotype. The 1200 ug every-2-weeks arms of the phase 3 trials were reduced to 900 ug during the studies because of serious pulmonary adverse events.",
-    regions        = "multinational",
-    notes          = "Pooled from three phase 2 and two phase 3 randomized trials (NCT00656006, NCT00097435, NCT00115908, NCT00411385, NCT00402428), contributing 12,042 serum albIFN concentrations. Full baseline demographics are in Supplementary Table I, which is not on disk; the figures given here are those stated in the main-text Results, 'Population PK Analysis'. sex_female_pct is computed from the reported counts (795 women of 1984). Serum albIFN was measured by ELISA with a lower limit of quantitation of 0.53 ng/mL for all phase 3 specimens and most phase 2 specimens, and 0.26 ng/mL for the remainder. Hypothetical reference individual for the Table I estimates: 45-year-old white woman, 75 kg, HCV genotype 1, negative for immunogenicity, baseline HCV RNA < 800,000 IU/mL, ribavirin 1200 mg/day, abdomen as injection site, albumin 4.3 g/dL, ALT 34 IU/L, estimated creatinine clearance 120 mL/min."
+    disease_state = "Chronic hepatitis C virus infection with detectable serum HCV RNA and compensated liver disease. 66% HCV genotype 1, the remainder genotype 2 or 3 apart from 5 patients with genotype 4. Interferon-treatment-naive except for one phase 2 trial (NCT00097435), which enrolled patients who had failed previous interferon alfa treatment.",
+    dose_range = "900-1800 ug albinterferon alfa-2b, self-administered subcutaneously in the thigh or abdomen once every 2 weeks or once every 4 weeks, for 48 weeks (genotype 1) or 24 weeks (genotype 2/3); up to 72 weeks for late responders in NCT00097435. All patients also received daily oral ribavirin per the standard of care for their genotype. The 1200 ug every-2-weeks arms of the phase 3 trials were reduced to 900 ug during the studies because of serious pulmonary adverse events.",
+    regions = "multinational",
+    notes = "Pooled from three phase 2 and two phase 3 randomized trials (NCT00656006, NCT00097435, NCT00115908, NCT00411385, NCT00402428), contributing 12,042 serum albIFN concentrations. Full baseline demographics are in Supplementary Table I, which is not on disk; the figures given here are those stated in the main-text Results, 'Population PK Analysis'. sex_female_pct is computed from the reported counts (795 women of 1984). Serum albIFN was measured by ELISA with a lower limit of quantitation of 0.53 ng/mL for all phase 3 specimens and most phase 2 specimens, and 0.26 ng/mL for the remainder. Hypothetical reference individual for the Table I estimates: 45-year-old white woman, 75 kg, HCV genotype 1, negative for immunogenicity, baseline HCV RNA < 800,000 IU/mL, ribavirin 1200 mg/day, abdomen as injection site, albumin 4.3 g/dL, ALT 34 IU/L, estimated creatinine clearance 120 mL/min."
   )
 
   ini({

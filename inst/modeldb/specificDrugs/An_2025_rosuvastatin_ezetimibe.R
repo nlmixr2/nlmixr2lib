@@ -9,7 +9,7 @@ An_2025_rosuvastatin_ezetimibe <- function() {
     sep = " "
   )
   vignette <- "An_2025_rosuvastatin_ezetimibe"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # An 2025, "Covariate Analysis and Model Evaluation" and both Results
   # sections: age, weight, serum creatinine, albumin, ALP, ALT, AST and GGT
@@ -22,47 +22,104 @@ An_2025_rosuvastatin_ezetimibe <- function() {
   covariateData <- list()
 
   covariatesDataExcluded <- list(
-    AGE   = list(description = "Age at screening", units = "years", type = "continuous",
-                 notes = "Screened (centered on the mean) in An 2025 but not retained in the final PK or PD model."),
-    WT    = list(description = "Body weight at screening", units = "kg", type = "continuous",
-                 notes = "Screened (centered on the mean) in An 2025 but not retained; enrolment required weight within +/-20% of ideal body weight, so the range was narrow."),
-    CREAT = list(description = "Serum creatinine at screening", units = "mg/dL", type = "continuous",
-                 notes = "Screened in An 2025 but not retained; subjects with Cockcroft-Gault creatinine clearance below 80 mL/min were excluded."),
-    ALB   = list(description = "Serum albumin at screening", units = "g/dL", type = "continuous",
-                 notes = "Screened in An 2025 but not retained. An 2025 Table 1 reports albumin in g/dL (US convention), not the canonical g/L."),
-    ALP   = list(description = "Serum alkaline phosphatase at screening", units = "U/L", type = "continuous",
-                 notes = "Screened in An 2025 but not retained."),
-    ALT   = list(description = "Serum alanine aminotransferase at screening", units = "U/L", type = "continuous",
-                 notes = "Screened in An 2025 but not retained."),
-    AST   = list(description = "Serum aspartate aminotransferase at screening", units = "U/L", type = "continuous",
-                 notes = "Screened in An 2025 but not retained."),
-    GGT   = list(description = "Serum gamma-glutamyltransferase at screening", units = "U/L", type = "continuous",
-                 notes = "Screened in An 2025 but not retained.")
+    AGE = list(
+      description = "Age at screening",
+      units = "years",
+      type = "continuous",
+      notes = "Screened (centered on the mean) in An 2025 but not retained in the final PK or PD model."
+    ),
+    WT = list(
+      description = "Body weight at screening",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened (centered on the mean) in An 2025 but not retained; enrolment required weight within +/-20% of ideal body weight, so the range was narrow."
+    ),
+    CREAT = list(
+      description = "Serum creatinine at screening",
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened in An 2025 but not retained; subjects with Cockcroft-Gault creatinine clearance below 80 mL/min were excluded."
+    ),
+    ALB = list(
+      description = "Serum albumin at screening",
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened in An 2025 but not retained. An 2025 Table 1 reports albumin in g/dL (US convention), not the canonical g/L."
+    ),
+    ALP = list(
+      description = "Serum alkaline phosphatase at screening",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened in An 2025 but not retained."
+    ),
+    ALT = list(
+      description = "Serum alanine aminotransferase at screening",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened in An 2025 but not retained."
+    ),
+    AST = list(
+      description = "Serum aspartate aminotransferase at screening",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened in An 2025 but not retained."
+    ),
+    GGT = list(
+      description = "Serum gamma-glutamyltransferase at screening",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened in An 2025 but not retained."
+    )
   )
 
   compartmentData <- list(
-    depot_rosuvastatin       = list(analyte = "rosuvastatin", units = "mg", specimen = "administration site", verified = TRUE),
-    central_rosuvastatin     = list(analyte = "rosuvastatin", units = "mg", specimen = "plasma", verified = TRUE),
+    depot_rosuvastatin = list(
+      analyte = "rosuvastatin",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central_rosuvastatin = list(analyte = "rosuvastatin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1_rosuvastatin = list(analyte = "rosuvastatin", units = "mg", specimen = "plasma", verified = TRUE),
-    depot_ezetimibe          = list(analyte = "total ezetimibe (ezetimibe + ezetimibe phenolic glucuronide)", units = "mg", specimen = "administration site", verified = TRUE),
-    central_ezetimibe        = list(analyte = "total ezetimibe (ezetimibe + ezetimibe phenolic glucuronide)", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_ezetimibe    = list(analyte = "total ezetimibe (ezetimibe + ezetimibe phenolic glucuronide)", units = "mg", specimen = "plasma", verified = TRUE),
-    gallbladder_ezetimibe    = list(analyte = "total ezetimibe (ezetimibe + ezetimibe phenolic glucuronide)", units = "mg", specimen = "bile", verified = TRUE),
-    ldl                      = list(analyte = "low-density lipoprotein cholesterol", units = "mg/dL", specimen = "serum", verified = TRUE)
+    depot_ezetimibe = list(
+      analyte = "total ezetimibe (ezetimibe + ezetimibe phenolic glucuronide)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central_ezetimibe = list(
+      analyte = "total ezetimibe (ezetimibe + ezetimibe phenolic glucuronide)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    peripheral1_ezetimibe = list(
+      analyte = "total ezetimibe (ezetimibe + ezetimibe phenolic glucuronide)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    gallbladder_ezetimibe = list(
+      analyte = "total ezetimibe (ezetimibe + ezetimibe phenolic glucuronide)",
+      units = "mg",
+      specimen = "bile",
+      verified = TRUE
+    ),
+    ldl = list(analyte = "low-density lipoprotein cholesterol", units = "mg/dL", specimen = "serum", verified = TRUE)
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 50L,
-    n_studies     = 1L,
-    age_range     = "19-45 years by protocol; median 24 (range 19-33) in Part A and 24 (19-37) in Part B (An 2025 Table 1).",
-    weight_range  = "Median 69.1 kg (55.0-88.0) in Part A and 68.8 kg (44.8-84.0) in Part B (An 2025 Table 1).",
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
+    age_range = "19-45 years by protocol; median 24 (range 19-33) in Part A and 24 (19-37) in Part B (An 2025 Table 1).",
+    weight_range = "Median 69.1 kg (55.0-88.0) in Part A and 68.8 kg (44.8-84.0) in Part B (An 2025 Table 1).",
     sex_female_pct = 0,
     race_ethnicity = "Korean.",
     disease_state = "Healthy male volunteers with no clinically significant medical history; creatinine clearance at or above 80 mL/min by Cockcroft-Gault.",
-    dose_range    = "Rosuvastatin 20 mg and/or ezetimibe 10 mg once daily for 7 days, as monotherapy or co-therapy.",
-    regions       = "Republic of Korea (Gachon University Gil Medical Center).",
-    notes         = "An 2025 Methods and Table 1. Two-part, open-label, multiple-dose, two-treatment, two-period, two-sequence crossover drug-interaction study (ClinicalTrials.gov NCT02289430, IRB GCIRB2014-324). 56 subjects enrolled (28 per part); 50 (25 per part) contributed to the population analysis, giving 25 rosuvastatin monotherapy, 25 ezetimibe monotherapy and 50 co-therapy concentration-time profiles. Part A compared rosuvastatin 20 mg with rosuvastatin 20 mg + ezetimibe 10 mg; Part B compared ezetimibe 10 mg with the same combination; 14-day washout between periods. Steady-state PK sampling on day 7 at 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 8, 12, 24, 48 and 72 h post-dose. Standard meals were given 4, 10 and 24 h after the final dose, and these define the gallbladder-emptying windows. LDL-C was measured pre-dose on day 1 (baseline) and 24 h after the final dose. Concentrations below the LLOQ (8.38% of rosuvastatin and 1.25% of ezetimibe samples, all after 48 h) were treated as missing. Estimation used the SAEM algorithm in Monolix 2024R1."
+    dose_range = "Rosuvastatin 20 mg and/or ezetimibe 10 mg once daily for 7 days, as monotherapy or co-therapy.",
+    regions = "Republic of Korea (Gachon University Gil Medical Center).",
+    notes = "An 2025 Methods and Table 1. Two-part, open-label, multiple-dose, two-treatment, two-period, two-sequence crossover drug-interaction study (ClinicalTrials.gov NCT02289430, IRB GCIRB2014-324). 56 subjects enrolled (28 per part); 50 (25 per part) contributed to the population analysis, giving 25 rosuvastatin monotherapy, 25 ezetimibe monotherapy and 50 co-therapy concentration-time profiles. Part A compared rosuvastatin 20 mg with rosuvastatin 20 mg + ezetimibe 10 mg; Part B compared ezetimibe 10 mg with the same combination; 14-day washout between periods. Steady-state PK sampling on day 7 at 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 8, 12, 24, 48 and 72 h post-dose. Standard meals were given 4, 10 and 24 h after the final dose, and these define the gallbladder-emptying windows. LDL-C was measured pre-dose on day 1 (baseline) and 24 h after the final dose. Concentrations below the LLOQ (8.38% of rosuvastatin and 1.25% of ezetimibe samples, all after 48 h) were treated as missing. Estimation used the SAEM algorithm in Monolix 2024R1."
   )
 
   ini({

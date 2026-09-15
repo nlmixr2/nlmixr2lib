@@ -8,172 +8,172 @@ Kemal_2026_nemtabrutinib <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "nemtabrutinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "nemtabrutinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "nemtabrutinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "nemtabrutinib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "nemtabrutinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference (median) 73.5 kg; NONMEM supplement code. Applied as power function to CL and Vc with fixed exponents 0.331 and 0.807 respectively (Table 2). Missing values imputed to the reference in the source analysis.",
-      source_name        = "BWT"
+      notes = "Reference (median) 73.5 kg; NONMEM supplement code. Applied as power function to CL and Vc with fixed exponents 0.331 and 0.807 respectively (Table 2). Missing values imputed to the reference in the source analysis.",
+      source_name = "BWT"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference (median) 68 years; NONMEM supplement code. Log-linear (power) effect on CL only (exponent -0.503). Missing values imputed to the reference.",
-      source_name        = "AGE"
+      notes = "Reference (median) 68 years; NONMEM supplement code. Log-linear (power) effect on CL only (exponent -0.503). Missing values imputed to the reference.",
+      source_name = "AGE"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference (median) 41.2 g/L; NONMEM supplement code (paper Table 1 reports in g/dL, i.e. 4.12 g/dL). Log-linear (power) effect on CL only (exponent -0.395). Missing values imputed to the reference.",
-      source_name        = "BALB"
+      notes = "Reference (median) 41.2 g/L; NONMEM supplement code (paper Table 1 reports in g/dL, i.e. 4.12 g/dL). Log-linear (power) effect on CL only (exponent -0.395). Missing values imputed to the reference.",
+      source_name = "BALB"
     ),
     SEXF = list(
-      description        = "Biological sex, 1 = female / 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex, 1 = female / 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = "Fractional additive effect on CL (-0.133) and Vc (-0.0901) for female relative to male reference. NONMEM SEX column: 0 = male, 1 = female.",
-      source_name        = "SEX"
+      notes = "Fractional additive effect on CL (-0.133) and Vc (-0.0901) for female relative to male reference. NONMEM SEX column: 0 = male, 1 = female.",
+      source_name = "SEX"
     ),
     RACE_ASIAN = list(
-      description        = "Race indicator, 1 = Asian / 0 = other",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator, 1 = Asian / 0 = other",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (Other pooled with White per Methods)",
-      notes              = "Fractional additive effect on CL (-0.117) and Vc (-0.116). Derived from RACE = 3 in the NONMEM control stream; White (RACE = 1) is the reference and 'Other' was merged with 'White' per Methods section 2.2.2.",
-      source_name        = "RACE"
+      notes = "Fractional additive effect on CL (-0.117) and Vc (-0.116). Derived from RACE = 3 in the NONMEM control stream; White (RACE = 1) is the reference and 'Other' was merged with 'White' per Methods section 2.2.2.",
+      source_name = "RACE"
     ),
     RACE_BLACK = list(
-      description        = "Race indicator, 1 = Black / African American / 0 = other",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator, 1 = Black / African American / 0 = other",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (Other pooled with White per Methods)",
-      notes              = "Fractional additive effect on CL (0.0533; 95% CI includes zero, RSE 252%) and Vc (0.102). Derived from RACE = 2 in the NONMEM control stream.",
-      source_name        = "RACE"
+      notes = "Fractional additive effect on CL (0.0533; 95% CI includes zero, RSE 252%) and Vc (0.102). Derived from RACE = 2 in the NONMEM control stream.",
+      source_name = "RACE"
     ),
     DIS_BCELLNHL = list(
-      description        = "Disease indication, 1 = B-cell non-Hodgkin lymphoma / 0 = other",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Disease indication, 1 = B-cell non-Hodgkin lymphoma / 0 = other",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = CLL/SLL (reference disease indication in the model)",
-      notes              = "Fractional additive effect on CL (-0.166) and Vc (0.00224). Derived from INDIC = 1 in the NONMEM control stream.",
-      source_name        = "INDIC"
+      notes = "Fractional additive effect on CL (-0.166) and Vc (0.00224). Derived from INDIC = 1 in the NONMEM control stream.",
+      source_name = "INDIC"
     ),
     DIS_WM = list(
-      description        = "Disease indication, 1 = Waldenstrom's macroglobulinemia / 0 = other",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Disease indication, 1 = Waldenstrom's macroglobulinemia / 0 = other",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = CLL/SLL",
-      notes              = "Fractional additive effect on CL (0.0718; RSE 120%) and Vc (0.152). Derived from INDIC = 3 in the NONMEM control stream.",
-      source_name        = "INDIC"
+      notes = "Fractional additive effect on CL (0.0718; RSE 120%) and Vc (0.152). Derived from INDIC = 3 in the NONMEM control stream.",
+      source_name = "INDIC"
     ),
     DIS_OTHER_HEME = list(
-      description        = "Disease indication, 1 = other hematologic malignancy (pooled Other + MZL + FL + MCL + Richter's transformation) / 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Disease indication, 1 = other hematologic malignancy (pooled Other + MZL + FL + MCL + Richter's transformation) / 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = CLL/SLL",
-      notes              = "Fractional additive effect on CL (-0.0244; RSE 171%) and Vc (-0.0200). Derived from INDIC in {4, 5, 6, 7, 8} in the NONMEM control stream, which pools 'Other', MZL (marginal zone lymphoma), FL (follicular lymphoma), MCL (mantle cell lymphoma), and Richter's transformation into a single effect.",
-      source_name        = "INDIC"
+      notes = "Fractional additive effect on CL (-0.0244; RSE 171%) and Vc (-0.0200). Derived from INDIC in {4, 5, 6, 7, 8} in the NONMEM control stream, which pools 'Other', MZL (marginal zone lymphoma), FL (follicular lymphoma), MCL (mantle cell lymphoma), and Richter's transformation into a single effect.",
+      source_name = "INDIC"
     ),
     RENALIMP_MILD = list(
-      description        = "Renal impairment, 1 = mild (Cockcroft-Gault eGFR 60-89 mL/min) / 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Renal impairment, 1 = mild (Cockcroft-Gault eGFR 60-89 mL/min) / 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = normal renal function (eGFR >= 90 mL/min); mild impairment is a distinct binary indicator from RENALIMP_MOD",
-      notes              = "Fractional additive effect on CL (0.0537). Classification per NCI ODWG using Cockcroft-Gault (Table S2). Missing serum creatinine assumed normal in the NONMEM code.",
-      source_name        = "RENIMP"
+      notes = "Fractional additive effect on CL (0.0537). Classification per NCI ODWG using Cockcroft-Gault (Table S2). Missing serum creatinine assumed normal in the NONMEM code.",
+      source_name = "RENIMP"
     ),
     RENALIMP_MOD = list(
-      description        = "Renal impairment, 1 = moderate (eGFR 30-59 mL/min) / 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Renal impairment, 1 = moderate (eGFR 30-59 mL/min) / 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = normal renal function; mild impairment enters via RENALIMP_MILD",
-      notes              = "Fractional additive effect on CL (-0.00186; 95% CI wide, RSE ~3000%). Cockcroft-Gault classification per Table S2. Severe impairment and kidney failure were pooled with the reference in the model (only 11 subjects total).",
-      source_name        = "RENIMP"
+      notes = "Fractional additive effect on CL (-0.00186; 95% CI wide, RSE ~3000%). Cockcroft-Gault classification per Table S2. Severe impairment and kidney failure were pooled with the reference in the model (only 11 subjects total).",
+      source_name = "RENIMP"
     ),
     HEPIMP_MILD = list(
-      description        = "Hepatic impairment, 1 = mild (NCI ODWG) / 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hepatic impairment, 1 = mild (NCI ODWG) / 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = normal hepatic function; moderate hepatic impairment (n = 8) pooled with reference",
-      notes              = "Fractional additive effect on CL (0.00401; 95% CI includes zero, RSE ~1200%). NCI ODWG classification per Table S2.",
-      source_name        = "HEPIMP"
+      notes = "Fractional additive effect on CL (0.00401; 95% CI includes zero, RSE ~1200%). NCI ODWG classification per Table S2.",
+      source_name = "HEPIMP"
     ),
     CONMED_CYP3A4_IND_MOD = list(
-      description        = "Concomitant use of a moderate CYP3A4 inducer at the time of the PK observation",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant use of a moderate CYP3A4 inducer at the time of the PK observation",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no concomitant moderate CYP3A4 inducer",
-      notes              = "Fractional additive effect on CL (0.0220; RSE 458%). Time-varying regressor. No strong CYP3A4 inducers in the study; weak inducers were not entered into the model.",
-      source_name        = "C3A4INDM"
+      notes = "Fractional additive effect on CL (0.0220; RSE 458%). Time-varying regressor. No strong CYP3A4 inducers in the study; weak inducers were not entered into the model.",
+      source_name = "C3A4INDM"
     ),
     CONMED_CYP3A4_INH_STRONG = list(
-      description        = "Concomitant use of a strong CYP3A4 inhibitor at the time of the PK observation",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant use of a strong CYP3A4 inhibitor at the time of the PK observation",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no concomitant strong CYP3A4 inhibitor",
-      notes              = "Fractional additive effect on CL (-0.0119; RSE 774%). Time-varying regressor. Weak and moderate inhibitors were not entered into the model.",
-      source_name        = "C3A4INHS"
+      notes = "Fractional additive effect on CL (-0.0119; RSE 774%). Time-varying regressor. Weak and moderate inhibitors were not entered into the model.",
+      source_name = "C3A4INHS"
     ),
     CONMED_PPI = list(
-      description        = "Concomitant use of a proton pump inhibitor at the time of the PK observation",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant use of a proton pump inhibitor at the time of the PK observation",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no concomitant PPI",
-      notes              = "Fractional additive effect on F (0.00232; RSE 915%). Time-varying regressor. Examples: esomeprazole, pantoprazole.",
-      source_name        = "PPIF"
+      notes = "Fractional additive effect on F (0.00232; RSE 915%). Time-varying regressor. Examples: esomeprazole, pantoprazole.",
+      source_name = "PPIF"
     ),
     CONMED_H2RA = list(
-      description        = "Concomitant use of a histamine H2 receptor antagonist at the time of the PK observation",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant use of a histamine H2 receptor antagonist at the time of the PK observation",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no concomitant H2 antagonist",
-      notes              = "Fractional additive effect on F (0.0264; RSE 132%). Time-varying regressor. Examples: famotidine, cimetidine.",
-      source_name        = "H2F"
+      notes = "Fractional additive effect on F (0.0264; RSE 132%). Time-varying regressor. Examples: famotidine, cimetidine.",
+      source_name = "H2F"
     ),
     CONMED_ANTACID = list(
-      description        = "Concomitant use of an antacid at the time of the PK observation",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant use of an antacid at the time of the PK observation",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no concomitant antacid",
-      notes              = "Fractional additive effect on F (-0.0360; RSE 72.8%). Time-varying regressor. Examples: calcium carbonate, magnesium carbonate.",
-      source_name        = "ANTACIDF"
+      notes = "Fractional additive effect on F (-0.0360; RSE 72.8%). Time-varying regressor. Examples: calcium carbonate, magnesium carbonate.",
+      source_name = "ANTACIDF"
     ),
     DOSE = list(
-      description        = "Nemtabrutinib dose at the current dosing event, used to identify low-dose (< 30 mg) bioavailability regime",
-      units              = "mg",
-      type               = "continuous",
+      description = "Nemtabrutinib dose at the current dosing event, used to identify low-dose (< 30 mg) bioavailability regime",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used only to construct the low-dose indicator: doses < 30 mg receive a -0.151 fractional shift in F relative to doses >= 30 mg. Both the paper and the NONMEM supplement encode this as a dose-level covariate, not a subject-level covariate.",
-      source_name        = "DOSE"
+      notes = "Used only to construct the low-dose indicator: doses < 30 mg receive a -0.151 fractional shift in F relative to doses >= 30 mg. Both the paper and the NONMEM supplement encode this as a dose-level covariate, not a subject-level covariate.",
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 578L,
-    n_studies      = 2L,
-    age_range      = "25-89 years",
-    age_median     = "68 years",
-    weight_range   = "41.2-147 kg",
-    weight_median  = "74.0 kg",
+    species = "human",
+    n_subjects = 578L,
+    n_studies = 2L,
+    age_range = "25-89 years",
+    age_median = "68 years",
+    weight_range = "41.2-147 kg",
+    weight_median = "74.0 kg",
     sex_female_pct = 34.1,
     race_ethnicity = c(White = 85.8, Black = 2.4, Asian = 7.8, Other = 2.4, Missing = 1.6),
-    disease_state  = "Hematologic malignancies including CLL/SLL (49.8%), B-cell NHL (9.7%), Waldenstrom's macroglobulinemia (9.7%), and other (30.6%; MZL / FL / MCL / Richter's transformation pooled)",
-    dose_range     = "5-80 mg once daily orally (BELLWAVE-001: 5, 10, 15, 20, 30, 45, 65, 75 mg; BELLWAVE-003: 45, 65, 80 mg)",
-    regions        = "Not stated at the aggregate level in the source",
-    notes          = "Table 1 baseline demographics for the pooled BELLWAVE-001 (Phase 1/2, n = 136) and BELLWAVE-003 (Phase 2, n = 442) analysis population. 5669 non-BLQ observations across 578 patients. Missing continuous covariates imputed to the median; missing / small-N categorical categories pooled with the largest category ('Other' race merged with 'White'; 'Other' disease indication kept as a distinct category)."
+    disease_state = "Hematologic malignancies including CLL/SLL (49.8%), B-cell NHL (9.7%), Waldenstrom's macroglobulinemia (9.7%), and other (30.6%; MZL / FL / MCL / Richter's transformation pooled)",
+    dose_range = "5-80 mg once daily orally (BELLWAVE-001: 5, 10, 15, 20, 30, 45, 65, 75 mg; BELLWAVE-003: 45, 65, 80 mg)",
+    regions = "Not stated at the aggregate level in the source",
+    notes = "Table 1 baseline demographics for the pooled BELLWAVE-001 (Phase 1/2, n = 136) and BELLWAVE-003 (Phase 2, n = 442) analysis population. 5669 non-BLQ observations across 578 patients. Missing continuous covariates imputed to the median; missing / small-N categorical categories pooled with the largest category ('Other' race merged with 'White'; 'Other' disease indication kept as a distinct category)."
   )
 
   ini({

@@ -56,18 +56,18 @@ Koolen_2010_docetaxel <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "docetaxel", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "docetaxel", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "docetaxel", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "docetaxel", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "docetaxel", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "docetaxel", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "docetaxel", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "docetaxel", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_rtv   = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
     central_rtv = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_RTV = list(
-      description        = paste(
+      description = paste(
         "1 = the docetaxel dose record is administered with concomitant oral",
         "ritonavir 100 mg (either simultaneously or 1 h prior to docetaxel),",
         "0 = docetaxel administered alone (no ritonavir). Time-fixed within",
@@ -77,10 +77,10 @@ Koolen_2010_docetaxel <- function() {
         "concentration that drives the CLi inhibition through the embedded",
         "ritonavir PK compartments."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (docetaxel alone, no ritonavir).",
-      notes              = paste(
+      notes = paste(
         "Koolen 2010 Methods Equation 4 (the non-concentration-dependent",
         "ritonavir effect on gut bioavailability) and Results Model",
         "development section: F1 = 0.19 (no RTV) vs F_RTV = 0.39 (RTV",
@@ -92,10 +92,10 @@ Koolen_2010_docetaxel <- function() {
         "ritonavir plasma concentration (central_rtv / vc_rtv) can drive",
         "the competitive CLi inhibition."
       ),
-      source_name        = "RTV (indicator in Equation 4)"
+      source_name = "RTV (indicator in Equation 4)"
     ),
     ROUTE_IV = list(
-      description        = paste(
+      description = paste(
         "1 = the dose record is administered intravenously (docetaxel IV",
         "infusion; dose into the central compartment), 0 = administered",
         "orally (docetaxel by mouth; dose into the depot compartment).",
@@ -105,10 +105,10 @@ Koolen_2010_docetaxel <- function() {
         "subject when the same patient receives both IV and oral docetaxel",
         "on different occasions."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral docetaxel; reference V_central_po = 44.0 L).",
-      notes              = paste(
+      notes = paste(
         "Koolen 2010 Results 'Volume of distribution' section: 'Separate",
         "analyses of the volume of distribution of the central compartment",
         "for orally and intravenously administered docetaxel resulted in",
@@ -124,20 +124,20 @@ Koolen_2010_docetaxel <- function() {
         "paper-specific; see covariate-columns.md entry for the registered",
         "examples)."
       ),
-      source_name        = "(NONMEM data column flagging IV vs oral administration; not explicitly named in the paper text)"
+      source_name = "(NONMEM data column flagging IV vs oral administration; not explicitly named in the paper text)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 36L,
-    n_studies       = 2L,
-    n_observations  = 1025L,
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 2L,
+    n_observations = 1025L,
     n_treatment_courses = 72L,
-    age_range       = "31-73 years",
-    age_median      = "54 years",
-    sex_female_pct  = 44.4,
-    disease_state   = paste(
+    age_range = "31-73 years",
+    age_median = "54 years",
+    sex_female_pct = 44.4,
+    disease_state = paste(
       "Adults with histologically or cytologically confirmed advanced",
       "cancer for which no standard therapy was available (Koolen 2010",
       "Methods Patients section). Performance status <= 2 (WHO),",
@@ -149,7 +149,7 @@ Koolen_2010_docetaxel <- function() {
       "bacterial / viral infections, CNS metastases, alcoholism, drug",
       "addiction, or pregnancy were excluded."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Docetaxel intravenously 100 mg or 100 mg/m^2 (32 patients across",
       "the two cohorts) and orally 10 mg, 75 mg/m^2, or 100 mg with or",
       "without oral ritonavir 100 mg (administered simultaneously or 1 h",
@@ -160,8 +160,8 @@ Koolen_2010_docetaxel <- function() {
       "apart) = 15, RTV 100 mg + oral docetaxel 10 mg simultaneous = 5,",
       "RTV 100 mg + oral docetaxel 100 mg simultaneous = 11."
     ),
-    regions         = "Netherlands (Netherlands Cancer Institute / Slotervaart Hospital, Amsterdam).",
-    notes           = paste(
+    regions = "Netherlands (Netherlands Cancer Institute / Slotervaart Hospital, Amsterdam).",
+    notes = paste(
       "Pooled data from two phase I studies in the same institution (Koolen",
       "2010 Methods refs [4, 5]). 1025 docetaxel and 276 ritonavir plasma",
       "concentrations across 72 treatment courses. Standard dexamethasone +",

@@ -2,7 +2,17 @@ Zuo_2016_UDCA <- function() {
   description <- "Systems model. Enterohepatic recirculation of ursodeoxycholic acid (UDCA) and its glycine (GUDCA) and taurine (TUDCA) conjugates in healthy adults, with adaptation to primary biliary cirrhosis (PBC). 19 ODEs across stomach, intestine, portal vein, blood, liver, biliary system, and feces compartments per analyte; oral square-wave absorption (0.5 h) and meal/snack-modulated biliary-to-intestinal flux. No IIV or residual error - typical-value mechanistic simulation only."
   reference <- "Zuo P, Dobbins RL, O'Connor-Semmes RL, Young MA. A Systems Model for Ursodeoxycholic Acid Metabolism in Healthy and Patients With Primary Biliary Cirrhosis. CPT Pharmacometrics Syst Pharmacol. 2016 Aug;5(8):418-426. doi:10.1002/psp4.12100"
   vignette <- "Zuo_2016_UDCA"
-  paper_specific_compartments <- c("portal_udca", "biliary_udca", "feces_udca", "portal_gudca", "biliary_gudca", "feces_gudca", "portal_tudca", "biliary_tudca", "feces_tudca")
+  paper_specific_compartments <- c(
+    "portal_udca",
+    "biliary_udca",
+    "feces_udca",
+    "portal_gudca",
+    "biliary_gudca",
+    "feces_gudca",
+    "portal_tudca",
+    "biliary_tudca",
+    "feces_tudca"
+  )
 
   units <- list(time = "h", dosing = "mg", concentration = "umol/L")
 
@@ -11,73 +21,73 @@ Zuo_2016_UDCA <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    stomach_udca    = list(analyte = "UDCA", units = "mg", specimen = "administration site", verified = FALSE),
-    intestine_udca  = list(analyte = "UDCA", units = "mg", specimen = "administration site", verified = FALSE),
-    portal_udca     = list(analyte = "UDCA", units = "mg", specimen = "administration site", verified = FALSE),
-    blood_udca      = list(analyte = "UDCA", units = "mg", specimen = "blood cell", verified = FALSE),
-    liver_udca      = list(analyte = "UDCA", units = "mg", specimen = "tissue", verified = FALSE),
-    biliary_udca    = list(analyte = "UDCA", units = "mg", specimen = "administration site", verified = FALSE),
-    feces_udca      = list(analyte = "UDCA", units = "mg", specimen = "faeces", verified = FALSE),
+    stomach_udca = list(analyte = "UDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    intestine_udca = list(analyte = "UDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    portal_udca = list(analyte = "UDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    blood_udca = list(analyte = "UDCA", units = "mg", specimen = "blood cell", verified = FALSE),
+    liver_udca = list(analyte = "UDCA", units = "mg", specimen = "tissue", verified = FALSE),
+    biliary_udca = list(analyte = "UDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    feces_udca = list(analyte = "UDCA", units = "mg", specimen = "faeces", verified = FALSE),
     intestine_gudca = list(analyte = "GUDCA", units = "mg", specimen = "administration site", verified = FALSE),
-    portal_gudca    = list(analyte = "GUDCA", units = "mg", specimen = "administration site", verified = FALSE),
-    blood_gudca     = list(analyte = "GUDCA", units = "mg", specimen = "blood cell", verified = FALSE),
-    liver_gudca     = list(analyte = "GUDCA", units = "mg", specimen = "tissue", verified = FALSE),
-    biliary_gudca   = list(analyte = "GUDCA", units = "mg", specimen = "administration site", verified = FALSE),
-    feces_gudca     = list(analyte = "GUDCA", units = "mg", specimen = "faeces", verified = FALSE),
+    portal_gudca = list(analyte = "GUDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    blood_gudca = list(analyte = "GUDCA", units = "mg", specimen = "blood cell", verified = FALSE),
+    liver_gudca = list(analyte = "GUDCA", units = "mg", specimen = "tissue", verified = FALSE),
+    biliary_gudca = list(analyte = "GUDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    feces_gudca = list(analyte = "GUDCA", units = "mg", specimen = "faeces", verified = FALSE),
     intestine_tudca = list(analyte = "TUDCA", units = "mg", specimen = "administration site", verified = FALSE),
-    portal_tudca    = list(analyte = "TUDCA", units = "mg", specimen = "administration site", verified = FALSE),
-    blood_tudca     = list(analyte = "TUDCA", units = "mg", specimen = "blood cell", verified = FALSE),
-    liver_tudca     = list(analyte = "TUDCA", units = "mg", specimen = "tissue", verified = FALSE),
-    biliary_tudca   = list(analyte = "TUDCA", units = "mg", specimen = "administration site", verified = FALSE),
-    feces_tudca     = list(analyte = "TUDCA", units = "mg", specimen = "faeces", verified = FALSE)
+    portal_tudca = list(analyte = "TUDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    blood_tudca = list(analyte = "TUDCA", units = "mg", specimen = "blood cell", verified = FALSE),
+    liver_tudca = list(analyte = "TUDCA", units = "mg", specimen = "tissue", verified = FALSE),
+    biliary_tudca = list(analyte = "TUDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    feces_tudca = list(analyte = "TUDCA", units = "mg", specimen = "faeces", verified = FALSE)
   )
 
   covariateData <- list(
     FRACABS = list(
-      description       = "Fractional absorption of UDCA from stomach into circulation. Dose-dependent per the paper's regression on log(dose_mg): F=0.66 for 150 mg and F=0.31 for 1000 mg (R^2=0.99 over 200-2000 mg from Crosignani 1991 / Walker 1992).",
-      units             = "fraction",
-      type              = "continuous",
+      description = "Fractional absorption of UDCA from stomach into circulation. Dose-dependent per the paper's regression on log(dose_mg): F=0.66 for 150 mg and F=0.31 for 1000 mg (R^2=0.99 over 200-2000 mg from Crosignani 1991 / Walker 1992).",
+      units = "fraction",
+      type = "continuous",
       reference_category = NULL,
-      notes             = "Applied as bioavailability on the stomach compartment, combined with mg->mmol unit conversion via the UDCA molecular weight. Only modulates first-pass entry; recirculated bile acids re-enter the intestine from bile without an additional F scaling (per paper Methods).",
-      source_name       = "F"
+      notes = "Applied as bioavailability on the stomach compartment, combined with mg->mmol unit conversion via the UDCA molecular weight. Only modulates first-pass entry; recirculated bile acids re-enter the intestine from bile without an additional F scaling (per paper Methods).",
+      source_name = "F"
     ),
     MEAL_FLAG = list(
-      description       = "Indicator that the current time falls within a meal window (lunch / dinner, 1 hour duration each). Scales biliary-to-intestine rate constants (K_BI for UDCA, GUDCA, and TUDCA) by E_meal during this interval to mimic gallbladder contraction.",
-      units             = "(binary)",
-      type              = "binary",
+      description = "Indicator that the current time falls within a meal window (lunch / dinner, 1 hour duration each). Scales biliary-to-intestine rate constants (K_BI for UDCA, GUDCA, and TUDCA) by E_meal during this interval to mimic gallbladder contraction.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no meal effect)",
-      notes             = "Time-varying covariate. Set to 1 over [t_meal, t_meal + 1 h] for each meal, 0 otherwise. Snacks are encoded separately via SNACK_FLAG. Two meals per dosing day were modelled (lunch at +4 h, dinner at +10 h after the morning dose, per Xiang 2011 and Dilger 2012).",
-      source_name       = "meal indicator"
+      notes = "Time-varying covariate. Set to 1 over [t_meal, t_meal + 1 h] for each meal, 0 otherwise. Snacks are encoded separately via SNACK_FLAG. Two meals per dosing day were modelled (lunch at +4 h, dinner at +10 h after the morning dose, per Xiang 2011 and Dilger 2012).",
+      source_name = "meal indicator"
     ),
     SNACK_FLAG = list(
-      description       = "Indicator that the current time falls within a snack window (0.5 hour duration). Scales biliary-to-intestine rate constants by E_snack during this interval.",
-      units             = "(binary)",
-      type              = "binary",
+      description = "Indicator that the current time falls within a snack window (0.5 hour duration). Scales biliary-to-intestine rate constants by E_snack during this interval.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no snack effect)",
-      notes             = "Time-varying covariate. Set to 1 over [t_snack, t_snack + 0.5 h] for each snack, 0 otherwise. Two snacks per dosing day were modelled (at +7 h after the morning dose for the Xiang 2011 single-dose study).",
-      source_name       = "snack indicator"
+      notes = "Time-varying covariate. Set to 1 over [t_snack, t_snack + 0.5 h] for each snack, 0 otherwise. Two snacks per dosing day were modelled (at +7 h after the morning dose for the Xiang 2011 single-dose study).",
+      source_name = "snack indicator"
     ),
     DIS_PBC = list(
-      description       = "Primary biliary cirrhosis disease state. Multiplies liver-to-biliary rate constants by 0.10 (UDCA), 0.30 (GUDCA), and 0.10 (TUDCA) when DIS_PBC=1 to reproduce the Zuo 2016 Figure 3 disease-state simulation.",
-      units             = "(binary)",
-      type              = "binary",
+      description = "Primary biliary cirrhosis disease state. Multiplies liver-to-biliary rate constants by 0.10 (UDCA), 0.30 (GUDCA), and 0.10 (TUDCA) when DIS_PBC=1 to reproduce the Zuo 2016 Figure 3 disease-state simulation.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy)",
-      notes             = "Time-fixed per-subject covariate. PBC scaling factors come from the paper's PBC adaptation (Methods, 'Model for PBC' and Figure 3 legend): K_LB,0 reduced 90%, K_LB,1 reduced 70%, K_LB,2 reduced 90%.",
-      source_name       = "PBC indicator"
+      notes = "Time-fixed per-subject covariate. PBC scaling factors come from the paper's PBC adaptation (Methods, 'Model for PBC' and Figure 3 legend): K_LB,0 reduced 90%, K_LB,1 reduced 70%, K_LB,2 reduced 90%.",
+      source_name = "PBC indicator"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 49L,
-    n_studies       = 3L,
-    age_range       = "adults (cohort mean age not reported per subject; PBC cohort 30-65 years typical for the disease)",
-    weight_range    = "not reported per subject; cohort means imputed for the Dilger 2012 chronic-dosing study (1000 mg/day used as the average for 15 mg/kg body weight)",
-    sex_female_pct  = NA_real_,
-    disease_state   = "Healthy adults (calibration: Xiang 2011 n=27 single-dose + Dilger 2012 n=11 chronic; validation: Hess 2004 n=21 chronic). PBC adults (Dilger 2012 n=11) for the disease-adaptation simulations.",
-    dose_range      = "150 mg single oral tablet (Xiang 2011), 15 mg/kg body weight daily for 21 days (Dilger 2012; modelled as 1000 mg/day for the mean weight), 900 mg twice daily for 21 days (Hess 2004 validation).",
-    regions         = "Multi-source: Finland (Xiang 2011), Germany (Dilger 2012), United States (Hess 2004).",
-    notes           = "Mechanistic systems model fit to mean published profiles, not individual-level data; no IIV, no residual error. The PBC adaptation reduces K_LB rate constants per the paper's hypothesis-testing simulations. Sensitivity analysis (Table 3) drove the choice of which parameters to adjust between healthy and PBC states."
+    species = "human",
+    n_subjects = 49L,
+    n_studies = 3L,
+    age_range = "adults (cohort mean age not reported per subject; PBC cohort 30-65 years typical for the disease)",
+    weight_range = "not reported per subject; cohort means imputed for the Dilger 2012 chronic-dosing study (1000 mg/day used as the average for 15 mg/kg body weight)",
+    sex_female_pct = NA_real_,
+    disease_state = "Healthy adults (calibration: Xiang 2011 n=27 single-dose + Dilger 2012 n=11 chronic; validation: Hess 2004 n=21 chronic). PBC adults (Dilger 2012 n=11) for the disease-adaptation simulations.",
+    dose_range = "150 mg single oral tablet (Xiang 2011), 15 mg/kg body weight daily for 21 days (Dilger 2012; modelled as 1000 mg/day for the mean weight), 900 mg twice daily for 21 days (Hess 2004 validation).",
+    regions = "Multi-source: Finland (Xiang 2011), Germany (Dilger 2012), United States (Hess 2004).",
+    notes = "Mechanistic systems model fit to mean published profiles, not individual-level data; no IIV, no residual error. The PBC adaptation reduces K_LB rate constants per the paper's hypothesis-testing simulations. Sensitivity analysis (Table 3) drove the choice of which parameters to adjust between healthy and PBC states."
   )
 
   ini({

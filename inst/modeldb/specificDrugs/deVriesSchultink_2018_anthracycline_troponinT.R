@@ -34,38 +34,38 @@ deVriesSchultink_2018_anthracycline_troponinT <- function() {
 
   covariateData <- list(
     CONMED_DOXORUBICIN = list(
-      description        = "Indicator that the subject's anthracycline cycles used doxorubicin",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the subject's anthracycline cycles used doxorubicin",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (subject not on doxorubicin; paired with CONMED_EPIRUBICIN = 1 in this cohort)",
-      notes              = "Time-fixed per subject in this study (each patient received exactly one anthracycline class for the full 2-6 cycle course). The de Vries Schultink 2018 dataset records the anthracycline class as a categorical 'doxorubicin' / 'epirubicin'; the canonical covariate register splits this into the two binary indicators CONMED_DOXORUBICIN and CONMED_EPIRUBICIN per the CONMED_<drug> pattern. Doxorubicin is the reference category in the paper's model (paper's anthracycline-type-on-SLOPE coefficient is the epirubicin-vs-doxorubicin contrast). Per Table 1, doxorubicin n = 181 (87.9%), epirubicin n = 25 (12.1%).",
-      source_name        = "ANTH_TYPE (= 'doxorubicin')"
+      notes = "Time-fixed per subject in this study (each patient received exactly one anthracycline class for the full 2-6 cycle course). The de Vries Schultink 2018 dataset records the anthracycline class as a categorical 'doxorubicin' / 'epirubicin'; the canonical covariate register splits this into the two binary indicators CONMED_DOXORUBICIN and CONMED_EPIRUBICIN per the CONMED_<drug> pattern. Doxorubicin is the reference category in the paper's model (paper's anthracycline-type-on-SLOPE coefficient is the epirubicin-vs-doxorubicin contrast). Per Table 1, doxorubicin n = 181 (87.9%), epirubicin n = 25 (12.1%).",
+      source_name = "ANTH_TYPE (= 'doxorubicin')"
     ),
     CONMED_EPIRUBICIN = list(
-      description        = "Indicator that the subject's anthracycline cycles used epirubicin",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the subject's anthracycline cycles used epirubicin",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (subject not on epirubicin)",
-      notes              = "See CONMED_DOXORUBICIN. The two indicators are mutually exclusive in this cohort (exactly one is 1 per subject). The epirubicin-on-SLOPE multiplicative effect is 0.524 (de Vries Schultink 2018 Table 2, 'Proportional anthracycline-type effect on SLOPE', RSE 17.5%); the doxorubicin-driven SLOPE is the population reference. The text-worked example (paper p. 438) confirms: 100 mg doxorubicin raises troponin T from 3 to 5.6 ng/L (an increment of 2.6 ng/L driven by SLOPE * dose at t = 0), and an equivalent epirubicin dose raises troponin T from 3 to 4.3 ng/L (an increment of 1.3 ng/L = 0.524 * 2.6). The encoding here is SLOPE_i = SLOPE_pop * (1 + e_anth_slope * CONMED_EPIRUBICIN - e_anth_slope * CONMED_DOXORUBICIN) = SLOPE_pop * (CONMED_DOXORUBICIN + 0.524 * CONMED_EPIRUBICIN) when the two indicators are mutually exclusive.",
-      source_name        = "ANTH_TYPE (= 'epirubicin')"
+      notes = "See CONMED_DOXORUBICIN. The two indicators are mutually exclusive in this cohort (exactly one is 1 per subject). The epirubicin-on-SLOPE multiplicative effect is 0.524 (de Vries Schultink 2018 Table 2, 'Proportional anthracycline-type effect on SLOPE', RSE 17.5%); the doxorubicin-driven SLOPE is the population reference. The text-worked example (paper p. 438) confirms: 100 mg doxorubicin raises troponin T from 3 to 5.6 ng/L (an increment of 2.6 ng/L driven by SLOPE * dose at t = 0), and an equivalent epirubicin dose raises troponin T from 3 to 4.3 ng/L (an increment of 1.3 ng/L = 0.524 * 2.6). The encoding here is SLOPE_i = SLOPE_pop * (1 + e_anth_slope * CONMED_EPIRUBICIN - e_anth_slope * CONMED_DOXORUBICIN) = SLOPE_pop * (CONMED_DOXORUBICIN + 0.524 * CONMED_EPIRUBICIN) when the two indicators are mutually exclusive.",
+      source_name = "ANTH_TYPE (= 'epirubicin')"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 190L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 190L,
+    n_studies = 1L,
     n_observations = 1230L,
-    age_range      = "25-69 years",
-    age_median     = "50 years",
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    age_range = "25-69 years",
+    age_median = "50 years",
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 100,
     race_ethnicity = "Not explicitly tabulated in de Vries Schultink 2018; clinical-trial cohort recruited at Dutch and University-of-Groningen sites (predominantly European white).",
-    disease_state  = "HER2-positive early (stage I-III) breast cancer; cardiac-marker-evaluable subset (n = 190 of 206 randomised) of the parent candesartan-vs-placebo cardioprotection trial (Boekhout 2016, JAMA Oncology 2:1030-1037, doi:10.1001/jamaoncol.2016.1726). Patients had favorable baseline cardiac history (max age 69 y; only 13% > 60 y) and no significant prior cardiac disease.",
-    dose_range     = "Adjuvant anthracycline as 4 [2-6] cycles of either doxorubicin (median absolute dose 110 mg/cycle [75-150], n = 181) or epirubicin (median 170 mg/cycle [100-200], n = 25), administered IV at three-week intervals; cumulative doses below the lifetime cardiotoxicity threshold (< 550 mg/m^2 for doxorubicin and < 950 mg/m^2 for epirubicin).",
-    regions        = "Netherlands (Antoni van Leeuwenhoek / NKI Amsterdam, University Medical Center Groningen).",
-    notes          = "Cohort and patient characteristics from de Vries Schultink 2018 Table 1 (the 'troponin T measurements available' subset, n = 190 of 206). 4.6% of the 1230 troponin T observations were below the assay LLOQ (3 ng/L for the Roche Modular E hs-TnT assay); BLQ values were imputed as LLOQ/2 in the source dataset per Methods."
+    disease_state = "HER2-positive early (stage I-III) breast cancer; cardiac-marker-evaluable subset (n = 190 of 206 randomised) of the parent candesartan-vs-placebo cardioprotection trial (Boekhout 2016, JAMA Oncology 2:1030-1037, doi:10.1001/jamaoncol.2016.1726). Patients had favorable baseline cardiac history (max age 69 y; only 13% > 60 y) and no significant prior cardiac disease.",
+    dose_range = "Adjuvant anthracycline as 4 [2-6] cycles of either doxorubicin (median absolute dose 110 mg/cycle [75-150], n = 181) or epirubicin (median 170 mg/cycle [100-200], n = 25), administered IV at three-week intervals; cumulative doses below the lifetime cardiotoxicity threshold (< 550 mg/m^2 for doxorubicin and < 950 mg/m^2 for epirubicin).",
+    regions = "Netherlands (Antoni van Leeuwenhoek / NKI Amsterdam, University Medical Center Groningen).",
+    notes = "Cohort and patient characteristics from de Vries Schultink 2018 Table 1 (the 'troponin T measurements available' subset, n = 190 of 206). 4.6% of the 1230 troponin T observations were below the assay LLOQ (3 ng/L for the Roche Modular E hs-TnT assay); BLQ values were imputed as LLOQ/2 in the source dataset per Methods."
   )
 
   ini({

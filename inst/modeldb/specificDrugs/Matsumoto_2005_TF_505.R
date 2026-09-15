@@ -10,28 +10,28 @@ Matsumoto_2005_TF_505 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "TF-505", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "TF-505", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "TF-505", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "TF-505", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "TF-505", units = "mg", specimen = "plasma", verified = FALSE),
-    dht         = list(analyte = "DHT", units = "mg", specimen = "plasma", verified = FALSE)
+    dht = list(analyte = "DHT", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36L,                                    # Matsumoto 2005 p. 1456 Methods / Table 1: 6 subjects per group x 6 dose groups
-    n_studies      = 1L,                                     # Single-centre study, Clinical Investigation Center of Kitasato University East Hospital
-    age_range      = "20-64 years",                          # Matsumoto 2005 Table 1 across all six dose groups
-    age_median     = NULL,                                   # Not reported; group means range 22.8-52.5 years
-    weight_range   = "49.6-72.3 kg",                         # Matsumoto 2005 Table 1 across all six dose groups
-    weight_median  = NULL,                                   # Not reported; group means range 61.1-65.7 kg
-    sex_female_pct = 0,                                      # All male
-    race_ethnicity = c(Japanese = 100),                      # Matsumoto 2005 Methods 'Volunteers and Study Design': healthy male Japanese volunteers
-    disease_state  = "Healthy adult male Japanese volunteers",
-    dose_range     = "Single 25, 50, 75, 100 mg p.o.; multiple 12.5 or 25 mg p.o. QD x 7 days",
-    regions        = "Japan",
-    notes          = "Inclusion: males aged >=20 years (low single-dose groups 25 and 50 mg) or >=40 years (high single-dose 75 / 100 mg, and both multiple-dose groups); body weight within 20% of ideal. Single-dose groups dosed at 9 a.m. without breakfast; multiple-dose groups dosed at 9 a.m. after breakfast. Smoking allowed but stopped 1 h pre- through 24 h post-dose. Caffeine, alcohol and grapefruit prohibited. 564 plasma TF-505 and 264 plasma DHT measurements were used in the joint fit."
+    species = "human",
+    n_subjects = 36L, # Matsumoto 2005 p. 1456 Methods / Table 1: 6 subjects per group x 6 dose groups
+    n_studies = 1L, # Single-centre study, Clinical Investigation Center of Kitasato University East Hospital
+    age_range = "20-64 years", # Matsumoto 2005 Table 1 across all six dose groups
+    age_median = NULL, # Not reported; group means range 22.8-52.5 years
+    weight_range = "49.6-72.3 kg", # Matsumoto 2005 Table 1 across all six dose groups
+    weight_median = NULL, # Not reported; group means range 61.1-65.7 kg
+    sex_female_pct = 0, # All male
+    race_ethnicity = c(Japanese = 100), # Matsumoto 2005 Methods 'Volunteers and Study Design': healthy male Japanese volunteers
+    disease_state = "Healthy adult male Japanese volunteers",
+    dose_range = "Single 25, 50, 75, 100 mg p.o.; multiple 12.5 or 25 mg p.o. QD x 7 days",
+    regions = "Japan",
+    notes = "Inclusion: males aged >=20 years (low single-dose groups 25 and 50 mg) or >=40 years (high single-dose 75 / 100 mg, and both multiple-dose groups); body weight within 20% of ideal. Single-dose groups dosed at 9 a.m. without breakfast; multiple-dose groups dosed at 9 a.m. after breakfast. Smoking allowed but stopped 1 h pre- through 24 h post-dose. Caffeine, alcohol and grapefruit prohibited. 564 plasma TF-505 and 264 plasma DHT measurements were used in the joint fit."
   )
 
   ini({

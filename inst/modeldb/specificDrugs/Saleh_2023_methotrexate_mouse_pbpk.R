@@ -40,24 +40,24 @@ Saleh_2023_methotrexate_mouse_pbpk <- function() {
   units <- list(time = "min", dosing = "ng", concentration = "ng/mL")
 
   compartmentData <- list(
-    central              = list(analyte = "methotrexate", units = "ng", specimen = "plasma", verified = TRUE),
-    peripheral1          = list(analyte = "methotrexate", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_vascular       = list(analyte = "methotrexate", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_ecf            = list(analyte = "methotrexate", units = "ng", specimen = "brain ISF", verified = TRUE),
-    brain_cell_membrane  = list(analyte = "methotrexate", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_icf            = list(analyte = "methotrexate", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_lysosome       = list(analyte = "methotrexate", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_csf_lv         = list(analyte = "methotrexate", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_tfv        = list(analyte = "methotrexate", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_cm         = list(analyte = "methotrexate", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_sas        = list(analyte = "methotrexate", units = "ng", specimen = "CSF", verified = TRUE)
+    central = list(analyte = "methotrexate", units = "ng", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "methotrexate", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_vascular = list(analyte = "methotrexate", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_ecf = list(analyte = "methotrexate", units = "ng", specimen = "brain ISF", verified = TRUE),
+    brain_cell_membrane = list(analyte = "methotrexate", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_icf = list(analyte = "methotrexate", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_lysosome = list(analyte = "methotrexate", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_csf_lv = list(analyte = "methotrexate", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_tfv = list(analyte = "methotrexate", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_cm = list(analyte = "methotrexate", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_sas = list(analyte = "methotrexate", units = "ng", specimen = "CSF", verified = TRUE)
   )
 
   population <- list(
-    species      = "mouse (CD1 nude)",
+    species = "mouse (CD1 nude)",
     disease_state = "healthy / tumour-bearing laboratory mice; CNS physiology parameterised for the healthy mouse",
-    dose_range   = "1000 mg/kg IV (single dose; Table IV)",
-    notes        = paste(
+    dose_range = "1000 mg/kg IV (single dose; Table IV)",
+    notes = paste(
       "Unbound plasma and microdialysis brain-ECF concentration-time",
       "data for methotrexate came from Stewart lab, St. Jude Children's Research Hospital",
       "(Table II). Subject counts per drug are not reported. Doses in",
@@ -255,4 +255,3 @@ Saleh_2023_methotrexate_mouse_pbpk <- function() {
     Cc ~ prop(propSd)
   })
 }
-

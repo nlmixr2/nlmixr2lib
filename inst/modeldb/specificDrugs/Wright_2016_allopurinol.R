@@ -1,71 +1,71 @@
 Wright_2016_allopurinol <- function() {
   description <- "One-compartment population PK-PD model for allopurinol (via the active metabolite oxypurinol) and plasma urate in adults with gout (Wright 2016 BJCP). Oxypurinol disposition is a one-compartment first-order absorption / first-order elimination model with Ka fixed at 1.09 1/h; apparent oxypurinol clearance (CL/F_oxy) is allometrically scaled on fat-free mass (Janmahasatian formula, exponent fixed at 0.75) and power-scaled on Cockcroft-Gault creatinine clearance standardised to 70 kg, with a multiplicative reduction when a thiazide or loop diuretic is coadministered; apparent volume (V/F_oxy) is allometrically scaled on total body weight (exponent fixed at 1.0) and shares its IIV with CL/F_oxy via a fixed fractional scaler (Bonate 2006 fractional-effect parameterisation). Plasma urate is described by a direct-effect sigmoidal Emax inhibition of urate production on top of a baseline urate U0 that is power-scaled on renal function and multiplicatively higher with concomitant diuretic. The dose entered into the model is allopurinol oral mg; the implicit 1:1 molar conversion to oxypurinol is absorbed into the apparent CL/F_oxy and V/F_oxy. Cc is oxypurinol concentration (umol/L) and Eurate is plasma urate (mmol/L)."
-  reference   <- "Wright DFB, Duffull SB, Merriman TR, Dalbeth N, Barclay ML, Stamp LK. Predicting allopurinol response in patients with gout. Br J Clin Pharmacol. 2016 Feb;81(2):277-289. doi:10.1111/bcp.12799"
-  vignette    <- "Wright_2016_allopurinol"
-  units       <- list(time = "h", dosing = "mg", concentration = "umol/L (oxypurinol Cc); mmol/L (urate Eurate)")
+  reference <- "Wright DFB, Duffull SB, Merriman TR, Dalbeth N, Barclay ML, Stamp LK. Predicting allopurinol response in patients with gout. Br J Clin Pharmacol. 2016 Feb;81(2):277-289. doi:10.1111/bcp.12799"
+  vignette <- "Wright_2016_allopurinol"
+  units <- list(time = "h", dosing = "mg", concentration = "umol/L (oxypurinol Cc); mmol/L (urate Eurate)")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "allopurinol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "allopurinol", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "allopurinol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass derived from total body weight, height, and sex by the Janmahasatian 2005 semi-mechanistic formula.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass derived from total body weight, height, and sex by the Janmahasatian 2005 semi-mechanistic formula.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Wright 2016 Methods (Covariate models): 'Fat-free mass (FFM) was calculated using the formula developed by Janmahasatian et al. [34]'. Enters apparent oxypurinol clearance CL/F_oxy via allometric power scaling with fixed exponent 0.75 and reference 70 kg (Wright 2016 final-model equation set; Table 3 footnote *: 'clearance expressed per 70 kg FFM/CLcr 6 l h^-1').",
-      source_name        = "FFM"
+      notes = "Wright 2016 Methods (Covariate models): 'Fat-free mass (FFM) was calculated using the formula developed by Janmahasatian et al. [34]'. Enters apparent oxypurinol clearance CL/F_oxy via allometric power scaling with fixed exponent 0.75 and reference 70 kg (Wright 2016 final-model equation set; Table 3 footnote *: 'clearance expressed per 70 kg FFM/CLcr 6 l h^-1').",
+      source_name = "FFM"
     ),
     WT = list(
-      description        = "Total body weight (TBW).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (TBW).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Wright 2016 Methods (Covariate models). Used for allometric scaling of apparent oxypurinol volume V/F_oxy with fixed exponent 1.0 and reference 70 kg (Wright 2016 final-model equation; Table 3 footnote dagger: 'volume expressed per 70 kg body weight'). Not used on CL/F_oxy; the paper explicitly notes that TBW as a covariate on oxypurinol clearance did not provide a better fit than FFM (Wright 2016 Results paragraph 'Total body weight as a covariate on oxypurinol clearance did not provide a better fit to the data').",
-      source_name        = "TBW"
+      notes = "Wright 2016 Methods (Covariate models). Used for allometric scaling of apparent oxypurinol volume V/F_oxy with fixed exponent 1.0 and reference 70 kg (Wright 2016 final-model equation; Table 3 footnote dagger: 'volume expressed per 70 kg body weight'). Not used on CL/F_oxy; the paper explicitly notes that TBW as a covariate on oxypurinol clearance did not provide a better fit than FFM (Wright 2016 Results paragraph 'Total body weight as a covariate on oxypurinol clearance did not provide a better fit to the data').",
+      source_name = "TBW"
     ),
     CRCL = list(
-      description        = "Creatinine clearance estimated by the Cockcroft-Gault formula and standardised to 70 kg (NOT BSA-normalised). Expressed as L/h, not as mL/min.",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the Cockcroft-Gault formula and standardised to 70 kg (NOT BSA-normalised). Expressed as L/h, not as mL/min.",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Wright 2016 Methods (Covariate models): 'Renal function was calculated using the Cockroft-Gault formula [38] and expressed as creatinine clearance (CLcr) standardized to 70 kg [39]. Renal function (RF) was then normalized to a standard creatinine clearance (CLcrSTD) of 6 l h^-1/70 kg (100 ml min^-1/70 kg)'. Values are stored in L/h (so a typical normal-renal-function adult is 6 L/h; the cohort median 68 mL/min / 70 kg ~= 4.08 L/h). Enters apparent oxypurinol clearance via power scaling (CRCL/6)^0.587 and enters baseline urate U0 via power scaling (CRCL/6)^(-0.119). Stored under the canonical CRCL register entry with the explicit Cockcroft-Gault-standardised-to-70 kg assay form documented here (mirrors the Stocker 2012 oxypurinol precedent which uses raw Cockcroft-Gault mL/min normalised on lean body weight; the two papers use different normalisations of the same biological quantity).",
-      source_name        = "CLcr"
+      notes = "Wright 2016 Methods (Covariate models): 'Renal function was calculated using the Cockroft-Gault formula [38] and expressed as creatinine clearance (CLcr) standardized to 70 kg [39]. Renal function (RF) was then normalized to a standard creatinine clearance (CLcrSTD) of 6 l h^-1/70 kg (100 ml min^-1/70 kg)'. Values are stored in L/h (so a typical normal-renal-function adult is 6 L/h; the cohort median 68 mL/min / 70 kg ~= 4.08 L/h). Enters apparent oxypurinol clearance via power scaling (CRCL/6)^0.587 and enters baseline urate U0 via power scaling (CRCL/6)^(-0.119). Stored under the canonical CRCL register entry with the explicit Cockcroft-Gault-standardised-to-70 kg assay form documented here (mirrors the Stocker 2012 oxypurinol precedent which uses raw Cockcroft-Gault mL/min normalised on lean body weight; the two papers use different normalisations of the same biological quantity).",
+      source_name = "CLcr"
     ),
     CONMED_DIURETIC = list(
-      description        = "Concomitant diuretic indicator. Wright 2016's CONMED_DIURETIC captures thiazide diuretics OR loop diuretics; potassium-sparing diuretics (spironolactone, amiloride) are NOT pooled in.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant diuretic indicator. Wright 2016's CONMED_DIURETIC captures thiazide diuretics OR loop diuretics; potassium-sparing diuretics (spironolactone, amiloride) are NOT pooled in.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant thiazide or loop diuretic)",
-      notes              = "Wright 2016 Methods (Covariate models): 'drugs associated with an increased or decreased risk of hyperuricaemia were tested in the PKPD model including thiazide or loop diuretics ...'. Wright 2016 Table 4 footer: 'Diuretics include thiazides and loop diuretics'. 33% of the cohort (44 of 133 patients) were on a thiazide or loop diuretic at study entry (Wright 2016 Table 2 totals). This is NARROWER than the Stocker_2012_oxypurinol.R definition (which pools thiazide + loop + spironolactone into the same CONMED_DIURETIC column): Wright excludes potassium-sparing diuretics on the documented clinical rationale that thiazide and loop diuretics raise serum urate (anti-uricosuric) whereas potassium-sparing diuretics tend to lower it (uricosuric). Users simulating across the Wright 2016 and Stocker 2012 models must populate the column accordingly per the paper definition. Multiplicative effects in Wright 2016: CL/F_oxy *= 0.740^CONMED_DIURETIC (-26% on diuretic), U0 *= 1.14^CONMED_DIURETIC (+14% on diuretic); both from Wright 2016 Table 3 final-model thetadiuretic and thetaE0_diuretic.",
-      source_name        = "diuretic"
+      notes = "Wright 2016 Methods (Covariate models): 'drugs associated with an increased or decreased risk of hyperuricaemia were tested in the PKPD model including thiazide or loop diuretics ...'. Wright 2016 Table 4 footer: 'Diuretics include thiazides and loop diuretics'. 33% of the cohort (44 of 133 patients) were on a thiazide or loop diuretic at study entry (Wright 2016 Table 2 totals). This is NARROWER than the Stocker_2012_oxypurinol.R definition (which pools thiazide + loop + spironolactone into the same CONMED_DIURETIC column): Wright excludes potassium-sparing diuretics on the documented clinical rationale that thiazide and loop diuretics raise serum urate (anti-uricosuric) whereas potassium-sparing diuretics tend to lower it (uricosuric). Users simulating across the Wright 2016 and Stocker 2012 models must populate the column accordingly per the paper definition. Multiplicative effects in Wright 2016: CL/F_oxy *= 0.740^CONMED_DIURETIC (-26% on diuretic), U0 *= 1.14^CONMED_DIURETIC (+14% on diuretic); both from Wright 2016 Table 3 final-model thetadiuretic and thetaE0_diuretic.",
+      source_name = "diuretic"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 133L,
-    n_studies       = 5L,
-    age_range       = "27 to 83 years",
-    age_median      = "60 years",
-    weight_range    = "51 to 171 kg total body weight",
-    weight_median   = "94 kg total body weight",
-    sex_female_pct  = 12.7,
-    race_ethnicity  = "European 78.2%, Maori or Pacific Islander 20.3%, East Asian 0.8% (one Korean subject), South Asian 0.8% (one Indian subject) (Wright 2016 Table 2 totals).",
-    disease_state   = "Adults with gout; 29 patients were allopurinol-naive (initiating therapy) and 104 were on chronic allopurinol for >=1 month at study entry. Baseline urate range 0.18 to 0.89 mmol/L (median 0.38 mmol/L) across the pooled five-study cohort.",
-    dose_range      = "Allopurinol 50-700 mg/day oral (median 300 mg/day at study entry; Wright 2016 Table 2 totals).",
-    regions         = "New Zealand (multi-centre; Christchurch and Auckland).",
-    crcl_range      = "12 to 125 mL/min total cohort range (median 68 mL/min ~= 4.08 L/h standardised to 70 kg; Wright 2016 Table 2).",
-    co_medication   = "Concomitant medications tested as PD covariates and retained: thiazide or loop diuretic (33%). Tested without retention: beta-adrenoceptor blockers (41%), ACE inhibitors (39%), ARBs (10%), calcium-channel blockers (20%), statins (41%), NSAIDs (13%), uricosurics (3%). On PK, frusemide and probenecid were tested in the upstream Wright 2013 oxypurinol popPK (reference [21]) which informed model selection.",
+    species = "human",
+    n_subjects = 133L,
+    n_studies = 5L,
+    age_range = "27 to 83 years",
+    age_median = "60 years",
+    weight_range = "51 to 171 kg total body weight",
+    weight_median = "94 kg total body weight",
+    sex_female_pct = 12.7,
+    race_ethnicity = "European 78.2%, Maori or Pacific Islander 20.3%, East Asian 0.8% (one Korean subject), South Asian 0.8% (one Indian subject) (Wright 2016 Table 2 totals).",
+    disease_state = "Adults with gout; 29 patients were allopurinol-naive (initiating therapy) and 104 were on chronic allopurinol for >=1 month at study entry. Baseline urate range 0.18 to 0.89 mmol/L (median 0.38 mmol/L) across the pooled five-study cohort.",
+    dose_range = "Allopurinol 50-700 mg/day oral (median 300 mg/day at study entry; Wright 2016 Table 2 totals).",
+    regions = "New Zealand (multi-centre; Christchurch and Auckland).",
+    crcl_range = "12 to 125 mL/min total cohort range (median 68 mL/min ~= 4.08 L/h standardised to 70 kg; Wright 2016 Table 2).",
+    co_medication = "Concomitant medications tested as PD covariates and retained: thiazide or loop diuretic (33%). Tested without retention: beta-adrenoceptor blockers (41%), ACE inhibitors (39%), ARBs (10%), calcium-channel blockers (20%), statins (41%), NSAIDs (13%), uricosurics (3%). On PK, frusemide and probenecid were tested in the upstream Wright 2013 oxypurinol popPK (reference [21]) which informed model selection.",
     genotypes_tested = "Renal-urate-transporter SNPs rs11942223 (SLC2A9), rs2231142 (ABCG2), rs1183201 (NPT1/SLC17A1), and rs3825018 (URAT1) were tested. None were retained in the final model. An ABCG2-T-allele homozygote effect on C50 (+40%) approached significance but did not meet the chi-squared P<0.01 backward-elimination criterion (Wright 2016 Discussion).",
-    samples         = "1105 oxypurinol and 1162 urate plasma concentrations from 133 gout patients (Wright 2016 Results). Concentrations >LLOQ in this analysis.",
-    studies_notes   = "Five-study pooled analysis: Study 1 (n=74; Stamp 2011 [19], the largest single cohort), Study 2 (n=10; Stamp 2012 [23] frusemide-interaction study), Study 3 (n=30; Stamp 2013 [24] dose-escalation study), Study 4 (n=19; the unpublished low-dose study used for graphical analysis of urate response time delays), Study 5 (n=8; the second unpublished Christchurch study). Per-study urate additive residual SDs differ from 0.021 to 0.054 mmol/L; see addSd_eurate in ini() for the representative-cohort choice.",
-    notes           = "Allopurinol (parent) is NOT modelled because (a) the allopurinol-parent model was found to be unstable in prior work (Wright 2013 [21]), (b) allopurinol has a short half-life and most clinical samples are below the assay limit of quantitation, and (c) allopurinol does not contribute meaningfully to the urate-lowering effect compared with oxypurinol (Wright 2016 PK models section). Final model selection used IPP-framework PKPD; bootstrap n=1000 (5% nonconvergence retained); base/final/PPPD/simultaneous parameter estimates agreed within ~10% (Wright 2016 Supplementary Table S3)."
+    samples = "1105 oxypurinol and 1162 urate plasma concentrations from 133 gout patients (Wright 2016 Results). Concentrations >LLOQ in this analysis.",
+    studies_notes = "Five-study pooled analysis: Study 1 (n=74; Stamp 2011 [19], the largest single cohort), Study 2 (n=10; Stamp 2012 [23] frusemide-interaction study), Study 3 (n=30; Stamp 2013 [24] dose-escalation study), Study 4 (n=19; the unpublished low-dose study used for graphical analysis of urate response time delays), Study 5 (n=8; the second unpublished Christchurch study). Per-study urate additive residual SDs differ from 0.021 to 0.054 mmol/L; see addSd_eurate in ini() for the representative-cohort choice.",
+    notes = "Allopurinol (parent) is NOT modelled because (a) the allopurinol-parent model was found to be unstable in prior work (Wright 2013 [21]), (b) allopurinol has a short half-life and most clinical samples are below the assay limit of quantitation, and (c) allopurinol does not contribute meaningfully to the urate-lowering effect compared with oxypurinol (Wright 2016 PK models section). Final model selection used IPP-framework PKPD; bootstrap n=1000 (5% nonconvergence retained); base/final/PPPD/simultaneous parameter estimates agreed within ~10% (Wright 2016 Supplementary Table S3)."
   )
 
   ini({

@@ -45,8 +45,8 @@ Cai_2025_diamorphine <- function() {
   # ratio on any transfer arrow. States are therefore nmol and observations
   # nmol/L; a mass dose must be converted before use (see the vignette).
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
 
@@ -57,38 +57,50 @@ Cai_2025_diamorphine <- function() {
   # PK block).
   compartmentData <- list(
     depot = list(
-      analyte = "diamorphine", units = "nmol",
-      specimen = "administration site", verified = TRUE
+      analyte = "diamorphine",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     depot2 = list(
-      analyte = "diamorphine", units = "nmol",
-      specimen = "administration site", verified = TRUE
+      analyte = "diamorphine",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "diamorphine", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "diamorphine",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_6mam = list(
-      analyte = "6-monoacetylmorphine", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "6-monoacetylmorphine",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_morphine = list(
-      analyte = "morphine", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "morphine",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_morphine = list(
-      analyte = "morphine", units = "nmol",
-      specimen = "tissue", verified = TRUE
+      analyte = "morphine",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters every structural parameter a priori",
         "through theory-based allometry standardised to 70 kg",
         "(Supplementary Material S2, Eqs. 1-3): clearance scales as",
@@ -101,14 +113,14 @@ Cai_2025_diamorphine <- function() {
         "the clearance exponent minus the volume exponent because a",
         "first-order rate constant is a clearance divided by a volume."
       ),
-      source_name        = "WT (Supplementary Material S1 [COVARIATE] block)"
+      source_name = "WT (Supplementary Material S1 [COVARIATE] block)"
     ),
     AGE = list(
-      description        = "Postnatal age",
-      units              = "years",
-      type               = "continuous",
+      description = "Postnatal age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Used only to derive postmenstrual age for",
         "the morphine-clearance maturation function:",
         "PMA (weeks) = 40 + AGE * 52 (Supplementary Material S2, Eq. 4).",
@@ -121,7 +133,7 @@ Cai_2025_diamorphine <- function() {
         "inside model() the data need carry only AGE, matching the paper's",
         "own covariate input set {AGE, WT}."
       ),
-      source_name        = "AGE (Supplementary Material S1 [COVARIATE] block)"
+      source_name = "AGE (Supplementary Material S1 [COVARIATE] block)"
     )
   )
 
@@ -138,9 +150,9 @@ Cai_2025_diamorphine <- function() {
   covariatesDataExcluded <- list(
     DOSE_HIGH = list(
       description = "Diamorphine dose level indicator (0 = 6 mg, 1 = 12 mg)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "CAT2 in Supplementary Material S2, Eqs. 9-10 and Table S2. Screened",
         "on the disposition parameters and rejected, which the paper reads as",
         "confirming linear kinetics over the twofold dose range studied",
@@ -150,9 +162,9 @@ Cai_2025_diamorphine <- function() {
     ),
     ROUTE_IN = list(
       description = "Administration route indicator (0 = intramuscular, 1 = intranasal)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "CAT1 in Supplementary Material S2, Eqs. 9-10. Screened as an",
         "exponential effect on the absorption rate constant and rejected:",
         "'When we separately estimated the absorption rate constant (Ka) for",
@@ -165,29 +177,29 @@ Cai_2025_diamorphine <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10,
-    n_studies      = 2,
-    age_range      = "23-41 years",
-    age_median     = "28.25 years (IM 6 mg) / 31.38 years (IN 6 and 12 mg)",
-    weight_range   = "60.4-81.4 kg",
-    weight_median  = "73.19 kg (IM 6 mg) / 72.16 kg (IN 6 and 12 mg)",
+    species = "human",
+    n_subjects = 10,
+    n_studies = 2,
+    age_range = "23-41 years",
+    age_median = "28.25 years (IM 6 mg) / 31.38 years (IN 6 and 12 mg)",
+    weight_range = "60.4-81.4 kg",
+    weight_median = "73.19 kg (IM 6 mg) / 72.16 kg (IN 6 and 12 mg)",
     sex_female_pct = 0,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Regular heroin users studied after at least three consecutive days of",
       "negative opioid tests (abstinence), i.e. opioid-free at dosing. Not a",
       "pain population: the paper fits adults and then extrapolates to",
       "children with breakthrough pain."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single doses of diamorphine hydrochloride 6 mg intramuscular",
       "(reference) and 6 or 12 mg intranasal, in a double-blind",
       "double-dummy crossover with a 1-week washout. 6 mg is roughly",
       "0.07-0.09 mg/kg in this cohort."
     ),
-    regions        = "United States (NIDA Addiction Research Center, Baltimore) and Germany",
-    notes          = paste(
+    regions = "United States (NIDA Addiction Research Center, Baltimore) and Germany",
+    notes = paste(
       "Development dataset pooled from two published NIDA studies sharing",
       "dosing regimen, study medication, assay and sampling times",
       "(Cone et al. and Skopp et al.; paper Table 1). 385 plasma",

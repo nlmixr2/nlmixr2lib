@@ -26,31 +26,31 @@ Tong_2026_vancomycin_thomson <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tong 2026 Table 1, BMI < 40 kg/m2 cohort: median 79.0 kg (range 20.4-173.8). Scales BOTH",
         "volumes linearly and without normalisation to a reference weight: TVV = 0.675 * WT and",
         "TVV2 = 0.732 * WT, so the coefficients are volumes per kilogram (L/kg) rather than volumes",
         "at a reference weight. Table S1 confirms 'V = 0.675 * WT' and 'V2 = 0.732 * WT'.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (raw, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (raw, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Supplied as a data item to this variant rather than computed inside the model (unlike the",
         "sibling modified-Goti and Hughes streams, which derive it internally). The InsightRX pipeline",
         "supplies it in L/h, and the control stream converts to mL/min on its first line,",
@@ -64,32 +64,32 @@ Tong_2026_vancomycin_thomson <- function() {
         "rather than creatinine clearance for this cohort.",
         sep = " "
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 87586L,
-    n_studies      = 19L,
-    age_range      = "18.0 to 90+ years",
-    age_median     = "65.8 years",
-    weight_range   = "20.4-173.8 kg",
-    weight_median  = "79.0 kg",
+    species = "human",
+    n_subjects = 87586L,
+    n_studies = 19L,
+    age_range = "18.0 to 90+ years",
+    age_median = "65.8 years",
+    weight_range = "20.4-173.8 kg",
+    weight_median = "79.0 kg",
     sex_female_pct = 57.9,
     race_ethnicity = "Not reported",
-    disease_state  = paste(
+    disease_state = paste(
       "Hospitalized adults (>= 18 years) with BMI < 40 kg/m2 receiving intravenous vancomycin under",
       "routine model-informed precision dosing; at least two doses and at least one measured",
       "concentration required. Patients undergoing haemodialysis at any point during treatment were",
       "excluded, as were patients dosed with a model other than their site's default.",
       sep = " "
     ),
-    dose_range     = "Intravenous vancomycin per routine clinical practice; initial doses selected a priori, subsequent doses adapted by MAP Bayesian posterior estimates",
-    regions        = "United States (19 hospital systems, patients beginning treatment August 2022 to December 2024)",
+    dose_range = "Intravenous vancomycin per routine clinical practice; initial doses selected a priori, subsequent doses adapted by MAP Bayesian posterior estimates",
+    regions = "United States (19 hospital systems, patients beginning treatment August 2022 to December 2024)",
     renal_function = "Serum creatinine median 0.90 mg/dL (range 0.05-25.3); haemodialysis patients excluded",
     n_concentrations = 192013L,
-    notes          = paste(
+    notes = paste(
       "APPLICATION population from Tong 2026 Table 1 (BMI < 40 kg/m2 cohort: 87586 patients, 94991",
       "treatment courses, 192013 samples), i.e. the cohort this model was USED to dose as the",
       "post-intervention default -- NOT the cohort it was estimated from. The DEVELOPMENT population",

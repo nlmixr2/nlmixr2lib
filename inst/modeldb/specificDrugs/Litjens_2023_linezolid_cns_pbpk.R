@@ -52,12 +52,15 @@ Litjens_2023_linezolid_cns_pbpk <- function() {
   # two CSF states are anatomically distinct (cranial vs spinal), following
   # the csf_<site> idiom already used by Westerhout_2012_acetaminophen_rat_pbpk.
   paper_specific_compartments <- c(
-    "brain_blood", "brain_mass", "csf_cranial", "csf_spinal"
+    "brain_blood",
+    "brain_mass",
+    "csf_cranial",
+    "csf_spinal"
   )
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -66,95 +69,95 @@ Litjens_2023_linezolid_cns_pbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "Linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "Linezolid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "Linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "Linezolid", units = "mg", specimen = "plasma", verified = FALSE),
     brain_blood = list(analyte = "Linezolid", units = "mg", specimen = "tissue", verified = FALSE),
-    brain_mass  = list(analyte = "Linezolid", units = "mg", specimen = "tissue", verified = FALSE),
+    brain_mass = list(analyte = "Linezolid", units = "mg", specimen = "tissue", verified = FALSE),
     csf_cranial = list(analyte = "Linezolid", units = "mg", specimen = "CSF", verified = FALSE),
-    csf_spinal  = list(analyte = "Linezolid", units = "mg", specimen = "CSF", verified = FALSE)
+    csf_spinal = list(analyte = "Linezolid", units = "mg", specimen = "CSF", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = paste(
+      description = paste(
         "Total body weight. Scales the steady-state volume of distribution",
         "(V = Vss * WT), the adult total brain volume, and the paediatric",
         "spinal CSF volume."
       ),
-      units              = "kg",
-      type               = "continuous",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Litjens 2023 Supplementary File S1: adult TB patients had a mean",
         "reported weight of ~60 kg but the Simcyp virtual population mean",
         "is ~75 kg, which is why Vss was re-expressed per kg (0.47 L/kg at",
         "60 kg -> 0.4 L/kg at 75 kg). Supply the weight of the simulated",
         "individual; the model does the scaling."
       ),
-      source_name        = "body weight"
+      source_name = "body weight"
     ),
     AGE = list(
-      description        = paste(
+      description = paste(
         "Age. Selects the adult (>= 18 y) or paediatric (< 18 y) brain",
         "physiology equation set of Verscheijden 2019 S1 Table and enters",
         "the cardiac-output, brain-blood-flow, brain-volume and CSF-",
         "production-rate equations directly."
       ),
-      units              = "years",
-      type               = "continuous",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The paediatric CSF production rate has a further branch below",
         "3 months (0.25 y). Litjens 2023 simulated children aged 0.25-21 y",
         "(critically ill validation) and 0.6-9.4 y (paediatric MDR-TB",
         "target attainment); adults 18-78 y."
       ),
-      source_name        = "age"
+      source_name = "age"
     ),
     SEXF = list(
-      description        = paste(
+      description = paste(
         "Female sex indicator. Selects the sex-specific adult total-CSF",
         "fraction of brain volume (10.5 percent male, 9.2 percent female;",
         "Verscheijden 2019 S1 Table adult column)."
       ),
-      units              = "(binary)",
-      type               = "categorical",
+      units = "(binary)",
+      type = "categorical",
       reference_category = "0 = male",
-      notes              = paste(
+      notes = paste(
         "1 = female, 0 = male. Only used in the adult branch; the",
         "paediatric branch uses a fixed cranial CSF volume of 0.143 L and a",
         "weight-based spinal CSF volume that are not sex-specific."
       ),
-      source_name        = "sex"
+      source_name = "sex"
     ),
     BSA = list(
-      description        = paste(
+      description = paste(
         "Body surface area. Drives cardiac output, and hence brain blood",
         "flow (Qbrain = 0.12 * cardiac output in adults)."
       ),
-      units              = "m^2",
-      type               = "continuous",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Verscheijden 2019 S1 File computes BSA with the Du Bois formula",
         "BSA = 0.007184 * HT^0.725 * WT^0.425 (HT in cm, WT in kg); supply",
         "the same value here."
       ),
-      source_name        = "body surface area"
+      source_name = "body surface area"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 131L,
-    n_studies      = 10L,
-    age_range      = "0.25-78 years (adults 18-78 y; children 0.25-21 y)",
-    weight_range   = paste(
+    species = "human",
+    n_subjects = 131L,
+    n_studies = 10L,
+    age_range = "0.25-78 years (adults 18-78 y; children 0.25-21 y)",
+    weight_range = paste(
       "not tabulated per subject; adult TB patients mean ~60 kg,",
       "Simcyp virtual adult population mean ~75 kg"
     ),
     race_ethnicity = c(White = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Two distinct simulated populations. (1) Critically ill adults and",
       "children with non-tuberculous CNS conditions (subarachnoid /",
       "intraventricular / intracerebral haemorrhage, traumatic brain",
@@ -169,25 +172,25 @@ Litjens_2023_linezolid_cns_pbpk <- function() {
       "tuberculous meningitis patients was assumed equal to that in",
       "pulmonary TB patients (Discussion, limitation 3)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Verification: 600 mg IV single dose and 600 mg IV BID in adults;",
       "10 mg/kg IV single dose and BID in children. Target attainment:",
       "300 mg oral BID, 600 mg oral BID and 1200 mg oral QD in adults;",
       "~9.24 mg/kg oral BID in children."
     ),
-    regions        = paste(
+    regions = paste(
       "Simulated as Simcyp healthy North European Caucasian volunteers",
       "(adult) and the Simcyp paediatric population; source clinical data",
       "from Austria, Italy, Greece, Spain, the Netherlands, South Africa",
       "and the USA."
     ),
-    n_virtual      = paste(
+    n_virtual = paste(
       "100 virtual individuals per simulation (Supplementary File S1);",
       "age range, proportion female and dose matched to the clinical",
       "data set being reproduced. Ages above 65 y were capped at 65 y in",
       "the simulation (Supplementary Table S2 footnote)."
     ),
-    notes          = paste(
+    notes = paste(
       "No individual-level data were fitted in this paper: every simulation",
       "is a forward prediction. n_subjects = 131 is the number of patients",
       "in the 10 published studies (13 dosing arms) whose plasma and CSF",

@@ -1,35 +1,35 @@
 Vezina_2010_valganciclovir <- function() {
   description <- "One-compartment population PK model for ganciclovir following oral valganciclovir prophylaxis in pediatric solid organ transplant recipients at risk for Epstein-Barr virus disease (Vezina 2010). First-order absorption with no covariates retained in the final model; doses are mg of valganciclovir uncorrected for molecular weight, and the apparent CL/F and V/F absorb both oral bioavailability and the molar conversion from valganciclovir to ganciclovir."
-  reference   <- "Vezina HE, Brundage RC, Nevins TE, Balfour HH Jr. The pharmacokinetics of valganciclovir prophylaxis in pediatric solid organ transplant patients at risk for Epstein-Barr virus disease. Clin Pharmacol Adv Appl. 2010;2:1-7. doi:10.2147/CPAA.S8341"
-  vignette    <- "Vezina_2010_valganciclovir"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Vezina HE, Brundage RC, Nevins TE, Balfour HH Jr. The pharmacokinetics of valganciclovir prophylaxis in pediatric solid organ transplant patients at risk for Epstein-Barr virus disease. Clin Pharmacol Adv Appl. 2010;2:1-7. doi:10.2147/CPAA.S8341"
+  vignette <- "Vezina_2010_valganciclovir"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "valganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "valganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "valganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = 8L,
-    n_studies      = 1L,
+    n_subjects = 8L,
+    n_studies = 1L,
     n_observations = 43L,
-    age_range      = "1.3 - 6.2 years (median 2.1 years)",
-    weight_range   = "9.4 - 19.8 kg (median 14.1 kg)",
-    height_range   = "73 - 107 cm (median 89.5 cm)",
-    bsa_range      = "0.4 - 0.7 m^2 (median 0.6 m^2; computed as sqrt(weight_kg * height_cm / 3600))",
-    crcl_range     = "61.9 - 127 mL/min/1.73 m^2 (median 106; Schwartz method)",
+    age_range = "1.3 - 6.2 years (median 2.1 years)",
+    weight_range = "9.4 - 19.8 kg (median 14.1 kg)",
+    height_range = "73 - 107 cm (median 89.5 cm)",
+    bsa_range = "0.4 - 0.7 m^2 (median 0.6 m^2; computed as sqrt(weight_kg * height_cm / 3600))",
+    crcl_range = "61.9 - 127 mL/min/1.73 m^2 (median 106; Schwartz method)",
     sex_female_pct = 25,
     race_ethnicity = "Not reported in the publication.",
-    disease_state  = "Pediatric solid organ transplant recipients (5 kidney, 3 liver) receiving valganciclovir prophylaxis for prevention of Epstein-Barr virus (EBV)-associated post-transplant lymphoproliferative disorder (PTLD). Subjects were at least six weeks post-transplant with two stable serum creatinine measurements (within +/- 0.2 mg/dL on consecutive occasions at least three days apart). Exclusion: ANC < 500/mm^3, platelets < 20,000/mm^3, hemoglobin < 6.5 g/dL.",
-    dose_range     = "Oral valganciclovir suspension (90 mg/mL, compounded at the University of Minnesota Medical Center). Median (range) 11.1 (10.1-12.1) mg/kg every 12 hours, or 7.4 (5.3-11.3) mg/kg every 24 hours, dosed by the transplant center using weight-based valganciclovir adjusted for renal function.",
-    regions        = "Single center, University of Minnesota Medical Center / General Clinical Research Center, Minneapolis, MN, USA.",
+    disease_state = "Pediatric solid organ transplant recipients (5 kidney, 3 liver) receiving valganciclovir prophylaxis for prevention of Epstein-Barr virus (EBV)-associated post-transplant lymphoproliferative disorder (PTLD). Subjects were at least six weeks post-transplant with two stable serum creatinine measurements (within +/- 0.2 mg/dL on consecutive occasions at least three days apart). Exclusion: ANC < 500/mm^3, platelets < 20,000/mm^3, hemoglobin < 6.5 g/dL.",
+    dose_range = "Oral valganciclovir suspension (90 mg/mL, compounded at the University of Minnesota Medical Center). Median (range) 11.1 (10.1-12.1) mg/kg every 12 hours, or 7.4 (5.3-11.3) mg/kg every 24 hours, dosed by the transplant center using weight-based valganciclovir adjusted for renal function.",
+    regions = "Single center, University of Minnesota Medical Center / General Clinical Research Center, Minneapolis, MN, USA.",
     co_medications = "Concomitant immunosuppression not separately tabulated; subjects were managed per standard post-transplant care.",
-    notes          = "Prospective, open-label PK study. Sampling: a 12-hour intensive visit (0, 1, 2, 4, 6, 8, 12 h post-dose; subjects fasted overnight, dosed after a standardized 641 kcal breakfast) and/or two sparse visits during routine transplant clinic appointments. Two of eight subjects participated in both intensive and sparse visits; six participated only in sparse. 43 plasma samples used in the population PK analysis. Demographics from Table 1; pharmacokinetic results from Table 2. The Discussion notes a non-significant trend toward lower bioavailability (F < 65%) in subjects younger than three years; this signal was NOT incorporated into the final model and is not encoded here."
+    notes = "Prospective, open-label PK study. Sampling: a 12-hour intensive visit (0, 1, 2, 4, 6, 8, 12 h post-dose; subjects fasted overnight, dosed after a standardized 641 kcal breakfast) and/or two sparse visits during routine transplant clinic appointments. Two of eight subjects participated in both intensive and sparse visits; six participated only in sparse. 43 plasma samples used in the population PK analysis. Demographics from Table 1; pharmacokinetic results from Table 2. The Discussion notes a non-significant trend toward lower bioavailability (F < 65%) in subjects younger than three years; this signal was NOT incorporated into the final model and is not encoded here."
   )
 
   ini({

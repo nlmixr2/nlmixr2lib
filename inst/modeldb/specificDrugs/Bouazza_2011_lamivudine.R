@@ -8,51 +8,51 @@ Bouazza_2011_lamivudine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling on CL, Q, Vc, Vp with reference weight 70 kg. Paper cohort range 1-84 kg (median 23 kg).",
-      source_name        = "BW"
+      notes = "Used for allometric scaling on CL, Q, Vc, Vp with reference weight 70 kg. Paper cohort range 1-84 kg (median 23 kg).",
+      source_name = "BW"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (PMA = postnatal age + gestational age)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (PMA = postnatal age + gestational age)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the sigmoidal CL maturation function. The paper parameterises PMA in weeks (PMA50 = 59 weeks); inside model() PAGE is multiplied by 4.345 weeks/month to recover the published equation. When gestational age is unknown the paper imputes 40 weeks (term birth) before computing PMA.",
-      source_name        = "PMA"
+      notes = "Drives the sigmoidal CL maturation function. The paper parameterises PMA in weeks (PMA50 = 59 weeks); inside model() PAGE is multiplied by 4.345 weeks/month to recover the published equation. When gestational age is unknown the paper imputes 40 weeks (term birth) before computing PMA.",
+      source_name = "PMA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 580,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 580,
+    n_studies = 1,
     n_observations = 2106,
-    age_range      = "2 days to 18 years (median 7.41 years)",
-    weight_range   = "1 to 84 kg (median 23 kg)",
+    age_range = "2 days to 18 years (median 7.41 years)",
+    weight_range = "1 to 84 kg (median 23 kg)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "HIV-1 infection or prevention of mother-to-child transmission",
-    dose_range     = "Median 7.5 (SD 3.2) mg/kg/day; tablet or oral solution; BID or OAD regimens",
-    regions        = "France (Paris hospitals; retrospective therapeutic drug monitoring)",
-    notes          = "Bouazza 2011 Materials and Methods 'Patients and treatment'. Race/ethnicity and sex distribution not reported in the source. The galenic form (tablet vs oral solution) was tested as a categorical covariate on bioavailability and had no significant effect."
+    disease_state = "HIV-1 infection or prevention of mother-to-child transmission",
+    dose_range = "Median 7.5 (SD 3.2) mg/kg/day; tablet or oral solution; BID or OAD regimens",
+    regions = "France (Paris hospitals; retrospective therapeutic drug monitoring)",
+    notes = "Bouazza 2011 Materials and Methods 'Patients and treatment'. Race/ethnicity and sex distribution not reported in the source. The galenic form (tablet vs oral solution) was tested as a categorical covariate on bioavailability and had no significant effect."
   )
 
   covariatesDataExcluded <- list(
     FORMULATION = list(
       description = "Galenic form (tablet vs oral solution)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as CA in CL = theta_CL * beta_CA but not retained: galenic form had no significant effect on bioavailability (Bouazza 2011 Results)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as CA in CL = theta_CL * beta_CA but not retained: galenic form had no significant effect on bioavailability (Bouazza 2011 Results)."
     )
   )
 

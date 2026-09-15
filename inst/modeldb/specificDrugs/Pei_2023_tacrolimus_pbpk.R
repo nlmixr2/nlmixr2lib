@@ -44,31 +44,31 @@ Pei_2023_tacrolimus_pbpk <- function() {
   # biological matrix. Tissue states hold total tacrolimus amount in the
   # well-stirred organ; arterial / venous hold the amount in blood.
   compartmentData <- list(
-    depot     = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
-    gut       = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
-    spleen    = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
-    pancreas  = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
-    liver     = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
-    muscle    = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
-    kidney    = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
-    brain     = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
-    heart     = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
-    lung      = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
-    skin      = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
-    tendon    = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
-    other     = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
-    adipose   = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
-    arterial  = list(analyte = "tacrolimus", units = "ug", specimen = "whole blood", verified = TRUE),
-    venous    = list(analyte = "tacrolimus", units = "ug", specimen = "whole blood", verified = TRUE)
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    gut = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
+    pancreas = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
+    lung = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
+    skin = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
+    tendon = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
+    adipose = list(analyte = "tacrolimus", units = "ug", specimen = "tissue", verified = TRUE),
+    arterial = list(analyte = "tacrolimus", units = "ug", specimen = "whole blood", verified = TRUE),
+    venous = list(analyte = "tacrolimus", units = "ug", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Pei 2023 Methods 2.5: 'The volume of each organ, V, was adjusted",
         "in relation to the bodyweight (BW) and the proportion of adipose",
         "tissue [24]', citing Levitt 2002 PKQuest. No explicit scaling",
@@ -81,14 +81,14 @@ Pei_2023_tacrolimus_pbpk <- function() {
         "(organ weights sum to 70.00 kg). Study cohort median (IQR) weight",
         "67.50 (57.50, 75.00) kg, Table 2."
       ),
-      source_name        = "Weight (kg)"
+      source_name = "Weight (kg)"
     ),
     BODYFAT_PCT = list(
-      description        = "Percent total body fat",
-      units              = "% (percent, 0-100)",
-      type               = "continuous",
+      description = "Percent total body fat",
+      units = "% (percent, 0-100)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Pei 2023 Methods 2.5 names 'the proportion of adipose tissue' as",
         "the second determinant of organ volumes, and Table 5 reports its",
         "local sensitivity (0.02 on AUC0-last, 0.17 on Cmax, 0.05 on",
@@ -99,14 +99,14 @@ Pei_2023_tacrolimus_pbpk <- function() {
         "user's own body-composition data, or leave at the 25 percent",
         "reference."
       ),
-      source_name        = "proportion of adipose tissue"
+      source_name = "proportion of adipose tissue"
     ),
     HCT = list(
-      description        = "Hematocrit",
-      units              = "% (volume fraction times 100)",
-      type               = "continuous",
+      description = "Hematocrit",
+      units = "% (volume fraction times 100)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters the blood-to-plasma ratio through Eq 5:",
         "BPR = 1 + Bmax * HCT / (KD * HCTm), where HCTm is the median",
         "hematocrit of the heart transplant population. Pei 2023 Table 2",
@@ -119,14 +119,14 @@ Pei_2023_tacrolimus_pbpk <- function() {
         "percent on this column's scale). Time-varying in principle;",
         "baseline in the Pei 2023 analysis."
       ),
-      source_name        = "HCT (%)"
+      source_name = "HCT (%)"
     ),
     CYP3A5_EXPR = list(
-      description        = "CYP3A5 expresser status (at least one CYP3A5*1 allele)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 expresser status (at least one CYP3A5*1 allele)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 nonexpresser)",
-      notes              = paste(
+      notes = paste(
         "Pei 2023 Results 3.2: 'we identified those carrying CYP3A5*1 and",
         "CYP3A4*18B with extensive metabolizers (EM), and those carrying",
         "CYP3A5*3/*3 and CYP3A4*1/*1 with poor metabolizers (PM). The",
@@ -143,14 +143,14 @@ Pei_2023_tacrolimus_pbpk <- function() {
         "frequency in Chinese Han), so CC = *3/*3 = nonexpresser and",
         "CYP3A5_EXPR = 1 for CT and TT."
       ),
-      source_name        = "CYP3A5*3 (rs776746)"
+      source_name = "CYP3A5*3 (rs776746)"
     ),
     SNP_CYP3A4_RS2242480_VAR_COUNT = list(
-      description        = "CYP3A4 rs2242480 (CYP3A4*18B) variant-allele count",
-      units              = "(count, 0/1/2 alleles per subject)",
-      type               = "continuous",
+      description = "CYP3A4 rs2242480 (CYP3A4*18B) variant-allele count",
+      units = "(count, 0/1/2 alleles per subject)",
+      type = "continuous",
       reference_category = "n/a (0 = CYP3A4*1/*1 wild-type homozygote)",
-      notes              = paste(
+      notes = paste(
         "Pei 2023 pools CYP3A4*18B carriers (*18B/*18B and *1/*18B) into",
         "the EM stratum with FACYP3A4 = 1 and assigns FACYP3A4 = 0.5 to",
         "the CYP3A4*1/*1 wild-type homozygotes (Results 3.2). Inside",
@@ -161,14 +161,14 @@ Pei_2023_tacrolimus_pbpk <- function() {
         "Discussion notes linkage disequilibrium between CYP3A5*3 and",
         "CYP3A4*18B in this cohort."
       ),
-      source_name        = "CYP3A4*18B (rs2242480)"
+      source_name = "CYP3A4*18B (rs2242480)"
     ),
     CONC_VORI_NGML = list(
-      description        = "Voriconazole whole-blood concentration driving the reversible CYP3A inhibition term",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Voriconazole whole-blood concentration driving the reversible CYP3A inhibition term",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = "0 (no voriconazole coadministration; DDIRE = 1, no inhibition)",
-      notes              = paste(
+      notes = paste(
         "Supplement Eq 1 defines the reversible-inhibition ratio",
         "DDIRE = 1 / (1 + Cb,vor * fub,vor / KI), where Cb,vor is the",
         "voriconazole whole-blood concentration, fub,vor its unbound",
@@ -187,16 +187,16 @@ Pei_2023_tacrolimus_pbpk <- function() {
         "vignette for the Cb,vor implied by the paper's own reported",
         "5.80-fold AUC ratio."
       ),
-      source_name        = "Cb,vor"
+      source_name = "Cb,vor"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex, female indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Pei 2023 Discussion: 'the mean tacrolimus concentration was",
         "higher in female patients (3.77 +/- 2.82 ng/mL) compared to male",
         "patients (2.75 +/- 3.31 ng/mL) ... We reduced the number of male",
@@ -209,9 +209,9 @@ Pei_2023_tacrolimus_pbpk <- function() {
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "A significant covariate on CL/F in the companion popPK model",
         "(Table S4, exponent -0.19) but NOT part of the PBPK model, which",
         "has no hepatic-function scaling on CLint. Recorded here so the",
@@ -222,16 +222,16 @@ Pei_2023_tacrolimus_pbpk <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 115L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 115L,
+    n_studies = 1L,
     n_concentrations = 443L,
-    age_range        = "adults >= 18 years; median (IQR) 52.00 (46.00, 61.00) years (Table 2)",
-    age_median       = "52.00 years",
-    weight_range     = "median (IQR) 67.50 (57.50, 75.00) kg (Table 2)",
-    weight_median    = "67.50 kg",
-    sex_female_pct   = 19.1,
-    disease_state    = paste(
+    age_range = "adults >= 18 years; median (IQR) 52.00 (46.00, 61.00) years (Table 2)",
+    age_median = "52.00 years",
+    weight_range = "median (IQR) 67.50 (57.50, 75.00) kg (Table 2)",
+    weight_median = "67.50 kg",
+    sex_female_pct = 19.1,
+    disease_state = paste(
       "Adult heart transplant recipients at Nanjing First Hospital",
       "(November 2012 - January 2023), on tacrolimus (Prograf) with",
       "mycophenolate and corticosteroids. Multi-organ transplant",
@@ -241,7 +241,7 @@ Pei_2023_tacrolimus_pbpk <- function() {
       "hematocrit 31.98 (29.72, 34.96) percent, total bilirubin 15.90",
       "(12.13, 21.10) umol/L, albumin 36.74 (34.48, 38.68) g/L."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Oral tacrolimus titrated to a whole-blood trough target of 10-15",
       "ng/mL during the early postoperative period; median (IQR) daily",
       "dose 5.00 (4.00, 6.00) mg. The PBPK simulations in the paper use",
@@ -249,8 +249,8 @@ Pei_2023_tacrolimus_pbpk <- function() {
       "q12h (Table 6), and 2, 3 and 5 mg single doses in healthy adults",
       "(Figures 2 and 4, Table S5)."
     ),
-    regions          = "China (Nanjing First Hospital; external evaluation cohort at Wuhan Union Hospital)",
-    genotyping       = paste(
+    regions = "China (Nanjing First Hospital; external evaluation cohort at Wuhan Union Hospital)",
+    genotyping = paste(
       "20 SNPs genotyped in 86 of the 115 subjects. rs35599367, rs1135840,",
       "rs150461093, rs2229109 and rs4253728 failed Hardy-Weinberg",
       "equilibrium (p < 0.05) and were excluded. CYP3A5*3 (rs776746),",
@@ -263,7 +263,7 @@ Pei_2023_tacrolimus_pbpk <- function() {
       "1/h, KD 5.9 ng/mL, Bmax 176.8 ng/mL, CLint 10,256.2 L/h) with no",
       "statistical difference from the model-building estimates."
     ),
-    notes            = paste(
+    notes = paste(
       "Software: SimBiology 5.8.2 (MathWorks) for the PBPK model; the",
       "companion popPK model (Pei_2023_tacrolimus.R) used Phoenix NLME",
       "8.3. Whole-blood tacrolimus by CMIA, LLOQ 2 ng/mL, quantitative",

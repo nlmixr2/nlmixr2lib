@@ -3,8 +3,8 @@ Bergen_2017_meropenem <- function() {
   reference <- "Bergen PJ, Bulitta JB, Kirkpatrick CMJ, Rogers KE, McGregor MJ, Wallis SC, Paterson DL, Nation RL, Lipman J, Roberts JA, Landersdorfer CB. Substantial impact of altered pharmacokinetics in critically ill patients on the antibacterial effects of meropenem evaluated via the dynamic hollow-fiber infection model. Antimicrob Agents Chemother. 2017;61(5):e02642-16. doi:10.1128/AAC.02642-16. Model differential equations (Eqs 1-5) and final parameter estimates (Table 3) are in the main text Materials and Methods + Discussion; HFIM dosing scenarios and concentration summaries are Table 4. Meropenem PK profiles were simulated from the upstream popPK model in reference 20 (Mattioli 2016, AAC; not packaged here)."
   vignette <- "Bergen_2017_meropenem"
   units <- list(
-    time          = "h",
-    dosing        = "mg/L (concentration dosed directly into the cmem state, as in the in-vitro HFIM)",
+    time = "h",
+    dosing = "mg/L (concentration dosed directly into the cmem state, as in the in-vitro HFIM)",
     concentration = "log10 CFU/mL (observation); mg/L (cmem state)"
   )
 
@@ -19,26 +19,56 @@ Bergen_2017_meropenem <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_susceptible1  = list(analyte = "Pseudomonas aeruginosa", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_susceptible2  = list(analyte = "Pseudomonas aeruginosa", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_intermediate1 = list(analyte = "Pseudomonas aeruginosa", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_intermediate2 = list(analyte = "Pseudomonas aeruginosa", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_resistant1    = list(analyte = "Pseudomonas aeruginosa", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_resistant2    = list(analyte = "Pseudomonas aeruginosa", units = NA_character_, specimen = "administration site", verified = FALSE),
-    cmem               = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE)
+    bact_susceptible1 = list(
+      analyte = "Pseudomonas aeruginosa",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_susceptible2 = list(
+      analyte = "Pseudomonas aeruginosa",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_intermediate1 = list(
+      analyte = "Pseudomonas aeruginosa",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_intermediate2 = list(
+      analyte = "Pseudomonas aeruginosa",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_resistant1 = list(
+      analyte = "Pseudomonas aeruginosa",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_resistant2 = list(
+      analyte = "Pseudomonas aeruginosa",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    cmem = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species          = "in vitro (Pseudomonas aeruginosa 1280, clinical isolate from a critically ill patient with soft-tissue infection; meropenem MIC = 0.25 mg/L)",
-    n_subjects       = 1L,
-    n_studies        = 1L,
-    disease_state    = "Critically ill ICU patient pharmacokinetic scenarios simulated against a susceptible P. aeruginosa isolate",
-    model_system     = "Dynamic hollow-fiber in vitro infection model (HFIM) at 36 C, cation-adjusted Mueller-Hinton broth (CAMHB), 10-day duration with periodic sampling for viable counts",
+    species = "in vitro (Pseudomonas aeruginosa 1280, clinical isolate from a critically ill patient with soft-tissue infection; meropenem MIC = 0.25 mg/L)",
+    n_subjects = 1L,
+    n_studies = 1L,
+    disease_state = "Critically ill ICU patient pharmacokinetic scenarios simulated against a susceptible P. aeruginosa isolate",
+    model_system = "Dynamic hollow-fiber in vitro infection model (HFIM) at 36 C, cation-adjusted Mueller-Hinton broth (CAMHB), 10-day duration with periodic sampling for viable counts",
     initial_inoculum = "~10^7.5 CFU/mL (paper Methods); model estimate Log10CFU0 = 6.97 (Table 3) -- the model places ~1 log10 below the observed inoculum because the three subpopulations partition mutation-frequency-seeded cells away from the dominant susceptible pool, so the susceptible CFU_S0 absorbs the remainder of CFU0 and is not directly the observed total inoculum.",
-    dose_range       = "Meropenem 2, 1, or 0.5 g q8h as 30-min IV infusions, plus 1 g q12h (impaired renal function only), with concentration-time profiles simulated from the upstream popPK model (Mattioli 2016) for three renal-function scenarios: ARC (CLcr ~285 mL/min, meropenem CL = 34.0 L/h, t_1/2 = 0.6 h), normal (CLcr 120 mL/min, CL = 16.3 L/h, t_1/2 = 1.1 h), and impaired (CLcr ~10 mL/min, CL = 4.1 L/h, t_1/2 = 4.0 h)",
-    notes            = paste(
+    dose_range = "Meropenem 2, 1, or 0.5 g q8h as 30-min IV infusions, plus 1 g q12h (impaired renal function only), with concentration-time profiles simulated from the upstream popPK model (Mattioli 2016) for three renal-function scenarios: ARC (CLcr ~285 mL/min, meropenem CL = 34.0 L/h, t_1/2 = 0.6 h), normal (CLcr 120 mL/min, CL = 16.3 L/h, t_1/2 = 1.1 h), and impaired (CLcr ~10 mL/min, CL = 4.1 L/h, t_1/2 = 4.0 h)",
+    notes = paste(
       "Mechanism-based MBM (S-ADAPT, importance sampling pmethod=4) fit simultaneously to all renal functions and dosing regimens.",
       "Single P. aeruginosa isolate (1280); a separate growth-control arm per renal function was included.",
       "Meropenem protein binding = 2% (free fraction = 0.98); fraction excreted unchanged in urine = 79% (Methods).",

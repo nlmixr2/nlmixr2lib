@@ -31,32 +31,32 @@ Thakkar_2017_amifampridine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot         = list(analyte = "amifampridine", units = "mg", specimen = "administration site", verified = FALSE),
-    central       = list(analyte = "amifampridine", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1   = list(analyte = "amifampridine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "amifampridine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "amifampridine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "amifampridine", units = "mg", specimen = "plasma", verified = FALSE),
     central_acdap = list(analyte = "3-Ac DAP", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed total body weight. Allometric scaling on CL/F and",
         "CLm/F3ACDAP (exponent 0.75 fixed) and linear scaling on Vp/F",
         "(exponent 1 fixed); reference weight 82 kg (population median",
         "from Thakkar 2017 Table 1)."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed serum creatinine. Power-form covariate on",
         "metabolite clearance: CLm = CLm_pop * (0.8/CREAT)^0.7 (median",
         "SCR 0.8 mg/dL from Thakkar 2017 Table 1; the implementation",
@@ -64,24 +64,24 @@ Thakkar_2017_amifampridine <- function() {
         "column name SCR is the canonical CREAT alias per",
         "inst/references/covariate-columns.md."
       ),
-      source_name        = "SCR"
+      source_name = "SCR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 49,
-    n_studies      = 1,
-    age_range      = "23-83 years",
-    age_median     = "60 years",
-    weight_range   = "45.8-131.5 kg",
-    weight_median  = "82.6 kg",
+    species = "human",
+    n_subjects = 49,
+    n_studies = 1,
+    age_range = "23-83 years",
+    age_median = "60 years",
+    weight_range = "45.8-131.5 kg",
+    weight_median = "82.6 kg",
     sex_female_pct = 53,
     race_ethnicity = c(White = 94, Other = 6),
-    disease_state  = "Adults with Lambert-Eaton myasthenia on chronic 3,4-DAP free base treatment",
-    dose_range     = "10-30 mg single oral doses (median 20 mg); total daily dose 30-100 mg (median 80 mg)",
-    regions        = "United States (DAPPER multicenter trial)",
-    notes          = paste(
+    disease_state = "Adults with Lambert-Eaton myasthenia on chronic 3,4-DAP free base treatment",
+    dose_range = "10-30 mg single oral doses (median 20 mg); total daily dose 30-100 mg (median 80 mg)",
+    regions = "United States (DAPPER multicenter trial)",
+    notes = paste(
       "Demographics from Thakkar 2017 Table 1. Single multicenter",
       "double-blind placebo-controlled withdrawal phase II study",
       "(ClinicalTrials.gov NCT01511978). PK analysis n = 49 (1270",

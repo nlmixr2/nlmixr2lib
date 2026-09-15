@@ -63,8 +63,12 @@ Huh_2024_ritlecitinib <- function() {
   # The canonical PK output `Cc` does not apply -- there is no drug
   # concentration state in this model.
   paper_specific_compartments <- c(
-    "placebo1", "placebo2", "placebo3", "placebo4",
-    "salt_transformed", "salt"
+    "placebo1",
+    "placebo2",
+    "placebo3",
+    "placebo4",
+    "salt_transformed",
+    "salt"
   )
 
   # `etapmax` is additive on the linear-scale Pmax (Section 2.3: "Pmax
@@ -79,126 +83,161 @@ Huh_2024_ritlecitinib <- function() {
   # indirect-response system on the Aranda-Ordaz-transformed SALT
   # domain. Each starts at its untreated steady state of kin/kout = 1.
   compartmentData <- list(
-    placebo1 = list(analyte = "placebo latent variable (transit 1 of 3)", units = "(dimensionless)", specimen = "not applicable", verified = FALSE),
-    placebo2 = list(analyte = "placebo latent variable (transit 2 of 3)", units = "(dimensionless)", specimen = "not applicable", verified = FALSE),
-    placebo3 = list(analyte = "placebo latent variable (transit 3 of 3)", units = "(dimensionless)", specimen = "not applicable", verified = FALSE),
-    placebo4 = list(analyte = "placebo latent variable PBO(t) of Huh 2024 Eq 4", units = "(dimensionless)", specimen = "not applicable", verified = FALSE),
-    effect1  = list(analyte = "drug-effect latent variable (transit 1 of 2)", units = "(dimensionless)", specimen = "not applicable", verified = FALSE),
-    effect2  = list(analyte = "drug-effect latent variable (transit 2 of 2)", units = "(dimensionless)", specimen = "not applicable", verified = FALSE),
-    effect3  = list(analyte = "drug-effect latent variable E(t) of Huh 2024 Eq 4", units = "(dimensionless)", specimen = "not applicable", verified = FALSE)
+    placebo1 = list(
+      analyte = "placebo latent variable (transit 1 of 3)",
+      units = "(dimensionless)",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    placebo2 = list(
+      analyte = "placebo latent variable (transit 2 of 3)",
+      units = "(dimensionless)",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    placebo3 = list(
+      analyte = "placebo latent variable (transit 3 of 3)",
+      units = "(dimensionless)",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    placebo4 = list(
+      analyte = "placebo latent variable PBO(t) of Huh 2024 Eq 4",
+      units = "(dimensionless)",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    effect1 = list(
+      analyte = "drug-effect latent variable (transit 1 of 2)",
+      units = "(dimensionless)",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    effect2 = list(
+      analyte = "drug-effect latent variable (transit 2 of 2)",
+      units = "(dimensionless)",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    effect3 = list(
+      analyte = "drug-effect latent variable E(t) of Huh 2024 Eq 4",
+      units = "(dimensionless)",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   units <- list(
-    time          = "week (time since the first study treatment record)",
-    dosing        = "(none; no PK component -- ritlecitinib exposure enters as the CAV covariate column, not as dosing events)",
+    time = "week (time since the first study treatment record)",
+    dosing = "(none; no PK component -- ritlecitinib exposure enters as the CAV covariate column, not as dosing events)",
     concentration = "(Severity of Alopecia Tool score, 0-100 percent scalp hair loss; the fitted output salt_transformed is on the Aranda-Ordaz-transformed scale of Huh 2024 Eq 1, with the back-transformed salt also emitted)"
   )
 
   covariateData <- list(
     CAV = list(
-      description        = "Average ritlecitinib plasma concentration over the interval between the previous SALT record and the current SALT record.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Average ritlecitinib plasma concentration over the interval between the previous SALT record and the current SALT record.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying per record. Huh 2024 Section 2.2: derived from the empirical Bayes estimates of the final ritlecitinib population PK model of Wojciechowski 2023 (this package's `Wojciechowski_2023_ritlecitinib_final`) combined with the patient's own dosing diary, then averaged over the inter-SALT-record interval. The averaging window is therefore the observation interval, NOT a dosing interval and NOT a steady-state Cavg computed from dose and clearance -- Huh 2024 Section 4.1 argues this choice specifically so that treatment interruptions are reflected in the exposure metric. Set to 0 for placebo periods and for any interval in which no ritlecitinib was taken; the Emax term then collapses to 0. For orientation, Huh 2024 Section 3.2 reports the Cavg of the 50 mg QD regimen as 52 ng/mL, essentially at the estimated EC50 of 53.6 ng/mL.",
-      source_name        = "Cavg"
+      notes = "Time-varying per record. Huh 2024 Section 2.2: derived from the empirical Bayes estimates of the final ritlecitinib population PK model of Wojciechowski 2023 (this package's `Wojciechowski_2023_ritlecitinib_final`) combined with the patient's own dosing diary, then averaged over the inter-SALT-record interval. The averaging window is therefore the observation interval, NOT a dosing interval and NOT a steady-state Cavg computed from dose and clearance -- Huh 2024 Section 4.1 argues this choice specifically so that treatment interruptions are reflected in the exposure metric. Set to 0 for placebo periods and for any interval in which no ritlecitinib was taken; the Emax term then collapses to 0. For orientation, Huh 2024 Section 3.2 reports the Cavg of the 50 mg QD regimen as 52 ng/mL, essentially at the estimated EC50 of 53.6 ng/mL.",
+      source_name = "Cavg"
     ),
     TRT_PHASE = list(
-      description        = "Indicator that the record falls within a period in which study treatment (ritlecitinib OR matching placebo) is being administered.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the record falls within a period in which study treatment (ritlecitinib OR matching placebo) is being administered.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (off study treatment: pre-treatment, drug holiday, or after treatment withdrawal).",
-      notes              = "Time-varying per record. This is the I_PBO indicator of Huh 2024 Eq 4, 'an indicator variable that equals 1 if treatment was given and equals 0 otherwise'. In this model it gates the PLACEBO latent chain only; the drug latent chain is gated separately by CAV = 0, so a placebo-arm record carries TRT_PHASE = 1 and CAV = 0. Setting TRT_PHASE = 0 (together with CAV = 0) is how the paper's treatment-interruption simulation (Section 2.6 / Table 3) switches both effects off. The canonical entry's description says the indicator switches drug AND placebo effects on; here only the placebo effect is gated by the column itself, which is a narrowing consistent with the canonical rather than a different concept.",
-      source_name        = "I_PBO"
+      notes = "Time-varying per record. This is the I_PBO indicator of Huh 2024 Eq 4, 'an indicator variable that equals 1 if treatment was given and equals 0 otherwise'. In this model it gates the PLACEBO latent chain only; the drug latent chain is gated separately by CAV = 0, so a placebo-arm record carries TRT_PHASE = 1 and CAV = 0. Setting TRT_PHASE = 0 (together with CAV = 0) is how the paper's treatment-interruption simulation (Section 2.6 / Table 3) switches both effects off. The canonical entry's description says the indicator switches drug AND placebo effects on; here only the placebo effect is gated by the column itself, which is a narrowing consistent with the canonical rather than a different concept.",
+      source_name = "I_PBO"
     ),
     DIS_ALOPECIA_AT_AU = list(
-      description        = "Indicator that the participant's alopecia areata has progressed to alopecia totalis (complete scalp hair loss) or alopecia universalis (complete scalp and body hair loss), the severe end of the alopecia areata spectrum.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the participant's alopecia areata has progressed to alopecia totalis (complete scalp hair loss) or alopecia universalis (complete scalp and body hair loss), the severe end of the alopecia areata spectrum.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-AT/AU alopecia areata: patchy disease not meeting AT or AU criteria).",
-      notes              = "Time-fixed per subject (disease classification at study entry). Huh 2024 Table 1: 532/1268 (42.0%) of the analysis population were AT/AU. AT/AU participants have a baseline SALT of 100 by definition of the classification, versus a mean of 74.0 (median 77.9) in the non-AT/AU group. Huh 2024 retained this as a STRUCTURAL covariate -- it is the only covariate in the final model, entering on three parameters: BASE (separate typical values 11.6 vs 1.92 on the transformed scale), Pmax (2.75 vs 0 fix) and the drug-chain half-life (a -60.1% fractional shift, 3.11 vs 7.80 weeks). Note that the B7981032 study effect on BASE applies to the non-AT/AU group only, because the AT/AU baseline is pinned at SALT = 100 regardless of study entry criteria.",
-      source_name        = "AT/AU status"
+      notes = "Time-fixed per subject (disease classification at study entry). Huh 2024 Table 1: 532/1268 (42.0%) of the analysis population were AT/AU. AT/AU participants have a baseline SALT of 100 by definition of the classification, versus a mean of 74.0 (median 77.9) in the non-AT/AU group. Huh 2024 retained this as a STRUCTURAL covariate -- it is the only covariate in the final model, entering on three parameters: BASE (separate typical values 11.6 vs 1.92 on the transformed scale), Pmax (2.75 vs 0 fix) and the drug-chain half-life (a -60.1% fractional shift, 3.11 vs 7.80 weeks). Note that the B7981032 study effect on BASE applies to the non-AT/AU group only, because the AT/AU baseline is pinned at SALT = 100 regardless of study entry criteria.",
+      source_name = "AT/AU status"
     ),
     STUDY_B7981032 = list(
-      description        = "Indicator that the SALT record comes from study B7981032 (NCT04006457), the phase 3 long-term ritlecitinib study.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the SALT record comes from study B7981032 (NCT04006457), the phase 3 long-term ritlecitinib study.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (studies B7931005 and B7981015, whose baseline-SALT inclusion criterion was >= 50%).",
-      notes              = "Per-subject time-fixed within this analysis. Huh 2024 Section 3.2: 'Study B7981032 effect on BASE was incorporated to address differences in inclusion criteria between studies (baseline SALT >= 50 for B7931005 and B7981015 vs baseline SALT >= 25 for B7981032)'. Table 1: 458/1268 (36.1%) of participants. The effect is a MULTIPLICATIVE fractional shift on the non-AT/AU BASE, confirmed against the paper's own worked value: 1.92 * (1 + (-0.645)) = 0.68, the figure Section 3.2 quotes for the non-AT/AU group in B7981032 (an additive reading would give 1.28 and is falsified).",
-      source_name        = "B7981032"
+      notes = "Per-subject time-fixed within this analysis. Huh 2024 Section 3.2: 'Study B7981032 effect on BASE was incorporated to address differences in inclusion criteria between studies (baseline SALT >= 50 for B7931005 and B7981015 vs baseline SALT >= 25 for B7981032)'. Table 1: 458/1268 (36.1%) of participants. The effect is a MULTIPLICATIVE fractional shift on the non-AT/AU BASE, confirmed against the paper's own worked value: 1.92 * (1 + (-0.645)) = 0.68, the figure Section 3.2 quotes for the non-AT/AU group in B7981032 (an additive reading would give 1.28 and is falsified).",
+      source_name = "B7981032"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female-sex indicator at baseline.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on BASE and Emax (Huh 2024 Section 2.3) but not retained: 'the forward addition step of covariate analysis did not identify any important covariates' (Section 3.2). Table 1: 805/1268 (63.5%) female."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on BASE and Emax (Huh 2024 Section 2.3) but not retained: 'the forward addition step of covariate analysis did not identify any important covariates' (Section 3.2). Table 1: 805/1268 (63.5%) female."
     ),
     WT = list(
       description = "Body weight at baseline.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on BASE, Emax and the drug-chain half-life but not retained (Huh 2024 Sections 2.3 and 3.2). Table 1: mean 70.7 kg (SD 17.6), median 68.4 kg (range 29.6-200.0)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on BASE, Emax and the drug-chain half-life but not retained (Huh 2024 Sections 2.3 and 3.2). Table 1: mean 70.7 kg (SD 17.6), median 68.4 kg (range 29.6-200.0)."
     ),
     AGE = list(
       description = "Age at baseline.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on BASE, Emax and the drug-chain half-life but not retained (Huh 2024 Sections 2.3 and 3.2). Table 1: mean 33.8 years (SD 14.2), median 32 (range 12-72); 170/1268 (13.4%) were adolescents 12 to <18 years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on BASE, Emax and the drug-chain half-life but not retained (Huh 2024 Sections 2.3 and 3.2). Table 1: mean 33.8 years (SD 14.2), median 32 (range 12-72); 170/1268 (13.4%) were adolescents 12 to <18 years."
     ),
     RACE_ASIAN = list(
       description = "Asian-race indicator at baseline.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Race was screened on BASE and Emax but not retained (Huh 2024 Sections 2.3 and 3.2). Table 1 reports White 889 (70.1%), Asian 286 (22.6%), African American 46 (3.6%), Other 47 (3.7%); no per-level coefficient is reported because no level entered the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Race was screened on BASE and Emax but not retained (Huh 2024 Sections 2.3 and 3.2). Table 1 reports White 889 (70.1%), Asian 286 (22.6%), African American 46 (3.6%), Other 47 (3.7%); no per-level coefficient is reported because no level entered the final model."
     ),
     PRIORTRT = list(
       description = "Indicator of prior pharmacological treatment for alopecia areata.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on BASE, Emax and the drug-chain half-life but not retained (Huh 2024 Sections 2.3 and 3.2). Table 1: Yes 499 (39.4%), No 22 (1.7%), Unknown 747 (58.9%) -- the large unknown stratum limits what this covariate could have resolved."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on BASE, Emax and the drug-chain half-life but not retained (Huh 2024 Sections 2.3 and 3.2). Table 1: Yes 499 (39.4%), No 22 (1.7%), Unknown 747 (58.9%) -- the large unknown stratum limits what this covariate could have resolved."
     ),
     DURF = list(
       description = "Duration of alopecia areata since first diagnosis.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on Emax and the drug-chain half-life but not retained (Huh 2024 Sections 2.3 and 3.2). Table 1: mean 10.0 years (SD 10.5), median 6.67 (range 0.04-60.1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on Emax and the drug-chain half-life but not retained (Huh 2024 Sections 2.3 and 3.2). Table 1: mean 10.0 years (SD 10.5), median 6.67 (range 0.04-60.1)."
     ),
     DURC = list(
       description = "Duration of the current alopecia areata episode.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on Emax and the drug-chain half-life but not retained (Huh 2024 Sections 2.3 and 3.2). Table 1: mean 3.22 years (SD 2.82), median 2.25 (range 0.02-29.5). The paper singles this one out in the Discussion: a >10-year current episode has been hypothesised to predict non-response, but B7981015 and B7981032 restricted the current episode to <= 10 years, which the authors suggest is why no trend was visible."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on Emax and the drug-chain half-life but not retained (Huh 2024 Sections 2.3 and 3.2). Table 1: mean 3.22 years (SD 2.82), median 2.25 (range 0.02-29.5). The paper singles this one out in the Discussion: a >10-year current episode has been hypothesised to predict non-response, but B7981015 and B7981032 restricted the current episode to <= 10 years, which the authors suggest is why no trend was visible."
     ),
     BL_SALT = list(
       description = "Baseline Severity of Alopecia Tool score.",
-      units       = "percent scalp hair loss (0-100)",
-      type        = "continuous",
-      notes       = "Screened on Emax but not retained (Huh 2024 Sections 2.3 and 3.2). Its structural content is already carried by DIS_ALOPECIA_AT_AU and STUDY_B7981032 acting on BASE. Table 1: mean 84.9 (SD 21.4) overall; 74.0 (SD 22.5) in non-AT/AU and exactly 100 (SD 0) in AT/AU."
+      units = "percent scalp hair loss (0-100)",
+      type = "continuous",
+      notes = "Screened on Emax but not retained (Huh 2024 Sections 2.3 and 3.2). Its structural content is already carried by DIS_ALOPECIA_AT_AU and STUDY_B7981032 acting on BASE. Table 1: mean 84.9 (SD 21.4) overall; 74.0 (SD 22.5) in non-AT/AU and exactly 100 (SD 0) in AT/AU."
     ),
     REGION = list(
       description = "Geographic region of the enrolling site.",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened on BASE, Emax and the drug-chain half-life but not retained (Huh 2024 Sections 2.3 and 3.2). The paper does not tabulate the region levels or their sizes."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened on BASE, Emax and the drug-chain half-life but not retained (Huh 2024 Sections 2.3 and 3.2). The paper does not tabulate the region levels or their sizes."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1268L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 1268L,
+    n_studies = 3L,
     n_observations = 11857L,
-    age_range      = "12-72 years (Table 1 median 32, min 12, max 72); 170 (13.4%) adolescents 12 to <18 years and 1098 (86.6%) adults >= 18 years",
-    weight_range   = "29.6-200.0 kg (Table 1 median 68.4, mean 70.7, SD 17.6)",
+    age_range = "12-72 years (Table 1 median 32, min 12, max 72); 170 (13.4%) adolescents 12 to <18 years and 1098 (86.6%) adults >= 18 years",
+    weight_range = "29.6-200.0 kg (Table 1 median 68.4, mean 70.7, SD 17.6)",
     sex_female_pct = 63.5,
     race_ethnicity = "White 889 (70.1%), Asian 286 (22.6%), Other 47 (3.7%), African American 46 (3.6%) (Table 1)",
-    disease_state  = "Alopecia areata. 736 (58.0%) non-AT/AU and 532 (42.0%) alopecia totalis or alopecia universalis (Table 1). Baseline SALT mean 84.9 (SD 21.4) overall; 74.0 (SD 22.5) non-AT/AU and 100 (SD 0) AT/AU. Duration since first diagnosis median 6.67 years; duration of the current episode median 2.25 years. Prior pharmacological treatment for alopecia areata: 499 (39.4%) yes, 22 (1.7%) no, 747 (58.9%) unknown.",
-    dose_range     = "Ritlecitinib 10, 30 or 50 mg QD, with or without a 200 mg QD 4-week loading dose, plus matching placebo, across the three pooled studies. B7931005 (phase 2a, NCT02974868, n = 95): 200 mg QD x 4 weeks then 50 mg QD x 20 weeks, or placebo, with a single-blind extension after a 4-week drug holiday. B7981015 (phase 2b/3, NCT03732807, n = 715): 200/50, 200/30, 50, 30 and 10 mg QD arms plus two placebo-to-active switch arms. B7981032 (phase 3 long-term, NCT04006457, n = 458): 50 mg QD for rollover participants, 200 mg QD x 4 weeks then 50 mg QD for de novo participants.",
-    regions        = "Multiregional (region was screened as a covariate but the source does not tabulate the levels).",
-    notes          = "Inclusion required >= 50% scalp hair loss in B7931005 and B7981015 and >= 25% in B7981032 -- the difference the STUDY_B7981032 effect on BASE absorbs. B7981015 and B7981032 enrolled participants aged >= 12 years; B7931005 enrolled adults only. B7981032 was ongoing at the time of the analysis, so only the available data cut was included. Boundary SALT records were common: 5.39% of observations at SALT = 0 and 24.9% at SALT = 100, and they are handled by the paper's censored likelihood rather than by the structural model encoded here."
+    disease_state = "Alopecia areata. 736 (58.0%) non-AT/AU and 532 (42.0%) alopecia totalis or alopecia universalis (Table 1). Baseline SALT mean 84.9 (SD 21.4) overall; 74.0 (SD 22.5) non-AT/AU and 100 (SD 0) AT/AU. Duration since first diagnosis median 6.67 years; duration of the current episode median 2.25 years. Prior pharmacological treatment for alopecia areata: 499 (39.4%) yes, 22 (1.7%) no, 747 (58.9%) unknown.",
+    dose_range = "Ritlecitinib 10, 30 or 50 mg QD, with or without a 200 mg QD 4-week loading dose, plus matching placebo, across the three pooled studies. B7931005 (phase 2a, NCT02974868, n = 95): 200 mg QD x 4 weeks then 50 mg QD x 20 weeks, or placebo, with a single-blind extension after a 4-week drug holiday. B7981015 (phase 2b/3, NCT03732807, n = 715): 200/50, 200/30, 50, 30 and 10 mg QD arms plus two placebo-to-active switch arms. B7981032 (phase 3 long-term, NCT04006457, n = 458): 50 mg QD for rollover participants, 200 mg QD x 4 weeks then 50 mg QD for de novo participants.",
+    regions = "Multiregional (region was screened as a covariate but the source does not tabulate the levels).",
+    notes = "Inclusion required >= 50% scalp hair loss in B7931005 and B7981015 and >= 25% in B7981032 -- the difference the STUDY_B7981032 effect on BASE absorbs. B7981015 and B7981032 enrolled participants aged >= 12 years; B7931005 enrolled adults only. B7981032 was ongoing at the time of the analysis, so only the available data cut was included. Boundary SALT records were common: 5.39% of observations at SALT = 0 and 24.9% at SALT = 100, and they are handled by the paper's censored likelihood rather than by the structural model encoded here."
   )
 
   ini({

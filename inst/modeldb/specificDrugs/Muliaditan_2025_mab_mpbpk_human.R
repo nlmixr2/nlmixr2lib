@@ -40,8 +40,8 @@ Muliaditan_2025_mab_mpbpk_human <- function() {
   )
   vignette <- "Muliaditan_2025_mab_mpbpk"
   units <- list(
-    time          = "h",
-    dosing        = "nmol (convert mg via dose_nmol = dose_mg / mw_kda * 1000)",
+    time = "h",
+    dosing = "nmol (convert mg via dose_nmol = dose_mg / mw_kda * 1000)",
     concentration = "nmol/L"
   )
 
@@ -50,47 +50,47 @@ Muliaditan_2025_mab_mpbpk_human <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central           = list(analyte = "mab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    tissue_vasc       = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    tissue_endo_u     = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    tissue_endo_b     = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    tissue_isf        = list(analyte = "mab", units = NA_character_, specimen = "brain ISF", verified = FALSE),
-    brain_vascular    = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    bbb_endo_u        = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    bbb_endo_b        = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_isf         = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    bcsfb_endo_u      = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    bcsfb_endo_b      = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    csf               = list(analyte = "mab", units = NA_character_, specimen = "CSF", verified = FALSE),
-    lymph             = list(analyte = "mab", units = NA_character_, specimen = "lymph", verified = FALSE),
-    tissue_fcrn       = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    bbb_fcrn          = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    bcsfb_fcrn        = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    complex_plasma    = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    delta_utfr_bbb    = list(analyte = "TfR", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    complex_bbb_lum   = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE),
-    complex_bbb_abl   = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE),
-    utfr_bbb_abl      = list(analyte = "TfR", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    delta_utfr_bcsfb  = list(analyte = "TfR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    central = list(analyte = "mab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    tissue_vasc = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    tissue_endo_u = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    tissue_endo_b = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    tissue_isf = list(analyte = "mab", units = NA_character_, specimen = "brain ISF", verified = FALSE),
+    brain_vascular = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bbb_endo_u = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bbb_endo_b = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_isf = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bcsfb_endo_u = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bcsfb_endo_b = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    csf = list(analyte = "mab", units = NA_character_, specimen = "CSF", verified = FALSE),
+    lymph = list(analyte = "mab", units = NA_character_, specimen = "lymph", verified = FALSE),
+    tissue_fcrn = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bbb_fcrn = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bcsfb_fcrn = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    complex_plasma = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    delta_utfr_bbb = list(analyte = "TfR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    complex_bbb_lum = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE),
+    complex_bbb_abl = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE),
+    utfr_bbb_abl = list(analyte = "TfR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    delta_utfr_bcsfb = list(analyte = "TfR", units = NA_character_, specimen = "not applicable", verified = FALSE),
     complex_bcsfb_lum = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE),
     complex_bcsfb_abl = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE),
-    utfr_bcsfb_abl    = list(analyte = "TfR", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    complex_neuron    = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE)
+    utfr_bcsfb_abl = list(analyte = "TfR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    complex_neuron = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     MIX_FAST_ELIM = list(
-      description        = paste(
+      description = paste(
         "Mixture-model class indicator for fast vs slow bsAb-TfR complex",
         "internalization rate (kint). 1 = POP1 fast eliminator",
         "(allometrically scaled human kint = 0.0179 h^-1);",
         "0 = POP2 slow eliminator (allometrically scaled human kint =",
         "0.0125 * (70/6.2)^(-0.25) = 0.00683 h^-1)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Population probability of MIX_FAST_ELIM = 1 (POP1, fast)",
         "is 0.437 (Muliaditan 2025 Table 2, Fraction POP1, RSE 30%).",
         "For typical-value simulation set MIX_FAST_ELIM = 0 (slow,",
@@ -100,24 +100,24 @@ Muliaditan_2025_mab_mpbpk_human <- function() {
         "values uses the (70/6.2)^(-0.25) = 0.546 factor (paper",
         "Methods, exponent -0.25)."
       ),
-      source_name        = "MIXTURE"
+      source_name = "MIXTURE"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = NA_integer_,
-    n_studies       = 1L,
-    weight_range    = "Bloomingdale 2017 70-kg human reference subject for the physiology",
-    disease_state   = paste(
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    weight_range = "Bloomingdale 2017 70-kg human reference subject for the physiology",
+    disease_state = paste(
       "Healthy adult subjects (trontinemab Phase 1 single ascending",
       "dose study NCT04023994; Grimm 2023). Plasma exposure metrics",
       "(AUC0-168h, AUC0-inf, Cmax) and CSF concentrations at study",
       "days 3 and 5 were used for clinical validation in the paper",
       "(Muliaditan 2025 Methods / Figure 5)."
     ),
-    dose_range      = "0.1, 0.4, 1.2, 3.6, 7.2 mg/kg single IV infusion (trontinemab single ascending dose; Grimm 2023)",
-    notes           = paste(
+    dose_range = "0.1, 0.4, 1.2, 3.6, 7.2 mg/kg single IV infusion (trontinemab single ascending dose; Grimm 2023)",
+    notes = paste(
       "Human PK projection only - no human dataset was fit. The",
       "translated mPBPK parameters are kept identical to the NHP",
       "fit except for (a) Bloomingdale 2017 70-kg human physiology",

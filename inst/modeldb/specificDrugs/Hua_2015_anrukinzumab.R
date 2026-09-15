@@ -8,58 +8,58 @@ Hua_2015_anrukinzumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "anrukinzumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "anrukinzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "anrukinzumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "anrukinzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "anrukinzumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling (WT/75)^0.75 on CL (exponent fixed per Hua 2015 base-model decision) and (WT/75)^0.688 on both Vc and Vp (estimated shared exponent). Reference 75 kg per Table 3.",
-      source_name        = "WT"
+      notes = "Allometric scaling (WT/75)^0.75 on CL (exponent fixed per Hua 2015 base-model decision) and (WT/75)^0.688 on both Vc and Vp (estimated shared exponent). Reference 75 kg per Table 3.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
+      description = "Baseline serum albumin",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL: (ALB/4.3)^theta_albumin with theta_albumin = -1.07 (Hua 2015 Table 3). Reference 4.3 g/dL per Table 3. Albumin units inferred as g/dL from Figure 1 covariate-plot axis range (3.0-5.0) which is consistent with US-convention reporting.",
-      source_name        = "ALB"
+      notes = "Power effect on CL: (ALB/4.3)^theta_albumin with theta_albumin = -1.07 (Hua 2015 Table 3). Reference 4.3 g/dL per Table 3. Albumin units inferred as g/dL from Figure 1 covariate-plot axis range (3.0-5.0) which is consistent with US-convention reporting.",
+      source_name = "ALB"
     ),
     DIS_UC = list(
-      description        = "Ulcerative colitis patient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Ulcerative colitis patient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-UC: healthy volunteers or asthma patients in the Hua 2015 pooled cohort)",
-      notes              = "Multiplicative fractional effect on CL: CL_UC = CL_nonUC * (1 + theta_UC * DIS_UC), theta_UC = 0.728 (Hua 2015 Table 3). UC patients in Hua 2015 received IV doses only (study 5), so F is not defined separately for UC.",
-      source_name        = "UC"
+      notes = "Multiplicative fractional effect on CL: CL_UC = CL_nonUC * (1 + theta_UC * DIS_UC), theta_UC = 0.728 (Hua 2015 Table 3). UC patients in Hua 2015 received IV doses only (study 5), so F is not defined separately for UC.",
+      source_name = "UC"
     ),
     DIS_SASTHMA = list(
-      description        = "Moderate-to-severe asthma patient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate-to-severe asthma patient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer, mild-to-moderate asthma, or UC)",
-      notes              = "Multiplicative fractional effect on SC bioavailability: F = F_pop * (1 + theta_sA * DIS_SASTHMA), theta_sA = -0.309 (Hua 2015 Table 3). Moderate-to-severe asthma defined per Hua 2015 study 4 inclusion: FEV1 55-80% and ACQ-5 >= 2. Mild-to-moderate asthma (study 1) used FEV1 > 70% and ACQ-5 <= 1. The reduced F in moderate-to-severe asthma is discussed as potentially reflecting sparse-sampling / SC-dosing-accuracy effects in the phase-2 multicenter protocol rather than a disease-biology effect.",
-      source_name        = "sAsthma"
+      notes = "Multiplicative fractional effect on SC bioavailability: F = F_pop * (1 + theta_sA * DIS_SASTHMA), theta_sA = -0.309 (Hua 2015 Table 3). Moderate-to-severe asthma defined per Hua 2015 study 4 inclusion: FEV1 55-80% and ACQ-5 >= 2. Mild-to-moderate asthma (study 1) used FEV1 > 70% and ACQ-5 <= 1. The reduced F in moderate-to-severe asthma is discussed as potentially reflecting sparse-sampling / SC-dosing-accuracy effects in the phase-2 multicenter protocol rather than a disease-biology effect.",
+      source_name = "sAsthma"
     )
   )
 
   population <- list(
-    n_subjects     = 255L,
-    n_studies      = 5L,
-    age_median     = "37 years (mean 38, SD 13)",
-    weight_median  = "81.3 kg (mean 82.6, SD 18.7)",
+    n_subjects = 255L,
+    n_studies = 5L,
+    age_median = "37 years (mean 38, SD 13)",
+    weight_median = "81.3 kg (mean 82.6, SD 18.7)",
     sex_female_pct = 35,
     race_ethnicity = c(White = 73, Black = 12, Asian = 12, Other = 3),
-    disease_state  = "Healthy volunteers (17%), mild-to-moderate asthma (20%), moderate-to-severe asthma (38%), ulcerative colitis (25%).",
-    dose_range     = "0.2-600 mg total dose across 5 studies; SC (72% of subjects) and IV (28%) routes.",
-    regions        = "Multinational; study 2 enrolled Japanese and non-Asian healthy volunteers separately.",
-    ada_status     = "No anti-anrukinzumab ADA reported in any of the five studies.",
-    notes          = "Baseline demographics pooled from Hua 2015 Table 2 (n = 255 across all 5 studies). Study breakdown from Table 1: (1) single-dose escalation in mild-to-moderate asthma, n=37, SC/IV 0.3-4 mg/kg; (2) single-dose SC escalation in healthy Japanese and non-Asian volunteers, n=44, 0.3-4 mg/kg; (3) allergen-challenge study in mild asthma, n=14, 2 mg/kg SC x 2 doses; (4) moderate-to-severe asthma efficacy, n=97, SC 0.2-2 mg/kg or 200 mg fixed-dose Q2-4W; (5) UC biomarker study, n=63, IV 200-600 mg Q2-4W x 5 doses. Reference covariate values: WT = 75 kg, ALB = 4.3 g/dL, non-UC, non-moderate-to-severe-asthma."
+    disease_state = "Healthy volunteers (17%), mild-to-moderate asthma (20%), moderate-to-severe asthma (38%), ulcerative colitis (25%).",
+    dose_range = "0.2-600 mg total dose across 5 studies; SC (72% of subjects) and IV (28%) routes.",
+    regions = "Multinational; study 2 enrolled Japanese and non-Asian healthy volunteers separately.",
+    ada_status = "No anti-anrukinzumab ADA reported in any of the five studies.",
+    notes = "Baseline demographics pooled from Hua 2015 Table 2 (n = 255 across all 5 studies). Study breakdown from Table 1: (1) single-dose escalation in mild-to-moderate asthma, n=37, SC/IV 0.3-4 mg/kg; (2) single-dose SC escalation in healthy Japanese and non-Asian volunteers, n=44, 0.3-4 mg/kg; (3) allergen-challenge study in mild asthma, n=14, 2 mg/kg SC x 2 doses; (4) moderate-to-severe asthma efficacy, n=97, SC 0.2-2 mg/kg or 200 mg fixed-dose Q2-4W; (5) UC biomarker study, n=63, IV 200-600 mg Q2-4W x 5 doses. Reference covariate values: WT = 75 kg, ALB = 4.3 g/dL, non-UC, non-moderate-to-severe-asthma."
   )
 
   ini({

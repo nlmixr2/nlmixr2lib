@@ -19,8 +19,8 @@ Baron_2016_empagliflozin <- function() {
   )
   vignette <- "Baron_2016_empagliflozin"
   units <- list(
-    time          = "h",
-    dosing        = "mg empagliflozin (oral, once daily)",
+    time = "h",
+    dosing = "mg empagliflozin (oral, once daily)",
     concentration = "Cc in nmol/L (= nM; converted from mg/L via MW 450.91 g/mol); FPG in mmol/L; HbA1c in % (NGSP)"
   )
   paper_specific_compartments <- c("hba1c")
@@ -30,92 +30,92 @@ Baron_2016_empagliflozin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "empagliflozin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "empagliflozin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "empagliflozin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "empagliflozin", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "empagliflozin", units = NA_character_, specimen = "plasma", verified = FALSE),
-    glucose     = list(analyte = "glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
-    hba1c       = list(analyte = "HbA1c", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    glucose = list(analyte = "glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba1c = list(analyte = "HbA1c", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects centred at 50 years on CL, V2/F, V3/F, ka (Table S1), on the model-predicted baseline FPG and Gmax (Table S3), and on kHbA1cout (Table S4).",
-      source_name        = "AGE"
+      notes = "Power-form effects centred at 50 years on CL, V2/F, V3/F, ka (Table S1), on the model-predicted baseline FPG and Gmax (Table S3), and on kHbA1cout (Table S4).",
+      source_name = "AGE"
     ),
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects centred at 25 kg/m^2 on CL, V3/F, BFPG, Gmax, kHbA1cout. The single V2/F effect is centred at 20 kg/m^2 (Baron 2016 Table S1 row V2/F BMI).",
-      source_name        = "BMI"
+      notes = "Power-form effects centred at 25 kg/m^2 on CL, V3/F, BFPG, Gmax, kHbA1cout. The single V2/F effect is centred at 20 kg/m^2 (Baron 2016 Table S1 row V2/F BMI).",
+      source_name = "BMI"
     ),
     CRCL = list(
-      description        = "Modification-of-diet-in-renal-disease (MDRD) estimated glomerular filtration rate, BSA-normalised",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Modification-of-diet-in-renal-disease (MDRD) estimated glomerular filtration rate, BSA-normalised",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects centred at 100 mL/min/1.73 m^2 on CL (Table S1), BFPG, Gmax (Table S3), and kHbA1cout (Table S4). Renamed from the source column eGFR to the canonical CRCL per covariate-columns.md.",
-      source_name        = "eGFR"
+      notes = "Power-form effects centred at 100 mL/min/1.73 m^2 on CL (Table S1), BFPG, Gmax (Table S3), and kHbA1cout (Table S4). Renamed from the source column eGFR to the canonical CRCL per covariate-columns.md.",
+      source_name = "eGFR"
     ),
     TPRO = list(
-      description        = "Total serum protein",
-      units              = "g/L (SI); paper reports g/dL with reference value 70 g/dL.",
-      type               = "continuous",
+      description = "Total serum protein",
+      units = "g/L (SI); paper reports g/dL with reference value 70 g/dL.",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects centred at 70 g/dL on CL, V2/F, V3/F (Table S1). The model converts the canonical g/L column to g/dL inline (TPRO / 10).",
-      source_name        = "TPRO"
+      notes = "Power-form effects centred at 70 g/dL on CL, V2/F, V3/F (Table S1). The model converts the canonical g/L column to g/dL inline (TPRO / 10).",
+      source_name = "TPRO"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CL centred at 20 U/L (Table S1).",
-      source_name        = "ALT"
+      notes = "Power-form effect on CL centred at 20 U/L (Table S1).",
+      source_name = "ALT"
     ),
     AST = list(
-      description        = "Aspartate aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CL centred at 20 U/L (Table S1).",
-      source_name        = "AST"
+      notes = "Power-form effect on CL centred at 20 U/L (Table S1).",
+      source_name = "AST"
     ),
     ALP = list(
-      description        = "Alkaline phosphatase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CL centred at 70 U/L (Table S1). Renamed from the source column AP to the canonical ALP per covariate-columns.md.",
-      source_name        = "AP"
+      notes = "Power-form effect on CL centred at 70 U/L (Table S1). Renamed from the source column AP to the canonical ALP per covariate-columns.md.",
+      source_name = "AP"
     ),
     LDH = list(
-      description        = "Lactate dehydrogenase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Lactate dehydrogenase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CL centred at 160 U/L (Table S1).",
-      source_name        = "LDH"
+      notes = "Power-form effect on CL centred at 160 U/L (Table S1).",
+      source_name = "LDH"
     ),
     SEXF = list(
-      description        = "Sex (female indicator)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (female indicator)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplicative effects on CL, V2/F, V3/F, ka (Table S1), BFPG, Gmax (Table S3), and kHbA1cout (Table S4).",
-      source_name        = "SEX (1 = female; 0 = male)"
+      notes = "Multiplicative effects on CL, V2/F, V3/F, ka (Table S1), BFPG, Gmax (Table S3), and kHbA1cout (Table S4).",
+      source_name = "SEX (1 = female; 0 = male)"
     ),
     SMOKE_CURRENT = list(
-      description        = "Current-smoker indicator (paired with SMOKE_NEVER)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker indicator (paired with SMOKE_NEVER)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = former smoker (when paired with SMOKE_NEVER = 0)",
-      notes              = paste(
+      notes = paste(
         "Baron 2016 Table S1 reports smoking as a 3-level categorical with NEVER smoker as",
         "the reference (CL multipliers theta_4 = 1.02 for exsmoker, theta_5 = 1.06 for",
         "current smoker). The canonical SMOKE_NEVER + SMOKE_CURRENT pairing uses FORMER",
@@ -123,105 +123,105 @@ Baron_2016_empagliflozin <- function() {
         "coefficients so the reference category becomes former smoker: see in-file comments",
         "on cl_smoke_never and cl_smoke_current."
       ),
-      source_name        = "SMK_C (1 = current; 0 otherwise)"
+      source_name = "SMK_C (1 = current; 0 otherwise)"
     ),
     SMOKE_NEVER = list(
-      description        = "Never-smoker indicator (paired with SMOKE_CURRENT)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Never-smoker indicator (paired with SMOKE_CURRENT)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = former smoker (when paired with SMOKE_CURRENT = 0)",
-      notes              = "See SMOKE_CURRENT notes above for the recoding from Baron 2016's never-as-reference encoding to the canonical former-as-reference pairing.",
-      source_name        = "SMK_N (1 = never; 0 otherwise)"
+      notes = "See SMOKE_CURRENT notes above for the recoding from Baron 2016's never-as-reference encoding to the canonical former-as-reference pairing.",
+      source_name = "SMK_N (1 = never; 0 otherwise)"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = "Multiplicative effects on CL, V2/F, V3/F, ka (Table S1), BFPG, Gmax (Table S3), and kHbA1cout (Table S4). Reference: non-Asian (pooled white + black + other).",
-      source_name        = "ASIAN"
+      notes = "Multiplicative effects on CL, V2/F, V3/F, ka (Table S1), BFPG, Gmax (Table S3), and kHbA1cout (Table S4). Reference: non-Asian (pooled white + black + other).",
+      source_name = "ASIAN"
     ),
     RACE_BLACK = list(
-      description        = "Black race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black)",
-      notes              = "Multiplicative effects on BFPG and Gmax only (Table S3). No PK or kHbA1cout effects.",
-      source_name        = "BLACK"
+      notes = "Multiplicative effects on BFPG and Gmax only (Table S3). No PK or kHbA1cout effects.",
+      source_name = "BLACK"
     ),
     FPG = list(
-      description        = "Observed baseline fasting plasma glucose at study entry",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Observed baseline fasting plasma glucose at study entry",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject baseline FPG used as a CALIBRATION COVARIATE in the model-predicted BFPG equation (Baron 2016 Table S3): BFPG_i = IBFPG * exp(theta * 8 / FPG_obs) * (covariates) * exp(eta). Distinct from the model state glucose(t) which is the simulated time-varying FPG.",
-      source_name        = "BFPG"
+      notes = "Per-subject baseline FPG used as a CALIBRATION COVARIATE in the model-predicted BFPG equation (Baron 2016 Table S3): BFPG_i = IBFPG * exp(theta * 8 / FPG_obs) * (covariates) * exp(eta). Distinct from the model state glucose(t) which is the simulated time-varying FPG.",
+      source_name = "BFPG"
     ),
     T_DIAG_DIAB = list(
-      description        = "Time since type 2 diabetes diagnosis at study entry",
-      units              = "years",
-      type               = "continuous",
+      description = "Time since type 2 diabetes diagnosis at study entry",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects centred at 2 years on BFPG, Gmax (Table S3) and kHbA1cout (Table S4). Baron 2016 categorises duration as <1 year / 1-5 years / >5 years (Table S2) but the structural model retains it as a continuous power-form covariate; supply the per-subject duration in years.",
-      source_name        = "DUR"
+      notes = "Power-form effects centred at 2 years on BFPG, Gmax (Table S3) and kHbA1cout (Table S4). Baron 2016 categorises duration as <1 year / 1-5 years / >5 years (Table S2) but the structural model retains it as a continuous power-form covariate; supply the per-subject duration in years.",
+      source_name = "DUR"
     ),
     CONMED_METFORMIN = list(
-      description        = "Concomitant metformin co-administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant metformin co-administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant metformin)",
-      notes              = "Multiplicative effects on BFPG, Gmax (Table S3) and kHbA1cout (Table S4).",
-      source_name        = "MET"
+      notes = "Multiplicative effects on BFPG, Gmax (Table S3) and kHbA1cout (Table S4).",
+      source_name = "MET"
     ),
     CONMED_SULFONYLUREA = list(
-      description        = "Concomitant sulfonylurea co-administration indicator (class indicator)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant sulfonylurea co-administration indicator (class indicator)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant sulfonylurea)",
-      notes              = "Multiplicative effects on BFPG and Gmax (Table S3); no kHbA1cout effect. Class indicator pooling glyburide / glibenclamide / glipizide / glimepiride / gliclazide / tolbutamide as a single second-generation oral antidiabetic stratum (Baron 2016 Methods / Table S2: 'background sulfonylurea' study-design cohort).",
-      source_name        = "SU"
+      notes = "Multiplicative effects on BFPG and Gmax (Table S3); no kHbA1cout effect. Class indicator pooling glyburide / glibenclamide / glipizide / glimepiride / gliclazide / tolbutamide as a single second-generation oral antidiabetic stratum (Baron 2016 Methods / Table S2: 'background sulfonylurea' study-design cohort).",
+      source_name = "SU"
     ),
     CONMED_PIOGLITAZONE = list(
-      description        = "Concomitant pioglitazone co-administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant pioglitazone co-administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant pioglitazone)",
-      notes              = "Multiplicative effects on BFPG and Gmax (Table S3); no kHbA1cout effect.",
-      source_name        = "PIO"
+      notes = "Multiplicative effects on BFPG and Gmax (Table S3); no kHbA1cout effect.",
+      source_name = "PIO"
     ),
     DOSE_EMPA_MGD = list(
-      description        = "Patient's own once-daily empagliflozin dose at the current dosing record",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Patient's own once-daily empagliflozin dose at the current dosing record",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the steady-state AUC computation that feeds the FPG Emax: AUCss [nM*h] = DOSE_EMPA_MGD * 1e6 / MW_empa / cl, with MW_empa = 450.91 g/mol. Set to 0 for placebo arms (yields AUCss = 0 and STIM = 0). Studied doses: 1, 5, 10, 25, 50 mg QD (Table S2). Supply per dose record (constant within an inter-dose interval).",
-      source_name        = "DOSE"
+      notes = "Drives the steady-state AUC computation that feeds the FPG Emax: AUCss [nM*h] = DOSE_EMPA_MGD * 1e6 / MW_empa / cl, with MW_empa = 450.91 g/mol. Set to 0 for placebo arms (yields AUCss = 0 and STIM = 0). Studied doses: 1, 5, 10, 25, 50 mg QD (Table S2). Supply per dose record (constant within an inter-dose interval).",
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species             = "human",
-    n_subjects_pk       = 2761L,
-    n_subjects_pkpd     = 4065L,
-    n_studies           = 10L,
-    n_pk_observations   = 12503L,
-    n_fpg_observations  = 25361L,
+    species = "human",
+    n_subjects_pk = 2761L,
+    n_subjects_pkpd = 4065L,
+    n_studies = 10L,
+    n_pk_observations = 12503L,
+    n_fpg_observations = 25361L,
     n_hba1c_observations = 22012L,
-    studies             = "2 phase I + 4 phase II + 4 phase III multi-region clinical trials (Baron 2016 Table 1).",
-    age_range           = "36.0 - 76.0 years (PK/PD pooled dataset 2.5th - 97.5th percentile, Baron 2016 Table 2)",
-    age_median          = "58.0 years",
-    bmi_median          = "29.1 kg/m^2 (range 21.0 - 42.4)",
-    sex_female_pct      = 45.5,
-    race_ethnicity      = c(NonBlackAsian = 55.3, Black = 2.73, Asian = 42.0),
-    smoking             = c(Never = 62.7, Former = 24.1, Current = 13.2),
-    disease_state       = "Type 2 diabetes mellitus (T2DM); duration of T2DM > 5 years in 58.5% of patients (Baron 2016 Table S2).",
-    dose_range          = "1 - 50 mg empagliflozin PO once daily; 40.9% on 10 mg QD and 46.0% on 25 mg QD (Baron 2016 Results).",
+    studies = "2 phase I + 4 phase II + 4 phase III multi-region clinical trials (Baron 2016 Table 1).",
+    age_range = "36.0 - 76.0 years (PK/PD pooled dataset 2.5th - 97.5th percentile, Baron 2016 Table 2)",
+    age_median = "58.0 years",
+    bmi_median = "29.1 kg/m^2 (range 21.0 - 42.4)",
+    sex_female_pct = 45.5,
+    race_ethnicity = c(NonBlackAsian = 55.3, Black = 2.73, Asian = 42.0),
+    smoking = c(Never = 62.7, Former = 24.1, Current = 13.2),
+    disease_state = "Type 2 diabetes mellitus (T2DM); duration of T2DM > 5 years in 58.5% of patients (Baron 2016 Table S2).",
+    dose_range = "1 - 50 mg empagliflozin PO once daily; 40.9% on 10 mg QD and 46.0% on 25 mg QD (Baron 2016 Results).",
     baseline_fpg_median = "8.38 mmol/L (range 4.83 - 13.6)",
     baseline_hba1c_median = "7.90 % (range 6.70 - 9.80)",
-    crcl_median         = "81.8 mL/min/1.73 m^2 (range 33.4 - 128)",
-    tpro_median         = "72.0 g/dL (range 64.0 - 82.0)",
-    co_medication       = "Metformin in 37.6%; metformin + sulfonylurea in 29.6%; no antidiabetic backbone in 32.8% (Baron 2016 Table S2).",
-    notes               = "Demographics summarised in Baron 2016 Tables 1, 2, and S2. PK dataset excludes placebo subjects; PK/PD dataset includes placebo arms (n = 1469 / 36.1%)."
+    crcl_median = "81.8 mL/min/1.73 m^2 (range 33.4 - 128)",
+    tpro_median = "72.0 g/dL (range 64.0 - 82.0)",
+    co_medication = "Metformin in 37.6%; metformin + sulfonylurea in 29.6%; no antidiabetic backbone in 32.8% (Baron 2016 Table S2).",
+    notes = "Demographics summarised in Baron 2016 Tables 1, 2, and S2. PK dataset excludes placebo subjects; PK/PD dataset includes placebo arms (n = 1469 / 36.1%)."
   )
 
   ini({

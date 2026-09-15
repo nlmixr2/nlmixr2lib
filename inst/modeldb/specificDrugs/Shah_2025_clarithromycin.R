@@ -23,17 +23,17 @@ Shah_2025_clarithromycin <- function() {
   # arterial blood samples by UHPLC-MS/MS; Section 2.2 selects a
   # two-compartment disposition model.
   compartmentData <- list(
-    central     = list(analyte = "clarithromycin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "clarithromycin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "clarithromycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate in the final model. Added a priori, not by",
         "stepwise selection (Shah 2025 Section 4: 'Weight was added a priori",
         "with an allometric exponent of 0.75 for clearance parameters and 1",
@@ -41,7 +41,7 @@ Shah_2025_clarithromycin <- function() {
         "reported per 70 kg, which fixes the reference weight at 70 kg.",
         "Cohort median 80 kg (IQR 65-95, range 53-120; Table 1)."
       ),
-      source_name        = "Weight (kg)"
+      source_name = "Weight (kg)"
     )
   )
 
@@ -54,9 +54,9 @@ Shah_2025_clarithromycin <- function() {
   covariatesDataExcluded <- list(
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Tested; did not significantly improve model fit (Shah 2025",
         "Section 2.2). Cohort median 25 g/L (IQR 21-29, range 12-38;",
         "Table 1) -- markedly hypoalbuminaemic, as expected in critical",
@@ -68,9 +68,9 @@ Shah_2025_clarithromycin <- function() {
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Tested on clearance; did not significantly improve model fit",
         "(Shah 2025 Section 2.2). Cohort median 89 umol/L (IQR 71-121,",
         "range 40-276; Table 1). Contrast with the same group's",
@@ -80,9 +80,9 @@ Shah_2025_clarithromycin <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Tested; did not significantly improve model fit (Shah 2025",
         "Section 2.2). Cohort was 12 male : 7 female (Table 1). The paper",
         "reports the covariate only as 'sex' and does not state a reference",
@@ -92,9 +92,9 @@ Shah_2025_clarithromycin <- function() {
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Tested; did not significantly improve model fit (Shah 2025",
         "Section 2.2). Cohort median 173 cm (IQR 166-178, range 150-192;",
         "Table 1). One participant had no height recorded (Table 1",
@@ -103,9 +103,9 @@ Shah_2025_clarithromycin <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Tested; did not significantly improve model fit (Shah 2025",
         "Section 2.2). Cohort median 66 years (IQR 56.7-72.7, range",
         "25-85.8; Table 1)."
@@ -113,9 +113,9 @@ Shah_2025_clarithromycin <- function() {
     ),
     LIVER_DISEASE = list(
       description = "Presence of liver disease",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Tested; did not significantly improve model fit (Shah 2025",
         "Section 2.2). The paper gives no definition of the flag and no",
         "count of affected participants; Table 1 reports ALT (median 34",
@@ -129,9 +129,9 @@ Shah_2025_clarithromycin <- function() {
     ),
     RRT_CRRT_ACTIVE = list(
       description = "Renal replacement therapy active",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Never tested as a covariate. Handled by data exclusion instead:",
         "Shah 2025 Section 4, 'Periods during which time participants were",
         "receiving renal replacement therapy were excluded from the",
@@ -145,38 +145,38 @@ Shah_2025_clarithromycin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 19,
-    n_studies      = 1,
-    n_samples      = 121,
-    age_range      = "25-85.8 years",
-    age_median     = "66 years",
-    weight_range   = "53-120 kg",
-    weight_median  = "80 kg",
-    height_range   = "150-192 cm",
-    height_median  = "173 cm",
+    species = "human",
+    n_subjects = 19,
+    n_studies = 1,
+    n_samples = 121,
+    age_range = "25-85.8 years",
+    age_median = "66 years",
+    weight_range = "53-120 kg",
+    weight_median = "80 kg",
+    height_range = "150-192 cm",
+    height_median = "173 cm",
     sex_female_pct = 36.8,
     race_ethnicity = c(
-      White           = 63.2,
+      White = 63.2,
       `Black British` = 5.3,
-      Asian           = 5.3,
-      `Not stated`    = 26.3
+      Asian = 5.3,
+      `Not stated` = 26.3
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Critical illness requiring intensive care. Infection sources were",
       "chest (14), ear/nose/throat (2), skin (1), central nervous system (1),",
       "gastrointestinal (1) and unknown (1); participants could have more",
       "than one source. Median APACHE II 20 points (IQR 16-23, range 0-28)"
     ),
-    dose_range     = "500 mg IV every 12 h (all participants)",
-    regions        = "United Kingdom (single centre: St George's Hospital, London)",
+    dose_range = "500 mg IV every 12 h (all participants)",
+    regions = "United Kingdom (single centre: St George's Hospital, London)",
     renal_function = paste(
       "Serum creatinine median 89 umol/L (IQR 71-121, range 40-276).",
       "Periods of renal replacement therapy were excluded a priori: 18 of",
       "139 samples, from 5 of 22 participants"
     ),
     hepatic_function = "ALT median 34 U/L (IQR 24-48, range 9-166)",
-    severity       = paste(
+    severity = paste(
       "APACHE II median 20 points (IQR 16-23, range 0-28); 12 participants",
       "received vasopressors; 12 had periods of invasive ventilation, 4 of",
       "non-invasive ventilation and 14 of self-ventilation (categories",
@@ -184,12 +184,12 @@ Shah_2025_clarithromycin <- function() {
       "90-day outcome: 13 alive, 3 infection-attributable deaths, 3 deaths",
       "not attributable to infection"
     ),
-    co_medication  = paste(
+    co_medication = paste(
       "Concomitant drugs were screened against the British National",
       "Formulary; none was predicted to affect clarithromycin PK",
       "(Section 2.1)"
     ),
-    notes          = paste(
+    notes = paste(
       "Sub-study of the ABDose observational antibiotic PK/PD study",
       "(REC 14/LO/1999), the same study that supplied",
       "modellib('Shah_2023_benzylpenicillin'). Baseline demographics:",

@@ -40,51 +40,51 @@ Zhu_2024_borneol_human_pbpk <- function() {
     sep = " "
   )
   vignette <- "Zhu_2024_borneol_pbpk"
-  dosing   <- "venous"   # IV into the venous blood pool; else buildModelDb() mislabels it
+  dosing <- "venous" # IV into the venous blood pool; else buildModelDb() mislabels it
 
   units <- list(
-    time          = "min",
-    dosing        = "mg",
+    time = "min",
+    dosing = "mg",
     concentration = "mg/L",
-    amount        = "mg",
-    weight        = "kg"
+    amount = "mg",
+    weight = "kg"
   )
 
   # See the rat sibling for the compartment-name mapping to the paper's
   # notation: `vp_adipose` is the paper's C1 (Equation 11, "vascular"),
   # `adipose` is C2 (Equation 12, "extravascular"), `other` is "rest of body".
   compartmentData <- list(
-    lung        = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    heart       = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    brain       = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle      = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    skin        = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    other       = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    spleen      = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    stomach     = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    vp_adipose  = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "whole blood", verified = TRUE),
-    adipose     = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney      = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    intestine   = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    liver       = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    arterial    = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "whole blood", verified = TRUE),
-    venous      = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "whole blood", verified = TRUE)
+    lung = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    skin = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    stomach = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    vp_adipose = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "whole blood", verified = TRUE),
+    adipose = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    intestine = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    arterial = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "whole blood", verified = TRUE),
+    venous = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = "70 kg reference adult (Table 1)",
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = "70 kg reference adult (Table 1)",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported (study conducted in China)",
-    disease_state  = "Healthy volunteers",
-    dose_range     = "10, 20 and 40 mg as a 1 h IV infusion; single dose on day 0, then q12h for 7 days from 48 h",
-    regions        = "China",
-    notes          = paste(
+    disease_state = "Healthy volunteers",
+    dose_range = "10, 20 and 40 mg as a 1 h IV infusion; single dose on day 0, then q12h for 7 days from 48 h",
+    regions = "China",
+    notes = paste(
       "Methods 2.3.4: the clinical data are NOT original to this paper -- they are cited",
       "from the paper's reference [7]. Thirty-six healthy volunteers were divided evenly",
       "into three dose cohorts (10, 20 and 40 mg, i.e. 12 per cohort). SPT-07A was given as",

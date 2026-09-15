@@ -34,8 +34,8 @@ Benson_2010_bhma_mouse <- function() {
   vignette <- "Benson_2010_bhma_mouse"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg/kg",
+    time = "h",
+    dosing = "mg/kg",
     concentration = "ng/mL (BHMA in plasma); IU/mL (IFN-alpha in plasma)"
   )
 
@@ -44,10 +44,10 @@ Benson_2010_bhma_mouse <- function() {
   # (Materials and Methods, 'In vivo experiments with BHMA' and 'PK and
   # PK-PD modeling'; Fig. 1 schematic).
   compartmentData <- list(
-    depot       = list(analyte = "BHMA",      units = "mg/kg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "BHMA",      units = "mg/kg", specimen = "plasma",              verified = TRUE),
-    peripheral1 = list(analyte = "BHMA",      units = "mg/kg", specimen = "plasma",              verified = TRUE),
-    ifna        = list(analyte = "IFN-alpha", units = "IU/mL", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "BHMA", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "BHMA", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "BHMA", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    ifna = list(analyte = "IFN-alpha", units = "IU/mL", specimen = "plasma", verified = TRUE)
   )
 
   # No covariates were tested or retained in either stage of the Benson
@@ -57,15 +57,15 @@ Benson_2010_bhma_mouse <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (male CD-1 outbred)",
-    n_subjects     = 71L,
-    n_studies      = 1L,
-    disease_state  = paste(
+    species = "mouse (male CD-1 outbred)",
+    n_subjects = 71L,
+    n_studies = 1L,
+    disease_state = paste(
       "Healthy, uninfected male CD-1 outbred mice (Charles River",
       "Laboratories UK, Margate, Kent). No disease model was used;",
       "IFN-alpha induction was measured in naive animals."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "BHMA administered orally in 5% dimethyl sulfoxide / 50%",
       "polyethylene glycol 200 / 45% water. PD groups (n per group in",
       "parentheses): 0.1 mg/kg (3), 0.3 mg/kg (2), 0.5 mg/kg (2),",
@@ -73,8 +73,8 @@ Benson_2010_bhma_mouse <- function() {
       "animals total. PK-only groups: 0.1, 1 and 5 mg/kg, 25 animals",
       "total. Single doses only."
     ),
-    regions        = "United Kingdom (Pfizer Global Research and Development, Sandwich).",
-    notes          = paste(
+    regions = "United Kingdom (Pfizer Global Research and Development, Sandwich).",
+    notes = paste(
       "Benson 2010 Materials and Methods, 'In vivo experiments with",
       "BHMA'. A matrix (composite) sampling design was used: two 50 uL",
       "saphenous-vein samples plus a terminal 1 mL sample per animal,",

@@ -34,18 +34,18 @@ Chen_2025_hemoporfin_patient_rating <- function() {
   depends <- c("Chen_2025_hemoporfin")
 
   units <- list(
-    time          = "n/a (static landmark exposure-response regression evaluated 8 weeks after therapy; no time dimension)",
-    dosing        = "n/a (no dose events; hemoporfin exposure enters as the covariate AUC_HEMO)",
+    time = "n/a (static landmark exposure-response regression evaluated 8 weeks after therapy; no time dimension)",
+    dosing = "n/a (no dose events; hemoporfin exposure enters as the covariate AUC_HEMO)",
     concentration = "prob_patient_rating (probability that the patient rates the outcome 'good' or 'excellent', 0-1; also logit_patient_rating)"
   )
 
   covariateData <- list(
     AUC_HEMO = list(
-      description        = "Individual hemoporfin AUC from 0 to 30 minutes after the start of the intravenous infusion",
-      units              = "h*ug/mL",
-      type               = "continuous",
+      description = "Individual hemoporfin AUC from 0 to 30 minutes after the start of the intravenous infusion",
+      units = "h*ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Chen 2025 Methods 2.8: AUC(0-30min) and Cmax were chosen as the ",
         "efficacy-related exposure metrics because the photodynamic ",
         "treatment window (light applied 10-30 minutes after the start of ",
@@ -59,27 +59,27 @@ Chen_2025_hemoporfin_patient_rating <- function() {
         "intercept is an extrapolated anchor at AUC_HEMO = 0, not a ",
         "reference-patient probability."
       ),
-      source_name        = "AUC 0-30min"
+      source_name = "AUC 0-30min"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "7-13 years",
-    age_median     = "9 years",
-    weight_range   = "21-72 kg",
-    weight_median  = "32 kg",
-    height_range   = "120-164 cm",
-    height_median  = "139 cm",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "7-13 years",
+    age_median = "9 years",
+    weight_range = "21-72 kg",
+    weight_median = "32 kg",
+    height_range = "120-164 cm",
+    height_median = "139 cm",
     sex_female_pct = 41.7,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Port-wine stain (congenital capillary malformation) of the head and neck.",
-    dose_range     = "Single 5 mg/kg intravenous hemoporfin infusion over 20 minutes, followed by 530 nm LED irradiation at 60 mW/cm^2 (4 patients) or 75 mW/cm^2 (20 patients) from 10 to 30 minutes after the start of infusion.",
+    disease_state = "Port-wine stain (congenital capillary malformation) of the head and neck.",
+    dose_range = "Single 5 mg/kg intravenous hemoporfin infusion over 20 minutes, followed by 530 nm LED irradiation at 60 mW/cm^2 (4 patients) or 75 mW/cm^2 (20 patients) from 10 to 30 minutes after the start of infusion.",
     administration = "Intravenous infusion (20 minutes) plus photodynamic therapy",
-    regions        = "China",
-    notes          = paste0(
+    regions = "China",
+    notes = paste0(
       "Chen 2025 Table 1 (pediatric column) and Methods 2.3. Efficacy was ",
       "assessed 8 weeks after therapy. The patient rated the clinical ",
       "outcome as 'excellent', 'good', 'moderate' or 'unsatisfied'; the ",

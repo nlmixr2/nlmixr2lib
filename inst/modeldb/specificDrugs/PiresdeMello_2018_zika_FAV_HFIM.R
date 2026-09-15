@@ -30,14 +30,22 @@ PiresdeMello_2018_zika_FAV_HFIM <- function() {
 
   paper_specific_compartments <- c(
     "uninfected",
-    "infected1", "infected2", "infected3", "infected4", "infected5",
-    "vi1", "vi2", "vi3", "vi4", "vi5",
+    "infected1",
+    "infected2",
+    "infected3",
+    "infected4",
+    "infected5",
+    "vi1",
+    "vi2",
+    "vi3",
+    "vi4",
+    "vi5",
     "vextra"
   )
 
   units <- list(
-    time          = "h",
-    dosing        = "no dosing events -- FAV concentration is supplied via the CONC_FAV_UM time-varying covariate",
+    time = "h",
+    dosing = "no dosing events -- FAV concentration is supplied via the CONC_FAV_UM time-varying covariate",
     concentration = "log10(PFU/mL) for the model observation log10_viral_load"
   )
 
@@ -47,26 +55,51 @@ PiresdeMello_2018_zika_FAV_HFIM <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     uninfected = list(analyte = "host cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    infected1  = list(analyte = "infected host cells", units = NA_character_, specimen = "administration site", verified = FALSE),
-    infected2  = list(analyte = "infected host cells", units = NA_character_, specimen = "administration site", verified = FALSE),
-    infected3  = list(analyte = "infected host cells", units = NA_character_, specimen = "administration site", verified = FALSE),
-    infected4  = list(analyte = "infected host cells", units = NA_character_, specimen = "administration site", verified = FALSE),
-    infected5  = list(analyte = "infected host cells", units = NA_character_, specimen = "administration site", verified = FALSE),
-    vi1        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
-    vi2        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
-    vi3        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
-    vi4        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
-    vi5        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
-    vextra     = list(analyte = "extracellular virus", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    infected1 = list(
+      analyte = "infected host cells",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    infected2 = list(
+      analyte = "infected host cells",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    infected3 = list(
+      analyte = "infected host cells",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    infected4 = list(
+      analyte = "infected host cells",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    infected5 = list(
+      analyte = "infected host cells",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    vi1 = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi2 = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi3 = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi4 = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi5 = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vextra = list(analyte = "extracellular virus", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     CONC_FAV_UM = list(
-      description        = "Favipiravir extracellular (free-drug) concentration in the HFIM medium (uM)",
-      units              = "uM",
-      type               = "continuous",
+      description = "Favipiravir extracellular (free-drug) concentration in the HFIM medium (uM)",
+      units = "uM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying covariate driving Eq 8 (INH_FAV). The HFIM system",
         "simulates the free-drug concentration-time profiles associated",
         "with clinically utilized FAV regimens (Pires de Mello 2018 Fig 4),",
@@ -82,17 +115,17 @@ PiresdeMello_2018_zika_FAV_HFIM <- function() {
         "concentration (log10_viral_load), not an exogenous-drug-concentration covariate",
         "used to drive an in vitro PD model."
       ),
-      source_name        = "C_FAV (Pires de Mello 2018 Eq 8)"
+      source_name = "C_FAV (Pires de Mello 2018 Eq 8)"
     )
   )
 
   population <- list(
-    species          = "in vitro (HUH-7 human hepatoma cell line)",
-    n_subjects       = NA_integer_,
-    n_studies        = 1L,
-    cell_line        = "HUH-7 (human hepatoma)",
-    virus_strain     = "Zika virus, 2015 human Puerto Rican strain PRVABC59 (BEI Resources)",
-    inoculum         = paste(
+    species = "in vitro (HUH-7 human hepatoma cell line)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    cell_line = "HUH-7 (human hepatoma)",
+    virus_strain = "Zika virus, 2015 human Puerto Rican strain PRVABC59 (BEI Resources)",
+    inoculum = paste(
       "10^8 HUH-7 cells mixed with 10^5 PFU ZIKV (MOI ~ 0.001 PFU/cell)",
       "inoculated into the extracapillary space of a cellulosic hollow-",
       "fiber cartridge. Initial uninfected host cell density U(0) =",
@@ -101,7 +134,7 @@ PiresdeMello_2018_zika_FAV_HFIM <- function() {
       "Initial extracellular virus V_extra(0) = 6,670 PFU/mL",
       "(Virus_Load fixed, Table 1)."
     ),
-    disease_state    = paste(
+    disease_state = paste(
       "Zika virus in vitro pharmacodynamic experiments in HUH-7 cells",
       "cultured in Dulbecco's modified Eagle's medium (high glucose)",
       "with 5% fetal bovine serum and 1% penicillin-streptomycin in the",
@@ -111,14 +144,14 @@ PiresdeMello_2018_zika_FAV_HFIM <- function() {
       "M3 method was used in S-ADAPT to handle BLQ samples (e.g. at",
       "time zero for the plate assay)."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Dose-ranging continuous-infusion experiments: FAV 31.25-500 uM",
       "(constant). Prospective clinical-regimen validation: low-dose",
       "influenza (1,800/800 mg q12h) and high-dose Ebola",
       "(2,400/1,800/1,200 mg) -- supplied as time-varying free-drug",
       "concentration profiles."
     ),
-    notes            = paste(
+    notes = paste(
       "Two replicate experiments were performed for the dose-ranging",
       "studies; the prospective regimen validation used three cartridges",
       "(low-dose, high-dose, growth control). Between-curve variability",

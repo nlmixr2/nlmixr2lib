@@ -12,27 +12,57 @@ Rees_2018_meropenem_ciprofloxacin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa (susceptible)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa (susceptible)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa (resistant-intermediate)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa (resistant-intermediate)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_intermediate_resistant1  = list(analyte = "Pseudomonas aeruginosa (intermediate-resistant)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa (intermediate-resistant)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    cmem                          = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE),
-    ccip                          = list(analyte = "ciprofloxacin", units = NA_character_, specimen = "administration site", verified = FALSE)
+    bact_susceptible_susceptible1 = list(
+      analyte = "Pseudomonas aeruginosa (susceptible)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_susceptible_susceptible2 = list(
+      analyte = "Pseudomonas aeruginosa (susceptible)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate1 = list(
+      analyte = "Pseudomonas aeruginosa (resistant-intermediate)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate2 = list(
+      analyte = "Pseudomonas aeruginosa (resistant-intermediate)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant1 = list(
+      analyte = "Pseudomonas aeruginosa (intermediate-resistant)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant2 = list(
+      analyte = "Pseudomonas aeruginosa (intermediate-resistant)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    cmem = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ccip = list(analyte = "ciprofloxacin", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species          = "in vitro (Pseudomonas aeruginosa CW44, hypermutable cystic fibrosis isolate)",
-    n_subjects       = 1L,
-    n_studies        = 1L,
-    disease_state    = "Hypermutable P. aeruginosa respiratory infection in cystic fibrosis",
-    model_system     = "Dynamic hollow-fiber infection model (HFIM) over 8 days, simulating cystic-fibrosis epithelial-lining-fluid (ELF) antibiotic exposure",
+    species = "in vitro (Pseudomonas aeruginosa CW44, hypermutable cystic fibrosis isolate)",
+    n_subjects = 1L,
+    n_studies = 1L,
+    disease_state = "Hypermutable P. aeruginosa respiratory infection in cystic fibrosis",
+    model_system = "Dynamic hollow-fiber infection model (HFIM) over 8 days, simulating cystic-fibrosis epithelial-lining-fluid (ELF) antibiotic exposure",
     initial_inoculum = "~10^7.4 CFU/mL",
-    dose_range       = "Meropenem 1-2 g q8h (3-h infusions) or 3 g/day continuous infusion; ciprofloxacin 400 mg q8h (1-h infusions); alone and combined",
-    notes            = paste(
+    dose_range = "Meropenem 1-2 g q8h (3-h infusions) or 3 g/day continuous infusion; ciprofloxacin 400 mg q8h (1-h infusions); alone and combined",
+    notes = paste(
       "Mechanism-based model (S-ADAPT) fit to total and resistant viable counts for the double-susceptible hypermutable isolate CW44.",
       "Parameters are the HFIM estimates (Rees 2018 Table 2); the static-concentration time-kill (SCTK) counterpart is Table S1 in the supplement.",
       "Antibiotic ELF concentrations were simulated in Berkeley Madonna with elimination half-lives of 0.8 h (meropenem) and 2.9 h (ciprofloxacin); ELF penetration 30%/60% (meropenem) and 85% (ciprofloxacin).",

@@ -8,33 +8,33 @@ Nicholas_2009_ponezumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ponezumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ponezumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ponezumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline body weight. Allometric power scaling on CL, V1, Q, and V2 with reference weight 70 kg (Nicholas 2009 Methods: 'Allometric scaling was implemented using a reference weight of 70 kg.'). The allometric exponents (Theta_5, Theta_6, Theta_7, Theta_8) are estimated rather than fixed at 0.75 / 1; CL and V1 are precisely estimated while Q and V2 exponents are imprecise (Theta_7 95% CI crosses zero, Theta_8 95% CI is wide). Covariate analysis in this preliminary model was limited to body weight because of the small sample size (n=26) and narrow age range (60-80 years).",
-      source_name        = "WT"
+      notes = "Time-fixed baseline body weight. Allometric power scaling on CL, V1, Q, and V2 with reference weight 70 kg (Nicholas 2009 Methods: 'Allometric scaling was implemented using a reference weight of 70 kg.'). The allometric exponents (Theta_5, Theta_6, Theta_7, Theta_8) are estimated rather than fixed at 0.75 / 1; CL and V1 are precisely estimated while Q and V2 exponents are imprecise (Theta_7 95% CI crosses zero, Theta_8 95% CI is wide). Covariate analysis in this preliminary model was limited to body weight because of the small sample size (n=26) and narrow age range (60-80 years).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 26L,
-    n_studies        = 1L,
-    age_range        = "60-80 years",
-    weight_range     = "Not tabulated in the poster.",
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = NA_character_,
-    disease_state    = "Mild-to-moderate Alzheimer's disease (Mini Mental State Examination score 16-26).",
-    dose_range       = "Single intravenous dose of PF-04360365 (ponezumab) 0.1-10 mg/kg dose-escalation (n=26 active; n=11 placebo not included in the analysis).",
-    regions          = "Not tabulated in the poster.",
-    notes            = "Plasma concentrations were measured by ELISA over an analytical range of 156-10,000 ng/mL with intra- and inter-assay precisions within 10% and accuracy within 16.0%. BLQ and missing concentrations were excluded; subjects with no concentration data were not included. Modeling was performed in NONMEM VI Level 2.0 with FOCE-I using ADVAN3 TRANS4 (Nicholas 2009 Methods)."
+    species = "human",
+    n_subjects = 26L,
+    n_studies = 1L,
+    age_range = "60-80 years",
+    weight_range = "Not tabulated in the poster.",
+    sex_female_pct = NA_real_,
+    race_ethnicity = NA_character_,
+    disease_state = "Mild-to-moderate Alzheimer's disease (Mini Mental State Examination score 16-26).",
+    dose_range = "Single intravenous dose of PF-04360365 (ponezumab) 0.1-10 mg/kg dose-escalation (n=26 active; n=11 placebo not included in the analysis).",
+    regions = "Not tabulated in the poster.",
+    notes = "Plasma concentrations were measured by ELISA over an analytical range of 156-10,000 ng/mL with intra- and inter-assay precisions within 10% and accuracy within 16.0%. BLQ and missing concentrations were excluded; subjects with no concentration data were not included. Modeling was performed in NONMEM VI Level 2.0 with FOCE-I using ADVAN3 TRANS4 (Nicholas 2009 Methods)."
   )
 
   ini({

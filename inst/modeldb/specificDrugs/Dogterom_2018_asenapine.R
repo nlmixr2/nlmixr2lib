@@ -15,35 +15,35 @@ Dogterom_2018_asenapine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "asenapine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "asenapine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "asenapine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "asenapine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "asenapine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     SAMPLE_INTENSIVE = list(
-      description        = "Per-observation indicator of sampling intensity: 1 = intensive (rich post-dose Phase I PK profile), 0 = sparse (Phase III efficacy-study population sample).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Per-observation indicator of sampling intensity: 1 = intensive (rich post-dose Phase I PK profile), 0 = sparse (Phase III efficacy-study population sample).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (sparse Phase III efficacy sampling)",
-      notes              = "Record-level indicator that switches the proportional residual-error magnitude per observation: intensive Phase I sampling 27.8% CV, sparse Phase III sampling 56.0% CV (Dogterom 2018 Table 3 final model). The pooled analysis carried 2,451 observations from 561 pediatric patients across two Phase I PK studies (A7501022 and P06522, intensive sampling between 15 min and 72 h postdose) and two Phase III efficacy studies (P05896 schizophrenia, P06107 bipolar I disorder, sparse population samples). Set SAMPLE_INTENSIVE = 1 on observations from a Phase I PK profile, 0 on observations from a Phase III efficacy study.",
-      source_name        = "SAMPLE_INTENSIVE"
+      notes = "Record-level indicator that switches the proportional residual-error magnitude per observation: intensive Phase I sampling 27.8% CV, sparse Phase III sampling 56.0% CV (Dogterom 2018 Table 3 final model). The pooled analysis carried 2,451 observations from 561 pediatric patients across two Phase I PK studies (A7501022 and P06522, intensive sampling between 15 min and 72 h postdose) and two Phase III efficacy studies (P05896 schizophrenia, P06107 bipolar I disorder, sparse population samples). Set SAMPLE_INTENSIVE = 1 on observations from a Phase I PK profile, 0 on observations from a Phase III efficacy study.",
+      source_name = "SAMPLE_INTENSIVE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 561L,
+    species = "human",
+    n_subjects = 561L,
     n_observations = 2451L,
-    n_studies      = 4L,
-    age_range      = "10-17 years",
-    weight_range   = "37 kg minimum (Study 1 inclusion criterion); Study 2 had no body-weight cutoff",
+    n_studies = 4L,
+    age_range = "10-17 years",
+    weight_range = "37 kg minimum (Study 1 inclusion criterion); Study 2 had no body-weight cutoff",
     sex_female_pct = 43,
     race_ethnicity = c(White = NA_real_, Black = NA_real_, Asian = 0, Other = 0),
-    disease_state  = "Schizophrenia, bipolar I disorder, or other psychiatric disorders (autism, conduct disorder, oppositional defiant disorder) requiring chronic antipsychotic medication",
-    dose_range     = "1-10 mg sublingual twice daily; Phase I cohorts at 1, 3, 5, 10 mg BID (Study 1) and 2.5, 5, 10 mg BID (Study 2); Phase III cohorts at 2.5, 5, 10 mg BID",
-    regions        = "United States",
-    notes          = "Pooled population PK analysis of two Phase I multiple ascending-dose studies (A7501022 / Study 1 in 40 patients; P06522 / Study 2 / NCT01206517 in 30 patients) and two Phase III fixed-dose efficacy studies (P06107 / NCT01244815 bipolar I disorder for 3 weeks; P05896 / NCT01190254 schizophrenia for 8 weeks). Inclusion limited to White and Black/African-American patients across all four studies (Discussion: 'demographics among patients who met inclusion criteria only included white and black/African-American racial groups'). Sex balance approximated from Study 1 (23M/17F) and Study 2 (17M/13F); the pooled Phase III demographic breakdown is not reported in the main text. Prespecified covariates age, BMI, body weight, sex, race, and dose were tested by stepwise covariate selection (forward p<0.01, backward p<0.001); none were retained in the final model. Asenapine is administered as rapidly-dissolving sublingual tablets; the model treats absorption as first-order from a depot compartment."
+    disease_state = "Schizophrenia, bipolar I disorder, or other psychiatric disorders (autism, conduct disorder, oppositional defiant disorder) requiring chronic antipsychotic medication",
+    dose_range = "1-10 mg sublingual twice daily; Phase I cohorts at 1, 3, 5, 10 mg BID (Study 1) and 2.5, 5, 10 mg BID (Study 2); Phase III cohorts at 2.5, 5, 10 mg BID",
+    regions = "United States",
+    notes = "Pooled population PK analysis of two Phase I multiple ascending-dose studies (A7501022 / Study 1 in 40 patients; P06522 / Study 2 / NCT01206517 in 30 patients) and two Phase III fixed-dose efficacy studies (P06107 / NCT01244815 bipolar I disorder for 3 weeks; P05896 / NCT01190254 schizophrenia for 8 weeks). Inclusion limited to White and Black/African-American patients across all four studies (Discussion: 'demographics among patients who met inclusion criteria only included white and black/African-American racial groups'). Sex balance approximated from Study 1 (23M/17F) and Study 2 (17M/13F); the pooled Phase III demographic breakdown is not reported in the main text. Prespecified covariates age, BMI, body weight, sex, race, and dose were tested by stepwise covariate selection (forward p<0.01, backward p<0.001); none were retained in the final model. Asenapine is administered as rapidly-dissolving sublingual tablets; the model treats absorption as first-order from a depot compartment."
   )
 
   ini({

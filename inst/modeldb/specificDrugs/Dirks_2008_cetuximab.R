@@ -8,51 +8,51 @@ Dirks_2008_cetuximab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "cetuximab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cetuximab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cetuximab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     IBW = list(
-      description        = "Ideal body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Ideal body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline only. Enters as an additive linear-deviation term on Vmax: Vmax = TVVmax * (1 + e_ibw_vmax * (IBW - 64)) with reference 64 kg (Dirks 2008 Table 3-2 in thesis Chapter 3, p. 53). The paper does not identify which Devine-family IBW variant was used by the source dataset; if only WT and HT are available the user must compute IBW externally with a chosen formula and record that choice.",
-      source_name        = "IBW"
+      notes = "Baseline only. Enters as an additive linear-deviation term on Vmax: Vmax = TVVmax * (1 + e_ibw_vmax * (IBW - 64)) with reference 64 kg (Dirks 2008 Table 3-2 in thesis Chapter 3, p. 53). The paper does not identify which Devine-family IBW variant was used by the source dataset; if only WT and HT are available the user must compute IBW externally with a chosen formula and record that choice.",
+      source_name = "IBW"
     ),
     WBC = list(
-      description        = "Total white blood cell count at baseline",
-      units              = "10^9 cells/L",
-      type               = "continuous",
+      description = "Total white blood cell count at baseline",
+      units = "10^9 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline only. Enters as an additive linear-deviation term on Vmax: Vmax = TVVmax * (1 + e_wbc_vmax * (WBC - 6.8)) with reference 6.8 x 10^9/L (Dirks 2008 Table 3-2 in thesis Chapter 3, p. 53). Interpreted mechanistically as a surrogate for EGFR-bearing leukocyte burden (lymphocytes, monocytes, macrophages, neutrophils all express EGFR); a 10^9/L rise in WBC increases Vmax by 2.2 percent.",
-      source_name        = "WBC"
+      notes = "Baseline only. Enters as an additive linear-deviation term on Vmax: Vmax = TVVmax * (1 + e_wbc_vmax * (WBC - 6.8)) with reference 6.8 x 10^9/L (Dirks 2008 Table 3-2 in thesis Chapter 3, p. 53). Interpreted mechanistically as a surrogate for EGFR-bearing leukocyte burden (lymphocytes, monocytes, macrophages, neutrophils all express EGFR); a 10^9/L rise in WBC increases Vmax by 2.2 percent.",
+      source_name = "WBC"
     ),
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline only. Enters as an additive linear-deviation term on V1: V1 = TVV1 * (1 + e_wt_v1 * (WT - 60)) with reference 60 kg (Dirks 2008 Table 3-2 in thesis Chapter 3, p. 53). WGT in the NONMEM control stream (Appendix A) maps to WT here.",
-      source_name        = "WGT"
+      notes = "Baseline only. Enters as an additive linear-deviation term on V1: V1 = TVV1 * (1 + e_wt_v1 * (WT - 60)) with reference 60 kg (Dirks 2008 Table 3-2 in thesis Chapter 3, p. 53). WGT in the NONMEM control stream (Appendix A) maps to WT here.",
+      source_name = "WGT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 143L,
-    n_studies      = 2L,
-    age_range      = "23-77 years",
-    age_median     = "56 years",
-    weight_range   = "34-113 kg",
-    weight_median  = "60 kg",
+    species = "human",
+    n_subjects = 143L,
+    n_studies = 2L,
+    age_range = "23-77 years",
+    age_median = "56 years",
+    weight_range = "34-113 kg",
+    weight_median = "60 kg",
     sex_female_pct = 16.1,
     race_ethnicity = c(Caucasian = 91.6, Unknown = 8.4),
-    disease_state  = "Recurrent and/or metastatic squamous cell carcinoma of the head and neck (SCCHN). 138 of 143 patients had EGFR-expressing tumours by immunohistochemistry; human anti-chimeric antibodies were not detected in either study.",
-    dose_range     = "Cetuximab IV: 400 mg/m^2 loading over 2 hours followed by 250 mg/m^2 weekly maintenance over 1 hour (currently approved regimen); duration of therapy 1-54 weeks in the modelled cohort (median 6 weeks). Study A n=47; Study B n=96. Concomitant 5-fluorouracil in 47/143; concomitant platinum in 89/143.",
-    regions        = "Two phase I/II studies of cetuximab in SCCHN (institutions not specified in the thesis).",
-    notes          = "Median patient characteristics from Table 3-1 (p. 51). Reference covariates for the typical-value equations (Table 3-2, p. 53): IBW 64 kg, WBC 6.8 x 10^9/L, WT (WGT) 60 kg. 912 concentrations available for model building (530 from study A, 382 from study B); Study A patients contributed a median of 13 samples each and Study B patients a median of 4 samples each. IBW median in Table 3-1 was 64.2 kg; the model uses 64 kg as the centring value."
+    disease_state = "Recurrent and/or metastatic squamous cell carcinoma of the head and neck (SCCHN). 138 of 143 patients had EGFR-expressing tumours by immunohistochemistry; human anti-chimeric antibodies were not detected in either study.",
+    dose_range = "Cetuximab IV: 400 mg/m^2 loading over 2 hours followed by 250 mg/m^2 weekly maintenance over 1 hour (currently approved regimen); duration of therapy 1-54 weeks in the modelled cohort (median 6 weeks). Study A n=47; Study B n=96. Concomitant 5-fluorouracil in 47/143; concomitant platinum in 89/143.",
+    regions = "Two phase I/II studies of cetuximab in SCCHN (institutions not specified in the thesis).",
+    notes = "Median patient characteristics from Table 3-1 (p. 51). Reference covariates for the typical-value equations (Table 3-2, p. 53): IBW 64 kg, WBC 6.8 x 10^9/L, WT (WGT) 60 kg. 912 concentrations available for model building (530 from study A, 382 from study B); Study A patients contributed a median of 13 samples each and Study B patients a median of 4 samples each. IBW median in Table 3-1 was 64.2 kg; the model uses 64 kg as the centring value."
   )
 
   ini({

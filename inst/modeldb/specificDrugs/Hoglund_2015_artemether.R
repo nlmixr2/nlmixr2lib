@@ -39,28 +39,28 @@ Hoglund_2015_artemether <- function() {
     sep = " "
   )
   vignette <- "Hoglund_2015_artemether_lumefantrine"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "artemether", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "artemether", units = "mg", specimen = "plasma", verified = FALSE),
     central_dha = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_EFV = list(
-      description        = "Concomitant efavirenz co-administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant efavirenz co-administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = subject is receiving concomitant efavirenz (600 mg once",
         "daily) based antiretroviral therapy, 0 = no concomitant",
         "efavirenz. Time-fixed per subject in the Hoglund 2015 cohort",
@@ -72,14 +72,14 @@ Hoglund_2015_artemether <- function() {
         "-71.5 % +/-5.94 % RSE; mechanism: induction of intestinal",
         "P-glycoprotein and/or intestinal CYP3A4)."
       ),
-      source_name        = "EFZ"
+      source_name = "EFZ"
     ),
     CONMED_NVP = list(
-      description        = "Concomitant nevirapine co-administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant nevirapine co-administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = subject is receiving concomitant nevirapine (200 mg twice",
         "daily) based antiretroviral therapy, 0 = no concomitant",
         "nevirapine. Time-fixed per subject. Nevirapine enters this",
@@ -94,14 +94,14 @@ Hoglund_2015_artemether <- function() {
         "affect the UGT system that clears DHA, and is flagged as such",
         "in the source paper Discussion)."
       ),
-      source_name        = "NEV"
+      source_name = "NEV"
     ),
     CONMED_LPV = list(
-      description        = "Concomitant lopinavir/ritonavir co-administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant lopinavir/ritonavir co-administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = subject is receiving concomitant lopinavir 400 mg /",
         "ritonavir 100 mg twice daily (Aluvia, Abbott); 0 = no",
         "concomitant LPV/r. Time-fixed per subject. Lopinavir/ritonavir",
@@ -115,21 +115,21 @@ Hoglund_2015_artemether <- function() {
         "induction of CYP2B6/2C9/2C19 and possibly other unknown",
         "pathways)."
       ),
-      source_name        = "LOP"
+      source_name = "LOP"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 89L,
-    n_studies       = 2L,
-    n_study1        = 31L,
-    n_study2        = 58L,
-    age_range       = "20-70 years (study 1 median 36.5, range 24-51; study 2 median 36, range 20-70; Table 1)",
-    weight_range    = "42-91 kg (study 1 median 64, range 45-86; study 2 median 56, range 42-91; Table 1)",
-    bmi_range       = "17.0-36.5 kg/m^2 (study 1 median 23.7, range 17.0-34.0; study 2 median 22.3, range 17.3-36.5; Table 1)",
-    sex_female_pct  = 73.0,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 89L,
+    n_studies = 2L,
+    n_study1 = 31L,
+    n_study2 = 58L,
+    age_range = "20-70 years (study 1 median 36.5, range 24-51; study 2 median 36, range 20-70; Table 1)",
+    weight_range = "42-91 kg (study 1 median 64, range 45-86; study 2 median 56, range 42-91; Table 1)",
+    bmi_range = "17.0-36.5 kg/m^2 (study 1 median 23.7, range 17.0-34.0; study 2 median 22.3, range 17.3-36.5; Table 1)",
+    sex_female_pct = 73.0,
+    disease_state = paste(
       "HIV-infected adults without active malaria. Exclusion criteria:",
       "anaemia (Hb < 8 g/dL), pregnancy, abnormal liver / renal",
       "function, CYP- or P-gp-inhibiting/inducing comedications, herbal",
@@ -137,7 +137,7 @@ Hoglund_2015_artemether <- function() {
       "additionally excluded viral loads > 400 counts/mL and malaria",
       "parasitaemia."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Coartem (Novartis, batch F0660): 20 mg artemether + 120 mg",
       "lumefantrine per tablet; oral 4-tablet dose (80 mg artemether +",
       "480 mg lumefantrine). Study 1 (parallel): single dose; study 2",
@@ -146,9 +146,9 @@ Hoglund_2015_artemether <- function() {
       "post-dose (study 1); after the last dose of the 6-dose regimen",
       "at 1, 2, 4, 8, 12, 24, 48, 72, 96, 120 h (study 2)."
     ),
-    regions         = "Uganda (Mulago National Referral Hospital, Kampala)",
+    regions = "Uganda (Mulago National Referral Hospital, Kampala)",
     trial_registration = "ClinicalTrials.gov NCT00619944 (study 1) and NCT00620438 (study 2)",
-    notes           = paste(
+    notes = paste(
       "Demographics pooled from Hoglund 2015 Table 1. Total observations:",
       "934 AM + DHA plasma samples; 277 AM (30 %) and 181 DHA (19 %)",
       "below LLOQ (1.4 ng/mL for both) were omitted (the M3 method was",

@@ -20,61 +20,75 @@ AlfoseaCuadrado_2024_reserpine_rat <- function() {
   # Figure 2 pc-VPC axis; PD states against Section 3.2.2 and Figure 1.
   compartmentData <- list(
     depot = list(
-      analyte = "reserpine", units = "mg/kg", specimen = "administration site",
+      analyte = "reserpine",
+      units = "mg/kg",
+      specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte = "reserpine", units = "mg/kg", specimen = "plasma",
+      analyte = "reserpine",
+      units = "mg/kg",
+      specimen = "plasma",
       verified = TRUE
     ),
     precursor1 = list(
-      analyte = "monoamine precursor pool", units = "mg/L", specimen = "not applicable",
+      analyte = "monoamine precursor pool",
+      units = "mg/L",
+      specimen = "not applicable",
       verified = TRUE
     ),
     effect = list(
-      analyte = "monoamines (serotonin, dopamine, noradrenaline)", units = "mg/L",
-      specimen = "tissue", verified = TRUE
+      analyte = "monoamines (serotonin, dopamine, noradrenaline)",
+      units = "mg/L",
+      specimen = "tissue",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "monoamine-degradation signal", units = "(unitless)",
-      specimen = "not applicable", verified = TRUE
+      analyte = "monoamine-degradation signal",
+      units = "(unitless)",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     transit2 = list(
-      analyte = "monoamine-degradation signal", units = "(unitless)",
-      specimen = "not applicable", verified = TRUE
+      analyte = "monoamine-degradation signal",
+      units = "(unitless)",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     transit3 = list(
-      analyte = "monoamine-degradation signal", units = "(unitless)",
-      specimen = "not applicable", verified = TRUE
+      analyte = "monoamine-degradation signal",
+      units = "(unitless)",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     CNSREG_PFC = list(
-      description        = "Medial prefrontal cortex sampling-region indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Medial prefrontal cortex sampling-region indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (amygdala, the reference sampling region)",
-      notes              = paste(
+      notes = paste(
         "Per-observation anatomical sampling region. Selects the prefrontal-cortex",
         "typical value of the precursor production rate kpin. Mutually exclusive with",
         "CNSREG_SC; both 0 selects the amygdala reference. The only covariate retained",
         "in the final model (Section 3.2.2); body weight, age, breed and sex were all",
         "screened and rejected (Section 4, study limitations)."
       ),
-      source_name        = "BRAIN AREA (level 'PFC')"
+      source_name = "BRAIN AREA (level 'PFC')"
     ),
     CNSREG_SC = list(
-      description        = "Lumbar spinal cord sampling-region indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Lumbar spinal cord sampling-region indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (amygdala, the reference sampling region)",
-      notes              = paste(
+      notes = paste(
         "Per-observation anatomical sampling region. Selects the spinal-cord typical",
         "value of the precursor production rate kpin. Mutually exclusive with",
         "CNSREG_PFC; both 0 selects the amygdala reference."
       ),
-      source_name        = "BRAIN AREA (level 'SC')"
+      source_name = "BRAIN AREA (level 'SC')"
     )
   )
 
@@ -83,9 +97,9 @@ AlfoseaCuadrado_2024_reserpine_rat <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "g",
-      type        = "continuous",
-      notes       = paste(
+      units = "g",
+      type = "continuous",
+      notes = paste(
         "Rats weighed 300-450 g (Section 2.1). Screened as a covariate on the PK-PD",
         "parameters but not statistically significant, attributed by the authors to",
         "the low variation across animals (Section 4)."
@@ -93,15 +107,15 @@ AlfoseaCuadrado_2024_reserpine_rat <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = "Screened and rejected (Section 4); no point estimate reported."
+      units = "weeks",
+      type = "continuous",
+      notes = "Screened and rejected (Section 4); no point estimate reported."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened and rejected (Section 4). All 120 animals were in fact male",
         "Sprague-Dawley rats (Section 2.1), so the screen carried no information."
       )
@@ -109,27 +123,27 @@ AlfoseaCuadrado_2024_reserpine_rat <- function() {
   )
 
   population <- list(
-    species       = "rat (male Sprague-Dawley)",
-    n_subjects    = 120,
-    n_studies     = 1,
-    weight_range  = "300-450 g",
+    species = "rat (male Sprague-Dawley)",
+    n_subjects = 120,
+    n_studies = 1,
+    weight_range = "300-450 g",
     sex_female_pct = 0,
     disease_state = "reserpine-induced myalgia (RIM) model of fibromyalgia syndrome",
-    dose_range    = "0.1, 0.5 and 1 mg/kg once daily for three consecutive days",
-    regions       = "Spain (University of Valencia)",
+    dose_range = "0.1, 0.5 and 1 mg/kg once daily for three consecutive days",
+    regions = "Spain (University of Valencia)",
     n_observations = "120 PK and 828 PD observations, collected 48-96 h after the first dose",
-    sampling      = paste(
+    sampling = paste(
       "Destructive sampling: one terminal sample per animal, at pre-dose or 30 min, 2, 4,",
       "24 or 48 h after the third dose (Section 2.1, Figure S1). Longitudinal profiles",
       "were assembled by pooling samples from different animals (Section 3.1), which the",
       "authors identify as the reason for the large inter-animal variability (Section 4)."
     ),
-    endpoints     = paste(
+    endpoints = paste(
       "Plasma reserpine by LC-MS (LLOQ 0.1 ug/mL); serotonin, dopamine and noradrenaline",
       "by HPLC with electrochemical detection in amygdala, medial prefrontal cortex and",
       "lumbar spinal cord homogenates."
     ),
-    notes         = paste(
+    notes = paste(
       "Sample counts per dose group, neurotransmitter and tissue are in Table 1.",
       "The analysis dataset is openly deposited at doi:10.5281/zenodo.11206173."
     )

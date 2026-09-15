@@ -15,52 +15,52 @@ Tang_2019_amoxicillin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "amoxicillin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "amoxicillin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "amoxicillin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying current weight on the day of the PK sample. Tang 2019 reports the column in grams (median 3,210 g; range 1,060 to 4,580 g) and uses 3,210 g as the allometric reference. The canonical WT column is in kg, so the reference is rescaled to 3.21 kg and the (CW / 3210)^a relationships from Table 2 become (WT / 3.21)^a inside model() with no change in the exponents.",
-      source_name        = "CW"
+      notes = "Time-varying current weight on the day of the PK sample. Tang 2019 reports the column in grams (median 3,210 g; range 1,060 to 4,580 g) and uses 3,210 g as the allometric reference. The canonical WT column is in kg, so the reference is rescaled to 3.21 kg and the (CW / 3210)^a relationships from Table 2 become (WT / 3.21)^a inside model() with no change in the exponents.",
+      source_name = "CW"
     ),
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Tang 2019 cohort median 38.14 weeks (range 28.3 to 41.4 weeks) is used as the reference inside the F_age maturation factor for CL.",
-      source_name        = "GA"
+      notes = "Time-fixed per subject. Tang 2019 cohort median 38.14 weeks (range 28.3 to 41.4 weeks) is used as the reference inside the F_age maturation factor for CL.",
+      source_name = "GA"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological time since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological time since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Tang 2019 reports PNA in DAYS (cohort median 7 days, range 1 to 37 days) and parameterises F_age as (PNA_days / 7)^0.28. The canonical PNA column is in MONTHS, so the reference is rescaled to 7 / 30.4375 = 0.2300 months and the model code uses (PNA_months / 0.2300)^0.28; numerator and denominator carry the same unit so the dynamic relationship and the estimated exponent are unchanged. Same rescaling precedent as Zhao 2018 omeprazole.",
-      source_name        = "PNA"
+      notes = "Time-varying. Tang 2019 reports PNA in DAYS (cohort median 7 days, range 1 to 37 days) and parameterises F_age as (PNA_days / 7)^0.28. The canonical PNA column is in MONTHS, so the reference is rescaled to 7 / 30.4375 = 0.2300 months and the model code uses (PNA_months / 0.2300)^0.28; numerator and denominator carry the same unit so the dynamic relationship and the estimated exponent are unchanged. Same rescaling precedent as Zhao 2018 omeprazole.",
+      source_name = "PNA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 187L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 187L,
+    n_studies = 1L,
     n_observations = "224 amoxicillin plasma concentrations (Tang 2019 Results 'Model building'); 18 below the LLOQ of 0.5 ug/mL were imputed at LLOQ/2 = 0.25 ug/mL by the source authors.",
-    age_range      = "Neonates and young infants; postmenstrual age 28.4 to 46.3 weeks (Tang 2019 Table 1)",
-    age_median     = "PMA median 39.0 weeks; PNA median 7 days (Table 1)",
-    weight_range   = "Current weight 1.06 to 4.58 kg (Tang 2019 Table 1)",
-    weight_median  = "Current weight 3.21 kg (Table 1)",
-    sex_female_pct = 47.6,  # 89 female / 187 total per Table 1 footnote a
+    age_range = "Neonates and young infants; postmenstrual age 28.4 to 46.3 weeks (Tang 2019 Table 1)",
+    age_median = "PMA median 39.0 weeks; PNA median 7 days (Table 1)",
+    weight_range = "Current weight 1.06 to 4.58 kg (Tang 2019 Table 1)",
+    weight_median = "Current weight 3.21 kg (Table 1)",
+    sex_female_pct = 47.6, # 89 female / 187 total per Table 1 footnote a
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Chinese neonates and young infants admitted to neonatal intensive care units who received amoxicillin as part of regular antimicrobial treatment; postmenstrual age < 48 weeks (Tang 2019 Methods 'Study design').",
-    dose_range     = "Intravenous amoxicillin 25 mg/kg twice daily administered as a bolus over 5 minutes or as an infusion over 30 minutes; unit-dose median 23.7 mg/kg/dose (range 15.7 to 35.2 mg/kg/dose) per Table 1.",
-    regions        = "China (Beijing Obstetrics and Gynecology Hospital, Beijing Children's Hospital, Shandong Provincial Qianfoshan Hospital).",
-    notes          = "Demographics from Tang 2019 Table 1 and Methods 'Study design' / 'Analytical method for amoxicillin'. Opportunistic sampling design with HPLC quantification (LLOQ 0.5 ug/mL, intra- and interday CV 3.05% and 4.30%). Free fraction not measured; serum protein binding considered negligible (~ 10%). NONMEM v7.2 with FOCE-I; PsN v2.30 for bootstrap. The 'Final model' column of Table 2 is used here (rather than the 'Total model' column of Table 3 that pools the original 187-subject dataset with 48 external-validation subjects); the parameter values differ slightly between the two columns and Tang 2019 reports the 187-subject final-model estimates as the primary analysis."
+    disease_state = "Chinese neonates and young infants admitted to neonatal intensive care units who received amoxicillin as part of regular antimicrobial treatment; postmenstrual age < 48 weeks (Tang 2019 Methods 'Study design').",
+    dose_range = "Intravenous amoxicillin 25 mg/kg twice daily administered as a bolus over 5 minutes or as an infusion over 30 minutes; unit-dose median 23.7 mg/kg/dose (range 15.7 to 35.2 mg/kg/dose) per Table 1.",
+    regions = "China (Beijing Obstetrics and Gynecology Hospital, Beijing Children's Hospital, Shandong Provincial Qianfoshan Hospital).",
+    notes = "Demographics from Tang 2019 Table 1 and Methods 'Study design' / 'Analytical method for amoxicillin'. Opportunistic sampling design with HPLC quantification (LLOQ 0.5 ug/mL, intra- and interday CV 3.05% and 4.30%). Free fraction not measured; serum protein binding considered negligible (~ 10%). NONMEM v7.2 with FOCE-I; PsN v2.30 for bootstrap. The 'Final model' column of Table 2 is used here (rather than the 'Total model' column of Table 3 that pools the original 187-subject dataset with 48 external-validation subjects); the parameter values differ slightly between the two columns and Tang 2019 reports the 187-subject final-model estimates as the primary analysis."
   )
 
   ini({

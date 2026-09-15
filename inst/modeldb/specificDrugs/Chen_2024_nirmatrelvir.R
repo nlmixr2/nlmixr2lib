@@ -7,26 +7,26 @@ Chen_2024_nirmatrelvir <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "nirmatrelvir", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "nirmatrelvir", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "nirmatrelvir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated with the CKD-EPI equation",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Creatinine clearance estimated with the CKD-EPI equation",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters nirmatrelvir CL/F via the centred power form (CRCL / 80)^e_crcl_cl of Chen 2024 Equation 1, centred at 80 mL/min/1.73 m^2 (the rounded cohort mean of 78.5; Table 1). The paper labels the units inconsistently: the Table 3 footnote gives mL/min/1.73 m^2 while Table 1 and the Table 4 footnote give mL/min for the same CKD-EPI-derived quantity. The CKD-EPI equation returns a body-surface-area-normalised value, so mL/min/1.73 m^2 is used here, matching the Table 3 footnote that defines the covariate coefficient itself. Cohort value 78.5 +/- 34.4; the dosing-recommendation table spans 15 to >60. In combination with ritonavir the primary elimination pathway of nirmatrelvir shifts from liver to kidney, so CL/F falls as CRCL falls (Discussion).",
-      source_name        = "CrCL"
+      notes = "Enters nirmatrelvir CL/F via the centred power form (CRCL / 80)^e_crcl_cl of Chen 2024 Equation 1, centred at 80 mL/min/1.73 m^2 (the rounded cohort mean of 78.5; Table 1). The paper labels the units inconsistently: the Table 3 footnote gives mL/min/1.73 m^2 while Table 1 and the Table 4 footnote give mL/min for the same CKD-EPI-derived quantity. The CKD-EPI equation returns a body-surface-area-normalised value, so mL/min/1.73 m^2 is used here, matching the Table 3 footnote that defines the covariate coefficient itself. Cohort value 78.5 +/- 34.4; the dosing-recommendation table spans 15 to >60. In combination with ritonavir the primary elimination pathway of nirmatrelvir shifts from liver to kidney, so CL/F falls as CRCL falls (Discussion).",
+      source_name = "CrCL"
     ),
     CONMED_RTV_AUC_12H = list(
-      description        = "Ritonavir AUC over the 12 h (q12h) dosing interval for the co-administered 100 mg twice-daily ritonavir booster",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Ritonavir AUC over the 12 h (q12h) dosing interval for the co-administered 100 mg twice-daily ritonavir booster",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters nirmatrelvir CL/F via the centred power form (CONMED_RTV_AUC_12H / 12.2)^e_rtv_auc_12h_cl of Chen 2024 Equation 1, centred at 12.2 mg*h/L. Computed per subject by Chen 2024 Equation 2 as AUC = DOSE / (CL/F) with DOSE = 100 mg (Figure 1 caption: 'AUC, area under curve of ritonavir base on 100mg') and CL/F the individual ritonavir apparent clearance from the companion ritonavir model in the same paper; see modellib('Chen_2024_ritonavir'). Simulated per-subject values are therefore obtained as 100 / cl_ritonavir. The Monte Carlo dosing simulations swept the 10th-90th percentiles of this covariate, and the Table 4 dose-recommendation grid spans 3.2 to 23.3 mg*h/L. Higher ritonavir exposure gives stronger CYP3A4/5 inhibition and hence lower nirmatrelvir CL/F, consistent with the negative exponent.",
-      source_name        = "AUCRIT"
+      notes = "Enters nirmatrelvir CL/F via the centred power form (CONMED_RTV_AUC_12H / 12.2)^e_rtv_auc_12h_cl of Chen 2024 Equation 1, centred at 12.2 mg*h/L. Computed per subject by Chen 2024 Equation 2 as AUC = DOSE / (CL/F) with DOSE = 100 mg (Figure 1 caption: 'AUC, area under curve of ritonavir base on 100mg') and CL/F the individual ritonavir apparent clearance from the companion ritonavir model in the same paper; see modellib('Chen_2024_ritonavir'). Simulated per-subject values are therefore obtained as 100 / cl_ritonavir. The Monte Carlo dosing simulations swept the 10th-90th percentiles of this covariate, and the Table 4 dose-recommendation grid spans 3.2 to 23.3 mg*h/L. Higher ritonavir exposure gives stronger CYP3A4/5 inhibition and hence lower nirmatrelvir CL/F, consistent with the negative exponent.",
+      source_name = "AUCRIT"
     )
   )
 
@@ -37,110 +37,110 @@ Chen_2024_nirmatrelvir <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained; the Discussion states the number of young patients was insufficient to assess an age effect."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained; the Discussion states the number of young patients was insufficient to assess an age effect."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained on CL/F or V/F."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained on CL/F or V/F."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened during stepwise covariate selection; not retained. Cohort was 65% male (Table 1)."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened during stepwise covariate selection; not retained. Cohort was 65% male (Table 1)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained. Renal function entered the final model through CRCL instead."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained. Renal function entered the final model through CRCL instead."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained."
     ),
     TPRO = list(
       description = "Total protein",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; the Discussion states the number of hepatic-impairment patients was insufficient to assess a liver-function effect."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained; the Discussion states the number of hepatic-impairment patients was insufficient to assess a liver-function effect."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained; see the ALT note."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained; see the ALT note."
     ),
     ALP = list(
       description = "Alkaline phosphatase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained."
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation (APACHE) II score",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained. Cohort median 14 (IQR 11-21) per Table 1."
+      units = "(score)",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained. Cohort median 14 (IQR 11-21) per Table 1."
     ),
     SOFA = list(
       description = "Sequential Organ Failure Assessment score",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = "Screened during stepwise covariate selection; not retained. Cohort median 6 (IQR 3-9) per Table 1."
+      units = "(score)",
+      type = "continuous",
+      notes = "Screened during stepwise covariate selection; not retained. Cohort median 6 (IQR 3-9) per Table 1."
     ),
     CONMED_CYP3A4_INH = list(
       description = "Concomitant weak CYP3A4/5 inhibitor",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened during stepwise covariate selection; not retained. 7 of 31 patients (22.6%) per Table 1. The Discussion notes that ritonavir, itself a strong CYP3A4/5 and P-gp inhibitor, may obscure the effect of other interacting co-medications."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened during stepwise covariate selection; not retained. 7 of 31 patients (22.6%) per Table 1. The Discussion notes that ritonavir, itself a strong CYP3A4/5 and P-gp inhibitor, may obscure the effect of other interacting co-medications."
     ),
     CONMED_CYP3A4_IND = list(
       description = "Concomitant weak CYP3A4/5 inducer",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened during stepwise covariate selection; not retained. 10 of 31 patients (32.3%) per Table 1."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened during stepwise covariate selection; not retained. 10 of 31 patients (32.3%) per Table 1."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 31L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 31L,
+    n_studies = 1L,
     n_observations = 89L,
-    age_median     = "69 years (IQR 63-77)",
-    weight_median  = "60.6 kg (SD 12.8)",
+    age_median = "69 years (IQR 63-77)",
+    weight_median = "60.6 kg (SD 12.8)",
     sex_female_pct = 35,
-    disease_state  = "Critically ill adults (>=18 years) admitted to the intensive care unit with RT-PCR-confirmed SARS-CoV-2 infection and compatible pulmonary CT findings. Patients receiving continuous renal replacement therapy or extracorporeal membrane oxygenation were excluded. Median APACHE II score 14 (IQR 11-21); median SOFA score 6 (IQR 3-9). 81.2% of the cohort was older than 60 years (Discussion).",
+    disease_state = "Critically ill adults (>=18 years) admitted to the intensive care unit with RT-PCR-confirmed SARS-CoV-2 infection and compatible pulmonary CT findings. Patients receiving continuous renal replacement therapy or extracorporeal membrane oxygenation were excluded. Median APACHE II score 14 (IQR 11-21); median SOFA score 6 (IQR 3-9). 81.2% of the cohort was older than 60 years (Discussion).",
     renal_function = "Creatinine clearance (CKD-EPI) 78.5 +/- 34.4 mL/min; serum creatinine 100.2 +/- 79.9 umol/L (Table 1).",
-    dose_range     = "Oral nirmatrelvir/ritonavir 300 mg/100 mg twice daily in 27 of 31 patients (87%) and 150 mg/100 mg twice daily in 4 of 31 (13%). 29 of 31 (94%) received the tablets by nasal feeding and 2 (6%) orally, all for more than 5 days.",
-    co_medication  = "Ritonavir 100 mg twice daily in every patient (the boosting component of the fixed combination). Concomitant CYP3A4/5 weak inhibitor in 7 of 31 (22.6%) and weak inducer in 10 of 31 (32.3%) per Table 1; named co-medications in the Discussion include voriconazole, dexamethasone, methylprednisolone and omeprazole.",
-    regions        = "China (The First Affiliated Hospital, Zhejiang University School of Medicine, Hangzhou)",
-    notes          = "Prospective observational study, January-June 2023. Two to three serial plasma samples per patient collected after the second dose; 89 plasma samples from 31 patients. Nirmatrelvir quantified by validated LC-MS/MS over 100.41-52991.51 ng/mL. Measured nirmatrelvir concentrations ranged 1214.31-21342.06 ng/mL. Model fit in Phoenix NLME 8.1 with FOCE; final OFV 95.0. Baseline demographics in Table 1; final parameter estimates and 1000-sample bootstrap in Table 3; the clearance covariate model is Equation 1. The efficacy target used in the paper's Monte Carlo simulations is the total in vitro EC90 of 292 ng/mL (0.292 mg/L), derived from the free EC90 of 90.5 ng/mL and approximately 70% protein binding; the safety ceiling is the human NOAEL of 79,700 ng/mL (79.7 mg/L)."
+    dose_range = "Oral nirmatrelvir/ritonavir 300 mg/100 mg twice daily in 27 of 31 patients (87%) and 150 mg/100 mg twice daily in 4 of 31 (13%). 29 of 31 (94%) received the tablets by nasal feeding and 2 (6%) orally, all for more than 5 days.",
+    co_medication = "Ritonavir 100 mg twice daily in every patient (the boosting component of the fixed combination). Concomitant CYP3A4/5 weak inhibitor in 7 of 31 (22.6%) and weak inducer in 10 of 31 (32.3%) per Table 1; named co-medications in the Discussion include voriconazole, dexamethasone, methylprednisolone and omeprazole.",
+    regions = "China (The First Affiliated Hospital, Zhejiang University School of Medicine, Hangzhou)",
+    notes = "Prospective observational study, January-June 2023. Two to three serial plasma samples per patient collected after the second dose; 89 plasma samples from 31 patients. Nirmatrelvir quantified by validated LC-MS/MS over 100.41-52991.51 ng/mL. Measured nirmatrelvir concentrations ranged 1214.31-21342.06 ng/mL. Model fit in Phoenix NLME 8.1 with FOCE; final OFV 95.0. Baseline demographics in Table 1; final parameter estimates and 1000-sample bootstrap in Table 3; the clearance covariate model is Equation 1. The efficacy target used in the paper's Monte Carlo simulations is the total in vitro EC90 of 292 ng/mL (0.292 mg/L), derived from the free EC90 of 90.5 ng/mL and approximately 70% protein binding; the safety ceiling is the human NOAEL of 79,700 ng/mL (79.7 mg/L)."
   )
 
   ini({

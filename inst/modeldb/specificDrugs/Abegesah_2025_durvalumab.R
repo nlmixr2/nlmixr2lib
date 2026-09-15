@@ -17,132 +17,132 @@ Abegesah_2025_durvalumab <- function() {
   # durvalumab was measured in SERUM (ECL assay, LLOQ-ULOQ 0.05-3.2 ug/mL
   # on the assayed dilution), so the specimen is serum rather than plasma.
   compartmentData <- list(
-    central     = list(analyte = "durvalumab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "durvalumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "durvalumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effects on CL (exponent 0.338) and Vc (exponent 0.515), both normalized to 69.4 kg. The normalizer is printed inside the CL and Vc equations on page 3 of Abegesah 2025 and equals the 'Previous 5 studies' median of Table 2 (69.4 kg), i.e. the reference value inherited from the POSEIDON model, NOT the pooled 6-study median (69.0 kg). Do not conflate the two.",
-      source_name        = "WT"
+      notes = "Power effects on CL (exponent 0.338) and Vc (exponent 0.515), both normalized to 69.4 kg. The normalizer is printed inside the CL and Vc equations on page 3 of Abegesah 2025 and equals the 'Previous 5 studies' median of Table 2 (69.4 kg), i.e. the reference value inherited from the POSEIDON model, NOT the pooled 6-study median (69.0 kg). Do not conflate the two.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL (exponent -0.589) normalized to 39 g/L, printed in the CL_cont.cov equation on page 3. Reported and used in SI g/L (Table 2 median 39.0 g/L), so no g/dL conversion applies. The same 39 g/L reference is used by the sibling AstraZeneca model Hwang_2022_tremelimumab.R.",
-      source_name        = "alb"
+      notes = "Power effect on CL (exponent -0.589) normalized to 39 g/L, printed in the CL_cont.cov equation on page 3. Reported and used in SI g/L (Table 2 median 39.0 g/L), so no g/dL conversion applies. The same 39 g/L reference is used by the sibling AstraZeneca model Hwang_2022_tremelimumab.R.",
+      source_name = "alb"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance (raw Cockcroft-Gault style, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance (raw Cockcroft-Gault style, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL (exponent 0.136) normalized to 85.66 mL/min, printed in the CL_cont.cov equation on page 3. Table 2 reports 'Creatinine clearance (mL/min)' with no BSA normalization, so the per-model unit is mL/min rather than the register default mL/min/1.73 m^2 (same precedent as the sibling durvalumab model deVries_2025_durvalumab.R, which carries the essentially identical Baverel 2018 normalizer of 85.65 mL/min).",
-      source_name        = "CrCL"
+      notes = "Power effect on CL (exponent 0.136) normalized to 85.66 mL/min, printed in the CL_cont.cov equation on page 3. Table 2 reports 'Creatinine clearance (mL/min)' with no BSA normalization, so the per-model unit is mL/min rather than the register default mL/min/1.73 m^2 (same precedent as the sibling durvalumab model deVries_2025_durvalumab.R, which carries the essentially identical Baverel 2018 normalizer of 85.65 mL/min).",
+      source_name = "CrCL"
     ),
     LDH = list(
-      description        = "Baseline lactate dehydrogenase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline lactate dehydrogenase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL (exponent 0.0515) normalized to 247 U/L, printed in the CL_cont.cov equation on page 3. As with body weight, 247 U/L is the 'Previous 5 studies' median of Table 2 (the inherited POSEIDON reference), not the pooled 6-study median of 242 U/L.",
-      source_name        = "LDH"
+      notes = "Power effect on CL (exponent 0.0515) normalized to 247 U/L, printed in the CL_cont.cov equation on page 3. As with body weight, 247 U/L is the 'Previous 5 studies' median of Table 2 (the inherited POSEIDON reference), not the pooled 6-study median of 242 U/L.",
+      source_name = "LDH"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplicative effects for females on CL (1 - 0.161) and Vc (1 - 0.140), printed in the CL_cat.cov and Vc equations on page 3 with male as the explicit reference (the '1_male' factor). Fig. 1 corroborates both magnitudes and directions (-16.1% on CL, -14% on Vc). Direction agrees with the sibling durvalumab models Ogasawara_2020_durvalumab.R (female CL 0.791) and deVries_2025_durvalumab.R (female CL 0.857).",
-      source_name        = "sex"
+      notes = "Multiplicative effects for females on CL (1 - 0.161) and Vc (1 - 0.140), printed in the CL_cat.cov and Vc equations on page 3 with male as the explicit reference (the '1_male' factor). Fig. 1 corroborates both magnitudes and directions (-16.1% on CL, -14% on Vc). Direction agrees with the sibling durvalumab models Ogasawara_2020_durvalumab.R (female CL 0.791) and deVries_2025_durvalumab.R (female CL 0.857).",
+      source_name = "sex"
     ),
     ECOG_GE1 = list(
-      description        = "Baseline ECOG performance status >= 1 (1 = ECOG 1 or worse, 0 = ECOG 0)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline ECOG performance status >= 1 (1 = ECOG 1 or worse, 0 = ECOG 0)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG performance status 0)",
-      notes              = "Multiplicative effect on CL of (1 - 0.0501), printed in the CL_cat.cov equation on page 3 as the paper's binary 'ECOGbin' with ECOGbin = 0 the explicit reference. Table 2 records ECOG 0/1/2 as 37.91/61.83/0.10 percent, so the ordinal score collapses to this binary indicator. NOTE: the Fig. 1 tornado plot draws 'ECOG restricted activity' as +5.3% (a CL INCREASE), which contradicts the sign of both the printed equation and the Table 4 estimate (-0.0501); the equation is followed here per the standing text-vs-equation policy, and the negative direction is independently corroborated by the upstream Baverel 2018 durvalumab model as transcribed in deVries_2025_durvalumab.R (0.937^ECOG_GE1, i.e. 6.3% LOWER CL). See the vignette Errata.",
-      source_name        = "ECOGbin"
+      notes = "Multiplicative effect on CL of (1 - 0.0501), printed in the CL_cat.cov equation on page 3 as the paper's binary 'ECOGbin' with ECOGbin = 0 the explicit reference. Table 2 records ECOG 0/1/2 as 37.91/61.83/0.10 percent, so the ordinal score collapses to this binary indicator. NOTE: the Fig. 1 tornado plot draws 'ECOG restricted activity' as +5.3% (a CL INCREASE), which contradicts the sign of both the printed equation and the Table 4 estimate (-0.0501); the equation is followed here per the standing text-vs-equation policy, and the negative direction is independently corroborated by the upstream Baverel 2018 durvalumab model as transcribed in deVries_2025_durvalumab.R (0.937^ECOG_GE1, i.e. 6.3% LOWER CL). See the vignette Errata.",
+      source_name = "ECOGbin"
     ),
     CONMED_CHEMO = list(
-      description        = "Durvalumab co-administered with platinum-based chemotherapy",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Durvalumab co-administered with platinum-based chemotherapy",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (durvalumab monotherapy)",
-      notes              = "The paper's 'comb' column is a three-level categorical (comb = 0 durvalumab monotherapy, comb = 1 durvalumab + chemotherapy, comb = 2 durvalumab + tremelimumab + chemotherapy) carrying multiplicative CL factors of 1, (1 - 0.163) and (1 - 0.0929) respectively. It is stored here as two canonical columns, CONMED_CHEMO and CONMED_TREMELIMUMAB, so that each column keeps its register meaning; the model reconstructs the comb = 1 stratum as CONMED_CHEMO * (1 - CONMED_TREMELIMUMAB). TOPAZ-1 (durvalumab + gemcitabine/cisplatin) is the comb = 1 stratum. NOTE: the Table 4 legend glosses 'Comb1' as 'durvalumab and tremelimumab without chemotherapy', which is wrong -- Fig. 1 labels the -16.3% bar 'Combo Durva + Chemo', and Table 2 assigns all 314 TOPAZ-1 durvalumab + gem/cis patients to the second combination level. Both of the paper's own data sources agree against its legend. See the vignette Errata.",
-      source_name        = "comb"
+      notes = "The paper's 'comb' column is a three-level categorical (comb = 0 durvalumab monotherapy, comb = 1 durvalumab + chemotherapy, comb = 2 durvalumab + tremelimumab + chemotherapy) carrying multiplicative CL factors of 1, (1 - 0.163) and (1 - 0.0929) respectively. It is stored here as two canonical columns, CONMED_CHEMO and CONMED_TREMELIMUMAB, so that each column keeps its register meaning; the model reconstructs the comb = 1 stratum as CONMED_CHEMO * (1 - CONMED_TREMELIMUMAB). TOPAZ-1 (durvalumab + gemcitabine/cisplatin) is the comb = 1 stratum. NOTE: the Table 4 legend glosses 'Comb1' as 'durvalumab and tremelimumab without chemotherapy', which is wrong -- Fig. 1 labels the -16.3% bar 'Combo Durva + Chemo', and Table 2 assigns all 314 TOPAZ-1 durvalumab + gem/cis patients to the second combination level. Both of the paper's own data sources agree against its legend. See the vignette Errata.",
+      source_name = "comb"
     ),
     CONMED_TREMELIMUMAB = list(
-      description        = "Durvalumab co-administered with tremelimumab (always on a chemotherapy backbone in this dataset)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Durvalumab co-administered with tremelimumab (always on a chemotherapy backbone in this dataset)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no tremelimumab co-administration)",
-      notes              = "Identifies the paper's comb = 2 stratum (durvalumab + tremelimumab + chemotherapy, n = 327, the POSEIDON triplet arm per Table 2), carrying a multiplicative CL factor of (1 - 0.0929). Corroborated by the Fig. 1 bar labelled 'Combo Durva + Treme + Chemo' at -9.3%. Because no tremelimumab-without-chemotherapy patients exist in this pooled dataset, CONMED_TREMELIMUMAB = 1 implies CONMED_CHEMO = 1 and this column alone selects the comb = 2 factor. This is the mirror image of the sibling model Hwang_2022_tremelimumab.R, where tremelimumab is the analyte and COMBO_DURVA marks durvalumab co-administration.",
-      source_name        = "comb"
+      notes = "Identifies the paper's comb = 2 stratum (durvalumab + tremelimumab + chemotherapy, n = 327, the POSEIDON triplet arm per Table 2), carrying a multiplicative CL factor of (1 - 0.0929). Corroborated by the Fig. 1 bar labelled 'Combo Durva + Treme + Chemo' at -9.3%. Because no tremelimumab-without-chemotherapy patients exist in this pooled dataset, CONMED_TREMELIMUMAB = 1 implies CONMED_CHEMO = 1 and this column alone selects the comb = 2 factor. This is the mirror image of the sibling model Hwang_2022_tremelimumab.R, where tremelimumab is the analyte and COMBO_DURVA marks durvalumab co-administration.",
+      source_name = "comb"
     ),
     TUMTP_BLADDER = list(
-      description        = "Bladder (urothelial) carcinoma tumor-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Bladder (urothelial) carcinoma tumor-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all other tumor types; the pooled reference stratum is non-small-cell lung cancer, the paper's tumtyp = 0)",
-      notes              = "Multiplicative effect on CL of (1 + 0.0698). Table 4 names this row only 'Tumor type 2 on CL'; the tumor-type identity is recovered from the Fig. 1 tornado plot, which labels a +7% clearance bar 'TUM TYP Bladder' -- and 0.0698 is the only tumor-type coefficient that gives +7.0%. Bladder patients enter through the Study 1108 advanced-solid-tumour cohort (durvalumab's first-approved indication was urothelial carcinoma); Table 2's coarser 'Primary indication' column does not resolve them separately.",
-      source_name        = "tumtyp"
+      notes = "Multiplicative effect on CL of (1 + 0.0698). Table 4 names this row only 'Tumor type 2 on CL'; the tumor-type identity is recovered from the Fig. 1 tornado plot, which labels a +7% clearance bar 'TUM TYP Bladder' -- and 0.0698 is the only tumor-type coefficient that gives +7.0%. Bladder patients enter through the Study 1108 advanced-solid-tumour cohort (durvalumab's first-approved indication was urothelial carcinoma); Table 2's coarser 'Primary indication' column does not resolve them separately.",
+      source_name = "tumtyp"
     ),
     TUMTP_BTC = list(
-      description        = "Biliary tract cancer tumor-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biliary tract cancer tumor-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all other tumor types; the pooled reference stratum is non-small-cell lung cancer, the paper's tumtyp = 0)",
-      notes              = "Multiplicative effect on CL of (1 + 0.166), the largest tumor-type effect in the model. Table 4 names this row only 'Tumor type 3 on CL'; Fig. 1 labels the +16.6% bar 'TUM TYP BTC', and 0.166 gives exactly +16.6%. This is the TOPAZ-1 stratum (n = 314, 10.02% of the pooled analysis dataset) and the covariate added by this analysis -- the Results state that tumor type on clearance was 'the only new covariate that was added' to the inherited POSEIDON model.",
-      source_name        = "tumtyp"
+      notes = "Multiplicative effect on CL of (1 + 0.166), the largest tumor-type effect in the model. Table 4 names this row only 'Tumor type 3 on CL'; Fig. 1 labels the +16.6% bar 'TUM TYP BTC', and 0.166 gives exactly +16.6%. This is the TOPAZ-1 stratum (n = 314, 10.02% of the pooled analysis dataset) and the covariate added by this analysis -- the Results state that tumor type on clearance was 'the only new covariate that was added' to the inherited POSEIDON model.",
+      source_name = "tumtyp"
     ),
     TUMTP_OTHER = list(
-      description        = "Residual 'other tumor type' indicator (the paper's unlabelled tumtyp = 1 stratum)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Residual 'other tumor type' indicator (the paper's unlabelled tumtyp = 1 stratum)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all other tumor types; the pooled reference stratum is non-small-cell lung cancer, the paper's tumtyp = 0)",
-      notes              = "Multiplicative effect on CL of (1 - 0.0101). UNIDENTIFIED STRATUM: Abegesah 2025 never labels tumtyp = 1. Table 4 calls it only 'Tumor type 1 on CL' and the Fig. 1 tornado plot omits it entirely (only the Bladder and BTC bars are drawn), so unlike tumtyp = 2 and tumtyp = 3 there is no figure label to recover it from. Its composition is INFERRED here as the residual non-NSCLC / non-bladder / non-BTC pool -- small-cell lung cancer (n = 281 per Table 2) plus the miscellaneous advanced solid tumours of Study 1108 -- which is why the register's residual `TUMTP_OTHER` column is used rather than a named tumor-type canonical. The effect is negligible and not distinguishable from zero (Table 4 RSE 185%, bootstrap 95% CI [-0.0228; 0.0466] spanning zero), so no simulation conclusion turns on the inference. The SIGN also conflicts between the paper's own two reports of it: Table 4 prints +0.0101 while the CL_cat.cov equation on page 3 prints (1 - 0.0101). Every other categorical factor in that equation equals (1 + theta) using the Table 4 signed estimate, so tumtyp = 1 is the single term that breaks the pattern; the equation is followed here per the standing text-vs-equation policy. See the vignette Errata.",
-      source_name        = "tumtyp"
+      notes = "Multiplicative effect on CL of (1 - 0.0101). UNIDENTIFIED STRATUM: Abegesah 2025 never labels tumtyp = 1. Table 4 calls it only 'Tumor type 1 on CL' and the Fig. 1 tornado plot omits it entirely (only the Bladder and BTC bars are drawn), so unlike tumtyp = 2 and tumtyp = 3 there is no figure label to recover it from. Its composition is INFERRED here as the residual non-NSCLC / non-bladder / non-BTC pool -- small-cell lung cancer (n = 281 per Table 2) plus the miscellaneous advanced solid tumours of Study 1108 -- which is why the register's residual `TUMTP_OTHER` column is used rather than a named tumor-type canonical. The effect is negligible and not distinguishable from zero (Table 4 RSE 185%, bootstrap 95% CI [-0.0228; 0.0466] spanning zero), so no simulation conclusion turns on the inference. The SIGN also conflicts between the paper's own two reports of it: Table 4 prints +0.0101 while the CL_cat.cov equation on page 3 prints (1 - 0.0101). Every other categorical factor in that equation equals (1 + theta) using the Table 4 signed estimate, so tumtyp = 1 is the single term that breaks the pattern; the equation is followed here per the standing text-vs-equation policy. See the vignette Errata.",
+      source_name = "tumtyp"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the covariate analysis but not retained: 'The influence of age and race was not significant' (Results, Durvalumab PopPK). Table 2 reports a median of 63 years (range 19-96). Race was screened on the same footing and is likewise absent from the final model; no race indicator column is defined because the paper reports no coefficient for one."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the covariate analysis but not retained: 'The influence of age and race was not significant' (Results, Durvalumab PopPK). Table 2 reports a median of 63 years (range 19-96). Race was screened on the same footing and is likewise absent from the final model; no race indicator column is defined because the paper reports no coefficient for one."
     ),
     ADA_POS = list(
       description = "Treatment-emergent anti-drug antibody positive status",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Reported and discussed but not retained as a PK covariate: 111 of 3141 patients (3.53%) were treatment-emergent ADA positive across the 6 pooled studies and 'the exposure was comparable for ADA positive and negative patients' (Abstract; Table 2). No ADA coefficient appears in Table 4 or in the CL / Vc equations, so the covariate is documented for provenance only and is deliberately absent from model()."
+      units = "(binary)",
+      type = "binary",
+      notes = "Reported and discussed but not retained as a PK covariate: 111 of 3141 patients (3.53%) were treatment-emergent ADA positive across the 6 pooled studies and 'the exposure was comparable for ADA positive and negative patients' (Abstract; Table 2). No ADA coefficient appears in Table 4 or in the CL / Vc equations, so the covariate is documented for provenance only and is deliberately absent from model()."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 3141L,
-    n_studies      = 6L,
-    age_range      = "19-96 years",
-    age_median     = "63 years",
-    weight_range   = "31.0-175 kg",
-    weight_median  = "69.0 kg",
+    species = "human",
+    n_subjects = 3141L,
+    n_studies = 6L,
+    age_range = "19-96 years",
+    age_median = "63 years",
+    weight_range = "31.0-175 kg",
+    weight_median = "69.0 kg",
     sex_female_pct = 36.61,
     race_ethnicity = c(White = 67.22, Asian = 26.16, Black = 2.48, Other = 4.19, Multiple = 0.06),
-    disease_state  = "Advanced solid tumours (non-small cell lung cancer 60.22%, advanced solid tumours 21.19%, biliary tract cancer 10.02%, small cell lung cancer 8.98%)",
-    dose_range     = "3-10 mg/kg every 2 weeks, 15 mg/kg every 3 weeks, 20 mg/kg every 4 weeks, and 1500 mg flat every 3 or 4 weeks, all as intravenous infusions (Table 1; doses < 3 mg/kg were excluded from the population PK analysis because they were not dose-proportional)",
-    regions        = "Global",
+    disease_state = "Advanced solid tumours (non-small cell lung cancer 60.22%, advanced solid tumours 21.19%, biliary tract cancer 10.02%, small cell lung cancer 8.98%)",
+    dose_range = "3-10 mg/kg every 2 weeks, 15 mg/kg every 3 weeks, 20 mg/kg every 4 weeks, and 1500 mg flat every 3 or 4 weeks, all as intravenous infusions (Table 1; doses < 3 mg/kg were excluded from the population PK analysis because they were not dose-proportional)",
+    regions = "Global",
     treatment_regimen = "Durvalumab monotherapy 60.32%, durvalumab + chemotherapy 28.15% (includes all 314 TOPAZ-1 patients), durvalumab + tremelimumab + chemotherapy 10.29%",
     ecog_distribution = "ECOG 0 37.91%, ECOG 1 61.83%, ECOG 2 0.10%, missing 0.13%",
-    notes          = "Baseline demographics per Table 2 of Abegesah 2025 (pooled analysis dataset N = 3141). Studies pooled: CD-ON-MEDI4736-1108 (Study 1108, phase 1/2, advanced solid tumours, n = 1012), D4191C00003 (ATLANTIC, phase 2, NSCLC, n = 443), D4191C00001 (PACIFIC, phase 3, unresectable stage III NSCLC, n = 473), D419QC00001 (CASPIAN, phase 3, extensive-disease SCLC, n = 260), D419MC00004 (POSEIDON, phase 3, metastatic NSCLC, n = 326) and D933AC00001 (TOPAZ-1, phase 3, advanced BTC, n = 314). Other baseline medians: albumin 39.0 g/L (4.10-57.1), creatinine clearance 85.9 mL/min (25.7-363), LDH 242 U/L (18.0-15800), neutrophil-to-lymphocyte ratio 3.46 (0.006-58.8), total bilirubin 0.460 mg/dL (0.006-3.72). Treatment-emergent ADA positive 3.53%. NCI hepatic function normal 85.23% / mild 15.70% / moderate 0.89% / severe 0.03%. The covariate reference values used by the model (weight 69.4 kg, LDH 247 U/L, creatinine clearance 85.66 mL/min) are the 'Previous 5 studies' medians inherited from the POSEIDON model, not the pooled 6-study medians of this analysis."
+    notes = "Baseline demographics per Table 2 of Abegesah 2025 (pooled analysis dataset N = 3141). Studies pooled: CD-ON-MEDI4736-1108 (Study 1108, phase 1/2, advanced solid tumours, n = 1012), D4191C00003 (ATLANTIC, phase 2, NSCLC, n = 443), D4191C00001 (PACIFIC, phase 3, unresectable stage III NSCLC, n = 473), D419QC00001 (CASPIAN, phase 3, extensive-disease SCLC, n = 260), D419MC00004 (POSEIDON, phase 3, metastatic NSCLC, n = 326) and D933AC00001 (TOPAZ-1, phase 3, advanced BTC, n = 314). Other baseline medians: albumin 39.0 g/L (4.10-57.1), creatinine clearance 85.9 mL/min (25.7-363), LDH 242 U/L (18.0-15800), neutrophil-to-lymphocyte ratio 3.46 (0.006-58.8), total bilirubin 0.460 mg/dL (0.006-3.72). Treatment-emergent ADA positive 3.53%. NCI hepatic function normal 85.23% / mild 15.70% / moderate 0.89% / severe 0.03%. The covariate reference values used by the model (weight 69.4 kg, LDH 247 U/L, creatinine clearance 85.66 mL/min) are the 'Previous 5 studies' medians inherited from the POSEIDON model, not the pooled 6-study medians of this analysis."
   )
 
   ini({

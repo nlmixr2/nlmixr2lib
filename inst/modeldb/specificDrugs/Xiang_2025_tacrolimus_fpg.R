@@ -13,8 +13,8 @@ Xiang_2025_tacrolimus_fpg <- function() {
   )
   vignette <- "Xiang_2025_tacrolimus"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -22,42 +22,42 @@ Xiang_2025_tacrolimus_fpg <- function() {
   # population PK step. Fasting plasma glucose is an algebraic direct effect of
   # the predicted concentration and is not a state.
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     POD = list(
-      description        = "Post-operative day: days elapsed since renal transplantation",
-      units              = "days",
-      type               = "continuous",
+      description = "Post-operative day: days elapsed since renal transplantation",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "TIME-VARYING within subject. Enters the fixed PK layer as the power scaling (POD / 34)^0.109 on CL/F; 34 days is the median post-operative day of the index cohort (Xiang 2025 Table 1). The power form is undefined at POD = 0, so supply POD >= 1. It has no direct effect on fasting plasma glucose; it acts only through the predicted tacrolimus concentration.",
-      source_name        = "POD"
+      notes = "TIME-VARYING within subject. Enters the fixed PK layer as the power scaling (POD / 34)^0.109 on CL/F; 34 days is the median post-operative day of the index cohort (Xiang 2025 Table 1). The power form is undefined at POD = 0, so supply POD >= 1. It has no direct effect on fasting plasma glucose; it acts only through the predicted tacrolimus concentration.",
+      source_name = "POD"
     ),
     CONMED_WUZHI = list(
-      description        = "Concomitant Wuzhi capsule (Schisandra sphenanthera extract) indicator (1 = receiving Wuzhi capsule, 0 = not)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant Wuzhi capsule (Schisandra sphenanthera extract) indicator (1 = receiving Wuzhi capsule, 0 = not)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant Wuzhi capsule)",
-      notes              = "Source column WZ, defined below Xiang 2025 Eq. 6 as 'WZ = 1 if WZ is present; otherwise = 0'. Enters the fixed PK layer as exp(-0.211 * CONMED_WUZHI) on CL/F. It has no direct effect on fasting plasma glucose; it acts only through the predicted tacrolimus concentration, which is why the Wuzhi capsule raises simulated FPG.",
-      source_name        = "WZ"
+      notes = "Source column WZ, defined below Xiang 2025 Eq. 6 as 'WZ = 1 if WZ is present; otherwise = 0'. Enters the fixed PK layer as exp(-0.211 * CONMED_WUZHI) on CL/F. It has no direct effect on fasting plasma glucose; it acts only through the predicted tacrolimus concentration, which is why the Wuzhi capsule raises simulated FPG.",
+      source_name = "WZ"
     ),
     CYP3A5_EXPR = list(
-      description        = "CYP3A5 expresser status (1 = carries at least one CYP3A5*1 allele, genotype *1/*1 or *1/*3; 0 = CYP3A5*3/*3 non-expresser)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 expresser status (1 = carries at least one CYP3A5*1 allele, genotype *1/*1 or *1/*3; 0 = CYP3A5*3/*3 non-expresser)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 non-expresser)",
-      notes              = "VALUE INVERSION relative to the source: Xiang 2025 codes 'Genotype = 1 if the genotype is CYP3A5*3/*3' below Eq. 6, so CYP3A5_EXPR = 1 - Genotype and the model applies the published coefficient to (1 - CYP3A5_EXPR). Enters the fixed PK layer only; it has no direct effect on fasting plasma glucose.",
-      source_name        = "Genotype"
+      notes = "VALUE INVERSION relative to the source: Xiang 2025 codes 'Genotype = 1 if the genotype is CYP3A5*3/*3' below Eq. 6, so CYP3A5_EXPR = 1 - Genotype and the model applies the published coefficient to (1 - CYP3A5_EXPR). Enters the fixed PK layer only; it has no direct effect on fasting plasma glucose.",
+      source_name = "Genotype"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed. Enters as the power scaling (AGE / 38)^0.232 on the pre-transplantation baseline fasting plasma glucose (Xiang 2025 Eq. 7); 38 years is the median age of the index cohort. This was the only covariate retained on FPG0 (dOFV = 18.765, df = 1, p < 0.001). Amlodipine co-medication was significant in forward inclusion (dOFV = -8.613) but failed backward elimination and is recorded in covariatesDataExcluded. Age does not modify the tacrolimus effect on FPG, only its baseline.",
-      source_name        = "Age"
+      notes = "Time-fixed. Enters as the power scaling (AGE / 38)^0.232 on the pre-transplantation baseline fasting plasma glucose (Xiang 2025 Eq. 7); 38 years is the median age of the index cohort. This was the only covariate retained on FPG0 (dOFV = 18.765, df = 1, p < 0.001). Amlodipine co-medication was significant in forward inclusion (dOFV = -8.613) but failed backward elimination and is recorded in covariatesDataExcluded. Age does not modify the tacrolimus effect on FPG, only its baseline.",
+      source_name = "Age"
     )
   )
 
@@ -67,28 +67,28 @@ Xiang_2025_tacrolimus_fpg <- function() {
   # on FPG0 but did not meet the backward-elimination criterion (p < 0.001).
   covariatesDataExcluded <- list(
     CONMED_AMLODIPINE = list(
-      description        = "Concomitant amlodipine indicator (1 = receiving amlodipine, 0 = not)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant amlodipine indicator (1 = receiving amlodipine, 0 = not)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant amlodipine)",
-      notes              = "Screened on baseline fasting plasma glucose and significant in forward inclusion only (dOFV = -8.613, p < 0.01; Xiang 2025 Discussion and Supplementary Table 3). It did not meet the backward-elimination criterion (p < 0.001) and is absent from the final model, and no point estimate is published for it. 73% of the index cohort received amlodipine."
+      notes = "Screened on baseline fasting plasma glucose and significant in forward inclusion only (dOFV = -8.613, p < 0.01; Xiang 2025 Discussion and Supplementary Table 3). It did not meet the backward-elimination criterion (p < 0.001) and is absent from the final model, and no point estimate is published for it. 73% of the index cohort received amlodipine."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 100L,
-    n_studies      = 1L,
-    age_range      = "19-65 years (median 38)",
-    age_median     = "38 years",
-    weight_range   = "31-99 kg (median 60)",
-    weight_median  = "60 kg",
+    species = "human",
+    n_subjects = 100L,
+    n_studies = 1L,
+    age_range = "19-65 years (median 38)",
+    age_median = "38 years",
+    weight_range = "31-99 kg (median 60)",
+    weight_median = "60 kg",
     sex_female_pct = 36.0,
     race_ethnicity = c(Han = 92.0, Other = 8.0),
-    disease_state  = "Adult renal transplant recipients on a tacrolimus-based immunosuppressive regimen; baseline fasting plasma glucose 1.45-20.79 mmol/L (mean 6.01, median 5.66)",
-    dose_range     = "Oral tacrolimus started within 24 h of transplantation at 0.05-0.15 mg/kg/day divided q12h, then dose-adjusted to the trough TDM target; observed doses 0.5-5.5 mg per administration (median 2.5)",
-    regions        = "Single centre, Chongqing, People's Republic of China",
-    notes          = "Retrospective cohort of 126 renal transplant recipients randomly split 4:1 into an index group (n = 100) used to build the model and an external validation group (n = 26). 2055 fasting plasma glucose observations. Baseline demographics from Xiang 2025 Table 1 (index dataset column). Estimated in Phoenix NLME 8.3.5, sequentially on the population PK step. A fasting plasma glucose above 7.0 mmol/L is the paper's threshold for likely post-transplantation diabetes mellitus."
+    disease_state = "Adult renal transplant recipients on a tacrolimus-based immunosuppressive regimen; baseline fasting plasma glucose 1.45-20.79 mmol/L (mean 6.01, median 5.66)",
+    dose_range = "Oral tacrolimus started within 24 h of transplantation at 0.05-0.15 mg/kg/day divided q12h, then dose-adjusted to the trough TDM target; observed doses 0.5-5.5 mg per administration (median 2.5)",
+    regions = "Single centre, Chongqing, People's Republic of China",
+    notes = "Retrospective cohort of 126 renal transplant recipients randomly split 4:1 into an index group (n = 100) used to build the model and an external validation group (n = 26). 2055 fasting plasma glucose observations. Baseline demographics from Xiang 2025 Table 1 (index dataset column). Estimated in Phoenix NLME 8.3.5, sequentially on the population PK step. A fasting plasma glucose above 7.0 mmol/L is the paper's threshold for likely post-transplantation diabetes mellitus."
   )
 
   ini({

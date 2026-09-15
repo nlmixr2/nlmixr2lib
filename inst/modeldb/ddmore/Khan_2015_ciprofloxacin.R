@@ -12,7 +12,7 @@ Khan_2015_ciprofloxacin <- function() {
   paper_specific_compartments <- c("bact_s", "bact_r", "bact_spe", "bact_np", "bact_rpe", "bact_nppe")
 
   units <- list(time = "h", dosing = "mg/L", concentration = "log CFU/mL")
-  ddmore_id    <- "DDMODEL00000225"
+  ddmore_id <- "DDMODEL00000225"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -20,51 +20,81 @@ Khan_2015_ciprofloxacin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_s    = list(analyte = "Escherichia coli K-12 wild-type bacteria (susceptible-growing)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_r    = list(analyte = "Escherichia coli K-12 wild-type bacteria (resting)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_spe  = list(analyte = "Escherichia coli K-12 wild-type bacteria (drug-induced non-colony-form", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_np   = list(analyte = "Escherichia coli K-12 wild-type bacteria (non-colony-forming, suscepti", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_rpe  = list(analyte = "Escherichia coli K-12 wild-type bacteria (drug-induced non-colony-form", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_nppe = list(analyte = "Escherichia coli K-12 wild-type bacteria (non-colony-forming, resistan", units = NA_character_, specimen = "administration site", verified = FALSE)
+    bact_s = list(
+      analyte = "Escherichia coli K-12 wild-type bacteria (susceptible-growing)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_r = list(
+      analyte = "Escherichia coli K-12 wild-type bacteria (resting)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_spe = list(
+      analyte = "Escherichia coli K-12 wild-type bacteria (drug-induced non-colony-form",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_np = list(
+      analyte = "Escherichia coli K-12 wild-type bacteria (non-colony-forming, suscepti",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_rpe = list(
+      analyte = "Escherichia coli K-12 wild-type bacteria (drug-induced non-colony-form",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_nppe = list(
+      analyte = "Escherichia coli K-12 wild-type bacteria (non-colony-forming, resistan",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CONMED_STR_CC = list(
-      description        = "Bacterial strain identifier (E. coli K-12 derivative). Values 347, 202, 378, 534, 625, 693, 707 select the matching strain-specific EC50 in `model()`. Strain LM202 is the wild-type reference (estimated EC50); the other six are quinolone-resistant single-step mutants with fixed published EC50s.",
-      units              = "(integer code)",
-      type               = "categorical",
+      description = "Bacterial strain identifier (E. coli K-12 derivative). Values 347, 202, 378, 534, 625, 693, 707 select the matching strain-specific EC50 in `model()`. Strain LM202 is the wild-type reference (estimated EC50); the other six are quinolone-resistant single-step mutants with fixed published EC50s.",
+      units = "(integer code)",
+      type = "categorical",
       reference_category = "202",
-      notes              = "Per-tube fixed covariate. The DDMORE bundle's cipro_simulated.csv ships only CONMED_STR_CC=202; cipro202.csv and cipro378.csv carry the real-data fits for those two strains. Any CONMED_STR_CC value outside {347, 202, 378, 534, 625, 693, 707} drives the strain cascade in `model()` to ec50 = 0, which is intentionally unsafe (drug effect would diverge); guard the input data accordingly. In vitro experimental-design column, not a population-PK covariate; not added to the canonical inst/references/covariate-columns.md register.",
-      source_name        = "CONMED_STR_CC"
+      notes = "Per-tube fixed covariate. The DDMORE bundle's cipro_simulated.csv ships only CONMED_STR_CC=202; cipro202.csv and cipro378.csv carry the real-data fits for those two strains. Any CONMED_STR_CC value outside {347, 202, 378, 534, 625, 693, 707} drives the strain cascade in `model()` to ec50 = 0, which is intentionally unsafe (drug effect would diverge); guard the input data accordingly. In vitro experimental-design column, not a population-PK covariate; not added to the canonical inst/references/covariate-columns.md register.",
+      source_name = "CONMED_STR_CC"
     ),
     CONMED_CAB_CC = list(
-      description        = "Static (constant-during-tube) ciprofloxacin concentration in the in vitro time-kill experiment. Drives the Hill-Emax DRUGS / DRUGS2 kill terms and the active <-> non-colony-forming transition rates.",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Static (constant-during-tube) ciprofloxacin concentration in the in vitro time-kill experiment. Drives the Hill-Emax DRUGS / DRUGS2 kill terms and the active <-> non-colony-forming transition rates.",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-tube fixed covariate. CONMED_CAB_CC = 0 represents the no-drug control arm (drug effect is identically 0). The original Khan 2015 experiment static-dosed CONMED_CAB_CC at 0, 0.0625, 0.125, 0.25, 1, 2, 4, 8, and 16 x MIC for each strain; the bundle's cipro_simulated.csv replays a similar grid for CONMED_STR_CC = 202 (CONMED_CAB_CC in {0, 0.0029, 0.0059, 0.0118, 0.0235, 0.047, 0.094, 0.188, 0.376} mg/L). In vitro experimental-design column, not a population-PK covariate.",
-      source_name        = "CONMED_CAB_CC"
+      notes = "Per-tube fixed covariate. CONMED_CAB_CC = 0 represents the no-drug control arm (drug effect is identically 0). The original Khan 2015 experiment static-dosed CONMED_CAB_CC at 0, 0.0625, 0.125, 0.25, 1, 2, 4, 8, and 16 x MIC for each strain; the bundle's cipro_simulated.csv replays a similar grid for CONMED_STR_CC = 202 (CONMED_CAB_CC in {0, 0.0029, 0.0059, 0.0118, 0.0235, 0.047, 0.094, 0.188, 0.376} mg/L). In vitro experimental-design column, not a population-PK covariate.",
+      source_name = "CONMED_CAB_CC"
     ),
     BASE = list(
-      description        = "Per-tube logarithm (natural-ln) of the baseline bacterial inoculum (log CFU/mL). Sets sbase = exp(BASE), which seeds the susceptible-growing compartment at sbase * (1 - mut*1e-6) and the pre-existing resistant-growing compartment at sbase * mut * 1e-6.",
-      units              = "log CFU/mL",
-      type               = "continuous",
+      description = "Per-tube logarithm (natural-ln) of the baseline bacterial inoculum (log CFU/mL). Sets sbase = exp(BASE), which seeds the susceptible-growing compartment at sbase * (1 - mut*1e-6) and the pre-existing resistant-growing compartment at sbase * mut * 1e-6.",
+      units = "log CFU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-tube fixed covariate; the .mod's $PK B2-method baseline-IIV term `exp(ETA(1)*sqrt(SIGMA(1)))` is dropped here (see vignette Errata). The DDMORE bundle's cipro_simulated.csv carries BASE values around 12.9-13 (ln of ~4-5e5 CFU/mL initial inoculum). In vitro experimental-design column, not a population-PK covariate.",
-      source_name        = "BASE"
+      notes = "Per-tube fixed covariate; the .mod's $PK B2-method baseline-IIV term `exp(ETA(1)*sqrt(SIGMA(1)))` is dropped here (see vignette Errata). The DDMORE bundle's cipro_simulated.csv carries BASE values around 12.9-13 (ln of ~4-5e5 CFU/mL initial inoculum). In vitro experimental-design column, not a population-PK covariate.",
+      source_name = "BASE"
     )
   )
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Static in vitro time-kill experiments on Escherichia coli K-12 MG1655 wild-type and six gyrA/gyrB/parC/parE single-step mutants (LM347, LM378, LM534, LM625, LM693, LM707) raised on the same K-12 MG1655 background. Bacteria were grown in Mueller-Hinton broth and exposed to a static ciprofloxacin concentration; viable counts were obtained by serial-dilution colony counting at 0, 1, 2, 4, 6, 9, 12, and 24 hours. NOT a human population-PK study.",
-    dose_range     = "Static (constant-during-tube) ciprofloxacin concentrations: 0 (no-drug control) plus a per-strain grid of MIC multipliers (0.0625x, 0.125x, 0.25x, 1x, 2x, 4x, 8x, 16x of each strain's measured MIC). LM202 wild-type MIC = 0.047 mg/L. The DDMORE bundle's simulated dataset uses the same grid for CONMED_STR_CC = 202 only.",
-    regions        = NA_character_,
-    notes          = "DDMODEL00000225's bundle does NOT include the original Khan 2015 publication, the published Table 1 (per-strain MICs and EC50s) or Table 2 (model parameter estimates) -- the doi:10.1093/jac/dkv233 article is paywalled and is not on disk in this worktree. Population-style demographic fields (n_subjects, age, weight, sex) do not apply to an in vitro bacterial culture experiment and are intentionally NA. The simulated dataset cipro_simulated.csv ships 9 tubes (one per CONMED_CAB_CC level for CONMED_STR_CC = 202) with 4 sample-position replicates per observation time, totalling 207 rows. See the validation vignette's Assumptions and deviations / Errata section for the full list of bundle-versus-publication caveats."
+    disease_state = "Static in vitro time-kill experiments on Escherichia coli K-12 MG1655 wild-type and six gyrA/gyrB/parC/parE single-step mutants (LM347, LM378, LM534, LM625, LM693, LM707) raised on the same K-12 MG1655 background. Bacteria were grown in Mueller-Hinton broth and exposed to a static ciprofloxacin concentration; viable counts were obtained by serial-dilution colony counting at 0, 1, 2, 4, 6, 9, 12, and 24 hours. NOT a human population-PK study.",
+    dose_range = "Static (constant-during-tube) ciprofloxacin concentrations: 0 (no-drug control) plus a per-strain grid of MIC multipliers (0.0625x, 0.125x, 0.25x, 1x, 2x, 4x, 8x, 16x of each strain's measured MIC). LM202 wild-type MIC = 0.047 mg/L. The DDMORE bundle's simulated dataset uses the same grid for CONMED_STR_CC = 202 only.",
+    regions = NA_character_,
+    notes = "DDMODEL00000225's bundle does NOT include the original Khan 2015 publication, the published Table 1 (per-strain MICs and EC50s) or Table 2 (model parameter estimates) -- the doi:10.1093/jac/dkv233 article is paywalled and is not on disk in this worktree. Population-style demographic fields (n_subjects, age, weight, sex) do not apply to an in vitro bacterial culture experiment and are intentionally NA. The simulated dataset cipro_simulated.csv ships 9 tubes (one per CONMED_CAB_CC level for CONMED_STR_CC = 202) with 4 sample-position replicates per observation time, totalling 207 rows. See the validation vignette's Assumptions and deviations / Errata section for the full list of bundle-versus-publication caveats."
   )
 
   ini({

@@ -30,21 +30,21 @@ Kappelhoff_2005_ritonavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_LPV = list(
-      description        = paste(
+      description = paste(
         "1 = subject is receiving concomitant lopinavir as part of an",
         "antiretroviral regimen at the time of the observation;",
         "0 = subject is not on lopinavir."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant lopinavir)",
-      notes              = paste(
+      notes = paste(
         "Effect on apparent oral clearance is a multiplicative power",
         "form, CL/F = exp(lcl) * e_lpv_cl^CONMED_LPV, with",
         "e_lpv_cl = 2.72 (Kappelhoff 2005 Results equation following",
@@ -57,10 +57,10 @@ Kappelhoff_2005_ritonavir <- function() {
         "if a regimen switch occurs in simulation use it can be",
         "supplied as a time-varying covariate column."
       ),
-      source_name        = "LPV"
+      source_name = "LPV"
     ),
     MIX_LARGE_RUV = list(
-      description        = paste(
+      description = paste(
         "Latent mixture-model class indicator for the additive residual",
         "error magnitude: 1 = subject classified to the minority larger",
         "additive-RUV subpopulation P2 (addSd = 0.199 mg/L); 0 = subject",
@@ -68,10 +68,10 @@ Kappelhoff_2005_ritonavir <- function() {
         "P1 (addSd = 0.0600 mg/L). Both subpopulations share the same",
         "15.4% proportional RUV component."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (smaller-additive-RUV subpopulation P1)",
-      notes              = paste(
+      notes = paste(
         "Not a measured patient covariate -- this is the per-subject",
         "posterior class-membership index from Kappelhoff 2005's NONMEM",
         "$MIX block (paper Methods, 'Basic pharmacokinetic model':",
@@ -84,26 +84,26 @@ Kappelhoff_2005_ritonavir <- function() {
         "The paper (Discussion) notes the mechanistic explanation could",
         "not be identified."
       ),
-      source_name        = "$MIX class assignment"
+      source_name = "$MIX class assignment"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 186L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 186L,
+    n_studies = 1L,
     n_observations = 1228L,
-    age_range      = "median 39.4 years; IQR 35.0-46.0 (Table 1)",
-    weight_range   = "median 71.5 kg; IQR 63.0-79.8 (Table 1)",
+    age_range = "median 39.4 years; IQR 35.0-46.0 (Table 1)",
+    weight_range = "median 71.5 kg; IQR 63.0-79.8 (Table 1)",
     sex_female_pct = 12.4,
     race_ethnicity = c(
-      White         = 64.5,
-      Black         = 10.2,
-      Asian         = 4.3,
-      Hispanic      = 5.4,
-      Missing       = 15.6
+      White = 64.5,
+      Black = 10.2,
+      Asian = 4.3,
+      Hispanic = 5.4,
+      Missing = 15.6
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Ambulatory HIV-1-infected adults from the outpatient clinic at",
       "Slotervaart Hospital, Amsterdam, sampled between January 1999",
       "and June 2003. Baseline median CD4 240 cells/mm^3 (IQR 110-380),",
@@ -115,7 +115,7 @@ Kappelhoff_2005_ritonavir <- function() {
       "tested in covariate screening; only concomitant lopinavir was",
       "retained in the final model."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral ritonavir 100-750 mg once or twice daily. 115 subjects",
       "(62%) received ritonavir 100 mg QD, 100 mg BID, 133 mg BID, or",
       "200 mg BID as a booster of another protease inhibitor (49 with",
@@ -123,8 +123,8 @@ Kappelhoff_2005_ritonavir <- function() {
       "(38%) received ritonavir as an antiviral agent at 300, 400,",
       "500, 600, or 750 mg twice daily."
     ),
-    regions        = "Netherlands (Slotervaart Hospital, Amsterdam)",
-    notes          = paste(
+    regions = "Netherlands (Slotervaart Hospital, Amsterdam)",
+    notes = paste(
       "Sparse per-visit single-time-point samples (505) supplemented",
       "with 55 full PK profiles (12-15 sampling time points each);",
       "average 3-4 samples per patient over 7-12 months follow-up",

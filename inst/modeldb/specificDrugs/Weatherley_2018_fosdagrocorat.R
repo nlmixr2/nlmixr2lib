@@ -33,7 +33,8 @@ Weatherley_2018_fosdagrocorat <- function() {
     "plus proportional on the linear-concentration scale separately",
     "for each analyte (Metabolite-1 proportional 19.9 percent +",
     "additive 0.305 ng/mL; Metabolite-2 proportional 7.8 percent +",
-    "additive 0.10 ng/mL).")
+    "additive 0.10 ng/mL)."
+  )
   reference <- "Weatherley B, McFadyen L, Tammara B. Population pharmacokinetics of fosdagrocorat (PF-04171327), a dissociated glucocorticoid receptor agonist, in patients with rheumatoid arthritis. Clin Transl Sci. 2018;11(1):54-62. doi:10.1111/cts.12515"
   vignette <- "Weatherley_2018_fosdagrocorat"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
@@ -43,51 +44,51 @@ Weatherley_2018_fosdagrocorat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot          = list(analyte = "fosdagrocorat", units = "mg", specimen = "administration site", verified = FALSE),
-    central        = list(analyte = "PF-00251802", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1    = list(analyte = "PF-00251802", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "fosdagrocorat", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "PF-00251802", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "PF-00251802", units = "mg", specimen = "plasma", verified = FALSE),
     central_noxide = list(analyte = "PF-04015475", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Fixed allometric scaling on Metabolite-1 disposition: exponent 0.75 on CL and Q, exponent 1.00 on V2 and V4. Estimated power exponent 0.450 on Metabolite-2 CLm (Weatherley 2018 Table 2). No weight effect on Metabolite-2 Vm (rejected in stepwise testing because the estimated exponent 0.241 was far from the canonical allometric value 1.0; Weatherley 2018 Results page 58). Reference weight 70 kg per Weatherley 2018 Methods.",
-      source_name        = "BWT (body weight)"
+      notes = "Fixed allometric scaling on Metabolite-1 disposition: exponent 0.75 on CL and Q, exponent 1.00 on V2 and V4. Estimated power exponent 0.450 on Metabolite-2 CLm (Weatherley 2018 Table 2). No weight effect on Metabolite-2 Vm (rejected in stepwise testing because the estimated exponent 0.241 was far from the canonical allometric value 1.0; Weatherley 2018 Results page 58). Reference weight 70 kg per Weatherley 2018 Methods.",
+      source_name = "BWT (body weight)"
     ),
     AGE = list(
-      description        = "Subject age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-additive effect on Metabolite-1 CL: change of -0.00633 L/h per year above the reference age of 40 (Weatherley 2018 Table 2 'Without BLQ or taper' column). The publication characterizes this effect as approximately 3 percent CL reduction per 30-year increment (Discussion page 60) and notes it could likely have been dropped without clinical relevance.",
-      source_name        = "Age"
+      notes = "Linear-additive effect on Metabolite-1 CL: change of -0.00633 L/h per year above the reference age of 40 (Weatherley 2018 Table 2 'Without BLQ or taper' column). The publication characterizes this effect as approximately 3 percent CL reduction per 30-year increment (Discussion page 60) and notes it could likely have been dropped without clinical relevance.",
+      source_name = "Age"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male).",
-      notes              = "Linear multiplicative effects: -26.8 percent on Metabolite-1 CL and -34.1 percent on Metabolite-2 CLm (Weatherley 2018 Table 2). After accounting for allometric body-weight scaling, female subjects therefore have higher exposure to both Metabolite-1 and Metabolite-2 than male subjects of the same weight. The mechanistic basis of the female effect was not identified; in vitro CYP3A4 metabolism does not show a documented sex difference (Weatherley 2018 Discussion page 60).",
-      source_name        = "Sex (1 = male, 2 = female in NONMEM dataset; canonical SEXF = as.integer(SEX == 2))"
+      notes = "Linear multiplicative effects: -26.8 percent on Metabolite-1 CL and -34.1 percent on Metabolite-2 CLm (Weatherley 2018 Table 2). After accounting for allometric body-weight scaling, female subjects therefore have higher exposure to both Metabolite-1 and Metabolite-2 than male subjects of the same weight. The mechanistic basis of the female effect was not identified; in vitro CYP3A4 metabolism does not show a documented sex difference (Weatherley 2018 Discussion page 60).",
+      source_name = "Sex (1 = male, 2 = female in NONMEM dataset; canonical SEXF = as.integer(SEX == 2))"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 179L,
-    n_studies      = 1L,
-    age_range      = "18-84 years (combined male and female)",
-    weight_range   = "~40-140 kg (paper Figure 5 illustrates exposure across this range; per-arm SDs reported in Table 1)",
+    species = "human",
+    n_subjects = 179L,
+    n_studies = 1L,
+    age_range = "18-84 years (combined male and female)",
+    weight_range = "~40-140 kg (paper Figure 5 illustrates exposure across this range; per-arm SDs reported in Table 1)",
     sex_female_pct = 76,
     race_ethnicity = "Reported but not stratified in the public summary; covariate testing on race did not retain race in the final model.",
-    disease_state  = "Patients with moderate-to-severe rheumatoid arthritis (RA) receiving stable background methotrexate, enrolled in study A9391010 (NCT01393639), a 12-week phase II randomized double-blind dose-ranging study.",
-    dose_range     = "Oral fosdagrocorat 1, 5, 10, or 15 mg once daily for 8 weeks, followed by a blinded 1 mg tapered regimen (Q48 h for 2 weeks, then Q72 h for 2 weeks) and a 1-week off-drug washout. Only the 8-week active-dosing period contributed to the final model after below-quantitation and taper observations were excluded.",
-    regions        = "Multinational; specific country composition not summarized in the public publication.",
-    notes          = "Demographics (Weatherley 2018 Table 1, per-arm means and SDs): 76 percent female overall. Mean weight 80.4 kg (male) and 72.9 kg (female). Mean baseline creatinine clearance ~100-130 mL/min. NONMEM 7.2 (ICON Development Solutions, Ellicott City, MD) with first-order conditional estimation was used; observations below the limit of quantitation (1.00 ng/mL for Metabolite-1 and 0.50 ng/mL for Metabolite-2) and concentrations measured during the taper period were excluded from the final model. The final model was selected from the 'Without BLQ or taper' simultaneous Metabolite-1 / Metabolite-2 fit (Table 2 right-most column)."
+    disease_state = "Patients with moderate-to-severe rheumatoid arthritis (RA) receiving stable background methotrexate, enrolled in study A9391010 (NCT01393639), a 12-week phase II randomized double-blind dose-ranging study.",
+    dose_range = "Oral fosdagrocorat 1, 5, 10, or 15 mg once daily for 8 weeks, followed by a blinded 1 mg tapered regimen (Q48 h for 2 weeks, then Q72 h for 2 weeks) and a 1-week off-drug washout. Only the 8-week active-dosing period contributed to the final model after below-quantitation and taper observations were excluded.",
+    regions = "Multinational; specific country composition not summarized in the public publication.",
+    notes = "Demographics (Weatherley 2018 Table 1, per-arm means and SDs): 76 percent female overall. Mean weight 80.4 kg (male) and 72.9 kg (female). Mean baseline creatinine clearance ~100-130 mL/min. NONMEM 7.2 (ICON Development Solutions, Ellicott City, MD) with first-order conditional estimation was used; observations below the limit of quantitation (1.00 ng/mL for Metabolite-1 and 0.50 ng/mL for Metabolite-2) and concentrations measured during the taper period were excluded from the final model. The final model was selected from the 'Without BLQ or taper' simultaneous Metabolite-1 / Metabolite-2 fit (Table 2 right-most column)."
   )
 
   ini({

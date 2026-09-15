@@ -41,170 +41,212 @@ Dings_2026_cafedrine_theodrenaline_ephedrine <- function() {
 
   compartmentData <- list(
     depot_kpd = list(
-      analyte = "cafedrine/theodrenaline or ephedrine", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "cafedrine/theodrenaline or ephedrine",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     # The lag-cascade stages are driven by depot_kpd/vc (a concentration),
     # not by a mass transfer, so they carry concentration units (mg/L)
     # rather than amounts. Dings 2026 Eqs A2-A8.
-    effect_slow1 = list(analyte = "cafedrine/theodrenaline or ephedrine", units = "mg/L", specimen = "not applicable", verified = TRUE),
-    effect_slow2 = list(analyte = "cafedrine/theodrenaline or ephedrine", units = "mg/L", specimen = "not applicable", verified = TRUE),
-    effect_slow3 = list(analyte = "cafedrine/theodrenaline or ephedrine", units = "mg/L", specimen = "not applicable", verified = TRUE),
-    effect_fast1 = list(analyte = "cafedrine/theodrenaline or ephedrine", units = "mg/L", specimen = "not applicable", verified = TRUE),
-    effect_fast2 = list(analyte = "cafedrine/theodrenaline or ephedrine", units = "mg/L", specimen = "not applicable", verified = TRUE),
-    effect_fast3 = list(analyte = "cafedrine/theodrenaline or ephedrine", units = "mg/L", specimen = "not applicable", verified = TRUE),
-    effect_fast4 = list(analyte = "cafedrine/theodrenaline or ephedrine", units = "mg/L", specimen = "not applicable", verified = TRUE),
-    effect_anaesthesia = list(analyte = "spinal anaesthesia effect (virtual unit amount)", units = "(unitless)", specimen = "not applicable", verified = TRUE)
+    effect_slow1 = list(
+      analyte = "cafedrine/theodrenaline or ephedrine",
+      units = "mg/L",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    effect_slow2 = list(
+      analyte = "cafedrine/theodrenaline or ephedrine",
+      units = "mg/L",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    effect_slow3 = list(
+      analyte = "cafedrine/theodrenaline or ephedrine",
+      units = "mg/L",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    effect_fast1 = list(
+      analyte = "cafedrine/theodrenaline or ephedrine",
+      units = "mg/L",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    effect_fast2 = list(
+      analyte = "cafedrine/theodrenaline or ephedrine",
+      units = "mg/L",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    effect_fast3 = list(
+      analyte = "cafedrine/theodrenaline or ephedrine",
+      units = "mg/L",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    effect_fast4 = list(
+      analyte = "cafedrine/theodrenaline or ephedrine",
+      units = "mg/L",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    effect_anaesthesia = list(
+      analyte = "spinal anaesthesia effect (virtual unit amount)",
+      units = "(unitless)",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     BMI = list(
-      description        = "Maternal body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Maternal body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on K/PD clearance, centred at the population median of 30 kg/m^2 (Dings 2026 Section 3.4 typical parturient; Section 2.3 defines the typical parturient as the median covariate values). Cohort mean (SD) 31.6 (6.58) kg/m^2. A higher BMI lowers clearance (exponent -0.948) and therefore lengthens the effect half-life.",
-      source_name        = "BMI"
+      notes = "Power effect on K/PD clearance, centred at the population median of 30 kg/m^2 (Dings 2026 Section 3.4 typical parturient; Section 2.3 defines the typical parturient as the median covariate values). Cohort mean (SD) 31.6 (6.58) kg/m^2. A higher BMI lowers clearance (exponent -0.948) and therefore lengthens the effect half-life.",
+      source_name = "BMI"
     ),
     DBP_BL = list(
-      description        = "Maternal diastolic blood pressure at hypotension diagnosis, immediately before the first antihypotensive bolus",
-      units              = "mmHg",
-      type               = "continuous",
+      description = "Maternal diastolic blood pressure at hypotension diagnosis, immediately before the first antihypotensive bolus",
+      units = "mmHg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on the K/PD apparent volume, centred at 50 mmHg. Dings 2026 does not tabulate baseline DBP in Table 2; the 50 mmHg centring value is the typical-parturient value from Section 3.4, and is internally consistent with the tabulated baseline MAP and SBP via MAP = DBP + (SBP - DBP)/3 (50 + (92 - 50)/3 = 64 mmHg, matching the reported baseline MAP).",
-      source_name        = "DBP (baseline row, Table 2 / Section 3.4)"
+      notes = "Power effect on the K/PD apparent volume, centred at 50 mmHg. Dings 2026 does not tabulate baseline DBP in Table 2; the 50 mmHg centring value is the typical-parturient value from Section 3.4, and is internally consistent with the tabulated baseline MAP and SBP via MAP = DBP + (SBP - DBP)/3 (50 + (92 - 50)/3 = 64 mmHg, matching the reported baseline MAP).",
+      source_name = "DBP (baseline row, Table 2 / Section 3.4)"
     ),
     HR_PRESURG = list(
-      description        = "Maternal heart rate before spinal anaesthesia (undisturbed pre-surgical set-point)",
-      units              = "beats/min",
-      type               = "continuous",
+      description = "Maternal heart rate before spinal anaesthesia (undisturbed pre-surgical set-point)",
+      units = "beats/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on the attainable heart-rate ceiling, centred at the population median of 92 beats/min. Cohort means 92.6 (C/T) and 91.7 (ephedrine) beats/min, Dings 2026 Table 2 pre-surgery block. Distinct from HR_BL, which is measured after anaesthesia at hypotension diagnosis.",
-      source_name        = "HR (pre-surgery row, Table 2)"
+      notes = "Power effect on the attainable heart-rate ceiling, centred at the population median of 92 beats/min. Cohort means 92.6 (C/T) and 91.7 (ephedrine) beats/min, Dings 2026 Table 2 pre-surgery block. Distinct from HR_BL, which is measured after anaesthesia at hypotension diagnosis.",
+      source_name = "HR (pre-surgery row, Table 2)"
     ),
     HR_BL = list(
-      description        = "Maternal heart rate at hypotension diagnosis, immediately before the first antihypotensive bolus",
-      units              = "beats/min",
-      type               = "continuous",
+      description = "Maternal heart rate at hypotension diagnosis, immediately before the first antihypotensive bolus",
+      units = "beats/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Additive baseline anchor of the heart-rate Emax term (Dings 2026 Eq. A12: BL_HR). No covariate effect is estimated on it. Typical value 84 beats/min (Section 3.4); cohort means 85.4 (C/T) and 87.5 (ephedrine) beats/min. Because the estimated ceiling for C/T (77.8 beats/min) lies BELOW this baseline, the recovered Emax is negative for C/T and positive for ephedrine - this is the paper's central finding that C/T is essentially heart-rate-neutral.",
-      source_name        = "HR (baseline row, Table 2)"
+      notes = "Additive baseline anchor of the heart-rate Emax term (Dings 2026 Eq. A12: BL_HR). No covariate effect is estimated on it. Typical value 84 beats/min (Section 3.4); cohort means 85.4 (C/T) and 87.5 (ephedrine) beats/min. Because the estimated ceiling for C/T (77.8 beats/min) lies BELOW this baseline, the recovered Emax is negative for C/T and positive for ephedrine - this is the paper's central finding that C/T is essentially heart-rate-neutral.",
+      source_name = "HR (baseline row, Table 2)"
     ),
     MAP_PRESURG = list(
-      description        = "Maternal mean arterial pressure before spinal anaesthesia",
-      units              = "mmHg",
-      type               = "continuous",
+      description = "Maternal mean arterial pressure before spinal anaesthesia",
+      units = "mmHg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on the attainable MAP ceiling, centred at the population median of 100 mmHg. Cohort mean 101 mmHg in both arms (Dings 2026 Table 2 pre-surgery block). Enters with the OPPOSITE sign to MAP_BL on the same parameter, which is why the two anchors must be separate columns.",
-      source_name        = "MAP (pre-surgery row, Table 2)"
+      notes = "Power effect on the attainable MAP ceiling, centred at the population median of 100 mmHg. Cohort mean 101 mmHg in both arms (Dings 2026 Table 2 pre-surgery block). Enters with the OPPOSITE sign to MAP_BL on the same parameter, which is why the two anchors must be separate columns.",
+      source_name = "MAP (pre-surgery row, Table 2)"
     ),
     MAP_BL = list(
-      description        = "Maternal mean arterial pressure at hypotension diagnosis, immediately before the first antihypotensive bolus",
-      units              = "mmHg",
-      type               = "continuous",
+      description = "Maternal mean arterial pressure at hypotension diagnosis, immediately before the first antihypotensive bolus",
+      units = "mmHg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Serves two roles: the additive baseline anchor of the MAP Emax term (Dings 2026 Eq. A13: BL_MAP) and a power covariate on the MAP ceiling with exponent -0.53, centred at 64 mmHg. Cohort means 64.2 (C/T) and 64.5 (ephedrine) mmHg.",
-      source_name        = "MAP (baseline row, Table 2)"
+      notes = "Serves two roles: the additive baseline anchor of the MAP Emax term (Dings 2026 Eq. A13: BL_MAP) and a power covariate on the MAP ceiling with exponent -0.53, centred at 64 mmHg. Cohort means 64.2 (C/T) and 64.5 (ephedrine) mmHg.",
+      source_name = "MAP (baseline row, Table 2)"
     ),
     SBP_PRESURG = list(
-      description        = "Maternal systolic blood pressure before spinal anaesthesia",
-      units              = "mmHg",
-      type               = "continuous",
+      description = "Maternal systolic blood pressure before spinal anaesthesia",
+      units = "mmHg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on the attainable SBP ceiling, centred at the population median of 139 mmHg. Cohort means 139 (C/T) and 138 (ephedrine) mmHg.",
-      source_name        = "SBP (pre-surgery row, Table 2)"
+      notes = "Power effect on the attainable SBP ceiling, centred at the population median of 139 mmHg. Cohort means 139 (C/T) and 138 (ephedrine) mmHg.",
+      source_name = "SBP (pre-surgery row, Table 2)"
     ),
     SBP_BL = list(
-      description        = "Maternal systolic blood pressure at hypotension diagnosis, immediately before the first antihypotensive bolus",
-      units              = "mmHg",
-      type               = "continuous",
+      description = "Maternal systolic blood pressure at hypotension diagnosis, immediately before the first antihypotensive bolus",
+      units = "mmHg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Additive baseline anchor of the SBP Emax term (Dings 2026 Eq. A14: BL_SBP) and a power covariate on the SBP ceiling with exponent -0.494, centred at 92 mmHg. Cohort means 92.3 (C/T) and 93 (ephedrine) mmHg.",
-      source_name        = "SBP (baseline row, Table 2)"
+      notes = "Additive baseline anchor of the SBP Emax term (Dings 2026 Eq. A14: BL_SBP) and a power covariate on the SBP ceiling with exponent -0.494, centred at 92 mmHg. Cohort means 92.3 (C/T) and 93 (ephedrine) mmHg.",
+      source_name = "SBP (baseline row, Table 2)"
     ),
     SPINAL_BLOCK = list(
-      description        = "Highest anaesthetised dermatome of the spinal block, as a thoracic segment number (5 = T5)",
-      units              = "thoracic segment number",
-      type               = "continuous",
+      description = "Highest anaesthetised dermatome of the spinal block, as a thoracic segment number (5 = T5)",
+      units = "thoracic segment number",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on the additive anaesthesia blood-pressure effect, centred at the population median of 5 (T5). THE ORIENTATION IS INVERTED relative to the phrase 'block height': a LOWER segment number is an anatomically HIGHER, more extensive block. With exponent -2.05, a lower number therefore predicts a LARGER fall in blood pressure, matching Dings 2026 Section 3.2 ('larger decreases observed at lower thoracic block levels') and the positive per-segment coefficients in the companion neonatal model. Cohort means 5.79 (C/T) and 5.02 (ephedrine).",
-      source_name        = "Spinal block height / SPINAL"
+      notes = "Power effect on the additive anaesthesia blood-pressure effect, centred at the population median of 5 (T5). THE ORIENTATION IS INVERTED relative to the phrase 'block height': a LOWER segment number is an anatomically HIGHER, more extensive block. With exponent -2.05, a lower number therefore predicts a LARGER fall in blood pressure, matching Dings 2026 Section 3.2 ('larger decreases observed at lower thoracic block levels') and the positive per-segment coefficients in the companion neonatal model. Cohort means 5.79 (C/T) and 5.02 (ephedrine).",
+      source_name = "Spinal block height / SPINAL"
     ),
     TRT_EPHEDRINE = list(
-      description        = "Indicator that the parturient was treated with ephedrine rather than cafedrine/theodrenaline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the parturient was treated with ephedrine rather than cafedrine/theodrenaline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (cafedrine/theodrenaline arm; every subject in this analysis received one drug or the other, so C/T is the reference)",
-      notes              = "Enters via the paper's categorical form `1 + COV * theta` (Dings 2026 Eq. 2) on two parameters: the attainable heart-rate ceiling (+15%, Table A1 F_MAXHR = 0.15) and ALL THREE EC50 values (-71.1%, Table A1 F_EC50 = -0.711 - a single estimated parameter shared across the HR, MAP and SBP EC50s, confirmed by Section 3.2 quoting all three ephedrine EC50 values as 71.1% lower). n = 108 of 243 (44.4%) received ephedrine.",
-      source_name        = "Treatment with E"
+      notes = "Enters via the paper's categorical form `1 + COV * theta` (Dings 2026 Eq. 2) on two parameters: the attainable heart-rate ceiling (+15%, Table A1 F_MAXHR = 0.15) and ALL THREE EC50 values (-71.1%, Table A1 F_EC50 = -0.711 - a single estimated parameter shared across the HR, MAP and SBP EC50s, confirmed by Section 3.2 quoting all three ephedrine EC50 values as 71.1% lower). n = 108 of 243 (44.4%) received ephedrine.",
+      source_name = "Treatment with E"
     ),
     T_ANAESTHESIA = list(
-      description        = "Time from induction of spinal anaesthesia to the first antihypotensive bolus (model time zero)",
-      units              = "min",
-      type               = "continuous",
+      description = "Time from induction of spinal anaesthesia to the first antihypotensive bolus (model time zero)",
+      units = "min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Sets the initial condition of effect_anaesthesia (Dings 2026 Eqs A9 / A11). Typical value 7 min (Section 3.4). The construction makes the anaesthesia-driven blood-pressure fall already realised before treatment vanish at t = 0 - it is absorbed into the observed MAP_BL / SBP_BL anchors - so only the REMAINING fall is predicted forward.",
-      source_name        = "TIMEAN"
+      notes = "Sets the initial condition of effect_anaesthesia (Dings 2026 Eqs A9 / A11). Typical value 7 min (Section 3.4). The construction makes the anaesthesia-driven blood-pressure fall already realised before treatment vanish at t = 0 - it is absorbed into the observed MAP_BL / SBP_BL anchors - so only the REMAINING fall is predicted forward.",
+      source_name = "TIMEAN"
     ),
     T_INCISION = list(
-      description        = "Time from the first antihypotensive bolus to surgical incision",
-      units              = "min",
-      type               = "continuous",
+      description = "Time from the first antihypotensive bolus to surgical incision",
+      units = "min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject; the 0/1 indicator I of Dings 2026 Eqs A12-A14 is derived inside model() as `t >= T_INCISION`, so no time-varying covariate column is needed. Typical value 5 min after treatment (Section 3.4).",
-      source_name        = "I (derived indicator)"
+      notes = "Time-fixed per subject; the 0/1 indicator I of Dings 2026 Eqs A12-A14 is derived inside model() as `t >= T_INCISION`, so no time-varying covariate column is needed. Typical value 5 min after treatment (Section 3.4).",
+      source_name = "I (derived indicator)"
     ),
     T_UTEROTOMY = list(
-      description        = "Time from the first antihypotensive bolus to uterotomy",
-      units              = "min",
-      type               = "continuous",
+      description = "Time from the first antihypotensive bolus to uterotomy",
+      units = "min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject; the 0/1 indicator U of Dings 2026 Eqs A12-A14 is derived inside model() as `t >= T_UTEROTOMY`. Typical value 9 min after treatment (Section 3.4). Each of the two events adds one increment of the stimulation effect, so `iu` runs 0 -> 1 -> 2.",
-      source_name        = "U (derived indicator)"
+      notes = "Time-fixed per subject; the 0/1 indicator U of Dings 2026 Eqs A12-A14 is derived inside model() as `t >= T_UTEROTOMY`. Typical value 9 min after treatment (Section 3.4). Each of the two events adds one increment of the stimulation effect, so `iu` runs 0 -> 1 -> 2.",
+      source_name = "U (derived indicator)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Maternal body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened in the Dings 2026 covariate analysis (Section 2.2, maternal demographics) but NOT retained in the final haemodynamic model; BMI was retained instead. Cohort mean (SD) 87.6 (19.7) kg. Maternal weight IS retained in the companion `Dings_2026_neonatal_acidosis.R` base-excess regression."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened in the Dings 2026 covariate analysis (Section 2.2, maternal demographics) but NOT retained in the final haemodynamic model; BMI was retained instead. Cohort mean (SD) 87.6 (19.7) kg. Maternal weight IS retained in the companion `Dings_2026_neonatal_acidosis.R` base-excess regression."
     ),
     HT = list(
       description = "Maternal body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened (Section 2.2) but not retained; BMI carries the size effect. Cohort mean (SD) 166 (6.91) cm."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened (Section 2.2) but not retained; BMI carries the size effect. Cohort mean (SD) 166 (6.91) cm."
     ),
     DOSE_BUPIVACAINE_MG = list(
       description = "Intrathecal bupivacaine dose given for the spinal block",
-      units       = "mg",
-      type        = "continuous",
-      notes       = "Screened as an anaesthesia-related covariate (Section 2.2) but not retained in the maternal haemodynamic model. Cohort means 10.5 (C/T) and 10.2 (ephedrine) mg. IS retained in the companion neonatal model."
+      units = "mg",
+      type = "continuous",
+      notes = "Screened as an anaesthesia-related covariate (Section 2.2) but not retained in the maternal haemodynamic model. Cohort means 10.5 (C/T) and 10.2 (ephedrine) mg. IS retained in the companion neonatal model."
     ),
     EGA = list(
       description = "Pregnancy duration at delivery",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = "Screened as 'pregnancy duration' (Section 2.2) but not retained in the maternal haemodynamic model. Cohort mean (SD) 262 (10.2) days = 37.4 weeks. IS retained in the companion neonatal pH regression."
+      units = "weeks",
+      type = "continuous",
+      notes = "Screened as 'pregnancy duration' (Section 2.2) but not retained in the maternal haemodynamic model. Cohort mean (SD) 262 (10.2) days = 37.4 weeks. IS retained in the companion neonatal pH regression."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 243L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    age_median     = "33.4 years (mean; SD 5.22)",
-    weight_range   = NA_character_,
-    weight_median  = "87.6 kg (mean; SD 19.7)",
+    species = "human",
+    n_subjects = 243L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    age_median = "33.4 years (mean; SD 5.22)",
+    weight_range = NA_character_,
+    weight_median = "87.6 kg (mean; SD 19.7)",
     sex_female_pct = 100,
     race_ethnicity = "Not reported in Dings 2026; multicentre German cohort.",
-    disease_state  = "Spinal-anaesthesia-induced hypotension (SBP < 100 mmHg or < 90% of the pre-operative baseline SBP) during elective caesarean section in parturients at term. Prophylactically treated patients were excluded.",
-    dose_range     = "Intravenous boluses at the attending anaesthesiologist's discretion. Cafedrine/theodrenaline 10-200 mg per dose (most common single dose 50 mg; median cumulative dose over 30 min 100 mg, range 20-400 mg), expressed as cafedrine equivalents. Ephedrine 5-40 mg per dose (most common 15 mg; median cumulative 30 mg, range 10-120 mg).",
-    regions        = "Germany (multicentre)",
-    notes          = "HYPOTENS study (Eberhart 2018, Curr Med Res Opin 34:953-961; primary results Kranke 2021, Eur J Anaesthesiol 38:1067-1076), a prospective, open-label, two-armed, non-interventional study conducted July 2016 - February 2018. Of 283 per-protocol patients, 40 (14.1%) were excluded for blood loss > 1000 mL, colloid / blood-product administration, conversion to general anaesthesia, or a local anaesthetic other than bupivacaine, leaving 243 analysed: 135 (55.6%) cafedrine/theodrenaline and 108 (44.4%) ephedrine. Haemodynamics were recorded immediately before the first bolus and at 1-10, 12, 15, 20, 25 and 30 min after it. Demographics from Dings 2026 Tables 1 and 2. NOTE: no pharmacokinetic samples were obtained, so every kinetic parameter here is a functional descriptor of the response time course, NOT a systemic pharmacokinetic quantity."
+    disease_state = "Spinal-anaesthesia-induced hypotension (SBP < 100 mmHg or < 90% of the pre-operative baseline SBP) during elective caesarean section in parturients at term. Prophylactically treated patients were excluded.",
+    dose_range = "Intravenous boluses at the attending anaesthesiologist's discretion. Cafedrine/theodrenaline 10-200 mg per dose (most common single dose 50 mg; median cumulative dose over 30 min 100 mg, range 20-400 mg), expressed as cafedrine equivalents. Ephedrine 5-40 mg per dose (most common 15 mg; median cumulative 30 mg, range 10-120 mg).",
+    regions = "Germany (multicentre)",
+    notes = "HYPOTENS study (Eberhart 2018, Curr Med Res Opin 34:953-961; primary results Kranke 2021, Eur J Anaesthesiol 38:1067-1076), a prospective, open-label, two-armed, non-interventional study conducted July 2016 - February 2018. Of 283 per-protocol patients, 40 (14.1%) were excluded for blood loss > 1000 mL, colloid / blood-product administration, conversion to general anaesthesia, or a local anaesthetic other than bupivacaine, leaving 243 analysed: 135 (55.6%) cafedrine/theodrenaline and 108 (44.4%) ephedrine. Haemodynamics were recorded immediately before the first bolus and at 1-10, 12, 15, 20, 25 and 30 min after it. Demographics from Dings 2026 Tables 1 and 2. NOTE: no pharmacokinetic samples were obtained, so every kinetic parameter here is a functional descriptor of the response time course, NOT a systemic pharmacokinetic quantity."
   )
 
   ini({

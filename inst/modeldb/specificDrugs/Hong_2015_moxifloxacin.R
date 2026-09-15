@@ -16,36 +16,36 @@ Hong_2015_moxifloxacin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Per-record administered moxifloxacin dose level used by the dose-dependent absorption term",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-record administered moxifloxacin dose level used by the dose-dependent absorption term",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Hong 2015 estimated separate absorption rate constants for the 400 mg and 800 mg dose levels (Methods 'PK model' paragraph 2; Table 3 Ka1 = 16.7 1/h, Ka2 = 1.90 1/h). The packaged model uses a binary switch keyed on DOSE >= 600 mg: subjects with DOSE < 600 mg use the 400 mg ka and subjects with DOSE >= 600 mg use the 800 mg ka. For simulation set DOSE per subject (and per record if the dose changes within a subject) to the administered moxifloxacin dose in mg. Placebo simulations (where the model evaluates the circadian + placebo terms only) can use DOSE = 400 (the reference) since the value affects only the absorption rate.",
-      source_name        = "DOSE"
+      notes = "Hong 2015 estimated separate absorption rate constants for the 400 mg and 800 mg dose levels (Methods 'PK model' paragraph 2; Table 3 Ka1 = 16.7 1/h, Ka2 = 1.90 1/h). The packaged model uses a binary switch keyed on DOSE >= 600 mg: subjects with DOSE < 600 mg use the 400 mg ka and subjects with DOSE >= 600 mg use the 800 mg ka. For simulation set DOSE per subject (and per record if the dose changes within a subject) to the administered moxifloxacin dose in mg. Placebo simulations (where the model evaluates the circadian + placebo terms only) can use DOSE = 400 (the reference) since the value affects only the absorption rate.",
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 33L,
-    n_studies      = 3L,
-    age_range      = "20-40 years (mean 26.4, SD 4.8)",
-    age_median     = "26 years (mean 26.4 years)",
-    weight_range   = "approximately 60-78 kg (mean 68.3, SD 6.3)",
-    weight_median  = "68.3 kg (mean)",
+    species = "human",
+    n_subjects = 33L,
+    n_studies = 3L,
+    age_range = "20-40 years (mean 26.4, SD 4.8)",
+    age_median = "26 years (mean 26.4 years)",
+    weight_range = "approximately 60-78 kg (mean 68.3, SD 6.3)",
+    weight_median = "68.3 kg (mean)",
     sex_female_pct = 0,
     race_ethnicity = c(Korean = 100),
-    disease_state  = "Healthy adult male Korean volunteers",
-    dose_range     = "Single oral dose of moxifloxacin 400 mg or 800 mg as Avelox tablets with 240 mL water, in a three-way (placebo / 400 mg / 800 mg) William's-square crossover with 1-week washout between periods.",
-    regions        = "Republic of Korea (three clinical-trial centres: Seoul St Mary's Hospital, Seoul National University Hospital, and Seoul National University Bundang Hospital).",
-    notes          = "Demographics from Hong 2015 Table 1. Pooled dataset from three TQT studies (NCT01756521); 38 subjects enrolled, 33 completed and contributed PK data (660 plasma moxifloxacin concentrations). ECG / QT data from 27 subjects (6 lost to data archive errors): 810 baseline + 513 placebo + 540 drug-effect QT interval observations. No PK or PD covariate (age, height, weight, lean body mass, genotype) was retained in the final model."
+    disease_state = "Healthy adult male Korean volunteers",
+    dose_range = "Single oral dose of moxifloxacin 400 mg or 800 mg as Avelox tablets with 240 mL water, in a three-way (placebo / 400 mg / 800 mg) William's-square crossover with 1-week washout between periods.",
+    regions = "Republic of Korea (three clinical-trial centres: Seoul St Mary's Hospital, Seoul National University Hospital, and Seoul National University Bundang Hospital).",
+    notes = "Demographics from Hong 2015 Table 1. Pooled dataset from three TQT studies (NCT01756521); 38 subjects enrolled, 33 completed and contributed PK data (660 plasma moxifloxacin concentrations). ECG / QT data from 27 subjects (6 lost to data archive errors): 810 baseline + 513 placebo + 540 drug-effect QT interval observations. No PK or PD covariate (age, height, weight, lean body mass, genotype) was retained in the final model."
   )
 
   ini({

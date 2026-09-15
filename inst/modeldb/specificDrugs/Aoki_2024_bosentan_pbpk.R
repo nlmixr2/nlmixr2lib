@@ -61,8 +61,16 @@ Aoki_2024_bosentan_pbpk <- function() {
   # mathematically redundant with complex / rtot and the vignette
   # asserts that identity as a numerical check on the integration.
   paper_specific_compartments <- c(
-    "is_liver1", "is_liver2", "is_liver3", "is_liver4", "is_liver5",
-    "int_liver1", "int_liver2", "int_liver3", "int_liver4", "int_liver5",
+    "is_liver1",
+    "is_liver2",
+    "is_liver3",
+    "is_liver4",
+    "is_liver5",
+    "int_liver1",
+    "int_liver2",
+    "int_liver3",
+    "int_liver4",
+    "int_liver5",
     "occupancy"
   )
 
@@ -81,31 +89,31 @@ Aoki_2024_bosentan_pbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central    = list(analyte = "bosentan", units = "umol", specimen = "plasma", verified = FALSE),
-    is_liver1  = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
-    is_liver2  = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
-    is_liver3  = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
-    is_liver4  = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
-    is_liver5  = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "bosentan", units = "umol", specimen = "plasma", verified = FALSE),
+    is_liver1 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    is_liver2 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    is_liver3 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    is_liver4 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    is_liver5 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
     int_liver1 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
     int_liver2 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
     int_liver3 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
     int_liver4 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
     int_liver5 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
-    muscle     = list(analyte = "bosentan", units = "umol", specimen = "tissue", verified = FALSE),
-    skin       = list(analyte = "bosentan", units = "umol", specimen = "tissue", verified = FALSE),
-    adipose    = list(analyte = "bosentan", units = "umol", specimen = "tissue", verified = FALSE),
-    target     = list(analyte = "bosentan", units = "umol", specimen = "not applicable", verified = FALSE),
-    complex    = list(analyte = "bosentan", units = "umol", specimen = "not applicable", verified = FALSE),
-    occupancy  = list(analyte = "bosentan", units = "umol", specimen = "not applicable", verified = FALSE)
+    muscle = list(analyte = "bosentan", units = "umol", specimen = "tissue", verified = FALSE),
+    skin = list(analyte = "bosentan", units = "umol", specimen = "tissue", verified = FALSE),
+    adipose = list(analyte = "bosentan", units = "umol", specimen = "tissue", verified = FALSE),
+    target = list(analyte = "bosentan", units = "umol", specimen = "not applicable", verified = FALSE),
+    complex = list(analyte = "bosentan", units = "umol", specimen = "not applicable", verified = FALSE),
+    occupancy = list(analyte = "bosentan", units = "umol", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species    = "human",
+    species = "human",
     dose_range = "10, 50, 250, 500 and 750 mg single intravenous doses (5 arms)",
-    notes      = paste(
+    notes = paste(
       "Aoki 2024 identifies the fitting data only as 'plasma",
       "concentration data from 10, 50, 250, 500, and 750 mg arms'",
       "(Results, Example 3). The 13 observations per arm are hard-coded",

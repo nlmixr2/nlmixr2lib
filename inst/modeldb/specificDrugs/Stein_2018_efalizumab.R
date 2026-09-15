@@ -9,21 +9,21 @@ Stein_2018_efalizumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "efalizumab", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "efalizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "efalizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "efalizumab", units = "nmol", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "CD11a", units = "nmol", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "human",
-    n_subjects    = NA_integer_,
-    n_studies     = 1,
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1,
     disease_state = "Adults with psoriasis (efalizumab early-phase study; Bauer 1999).",
-    dose_range    = "Stein and Peletier 2018 simulated a 10 mg/kg single IV bolus (467 nmol assuming 70 kg patient and 150 kDa antibody; Stein and Peletier 2018 page 672).",
-    regions       = NA_character_,
-    notes         = paste(
+    dose_range = "Stein and Peletier 2018 simulated a 10 mg/kg single IV bolus (467 nmol assuming 70 kg patient and 150 kDa antibody; Stein and Peletier 2018 page 672).",
+    regions = NA_character_,
+    notes = paste(
       "Typical-value fit reproduced from Stein and Peletier 2018 Table 1. Parameters were estimated by",
       "Stein and Peletier (using the two-compartment quasi-steady-state TMDD model in their Eq. 7) by",
       "fitting the efalizumab PK profiles from Bauer RJ et al. J Pharmacokinet Biopharm 1999;27:397-420.",

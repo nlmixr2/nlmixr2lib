@@ -48,39 +48,39 @@ Almond_2016_rifampicin_invitro <- function() {
   vignette <- "Almond_2016_cyp3a4_induction"
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; static in vitro concentration-response model driven by an external rifampicin concentration covariate)",
+    time = "h",
+    dosing = "(none; static in vitro concentration-response model driven by an external rifampicin concentration covariate)",
     concentration = "(both observations are dimensionless fold-induction over vehicle control; the driving covariate CP_RIF_UM is the nominal rifampicin concentration in the culture medium in uM)"
   )
 
   covariateData <- list(
     CP_RIF_UM = list(
-      description        = "Nominal rifampicin concentration in the hepatocyte culture medium, supplied as a covariate. Reused canonical: in this in-vitro model the column carries a culture-medium concentration rather than a plasma concentration, but the quantity and units (uM) are identical. Same reuse rationale as CP_TUVUSERTIB_NGML in Mukker_2026_tuvusertib_hERG.R, which carries a patch-clamp bath concentration.",
-      units              = "umol/L (uM)",
-      type               = "continuous",
+      description = "Nominal rifampicin concentration in the hepatocyte culture medium, supplied as a covariate. Reused canonical: in this in-vitro model the column carries a culture-medium concentration rather than a plasma concentration, but the quantity and units (uM) are identical. Same reuse rationale as CP_TUVUSERTIB_NGML in Mukker_2026_tuvusertib_hERG.R, which carries a patch-clamp bath concentration.",
+      units = "umol/L (uM)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Almond 2016 Table 1: rifampicin was assayed at seven final concentrations in culture medium containing 0.1 percent dimethyl sulfoxide (v/v) -- 0.03, 0.1, 0.3, 1, 3, 10 and 30 uM. Concentration ranges were chosen per inducer 'with the aim of determining a robust Indmax and IndC50' (Materials and Methods).",
         "The top concentration is 100-fold above the fitted activity IndC50 of 0.30 uM, so the plateau of the curve is well determined; this is why rifampicin has the tightest donor-level S.D. on Indmax of the six inducers.",
         "Rifampicin MW = 823 g/mol (Supplemental Table 2), so 1 uM = 0.823 mg/L = 823 ng/mL.",
         "Set to 0 for the vehicle-control condition, at which the model returns fold = 1 by construction."
       ),
-      source_name        = "concentration of the inducer"
+      source_name = "concentration of the inducer"
     )
   )
 
   population <- list(
-    species          = "in vitro (cryopreserved human hepatocytes, four donors: Hu1206, Hu1191, Hu1198, Hu4193)",
-    n_subjects       = 4L,
-    n_studies        = 1L,
-    age_range        = NA_character_,
-    weight_range     = NA_character_,
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = NA_character_,
-    disease_state    = "Not applicable -- primary human hepatocytes in culture.",
-    dose_range       = "Nominal rifampicin concentrations 0.03, 0.1, 0.3, 1, 3, 10 and 30 uM in culture medium with 0.1 percent dimethyl sulfoxide (v/v) (Table 1).",
-    regions          = NA_character_,
-    notes            = paste(
+    species = "in vitro (cryopreserved human hepatocytes, four donors: Hu1206, Hu1191, Hu1198, Hu4193)",
+    n_subjects = 4L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
+    sex_female_pct = NA_real_,
+    race_ethnicity = NA_character_,
+    disease_state = "Not applicable -- primary human hepatocytes in culture.",
+    dose_range = "Nominal rifampicin concentrations 0.03, 0.1, 0.3, 1, 3, 10 and 30 uM in culture medium with 0.1 percent dimethyl sulfoxide (v/v) (Table 1).",
+    regions = NA_character_,
+    notes = paste(
       "Cryopreserved human hepatocytes from four donors (Hu1206, Hu1191, Hu1198, Hu4193; Life Technologies) were incubated with serial dilutions of the inducer prepared daily in dimethyl sulfoxide (Materials and Methods, 'Materials' and 'Generation of Induction Parameters In Vitro').",
       "TWO ENDPOINTS WERE MEASURED IN PARALLEL IN THE SAME INCUBATIONS: CYP3A4 catalytic activity, as 6-beta-hydroxytestosterone formation quantified by liquid chromatography-tandem mass spectrometry, and CYP3A4 mRNA, quantified with the QuantiGene Plex 2.0 assay (Affymetrix panel 11477). Because the two readouts come from the same cells in the same experiment, they are carried as two outputs of one model rather than as two model files.",
       "Cell toxicity and viability were monitored by lactate dehydrogenase leakage and AlamarBlue.",

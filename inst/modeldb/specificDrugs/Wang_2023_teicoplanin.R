@@ -26,17 +26,17 @@ Wang_2023_teicoplanin <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    central     = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Body-surface-area-normalized glomerular filtration rate estimated with the CKD-EPI equation, the only covariate retained in the final model (linear effect on clearance)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Body-surface-area-normalized glomerular filtration rate estimated with the CKD-EPI equation, the only covariate retained in the final model (linear effect on clearance)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column eGFR. Creatinine-based CKD-EPI estimate (Wang 2023 Methods,",
         "'Patients and Data Collection'; the paper cites the CKD-EPI equation as its",
         "reference 20), already normalized to 1.73 m^2 body surface area, so it is",
@@ -61,73 +61,73 @@ Wang_2023_teicoplanin <- function() {
         "threshold), so eGFR is the sole renal descriptor in the model and is applied",
         "to CRRT and non-CRRT records alike."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Median 61 kg (range 40-115) in the model-building group (Wang 2023 Table 1). Screened on CL (dOFV -0.930) and on Vc (dOFV -1.448) and not retained (Supplementary Table S1)."
+      units = "kg",
+      type = "continuous",
+      notes = "Median 61 kg (range 40-115) in the model-building group (Wang 2023 Table 1). Screened on CL (dOFV -0.930) and on Vc (dOFV -1.448) and not retained (Supplementary Table S1)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Median 33.6 g/L (range 17.5-49.2) in the model-building group (Wang 2023 Table 1). Screened on CL (dOFV -3.700) and on Vc (dOFV -2.688) and not retained (Supplementary Table S1). The Discussion attributes the null result to the cohort's albumin being within the normal range, in contrast with earlier teicoplanin models in which albumin acted on the volume of distribution."
+      units = "g/L",
+      type = "continuous",
+      notes = "Median 33.6 g/L (range 17.5-49.2) in the model-building group (Wang 2023 Table 1). Screened on CL (dOFV -3.700) and on Vc (dOFV -2.688) and not retained (Supplementary Table S1). The Discussion attributes the null result to the cohort's albumin being within the normal range, in contrast with earlier teicoplanin models in which albumin acted on the volume of distribution."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Median 161 umol/L (range 24.0-696) in the model-building group (Wang 2023 Table 1). Screened on CL (dOFV -23.839, the largest single drop in the forward step) and on Vc (dOFV -7.590). Not retained: the authors state they deliberately selected only mutually independent covariates (Wang 2023 Methods, 'PK Modeling'), and eGFR - which is itself derived from serum creatinine - was carried forward instead."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Median 161 umol/L (range 24.0-696) in the model-building group (Wang 2023 Table 1). Screened on CL (dOFV -23.839, the largest single drop in the forward step) and on Vc (dOFV -7.590). Not retained: the authors state they deliberately selected only mutually independent covariates (Wang 2023 Methods, 'PK Modeling'), and eGFR - which is itself derived from serum creatinine - was carried forward instead."
     ),
     CRCL_COCKCROFT = list(
       description = "Cockcroft-Gault creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Median 34.8 mL/min (range 8.82-296) in the model-building group (Wang 2023 Table 1). Screened on CL (dOFV -12.856) and on Vc (dOFV -1.745) and not retained in favour of the BSA-normalized CKD-EPI eGFR (Supplementary Table S1). Documented here only as a screened covariate; the canonical CRCL column in this model carries the CKD-EPI eGFR, not this Cockcroft-Gault value."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Median 34.8 mL/min (range 8.82-296) in the model-building group (Wang 2023 Table 1). Screened on CL (dOFV -12.856) and on Vc (dOFV -1.745) and not retained in favour of the BSA-normalized CKD-EPI eGFR (Supplementary Table S1). Documented here only as a screened covariate; the canonical CRCL column in this model carries the CKD-EPI eGFR, not this Cockcroft-Gault value."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Median 56.5 years (range 21-91) in the model-building group (Wang 2023 Table 1). Screened on CL (dOFV -2.369) and on Vc (dOFV -0.210) and not retained (Supplementary Table S1)."
+      units = "years",
+      type = "continuous",
+      notes = "Median 56.5 years (range 21-91) in the model-building group (Wang 2023 Table 1). Screened on CL (dOFV -2.369) and on Vc (dOFV -0.210) and not retained (Supplementary Table S1)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "38 of 108 model-building subjects were female (Wang 2023 Table 1). Screened on CL (dOFV -1.356) and on Vc (dOFV +38.137, i.e. a worse fit) and not retained (Supplementary Table S1). The supplement's categorical-covariate form is P_ij = P_tv,j * theta_j^COV_gender * e^eta_i with COV_gender = 1 for male and 0 for female."
+      units = "(binary)",
+      type = "binary",
+      notes = "38 of 108 model-building subjects were female (Wang 2023 Table 1). Screened on CL (dOFV -1.356) and on Vc (dOFV +38.137, i.e. a worse fit) and not retained (Supplementary Table S1). The supplement's categorical-covariate form is P_ij = P_tv,j * theta_j^COV_gender * e^eta_i with COV_gender = 1 for male and 0 for female."
     ),
     RRT_CRRT_STATUS = list(
       description = "Continuous renal replacement therapy indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "43 of 108 model-building subjects (39.8%) were on CRRT (Wang 2023 Table 1). Screened on CL (dOFV -6.685) and on Vc (dOFV -1.770) and not retained (Supplementary Table S1). The Discussion notes this contrasts with reports that CRRT modality influences teicoplanin disposition, and recommends therapeutic drug monitoring for these patients; the influence of CRRT settings (blood-flow rate, dialysate flow rate, filter) is listed as a study limitation."
+      units = "(binary)",
+      type = "binary",
+      notes = "43 of 108 model-building subjects (39.8%) were on CRRT (Wang 2023 Table 1). Screened on CL (dOFV -6.685) and on Vc (dOFV -1.770) and not retained (Supplementary Table S1). The Discussion notes this contrasts with reports that CRRT modality influences teicoplanin disposition, and recommends therapeutic drug monitoring for these patients; the influence of CRRT settings (blood-flow rate, dialysate flow rate, filter) is listed as a study limitation."
     ),
     APACHE2 = list(
       description = "Baseline APACHE II severity-of-illness score",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = "Median 25.5 (range 10-37) in the model-building group (Wang 2023 Table 1). Screened on CL (dOFV -2.619) and on Vc (dOFV -4.827) and not retained (Supplementary Table S1)."
+      units = "(score)",
+      type = "continuous",
+      notes = "Median 25.5 (range 10-37) in the model-building group (Wang 2023 Table 1). Screened on CL (dOFV -2.619) and on Vc (dOFV -4.827) and not retained (Supplementary Table S1)."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 108L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 108L,
+    n_studies = 1L,
     n_concentrations = 304L,
-    age_range        = "21-91 years (Wang 2023 Table 1, model-establishment group)",
-    age_median       = "56.5 years",
-    weight_range     = "40-115 kg (Wang 2023 Table 1, model-establishment group)",
-    weight_median    = "61 kg",
-    sex_female_pct   = 35.2,
-    race_ethnicity   = "Not reported by category; single-centre Chinese ICU cohort (Guangdong Provincial People's Hospital, Guangzhou)",
-    disease_state    = paste(
+    age_range = "21-91 years (Wang 2023 Table 1, model-establishment group)",
+    age_median = "56.5 years",
+    weight_range = "40-115 kg (Wang 2023 Table 1, model-establishment group)",
+    weight_median = "61 kg",
+    sex_female_pct = 35.2,
+    race_ethnicity = "Not reported by category; single-centre Chinese ICU cohort (Guangdong Provincial People's Hospital, Guangzhou)",
+    disease_state = paste(
       "Critically ill adults (age >= 18 years) admitted to a medical-surgical",
       "intensive care unit and treated intravenously with teicoplanin for a",
       "diagnosed or clinically suspected Gram-positive infection. Infection sites",
@@ -141,7 +141,7 @@ Wang_2023_teicoplanin <- function() {
       "mL/min/1.73 m^2 and 39.8% receiving CRRT. Patients missing any of the",
       "required demographic or laboratory data were excluded."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Teicoplanin (Targocid, Sanofi) by intravenous infusion over 1 h. Across the",
       "full 151-patient cohort the observed regimens were (Wang 2023 Methods,",
       "'Dosing Regimen'): group 1, 400 mg q12h x 3 loading then 400 mg q24h (n = 35);",
@@ -153,8 +153,8 @@ Wang_2023_teicoplanin <- function() {
       "infections, and 800 mg q12h x 3 or x 5 loading with 400/600/800 mg q24h",
       "maintenance for deep-seated infection."
     ),
-    regions          = "China (Guangdong Provincial People's Hospital ICU, Guangzhou; July 2018 to January 2020)",
-    renal_function   = paste(
+    regions = "China (Guangdong Provincial People's Hospital ICU, Guangzhou; July 2018 to January 2020)",
+    renal_function = paste(
       "Model-establishment group (Wang 2023 Table 1): CKD-EPI eGFR median 29.2",
       "mL/min/1.73 m^2 (range 4.89-170); Cockcroft-Gault creatinine clearance median",
       "34.8 mL/min (range 8.82-296); serum creatinine median 161 umol/L (range",
@@ -182,7 +182,7 @@ Wang_2023_teicoplanin <- function() {
       "(Wang 2023 Results). Mean prediction error -2.22 mg/L and RMSE 8.88 mg/L",
       "against the final model."
     ),
-    notes            = paste(
+    notes = paste(
       "Single-centre prospective observational study. 347 plasma teicoplanin",
       "concentrations from 151 ICU patients in total; the population PK model was",
       "built on the 304 samples from the 108 patients who contributed more than two",

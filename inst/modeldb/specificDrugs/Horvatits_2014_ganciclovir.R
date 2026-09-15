@@ -22,7 +22,7 @@ Horvatits_2014_ganciclovir <- function() {
     sep = " "
   )
   vignette <- "Yang_2023_ganciclovir_model_repository"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # No covariateData: Yang 2023 Table 4 records "NR" for every covariate column of
   # this study, with the footnote "Covariates were not included in the model due to
@@ -31,14 +31,14 @@ Horvatits_2014_ganciclovir <- function() {
   # covariate, and is recorded in `population` below.
 
   population <- list(
-    species        = "human",
-    n_subjects     = 9L,
-    n_studies      = 1L,
-    age_median     = "mean 56 (SD 9) years",
-    weight_median  = "mean 86 (SD 25) kg",
+    species = "human",
+    n_subjects = 9L,
+    n_studies = 1L,
+    age_median = "mean 56 (SD 9) years",
+    weight_median = "mean 86 (SD 25) kg",
     sex_female_pct = 11.1,
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill patients with suspected or proven CMV infection, all",
       "receiving continuous venovenous hemodiafiltration (CVVHDF) as",
       "renal-replacement therapy.",
@@ -51,16 +51,16 @@ Horvatits_2014_ganciclovir <- function() {
       "CVVHDF-supported patient rather than a native renal clearance.",
       sep = " "
     ),
-    dose_range     = "IV ganciclovir 5 mg/kg infused over 0.5 h via a central line.",
-    regions        = paste(
+    dose_range = "IV ganciclovir 5 mg/kg infused over 0.5 h via a central line.",
+    regions = paste(
       "Reported as 'Australia (Prospective)' in Yang 2023 Table 2. Flagged for",
       "verification against the primary publication: the Horvatits 2014",
       "author group is based in Vienna, so the country field in the review's",
       "table may be a transcription error for Austria.",
       sep = " "
     ),
-    bioassay       = "HPLC, LLOQ 5 ng/mL.",
-    notes          = paste(
+    bioassay = "HPLC, LLOQ 5 ng/mL.",
+    notes = paste(
       "Demographics and dosing from Yang 2023 Table 2. Intensive sampling at",
       "0 (pre-dose), 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12 and 24 h post dose; the number",
       "of observations was not reported. No covariates were investigated because of",
@@ -79,7 +79,7 @@ Horvatits_2014_ganciclovir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 

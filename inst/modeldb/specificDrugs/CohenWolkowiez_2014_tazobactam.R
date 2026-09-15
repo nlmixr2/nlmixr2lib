@@ -10,7 +10,7 @@ CohenWolkowiez_2014_tazobactam <- function() {
     sep = " "
   )
   vignette <- "CohenWolkowiez_2014_piperacillin_tazobactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -21,11 +21,11 @@ CohenWolkowiez_2014_tazobactam <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Linear allometric scaling on both CL and V with the WT",
         "exponent fixed at 1 (Cohen-Wolkowiez 2014 Table 2 and Population PK",
         "model building paragraph: estimation of a free body-size exponent and",
@@ -34,14 +34,14 @@ CohenWolkowiez_2014_tazobactam <- function() {
         "per-kg typical values multiply directly by WT with no centring (the",
         "cohort spanned 0.473-3.990 kg, median 1.439 kg, Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age in weeks + postnatal age in weeks)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age in weeks + postnatal age in weeks)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives the power-form maturation effect on CL with",
         "exponent 1.35 (Cohen-Wolkowiez 2014 Table 4) and reference 33 weeks",
         "(close to the cohort median PMA of 32 weeks, Table 1). The source",
@@ -49,14 +49,14 @@ CohenWolkowiez_2014_tazobactam <- function() {
         "(months) back to weeks via pma_wk = PAGE * 4.35 so the published",
         "exponent and 33-week reference apply unchanged."
       ),
-      source_name        = "PMA (weeks)"
+      source_name = "PMA (weeks)"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine concentration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Power-form effect on CL: (CREAT / 0.5)^theta_SCR with",
         "theta_SCR = -0.35 (Cohen-Wolkowiez 2014 Table 4). Reference 0.5 mg/dL",
         "is below the cohort median (0.8 mg/dL, Table 1) but matches the value",
@@ -66,14 +66,14 @@ CohenWolkowiez_2014_tazobactam <- function() {
         "an exponential SCR-vs-PMA relationship derived from the study cohort",
         "(Population PK analysis paragraph)."
       ),
-      source_name        = "SCR"
+      source_name = "SCR"
     ),
     CONMED_GEN = list(
-      description        = "Concomitant gentamicin coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant gentamicin coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concurrent gentamicin)",
-      notes              = paste(
+      notes = paste(
         "Time-varying indicator: 1 if gentamicin was administered concurrently",
         "with piperacillin-tazobactam, 0 if not. Multiplicative power-form",
         "effect on CL: COVGENT^GENT with COVGENT = 1.52 (Cohen-Wolkowiez 2014",
@@ -85,34 +85,34 @@ CohenWolkowiez_2014_tazobactam <- function() {
         "as a marker of an older / sicker subset rather than a mechanistic",
         "drug-drug interaction."
       ),
-      source_name        = "GENT"
+      source_name = "GENT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32,
-    n_studies      = 1,
-    age_range      = "Postnatal age 1-60 days; postmenstrual age 25-48 weeks; gestational age 23-40 weeks",
-    age_median     = "Postnatal age 8 days; postmenstrual age 32 weeks; gestational age 30 weeks",
-    weight_range   = "0.473-3.990 kg",
-    weight_median  = "1.439 kg",
+    species = "human",
+    n_subjects = 32,
+    n_studies = 1,
+    age_range = "Postnatal age 1-60 days; postmenstrual age 25-48 weeks; gestational age 23-40 weeks",
+    age_median = "Postnatal age 8 days; postmenstrual age 32 weeks; gestational age 30 weeks",
+    weight_range = "0.473-3.990 kg",
+    weight_median = "1.439 kg",
     sex_female_pct = 37,
     race_ethnicity = "Not reported in the source paper",
-    disease_state  = "Critically ill premature and term infants under 61 days postnatal age with suspected systemic infection (e.g. bacteraemia, necrotising enterocolitis, complicated intra-abdominal infection)",
-    dose_range     = paste(
+    disease_state = "Critically ill premature and term infants under 61 days postnatal age with suspected systemic infection (e.g. bacteraemia, necrotising enterocolitis, complicated intra-abdominal infection)",
+    dose_range = paste(
       "Tazobactam component of piperacillin-tazobactam dosed at the fixed 8:1",
       "piperacillin:tazobactam ratio: 10 mg/kg q8h IV (30-min infusion) for",
       "infants who received 80 mg/kg piperacillin (cohorts 1-3) and",
       "12.5 mg/kg q8h for infants who received 100 mg/kg piperacillin (cohort 4)."
     ),
-    regions        = "United States (four neonatal intensive care units)",
-    ga_range       = "23-40 weeks at birth (Table 1)",
-    pma_range      = "25-48 weeks postmenstrual age (Table 1)",
-    pna_range      = "1-60 days postnatal age (Table 1)",
-    creat_range    = "0.3-2.0 mg/dL serum creatinine (Table 1; cohort median 0.8 mg/dL)",
-    conmed_pct     = c(gentamicin = 63, dopamine = 13, epinephrine = 6),
-    notes          = paste(
+    regions = "United States (four neonatal intensive care units)",
+    ga_range = "23-40 weeks at birth (Table 1)",
+    pma_range = "25-48 weeks postmenstrual age (Table 1)",
+    pna_range = "1-60 days postnatal age (Table 1)",
+    creat_range = "0.3-2.0 mg/dL serum creatinine (Table 1; cohort median 0.8 mg/dL)",
+    conmed_pct = c(gentamicin = 63, dopamine = 13, epinephrine = 6),
+    notes = paste(
       "32 critically ill infants enrolled 2010-2011 at four US neonatal",
       "intensive care units. 128 timed plasma piperacillin samples and",
       "matched tazobactam samples were retained (median 4 samples per infant);",

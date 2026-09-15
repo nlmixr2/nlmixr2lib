@@ -15,53 +15,53 @@ Macpherson_2015_rosuvastatin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "rosuvastatin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "rosuvastatin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "rosuvastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "rosuvastatin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "rosuvastatin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (time-varying through the 2-year CHARON observation window).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (time-varying through the 2-year CHARON observation window).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on apparent clearance (estimated exponent 0.352, reference 42 kg = CHARON baseline median weight). No weight effect on Vc, Vp, or Q (the paper rejected the fixed allometric form with exponents 0.75 on CL and 1 on V because it gave prediction bias). Time-varying: actual observed weights through the 2-year CHARON study were used so that growth-driven changes in CL/F are captured.",
-      source_name        = "WT"
+      notes = "Power covariate on apparent clearance (estimated exponent 0.352, reference 42 kg = CHARON baseline median weight). No weight effect on Vc, Vp, or Q (the paper rejected the fixed allometric form with exponents 0.75 on CL and 1 on V because it gave prediction bias). Time-varying: actual observed weights through the 2-year CHARON study were used so that growth-driven changes in CL/F are captured.",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplicative covariate on apparent clearance. The source paper reports a male-vs-female fold-effect (Male CL/F x 1.41; female-children as the implicit reference), so the model applies the factor as 1.41^(1 - SEXF) to keep Table 2's published CL/F = 129 L/h interpretable as the female-at-42-kg typical value. Male children have CL/F ~1.41x higher than female children of the same weight. Worked Table 2 examples reproduced: a 20 kg female has CL/F = 99 L/h, a 20 kg male has CL/F = 140 L/h, a 99 kg male has CL/F = 246 L/h, a 111 kg female has CL/F = 182 L/h.",
-      source_name        = "SEXF"
+      notes = "Multiplicative covariate on apparent clearance. The source paper reports a male-vs-female fold-effect (Male CL/F x 1.41; female-children as the implicit reference), so the model applies the factor as 1.41^(1 - SEXF) to keep Table 2's published CL/F = 129 L/h interpretable as the female-at-42-kg typical value. Male children have CL/F ~1.41x higher than female children of the same weight. Worked Table 2 examples reproduced: a 20 kg female has CL/F = 99 L/h, a 20 kg male has CL/F = 140 L/h, a 99 kg male has CL/F = 246 L/h, a 111 kg female has CL/F = 182 L/h.",
+      source_name = "SEXF"
     ),
     SAMPLE_INTENSIVE = list(
-      description        = "Per-observation indicator of sampling intensity: 1 = intensive (rich post-dose profile), 0 = sparse (pre-dose / steady-state trough).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Per-observation indicator of sampling intensity: 1 = intensive (rich post-dose profile), 0 = sparse (pre-dose / steady-state trough).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (sparse pre-dose sampling)",
-      notes              = "Record-level indicator that switches the proportional residual-error magnitude per observation: intensive sampling 39.4% CV, sparse sampling 59.5% CV (Macpherson 2015 Table 2 final model). In CHARON (n=196) the 12 PK-pilot subjects had intensive 24-h post-dose sampling on Day 0 followed by sparse pre-dose sampling over the 2-year follow-up, while the other 184 subjects had sparse pre-dose sampling only. In Study 4522IL/0086 (n=18) every observation is intensive (rich profiles after single 10/40/80 mg doses and after 7 days of 80 mg once-daily dosing). Set SAMPLE_INTENSIVE = 1 on observations within a rich post-dose profile, 0 otherwise.",
-      source_name        = "SAMPLE_INTENSIVE"
+      notes = "Record-level indicator that switches the proportional residual-error magnitude per observation: intensive sampling 39.4% CV, sparse sampling 59.5% CV (Macpherson 2015 Table 2 final model). In CHARON (n=196) the 12 PK-pilot subjects had intensive 24-h post-dose sampling on Day 0 followed by sparse pre-dose sampling over the 2-year follow-up, while the other 184 subjects had sparse pre-dose sampling only. In Study 4522IL/0086 (n=18) every observation is intensive (rich profiles after single 10/40/80 mg doses and after 7 days of 80 mg once-daily dosing). Set SAMPLE_INTENSIVE = 1 on observations within a rich post-dose profile, 0 otherwise.",
+      source_name = "SAMPLE_INTENSIVE"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 214L,
-    n_observations   = 2029L,
-    n_studies        = 2L,
-    age_range        = "6-17 years",
-    age_median       = "11 years (CHARON), 14 years (4522IL/0086)",
-    weight_range     = "20-116 kg",
-    weight_median    = "42 kg (CHARON), 63.2 kg (4522IL/0086)",
-    sex_female_pct   = 56,
-    race_ethnicity   = c(Caucasian = 89, Black = 3, Asian = 7, Hispanic = 0.5, Other = 1.5),
-    disease_state    = "Heterozygous familial hypercholesterolemia (HeFH)",
-    dose_range       = "5-80 mg oral once daily; CHARON: 5/10/20 mg once-daily titration; 4522IL/0086: 10/40/80 mg single dose and 80 mg once daily for 7 days",
-    regions          = "Multicenter pediatric HeFH centers (CHARON, NCT01078675) and Study 4522IL/0086",
-    notes            = "Pooled population PK analysis from two AstraZeneca pediatric studies. Demographics from Macpherson 2015 Table 1. Race was not formally analyzed as a covariate (89% Caucasian, frequency of any other race category <7%). The dataset included 1,735 concentrations from CHARON (median 9 sparse trough samples per subject; 12 PK-pilot subjects had an additional intensive 24-h profile) and 294 concentrations from 4522IL/0086 (median 12 intensive samples per subject)."
+    species = "human",
+    n_subjects = 214L,
+    n_observations = 2029L,
+    n_studies = 2L,
+    age_range = "6-17 years",
+    age_median = "11 years (CHARON), 14 years (4522IL/0086)",
+    weight_range = "20-116 kg",
+    weight_median = "42 kg (CHARON), 63.2 kg (4522IL/0086)",
+    sex_female_pct = 56,
+    race_ethnicity = c(Caucasian = 89, Black = 3, Asian = 7, Hispanic = 0.5, Other = 1.5),
+    disease_state = "Heterozygous familial hypercholesterolemia (HeFH)",
+    dose_range = "5-80 mg oral once daily; CHARON: 5/10/20 mg once-daily titration; 4522IL/0086: 10/40/80 mg single dose and 80 mg once daily for 7 days",
+    regions = "Multicenter pediatric HeFH centers (CHARON, NCT01078675) and Study 4522IL/0086",
+    notes = "Pooled population PK analysis from two AstraZeneca pediatric studies. Demographics from Macpherson 2015 Table 1. Race was not formally analyzed as a covariate (89% Caucasian, frequency of any other race category <7%). The dataset included 1,735 concentrations from CHARON (median 9 sparse trough samples per subject; 12 PK-pilot subjects had an additional intensive 24-h profile) and 294 concentrations from 4522IL/0086 (median 12 intensive samples per subject)."
   )
 
   ini({

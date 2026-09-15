@@ -9,116 +9,116 @@ Muthukrishnan_2025_clazakizumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "clazakizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "clazakizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "clazakizumab", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "hs-CRP production rate", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "hs-CRP production rate", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline weight used for power scaling on CL and V1 with reference 95 kg (PK-dataset overall median; Table S1, N=95). Muthukrishnan 2025 states the weight allometric exponents were estimated freely (0.979 on CL, 0.784 on V1) rather than fixed to 0.75/1; the paper notes 'Any effects by sex are likely already described through the weight-based allometry model' (Results 3.1). The same median 95 kg holds in the larger PD dataset (Table S2, N=126).",
-      source_name        = "WT"
+      notes = "Baseline weight used for power scaling on CL and V1 with reference 95 kg (PK-dataset overall median; Table S1, N=95). Muthukrishnan 2025 states the weight allometric exponents were estimated freely (0.979 on CL, 0.784 on V1) rather than fixed to 0.75/1; the paper notes 'Any effects by sex are likely already described through the weight-based allometry model' (Results 3.1). The same median 95 kg holds in the larger PD dataset (Table S2, N=126).",
+      source_name = "WT"
     ),
     IL6 = list(
-      description        = "Baseline free serum interleukin-6 concentration",
-      units              = "ng/L (equivalently pg/mL)",
-      type               = "continuous",
+      description = "Baseline free serum interleukin-6 concentration",
+      units = "ng/L (equivalently pg/mL)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline free IL-6 used for a power effect on CL with reference 6.80 ng/L (PK-dataset overall median; Table S1). Retained after producing a 20-point OFV drop (p < 0.001; Results 3.1). Missing in 3/95 subjects (3.2%). Consistent with clazakizumab's mechanism (anti-IL-6 mAb): higher baseline free IL-6 modestly increases CL.",
-      source_name        = "IL6"
+      notes = "Baseline free IL-6 used for a power effect on CL with reference 6.80 ng/L (PK-dataset overall median; Table S1). Retained after producing a 20-point OFV drop (p < 0.001; Results 3.1). Missing in 3/95 subjects (3.2%). Consistent with clazakizumab's mechanism (anti-IL-6 mAb): higher baseline free IL-6 modestly increases CL.",
+      source_name = "IL6"
     ),
     CRP = list(
-      description        = "Baseline high-sensitivity C-reactive protein (predose Day 1)",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline high-sensitivity C-reactive protein (predose Day 1)",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline hs-CRP (Roche Cardiac CRP Latex High Sensitive assay on Cobas c502; particle-enhanced immunoturbidimetry). Value = predose Day 1 sample per Muthukrishnan 2025 Methods 2.4; the paper's 'Baseline hs-CRP: Predose Day 1 (mg/L)' median = 8.15 mg/L (PD-dataset overall, Table S2, N=126) is used as the reference for the power scaling on kin. Study inclusion required baseline hs-CRP >= 2 mg/L (assay linearity 0.15-20.0 mg/L extended to 0.2-300 mg/L with 1:15 dilution). Because the exponent 0.809 < 1 and E0 = kin/kout at steady state, the model-implied E0 partially compensates but does not exactly reproduce each subject's observed baseline; the PD residual absorbs the offset.",
-      source_name        = "CRP"
+      notes = "Baseline hs-CRP (Roche Cardiac CRP Latex High Sensitive assay on Cobas c502; particle-enhanced immunoturbidimetry). Value = predose Day 1 sample per Muthukrishnan 2025 Methods 2.4; the paper's 'Baseline hs-CRP: Predose Day 1 (mg/L)' median = 8.15 mg/L (PD-dataset overall, Table S2, N=126) is used as the reference for the power scaling on kin. Study inclusion required baseline hs-CRP >= 2 mg/L (assay linearity 0.15-20.0 mg/L extended to 0.2-300 mg/L with 1:15 dilution). Because the exponent 0.809 < 1 and E0 = kin/kout at steady state, the model-implied E0 partially compensates but does not exactly reproduce each subject's observed baseline; the PD residual absorbs the offset.",
+      source_name = "CRP"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age (years)",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a baseline covariate on CL and V1 (Methods 2.3) but not retained in the final popPK model. Also screened for the PK-PD model (on kin or IC50; Methods 2.4) but not retained. Table S1 PK-dataset median 65 years [31-83]."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a baseline covariate on CL and V1 (Methods 2.3) but not retained in the final popPK model. Also screened for the PK-PD model (on kin or IC50; Methods 2.4) but not retained. Table S1 PK-dataset median 65 years [31-83]."
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened on CL, V1, and V2 but not retained (p > 0.001; Results 3.1). Paper attributes any residual sex signal to the weight-based allometry that is already in the model. PK dataset 66.3% male; PD dataset 66.7% male."
+      notes = "Screened on CL, V1, and V2 but not retained (p > 0.001; Results 3.1). Paper attributes any residual sex signal to the weight-based allometry that is already in the model. PK dataset 66.3% male; PD dataset 66.7% male."
     ),
     RACE = list(
       description = "Self-reported race (White / Black or African American / Asian / American Indian or Alaska Native / Native Hawaiian or Other Pacific Islander / Other / Multiple)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened on CL and V1 but not retained (Methods 2.3, Table S1). PK-dataset composition per Table S1: White 57.9%, Black or African American 35.8%, Asian 1.1%, American Indian/Alaska Native 1.1%, Native Hawaiian/Pacific Islander 1.1%, Other 1.1%, Multiple 2.1%."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened on CL and V1 but not retained (Methods 2.3, Table S1). PK-dataset composition per Table S1: White 57.9%, Black or African American 35.8%, Asian 1.1%, American Indian/Alaska Native 1.1%, Native Hawaiian/Pacific Islander 1.1%, Other 1.1%, Multiple 2.1%."
     ),
     AST = list(
       description = "Aspartate aminotransferase (baseline)",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a baseline liver-enzyme covariate on CL (Methods 2.3) but not retained. Table S1 PK-dataset median 13.0 U/L [6.00-33.0]."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a baseline liver-enzyme covariate on CL (Methods 2.3) but not retained. Table S1 PK-dataset median 13.0 U/L [6.00-33.0]."
     ),
     ALT = list(
       description = "Alanine aminotransferase (baseline)",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a baseline liver-enzyme covariate on CL (Methods 2.3) but not retained. Table S1 PK-dataset median 12.0 U/L [4.00-51.0]; missing 2.1%."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a baseline liver-enzyme covariate on CL (Methods 2.3) but not retained. Table S1 PK-dataset median 12.0 U/L [4.00-51.0]; missing 2.1%."
     ),
     ALP = list(
       description = "Alkaline phosphatase (baseline)",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a baseline liver-enzyme covariate on CL (Methods 2.3) but not retained. Table S1 PK-dataset median 83.0 U/L [39.0-561]."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a baseline liver-enzyme covariate on CL (Methods 2.3) but not retained. Table S1 PK-dataset median 83.0 U/L [39.0-561]."
     ),
     BILI = list(
       description = "Total bilirubin (baseline)",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened as a baseline hepatic covariate on CL (Methods 2.3) but not retained. Table S1 PK-dataset median 0.450 mg/dL [0.240-0.959]."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened as a baseline hepatic covariate on CL (Methods 2.3) but not retained. Table S1 PK-dataset median 0.450 mg/dL [0.240-0.959]."
     ),
     ALB = list(
       description = "Serum albumin (baseline)",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened on CL (PK) and on kin/IC50 (PK-PD) but not retained. Table S1/S2 median 38 g/L [33-47]. Note the population is on dialysis so albumin is skewed low; had it been retained it would likely have entered as a power effect analogous to Li 2018 PF-04236921."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened on CL (PK) and on kin/IC50 (PK-PD) but not retained. Table S1/S2 median 38 g/L [33-47]. Note the population is on dialysis so albumin is skewed low; had it been retained it would likely have entered as a power effect analogous to Li 2018 PF-04236921."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects_pk  = 95L,
-    n_subjects_pd  = 126L,
-    n_subjects     = 126L,
-    n_studies      = 1L,
-    trial          = "POSIBIL 6 ESKD phase 2b (NCT05485961)",
-    age_range      = "31-83 years (PK dataset); 31-86 years (PD dataset with placebo)",
-    age_median     = "65 years (PK dataset); 66 years (PD dataset)",
-    weight_range   = "53-163 kg",
-    weight_median  = "95 kg",
+    species = "human",
+    n_subjects_pk = 95L,
+    n_subjects_pd = 126L,
+    n_subjects = 126L,
+    n_studies = 1L,
+    trial = "POSIBIL 6 ESKD phase 2b (NCT05485961)",
+    age_range = "31-83 years (PK dataset); 31-86 years (PD dataset with placebo)",
+    age_median = "65 years (PK dataset); 66 years (PD dataset)",
+    weight_range = "53-163 kg",
+    weight_median = "95 kg",
     sex_female_pct = 33.7,
     race_ethnicity = c(
-      White                                   = 57.9,
-      `Black or African American`             = 35.8,
-      Asian                                   = 1.1,
-      `American Indian / Alaska Native`       = 1.1,
-      `Native Hawaiian / Pacific Islander`    = 1.1,
-      Other                                   = 1.1,
-      Multiple                                = 2.1
+      White = 57.9,
+      `Black or African American` = 35.8,
+      Asian = 1.1,
+      `American Indian / Alaska Native` = 1.1,
+      `Native Hawaiian / Pacific Islander` = 1.1,
+      Other = 1.1,
+      Multiple = 2.1
     ),
-    disease_state  = "End-stage kidney disease receiving maintenance dialysis; enrolment required cardiovascular disease and/or diabetes plus baseline hs-CRP >= 2 mg/L. Dosing occurred during dialysis; all patients had chronic inflammation (median baseline hs-CRP 8.15 mg/L, range 0.7-215 mg/L).",
-    dose_range     = "Clazakizumab 2.5, 5, or 10 mg IV every 4 weeks (Q4W) as a 3-minute IV bolus via the return venous line of the hemodialysis circuit; placebo control; up to 6 doses (minimum treatment 12 weeks / 3 doses).",
-    regions        = "Multi-regional phase 2b (POSIBIL 6 ESKD).",
+    disease_state = "End-stage kidney disease receiving maintenance dialysis; enrolment required cardiovascular disease and/or diabetes plus baseline hs-CRP >= 2 mg/L. Dosing occurred during dialysis; all patients had chronic inflammation (median baseline hs-CRP 8.15 mg/L, range 0.7-215 mg/L).",
+    dose_range = "Clazakizumab 2.5, 5, or 10 mg IV every 4 weeks (Q4W) as a 3-minute IV bolus via the return venous line of the hemodialysis circuit; placebo control; up to 6 doses (minimum treatment 12 weeks / 3 doses).",
+    regions = "Multi-regional phase 2b (POSIBIL 6 ESKD).",
     n_observations = c(pk = 891L, pd = 1401L),
-    notes          = paste(
+    notes = paste(
       "PK analysis dataset: 891 measurable clazakizumab concentrations from 95 subjects (Results 3.1).",
       "PD analysis dataset: 1401 measurable hs-CRP observations from 126 subjects (Results 3.2); 8.9% of post-first-dose hs-CRP observations were BLQ and handled by M3 imputation.",
       "Assay ranges: clazakizumab enzyme immunoassay 20.0-1250 ng/mL (measures free / unbound antibody); hs-CRP Roche Cardiac CRP (Latex) High Sensitive 0.15-20.0 mg/L extended to 0.2-300 mg/L with automatic 1:15 dilution.",

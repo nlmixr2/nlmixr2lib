@@ -9,7 +9,11 @@ Nielsen_2011_erythromycin <- function() {
     sep = " "
   )
   vignette <- "Nielsen_2011_antibacterial_efficacy"
-  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "natural log CFU/mL (observation); mg/L (drug compartment)")
+  units <- list(
+    time = "h",
+    dosing = "mg/L (drug input concentration)",
+    concentration = "natural log CFU/mL (observation); mg/L (drug compartment)"
+  )
 
   paper_specific_compartments <- c("bact_sensitive", "bact_resting")
 
@@ -18,27 +22,37 @@ Nielsen_2011_erythromycin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central        = list(analyte = "erythromycin", units = NA_character_, specimen = "plasma", verified = FALSE),
-    effect         = list(analyte = "erythromycin", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    bact_sensitive = list(analyte = "Streptococcus pyogenes M12 NCTC P1800 (sensitive)", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    bact_resting   = list(analyte = "Streptococcus pyogenes M12 NCTC P1800 (resistant)", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    central = list(analyte = "erythromycin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    effect = list(analyte = "erythromycin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_sensitive = list(
+      analyte = "Streptococcus pyogenes M12 NCTC P1800 (sensitive)",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    bact_resting = list(
+      analyte = "Streptococcus pyogenes M12 NCTC P1800 (resistant)",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "in vitro (Streptococcus pyogenes group A strain M12 NCTC P1800)",
-    n_subjects    = NA_integer_,
-    n_studies     = 1L,
-    organism      = "Streptococcus pyogenes group A M12 NCTC P1800 (National Culture Type Collection); erythromycin MIC 0.125 mg/L",
-    medium        = "Todd-Hewitt broth (35 C, 5% CO2 for plating)",
-    inoculum      = "Target 10^6 CFU/mL at t = 0 (logarithmic-growth-phase culture)",
-    system        = "Static 10-mL test tubes (4 mL broth) and a dynamic in vitro kinetic system (110-mL open-bottom spinner flask with pump-driven dilution producing first-order antibiotic elimination at flow-rate / volume)",
-    duration      = "24 h (some experiments 48 h)",
-    drug          = "Erythromycin (Abboticin; Abbott)",
-    dose_range    = "Static initial concentrations 0.0625, 0.125, 0.25, 0.5, 1, 2, 4, 16, 64 x MIC; dynamic initial concentrations 2 and 16 x MIC with simulated half-lives 0 (constant infusion), 1.7 (human), and 5.1 (one-third human) h",
+    species = "in vitro (Streptococcus pyogenes group A strain M12 NCTC P1800)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Streptococcus pyogenes group A M12 NCTC P1800 (National Culture Type Collection); erythromycin MIC 0.125 mg/L",
+    medium = "Todd-Hewitt broth (35 C, 5% CO2 for plating)",
+    inoculum = "Target 10^6 CFU/mL at t = 0 (logarithmic-growth-phase culture)",
+    system = "Static 10-mL test tubes (4 mL broth) and a dynamic in vitro kinetic system (110-mL open-bottom spinner flask with pump-driven dilution producing first-order antibiotic elimination at flow-rate / volume)",
+    duration = "24 h (some experiments 48 h)",
+    drug = "Erythromycin (Abboticin; Abbott)",
+    dose_range = "Static initial concentrations 0.0625, 0.125, 0.25, 0.5, 1, 2, 4, 16, 64 x MIC; dynamic initial concentrations 2 and 16 x MIC with simulated half-lives 0 (constant infusion), 1.7 (human), and 5.1 (one-third human) h",
     n_observations = 616L,
-    notes         = "Parameters are typical values from the simultaneous static + dynamic estimation (Table 3 'Static and dynamic' column). Random effects (eta) are NOT included: the source NONMEM run estimated only inter-experiment variability in the resting fraction at t=0 via a two-component mixture model, plus replicate and common additive residual error on the natural-log viable count. The packaged file folds the mixture into a typical starting fraction (E[f_resting] = (1 - fmix1) * fpers) and combines the replicate and common residual SDs into a single additive SD."
+    notes = "Parameters are typical values from the simultaneous static + dynamic estimation (Table 3 'Static and dynamic' column). Random effects (eta) are NOT included: the source NONMEM run estimated only inter-experiment variability in the resting fraction at t=0 via a two-component mixture model, plus replicate and common additive residual error on the natural-log viable count. The packaged file folds the mixture into a typical starting fraction (E[f_resting] = (1 - fmix1) * fpers) and combines the replicate and common residual SDs into a single additive SD."
   )
 
   ini({

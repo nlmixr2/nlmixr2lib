@@ -29,23 +29,28 @@ You_2013_hCG_GTN <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    hCG = list(analyte = "human chorionic gonadotrophin (hCG)", units = NA_character_, specimen = "serum", verified = FALSE)
+    hCG = list(
+      analyte = "human chorionic gonadotrophin (hCG)",
+      units = NA_character_,
+      specimen = "serum",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 418L,
-    n_studies      = 1L,
-    age_range      = "median 31.2 years (IQR 26.1-36.1) in Model set; 30.9 years (IQR 26.1-35.6) in Test set (Table 1)",
-    weight_range   = "not reported",
+    species = "human",
+    n_subjects = 418L,
+    n_studies = 1L,
+    age_range = "median 31.2 years (IQR 26.1-36.1) in Model set; 30.9 years (IQR 26.1-35.6) in Test set (Table 1)",
+    weight_range = "not reported",
     sex_female_pct = 100,
     race_ethnicity = NULL,
-    disease_state  = "Low-risk gestational trophoblastic neoplasia (FIGO 2000 risk score 0-6) including invasive mole, choriocarcinoma, epithelioid trophoblastic and placental site trophoblastic tumours; cases of MTX resistance defined as three static or three rising hCG measurements (within +/-10%) on the 8-day MTX regimen.",
-    dose_range     = "8-day methotrexate regimen: 50 mg MTX intramuscular on days 1, 3, 5, 7 with 15 mg oral folinic acid on days 2, 4, 6, 8; cycles repeated every 2 weeks until hCG normalisation plus three consolidation cycles, or MTX resistance (Patients and methods).",
-    regions        = "United Kingdom (Charing Cross Hospital Trophoblastic Disease Centre, London, 1991-2011)",
-    notes          = "Model parameters in Table 2 estimated from the 418-patient Model data set (195 MTX-resistant, 223 MTX-sensitive); a separate 382-patient Test set validated the predictive 20.44 IU/L hCGres threshold. NONMEM v7 with M3 likelihood for BLQ (< 2 IU/L) hCG measurements over treatment days 0-50; titres beyond day 50 or after second-line switch were censored. Precision of estimates computed from a 100-resampling bootstrap (Table 2 footnote a)."
+    disease_state = "Low-risk gestational trophoblastic neoplasia (FIGO 2000 risk score 0-6) including invasive mole, choriocarcinoma, epithelioid trophoblastic and placental site trophoblastic tumours; cases of MTX resistance defined as three static or three rising hCG measurements (within +/-10%) on the 8-day MTX regimen.",
+    dose_range = "8-day methotrexate regimen: 50 mg MTX intramuscular on days 1, 3, 5, 7 with 15 mg oral folinic acid on days 2, 4, 6, 8; cycles repeated every 2 weeks until hCG normalisation plus three consolidation cycles, or MTX resistance (Patients and methods).",
+    regions = "United Kingdom (Charing Cross Hospital Trophoblastic Disease Centre, London, 1991-2011)",
+    notes = "Model parameters in Table 2 estimated from the 418-patient Model data set (195 MTX-resistant, 223 MTX-sensitive); a separate 382-patient Test set validated the predictive 20.44 IU/L hCGres threshold. NONMEM v7 with M3 likelihood for BLQ (< 2 IU/L) hCG measurements over treatment days 0-50; titres beyond day 50 or after second-line switch were censored. Precision of estimates computed from a 100-resampling bootstrap (Table 2 footnote a)."
   )
 
   ini({

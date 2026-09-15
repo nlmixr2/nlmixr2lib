@@ -6,48 +6,48 @@ Leber_2023_mycophenolateMofetil_sheep <- function() {
 
   covariateData <- list(
     HEMOADSORB_ACTIVE = list(
-      description        = "Hemoadsorption-active indicator (1 while a CytoSorb cartridge is in the extracorporeal circuit, 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hemoadsorption-active indicator (1 while a CytoSorb cartridge is in the extracorporeal circuit, 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no hemoadsorption cartridge in circuit)",
-      notes              = "Time-varying within subject. Gates the saturable CytoSorb adsorption clearance arm: cl_hemoadsorption is added to the systemic CL/F only while HEMOADSORB_ACTIVE = 1. In the source study the cartridge ran for a single 6-hour session (Methods, Catheter implantation and extracorporeal circulation); control animals received the identical extracorporeal circuit with no cartridge, i.e. HEMOADSORB_ACTIVE = 0 throughout. Setting it to 0 for the whole record reproduces the sham-circuit / no-device arm. The source paper has no data column for this indicator; it encodes the intervention-versus-control group assignment described in Methods, Drug administration.",
-      source_name        = NULL
+      notes = "Time-varying within subject. Gates the saturable CytoSorb adsorption clearance arm: cl_hemoadsorption is added to the systemic CL/F only while HEMOADSORB_ACTIVE = 1. In the source study the cartridge ran for a single 6-hour session (Methods, Catheter implantation and extracorporeal circulation); control animals received the identical extracorporeal circuit with no cartridge, i.e. HEMOADSORB_ACTIVE = 0 throughout. Setting it to 0 for the whole record reproduces the sham-circuit / no-device arm. The source paper has no data column for this indicator; it encodes the intervention-versus-control group assignment described in Methods, Drug administration.",
+      source_name = NULL
     ),
     BFR = list(
-      description        = "Blood flow rate through the extracorporeal circuit",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Blood flow rate through the extracorporeal circuit",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Held at approximately 120 mL/min throughout the study (Methods, Catheter implantation and extracorporeal circulation), so it is a study-wide constant rather than a fitted covariate. It enters ONLY the post-adsorber observation equation, never the clearance model: Leber 2023 Methods defines the cross-adsorber extraction denominator as FL = blood flow x (1 - hematocrit), the plasma / serum flow through the adsorber. Carried in the canonical mL/min and converted to L/h inside model() (x 0.06). Meaningful only when HEMOADSORB_ACTIVE = 1.",
-      source_name        = "blood flow"
+      notes = "Held at approximately 120 mL/min throughout the study (Methods, Catheter implantation and extracorporeal circulation), so it is a study-wide constant rather than a fitted covariate. It enters ONLY the post-adsorber observation equation, never the clearance model: Leber 2023 Methods defines the cross-adsorber extraction denominator as FL = blood flow x (1 - hematocrit), the plasma / serum flow through the adsorber. Carried in the canonical mL/min and converted to L/h inside model() (x 0.06). Meaningful only when HEMOADSORB_ACTIVE = 1.",
+      source_name = "blood flow"
     ),
     HCT = list(
-      description        = "Haematocrit",
-      units              = "%",
-      type               = "continuous",
+      description = "Haematocrit",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Not measured per animal. Leber 2023 Methods states haematocrit \"was calculated as 33% according to the standard value in sheep\" (reference 25), so 33 is the study-wide constant. Enters ONLY the post-adsorber observation equation, as the plasma fraction 1 - HCT/100 that converts blood flow into the plasma / serum flow FL through the adsorber. Same role as in ButraguenoLaiseca_2025_teicoplanin.",
-      source_name        = NULL
+      notes = "Not measured per animal. Leber 2023 Methods states haematocrit \"was calculated as 33% according to the standard value in sheep\" (reference 25), so 33 is the study-wide constant. Enters ONLY the post-adsorber observation equation, as the plasma fraction 1 - HCT/100 that converts blood flow into the plasma / serum flow FL through the adsorber. Same role as in ButraguenoLaiseca_2025_teicoplanin.",
+      source_name = NULL
     )
   )
 
   compartmentData <- list(
-    depot          = list(analyte = "mycophenolate mofetil", units = "mg", specimen = "administration site", verified = TRUE),
-    central        = list(analyte = "mycophenolate mofetil", units = "mg", specimen = "plasma", verified = TRUE),
-    adsorbed       = list(analyte = "mycophenolate mofetil", units = "mg", specimen = "not applicable", verified = TRUE)
+    depot = list(analyte = "mycophenolate mofetil", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "mycophenolate mofetil", units = "mg", specimen = "plasma", verified = TRUE),
+    adsorbed = list(analyte = "mycophenolate mofetil", units = "mg", specimen = "not applicable", verified = TRUE)
   )
 
   population <- list(
-    species        = "sheep (ewe)",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "5 years (all animals)",
-    weight_range   = "approximately 85 kg",
+    species = "sheep (ewe)",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "5 years (all animals)",
+    weight_range = "approximately 85 kg",
     sex_female_pct = 100,
-    disease_state  = "Healthy (no induced pathology). Animals were acclimatised for 14 days, then dosed to steady state before a single extracorporeal session.",
-    dose_range     = "Mycophenolate mofetil 1 g orally twice daily, not titrated (no target level defined; Table 1). Co-administered with prednisolone 10 mg and, depending on group, tacrolimus (group 1), ciclosporin (group 2) or everolimus (group 3).",
-    regions        = "Single-centre preclinical study, Medical University of Graz, Austria (Austrian Committee for Animal Trials approval 2020-0.437.202).",
-    notes          = "Fifteen 5-year-old ewes of approximately 85 kg were studied across five drug-combination groups (Methods, Animals). Mycophenolate mofetil was part of all three calcineurin- / proliferation-inhibitor combinations (groups 1, 2 and 3), each of which had five CytoSorb-intervention and three sham-circuit control animals, so n = 24 animal-occasions contributed mycophenolate mofetil data; the individual ewes were reused across combinations, so this is not 24 distinct animals. Four additional pilot animals were used to characterise the oral absorption of ciclosporin, tacrolimus, mycophenolate mofetil and everolimus, and their data were included in the analysis. Blood was sampled from the extracorporeal circuit immediately before and at 30, 90, 250 and 330 min after the start of the adsorber / sham procedure; mycophenolate mofetil was measured in EDTA plasma by HPLC with multiple-wavelength detection (Methods, Blood samples and laboratory analysis)."
+    disease_state = "Healthy (no induced pathology). Animals were acclimatised for 14 days, then dosed to steady state before a single extracorporeal session.",
+    dose_range = "Mycophenolate mofetil 1 g orally twice daily, not titrated (no target level defined; Table 1). Co-administered with prednisolone 10 mg and, depending on group, tacrolimus (group 1), ciclosporin (group 2) or everolimus (group 3).",
+    regions = "Single-centre preclinical study, Medical University of Graz, Austria (Austrian Committee for Animal Trials approval 2020-0.437.202).",
+    notes = "Fifteen 5-year-old ewes of approximately 85 kg were studied across five drug-combination groups (Methods, Animals). Mycophenolate mofetil was part of all three calcineurin- / proliferation-inhibitor combinations (groups 1, 2 and 3), each of which had five CytoSorb-intervention and three sham-circuit control animals, so n = 24 animal-occasions contributed mycophenolate mofetil data; the individual ewes were reused across combinations, so this is not 24 distinct animals. Four additional pilot animals were used to characterise the oral absorption of ciclosporin, tacrolimus, mycophenolate mofetil and everolimus, and their data were included in the analysis. Blood was sampled from the extracorporeal circuit immediately before and at 30, 90, 250 and 330 min after the start of the adsorber / sham procedure; mycophenolate mofetil was measured in EDTA plasma by HPLC with multiple-wavelength detection (Methods, Blood samples and laboratory analysis)."
   )
 
   ini({

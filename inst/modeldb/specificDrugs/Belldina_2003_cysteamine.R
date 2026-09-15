@@ -9,38 +9,43 @@ Belldina_2003_cysteamine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "cysteamine bitartrate", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "cysteamine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "cysteamine bitartrate", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "cysteamine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cysteamine", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "white-blood-cell cystine content reduction", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(
+      analyte = "white-blood-cell cystine content reduction",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Reference 36.5 kg is the arithmetic mean weight of the 11 patients in Table 1 (43.8 + 39.0 + 57.2 + 22.5 + 18.4 + 14.3 + 29.1 + 47.0 + 60.2 + 38.7 + 31.3 = 401.5 kg / 11 = 36.5 kg). Allometric exponents are fixed at 1.0 on CL, Q, Vc, Vp to reflect the source paper's per-kg parameterisation of all PK parameters (CL/F mL/min/kg, Vc L/kg, Q mL/min/kg, Vss/F L/kg).",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline. Reference 36.5 kg is the arithmetic mean weight of the 11 patients in Table 1 (43.8 + 39.0 + 57.2 + 22.5 + 18.4 + 14.3 + 29.1 + 47.0 + 60.2 + 38.7 + 31.3 = 401.5 kg / 11 = 36.5 kg). Allometric exponents are fixed at 1.0 on CL, Q, Vc, Vp to reflect the source paper's per-kg parameterisation of all PK parameters (CL/F mL/min/kg, Vc L/kg, Q mL/min/kg, Vss/F L/kg).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 11L,
-    n_studies      = 1L,
-    age_range      = "3-15 years",
-    weight_range   = "14.3-60.2 kg",
-    weight_median  = "38.7 kg (median of Table 1; arithmetic mean 36.5 kg)",
-    height_range   = "93.0-162.0 cm",
+    species = "human",
+    n_subjects = 11L,
+    n_studies = 1L,
+    age_range = "3-15 years",
+    weight_range = "14.3-60.2 kg",
+    weight_median = "38.7 kg (median of Table 1; arithmetic mean 36.5 kg)",
+    height_range = "93.0-162.0 cm",
     sex_female_pct = 36.36,
     race_ethnicity = "10 Caucasian + 1 Caucasian/Hispanic per Table 1 (single-centre UCSD cohort)",
-    disease_state  = "Nephropathic (infantile) cystinosis without renal transplant; documented evidence of disease and chronic cysteamine therapy >= 12 months prior to study.",
-    dose_range     = "225-550 mg oral cysteamine bitartrate (Cystagon) at steady state on approximately every-6-hours dosing.",
+    disease_state = "Nephropathic (infantile) cystinosis without renal transplant; documented evidence of disease and chronic cysteamine therapy >= 12 months prior to study.",
+    dose_range = "225-550 mg oral cysteamine bitartrate (Cystagon) at steady state on approximately every-6-hours dosing.",
     administration = "Oral, with 100 mL of ambient-temperature water; a standardised low-fat / low-protein breakfast was served 30 min before dosing and a standardised lunch 4 h after dosing.",
-    regions        = "United States (single centre: University of California, San Diego).",
-    notes          = "Single-dose, open-label, steady-state study (Methods). Demographics in Table 1; PK estimates in Table 2; PD estimates in Table 3. Plasma cysteamine measured by HPLC-UV (LLOQ 1.3 uM); WBC cystine measured by 14C-cystine binding-protein assay per Smith et al. The 11 patients were aged 3-15 y; one parent or guardian signed informed consent for subjects under 18, and subjects over 7 also signed an informed assent form."
+    regions = "United States (single centre: University of California, San Diego).",
+    notes = "Single-dose, open-label, steady-state study (Methods). Demographics in Table 1; PK estimates in Table 2; PD estimates in Table 3. Plasma cysteamine measured by HPLC-UV (LLOQ 1.3 uM); WBC cystine measured by 14C-cystine binding-protein assay per Smith et al. The 11 patients were aged 3-15 y; one parent or guardian signed informed consent for subjects under 18, and subjects over 7 also signed an informed assent form."
   )
 
   ini({

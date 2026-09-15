@@ -16,7 +16,7 @@ deCacqueray_2022_cefepime <- function() {
     sep = " "
   )
   vignette <- "Gotta_2025_cefepime_infant_neurotoxicity"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
     central = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE)
@@ -24,11 +24,11 @@ deCacqueray_2022_cefepime <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling referenced to 9 kg on both CL (exponent 0.75)",
         "and Vc (exponent 1). Gotta 2025 Eq. 3 gives",
         "CL = 1.21 * (weight/9)^0.75 and Eq. 4 gives V = 4.8 * (weight/9);",
@@ -38,18 +38,18 @@ deCacqueray_2022_cefepime <- function() {
         "below 3 kg is outside the model-development range.",
         "Source column weight_kg in the deposited covariate file."
       ),
-      source_name        = "weight_kg"
+      source_name = "weight_kg"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Estimated glomerular filtration rate, BSA-normalized, computed with",
         "the Schwartz (1976) paediatric equation from body length and plasma",
         "creatinine"
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL: (CRCL / 153)^0.37 per Gotta 2025 Eq. 3.",
         "The reference value 153 mL/min/1.73 m^2 is supranormal because the",
         "de Cacqueray 2022 cohort were critically ill children, in whom",
@@ -62,22 +62,22 @@ deCacqueray_2022_cefepime <- function() {
         "was used only in their sensitivity analysis, not with this model.",
         "Source column eGFR_Schwartz1976 in the deposited covariate file."
       ),
-      source_name        = "eGFR_Schwartz1976"
+      source_name = "eGFR_Schwartz1976"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 59L,
-    n_studies      = 1L,
-    age_range      = "1.1 months - 17.6 years",
-    weight_range   = "Inclusion criterion weight > 3 kg; individual weights not reported in the secondary source",
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 59L,
+    n_studies = 1L,
+    age_range = "1.1 months - 17.6 years",
+    weight_range = "Inclusion criterion weight > 3 kg; individual weights not reported in the secondary source",
+    disease_state = paste(
       "Critically ill paediatric patients with different renal function,",
       "mainly with lung or bloodstream infections"
     ),
     n_observations = 129L,
-    notes          = paste(
+    notes = paste(
       "Population description transcribed from Gotta 2025 Section 2.2.2,",
       "which summarises de Cacqueray 2022. 129 plasma concentrations were",
       "collected from 59 patients; the sampling times are not reported in",

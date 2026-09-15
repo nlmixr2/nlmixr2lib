@@ -40,8 +40,8 @@ VelezdeMendizabal_2012_lumiracoxib_rat <- function() {
   paper_specific_compartments <- c("lumxLocal", "lumxCns")
 
   units <- list(
-    time          = "min",
-    dosing        = "ug (lumiracoxib bolus into the intraplantar and / or intrathecal virtual compartment)",
+    time = "min",
+    dosing = "ug (lumiracoxib bolus into the intraplantar and / or intrathecal virtual compartment)",
     concentration = "flinches per 1-min window (number of paw flinches; the only observed quantity, no lumiracoxib concentration was measured)"
   )
 
@@ -50,27 +50,32 @@ VelezdeMendizabal_2012_lumiracoxib_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    lumxLocal = list(analyte = "Lumiracoxib", units = NA_character_, specimen = "administration site", verified = FALSE),
-    lumxCns   = list(analyte = "Lumiracoxib", units = NA_character_, specimen = "administration site", verified = FALSE)
+    lumxLocal = list(
+      analyte = "Lumiracoxib",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    lumxCns = list(analyte = "Lumiracoxib", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "rat (female Wistar)",
-    n_subjects     = 86L,
-    n_studies      = 1L,
-    age_range      = "6-7 weeks",
-    weight_range   = "180-220 g",
+    species = "rat (female Wistar)",
+    n_subjects = 86L,
+    n_studies = 1L,
+    age_range = "6-7 weeks",
+    weight_range = "180-220 g",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy rats subjected to the formalin test: 50 uL of 1% formalin",
       "injected subcutaneously into the dorsal surface of the right",
       "hind paw to elicit a biphasic nociceptive response measured as",
       "the number of paw flinches per 1-min window every 5 min for 60",
       "min after formalin injection."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Lumiracoxib administered as 10, 30, 100, or 300 ug by",
       "intraplantar (i.pl., 20 min before formalin) or intrathecal",
       "(i.th., 10 min before formalin) route. Combination arm gave",
@@ -78,8 +83,8 @@ VelezdeMendizabal_2012_lumiracoxib_rat <- function() {
       "26 + 27, 52 + 54, 104 + 108, 208 + 216 ug) based on per-route",
       "ED30. One control group received saline."
     ),
-    regions        = "Mexico (CINVESTAV, Mexico City)",
-    notes          = paste(
+    regions = "Mexico (CINVESTAV, Mexico City)",
+    notes = paste(
       "Animals were obtained from the in-house Wistar colony at CINVESTAV",
       "(Mexico City). 86 rats randomized into 14 groups of 6:",
       "4 i.pl.-dose groups, 4 i.th.-dose groups, 5 combined-route",

@@ -25,59 +25,59 @@ Jaworowicz_2006_levalbuterol <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "levalbuterol", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "levalbuterol", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "levalbuterol", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "levalbuterol", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "levalbuterol", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference body weight 74.8 kg (cohort median). Apparent clearance",
         "CL/F uses a linear-additive form CL = 59.1 + 0.477 * (WT - 74.8)",
         "L/h (Equation 1 of poster). Apparent central volume Vc/F uses a",
         "power form Vc = 527 * (WT / 74.8)^0.361 L (Equation 2 of poster)."
       ),
-      source_name        = "WTKG"
+      source_name = "WTKG"
     ),
     CHILD = list(
-      description        = "Pediatric age-cohort indicator (1 if subject < 12 years, 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pediatric age-cohort indicator (1 if subject < 12 years, 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Used as the pediatric-vs-adult switch on absorption rate Ka:",
         "Adult subjects (>= 12 years) have Ka = 6.28 1/h; pediatric",
         "subjects (< 12 years) have Ka = 3.08 1/h. Encoded as a",
         "multiplicative log-ratio effect e_child_ka on lka."
       ),
-      source_name        = "PED"
+      source_name = "PED"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 632L,
-    n_studies      = 3L,
-    age_range      = "4-81 years (pediatric subset 4-11 years; adult subset 12-81 years)",
-    age_median     = "Adults median ~36 years (433.7 +/- 192.4 months); pediatrics median ~9 years (106.9 +/- 28.1 months)",
-    weight_range   = "14.5-167.5 kg",
-    weight_median  = "75.2 kg overall (74.8 kg used as the reference for WT scaling); adults 80.8 kg, pediatrics 37.1 kg",
+    species = "human",
+    n_subjects = 632L,
+    n_studies = 3L,
+    age_range = "4-81 years (pediatric subset 4-11 years; adult subset 12-81 years)",
+    age_median = "Adults median ~36 years (433.7 +/- 192.4 months); pediatrics median ~9 years (106.9 +/- 28.1 months)",
+    weight_range = "14.5-167.5 kg",
+    weight_median = "75.2 kg overall (74.8 kg used as the reference for WT scaling); adults 80.8 kg, pediatrics 37.1 kg",
     sex_female_pct = 51,
     race_ethnicity = c(Caucasian = 69.6, Black = 19.3, Hispanic = 7.4, Asian = 2.4, Other = 1.3),
-    disease_state  = "Adult and pediatric asthma",
-    dose_range     = paste(
+    disease_state = "Adult and pediatric asthma",
+    dose_range = paste(
       "Inhaled HFA MDI: 90 ug levalbuterol QID or 180 ug racemic",
       "albuterol QID. Treatment duration 4 weeks (pediatrics) or 8 weeks",
       "(adults). Sampling at first dose (pre, 1-2, 4-6 hr) and after",
       "4 or 8 weeks (pre, 0.25, 0.5, 1, 2, 4, 8 hr)."
     ),
-    regions        = "Three randomized multi-center placebo- and active-controlled Phase 3 trials (sponsor identifiers 051-353, 051-355, and a third pediatric trial); region not stated on the poster",
-    notes          = paste(
+    regions = "Three randomized multi-center placebo- and active-controlled Phase 3 trials (sponsor identifiers 051-353, 051-355, and a third pediatric trial); region not stated on the poster",
+    notes = paste(
       "PK measurand is (R)-albuterol plasma concentration (pg/mL in",
       "the source; this model emits ng/mL = 1e-3 pg/mL via Cc =",
       "central / vc with dose in ug and Vc in L). 429 subjects received",

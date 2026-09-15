@@ -10,33 +10,33 @@ Sheng_2016_quinine_rat <- function() {
   )
   vignette <- "Sheng_2016_quinine_rat"
   units <- list(
-    time          = "(unused; each record is an 8-second presentation, no time evolution)",
-    dosing        = "mM (quinine HCl dihydrate applied via sipper tube)",
+    time = "(unused; each record is an 8-second presentation, no time evolution)",
+    dosing = "mM (quinine HCl dihydrate applied via sipper tube)",
     concentration = "(none; observation is a count of licks in 8 s, 0-61)"
   )
 
   covariateData <- list(
     STIM_QUININE_MM = list(
-      description        = "Applied sipper-tube concentration of quinine HCl dihydrate (mM) presented to the rat during the 8-second BATA trial; drives the sigmoid-emax effect on the logistic mixing probability between the low-count and high-count generalized-Poisson distributions.",
-      units              = "mM",
-      type               = "continuous",
+      description = "Applied sipper-tube concentration of quinine HCl dihydrate (mM) presented to the rat during the 8-second BATA trial; drives the sigmoid-emax effect on the logistic mixing probability between the low-count and high-count generalized-Poisson distributions.",
+      units = "mM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source paper presented seven concentrations: 0, 0.01, 0.03, 0.1, 0.3, 1, 3 mM (Table 1). Set to 0 for the water (control) presentation. Per-record covariate; no PK is modeled. New canonical entry registered alongside this model in inst/references/covariate-columns.md. Distinct from CAV (systemic plasma concentration of an administered drug) - STIM_QUININE_MM is the applied stimulus concentration in solution that contacts the taste receptors directly during a brief-access trial.",
-      source_name        = "QUININE"
+      notes = "Source paper presented seven concentrations: 0, 0.01, 0.03, 0.1, 0.3, 1, 3 mM (Table 1). Set to 0 for the water (control) presentation. Per-record covariate; no PK is modeled. New canonical entry registered alongside this model in inst/references/covariate-columns.md. Distinct from CAV (systemic plasma concentration of an administered drug) - STIM_QUININE_MM is the applied stimulus concentration in solution that contacts the taste receptors directly during a brief-access trial.",
+      source_name = "QUININE"
     )
   )
 
   population <- list(
-    species        = "rat (10 trained rats; strain not reported in the source publication)",
-    n_subjects     = 10,
-    n_studies      = 1,
-    age_range      = "(not reported in the source publication)",
-    weight_range   = "(not reported in the source publication)",
+    species = "rat (10 trained rats; strain not reported in the source publication)",
+    n_subjects = 10,
+    n_studies = 1,
+    age_range = "(not reported in the source publication)",
+    weight_range = "(not reported in the source publication)",
     sex_female_pct = NA_real_,
-    disease_state  = "(none; preclinical taste-aversion screening)",
-    dose_range     = "Seven concentrations of quinine HCl dihydrate: 0 (deionized water), 0.01, 0.03, 0.1, 0.3, 1, 3 mM, presented via sipper tube for 8 s with a 2 s water-rinse between trials. Each quinine concentration was presented four times and water six times per 40-minute session; experiments were repeated weekly for 8 weeks with a 1-week washout between sessions.",
-    regions        = "(not applicable; preclinical)",
-    notes          = "5,400 lick-count records total (Table 1: water n=1,080; each quinine concentration n=718-722). The observed maximum lick number across all trials was 61, which fixes the right-truncation upper bound used by the second (high-count) generalized-Poisson distribution. Lick counts followed a bimodal distribution (Figure 1b) with one peak in 0-20 and a second peak in 40-60; the proportion in the low-count peak increased monotonically with quinine concentration (Figure 2b). The Sheng 2016 publication does not report rat strain, sex, or age, and no supplementary methods document was on disk at extraction time."
+    disease_state = "(none; preclinical taste-aversion screening)",
+    dose_range = "Seven concentrations of quinine HCl dihydrate: 0 (deionized water), 0.01, 0.03, 0.1, 0.3, 1, 3 mM, presented via sipper tube for 8 s with a 2 s water-rinse between trials. Each quinine concentration was presented four times and water six times per 40-minute session; experiments were repeated weekly for 8 weeks with a 1-week washout between sessions.",
+    regions = "(not applicable; preclinical)",
+    notes = "5,400 lick-count records total (Table 1: water n=1,080; each quinine concentration n=718-722). The observed maximum lick number across all trials was 61, which fixes the right-truncation upper bound used by the second (high-count) generalized-Poisson distribution. Lick counts followed a bimodal distribution (Figure 1b) with one peak in 0-20 and a second peak in 40-60; the proportion in the low-count peak increased monotonically with quinine concentration (Figure 2b). The Sheng 2016 publication does not report rat strain, sex, or age, and no supplementary methods document was on disk at extraction time."
   )
 
   ini({

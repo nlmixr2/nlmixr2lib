@@ -16,11 +16,11 @@ Lehr_2010_tesofensine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "tesofensine", units = "mg", specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "tesofensine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tesofensine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tesofensine", units = "mg", specimen = "plasma", verified = FALSE),
     central_m1 = list(analyte = "M1", units = "mg", specimen = "plasma", verified = FALSE),
-    effect     = list(analyte = "tesofensine", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect_m1  = list(analyte = "M1", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "tesofensine", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect_m1 = list(analyte = "M1", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
@@ -28,21 +28,21 @@ Lehr_2010_tesofensine <- function() {
   covariatesDataExcluded <- list()
 
   population <- list(
-    species         = "human",
-    n_subjects      = 62L,
-    n_studies       = 2L,
-    age_range       = "70-80 years (median 70)",
-    age_median      = "70 years",
-    weight_range    = "54-129 kg (median 80)",
-    weight_median   = "80 kg",
-    sex_female_pct  = 44,
-    race_ethnicity  = c(White = 96.8, Black = 3.2),
-    disease_state   = "mild Alzheimer's disease (median ADAS-Cog at baseline 8.5; range 3.3-23.7)",
-    dose_range      = "0.125-1.0 mg/day oral; loading of 0.5-2.0 mg/day for the first 3 days then maintenance for 25 days",
-    renal_function  = "normal hepatic function; median creatinine clearance 77 mL/min (range 41-136)",
-    regions         = "(not reported)",
-    n_observations  = "357 tesofensine and 341 M1 plasma concentrations from 44 active-treated patients; 176 active and 72 placebo ADAS-Cog measurements",
-    notes           = "Demographics from Lehr 2010 Results, Data Base section: 44 active + 18 placebo treated patients with mild AD, median ADAS-Cog at baseline 8.5 points (range 3.3-23.7). The race composition is 60 Caucasians + 2 African-Americans (paper text). The model was developed on the Phase IIa dataset (this file uses the Phase IIa column of Table I) and subsequently re-estimated on the combined Phase IIa+IIb dataset (430 additional patients); see the validation vignette for the combined-dataset re-estimation comparison."
+    species = "human",
+    n_subjects = 62L,
+    n_studies = 2L,
+    age_range = "70-80 years (median 70)",
+    age_median = "70 years",
+    weight_range = "54-129 kg (median 80)",
+    weight_median = "80 kg",
+    sex_female_pct = 44,
+    race_ethnicity = c(White = 96.8, Black = 3.2),
+    disease_state = "mild Alzheimer's disease (median ADAS-Cog at baseline 8.5; range 3.3-23.7)",
+    dose_range = "0.125-1.0 mg/day oral; loading of 0.5-2.0 mg/day for the first 3 days then maintenance for 25 days",
+    renal_function = "normal hepatic function; median creatinine clearance 77 mL/min (range 41-136)",
+    regions = "(not reported)",
+    n_observations = "357 tesofensine and 341 M1 plasma concentrations from 44 active-treated patients; 176 active and 72 placebo ADAS-Cog measurements",
+    notes = "Demographics from Lehr 2010 Results, Data Base section: 44 active + 18 placebo treated patients with mild AD, median ADAS-Cog at baseline 8.5 points (range 3.3-23.7). The race composition is 60 Caucasians + 2 African-Americans (paper text). The model was developed on the Phase IIa dataset (this file uses the Phase IIa column of Table I) and subsequently re-estimated on the combined Phase IIa+IIb dataset (430 additional patients); see the validation vignette for the combined-dataset re-estimation comparison."
   )
 
   ini({

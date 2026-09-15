@@ -13,61 +13,61 @@ Aoyama_2012_sepantronium <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Computed by the Cockcroft-Gault equation (paper Eq. 5) in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md, following the raw-Cockcroft-Gault pattern of Delattre 2010 amikacin. Reference value 79 mL/min (population median, Aoyama 2012 Table 2). Effect form: (CRCL / 79)^0.425 multiplicative on CL.",
-      source_name        = "CLCR"
+      notes = "Source column CLCR. Computed by the Cockcroft-Gault equation (paper Eq. 5) in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md, following the raw-Cockcroft-Gault pattern of Delattre 2010 amikacin. Reference value 79 mL/min (population median, Aoyama 2012 Table 2). Effect form: (CRCL / 79)^0.425 multiplicative on CL.",
+      source_name = "CLCR"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase activity at baseline",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase activity at baseline",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference value 20 U/L (population median, Aoyama 2012 Table 2). Effect form: (ALT / 20)^0.124 multiplicative on CL. The paper notes the exponent is close to 0 so the practical influence is small; the covariate was nonetheless retained in the final model per the backward-elimination likelihood-ratio test.",
-      source_name        = "ALT"
+      notes = "Reference value 20 U/L (population median, Aoyama 2012 Table 2). Effect form: (ALT / 20)^0.124 multiplicative on CL. The paper notes the exponent is close to 0 so the practical influence is small; the covariate was nonetheless retained in the final model per the backward-elimination likelihood-ratio test.",
+      source_name = "ALT"
     ),
     TUMTP_HRPC = list(
-      description        = "Hormone-refractory prostate cancer tumor-type indicator (historical term; modern equivalent castration-resistant prostate cancer / CRPC)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hormone-refractory prostate cancer tumor-type indicator (historical term; modern equivalent castration-resistant prostate cancer / CRPC)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-HRPC; NSCLC is the model's implicit reference when paired with TUMTP_MEL = 0)",
-      notes              = "Proportional change on CL: ratio 0.955 (i.e. -4.5% vs NSCLC) per Aoyama 2012 Table 3. The paper uses the power form THETA_HRPC^I_HRPC; for a binary indicator this equals the proportional form (1 + (THETA_HRPC - 1) * I_HRPC) with coefficient -0.045. Cancer type was tested as a three-level categorical (NSCLC reference, HRPC, MM = melanoma); the implicit NSCLC reference holds when both TUMTP_HRPC = 0 and TUMTP_MEL = 0. Decompose a source TUMTP column into TUMTP_HRPC = as.integer(TUMTP == 'HRPC').",
-      source_name        = "TUMTP (HRPC level)"
+      notes = "Proportional change on CL: ratio 0.955 (i.e. -4.5% vs NSCLC) per Aoyama 2012 Table 3. The paper uses the power form THETA_HRPC^I_HRPC; for a binary indicator this equals the proportional form (1 + (THETA_HRPC - 1) * I_HRPC) with coefficient -0.045. Cancer type was tested as a three-level categorical (NSCLC reference, HRPC, MM = melanoma); the implicit NSCLC reference holds when both TUMTP_HRPC = 0 and TUMTP_MEL = 0. Decompose a source TUMTP column into TUMTP_HRPC = as.integer(TUMTP == 'HRPC').",
+      source_name = "TUMTP (HRPC level)"
     ),
     TUMTP_MEL = list(
-      description        = "Melanoma tumor-type indicator (unresectable stage III/IV cutaneous melanoma)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Melanoma tumor-type indicator (unresectable stage III/IV cutaneous melanoma)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-melanoma; NSCLC is the model's implicit reference when paired with TUMTP_HRPC = 0)",
-      notes              = "Proportional change on CL: ratio 1.24 (i.e. +24% vs NSCLC) per Aoyama 2012 Table 3. The paper's 'MM' label denotes malignant melanoma (unresectable stage III/IV cutaneous melanoma) and is NOT multiple myeloma; do not confuse with the canonical MM register entry. The paper uses the power form THETA_MM^I_MM; for a binary indicator this equals the proportional form (1 + (THETA_MM - 1) * I_MM) with coefficient +0.24. Decompose a source TUMTP column into TUMTP_MEL = as.integer(TUMTP == 'MM').",
-      source_name        = "TUMTP (MM = melanoma level)"
+      notes = "Proportional change on CL: ratio 1.24 (i.e. +24% vs NSCLC) per Aoyama 2012 Table 3. The paper's 'MM' label denotes malignant melanoma (unresectable stage III/IV cutaneous melanoma) and is NOT multiple myeloma; do not confuse with the canonical MM register entry. The paper uses the power form THETA_MM^I_MM; for a binary indicator this equals the proportional form (1 + (THETA_MM - 1) * I_MM) with coefficient +0.24. Decompose a source TUMTP column into TUMTP_MEL = as.integer(TUMTP == 'MM').",
+      source_name = "TUMTP (MM = melanoma level)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 96L,
-    n_studies       = 3L,
-    age_range       = "29-90 years",
-    age_median      = "64 years",
-    weight_range    = "50-114 kg",
-    weight_median   = "81 kg",
-    sex_female_pct  = 17.7,
-    race_ethnicity  = c(
+    species = "human",
+    n_subjects = 96L,
+    n_studies = 3L,
+    age_range = "29-90 years",
+    age_median = "64 years",
+    weight_range = "50-114 kg",
+    weight_median = "81 kg",
+    sex_female_pct = 17.7,
+    race_ethnicity = c(
       `African American` = 4.2,
       `Caucasian (unspecified Hispanic status)` = 45.8,
       `Caucasian Hispanic or Latino` = 8.3,
       `Caucasian non-Hispanic or Latino` = 41.7
     ),
-    disease_state   = "Advanced solid tumors: non-small cell lung cancer (NSCLC) 34.4%, hormone-refractory prostate cancer (HRPC; modern term castration-resistant prostate cancer / CRPC) 35.4%, unresectable stage III or IV melanoma (MM = melanoma) 30.2%",
-    dose_range      = "4.8 mg/m^2/day continuous IV infusion (CIVI) over 7 days (168 h) every 21 days; first cycle's dose computed using actual body surface area; concentrations and doses expressed as the cationic moiety of sepantronium bromide",
-    regions         = "NSCLC cohort enrolled in Europe (LUCY trial); HRPC and melanoma cohorts enrolled in North America (PACY and MACY trials)",
+    disease_state = "Advanced solid tumors: non-small cell lung cancer (NSCLC) 34.4%, hormone-refractory prostate cancer (HRPC; modern term castration-resistant prostate cancer / CRPC) 35.4%, unresectable stage III or IV melanoma (MM = melanoma) 30.2%",
+    dose_range = "4.8 mg/m^2/day continuous IV infusion (CIVI) over 7 days (168 h) every 21 days; first cycle's dose computed using actual body surface area; concentrations and doses expressed as the cationic moiety of sepantronium bromide",
+    regions = "NSCLC cohort enrolled in Europe (LUCY trial); HRPC and melanoma cohorts enrolled in North America (PACY and MACY trials)",
     ecog_distribution = "ECOG 0 (asymptomatic) 39.6%, ECOG 1 (symptomatic) 55.2%, ECOG 2 (ambulatory <50%) 5.2%; melanoma trial accepted only ECOG 0-1, NSCLC and HRPC accepted ECOG 0-2",
-    renal_function  = "Cockcroft-Gault creatinine clearance 31-180 mL/min (median 79); raw mL/min, NOT BSA-normalized",
+    renal_function = "Cockcroft-Gault creatinine clearance 31-180 mL/min (median 79); raw mL/min, NOT BSA-normalized",
     hepatic_function = "Baseline ALT 6-185 U/L (median 20); AST 12-92 U/L (median 25); no patients with severe hepatic impairment enrolled per Discussion",
-    notes           = "Baseline demographics per Aoyama 2012 Table 2 (N = 96; 578 plasma sepantronium concentrations across cycles 1-6). Three open-label multicenter Phase 2 trials pooled: LUCY (NSCLC, 33 patients, Europe), PACY (HRPC, 34 patients, North America), MACY (melanoma, 29 patients, North America). All HRPC patients were male; all NSCLC patients were Caucasian. Median values of alpha-1-acid glycoprotein and AST differed by cancer type (AAG 22 umol/L in melanoma vs 35 umol/L in NSCLC/HRPC; AST 34 U/L in HRPC vs 21-24 U/L in NSCLC/melanoma); most other demographics did not differ significantly across cancer types (P > 0.05 for age, height, serum creatinine, and CLCR). Bioanalysis: LC-MS/MS at PPD Central Laboratory, LLOQ 0.05 ng/mL. PK samples drawn during the 7-day CIVI of cycle 1 plus 0.5-4 h and 6-24 h after stop of CIVI, and during the CIVI of subsequent cycles."
+    notes = "Baseline demographics per Aoyama 2012 Table 2 (N = 96; 578 plasma sepantronium concentrations across cycles 1-6). Three open-label multicenter Phase 2 trials pooled: LUCY (NSCLC, 33 patients, Europe), PACY (HRPC, 34 patients, North America), MACY (melanoma, 29 patients, North America). All HRPC patients were male; all NSCLC patients were Caucasian. Median values of alpha-1-acid glycoprotein and AST differed by cancer type (AAG 22 umol/L in melanoma vs 35 umol/L in NSCLC/HRPC; AST 34 U/L in HRPC vs 21-24 U/L in NSCLC/melanoma); most other demographics did not differ significantly across cancer types (P > 0.05 for age, height, serum creatinine, and CLCR). Bioanalysis: LC-MS/MS at PPD Central Laboratory, LLOQ 0.05 ng/mL. PK samples drawn during the 7-day CIVI of cycle 1 plus 0.5-4 h and 6-24 h after stop of CIVI, and during the CIVI of subsequent cycles."
   )
 
   ini({

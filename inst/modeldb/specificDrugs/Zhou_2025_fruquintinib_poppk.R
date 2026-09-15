@@ -50,26 +50,32 @@ Zhou_2025_fruquintinib_poppk <- function() {
   # absorbed into the apparent VM/f, exactly as in the source.
   compartmentData <- list(
     depot = list(
-      analyte = "fruquintinib", units = "mg (apparent, i.e. amount/F)",
-      specimen = "administration site", verified = TRUE
+      analyte = "fruquintinib",
+      units = "mg (apparent, i.e. amount/F)",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "fruquintinib", units = "mg (apparent, i.e. amount/F)",
-      specimen = "plasma", verified = TRUE
+      analyte = "fruquintinib",
+      units = "mg (apparent, i.e. amount/F)",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_m11 = list(
-      analyte = "M11", units = "mg fruquintinib-equivalents (apparent, i.e. amount/f)",
-      specimen = "plasma", verified = TRUE
+      analyte = "M11",
+      units = "mg fruquintinib-equivalents (apparent, i.e. amount/f)",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight, the only continuous covariate retained in the final model; it acts on all four disposition parameters (fruquintinib CL/F and V/F, M11 CLM/f and VM/f)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight, the only continuous covariate retained in the final model; it acts on all four disposition parameters (fruquintinib CL/F and V/F, M11 CLM/f and VM/f)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Entered as a power function centered at 73 kg on each of the four",
         "disposition parameters (Zhou 2025 Results, 'Final Model' equation",
         "block: 'CL/F (L/h) = 0.808 x (BW/73)^0.43', 'V/F (L) = 50.4 x",
@@ -92,14 +98,14 @@ Zhou_2025_fruquintinib_poppk <- function() {
         "11.1. Baseline weight; the paper gives no indication that weight was",
         "carried as time-varying."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CONMED_PPI = list(
-      description        = "Concurrent proton-pump inhibitor use, a covariate on the fruquintinib absorption rate constant",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concurrent proton-pump inhibitor use, a covariate on the fruquintinib absorption rate constant",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concurrent proton-pump inhibitor)",
-      notes              = paste(
+      notes = paste(
         "1 = fruquintinib coadministered with a proton-pump inhibitor, 0 =",
         "not. Applied as a fractional change on the typical Ka (Zhou 2025",
         "Results, 'Final Model': 'Ka (1/h) = 2.52 (x [1 - 0.607] if",
@@ -120,14 +126,14 @@ Zhou_2025_fruquintinib_poppk <- function() {
         "tested 'to provide supportive data to complement the findings from",
         "dedicated drug-drug interaction studies' (Methods)."
       ),
-      source_name        = "PPI"
+      source_name = "PPI"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-volunteer indicator, the paper's 'health status' covariate on fruquintinib apparent volume of distribution",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-volunteer indicator, the paper's 'health status' covariate on fruquintinib apparent volume of distribution",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with cancer; the pooled non-healthy cohort of 515 subjects with colorectal or other solid tumors)",
-      notes              = paste(
+      notes = paste(
         "1 = healthy volunteer, 0 = patient with cancer. Applied as a",
         "fractional change on the typical V/F (Zhou 2025 Results, 'Final",
         "Model': 'V/F (L) = 50.4 x (BW/73)^0.924 (x [1 - 0.0908] if",
@@ -142,7 +148,7 @@ Zhou_2025_fruquintinib_poppk <- function() {
         "meaningful (Figure 3: <= 2% change in fruquintinib CmaxSS and CminSS",
         "and no change in AUCSS relative to the reference)."
       ),
-      source_name        = "HS"
+      source_name = "HS"
     )
   )
 
@@ -156,9 +162,9 @@ Zhou_2025_fruquintinib_poppk <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Table 1 median 61.0 years, range 18.0-82.0. Screened; not retained.",
         "Conclusion: 'age (18.0-82.0 years) ... had no clinically meaningful",
         "impact on fruquintinib PK' and Figure 4a plots individual AUCSS",
@@ -167,9 +173,9 @@ Zhou_2025_fruquintinib_poppk <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "244 female / 313 male (43.8% female, Table 1). Sex was NOT retained",
         "in the final model. Two distinct traces exist and both were",
         "excluded. (1) An intermediate model from the stepwise covariate",
@@ -190,9 +196,9 @@ Zhou_2025_fruquintinib_poppk <- function() {
     ),
     ALB = list(
       description = "Baseline serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Retained on M11 apparent clearance in the INTERMEDIATE model coming",
         "out of the stepwise covariate search ('albumin on CLM/f', Results,",
         "'Covariate Search') but dropped in the subsequent 'further model",
@@ -204,9 +210,9 @@ Zhou_2025_fruquintinib_poppk <- function() {
     ),
     CRCL = list(
       description = "Baseline creatinine clearance by the Cockcroft-Gault equation, the paper's renal-function covariate",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Table 1 median 97.9 mL/min, range 32.6-293.0. Tested because it was",
         "'deemed to be of clinical interest' (Methods) rather than on",
         "univariate significance; not retained. Figure 4f and the Results",
@@ -216,15 +222,15 @@ Zhou_2025_fruquintinib_poppk <- function() {
     ),
     RENALIMP_MILD = list(
       description = "Mild renal impairment indicator (CrCl category)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "177 subjects (31.8%, Table 1). Screened; not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "177 subjects (31.8%, Table 1). Screened; not retained."
     ),
     RENALIMP_MOD = list(
       description = "Moderate renal impairment indicator (CrCl category)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "42 subjects (7.5%, Table 1). Screened; not retained. Conclusion:",
         "'mild to moderate renal impairment ... had no clinically meaningful",
         "impact on fruquintinib PK'."
@@ -232,9 +238,9 @@ Zhou_2025_fruquintinib_poppk <- function() {
     ),
     HEPIMP_MILD = list(
       description = "Mild hepatic impairment indicator by NCI Organ Dysfunction Working Group criteria",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "133 subjects (23.9%, Table 1). Screened as clinically-of-interest;",
         "not retained. Discussion: 'mild hepatic impairment (total bilirubin",
         "<= upper limit of normal [ULN] and aspartate aminotransferase [AST]",
@@ -244,9 +250,9 @@ Zhou_2025_fruquintinib_poppk <- function() {
     ),
     HEPIMP_MOD = list(
       description = "Moderate hepatic impairment indicator by NCI Organ Dysfunction Working Group criteria",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Only 2 subjects (0.4%, Table 1). Results: 'There were only two",
         "subjects with moderate hepatic impairment, preventing an adequate",
         "assessment of this category.'"
@@ -254,27 +260,27 @@ Zhou_2025_fruquintinib_poppk <- function() {
     ),
     TBILI = list(
       description = "Baseline total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Table 1 median 9.30 umol/L, range 2.57-38.0. Part of the hepatic",
         "function screen; not retained."
       )
     ),
     BMI = list(
       description = "Baseline body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Table 1 median 25.2 kg/m^2, range 16.0-56.7. Part of the body-size",
         "screen; body weight was the retained body-size covariate."
       )
     ),
     ECOG_GE1 = list(
       description = "Eastern Cooperative Oncology Group performance-status >= 1 indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "310 subjects with ECOG 1 vs 247 with ECOG 0 (Table 1); no subject",
         "had ECOG >= 2, so the >= 1 indicator fully encodes the paper's",
         "'disease severity' covariate. Screened; not retained."
@@ -282,33 +288,33 @@ Zhou_2025_fruquintinib_poppk <- function() {
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "140 subjects (25.1%, Table 1). Screened; not retained (Figure 4c)."
+      units = "(binary)",
+      type = "binary",
+      notes = "140 subjects (25.1%, Table 1). Screened; not retained (Figure 4c)."
     ),
     RACE_BLACK = list(
       description = "Black / African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "29 subjects (5.2%, Table 1). Screened; not retained (Figure 4c)."
+      units = "(binary)",
+      type = "binary",
+      notes = "29 subjects (5.2%, Table 1). Screened; not retained (Figure 4c)."
     ),
     RACE_WHITE = list(
       description = "White race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "359 subjects (64.5%, Table 1). Screened; not retained (Figure 4c)."
+      units = "(binary)",
+      type = "binary",
+      notes = "359 subjects (64.5%, Table 1). Screened; not retained (Figure 4c)."
     ),
     RACE_HISPANIC = list(
       description = "Hispanic or Latino ethnicity indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "28 subjects (5.0%, Table 1). Screened; not retained (Figure 4d)."
+      units = "(binary)",
+      type = "binary",
+      notes = "28 subjects (5.0%, Table 1). Screened; not retained (Figure 4d)."
     ),
     REGION_CHINA = list(
       description = "China enrollment-country indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "80 subjects (14.4%, Table 1; the two China-only studies",
         "NCT01645215 and NCT01975077). Screened; not retained. Discussion:",
         "'race (Asian, Black, and White), ethnicity (Hispanic and",
@@ -318,15 +324,15 @@ Zhou_2025_fruquintinib_poppk <- function() {
     ),
     REGION_JAPAN = list(
       description = "Japan enrollment-country indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "45 subjects (8.1%, Table 1; the Japanese arm of FRESCO-2). Screened; not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "45 subjects (8.1%, Table 1; the Japanese arm of FRESCO-2). Screened; not retained."
     ),
     TUMTP_CRC = list(
       description = "Colorectal cancer tumor-type indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "470 subjects with colorectal cancer, 45 with another tumor type and",
         "42 with no tumor (Table 1). Screened; not retained. Abstract: 'tumor",
         "type ... had no clinically meaningful impact on fruquintinib or M11",
@@ -336,28 +342,33 @@ Zhou_2025_fruquintinib_poppk <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 557L,
-    n_studies      = 6L,
+    species = "human",
+    n_subjects = 557L,
+    n_studies = 6L,
     n_observations = "6668 post-treatment fruquintinib concentrations from 557 subjects; 4136 post-treatment M11 concentrations from 460 subjects (Results, 'Summary of Analysis Dataset')",
-    age_range      = "18.0-82.0 years",
-    age_median     = "61.0 years",
-    weight_range   = "36.0-158 kg",
-    weight_median  = "73.0 kg",
-    bmi_median     = "25.2 kg/m^2 (range 16.0-56.7)",
+    age_range = "18.0-82.0 years",
+    age_median = "61.0 years",
+    weight_range = "36.0-158 kg",
+    weight_median = "73.0 kg",
+    bmi_median = "25.2 kg/m^2 (range 16.0-56.7)",
     sex_female_pct = 43.8,
     race_ethnicity = c(
-      White = 64.5, Black = 5.2, Asian = 25.1,
-      HawaiianPacificIslander = 0.2, Multiple = 0.5, Other = 1.1, Missing = 3.4,
+      White = 64.5,
+      Black = 5.2,
+      Asian = 25.1,
+      HawaiianPacificIslander = 0.2,
+      Multiple = 0.5,
+      Other = 1.1,
+      Missing = 3.4,
       Hispanic = 5.0
     ),
-    disease_state  = "previously treated metastatic colorectal cancer and other advanced solid tumors (515 patients, 92.5%) plus healthy volunteers (42 subjects, 7.5%)",
+    disease_state = "previously treated metastatic colorectal cancer and other advanced solid tumors (515 patients, 92.5%) plus healthy volunteers (42 subjects, 7.5%)",
     renal_function = "creatinine clearance 32.6-293.0 mL/min (median 97.9); 337 normal (60.5%), 177 mild (31.8%), 42 moderate (7.5%) impairment",
     hepatic_function = "NCI Organ Dysfunction Working Group category: 421 normal (75.6%), 133 mild (23.9%), 2 moderate (0.4%)",
     performance_status = "ECOG 0 in 247 subjects (44.3%), ECOG 1 in 310 (55.7%); no subject had ECOG >= 2",
-    dose_range     = "oral fruquintinib 1-6 mg once daily across the phase I/Ib dose-ranging studies; 5 mg once daily for 21 days of each 28-day cycle in FRESCO-2",
-    regions        = "China (14.4%), Japan (8.1%), rest of world (77.6%)",
-    notes          = paste(
+    dose_range = "oral fruquintinib 1-6 mg once daily across the phase I/Ib dose-ranging studies; 5 mg once daily for 21 days of each 28-day cycle in FRESCO-2",
+    regions = "China (14.4%), Japan (8.1%), rest of world (77.6%)",
+    notes = paste(
       "Baseline demographics are Table 1 of Zhou 2025, reported overall and",
       "by study. The six pooled studies are NCT01645215 (n = 40, China),",
       "NCT01975077 (n = 40, China), US1/NCT03251378 (n = 101),",

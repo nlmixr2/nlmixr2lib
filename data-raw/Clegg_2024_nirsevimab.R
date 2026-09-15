@@ -15,24 +15,23 @@ library(nonmem2rx)
 nonmem_model <-
   nonmem2rx(
     "Clegg_2024_nirsevimab_jcph2401-sup-0001-suppmat.ctl",
-    thetaNames =
-      c(
-        TH01_CL = "cl",
-        TH02_V2 = "vc",
-        TH03_Q = "q",
-        TH04_V3 = "vp",
-        TH05_KA = "ka",
-        TH06_F1 = "f_m",
-        TH07_PROP = "propSd",
-        TH08_ADD = "addSd",
-        TH09_CLBETA_CL = "emax_cl_age",
-        TH10_CLT50 = "et50_cl_age",
-        TH11_CLAL = "e_cl_wt",
-        TH12_V2AL = "e_vc_wt",
-        TH13_CLADACAT1 = "e_cl_ada",
-        TH14_CLRACEN1 = "e_cl_black",
-        TH15_CLRACEN2 = "e_cl_asian_amind_mult",
-        TH16_V2RACEN3 = "e_vc_asian_amind_mult",
-        TH17_CLSEASON2 = "e_cl_season2"
-      )
+    thetaNames = c(
+      TH01_CL = "cl",
+      TH02_V2 = "vc",
+      TH03_Q = "q",
+      TH04_V3 = "vp",
+      TH05_KA = "ka",
+      TH06_F1 = "f_m",
+      TH07_PROP = "propSd",
+      TH08_ADD = "addSd",
+      TH09_CLBETA_CL = "emax_cl_age",
+      TH10_CLT50 = "et50_cl_age",
+      TH11_CLAL = "e_cl_wt",
+      TH12_V2AL = "e_vc_wt",
+      TH13_CLADACAT1 = "e_cl_ada",
+      TH14_CLRACEN1 = "e_cl_black",
+      TH15_CLRACEN2 = "e_cl_asian_amind_mult",
+      TH16_V2RACEN3 = "e_vc_asian_amind_mult",
+      TH17_CLSEASON2 = "e_cl_season2"
+    )
   )

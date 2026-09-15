@@ -18,8 +18,8 @@ Canini_2018_setrobuvir <- function() {
   # hours - consistent with the BID dosing interval (12 h) and the
   # absorption lag time (1.68 h).
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -28,37 +28,37 @@ Canini_2018_setrobuvir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "setrobuvir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "setrobuvir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "setrobuvir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "setrobuvir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "setrobuvir", units = "mg", specimen = "plasma", verified = FALSE),
-    infected    = list(analyte = "HCV-infected cells", units = "mg", specimen = "not applicable", verified = FALSE),
-    virus       = list(analyte = "free HCV virus", units = "mg", specimen = "plasma", verified = FALSE)
+    infected = list(analyte = "HCV-infected cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    virus = list(analyte = "free HCV virus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     HCV_GT1B = list(
-      description        = "HCV genotype-1 subtype indicator. 1 = patient infected with HCV genotype 1B; 0 = patient infected with HCV genotype 1A (the source-paper reference subtype).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HCV genotype-1 subtype indicator. 1 = patient infected with HCV genotype 1B; 0 = patient infected with HCV genotype 1A (the source-paper reference subtype).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HCV GT1A; 12 of 27 treated patients in Canini 2018 study D, 44 percent).",
-      notes              = "Time-fixed per subject (HCV subtype is determined at infection and does not change over the 3-day treatment window). Switches EC50, Hill coefficient h, and viral clearance rate c between the two independently-estimated typical values and their independent IIVs. Encoding inside model(): ec50_ind = exp(lec50_1a + etalec50_1a) * (1 - HCV_GT1B) + exp(lec50_1b + etalec50_1b) * HCV_GT1B, and analogous switches for hill_ind and c_ind. Registered canonical (see inst/references/covariate-columns.md).",
-      source_name        = "Genotype 1a / 1b column in Table 2; the indicator encodes GT1B = 1 to match the naming of HCV_GT1B in the covariate register."
+      notes = "Time-fixed per subject (HCV subtype is determined at infection and does not change over the 3-day treatment window). Switches EC50, Hill coefficient h, and viral clearance rate c between the two independently-estimated typical values and their independent IIVs. Encoding inside model(): ec50_ind = exp(lec50_1a + etalec50_1a) * (1 - HCV_GT1B) + exp(lec50_1b + etalec50_1b) * HCV_GT1B, and analogous switches for hill_ind and c_ind. Registered canonical (see inst/references/covariate-columns.md).",
+      source_name = "Genotype 1a / 1b column in Table 2; the indicator encodes GT1B = 1 to match the naming of HCV_GT1B in the covariate register."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 77L,
-    n_studies      = 4L,
-    n_patients_vk  = 27L,
-    pk_hv_a        = 12L,
-    pk_hv_b        = 23L,
-    pk_hv_c        = 15L,
+    species = "human",
+    n_subjects = 77L,
+    n_studies = 4L,
+    n_patients_vk = 27L,
+    pk_hv_a = 12L,
+    pk_hv_b = 23L,
+    pk_hv_c = 15L,
     dosing_regimen = "PK studies A/B/C (healthy volunteers): single dose 800 mg or 2000 mg (A); 400/600/800 mg once daily for 10 days after a single D0 dose (B); 200 mg BID for 6 days (C, danoprevir interaction study). VK study D (HCV-infected patients): 200 mg BID, 400 mg BID, or 800 mg BID for 3 days (11, 8, 8 patients per arm; 8 additional patients received placebo and were excluded from the analysis).",
-    disease_state  = "Chronic HCV genotype-1 infection (44 percent GT1A, 56 percent GT1B in the 27 treated patients from study D); healthy volunteers for PK studies A, B, and C.",
-    dose_range     = "200 mg to 2000 mg single or repeated oral setrobuvir. Multiple-dose regimens all BID or QD as above.",
-    regions        = "Canini 2018 does not report study region; study D references Antiviral Therapy dose-ranging trial (Roche).",
-    notes          = "Population sourced from Canini 2018 Methods, Table 1 (PK study designs), and Table 2 (baseline characteristics of the 27 treated patients: 5 GT1A + 6 GT1B in arm 1 200 mg; 3 GT1A + 5 GT1B in arm 2 400 mg; 4 GT1A + 4 GT1B in arm 3 800 mg). Median initial viral load ranged from 5.71 to 6.89 log10 IU/mL across dose arms (Table 2). Baseline viral load was not significantly associated with dose group (P = 0.35, Spearman). Baseline demographics beyond genotype and viral load are not tabulated in the trimmed manuscript (see Additional file 1 supplement, not on disk)."
+    disease_state = "Chronic HCV genotype-1 infection (44 percent GT1A, 56 percent GT1B in the 27 treated patients from study D); healthy volunteers for PK studies A, B, and C.",
+    dose_range = "200 mg to 2000 mg single or repeated oral setrobuvir. Multiple-dose regimens all BID or QD as above.",
+    regions = "Canini 2018 does not report study region; study D references Antiviral Therapy dose-ranging trial (Roche).",
+    notes = "Population sourced from Canini 2018 Methods, Table 1 (PK study designs), and Table 2 (baseline characteristics of the 27 treated patients: 5 GT1A + 6 GT1B in arm 1 200 mg; 3 GT1A + 5 GT1B in arm 2 400 mg; 4 GT1A + 4 GT1B in arm 3 800 mg). Median initial viral load ranged from 5.71 to 6.89 log10 IU/mL across dose arms (Table 2). Baseline viral load was not significantly associated with dose group (P = 0.35, Spearman). Baseline demographics beyond genotype and viral load are not tabulated in the trimmed manuscript (see Additional file 1 supplement, not on disk)."
   )
 
   ini({

@@ -12,8 +12,8 @@ Gebhard_2023_methotrexate <- function() {
   )
   vignette <- "Gebhard_2023_leukemia_maintenance_therapy"
   units <- list(
-    time          = "day",
-    dosing        = "umol/m^2",
+    time = "day",
+    dosing = "umol/m^2",
     concentration = "umol/L"
   )
   # Unit note. Gebhard 2023 states that the E-MTX OBSERVATIONS were converted to
@@ -35,43 +35,43 @@ Gebhard_2023_methotrexate <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "methotrexate", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "methotrexate", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "methotrexate", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "methotrexate", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "methotrexate", units = NA_character_, specimen = "plasma", verified = FALSE),
-    rbc_mtx     = list(analyte = "methotrexate", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    rbc_mtx = list(analyte = "methotrexate", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     BL_MTX_RBC = list(
-      description        = "Baseline (first observed) erythrocyte methotrexate concentration, used as the initial condition of the rbc_mtx compartment.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline (first observed) erythrocyte methotrexate concentration, used as the initial condition of the rbc_mtx compartment.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Gebhard 2023 Methods: 'X_E^MTX(0) = INIMTX with INIMTX being the first observation in the data set at time point 0'. Every patient's record begins after weeks of maintenance therapy, 28 days after the last high-dose intravenous MTX course, so the red-cell pool has already accumulated and cannot be initialised at zero. Cohort median 0.026 umol/L, range 0-0.10 umol/L (Table 1). The paper's own Discussion names an alternative remedy -- restructure the timeline so estimation can start where the red-cell compartment is genuinely zero -- but that is not the model as published. Originally measured in nmol/mmol hemoglobin and converted to umol/L assuming Hb MW 64458 g/mol and 330 g Hb/L erythrocytes (Gebhard 2023 Methods).",
-      source_name        = "INIMTX"
+      notes = "Gebhard 2023 Methods: 'X_E^MTX(0) = INIMTX with INIMTX being the first observation in the data set at time point 0'. Every patient's record begins after weeks of maintenance therapy, 28 days after the last high-dose intravenous MTX course, so the red-cell pool has already accumulated and cannot be initialised at zero. Cohort median 0.026 umol/L, range 0-0.10 umol/L (Table 1). The paper's own Discussion names an alternative remedy -- restructure the timeline so estimation can start where the red-cell compartment is genuinely zero -- but that is not the model as published. Originally measured in nmol/mmol hemoglobin and converted to umol/L assuming Hb MW 64458 g/mol and 330 g Hb/L erythrocytes (Gebhard 2023 Methods).",
+      source_name = "INIMTX"
     ),
     DOSE_MTX_MGM2 = list(
-      description        = "Methotrexate dose administered on the current dose record, normalised to body-surface area.",
-      units              = "mg/m^2",
-      type               = "continuous",
+      description = "Methotrexate dose administered on the current dose record, normalised to body-surface area.",
+      units = "mg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the saturable dose-dependent bioavailability F^MTX = 1 - 0.77 * DOSE_MTX_MGM2 / (15.01 + DOSE_MTX_MGM2) (Gebhard 2023 Supplementary Table S1, model PK^MTX_bio). A dedicated mg/m^2 column is required because this model's amt is supplied in umol/m^2; convert with the methotrexate molecular weight 454.44 g/mol via amt [umol/m^2] = DOSE_MTX_MGM2 * 1000 / 454.44. Cohort median weekly dose 15.0 mg/m^2, range 1.3-45.0 mg/m^2 (Table 1). At the median dose F = 1 - 0.77 * 15 / 30.01 = 0.615.",
-      source_name        = "MTX"
+      notes = "Drives the saturable dose-dependent bioavailability F^MTX = 1 - 0.77 * DOSE_MTX_MGM2 / (15.01 + DOSE_MTX_MGM2) (Gebhard 2023 Supplementary Table S1, model PK^MTX_bio). A dedicated mg/m^2 column is required because this model's amt is supplied in umol/m^2; convert with the methotrexate molecular weight 454.44 g/mol via amt [umol/m^2] = DOSE_MTX_MGM2 * 1000 / 454.44. Cohort median weekly dose 15.0 mg/m^2, range 1.3-45.0 mg/m^2 (Table 1). At the median dose F = 1 - 0.77 * 15 / 30.01 = 0.615.",
+      source_name = "MTX"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 452L,
-    n_studies      = 1L,
-    age_range      = "2.4-16.9 years (median 5.9)",
-    weight_range   = "10.3-105.5 kg (median 21.5)",
-    height_range   = "81.5-180.0 cm (median 114.0)",
-    disease_state  = "Precursor-B-cell acute lymphoblastic leukemia in children, during oral maintenance therapy with 6-mercaptopurine plus low-dose oral methotrexate. Treated on the NOPHO ALL-92 protocol (Nordic Society for Paediatric Haematology and Oncology); Copenhagen ethics approval V.200.2080/91.",
-    dose_range     = "Methotrexate 1.3-45.0 mg/m^2 weekly by mouth (median 15.0 mg/m^2); the concurrent 6-mercaptopurine dose was 5.4-175.0 mg/m^2 daily (median 57.1 mg/m^2). Doses were titrated to a target white-blood-cell count of 1.5-3.5 G/L.",
-    regions        = "Nordic countries (NOPHO ALL-92)",
-    observations   = "4192 E-MTX observations across 452 patients; the full data set also holds 4624 E-TGN and 9808 ANC observations (Table 1).",
-    notes          = "Each patient's record begins with the first paired E-TGN / E-MTX measurement taken 28 days after the last high-dose intravenous methotrexate course, so the high-dose-MTX period is excluded. Patients were dropped when parameter estimation would have been impossible: fewer than two E-TGN or E-MTX observations, no 6MP or MTX dose, or no height, weight or ANC observation. Estimation used NONMEM 7.5 with FOCEi for this PK submodel."
+    species = "human",
+    n_subjects = 452L,
+    n_studies = 1L,
+    age_range = "2.4-16.9 years (median 5.9)",
+    weight_range = "10.3-105.5 kg (median 21.5)",
+    height_range = "81.5-180.0 cm (median 114.0)",
+    disease_state = "Precursor-B-cell acute lymphoblastic leukemia in children, during oral maintenance therapy with 6-mercaptopurine plus low-dose oral methotrexate. Treated on the NOPHO ALL-92 protocol (Nordic Society for Paediatric Haematology and Oncology); Copenhagen ethics approval V.200.2080/91.",
+    dose_range = "Methotrexate 1.3-45.0 mg/m^2 weekly by mouth (median 15.0 mg/m^2); the concurrent 6-mercaptopurine dose was 5.4-175.0 mg/m^2 daily (median 57.1 mg/m^2). Doses were titrated to a target white-blood-cell count of 1.5-3.5 G/L.",
+    regions = "Nordic countries (NOPHO ALL-92)",
+    observations = "4192 E-MTX observations across 452 patients; the full data set also holds 4624 E-TGN and 9808 ANC observations (Table 1).",
+    notes = "Each patient's record begins with the first paired E-TGN / E-MTX measurement taken 28 days after the last high-dose intravenous methotrexate course, so the high-dose-MTX period is excluded. Patients were dropped when parameter estimation would have been impossible: fewer than two E-TGN or E-MTX observations, no 6MP or MTX dose, or no height, weight or ANC observation. Estimation used NONMEM 7.5 with FOCEi for this PK submodel."
   )
 
   ini({

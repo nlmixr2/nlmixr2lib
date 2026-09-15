@@ -26,26 +26,26 @@ Reinecke_2018_levonorgestrel_ivOral <- function() {
   )
   vignette <- "Reinecke_2018_levonorgestrel_contraceptives"
   units <- list(
-    time          = "h",
-    dosing        = "mg (levonorgestrel)",
+    time = "h",
+    dosing = "mg (levonorgestrel)",
     concentration = "ng/L (total and unbound LNG in serum/plasma); SHBG in nmol/L"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "levonorgestrel", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "levonorgestrel", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
-    effect      = list(analyte = "levonorgestrel", units = "nmol/L", specimen = "not applicable", verified = TRUE),
-    shbg        = list(analyte = "SHBG", units = "nmol/L", specimen = "serum", verified = TRUE)
+    effect = list(analyte = "levonorgestrel", units = "nmol/L", specimen = "not applicable", verified = TRUE),
+    shbg = list(analyte = "SHBG", units = "nmol/L", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (kg). Power-function ('allometric') covariate on the absolute oral bioavailability of levonorgestrel; bioavailability decreases with increasing body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (kg). Power-function ('allometric') covariate on the absolute oral bioavailability of levonorgestrel; bioavailability decreases with increasing body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight, centred on 66 kg. The reference weight is not",
         "stated in words but is pinned by Supplemental Table S2 itself: the",
         "row labelled 'Absolute oral bioavailability (median[WGHT]=66kg)'",
@@ -56,16 +56,16 @@ Reinecke_2018_levonorgestrel_ivOral <- function() {
         "and neither was significant there; only the effect on oral",
         "bioavailability was retained (Results, 'Intravenous-Oral Model')."
       ),
-      source_name        = "WGHT"
+      source_name = "WGHT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline (years). Screened as a power-function covariate on levonorgestrel clearance and on the SHBG baseline concentration.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Not retained: 'The covariates body weight and age did not have a",
         "significant effect on CL or SBL' (Results, 'Intravenous-Oral",
         "Model'). No point estimate is reported, so the effect cannot be",
@@ -75,20 +75,20 @@ Reinecke_2018_levonorgestrel_ivOral <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 51L,
-    n_studies      = 3L,
-    studies        = c(
+    species = "human",
+    n_subjects = 51L,
+    n_studies = 3L,
+    studies = c(
       "Phase 1 study 92085 (single-dose intravenous 90 ug LNG and single-dose oral 30 / 90 / 270 ug LNG, crossover in the same 18 women)",
       "Phase 1 study 15687 (progestin-only pill Microlut/Norgeston, 30 ug LNG once daily, 1 treatment cycle, 21 women)",
       "Phase 1 study 90078 (oral 150 ug LNG once daily, 1 treatment cycle, 12 women)"
     ),
-    age_range      = "21-45 years (median 35 years across the pooled oral data, N = 51)",
-    weight_range   = "51.2-82.9 kg (median 62 kg across the pooled oral data, N = 51)",
+    age_range = "21-45 years (median 35 years across the pooled oral data, N = 51)",
+    weight_range = "51.2-82.9 kg (median 62 kg across the pooled oral data, N = 51)",
     sex_female_pct = 100,
-    disease_state  = "Healthy premenopausal women",
-    dose_range     = "90 ug LNG single intravenous dose; 30, 90, 150 and 270 ug LNG oral",
-    notes          = paste(
+    disease_state = "Healthy premenopausal women",
+    dose_range = "90 ug LNG single intravenous dose; 30, 90, 150 and 270 ug LNG oral",
+    notes = paste(
       "Demographics from Table 1 and its footnote b. The intravenous and",
       "supportive oral data come from the same 18 subjects in study 92085.",
       "Observations contributing to this step: 286 (IV) + 646 (supportive",

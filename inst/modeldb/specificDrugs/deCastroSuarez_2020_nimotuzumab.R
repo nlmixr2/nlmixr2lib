@@ -9,42 +9,42 @@ deCastroSuarez_2020_nimotuzumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "nimotuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "nimotuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "nimotuzumab", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "EGFR binding", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "EGFR binding", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Subject's assigned single IV infusion dose level (50, 100, 200, or 400 mg in the original trial; vignette also extrapolates to 800 and 1200 mg)",
-      units              = "mg",
-      type               = "continuous",
+      description = "Subject's assigned single IV infusion dose level (50, 100, 200, or 400 mg in the original trial; vignette also extrapolates to 800 and 1200 mg)",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as a binary indicator for the 50 mg cohort only: V1 = exp(lvc + etalvc) * (1 - 0.53 * (DOSE == 50)) reproduces Castro-Suarez 2020 Table 2 row 'V1 change (D = 50 mg) [%] = 53'. Direction (decrease vs increase) is not stated in the paper text and is taken as a 53% DECREASE in V1 for the 50 mg cohort based on visual inspection of Figure 4A; see vignette Errata. Constant per subject across all observations.",
-      source_name        = "Dose"
+      notes = "Used as a binary indicator for the 50 mg cohort only: V1 = exp(lvc + etalvc) * (1 - 0.53 * (DOSE == 50)) reproduces Castro-Suarez 2020 Table 2 row 'V1 change (D = 50 mg) [%] = 53'. Direction (decrease vs increase) is not stated in the paper text and is taken as a 53% DECREASE in V1 for the 50 mg cohort based on visual inspection of Figure 4A; see vignette Errata. Constant per subject across all observations.",
+      source_name = "Dose"
     )
   )
 
   population <- list(
-    n_subjects     = 20L,
+    n_subjects = 20L,
     n_observations = 422L,
-    n_studies      = 1L,
-    age_range      = "21-61 years (median 42; mean 39, SD 11)",
-    age_median     = "42 years",
-    weight_range   = "approx 38-94 kg (median 65.7; mean 66.98, SD 14.69)",
-    weight_median  = "65.7 kg",
-    height_median  = "163.5 cm (mean 163.60, SD 8.99)",
-    bsa_median     = "1.70 m^2 (mean 1.72, SD 0.21)",
+    n_studies = 1L,
+    age_range = "21-61 years (median 42; mean 39, SD 11)",
+    age_median = "42 years",
+    weight_range = "approx 38-94 kg (median 65.7; mean 66.98, SD 14.69)",
+    weight_median = "65.7 kg",
+    height_median = "163.5 cm (mean 163.60, SD 8.99)",
+    bsa_median = "1.70 m^2 (mean 1.72, SD 0.21)",
     serum_creatinine_median = "0.72 mg/dL (mean 0.77, SD 0.14)",
-    crcl_median    = "105.7 mL/min/1.73 m^2 (mean 103.43, SD 22.63)",
-    tkv_mean       = "Men 822.18 mL (SD 486.22; median 678.85). Women 924.14 mL (SD 404.27; median 846.55).",
-    tcv_mean       = "339.93 mL (SD 201.19; median 310.3)",
+    crcl_median = "105.7 mL/min/1.73 m^2 (mean 103.43, SD 22.63)",
+    tkv_mean = "Men 822.18 mL (SD 486.22; median 678.85). Women 924.14 mL (SD 404.27; median 846.55).",
+    tcv_mean = "339.93 mL (SD 201.19; median 310.3)",
     sex_female_pct = 70,
     race_ethnicity = c(Caucasian = 75, AfroAmerican = 5, Other = 20),
-    disease_state  = "Adult patients with autosomal dominant polycystic kidney disease (ADPKD); inclusion required GFR >= 50 mL/min/1.73 m^2 and urinary protein excretion < 1 g/24 h.",
-    dose_range     = "Single 30-min IV infusion at one of four fixed doses: 50, 100, 200, or 400 mg (n=5 per cohort; total n=20).",
-    regions        = "Single-center Cuban phase I clinical trial (Cuban National Regulatory Agency CECMED 442/05.014.08-B); demographics from Castro-Suarez 2020 Table 1.",
-    notes          = "All 422 serum nimotuzumab concentrations were quantifiable (none below LOQ). Concentrations measured by ELISA capturing nimotuzumab via recombinant EGFR extracellular domain. Covariate search (body weight, height, age, BSA, CrCL, serum creatinine, total kidney volume, total cyst volume, sex, race) found no covariate statistically significant on any PK parameter; the model is therefore reported without covariate effects."
+    disease_state = "Adult patients with autosomal dominant polycystic kidney disease (ADPKD); inclusion required GFR >= 50 mL/min/1.73 m^2 and urinary protein excretion < 1 g/24 h.",
+    dose_range = "Single 30-min IV infusion at one of four fixed doses: 50, 100, 200, or 400 mg (n=5 per cohort; total n=20).",
+    regions = "Single-center Cuban phase I clinical trial (Cuban National Regulatory Agency CECMED 442/05.014.08-B); demographics from Castro-Suarez 2020 Table 1.",
+    notes = "All 422 serum nimotuzumab concentrations were quantifiable (none below LOQ). Concentrations measured by ELISA capturing nimotuzumab via recombinant EGFR extracellular domain. Covariate search (body weight, height, age, BSA, CrCL, serum creatinine, total kidney volume, total cyst volume, sex, race) found no covariate statistically significant on any PK parameter; the model is therefore reported without covariate effects."
   )
 
   ini({

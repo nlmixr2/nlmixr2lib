@@ -31,8 +31,8 @@ Schoemaker_1996_dalteparin <- function() {
   )
   vignette <- "Schoemaker_1996_low_molecular_weight_heparin_modeling"
   units <- list(
-    time          = "h",
-    dosing        = "IU",
+    time = "h",
+    dosing = "IU",
     concentration = "IU/mL"
   )
 
@@ -40,21 +40,21 @@ Schoemaker_1996_dalteparin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "dalteparin", units = "IU", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "dalteparin", units = "IU", specimen = "administration site", verified = FALSE),
     central = list(analyte = "dalteparin", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12L,
-    n_studies      = 1L,
-    age_range      = "Not reported in Schoemaker 1996; see the upstream Kroon 1993 abstract.",
-    weight_range   = "Not reported in Schoemaker 1996; see the upstream Kroon 1993 abstract.",
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "Not reported in Schoemaker 1996; see the upstream Kroon 1993 abstract.",
+    weight_range = "Not reported in Schoemaker 1996; see the upstream Kroon 1993 abstract.",
     sex_female_pct = NA,
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy volunteers in an open randomised cross-over study comparing",
       "the bioavailability of heparin, Fragmin (dalteparine), Fraxiparine",
       "(nadroparine) and Orgaran (danaparoid) after subcutaneous administration.",
@@ -65,15 +65,15 @@ Schoemaker_1996_dalteparin <- function() {
       "SC dalteparine, enabling simultaneous PK estimation across the two",
       "routes within each subject."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous bolus and subcutaneous administration. The Schoemaker 1996",
       "paper does not list the absolute dose amount in either anti-Xa IU or mg;",
       "see the upstream Kroon 1993 abstract for the dose specification. Figure 4",
       "(subject 3) shows peak anti-Xa activity in the 0.3-0.4 IU/mL range and",
       "peak APTT response of 55-60 seconds (versus baseline ~30 s)."
     ),
-    regions        = "Single-centre, Centre for Human Drug Research, Leiden, The Netherlands.",
-    notes          = paste(
+    regions = "Single-centre, Centre for Human Drug Research, Leiden, The Netherlands.",
+    notes = paste(
       "Baseline demographics are reported in the upstream Kroon 1993 abstract",
       "(reference [11] of Schoemaker 1996; Br J Clin Pharmacol 35:548P) which",
       "was NOT on disk at extraction time. The Schoemaker 1996 paper itself",

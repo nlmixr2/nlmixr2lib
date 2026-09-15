@@ -32,25 +32,25 @@ Assmus_2026_dndi6148 <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on apparent clearance and apparent volume, standardised",
         "to 70 kg with exponents fixed a priori at 0.75 and 1 (Methods,",
         "'(iii) Covariate model'; S1 Code $PK, '((WT/70)**0.75)' and",
         "'((WT/70)**1.00)'). Time-fixed: this is a single-dose study with baseline",
         "weight only. Median 72.3 kg, range 56.9-96.5 kg (Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE_DNDI6148_MGKG = list(
-      description        = "Administered DNDI-6148 dose level, weight-normalised",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Administered DNDI-6148 dose level, weight-normalised",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters as a CENTRED exponential term on both relative bioavailability and",
         "apparent clearance, centred on the study median dose of 1.7 mg/kg (Results,",
         "'Population pharmacokinetic model'; Table 2 footnote c; S1 Code $PK,",
@@ -61,7 +61,7 @@ Assmus_2026_dndi6148 <- function() {
         "DOSE_DNDI6148_MGKG * WT. Time-fixed per subject in this single-dose study.",
         "Pooled median 1.70 mg/kg, range 0.12-5.56 mg/kg (Table 1)."
       ),
-      source_name        = "DOSE_P_KG"
+      source_name = "DOSE_P_KG"
     )
   )
 
@@ -74,45 +74,45 @@ Assmus_2026_dndi6148 <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the SCM; not retained. Median 35 years, range 18-50 (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the SCM; not retained. Median 35 years, range 18-50 (Table 1)."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Liver-function marker screened in the SCM; not retained. Median 19 IU/L (Table 1)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Liver-function marker screened in the SCM; not retained. Median 19 IU/L (Table 1)."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Liver-function marker screened in the SCM; not retained. Median 19 IU/L (Table 1)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Liver-function marker screened in the SCM; not retained. Median 19 IU/L (Table 1)."
     ),
     ALP = list(
       description = "Alkaline phosphatase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Liver-function marker screened in the SCM; not retained. Median 66.5 IU/L (Table 1)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Liver-function marker screened in the SCM; not retained. Median 66.5 IU/L (Table 1)."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Liver-function marker screened in the SCM; not retained. Median 10 umol/L (Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Liver-function marker screened in the SCM; not retained. Median 10 umol/L (Table 1)."
     ),
     GGT = list(
       description = "Gamma-glutamyl transferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Liver-function marker screened in the SCM; not retained. Median 15.5 IU/L (Table 1)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Liver-function marker screened in the SCM; not retained. Median 15.5 IU/L (Table 1)."
     ),
     CRCL = list(
       description = "Creatinine clearance (Cockcroft-Gault)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Kidney-function marker screened in the SCM; not retained. Median 113 mL/min,",
         "range 81.5-161 (Table 1). Consistent with the Discussion, which reports",
         "< 0.2% of unchanged drug recovered in urine."
@@ -120,38 +120,38 @@ Assmus_2026_dndi6148 <- function() {
     ),
     HCT = list(
       description = "Hematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened in the SCM; not retained. Median 43.0%, range 37.1-48.4 (Table 1)."
+      units = "%",
+      type = "continuous",
+      notes = "Screened in the SCM; not retained. Median 43.0%, range 37.1-48.4 (Table 1)."
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "DNDI-6148", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "DNDI-6148", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "DNDI-6148", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 48,
-    n_studies      = 1,
-    age_range      = "18-50 years",
-    age_median     = "35 years",
-    weight_range   = "56.9-96.5 kg",
-    weight_median  = "72.3 kg",
+    species = "human",
+    n_subjects = 48,
+    n_studies = 1,
+    age_range = "18-50 years",
+    age_median = "35 years",
+    weight_range = "56.9-96.5 kg",
+    weight_median = "72.3 kg",
     sex_female_pct = 0,
     race_ethnicity = c(White = 100),
-    disease_state  = "healthy volunteers",
-    dose_range     = paste(
+    disease_state = "healthy volunteers",
+    dose_range = paste(
       "10-380 mg single oral dose (free acid equivalent), eight ascending cohorts of",
       "6 active subjects each: 10, 20, 40, 80, 160, 220, 300, 380 mg"
     ),
-    regions        = "France (single centre, Gieres)",
-    formulation    = paste(
+    regions = "France (single centre, Gieres)",
+    formulation = paste(
       "DNDI-6148 arginine monohydrate powder for suspension, reconstituted in",
       "ORA-Sweet vehicle, administered under fasting conditions"
     ),
-    notes          = paste(
+    notes = paste(
       "Phase 1 first-in-human single ascending dose study (EudraCT 2018-004023-37;",
       "ISRCTN54981564), 2018-2022. 64 healthy White men enrolled (48 active,",
       "16 placebo); the PK analysis used the 48 active subjects contributing 684",

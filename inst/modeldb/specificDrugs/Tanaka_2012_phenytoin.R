@@ -8,34 +8,34 @@ Tanaka_2012_phenytoin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "phenytoin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "phenytoin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "phenytoin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "phenytoin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "phenytoin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as a power covariate on CL, V2 (central), and V3 (peripheral). Reference 60 kg (Tanaka 2012 Results: 'The average BW of adult Japanese men (60 kg) was selected as the standard value'). The WT exponent on V2 was fixed at 1.0 (Results: 'The influence factor of V2 was fixed to 1 on the basis of statistical significance'). Paper uses the alias 'BW' interchangeably.",
-      source_name        = "BW"
+      notes = "Used as a power covariate on CL, V2 (central), and V3 (peripheral). Reference 60 kg (Tanaka 2012 Results: 'The average BW of adult Japanese men (60 kg) was selected as the standard value'). The WT exponent on V2 was fixed at 1.0 (Results: 'The influence factor of V2 was fixed to 1 on the basis of statistical significance'). Paper uses the alias 'BW' interchangeably.",
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 71L,
-    n_studies      = 3L,
-    age_range      = "2-86 years",
-    weight_range   = "7.8-74.4 kg",
+    species = "human",
+    n_subjects = 71L,
+    n_studies = 3L,
+    age_range = "2-86 years",
+    weight_range = "7.8-74.4 kg",
     sex_female_pct = 38.0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Pooled cohort of 24 healthy adult volunteers (Phase I crossover + Phase I dose-escalation), 14 adult patients (Phase III; status epilepticus, acute repetitive seizures, or post-neurosurgical seizure prophylaxis), and 33 pediatric patients (Phase III; same indications).",
-    dose_range     = "IV fosphenytoin sodium 375-750 mg (healthy volunteers, fixed doses) or 15-22.5 mg/kg (patients) infused at 8.3-75 mg/min (healthy volunteers) or 1-3 mg/kg/min capped at 150 mg/min (patients). Phase I crossover arm also dosed phenytoin sodium 250 mg IV directly.",
-    regions        = "Japan",
-    notes          = "Tanaka 2012 Table 2 baseline demographics. Three pooled studies: two Phase I in healthy adult Japanese males (n = 24 total, all male) and one Phase III in neurosurgical and epileptic patients (adult n = 14, pediatric n = 33; combined adult+pediatric sex 20/27 M/F). Overall sex 44/27 M/F. 923 phenytoin plasma concentrations. Reference body weight 60 kg (average Japanese adult male)."
+    disease_state = "Pooled cohort of 24 healthy adult volunteers (Phase I crossover + Phase I dose-escalation), 14 adult patients (Phase III; status epilepticus, acute repetitive seizures, or post-neurosurgical seizure prophylaxis), and 33 pediatric patients (Phase III; same indications).",
+    dose_range = "IV fosphenytoin sodium 375-750 mg (healthy volunteers, fixed doses) or 15-22.5 mg/kg (patients) infused at 8.3-75 mg/min (healthy volunteers) or 1-3 mg/kg/min capped at 150 mg/min (patients). Phase I crossover arm also dosed phenytoin sodium 250 mg IV directly.",
+    regions = "Japan",
+    notes = "Tanaka 2012 Table 2 baseline demographics. Three pooled studies: two Phase I in healthy adult Japanese males (n = 24 total, all male) and one Phase III in neurosurgical and epileptic patients (adult n = 14, pediatric n = 33; combined adult+pediatric sex 20/27 M/F). Overall sex 44/27 M/F. 923 phenytoin plasma concentrations. Reference body weight 60 kg (average Japanese adult male)."
   )
 
   ini({

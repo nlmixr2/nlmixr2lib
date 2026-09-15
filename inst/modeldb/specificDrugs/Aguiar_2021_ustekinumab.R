@@ -9,89 +9,99 @@ Aguiar_2021_ustekinumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot             = list(analyte = "ustekinumab", units = "nmol", specimen = "administration site", verified = FALSE),
-    central           = list(analyte = "ustekinumab", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1       = list(analyte = "ustekinumab", units = "nmol", specimen = "plasma", verified = FALSE),
-    total_target      = list(analyte = "unbound IL-12/IL-23 p40 target", units = "nmol", specimen = "plasma", verified = FALSE),
-    target_peripheral = list(analyte = "unbound IL-12/IL-23 p40 target", units = "nmol", specimen = "plasma", verified = FALSE),
-    fc                = list(analyte = "fecal calprotectin", units = "nmol", specimen = "faeces", verified = FALSE)
+    depot = list(analyte = "ustekinumab", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ustekinumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ustekinumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    total_target = list(
+      analyte = "unbound IL-12/IL-23 p40 target",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    target_peripheral = list(
+      analyte = "unbound IL-12/IL-23 p40 target",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    fc = list(analyte = "fecal calprotectin", units = "nmol", specimen = "faeces", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Baseline fat-free mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline fat-free mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL, Vc, Vp with reference 45 kg (Aguiar 2021 Table 2 footnotes a-c; the reference equals the cohort median FFM of 45 kg, Table 1). Derived per subject from height, weight, and sex via the Janmahasatian 2005 semi-mechanistic model (Aguiar 2021 Methods section 2.2).",
-      source_name        = "FFM"
+      notes = "Power scaling on CL, Vc, Vp with reference 45 kg (Aguiar 2021 Table 2 footnotes a-c; the reference equals the cohort median FFM of 45 kg, Table 1). Derived per subject from height, weight, and sex via the Janmahasatian 2005 semi-mechanistic model (Aguiar 2021 Methods section 2.2).",
+      source_name = "FFM"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on CL: multiplier (1 - 0.0165 * (ALB - 43)) (Aguiar 2021 Table 2 footnote a). Reference 43 g/L equals the cohort median (Table 1).",
-      source_name        = "Serum albumin"
+      notes = "Linear-deviation effect on CL: multiplier (1 - 0.0165 * (ALB - 43)) (Aguiar 2021 Table 2 footnote a). Reference 43 g/L equals the cohort median (Table 1).",
+      source_name = "Serum albumin"
     ),
     CRP = list(
-      description        = "Baseline C-reactive protein",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline C-reactive protein",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on Ksyn (rate constant of target synthesis): multiplier (1 + 0.0846 * (CRP - 3)) (Aguiar 2021 Table 2 footnote d). Reference 3 mg/L equals the cohort median (Table 1). Standard CRP assay (Aguiar 2021 does not specify a high-sensitivity assay).",
-      source_name        = "C-reactive protein"
+      notes = "Linear-deviation effect on Ksyn (rate constant of target synthesis): multiplier (1 + 0.0846 * (CRP - 3)) (Aguiar 2021 Table 2 footnote d). Reference 3 mg/L equals the cohort median (Table 1). Standard CRP assay (Aguiar 2021 does not specify a high-sensitivity assay).",
+      source_name = "C-reactive protein"
     ),
     PRIOR_BIO = list(
-      description        = "Prior biologic exposure indicator (any biologic; broader than anti-TNF only)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior biologic exposure indicator (any biologic; broader than anti-TNF only)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (biologic-naive). NOTE: Aguiar 2021 reports the inverted indicator 'bio-naive' (1 = biologic-naive); see notes.",
-      notes              = "Aguiar 2021 Table 2 footnote a uses the inverted variable bio-naive = 1 - PRIOR_BIO. The model() block derives bio_naive <- 1 - PRIOR_BIO so the paper's reported coefficient (-0.227 on bio-naive) is preserved exactly. Effect on CL: multiplier (1 - 0.227 * bio_naive). In Aguiar 2021, prior biologic = prior anti-TNF (66.7% of cohort) and/or prior vedolizumab (17.5%); the paper's bio-naive group are subjects with no prior anti-TNF or vedolizumab.",
-      source_name        = "bio-naive"
+      notes = "Aguiar 2021 Table 2 footnote a uses the inverted variable bio-naive = 1 - PRIOR_BIO. The model() block derives bio_naive <- 1 - PRIOR_BIO so the paper's reported coefficient (-0.227 on bio-naive) is preserved exactly. Effect on CL: multiplier (1 - 0.227 * bio_naive). In Aguiar 2021, prior biologic = prior anti-TNF (66.7% of cohort) and/or prior vedolizumab (17.5%); the paper's bio-naive group are subjects with no prior anti-TNF or vedolizumab.",
+      source_name = "bio-naive"
     ),
     FCGR3A_VV = list(
-      description        = "FCGR3A 158 V/V homozygote indicator (rs396991)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "FCGR3A 158 V/V homozygote indicator (rs396991)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (V/F heterozygote or F/F homozygote, combined)",
-      notes              = "Aguiar 2021 Table 2: subcutaneous bioavailability F = 88.8% in V/V homozygotes vs 71.0% in V/F + F/F (combined). Modeled here on the logit scale: logit(F_pop) = log(0.71/0.29) for the reference group; e_fcgr3a_vv_fdepot adds log(0.888/0.112) - log(0.71/0.29) for V/V subjects. In the source TaqMan assay (rs396991, C_25815666_10), allele coding is A/C; the V allele is the higher-FcgammaRIIIa-affinity variant. Cohort distribution: 5/57 V/V (8.8%), 31/57 V/F (54.4%), 21/57 F/F (36.8%) (Table 1).",
-      source_name        = "FCGR3A-158 V/V"
+      notes = "Aguiar 2021 Table 2: subcutaneous bioavailability F = 88.8% in V/V homozygotes vs 71.0% in V/F + F/F (combined). Modeled here on the logit scale: logit(F_pop) = log(0.71/0.29) for the reference group; e_fcgr3a_vv_fdepot adds log(0.888/0.112) - log(0.71/0.29) for V/V subjects. In the source TaqMan assay (rs396991, C_25815666_10), allele coding is A/C; the V allele is the higher-FcgammaRIIIa-affinity variant. Cohort distribution: 5/57 V/V (8.8%), 31/57 V/F (54.4%), 21/57 F/F (36.8%) (Table 1).",
+      source_name = "FCGR3A-158 V/V"
     ),
     ENDO_ULCER = list(
-      description        = "Endoscopically active luminal disease at baseline (mucosal ulcerations confirmed at baseline ileocolonoscopy)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Endoscopically active luminal disease at baseline (mucosal ulcerations confirmed at baseline ileocolonoscopy)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no mucosal ulcerations at baseline)",
-      notes              = "Aguiar 2021 Table 3: covariate on baseline fecal calprotectin FC0. Typical FC0 = 102 mg/kg without ulcers and 213 mg/kg with ulcers; modeled here as a multiplicative effect on FC0 with reference 102 mg/kg. Cohort prevalence 44/57 (77.2%, Table 1).",
-      source_name        = "Endoscopically active disease at baseline"
+      notes = "Aguiar 2021 Table 3: covariate on baseline fecal calprotectin FC0. Typical FC0 = 102 mg/kg without ulcers and 213 mg/kg with ulcers; modeled here as a multiplicative effect on FC0 with reference 102 mg/kg. Cohort prevalence 44/57 (77.2%, Table 1).",
+      source_name = "Endoscopically active disease at baseline"
     )
   )
 
   population <- list(
-    n_subjects     = 57L,
-    n_studies      = 1L,
-    age_range      = "median 49 years (IQR 32-56)",
-    age_median     = "49 years",
-    weight_range   = "median 70 kg (IQR 59-84)",
-    weight_median  = "70 kg",
-    ffm_range      = "median 45 kg (IQR 39-62)",
-    height_range   = "median 169 cm (IQR 163-179)",
+    n_subjects = 57L,
+    n_studies = 1L,
+    age_range = "median 49 years (IQR 32-56)",
+    age_median = "49 years",
+    weight_range = "median 70 kg (IQR 59-84)",
+    weight_median = "70 kg",
+    ffm_range = "median 45 kg (IQR 39-62)",
+    height_range = "median 169 cm (IQR 163-179)",
     sex_female_pct = 56.0,
     race_ethnicity = "Not reported (single-center Slovenian cohort)",
-    disease_state  = "Active Crohn's disease starting ustekinumab therapy; 77.2% endoscopically active at baseline; median disease duration 14 years (IQR 7-22)",
-    dose_range     = "Weight-tiered IV induction (260 mg if <=55 kg, 390 mg if 55-85 kg, 520 mg if >85 kg) at baseline, followed by 90 mg SC every 8 weeks (standard maintenance)",
-    regions        = "Single-center, tertiary referral center, Slovenia",
+    disease_state = "Active Crohn's disease starting ustekinumab therapy; 77.2% endoscopically active at baseline; median disease duration 14 years (IQR 7-22)",
+    dose_range = "Weight-tiered IV induction (260 mg if <=55 kg, 390 mg if 55-85 kg, 520 mg if >85 kg) at baseline, followed by 90 mg SC every 8 weeks (standard maintenance)",
+    regions = "Single-center, tertiary referral center, Slovenia",
     prior_biologic_pct = 66.7,
     prior_anti_tnf_pct = 66.7,
     prior_vedolizumab_pct = 17.5,
     fcgr3a_distribution = "V/V 8.8% (5/57), V/F 54.4% (31/57), F/F 36.8% (21/57); rs396991, Hardy-Weinberg in equilibrium",
-    crp_baseline   = "median 3 mg/L (IQR 3-11)",
+    crp_baseline = "median 3 mg/L (IQR 3-11)",
     albumin_baseline = "median 43 g/L (IQR 41-44)",
-    fc_baseline    = "median 134 mg/kg (IQR 53-213)",
-    samples        = "574 ustekinumab serum samples (5 below LOQ); 224 fecal calprotectin samples (15 below LOQ, 11 above ULOQ)",
-    follow_up      = "32 weeks per subject; PK at baseline, 1 h post-IV-induction, weeks 2/4/8/9/10/12/16/20/24/32; FC at baseline and weeks 8/16/24/32",
-    notes          = "Prospective observational study (Aguiar 2021). The PK assay is for unbound (free) ustekinumab via ImmunoGuide ELISA (LOQ 0.35 ug/mL); the modelled observation Cc is therefore free drug in nmol/L. Antidrug antibodies were not detected in any sample. Baseline demographics from Aguiar 2021 Table 1."
+    fc_baseline = "median 134 mg/kg (IQR 53-213)",
+    samples = "574 ustekinumab serum samples (5 below LOQ); 224 fecal calprotectin samples (15 below LOQ, 11 above ULOQ)",
+    follow_up = "32 weeks per subject; PK at baseline, 1 h post-IV-induction, weeks 2/4/8/9/10/12/16/20/24/32; FC at baseline and weeks 8/16/24/32",
+    notes = "Prospective observational study (Aguiar 2021). The PK assay is for unbound (free) ustekinumab via ImmunoGuide ELISA (LOQ 0.35 ug/mL); the modelled observation Cc is therefore free drug in nmol/L. Antidrug antibodies were not detected in any sample. Baseline demographics from Aguiar 2021 Table 1."
   )
 
   ini({

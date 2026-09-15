@@ -8,44 +8,44 @@ Williams_2012_valproic_acid_pediatric <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "valproic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "valproic acid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "valproic acid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with reference weight 70 kg. Fixed exponents 0.75 on CL/Q and 1.0 on Vc/Vp (Williams 2012 Table I).",
-      source_name        = "WT"
+      notes = "Allometric scaling with reference weight 70 kg. Fixed exponents 0.75 on CL/Q and 1.0 on Vc/Vp (Williams 2012 Table I).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-law effect on Vc with reference 8.5 years (median age in epilepsy data set). Estimated exponent -0.267 (Williams 2012 Table I, Final Model).",
-      source_name        = "AGE"
+      notes = "Power-law effect on Vc with reference 8.5 years (median age in epilepsy data set). Estimated exponent -0.267 (Williams 2012 Table I, Final Model).",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 52,
-    n_studies      = 2,
-    age_range      = "1-17 years",
-    age_median     = "8.5 years",
-    weight_range   = "not explicitly tabulated; median 27.5 kg",
-    weight_median  = "27.5 kg",
+    species = "human",
+    n_subjects = 52,
+    n_studies = 2,
+    age_range = "1-17 years",
+    age_median = "8.5 years",
+    weight_range = "not explicitly tabulated; median 27.5 kg",
+    weight_median = "27.5 kg",
     sex_female_pct = 30.8,
     race_ethnicity = "Not retained as covariate (>10% missing in the analysis dataset).",
-    disease_state  = "Pediatric epilepsy (10 subjects from an IV-infusion clinical trial of Depacon; 42 subjects from therapeutic drug monitoring at The Children's Hospital of Philadelphia, 2004-2006).",
-    dose_range     = "Clinical-trial IV infusion 14 mg/kg (range 12-15 mg/kg) single dose; TDM-subset oral or IV multiple doses 23 mg/kg/day (range 3-60 mg/kg/day) across syrup, capsule, divalproex sprinkle, and tablet formulations.",
-    regions        = "United States (multicenter IV infusion trial; Children's Hospital of Philadelphia TDM cohort).",
-    notes          = "Final analysis data set: 231 observations across 52 subjects with 1-15 observations per subject. 36 male / 16 female. 13 subjects classified as induced (concomitant antiepileptic drugs); 39 monotherapy. Extended-release tablet dosing and post-15-hour TDM observations excluded. See Williams 2012 Results section 'Epilepsy Patient Population and Data Characteristics' and Table I."
+    disease_state = "Pediatric epilepsy (10 subjects from an IV-infusion clinical trial of Depacon; 42 subjects from therapeutic drug monitoring at The Children's Hospital of Philadelphia, 2004-2006).",
+    dose_range = "Clinical-trial IV infusion 14 mg/kg (range 12-15 mg/kg) single dose; TDM-subset oral or IV multiple doses 23 mg/kg/day (range 3-60 mg/kg/day) across syrup, capsule, divalproex sprinkle, and tablet formulations.",
+    regions = "United States (multicenter IV infusion trial; Children's Hospital of Philadelphia TDM cohort).",
+    notes = "Final analysis data set: 231 observations across 52 subjects with 1-15 observations per subject. 36 male / 16 female. 13 subjects classified as induced (concomitant antiepileptic drugs); 39 monotherapy. Extended-release tablet dosing and post-15-hour TDM observations excluded. See Williams 2012 Results section 'Epilepsy Patient Population and Data Characteristics' and Table I."
   )
 
   ini({

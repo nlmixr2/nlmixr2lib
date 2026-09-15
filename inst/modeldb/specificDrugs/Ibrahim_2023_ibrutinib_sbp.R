@@ -23,8 +23,8 @@ Ibrahim_2023_ibrutinib_sbp <- function() {
   )
   vignette <- "Ibrahim_2023_ibrutinib"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; ibrutinib exposure enters as the time-varying covariate AUC_IBRU)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; ibrutinib exposure enters as the time-varying covariate AUC_IBRU)",
     concentration = "systolic blood pressure in mmHg (not a drug concentration)"
   )
 
@@ -34,16 +34,16 @@ Ibrahim_2023_ibrutinib_sbp <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     transit1 = list(analyte = "ibrutinib", units = NA_character_, specimen = "administration site", verified = FALSE),
-    sbp      = list(analyte = "systolic blood pressure", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    sbp = list(analyte = "systolic blood pressure", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     AUC_IBRU = list(
-      description        = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",
-      units              = "h*ng/mL",
-      type               = "continuous",
+      description = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",
+      units = "h*ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying: the value tracks the patient's current daily ibrutinib dose level and drops to 0 during",
         "treatment interruptions. Ibrutinib enters this model ONLY through this column -- the model contains no drug",
         "compartment and no dosing events. Ibrahim 2023 derived per-subject AUC(0-24) by integrating the individual",
@@ -53,14 +53,14 @@ Ibrahim_2023_ibrutinib_sbp <- function() {
         "three times the corresponding IAUC50 of the pBtk efficacy model (34.1 h*ng/mL), which is why the paper's",
         "de-escalation schedules lose less efficacy than hypertension risk."
       ),
-      source_name        = "DAILYAUC"
+      source_name = "DAILYAUC"
     ),
     AGE = list(
-      description        = "Baseline age.",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (baseline value). Enters the mean transit time in power form",
         "mtt = exp(lmtt_sbp + etalmtt_sbp + e_age_mtt_sbp * log(AGE / 63)), equivalently",
         "MTT_sBP = 79.9 * (AGE / 63)^-5.04, with reference age 63 years (Ibrahim 2023 Table 2 footnote c:",
@@ -68,22 +68,22 @@ Ibrahim_2023_ibrutinib_sbp <- function() {
         "(Supplementary Table S1). The exponent is large, so MTT_sBP is strongly age-sensitive: older patients reach",
         "the ibrutinib-elevated sBP steady state substantially faster (Ibrahim 2023 Discussion)."
       ),
-      source_name        = "LNAGE"
+      source_name = "LNAGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 120L,
-    n_studies      = 1L,
-    age_range      = "mean 62.4 (SD 9.9) years",
-    weight_range   = "mean 82.3 (SD 17) kg",
+    species = "human",
+    n_subjects = 120L,
+    n_studies = 1L,
+    age_range = "mean 62.4 (SD 9.9) years",
+    weight_range = "mean 82.3 (SD 17) kg",
     sex_female_pct = 24.2,
     race_ethnicity = NULL,
-    disease_state  = "Chronic lymphocytic leukemia (CLL); 20.8% treatment-naive, 79.2% relapsed/refractory",
-    dose_range     = "ibrutinib 420 mg once daily (n = 94) or 840 mg once daily (n = 38) in PCYC-1102",
-    regions        = "United States (PCYC-1102, phase Ib/II)",
-    notes          = paste(
+    disease_state = "Chronic lymphocytic leukemia (CLL); 20.8% treatment-naive, 79.2% relapsed/refractory",
+    dose_range = "ibrutinib 420 mg once daily (n = 94) or 840 mg once daily (n = 38) in PCYC-1102",
+    regions = "United States (PCYC-1102, phase Ib/II)",
+    notes = paste(
       "Baseline demographics from Ibrahim 2023 Supplementary Table S1. The blood-pressure dataset contained 2413",
       "paired sBP and dBP measurements (Ibrahim 2023 Appendix S1 section 1). At baseline 10.2% of patients had",
       "sBP >= 140 mmHg; after 2 years of the approved 420 mg/day schedule the model predicted 44.7%",
@@ -96,9 +96,9 @@ Ibrahim_2023_ibrutinib_sbp <- function() {
   covariatesDataExcluded <- list(
     CONMED_ANTIHYPERTENSIVE = list(
       description = "Antihypertensive co-medication indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but NOT retained in the final model. Ibrahim 2023 Patients and Methods 'PK-blood pressure model'",
         "tested the effect of antihypertensive drugs as a time-varying binary covariate, 'either as a step function",
         "or as a function in which the antihypertensive effect gradually evolved'; neither form survived the",
@@ -107,9 +107,9 @@ Ibrahim_2023_ibrutinib_sbp <- function() {
     ),
     SEXF = list(
       description = "Subject sex indicator: 1 = female, 0 = male.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but NOT retained in the final sBP model. Ibrahim 2023 Patients and Methods 'Covariate analysis'",
         "evaluated baseline age and gender in the blood pressure and competing risk models; only the age effect on",
         "MTT_sBP was retained (Table 2). No coefficient is reported for sex."

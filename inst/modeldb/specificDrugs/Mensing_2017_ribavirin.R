@@ -17,8 +17,8 @@ Mensing_2017_ribavirin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ribavirin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ribavirin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ribavirin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ribavirin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ribavirin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -26,46 +26,46 @@ Mensing_2017_ribavirin <- function() {
 
   covariatesDataExcluded <- list(
     HEPIMP_MILD = list(
-      description        = "Compensated cirrhosis (Child-Pugh stage A) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Compensated cirrhosis (Child-Pugh stage A) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no cirrhosis)",
-      notes              = "Retained in the author's final ribavirin model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 0.95 (0.93, 0.96) and AUC24,ss ratio of 0.94 (0.92, 0.96) for cirrhotic vs noncirrhotic patients; paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Mensing 2017 Results: ribavirin exposures were 'similar in subjects with or without compensated cirrhosis'.",
-      source_name        = "CIRR"
+      notes = "Retained in the author's final ribavirin model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 0.95 (0.93, 0.96) and AUC24,ss ratio of 0.94 (0.92, 0.96) for cirrhotic vs noncirrhotic patients; paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Mensing 2017 Results: ribavirin exposures were 'similar in subjects with or without compensated cirrhosis'.",
+      source_name = "CIRR"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Retained in the author's final ribavirin model as a significant covariate on CL/F AND on Vc/F and Vp/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.31 (1.26, 1.35) and AUC24,ss ratio of 1.29 (1.24, 1.33) for females vs males (29-31% higher exposures); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
-      source_name        = "SEX"
+      notes = "Retained in the author's final ribavirin model as a significant covariate on CL/F AND on Vc/F and Vp/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.31 (1.26, 1.35) and AUC24,ss ratio of 1.29 (1.24, 1.33) for females vs males (29-31% higher exposures); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
+      source_name = "SEX"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance (Cockcroft-Gault)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance (Cockcroft-Gault)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Retained in the author's final ribavirin model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at CrCL 75 mL/min and 105 mL/min vs the ribavirin-pharmacokinetic-dataset median of 105 mL/min (Cmax,ss / AUC24,ss ratios of 1.08/1.08 at 75 mL/min and 1.00/1.00 at 105 mL/min); paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Cohort range 37.0-241.0 mL/min, median 111.2 mL/min for the ribavirin pharmacokinetic dataset (Table 2).",
-      source_name        = "CRCL"
+      notes = "Retained in the author's final ribavirin model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at CrCL 75 mL/min and 105 mL/min vs the ribavirin-pharmacokinetic-dataset median of 105 mL/min (Cmax,ss / AUC24,ss ratios of 1.08/1.08 at 75 mL/min and 1.00/1.00 at 105 mL/min); paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Cohort range 37.0-241.0 mL/min, median 111.2 mL/min for the ribavirin pharmacokinetic dataset (Table 2).",
+      source_name = "CRCL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1841L,
-    n_studies      = 6L,
-    age_range      = "18-71 years",
-    age_median     = "54 years",
-    weight_range   = "42-129 kg",
-    weight_median  = "77 kg",
+    species = "human",
+    n_subjects = 1841L,
+    n_studies = 6L,
+    age_range = "18-71 years",
+    age_median = "54 years",
+    weight_range = "42-129 kg",
+    weight_median = "77 kg",
     sex_female_pct = 41,
     race_ethnicity = c(Asian = 2, Black = 6, Nonblack_NonAsian = 92),
     ethnicity_hispanic_latino_pct = 6,
-    disease_state  = "Adults with chronic hepatitis C virus (HCV) genotype 1 infection (HCV RNA > 10,000 IU/mL) receiving 3D + ribavirin therapy. 21% had compensated cirrhosis (Child-Pugh A); none had moderate or severe hepatic impairment. 38% were peg-IFN/RBV treatment-experienced.",
-    dose_range     = "Ribavirin orally twice daily, weight-based dosing (1000 mg/day total for body weight < 75 kg, 1200 mg/day total for body weight >= 75 kg), in combination with paritaprevir/ritonavir/ombitasvir 150/100/25 mg once daily and dasabuvir 250 mg twice daily; 12-week or 24-week treatment courses.",
-    regions        = "Multinational phase II (NCT01911845) and phase III (PEARL-II/III/IV, SAPPHIRE-I/II, TURQUOISE-II) studies; excludes the no-ribavirin arms.",
-    notes          = "Demographic and clinical baseline characteristics from Mensing 2017 Table 2 (ribavirin pharmacokinetic data column, n = 1841). HCV genotype distribution: 57% GT1a, 43% GT1b. Median creatinine clearance 111.2 mL/min (range 37.0-241.0)."
+    disease_state = "Adults with chronic hepatitis C virus (HCV) genotype 1 infection (HCV RNA > 10,000 IU/mL) receiving 3D + ribavirin therapy. 21% had compensated cirrhosis (Child-Pugh A); none had moderate or severe hepatic impairment. 38% were peg-IFN/RBV treatment-experienced.",
+    dose_range = "Ribavirin orally twice daily, weight-based dosing (1000 mg/day total for body weight < 75 kg, 1200 mg/day total for body weight >= 75 kg), in combination with paritaprevir/ritonavir/ombitasvir 150/100/25 mg once daily and dasabuvir 250 mg twice daily; 12-week or 24-week treatment courses.",
+    regions = "Multinational phase II (NCT01911845) and phase III (PEARL-II/III/IV, SAPPHIRE-I/II, TURQUOISE-II) studies; excludes the no-ribavirin arms.",
+    notes = "Demographic and clinical baseline characteristics from Mensing 2017 Table 2 (ribavirin pharmacokinetic data column, n = 1841). HCV genotype distribution: 57% GT1a, 43% GT1b. Median creatinine clearance 111.2 mL/min (range 37.0-241.0)."
   )
 
   ini({

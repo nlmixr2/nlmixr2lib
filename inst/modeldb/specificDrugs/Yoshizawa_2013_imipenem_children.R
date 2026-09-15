@@ -31,23 +31,23 @@ Yoshizawa_2013_imipenem_children <- function() {
     sep = " "
   )
   vignette <- "Zhang_2025_imipenem_model_review"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = FALSE because the primary publication is
   # not on disk.
   compartmentData <- list(
-    central     = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Body weight is not a screened-and-retained covariate in this model;",
         "it is a structural normalisation. Zhang 2025 Table 2 reports every",
         "disposition parameter for this cohort per kilogram -- CLr and CLnr",
@@ -62,27 +62,27 @@ Yoshizawa_2013_imipenem_children <- function() {
         "no covariate effect beyond this normalisation can be reconstructed.",
         "Cohort mean weight 29.5 +/- 10.9 kg (Zhang 2025 Table 1)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 39L,
-    n_studies        = 1L,
-    age_mean         = "9.61 +/- 3.16 years (mean +/- SD)",
-    weight_mean      = "29.5 +/- 10.9 kg (mean +/- SD)",
-    sex_female_pct   = 33.3,
-    race_ethnicity   = NULL,
-    disease_state    = "Children receiving imipenem-cilastatin",
-    dose_range       = paste(
+    species = "human",
+    n_subjects = 39L,
+    n_studies = 1L,
+    age_mean = "9.61 +/- 3.16 years (mean +/- SD)",
+    weight_mean = "29.5 +/- 10.9 kg (mean +/- SD)",
+    sex_female_pct = 33.3,
+    race_ethnicity = NULL,
+    disease_state = "Children receiving imipenem-cilastatin",
+    dose_range = paste(
       "8.70-30.0 mg/kg imipenem intravenously (Zhang 2025 Supplementary",
       "Table S1). Neither the dosing interval nor the infusion duration is",
       "reported by the review."
     ),
-    regions          = "Japan",
+    regions = "Japan",
     n_concentrations = 385L,
-    notes            = paste(
+    notes = paste(
       "Retrospective study (Zhang 2025 Table 1, study 3). The paediatric",
       "cohort contributed 230 blood and 155 urinary samples (385 total);",
       "sex split 26 male / 13 female. Sampling times and assay method are",

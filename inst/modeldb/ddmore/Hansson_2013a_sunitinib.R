@@ -20,43 +20,43 @@ Hansson_2013a_sunitinib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    vegf    = list(analyte = "VEGF", units = "mg", specimen = "plasma", verified = FALSE),
+    vegf = list(analyte = "VEGF", units = "mg", specimen = "plasma", verified = FALSE),
     svegfr2 = list(analyte = "sVEGFR-2", units = "mg", specimen = "plasma", verified = FALSE),
     svegfr3 = list(analyte = "sVEGFR-3", units = "mg", specimen = "plasma", verified = FALSE),
-    skit    = list(analyte = "sKIT", units = "mg", specimen = "plasma", verified = FALSE)
+    skit = list(analyte = "sKIT", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles (4 weeks on / 2 weeks off in the Hansson 2013a GIST cohort) or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles (4 weeks on / 2 weeks off in the Hansson 2013a GIST cohort) or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "DDMORE-bundle simulated dataset reports DOSE = 50 (treated) or 0 (placebo) for every record of every subject. The .mod feeds DOSE into AUC = DOSE / CLI in $PK at every event call, producing a per-cycle daily-AUC equivalent (mg*h/L). For typical-cohort vignette simulations the value is held at 50 mg during the 4-week on-cycles.",
-      source_name        = "DOS"
+      notes = "DDMORE-bundle simulated dataset reports DOSE = 50 (treated) or 0 (placebo) for every record of every subject. The .mod feeds DOSE into AUC = DOSE / CLI in $PK at every event call, producing a per-cycle daily-AUC equivalent (mg*h/L). For typical-cohort vignette simulations the value is held at 50 mg during the 4-week on-cycles.",
+      source_name = "DOS"
     ),
     CLI = list(
-      description        = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit. Per-subject, time-fixed.",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit. Per-subject, time-fixed.",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The DDMORE-bundle simulated dataset carries CLI = 32.819 L/h for subject 1; this value (which is broadly consistent with the typical sunitinib CL reported by Houk et al. 2010) is used as the typical-value reference for the validation vignette's virtual cohort. For a re-fit or new-population simulation the user must supply individual CL drawn from a sunitinib popPK model (the Hansson 2013 paper text describes the upstream PK as a 'previously developed 2-compartment model'; that popPK is not extracted into nlmixr2lib).",
-      source_name        = "CL"
+      notes = "Required input. The DDMORE-bundle simulated dataset carries CLI = 32.819 L/h for subject 1; this value (which is broadly consistent with the typical sunitinib CL reported by Houk et al. 2010) is used as the typical-value reference for the validation vignette's virtual cohort. For a re-fit or new-population simulation the user must supply individual CL drawn from a sunitinib popPK model (the Hansson 2013 paper text describes the upstream PK as a 'previously developed 2-compartment model'; that popPK is not extracted into nlmixr2lib).",
+      source_name = "CL"
     )
   )
 
   population <- list(
-    n_subjects     = 303L,
-    n_studies      = 1L,
-    age_range      = "adults with imatinib-resistant GIST (paper not on disk; Hansson 2013 main-text demographics not available in the bundle)",
-    weight_range   = "not reported in the DDMORE bundle",
+    n_subjects = 303L,
+    n_studies = 1L,
+    age_range = "adults with imatinib-resistant GIST (paper not on disk; Hansson 2013 main-text demographics not available in the bundle)",
+    weight_range = "not reported in the DDMORE bundle",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Imatinib-resistant gastrointestinal stromal tumours (GIST). Phase III trial included a placebo-controlled run-in (PLA = 1) and an active sunitinib arm (PLA = 0).",
-    dose_range     = "Sunitinib 50 mg PO QD on a 4-weeks-on / 2-weeks-off schedule (standard GIST regimen at the time of the source study). Placebo arm: no sunitinib.",
-    regions        = "Phase III multinational trial; specific regions not reported in the DDMORE bundle.",
-    biomarkers     = "VEGF, sVEGFR-2 (soluble VEGF receptor 2), sVEGFR-3 (soluble VEGF receptor 3), sKIT (soluble KIT receptor); plasma concentrations measured serially across treatment cycles. Source dataset reports concentrations on linear (DVX) and log-transformed (DV) scales; the model fits log(observation).",
-    notes          = "n_subjects = 303 and n_observations = 5394 are reported in the .lst header (`TOT. NO. OF INDIVIDUALS: 303`, `TOT. NO. OF OBS RECS: 5394`). The detailed baseline-demographics table (age, weight, sex, race, prior-imatinib-duration distributions) is in the linked publication (CPT Pharmacometrics Syst Pharmacol 2013;2:e84), which is not on disk; populate the missing population fields if the paper PDF becomes available. The bundle's simulated dataset is intentionally minimal (single subject) and is not representative of the published cohort."
+    disease_state = "Imatinib-resistant gastrointestinal stromal tumours (GIST). Phase III trial included a placebo-controlled run-in (PLA = 1) and an active sunitinib arm (PLA = 0).",
+    dose_range = "Sunitinib 50 mg PO QD on a 4-weeks-on / 2-weeks-off schedule (standard GIST regimen at the time of the source study). Placebo arm: no sunitinib.",
+    regions = "Phase III multinational trial; specific regions not reported in the DDMORE bundle.",
+    biomarkers = "VEGF, sVEGFR-2 (soluble VEGF receptor 2), sVEGFR-3 (soluble VEGF receptor 3), sKIT (soluble KIT receptor); plasma concentrations measured serially across treatment cycles. Source dataset reports concentrations on linear (DVX) and log-transformed (DV) scales; the model fits log(observation).",
+    notes = "n_subjects = 303 and n_observations = 5394 are reported in the .lst header (`TOT. NO. OF INDIVIDUALS: 303`, `TOT. NO. OF OBS RECS: 5394`). The detailed baseline-demographics table (age, weight, sex, race, prior-imatinib-duration distributions) is in the linked publication (CPT Pharmacometrics Syst Pharmacol 2013;2:e84), which is not on disk; populate the missing population fields if the paper PDF becomes available. The bundle's simulated dataset is intentionally minimal (single subject) and is not representative of the published cohort."
   )
 
   ini({

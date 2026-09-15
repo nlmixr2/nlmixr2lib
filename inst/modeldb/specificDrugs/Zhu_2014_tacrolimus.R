@@ -8,49 +8,49 @@ Zhu_2014_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Total tacrolimus oral dose per day",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Total tacrolimus oral dose per day",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject; reflects the daily-total tacrolimus dose at the time of the record (twice-daily oral capsules adjusted by therapeutic drug monitoring). Zhu 2014 Table 1: mean 5.31 mg/d, median 5 mg/d, range 1-10.5 mg/d. Enters the final covariate equation as a power term on CL/F (Eq. 3): CL/F = theta_CL/F * DOSE^theta_DOSE * POD^theta_POD; theta_DOSE = 0.371. Because the relationship is multiplicative and a power form, DOSE must be > 0 -- the dataset is restricted to on-treatment records by construction.",
-      source_name        = "DOSE"
+      notes = "Time-varying within subject; reflects the daily-total tacrolimus dose at the time of the record (twice-daily oral capsules adjusted by therapeutic drug monitoring). Zhu 2014 Table 1: mean 5.31 mg/d, median 5 mg/d, range 1-10.5 mg/d. Enters the final covariate equation as a power term on CL/F (Eq. 3): CL/F = theta_CL/F * DOSE^theta_DOSE * POD^theta_POD; theta_DOSE = 0.371. Because the relationship is multiplicative and a power form, DOSE must be > 0 -- the dataset is restricted to on-treatment records by construction.",
+      source_name = "DOSE"
     ),
     POD = list(
-      description        = "Postoperative days since liver transplantation",
-      units              = "days",
-      type               = "continuous",
+      description = "Postoperative days since liver transplantation",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject; rises monotonically from the transplant date. Zhu 2014 Table 1: mean 20.71 days, median 14 days, range 2-85 days. Enters the final covariate equation as a power term on CL/F (Eq. 3): CL/F = theta_CL/F * DOSE^theta_DOSE * POD^theta_POD; theta_POD = 0.127. POD must be > 0 because POD^theta_POD is undefined at POD = 0; the source dataset begins at POD = 2 d post-transplant.",
-      source_name        = "POD"
+      notes = "Time-varying within subject; rises monotonically from the transplant date. Zhu 2014 Table 1: mean 20.71 days, median 14 days, range 2-85 days. Enters the final covariate equation as a power term on CL/F (Eq. 3): CL/F = theta_CL/F * DOSE^theta_DOSE * POD^theta_POD; theta_POD = 0.127. POD must be > 0 because POD^theta_POD is undefined at POD = 0; the source dataset begins at POD = 2 d post-transplant.",
+      source_name = "POD"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 47L,
-    n_studies        = 1L,
-    n_observations   = 435L,
-    age_range        = "25-78 years",
-    age_median       = "60 years",
-    age_mean_sd      = "57.47 +/- 11.16 years",
-    weight_range     = "not collected (excluded by Zhu 2014 due to extensive missing weight data among inpatients)",
-    sex_female_pct   = 100 * 20 / 47,
-    race_ethnicity   = c(Asian = 100),
-    disease_state    = "Adult liver transplant recipients on triple immunosuppression (tacrolimus + mycophenolate mofetil + corticosteroids) during inpatient hospitalisation after orthotopic liver transplantation.",
-    dose_range       = "Oral tacrolimus capsules (0.5 mg and 1 mg). Therapy initiated at 0.1-0.15 mg/kg twice daily and adjusted by therapeutic drug monitoring to a trough target of 10-15 ng/mL during the first three months posttransplant. Observed daily doses 1-10.5 mg/d (median 5 mg/d).",
-    pod_range        = "2-85 days posttransplant (median 14 d, mean 20.71 d).",
-    regions          = "China (Tianjin First Central Hospital, Beijing Friendship Hospital).",
-    co_medication    = "Mycophenolate mofetil and corticosteroids as part of triple immunosuppressive regimen. Patients on fluconazole, diltiazem, or other strong CYP3A4 inhibitors/inducers were not specifically excluded but were rare in the dataset.",
-    sampling_design  = "Steady-state inpatient sampling. Daily predose troughs after transplantation until concentrations stabilised; thereafter blood samples 3x weekly or more frequently. A subset had full profiles (predose, 0.3, 1, 1.5, 2, 4, 6, 8, 12 h postdose).",
-    assay            = "Microparticle enzyme immunoassay (MEIA, IMx platform). LLOQ 1.5 ng/mL; linear 1.5-30 ng/mL; samples above LOQ diluted per manufacturer. The antitacrolimus monoclonal recognises parent drug plus three metabolites (M-II, M-III, M-V); cross-reactivity with other metabolites was below the minimum detectable sensitivity.",
-    notes            = "Single-centre prospective TDM cohort (Tianjin First Hospital, China, 2008-2011) -- 27 male and 20 female adults. Body weight and transplant type (whole vs cut-down graft) were excluded as candidate covariates because of extensive missing values among the inpatient population. Eleven candidate covariates were screened; only DOSE and POD on CL/F survived forward inclusion (alpha = 0.01) and backward elimination (alpha = 0.005). DOSE on V2/F was tested but eliminated (Table 3, eliminate-DOSE-on-V2 row: dOFV +4.8, p > 0.01)."
+    species = "human",
+    n_subjects = 47L,
+    n_studies = 1L,
+    n_observations = 435L,
+    age_range = "25-78 years",
+    age_median = "60 years",
+    age_mean_sd = "57.47 +/- 11.16 years",
+    weight_range = "not collected (excluded by Zhu 2014 due to extensive missing weight data among inpatients)",
+    sex_female_pct = 100 * 20 / 47,
+    race_ethnicity = c(Asian = 100),
+    disease_state = "Adult liver transplant recipients on triple immunosuppression (tacrolimus + mycophenolate mofetil + corticosteroids) during inpatient hospitalisation after orthotopic liver transplantation.",
+    dose_range = "Oral tacrolimus capsules (0.5 mg and 1 mg). Therapy initiated at 0.1-0.15 mg/kg twice daily and adjusted by therapeutic drug monitoring to a trough target of 10-15 ng/mL during the first three months posttransplant. Observed daily doses 1-10.5 mg/d (median 5 mg/d).",
+    pod_range = "2-85 days posttransplant (median 14 d, mean 20.71 d).",
+    regions = "China (Tianjin First Central Hospital, Beijing Friendship Hospital).",
+    co_medication = "Mycophenolate mofetil and corticosteroids as part of triple immunosuppressive regimen. Patients on fluconazole, diltiazem, or other strong CYP3A4 inhibitors/inducers were not specifically excluded but were rare in the dataset.",
+    sampling_design = "Steady-state inpatient sampling. Daily predose troughs after transplantation until concentrations stabilised; thereafter blood samples 3x weekly or more frequently. A subset had full profiles (predose, 0.3, 1, 1.5, 2, 4, 6, 8, 12 h postdose).",
+    assay = "Microparticle enzyme immunoassay (MEIA, IMx platform). LLOQ 1.5 ng/mL; linear 1.5-30 ng/mL; samples above LOQ diluted per manufacturer. The antitacrolimus monoclonal recognises parent drug plus three metabolites (M-II, M-III, M-V); cross-reactivity with other metabolites was below the minimum detectable sensitivity.",
+    notes = "Single-centre prospective TDM cohort (Tianjin First Hospital, China, 2008-2011) -- 27 male and 20 female adults. Body weight and transplant type (whole vs cut-down graft) were excluded as candidate covariates because of extensive missing values among the inpatient population. Eleven candidate covariates were screened; only DOSE and POD on CL/F survived forward inclusion (alpha = 0.01) and backward elimination (alpha = 0.005). DOSE on V2/F was tested but eliminated (Table 3, eliminate-DOSE-on-V2 row: dOFV +4.8, p > 0.01)."
   )
 
   ini({

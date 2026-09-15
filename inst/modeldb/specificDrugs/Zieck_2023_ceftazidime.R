@@ -11,7 +11,7 @@ Zieck_2023_ceftazidime <- function() {
     sep = " "
   )
   vignette <- "Zieck_2023_ceftazidime"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -22,11 +22,11 @@ Zieck_2023_ceftazidime <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "CKD-EPI estimated glomerular filtration rate, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "CKD-EPI estimated glomerular filtration rate, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column CKDEPI (Supplementary File S1 $INPUT). Renal function",
         "was estimated with the CKD-EPI (Chronic Kidney Disease Epidemiology",
         "Collaboration) creatinine equation on the day of inclusion",
@@ -44,14 +44,14 @@ Zieck_2023_ceftazidime <- function() {
         "function strata (Table 2). Also tested but not retained: MDRD and",
         "Cockcroft-Gault eGFR, and raw serum creatinine (Methods 4.6)."
       ),
-      source_name        = "CKDEPI"
+      source_name = "CKDEPI"
     ),
     CONMED_ABX = list(
-      description        = "Concomitant use of another (non-ceftazidime) antibiotic",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant use of another (non-ceftazidime) antibiotic",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant other antibiotic)",
-      notes              = paste(
+      notes = paste(
         "Source column COMED (Supplementary File S1 $INPUT), entering as",
         "FLAG1 via 'IF(COMED.EQ.1)FLAG1=1'. Multiplicative power-form effect",
         "on CL: 1.56^CONMED_ABX (Zieck 2023 Table 3 final model, RSE 12.4%,",
@@ -67,24 +67,24 @@ Zieck_2023_ceftazidime <- function() {
         "heavily co-treated subset rather than a mechanistic drug-drug",
         "interaction."
       ),
-      source_name        = "COMED"
+      source_name = "COMED"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 1L,
     n_observations = 119L,
-    age_range      = "Adults (>=18 years by inclusion criteria); oldest subject 86 years (Discussion)",
-    age_median     = "62.0 years (IQR 47.0-72.0)",
-    weight_range   = "Median 79.6 kg (IQR 69.7-92.3); stratum IQRs span 57.1-140.6 kg",
-    weight_median  = "79.6 kg",
-    height_median  = "175.5 cm (IQR 167.0-185.0)",
-    bmi_median     = "25.0 kg/m^2 (IQR 22.0-29.0)",
+    age_range = "Adults (>=18 years by inclusion criteria); oldest subject 86 years (Discussion)",
+    age_median = "62.0 years (IQR 47.0-72.0)",
+    weight_range = "Median 79.6 kg (IQR 69.7-92.3); stratum IQRs span 57.1-140.6 kg",
+    weight_median = "79.6 kg",
+    height_median = "175.5 cm (IQR 167.0-185.0)",
+    bmi_median = "25.0 kg/m^2 (IQR 22.0-29.0)",
     sex_female_pct = 42.5,
     race_ethnicity = c(Caucasian = 80, `African American` = 10, Asian = 7.5, Hispanic = 2.5),
-    disease_state  = paste(
+    disease_state = paste(
       "Adults admitted to a general (non-ICU) hospital ward receiving",
       "therapeutic ceftazidime as standard care for a suspected or proven",
       "Gram-negative infection. Patients in the ICU, on renal replacement",
@@ -98,8 +98,8 @@ Zieck_2023_ceftazidime <- function() {
       "impairment (eGFR < 30, n = 5, median 18.6). Serum creatinine median",
       "100.0 (IQR 67.3-135.3) umol/L (Table 2)."
     ),
-    co_medication  = "27/40 (68%) on a concomitant other antibiotic (Table 2)",
-    dose_range     = paste(
+    co_medication = "27/40 (68%) on a concomitant other antibiotic (Table 2)",
+    dose_range = paste(
       "Guideline-recommended, renal-function-stratified IV regimens infused",
       "over 0.5 h (Table 1): 2000 mg q8h for adequate renal function,",
       "1000 mg q12h for moderate impairment, and 1000 mg q24h for severe",
@@ -107,8 +107,8 @@ Zieck_2023_ceftazidime <- function() {
       "instead of the recommended 1000 mg q24h and was retained for the",
       "primary outcome only (Results 2.1)."
     ),
-    regions        = "The Netherlands (bicenter: Amsterdam UMC location AMC, and Noordwest Ziekenhuisgroep location Alkmaar)",
-    notes          = paste(
+    regions = "The Netherlands (bicenter: Amsterdam UMC location AMC, and Noordwest Ziekenhuisgroep location Alkmaar)",
+    notes = paste(
       "Prospective observational cohort study run October 2019 to December",
       "2021. Baseline demographics per Zieck 2023 Table 2 (medians with",
       "interquartile ranges). Three samples per patient (one trough plus two",

@@ -46,8 +46,8 @@ Mann_2022_respiratory_physiology <- function() {
   )
   vignette <- "Laffont_2025_opioid_overdose_reversal_simulation"
   units <- list(
-    time          = "min",
-    dosing        = "(not applicable; CAR is a time-varying covariate input from the binding layer)",
+    time = "min",
+    dosing = "(not applicable; CAR is a time-varying covariate input from the binding layer)",
     concentration = "L/min (primary output Venti is minute ventilation; the model has no plasma-concentration analyte and the canonical Cc observation is not used)"
   )
 
@@ -56,31 +56,71 @@ Mann_2022_respiratory_physiology <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    palv_co2         = list(analyte = "CO2 partial pressure in alveoli", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    palv_o2          = list(analyte = "O2 partial pressure in alveoli", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    cb_co2           = list(analyte = "CO2 partial pressure in capillaries", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    cb_o2            = list(analyte = "O2 partial pressure in capillaries", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    ct_co2           = list(analyte = "CO2 partial pressure in tissues", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    ct_o2            = list(analyte = "O2 partial pressure in tissues", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    yco2             = list(analyte = "CO2 partial pressure in alveoli (y)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    yo2              = list(analyte = "O2 partial pressure in alveoli (y)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    dp_state         = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    dc_state         = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    alpha_h          = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    crossed_latch    = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    palv_co2 = list(
+      analyte = "CO2 partial pressure in alveoli",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    palv_o2 = list(
+      analyte = "O2 partial pressure in alveoli",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    cb_co2 = list(
+      analyte = "CO2 partial pressure in capillaries",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    cb_o2 = list(
+      analyte = "O2 partial pressure in capillaries",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    ct_co2 = list(
+      analyte = "CO2 partial pressure in tissues",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    ct_o2 = list(
+      analyte = "O2 partial pressure in tissues",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    yco2 = list(
+      analyte = "CO2 partial pressure in alveoli (y)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    yo2 = list(
+      analyte = "O2 partial pressure in alveoli (y)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    dp_state = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    dc_state = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    alpha_h = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    crossed_latch = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
     first_cross_time = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    check_complete   = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    ca_arrest_latch  = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    im_arrest        = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    check_complete = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    ca_arrest_latch = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    im_arrest = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     CAR_OPIOID = list(
-      description        = "Time-varying fraction of mu-opioid receptors bound by an opioid agonist (RL_op output of Mann_2022_mu_receptor_binding); drives the ventilatory-depression reductions of wakefulness and chemoreflex drives.",
-      units              = "fraction",
-      type               = "continuous",
+      description = "Time-varying fraction of mu-opioid receptors bound by an opioid agonist (RL_op output of Mann_2022_mu_receptor_binding); drives the ventilatory-depression reductions of wakefulness and chemoreflex drives.",
+      units = "fraction",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Range 0..1. In the composed Mann 2022 overdose chain, this is",
         "the output of the binding layer Mann_2022_mu_receptor_binding",
         "for the OPIOID slot (RL_op). At CAR_OPIOID = 0 the model",
@@ -89,14 +129,14 @@ Mann_2022_respiratory_physiology <- function() {
         "completely abolished and the chemoreflex drives are also",
         "fully suppressed (1 - 1^P1 = 0), driving terminal apnoea."
       ),
-      source_name        = "(none; new canonical covariate registered for this model)"
+      source_name = "(none; new canonical covariate registered for this model)"
     ),
     OPIOID_PATIENT_TYPE = list(
-      description        = "Categorical 0 = healthy opioid-naive volunteer, 1 = chronic opioid user; selects the P1 (chemoreflex-drive reduction exponent) and P3 (wakefulness-drive reduction exponent) sensitivity parameters.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Categorical 0 = healthy opioid-naive volunteer, 1 = chronic opioid user; selects the P1 (chemoreflex-drive reduction exponent) and P3 (wakefulness-drive reduction exponent) sensitivity parameters.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (opioid-naive)",
-      notes              = paste(
+      notes = paste(
         "Mann 2022 fits two pharmacodynamic parameter sets:",
         "naive (P1 = 2.875, P3 = 0.9) and chronic (P1 = 4.226,",
         "P3 = 1.323). Both share the same metabolism exponent",
@@ -107,26 +147,26 @@ Mann_2022_respiratory_physiology <- function() {
         "simulateToGetOD_IM.R lines 185-192 (allpatients hand-",
         "adjustment after fentanyl_pars.txt load)."
       ),
-      source_name        = "(none; new canonical covariate registered for this model)"
+      source_name = "(none; new canonical covariate registered for this model)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    age_range      = NA_character_,
-    weight_range   = "70 kg adult (Magosso / Ursino reference)",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    age_range = NA_character_,
+    weight_range = "70 kg adult (Magosso / Ursino reference)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult ventilatory physiology calibrated to clinical",
       "ventilation responses to hypercapnia, hypoxia, anesthesia, and",
       "extended cardiovascular collapse from severe acute hypoxemia."
     ),
-    dose_range     = NA_character_,
-    regions        = NA_character_,
-    notes          = paste(
+    dose_range = NA_character_,
+    regions = NA_character_,
+    notes = paste(
       "Eleven physiological states are integrated:",
       "palv_co2, palv_o2 (alveolar / arterial gas partial pressures);",
       "cb_co2, cb_o2 (brain blood-gas concentrations);",

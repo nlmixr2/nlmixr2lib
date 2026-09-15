@@ -47,24 +47,32 @@ Bhagunde_2026_lecanemab_ptau181 <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte = "lecanemab", units = "mg", specimen = "serum", verified = TRUE
+      analyte = "lecanemab",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "lecanemab", units = "mg", specimen = "serum", verified = TRUE
+      analyte = "lecanemab",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     ),
     ptau181 = list(
       analyte = "tau phosphorylated at threonine 181 (p-tau181)",
-      units = "pg/mL", specimen = "plasma", verified = TRUE
+      units = "pg/mL",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters twice. (1) On lecanemab CL and V1 as a power term",
         "normalised to 72 kg (Majid 2024 Table 1 equations). (2) On the",
         "baseline plasma p-tau181 as a power term (WT/72)^-0.235",
@@ -75,26 +83,26 @@ Bhagunde_2026_lecanemab_ptau181 <- function() {
         "Assumptions and deviations section.",
         sep = " "
       ),
-      source_name        = "BW / Baseline Weight"
+      source_name = "BW / Baseline Weight"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power term on lecanemab CL normalised to 43 g/L",
         "(Majid 2024 Table 1 equation).",
         sep = " "
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     SEXF = list(
-      description        = "Sex",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "1 = female, 0 = male. Acts on lecanemab CL (ratio 0.791) and V1",
         "(ratio 0.868) in the Majid 2024 popPK model. Sex was not",
         "retained as a covariate in the Bhagunde 2026 p-tau181 PD model",
@@ -102,42 +110,42 @@ Bhagunde_2026_lecanemab_ptau181 <- function() {
         "significant).",
         sep = " "
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = paste(
+      notes = paste(
         "1 = ADA-positive. Ratio 1.13 on lecanemab CL (Majid 2024",
         "Table 1). Time-varying in the source popPK analysis. ADA status",
         "was tested but not retained in the Bhagunde 2026 p-tau181 PD",
         "model (Table S4).",
         sep = " "
       ),
-      source_name        = "ADA"
+      source_name = "ADA"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese-heritage race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese-heritage race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese)",
-      notes              = paste(
+      notes = paste(
         "1 = Japanese. Acts on lecanemab V1 (ratio 0.920) and V2 (ratio",
         "0.671) in the Majid 2024 popPK model. Japanese race was tested",
         "but not retained in the Bhagunde 2026 p-tau181 PD model",
         "(Table S4).",
         sep = " "
       ),
-      source_name        = "JPN"
+      source_name = "JPN"
     ),
     SCORE_MMSE = list(
-      description        = "Baseline Mini-Mental State Examination total score",
-      units              = "(SCORE_MMSE units, 0-30 score)",
-      type               = "continuous",
+      description = "Baseline Mini-Mental State Examination total score",
+      units = "(SCORE_MMSE units, 0-30 score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power term on the baseline plasma p-tau181,",
         "(SCORE_MMSE/26)^-0.468 (Bhagunde 2026 Table 1). The paper does",
         "not print the normalisation value; 26 is recovered from the",
@@ -147,14 +155,14 @@ Bhagunde_2026_lecanemab_ptau181 <- function() {
         "vignette Assumptions and deviations section.",
         sep = " "
       ),
-      source_name        = "BMMSE"
+      source_name = "BMMSE"
     ),
     APOE4_CARRIER = list(
-      description        = "APOE-epsilon4 carrier status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "APOE-epsilon4 carrier status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-carrier)",
-      notes              = paste(
+      notes = paste(
         "1 = carries at least one APOE-epsilon4 allele (heterozygous or",
         "homozygous), 0 = non-carrier. Applied as a ratio 1.07 on the",
         "baseline plasma p-tau181 (Bhagunde 2026 Table 1, explicitly",
@@ -164,29 +172,29 @@ Bhagunde_2026_lecanemab_ptau181 <- function() {
         "APOE4_COUNT.",
         sep = " "
       ),
-      source_name        = "APOE4 carrier status"
+      source_name = "APOE4 carrier status"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2179,
-    n_studies      = 2,
+    species = "human",
+    n_subjects = 2179,
+    n_studies = 2,
     n_observations = 7909,
-    disease_state  = paste(
+    disease_state = paste(
       "Early Alzheimer's disease (mild cognitive impairment due to",
       "Alzheimer's disease, or mild Alzheimer's disease dementia) with",
       "confirmed brain amyloid pathology.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Lecanemab IV 2.5 mg/kg biweekly, 5 mg/kg monthly, 5 mg/kg",
       "biweekly, 10 mg/kg monthly, 10 mg/kg biweekly, or placebo",
       "(Bhagunde 2026 Table S1).",
       sep = " "
     ),
-    regions        = "Global (North America, Europe, Asia including Japan)",
-    notes          = paste(
+    regions = "Global (North America, Europe, Asia including Japan)",
+    notes = paste(
       "Pooled Core and open-label-extension data from the lecanemab phase",
       "2 Study 201 and the phase 3 Clarity AD / Study 301 trial. Subject",
       "and observation counts per biomarker are Bhagunde 2026 Table S1.",

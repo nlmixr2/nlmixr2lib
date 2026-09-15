@@ -37,18 +37,18 @@ Tarning_2008_piperaquine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at admission",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at admission",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear covariate effect centred on the cohort median 48 kg",
         "(Tarning 2008 Table 2). CL/F = 66.0 * (1 + 0.0262 * (WT - 48))",
         "and Vc/F = 8660 * (1 + 0.0273 * (WT - 48)). Methods (page 1054):",
@@ -70,32 +70,32 @@ Tarning_2008_piperaquine <- function() {
         "parameter estimates will be unreasonable'.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 98L,
-    n_studies       = 1L,
-    n_dp4           = 50L,
-    n_dp3           = 48L,
-    n_children      = 11L,
-    age_range       = "3 - 55 years (pooled, Table 1)",
-    age_median      = "25 years in both DP4 and DP3 arms (Table 1)",
-    weight_range    = "12 - 74 kg (pooled across DP4 14 - 74 kg and DP3 12 - 59 kg, Table 1)",
-    weight_median   = "47 kg DP4 / 51 kg DP3; pooled cohort median 48 kg used in the WT-covariate centring (Tables 1 - 2)",
-    height_range    = "92 - 170 cm (pooled, Table 1)",
-    sex_female_pct  = 39.8,
-    race_ethnicity  = "Burmese or Karen ethnicity (study sites of the Shoklo Malaria Research Unit on the Thai-Myanmar border)",
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 98L,
+    n_studies = 1L,
+    n_dp4 = 50L,
+    n_dp3 = 48L,
+    n_children = 11L,
+    age_range = "3 - 55 years (pooled, Table 1)",
+    age_median = "25 years in both DP4 and DP3 arms (Table 1)",
+    weight_range = "12 - 74 kg (pooled across DP4 14 - 74 kg and DP3 12 - 59 kg, Table 1)",
+    weight_median = "47 kg DP4 / 51 kg DP3; pooled cohort median 48 kg used in the WT-covariate centring (Tables 1 - 2)",
+    height_range = "92 - 170 cm (pooled, Table 1)",
+    sex_female_pct = 39.8,
+    race_ethnicity = "Burmese or Karen ethnicity (study sites of the Shoklo Malaria Research Unit on the Thai-Myanmar border)",
+    disease_state = paste(
       "Uncomplicated symptomatic Plasmodium falciparum malaria.",
       "Exclusion criteria: pregnancy, lactation, >= 4% parasitised red",
       "blood cells, age below 1 year or above 65 years, signs or",
       "symptoms of severe malaria, or treatment with mefloquine within",
       "the previous 60 days (Methods, page 1053)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Dihydroartemisinin-piperaquine fixed-dose combination (Artekin;",
       "Holleykin Pharmaceutical Co. Ltd., Guangzhou, China; each tablet",
       "contains 320 mg piperaquine phosphate + 40 mg dihydroartemisinin)",
@@ -105,8 +105,8 @@ Tarning_2008_piperaquine <- function() {
       "four-dose regimen DP4 (split equally at 0, 8, 24, 48 h) or the",
       "once-daily three-dose regimen DP3 (split equally at 0, 24, 48 h)."
     ),
-    regions         = "Thai-Myanmar border (Shoklo Malaria Research Unit, Mae Sot, Thailand)",
-    notes           = paste(
+    regions = "Thai-Myanmar border (Shoklo Malaria Research Unit, Mae Sot, Thailand)",
+    notes = paste(
       "Demographics from Tarning 2008 Table 1. 480 venous plasma samples",
       "drawn from 98 patients over 63 days post-treatment; 469 had",
       "measurable piperaquine concentrations and 11 samples below the",

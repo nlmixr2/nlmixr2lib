@@ -21,10 +21,30 @@ Mahadevan_2026_polymyxinB_meropenem_fosfomycin_BRKP76 <- function() {
     cpmb = list(analyte = "polymyxin B", units = "mg/L", specimen = "administration site", verified = TRUE),
     cmem = list(analyte = "meropenem", units = "mg/L", specimen = "administration site", verified = TRUE),
     cfof = list(analyte = "fosfomycin", units = "mg/L", specimen = "administration site", verified = TRUE),
-    bact_intermediate_intermediate_intermediate1 = list(analyte = "Klebsiella pneumoniae BRKP76, polymyxin B-intermediate / meropenem-intermediate / fosfomycin-intermediate subpopulation, vegetative state 1", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_intermediate_intermediate_intermediate2 = list(analyte = "Klebsiella pneumoniae BRKP76, polymyxin B-intermediate / meropenem-intermediate / fosfomycin-intermediate subpopulation, replicating state 2", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_resistant_resistant_resistant1 = list(analyte = "Klebsiella pneumoniae BRKP76, subpopulation resistant to all three drugs, vegetative state 1", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_resistant_resistant_resistant2 = list(analyte = "Klebsiella pneumoniae BRKP76, subpopulation resistant to all three drugs, replicating state 2", units = "CFU/mL", specimen = "not applicable", verified = TRUE)
+    bact_intermediate_intermediate_intermediate1 = list(
+      analyte = "Klebsiella pneumoniae BRKP76, polymyxin B-intermediate / meropenem-intermediate / fosfomycin-intermediate subpopulation, vegetative state 1",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_intermediate_intermediate_intermediate2 = list(
+      analyte = "Klebsiella pneumoniae BRKP76, polymyxin B-intermediate / meropenem-intermediate / fosfomycin-intermediate subpopulation, replicating state 2",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_resistant_resistant_resistant1 = list(
+      analyte = "Klebsiella pneumoniae BRKP76, subpopulation resistant to all three drugs, vegetative state 1",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_resistant_resistant_resistant2 = list(
+      analyte = "Klebsiella pneumoniae BRKP76, subpopulation resistant to all three drugs, replicating state 2",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list()

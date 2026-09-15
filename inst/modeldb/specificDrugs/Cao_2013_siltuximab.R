@@ -10,24 +10,24 @@ Cao_2013_siltuximab <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     plasma = list(analyte = "siltuximab", units = "mg", specimen = "plasma", verified = FALSE),
-    tight  = list(analyte = "siltuximab", units = "mg", specimen = "tissue", verified = FALSE),
-    leaky  = list(analyte = "siltuximab", units = "mg", specimen = "tissue", verified = FALSE),
-    lymph  = list(analyte = "siltuximab", units = "mg", specimen = "lymph", verified = FALSE)
+    tight = list(analyte = "siltuximab", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky = list(analyte = "siltuximab", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph = list(analyte = "siltuximab", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1,
-    age_range      = "adults (per Puchalski 2010 source study)",
-    weight_range   = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
+    n_subjects = NA_integer_,
+    n_studies = 1,
+    age_range = "adults (per Puchalski 2010 source study)",
+    weight_range = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "Metastatic renal cell carcinoma (siltuximab anti-IL-6 chimeric IgG1).",
-    dose_range     = "1, 3, 6, 12 mg/kg IV (Cao 2013 Figure 5, siltuximab panel)",
-    regions        = NA,
-    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Puchalski T et al. Clin Cancer Res 2010;16:1652-1661 (PMID 20179212). The fit used a typical-value structural mPBPK model in ADAPT 5; no IIV or covariate effects were estimated. Population demographics for the underlying Puchalski 2010 trial are not reproduced in Cao 2013 -- consult the source publication for those details."
+    disease_state = "Metastatic renal cell carcinoma (siltuximab anti-IL-6 chimeric IgG1).",
+    dose_range = "1, 3, 6, 12 mg/kg IV (Cao 2013 Figure 5, siltuximab panel)",
+    regions = NA,
+    notes = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Puchalski T et al. Clin Cancer Res 2010;16:1652-1661 (PMID 20179212). The fit used a typical-value structural mPBPK model in ADAPT 5; no IIV or covariate effects were estimated. Population demographics for the underlying Puchalski 2010 trial are not reproduced in Cao 2013 -- consult the source publication for those details."
   )
 
   ini({

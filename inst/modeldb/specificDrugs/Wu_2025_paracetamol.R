@@ -23,63 +23,68 @@ Wu_2025_paracetamol <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot          = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
-    central        = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1    = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
-    central_gluc   = list(analyte = "paracetamol-glucuronide", units = "mg", specimen = "plasma", verified = FALSE),
-    central_sulf   = list(analyte = "paracetamol-sulfate", units = "mg", specimen = "plasma", verified = FALSE),
-    central_cysmer = list(analyte = "paracetamol-oxidative metabolites", units = "mg", specimen = "plasma", verified = FALSE)
+    depot = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    central_gluc = list(analyte = "paracetamol-glucuronide", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sulf = list(analyte = "paracetamol-sulfate", units = "mg", specimen = "plasma", verified = FALSE),
+    central_cysmer = list(
+      analyte = "paracetamol-oxidative metabolites",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight (time-varying)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight (time-varying)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-law scaling on PCM disposition (V_P, V_PP, Q) with reference 1.08 kg (paper's BWc reference 1080 g, Table 3 'Paracetamol' block), and on PTNA-equation CL_max terms (formation CL of PCM-GLU, PCM-SULF, PCM-OXI and PCM-SULF renal secretion) with reference 1.75 kg (Table 3). The same WT enters the Wu 2024 GFR maturation equation with reference 1.75 kg (Equation 3). Source column 'CW' on input.",
-      source_name        = "CW"
+      notes = "Power-law scaling on PCM disposition (V_P, V_PP, Q) with reference 1.08 kg (paper's BWc reference 1080 g, Table 3 'Paracetamol' block), and on PTNA-equation CL_max terms (formation CL of PCM-GLU, PCM-SULF, PCM-OXI and PCM-SULF renal secretion) with reference 1.75 kg (Table 3). The same WT enters the Wu 2024 GFR maturation equation with reference 1.75 kg (Equation 3). Source column 'CW' on input.",
+      source_name = "CW"
     ),
     WT_BIRTH = list(
-      description        = "Body weight at birth (time-fixed per subject)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at birth (time-fixed per subject)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-law scaling on the PTNA-equation CL_birth terms for the three formation clearances (Table 3) and on the Wu 2024 GFR maturation equation (Equation 3), both with reference 1.75 kg. Source column 'Bwb' on input.",
-      source_name        = "Bwb"
+      notes = "Power-law scaling on the PTNA-equation CL_birth terms for the three formation clearances (Table 3) and on the Wu 2024 GFR maturation equation (Equation 3), both with reference 1.75 kg. Source column 'Bwb' on input.",
+      source_name = "Bwb"
     ),
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-law scaling of the PTNA maturation PNA50 term with reference 34 weeks. Per paper Methods, GA was set to 40 weeks for datasets 6, 7, and 8 (infants, children, adults) where the true GA was unavailable.",
-      source_name        = "GA"
+      notes = "Power-law scaling of the PTNA maturation PNA50 term with reference 34 weeks. Per paper Methods, GA was set to 40 weeks for datasets 6, 7, and 8 (infants, children, adults) where the true GA was unavailable.",
+      source_name = "GA"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological time since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological time since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. The canonical PNA carries months; the paper expresses PNA in days throughout. Inside model() PNA is converted to days (PNA_days = PNA * 30.4375) for use in the PTNA sigmoidal-Emax maturation terms (paper's PNA50 estimates in days are kept verbatim). PNA in years (PNA / 12) is also used to flag the 'adult' (>= 18 years) subset to which the f_GLU,adult correction factor on renal PCM-GLU CL is applied (Table 3, paper Results: Model Refinement).",
-      source_name        = "PNA"
+      notes = "Time-varying. The canonical PNA carries months; the paper expresses PNA in days throughout. Inside model() PNA is converted to days (PNA_days = PNA * 30.4375) for use in the PTNA sigmoidal-Emax maturation terms (paper's PNA50 estimates in days are kept verbatim). PNA in years (PNA / 12) is also used to flag the 'adult' (>= 18 years) subset to which the f_GLU,adult correction factor on renal PCM-GLU CL is applied (Table 3, paper Results: Model Refinement).",
+      source_name = "PNA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 298L,
-    n_studies      = 8L,
-    age_range      = "0 days to 50 years (postnatal age); 23-41 weeks gestational age in the neonatal subset (datasets 1-5, n = 235); GA fixed at 40 weeks for the infant/child/adult subset (datasets 6-8, n = 63).",
-    age_median     = "Pooled PNA median 5 days for the 235 neonates and 3 years for the 63 infants/children/adults (Tables 1-2).",
-    weight_range   = "460 g (preterm neonate, dataset 2) to 91,700 g (adult, dataset 8).",
-    weight_median  = "1,190 g for neonates (n = 235); 15,000 g for infants/children/adults (n = 63).",
+    species = "human",
+    n_subjects = 298L,
+    n_studies = 8L,
+    age_range = "0 days to 50 years (postnatal age); 23-41 weeks gestational age in the neonatal subset (datasets 1-5, n = 235); GA fixed at 40 weeks for the infant/child/adult subset (datasets 6-8, n = 63).",
+    age_median = "Pooled PNA median 5 days for the 235 neonates and 3 years for the 63 infants/children/adults (Tables 1-2).",
+    weight_range = "460 g (preterm neonate, dataset 2) to 91,700 g (adult, dataset 8).",
+    weight_median = "1,190 g for neonates (n = 235); 15,000 g for infants/children/adults (n = 63).",
     sex_female_pct = 55.7,
     race_ethnicity = NA_character_,
-    disease_state  = "Mixed cohort: NICU preterm and term neonates with clinical indication for IV PCM or IV propacetamol analgesia (datasets 1-5, n = 235); infants after craniofacial surgery receiving rectal PCM or IV propacetamol (dataset 6, n = 26); children after adenotonsillectomy receiving rectal PCM (dataset 7, n = 29); healthy adults undergoing oral/maxillofacial surgery receiving IV PCM (dataset 8, n = 8).",
-    dose_range     = "Single or multiple IV PCM doses 10, 15, or 20 mg/kg (neonates); IV propacetamol 20-40 mg/kg (10-20 mg PCM equivalent /kg); rectal PCM 20-40 mg/kg (infants/children); IV PCM 2000 mg followed by 1000 mg every 6 h (adults). One propacetamol unit = 0.5 units of PCM for dosing input.",
-    regions        = "Netherlands (datasets 1, 2, 6, 8), United States (dataset 3), Belgium (datasets 4, 5), and one international children cohort (dataset 7).",
-    notes          = "Pooled retrospective + prospective IV/rectal PCM/propacetamol PK data; plasma observations for all datasets, urine observations also collected for datasets 1, 3, and 5. 6428 total observations. Demographics from Tables 1-2 of Wu 2025."
+    disease_state = "Mixed cohort: NICU preterm and term neonates with clinical indication for IV PCM or IV propacetamol analgesia (datasets 1-5, n = 235); infants after craniofacial surgery receiving rectal PCM or IV propacetamol (dataset 6, n = 26); children after adenotonsillectomy receiving rectal PCM (dataset 7, n = 29); healthy adults undergoing oral/maxillofacial surgery receiving IV PCM (dataset 8, n = 8).",
+    dose_range = "Single or multiple IV PCM doses 10, 15, or 20 mg/kg (neonates); IV propacetamol 20-40 mg/kg (10-20 mg PCM equivalent /kg); rectal PCM 20-40 mg/kg (infants/children); IV PCM 2000 mg followed by 1000 mg every 6 h (adults). One propacetamol unit = 0.5 units of PCM for dosing input.",
+    regions = "Netherlands (datasets 1, 2, 6, 8), United States (dataset 3), Belgium (datasets 4, 5), and one international children cohort (dataset 7).",
+    notes = "Pooled retrospective + prospective IV/rectal PCM/propacetamol PK data; plasma observations for all datasets, urine observations also collected for datasets 1, 3, and 5. 6428 total observations. Demographics from Tables 1-2 of Wu 2025."
   )
 
   ini({

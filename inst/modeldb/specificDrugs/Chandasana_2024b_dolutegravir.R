@@ -25,69 +25,69 @@ Chandasana_2024b_dolutegravir <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power effect on CL/F (exponent 0.455) and V/F (exponent 0.556) with reference weight 70 kg (Chandasana 2024 Table 2). Both exponents were estimated, not fixed at the canonical 0.75 / 1.0. Weight range 3.9-91.0 kg in the pooled model-development population; 8.15-39.30 kg in the IMPAACT 2019 external-validation cohort.",
-      source_name        = "WT"
+      notes = "Allometric power effect on CL/F (exponent 0.455) and V/F (exponent 0.556) with reference weight 70 kg (Chandasana 2024 Table 2). Both exponents were estimated, not fixed at the canonical 0.75 / 1.0. Weight range 3.9-91.0 kg in the pooled model-development population; 8.15-39.30 kg in the IMPAACT 2019 external-validation cohort.",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the sigmoidal enzyme-maturation function on CL/F, FMAT = PMA^HILL / (PMA^HILL + TM50^HILL), with TM50 = 52.2 postmenstrual weeks (equivalently 12 weeks postnatal age) and Hill = 3.43, both FIXED (Chandasana 2024 Table 2 and its footnote, citing Anderson and Holford 2009). The source model is written in postmenstrual WEEKS with PMA (weeks) = PNA (years) * 52 + 40; the canonical PAGE column is in months, so model() converts months to weeks with 1 month = 4.348125 weeks before evaluating FMAT. FMAT saturates to 1 in older children, so the maturation term is only material in infants.",
-      source_name        = "PMA (weeks)"
+      notes = "Drives the sigmoidal enzyme-maturation function on CL/F, FMAT = PMA^HILL / (PMA^HILL + TM50^HILL), with TM50 = 52.2 postmenstrual weeks (equivalently 12 weeks postnatal age) and Hill = 3.43, both FIXED (Chandasana 2024 Table 2 and its footnote, citing Anderson and Holford 2009). The source model is written in postmenstrual WEEKS with PMA (weeks) = PNA (years) * 52 + 40; the canonical PAGE column is in months, so model() converts months to weeks with 1 month = 4.348125 weeks before evaluating FMAT. FMAT saturates to 1 in older children, so the maturation term is only material in infants.",
+      source_name = "PMA (weeks)"
     ),
     FORM_DTG_DT = list(
-      description        = "Dolutegravir dispersible-tablet / granule formulation indicator (1 = dispersible tablet or granules for oral suspension, 0 = film-coated tablet)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dolutegravir dispersible-tablet / granule formulation indicator (1 = dispersible tablet or granules for oral suspension, 0 = film-coated tablet)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (film-coated tablet, FCT)",
-      notes              = "The source model accounts for differences in absorption rate and bioavailability across dolutegravir formulations (Chandasana 2024 'DTG Pediatric PopPK Model'). Both reported effects are RATIOS to the film-coated tablet: Chandasana 2024 Table 2's row 'KA ~ DT and granules = 2.04' is the multiplier THETA(17) of the primary source's control stream (KAFORM = THETA(17)**FORMK), so the dispersible-tablet Ka is 0.854 x 2.04 = 1.74 1/h, which Chandasana 2023 Table S1 tabulates as 1.74 (95% CI 1.20-2.28); and relative bioavailability is 1.00 for the fasted film-coated tablet versus 1.53 for the fasted dispersible tablet / granules. The dispersible tablet and granules share a single set of estimates because a healthy-adult study found them bioequivalent at the same dose, so one indicator covers both. Named in the FORM_<drug>_<formulation> family because the pooled DT + granule contrast is dolutegravir-formulation-development specific; promote to a general FORM_DISPERSIBLE_TABLET canonical if a second paper ratifies the same encoding.",
-      source_name        = "formulation"
+      notes = "The source model accounts for differences in absorption rate and bioavailability across dolutegravir formulations (Chandasana 2024 'DTG Pediatric PopPK Model'). Both reported effects are RATIOS to the film-coated tablet: Chandasana 2024 Table 2's row 'KA ~ DT and granules = 2.04' is the multiplier THETA(17) of the primary source's control stream (KAFORM = THETA(17)**FORMK), so the dispersible-tablet Ka is 0.854 x 2.04 = 1.74 1/h, which Chandasana 2023 Table S1 tabulates as 1.74 (95% CI 1.20-2.28); and relative bioavailability is 1.00 for the fasted film-coated tablet versus 1.53 for the fasted dispersible tablet / granules. The dispersible tablet and granules share a single set of estimates because a healthy-adult study found them bioequivalent at the same dose, so one indicator covers both. Named in the FORM_<drug>_<formulation> family because the pooled DT + granule contrast is dolutegravir-formulation-development specific; promote to a general FORM_DISPERSIBLE_TABLET canonical if a second paper ratifies the same encoding.",
+      source_name = "formulation"
     ),
     FED = list(
-      description        = "Dose administered without regard to food (1 = dosed without regard to food, 0 = dosed fasted)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dose administered without regard to food (1 = dosed without regard to food, 0 = dosed fasted)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Chandasana 2024 Table 2 reports relative bioavailability 1.00 for the fasted film-coated tablet and 1.10 for the film-coated tablet given without regard to food. The source category is 'without regard to food' (i.e. dosing was not required to be fasted) rather than a controlled fed challenge with a defined meal, so the general FED indicator applies rather than FED_HIGHFAT. The effect is NOT formulation-specific: the primary source's control stream forms F1 = 1 * THETA(4)**SFLAG * THETA(9)**FFLAG, whose own comment block enumerates fasted FCT = 1, fasted DT = THETA(9), fed FCT = THETA(4) and fed DT = THETA(9) * THETA(4), and Chandasana 2023 Table S1 accordingly tabulates F for the dispersible tablet without regard to food as 1.68 = 1.10 x 1.53. Chandasana 2024 Table 2 lists a fed estimate on the film-coated-tablet row only because that row is the reference level.",
-      source_name        = "food"
+      notes = "Chandasana 2024 Table 2 reports relative bioavailability 1.00 for the fasted film-coated tablet and 1.10 for the film-coated tablet given without regard to food. The source category is 'without regard to food' (i.e. dosing was not required to be fasted) rather than a controlled fed challenge with a defined meal, so the general FED indicator applies rather than FED_HIGHFAT. The effect is NOT formulation-specific: the primary source's control stream forms F1 = 1 * THETA(4)**SFLAG * THETA(9)**FFLAG, whose own comment block enumerates fasted FCT = 1, fasted DT = THETA(9), fed FCT = THETA(4) and fed DT = THETA(9) * THETA(4), and Chandasana 2023 Table S1 accordingly tabulates F for the dispersible tablet without regard to food as 1.68 = 1.10 x 1.53. Chandasana 2024 Table 2 lists a fed estimate on the film-coated-tablet row only because that row is the reference level.",
+      source_name = "food"
     ),
     STUDY_ODYSSEY = list(
-      description        = "ODYSSEY study indicator (1 = record from the ODYSSEY trial, 0 = record from IMPAACT P1093)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ODYSSEY study indicator (1 = record from the ODYSSEY trial, 0 = record from IMPAACT P1093)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (IMPAACT P1093)",
-      notes              = "The source model is a pooled analysis of two clinical studies (Chandasana 2024 'DTG Pediatric PopPK Model') with study-specific residual error. Chandasana 2024 Table 2's additive rows print the NONMEM $SIGMA VARIANCES 0.00164 (P1093) and 0.0900 (ODYSSEY); nlmixr2's add() takes the standard-deviation scale, so the values used here are their square roots, which Chandasana 2023 Table 2 prints explicitly as SD = 0.0405 ug/mL and SD = 0.300 ug/mL. The residual error is therefore proportional 28.6% plus additive 0.0405 ug/mL for P1093, and proportional 11.1% plus additive 0.300 ug/mL for ODYSSEY. Both sets are retained here and selected inside model() by this indicator. IMPAACT 2019 records are neither study; set STUDY_ODYSSEY = 0 to use the P1093 residual error, which is the pediatric dolutegravir single-entity study most comparable to IMPAACT 2019.",
-      source_name        = "study"
+      notes = "The source model is a pooled analysis of two clinical studies (Chandasana 2024 'DTG Pediatric PopPK Model') with study-specific residual error. Chandasana 2024 Table 2's additive rows print the NONMEM $SIGMA VARIANCES 0.00164 (P1093) and 0.0900 (ODYSSEY); nlmixr2's add() takes the standard-deviation scale, so the values used here are their square roots, which Chandasana 2023 Table 2 prints explicitly as SD = 0.0405 ug/mL and SD = 0.300 ug/mL. The residual error is therefore proportional 28.6% plus additive 0.0405 ug/mL for P1093, and proportional 11.1% plus additive 0.300 ug/mL for ODYSSEY. Both sets are retained here and selected inside model() by this indicator. IMPAACT 2019 records are neither study; set STUDY_ODYSSEY = 0 to use the P1093 residual error, which is the pediatric dolutegravir single-entity study most comparable to IMPAACT 2019.",
+      source_name = "study"
     ),
     OCC = list(
-      description        = "Integer-valued occasion / period indicator for inter-occasion variability on CL/F and Ka",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator for inter-occasion variability on CL/F and Ka",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Chandasana 2024 Table 2 reports a single inter-occasion variability magnitude per parameter (CL/F 33.9% CV, Ka 91.7% CV) shared across occasions, i.e. the NONMEM $OMEGA BLOCK(1) SAME idiom. Two occasions are encoded here (the minimum that makes IOV operational); set OCC = 1 for every record to reproduce the single steady-state occasion simulated in Chandasana 2024 Table 4. Users needing more occasions extend the oc<k> / etaiov_*_<k> pattern with additional ~ fix(...) slots.",
-      source_name        = "OCC"
+      notes = "Chandasana 2024 Table 2 reports a single inter-occasion variability magnitude per parameter (CL/F 33.9% CV, Ka 91.7% CV) shared across occasions, i.e. the NONMEM $OMEGA BLOCK(1) SAME idiom. Two occasions are encoded here (the minimum that makes IOV operational); set OCC = 1 for every record to reproduce the single steady-state occasion simulated in Chandasana 2024 Table 4. Users needing more occasions extend the oc<k> / etaiov_*_<k> pattern with additional ~ fix(...) slots.",
+      source_name = "OCC"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "dolutegravir", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "dolutegravir", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "dolutegravir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 239L,
-    n_studies      = 2L,
-    age_range      = "2 months to 18 years",
-    weight_range   = "3.9-91.0 kg",
-    disease_state  = "Infants, children and adolescents living with HIV-1 receiving oral dolutegravir",
-    dose_range     = "Oral dolutegravir; in the IMPAACT 2019 confirmatory simulations 15 mg (>=6 to <10 kg), 20 mg (>=10 to <14 kg), 25 mg (>=14 to <20 kg) and 30 mg (>=20 to <25 kg) once daily as the ABC/DTG/3TC dispersible tablet, and 50 mg once daily as the ABC/DTG/3TC tablet (>=25 to <40 kg)",
-    notes          = "Model-development population: a pooled analysis of two clinical studies (IMPAACT P1093 and ODYSSEY) reported in Chandasana et al. Clin Pharmacokinet 2023;62(10):1445-1459 (Chandasana 2024 reference 15), summarised in Chandasana 2024 'DTG Pediatric PopPK Model' and Table 2. External-validation cohort: IMPAACT 2019 (NCT03760458), an international phase I/II open-label study in children <12 years living with HIV-1 enrolled into five weight bands (>=6 to <10, >=10 to <14, >=14 to <20, >=20 to <25 and >=25 to <40 kg); 55 participants contributed 598 dolutegravir intensive and sparse PK samples, median (min-max) baseline age 6.0 (1.00-11.0) years and weight 17.00 (8.15-39.30) kg, 45.5% female, 67% Black and 31% Asian (Chandasana 2024 Results). The existing model was applied to the IMPAACT 2019 data with NONMEM MAXEVAL = 0, i.e. no parameter was re-estimated. Predefined exposure targets for dose confirmation were a geometric-mean C24 of 0.697-2.26 ug/mL and a geometric-mean AUC0-24 of 37-134 ug*h/mL (Chandasana 2024 Methods)."
+    species = "human",
+    n_subjects = 239L,
+    n_studies = 2L,
+    age_range = "2 months to 18 years",
+    weight_range = "3.9-91.0 kg",
+    disease_state = "Infants, children and adolescents living with HIV-1 receiving oral dolutegravir",
+    dose_range = "Oral dolutegravir; in the IMPAACT 2019 confirmatory simulations 15 mg (>=6 to <10 kg), 20 mg (>=10 to <14 kg), 25 mg (>=14 to <20 kg) and 30 mg (>=20 to <25 kg) once daily as the ABC/DTG/3TC dispersible tablet, and 50 mg once daily as the ABC/DTG/3TC tablet (>=25 to <40 kg)",
+    notes = "Model-development population: a pooled analysis of two clinical studies (IMPAACT P1093 and ODYSSEY) reported in Chandasana et al. Clin Pharmacokinet 2023;62(10):1445-1459 (Chandasana 2024 reference 15), summarised in Chandasana 2024 'DTG Pediatric PopPK Model' and Table 2. External-validation cohort: IMPAACT 2019 (NCT03760458), an international phase I/II open-label study in children <12 years living with HIV-1 enrolled into five weight bands (>=6 to <10, >=10 to <14, >=14 to <20, >=20 to <25 and >=25 to <40 kg); 55 participants contributed 598 dolutegravir intensive and sparse PK samples, median (min-max) baseline age 6.0 (1.00-11.0) years and weight 17.00 (8.15-39.30) kg, 45.5% female, 67% Black and 31% Asian (Chandasana 2024 Results). The existing model was applied to the IMPAACT 2019 data with NONMEM MAXEVAL = 0, i.e. no parameter was re-estimated. Predefined exposure targets for dose confirmation were a geometric-mean C24 of 0.697-2.26 ug/mL and a geometric-mean AUC0-24 of 37-134 ug*h/mL (Chandasana 2024 Methods)."
   )
 
   ini({

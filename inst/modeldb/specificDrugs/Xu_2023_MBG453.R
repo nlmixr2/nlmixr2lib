@@ -8,67 +8,67 @@ Xu_2023_MBG453 <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "MBG453", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "MBG453", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "MBG453", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form scaling on CL, Vc, and Vp via the paper's log-deviation form exp(beta * log(WT / WT_median)) (Xu 2023, p1657 covariate equations). The paper does not state the numerical median baseline weight; this model uses a working reference of 75 kg. Users with an alternative reference can override e_wt_*.",
-      source_name        = "WT0"
+      notes = "Power-form scaling on CL, Vc, and Vp via the paper's log-deviation form exp(beta * log(WT / WT_median)) (Xu 2023, p1657 covariate equations). The paper does not state the numerical median baseline weight; this model uses a working reference of 75 kg. Users with an alternative reference can override e_wt_*.",
+      source_name = "WT0"
     ),
     DIS_AML = list(
-      description        = "Acute myeloid leukemia disease indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Acute myeloid leukemia disease indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-AML; the reference complement in Xu 2023 is the advanced-solid-tumor cohort, alongside DIS_MDS = DIS_CMML = 0)",
-      notes              = "Exponential effect on CL (Xu 2023 Table 1 row beta_CL,AML = -0.0146, NS p = 0.801). Source column is the categorical DISEASE_abb in the Monolix supplement Appendix S2; the canonical column is the binary as.integer(DISEASE_abb == 'AML').",
-      source_name        = "DISEASE_abb"
+      notes = "Exponential effect on CL (Xu 2023 Table 1 row beta_CL,AML = -0.0146, NS p = 0.801). Source column is the categorical DISEASE_abb in the Monolix supplement Appendix S2; the canonical column is the binary as.integer(DISEASE_abb == 'AML').",
+      source_name = "DISEASE_abb"
     ),
     DIS_MDS = list(
-      description        = "Myelodysplastic syndrome disease indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Myelodysplastic syndrome disease indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-MDS; the reference complement in Xu 2023 is the advanced-solid-tumor cohort, alongside DIS_AML = DIS_CMML = 0)",
-      notes              = "Exponential effect on CL (Xu 2023 Table 1 row beta_CL,MDS = -0.149, statistically significant p = 0.0213; ~14% lower CL than the solid-tumor reference). Source column is the categorical DISEASE_abb; the canonical column is the binary as.integer(DISEASE_abb == 'MDS').",
-      source_name        = "DISEASE_abb"
+      notes = "Exponential effect on CL (Xu 2023 Table 1 row beta_CL,MDS = -0.149, statistically significant p = 0.0213; ~14% lower CL than the solid-tumor reference). Source column is the categorical DISEASE_abb; the canonical column is the binary as.integer(DISEASE_abb == 'MDS').",
+      source_name = "DISEASE_abb"
     ),
     DIS_CMML = list(
-      description        = "Chronic myelomonocytic leukemia disease indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chronic myelomonocytic leukemia disease indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-CMML; the reference complement in Xu 2023 is the advanced-solid-tumor cohort, alongside DIS_AML = DIS_MDS = 0)",
-      notes              = "Exponential effect on CL (Xu 2023 Table 1 row beta_CL,CMML = -0.0411, NS p = 0.76). Source column is the categorical DISEASE_abb; the canonical column is the binary as.integer(DISEASE_abb == 'CMML').",
-      source_name        = "DISEASE_abb"
+      notes = "Exponential effect on CL (Xu 2023 Table 1 row beta_CL,CMML = -0.0411, NS p = 0.76). Source column is the categorical DISEASE_abb; the canonical column is the binary as.integer(DISEASE_abb == 'CMML').",
+      source_name = "DISEASE_abb"
     ),
     CONMED_SPART = list(
-      description        = "Spartalizumab (PDR001, anti-PD-1) coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Spartalizumab (PDR001, anti-PD-1) coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no spartalizumab coadministration; the reference complement in Xu 2023 is the union of sabatolimab monotherapy and sabatolimab + hypomethylating-agent combination)",
-      notes              = "Exponential effect on CL (Xu 2023 Table 1 row beta_CL,HASPDR = 0.0194, NS p = 0.7). Renamed from the source column HASPDR (the supplement Appendix S2 documents the column as 'this patient HAS received PDR001 [spartalizumab, anti PD-1 mAb]') to the canonical CONMED_SPART per covariate-columns.md.",
-      source_name        = "HASPDR"
+      notes = "Exponential effect on CL (Xu 2023 Table 1 row beta_CL,HASPDR = 0.0194, NS p = 0.7). Renamed from the source column HASPDR (the supplement Appendix S2 documents the column as 'this patient HAS received PDR001 [spartalizumab, anti PD-1 mAb]') to the canonical CONMED_SPART per covariate-columns.md.",
+      source_name = "HASPDR"
     )
   )
 
   population <- list(
-    n_subjects     = 444L,
-    n_studies      = 2L,
-    age_range      = "adults (>= 18 years); median age in the hematologic-malignancy cohort 71-72.5 years across treatment arms (Table S1)",
-    age_median     = "not reported pooled across solid tumor + hematologic; ~72 years in the hematologic subgroup",
-    weight_range   = "not stated explicitly in the source paper",
-    weight_median  = "not stated in the source paper; this model assumes a working reference of 75 kg for the WT-on-CL/V/V2 scaling",
+    n_subjects = 444L,
+    n_studies = 2L,
+    age_range = "adults (>= 18 years); median age in the hematologic-malignancy cohort 71-72.5 years across treatment arms (Table S1)",
+    age_median = "not reported pooled across solid tumor + hematologic; ~72 years in the hematologic subgroup",
+    weight_range = "not stated explicitly in the source paper",
+    weight_median = "not stated in the source paper; this model assumes a working reference of 75 kg for the WT-on-CL/V/V2 scaling",
     sex_female_pct = "~40% in the hematologic-malignancy cohort (Table S1: 38.5-42.1% female across arms); not reported pooled with solid tumors",
     race_ethnicity = "predominantly Caucasian in the hematologic-malignancy cohort (Table S1: 68.9-87.9% Caucasian, 0-6.7% Asian, 0-7.7% Black, 1.4-2.2% Other, 7.9-17.8% Unknown); solid-tumor demographics previously reported separately in NCT02608268",
-    disease_state  = "Advanced/metastatic solid tumors (n=252) or hematologic malignancies (n=192): acute myeloid leukemia (AML), myelodysplastic syndrome (MDS, including intermediate-, high-, and very high-risk per Revised IPSS), or chronic myelomonocytic leukemia (CMML) ineligible for intensive chemotherapy",
-    dose_range     = "Sabatolimab IV 20-1200 mg Q2W or 80-1200 mg Q4W as monotherapy or in combination with spartalizumab (anti-PD-1) and/or hypomethylating agents (decitabine or azacitidine). Specific arms: solid tumor 80-1200 mg Q2W/Q4W single agent, 20-800 mg Q2W or 80-1200 mg Q4W with spartalizumab; heme 400 or 1200 mg Q2W single agent, 240/400/800 mg with HMA, 160/240/400 mg Q2W with spartalizumab +/- decitabine.",
-    regions        = "Two pooled studies: NCT02608268 (advanced solid tumors, phase I-Ib/II) and NCT03066648 (hematologic malignancies, phase Ib). Multi-regional but specific regions are not enumerated in the paper.",
+    disease_state = "Advanced/metastatic solid tumors (n=252) or hematologic malignancies (n=192): acute myeloid leukemia (AML), myelodysplastic syndrome (MDS, including intermediate-, high-, and very high-risk per Revised IPSS), or chronic myelomonocytic leukemia (CMML) ineligible for intensive chemotherapy",
+    dose_range = "Sabatolimab IV 20-1200 mg Q2W or 80-1200 mg Q4W as monotherapy or in combination with spartalizumab (anti-PD-1) and/or hypomethylating agents (decitabine or azacitidine). Specific arms: solid tumor 80-1200 mg Q2W/Q4W single agent, 20-800 mg Q2W or 80-1200 mg Q4W with spartalizumab; heme 400 or 1200 mg Q2W single agent, 240/400/800 mg with HMA, 160/240/400 mg Q2W with spartalizumab +/- decitabine.",
+    regions = "Two pooled studies: NCT02608268 (advanced solid tumors, phase I-Ib/II) and NCT03066648 (hematologic malignancies, phase Ib). Multi-regional but specific regions are not enumerated in the paper.",
     ecog_distribution = "ECOG performance status 0-2 (eligibility cap). In the hematologic-malignancy cohort, 15.4-32.1% PS 0, 58.6-69.2% PS 1, 9.3-15.6% PS 2 across treatment arms (Table S1).",
-    notes          = "Pooled PK dataset of 444 patients (252 solid tumors + 192 hematologic malignancies) supports the final model in Xu 2023 Table 1. PK samples were quantified by LC-MS with LLOQ 1 ug/mL; total soluble TIM-3 was quantified by ELISA with LLOQ 1.02 ng/mL (not modeled here -- the sTIM-3 model is described in Xu 2023 as a separately-fit QSS-TMDD model from the prior phase I solid-tumor analysis and is not republished). Treatment-arm composition: 159 sabatolimab monotherapy (133 solid tumor + 26 heme), 130 sabatolimab + spartalizumab (119 solid tumor + 11 heme), 55 sabatolimab + azacitidine (heme), 100 sabatolimab + decitabine +/- spartalizumab (heme)."
+    notes = "Pooled PK dataset of 444 patients (252 solid tumors + 192 hematologic malignancies) supports the final model in Xu 2023 Table 1. PK samples were quantified by LC-MS with LLOQ 1 ug/mL; total soluble TIM-3 was quantified by ELISA with LLOQ 1.02 ng/mL (not modeled here -- the sTIM-3 model is described in Xu 2023 as a separately-fit QSS-TMDD model from the prior phase I solid-tumor analysis and is not republished). Treatment-arm composition: 159 sabatolimab monotherapy (133 solid tumor + 26 heme), 130 sabatolimab + spartalizumab (119 solid tumor + 11 heme), 55 sabatolimab + azacitidine (heme), 100 sabatolimab + decitabine +/- spartalizumab (heme)."
   )
 
   ini({

@@ -31,7 +31,7 @@ Yamakawa_2011_imatinib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -40,9 +40,9 @@ Yamakawa_2011_imatinib <- function() {
   covariatesDataExcluded <- list(
     SNP_SLCO1B3 = list(
       description = "SLCO1B3 (OATP1B3) genotype (paper abbreviation; no canonical register entry -- not used by any model)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste0(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste0(
         "Yang 2025 Table 1 footnote d: 'The paper showed that single ",
         "nucleotide polymorphisms in SLCO1B3 and ABCB1 were associated ",
         "with imatinib clearance but did not build a covariate model on ",
@@ -57,9 +57,9 @@ Yamakawa_2011_imatinib <- function() {
     ),
     SNP_ABCB1 = list(
       description = "ABCB1 (P-glycoprotein / MDR1) genotype (paper abbreviation; no canonical register entry -- not used by any model)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste0(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste0(
         "See the SNP_SLCO1B3 note above: associated with imatinib ",
         "clearance in the primary but not carried into the population PK ",
         "covariate model, per Yang 2025 Table 1 footnote d. ABCB1 encodes ",
@@ -70,16 +70,16 @@ Yamakawa_2011_imatinib <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 34L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 34L,
+    n_studies = 1L,
     n_observations = "622 imatinib plasma concentrations (Yang 2025 Table 1)",
-    age_range      = "21-80 years",
-    disease_state  = "Japanese adults with chronic myeloid leukemia (CML)",
-    dose_range     = "Oral imatinib 100-600 mg total daily dose",
-    regions        = "Japan",
-    bioanalytical  = "HPLC; limit of quantification not reported in Yang 2025 Table 1",
-    notes          = paste0(
+    age_range = "21-80 years",
+    disease_state = "Japanese adults with chronic myeloid leukemia (CML)",
+    dose_range = "Oral imatinib 100-600 mg total daily dose",
+    regions = "Japan",
+    bioanalytical = "HPLC; limit of quantification not reported in Yang 2025 Table 1",
+    notes = paste0(
       "Demographic detail beyond the row above (weight range, sex split) ",
       "is not reported by the secondary source and must be read from the ",
       "primary publication."

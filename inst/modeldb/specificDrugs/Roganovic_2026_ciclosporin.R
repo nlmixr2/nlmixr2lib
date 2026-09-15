@@ -22,11 +22,11 @@ Roganovic_2026_ciclosporin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on CL/F and V/F, centred on the rounded cohort",
         "median of 40 kg (Roganovic 2026 Section 3.3; cohort median 39.65 kg,",
         "range 9.8-103 kg, Table 1). The CL/F exponent was estimated (0.89)",
@@ -35,14 +35,14 @@ Roganovic_2026_ciclosporin <- function() {
         "source is a retrospective chart review over roughly one year, so",
         "growth within a paediatric subject was present in the fitted data."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     HGB = list(
-      description        = "Blood haemoglobin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Blood haemoglobin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear (not power) effect on CL/F centred at 120 g/L, the cohort",
         "median (Roganovic 2026 Table 1; range 73-164 g/L). Roganovic 2026",
         "Eq. 4 writes the effect as (1 - 0.00279 * (HGB - 120)), so CL/F",
@@ -55,14 +55,14 @@ Roganovic_2026_ciclosporin <- function() {
         "any physiological range, but users extrapolating beyond the fitted",
         "73-164 g/L window should clamp the covariate."
       ),
-      source_name        = "HGB"
+      source_name = "HGB"
     ),
     OCC = list(
-      description        = "Occasion index for interoccasion variability on CL/F",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion index for interoccasion variability on CL/F",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Roganovic 2026 Section 2.3 defines an occasion as one",
         "therapeutic-drug-monitoring day: 'Every pair of concentrations",
         "measured on the same day, or a single concentration measured on a",
@@ -80,75 +80,75 @@ Roganovic_2026_ciclosporin <- function() {
         "etaiov_cl_k line plus one more term in iov_cl). Records outside",
         "1-6 carry no IOV."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at transplantation",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate modelling procedure (Roganovic 2026 Section 2.3) but not retained in the final model. No maturation function was applied because only 3 of 58 patients were aged 2 years or younger and ciclosporin metabolism is near-adult by age 2 (Discussion)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate modelling procedure (Roganovic 2026 Section 2.3) but not retained in the final model. No maturation function was applied because only 3 of 58 patients were aged 2 years or younger and ciclosporin metabolism is near-adult by age 2 (Discussion)."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate modelling procedure but not retained. Height is highly correlated with body weight (Roganovic 2026 Figure 2) and already enters the Schwartz creatinine-clearance estimate."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate modelling procedure but not retained. Height is highly correlated with body weight (Roganovic 2026 Figure 2) and already enters the Schwartz creatinine-clearance estimate."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate modelling procedure but not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate modelling procedure but not retained."
     ),
     HCT = list(
       description = "Haematocrit",
-      units       = "percent",
-      type        = "continuous",
-      notes       = "Explicitly tested and NOT selected in either the forward-inclusion or backward-elimination step (Roganovic 2026 Section 3.3). Notable because haematocrit is the erythrocyte marker most other ciclosporin population models retain; the paper's central claim is that haemoglobin is the more sensitive marker in this cohort."
+      units = "percent",
+      type = "continuous",
+      notes = "Explicitly tested and NOT selected in either the forward-inclusion or backward-elimination step (Roganovic 2026 Section 3.3). Notable because haematocrit is the erythrocyte marker most other ciclosporin population models retain; the paper's central claim is that haemoglobin is the more sensitive marker in this cohort."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Selected by the stepwise procedure but dropped from the final model: the effect was statistically significant yet changed CL/F by less than 20 percent across the usual covariate range, the paper's pre-specified clinical-relevance threshold, and its relative standard error was 58.8 percent (Roganovic 2026 Section 3.3)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Selected by the stepwise procedure but dropped from the final model: the effect was statistically significant yet changed CL/F by less than 20 percent across the usual covariate range, the paper's pre-specified clinical-relevance threshold, and its relative standard error was 58.8 percent (Roganovic 2026 Section 3.3)."
     ),
     CRCL = list(
       description = "Creatinine clearance estimated with the revised (bedside) Schwartz formula, CRCL = 0.413 * HT / CREAT",
-      units       = "mL/min/1.73m^2",
-      type        = "continuous",
-      notes       = "Selected by the stepwise procedure but dropped: in the model carrying creatinine clearance on CL/F the relative standard error of the effect was 572.7 percent (Roganovic 2026 Section 3.3). Highly correlated with serum creatinine (Figure 2), so the two were tested separately."
+      units = "mL/min/1.73m^2",
+      type = "continuous",
+      notes = "Selected by the stepwise procedure but dropped: in the model carrying creatinine clearance on CL/F the relative standard error of the effect was 572.7 percent (Roganovic 2026 Section 3.3). Highly correlated with serum creatinine (Figure 2), so the two were tested separately."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as the categorical covariate GEND but not retained. The cohort was 34 of 58 male (58.62 percent), so 41.38 percent female."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as the categorical covariate GEND but not retained. The cohort was 34 of 58 male (58.62 percent), so 41.38 percent female."
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "ciclosporin", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 58,
-    n_studies        = 1,
-    n_observations   = 974,
-    age_range        = "1-25 years (at transplantation)",
-    age_median       = "12 years",
-    weight_range     = "9.8-103 kg",
-    weight_median    = "39.65 kg",
-    sex_female_pct   = 41.38,
-    disease_state    = "renal transplant recipients on ciclosporin, corticosteroid and mycophenolic acid",
-    dose_range       = "5 mg/kg/day orally at initiation, divided into two or three daily doses, then adjusted by therapeutic drug monitoring",
-    regions          = "Serbia (single centre: University Children's Hospital, Belgrade)",
-    renal_function   = "creatinine clearance 8.93-131.58 mL/min/1.73m^2 (median 55.21) by the revised Schwartz formula",
-    notes            = paste(
+    species = "human",
+    n_subjects = 58,
+    n_studies = 1,
+    n_observations = 974,
+    age_range = "1-25 years (at transplantation)",
+    age_median = "12 years",
+    weight_range = "9.8-103 kg",
+    weight_median = "39.65 kg",
+    sex_female_pct = 41.38,
+    disease_state = "renal transplant recipients on ciclosporin, corticosteroid and mycophenolic acid",
+    dose_range = "5 mg/kg/day orally at initiation, divided into two or three daily doses, then adjusted by therapeutic drug monitoring",
+    regions = "Serbia (single centre: University Children's Hospital, Belgrade)",
+    renal_function = "creatinine clearance 8.93-131.58 mL/min/1.73m^2 (median 55.21) by the revised Schwartz formula",
+    notes = paste(
       "Retrospective chart review; 47 of 58 patients (81.03 percent) were",
       "children under 18 and 11 (18.97 percent) were young adults aged 18-25.",
       "30 patients received a living-donor and 28 a cadaveric graft. Baseline",

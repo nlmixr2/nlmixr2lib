@@ -13,37 +13,37 @@ Choe_2012_busulfan <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Actual body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Actual body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline in the source analysis. Allometric exponent on both CL and Vd was fixed at 0.5; reference weight 65 kg corresponds to the paper's typical-patient typical values CL 7.6 L/h and Vd 32.2 L (male) / 29.1 L (female) from Table 2 (Choe 2012 Results, p. 276).",
-      source_name        = "ABW"
+      notes = "Time-fixed at baseline in the source analysis. Allometric exponent on both CL and Vd was fixed at 0.5; reference weight 65 kg corresponds to the paper's typical-patient typical values CL 7.6 L/h and Vd 32.2 L (male) / 29.1 L (female) from Table 2 (Choe 2012 Results, p. 276).",
+      source_name = "ABW"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = "Canonical SEXF encoding (1 = female). The source paper used SEX with 1 = male, 0 = female (Choe 2012 Results, p. 276); the relationship is SEX_paper = 1 - SEXF. The published Vd structural value 3.610 * ABW^0.5 corresponds to the female reference, with male Vd a +10.5% deviation. The model preserves the female-reference structural value by applying the sex effect via (1 + e_sexf_vc * (1 - SEXF)).",
-      source_name        = "SEX"
+      notes = "Canonical SEXF encoding (1 = female). The source paper used SEX with 1 = male, 0 = female (Choe 2012 Results, p. 276); the relationship is SEX_paper = 1 - SEXF. The published Vd structural value 3.610 * ABW^0.5 corresponds to the female reference, with male Vd a +10.5% deviation. The model preserves the female-reference structural value by applying the sex effect via (1 + e_sexf_vc * (1 - SEXF)).",
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 60,
-    n_studies      = 1,
-    age_range      = "16-58 years",
-    age_mean       = "36.5 years (SD 10.9)",
-    weight_range   = "52.5-116 kg",
-    weight_mean    = "66.5 kg (SD 11.3)",
+    species = "human",
+    n_subjects = 60,
+    n_studies = 1,
+    age_range = "16-58 years",
+    age_mean = "36.5 years (SD 10.9)",
+    weight_range = "52.5-116 kg",
+    weight_mean = "66.5 kg (SD 11.3)",
     sex_female_pct = 38.3,
     race_ethnicity = c(Asian_Korean = 100),
-    disease_state  = "Adult patients with hematologic malignancies (AML/acute mixed leukemia, ALL, CML, MDS, other) receiving intravenous busulfan as conditioning therapy prior to hematopoietic stem cell transplantation (BuCy, BuFluATG, or Bu-only regimens). Patients had adequate cardiac, hepatic and renal function and Karnofsky performance scores >=70.",
-    dose_range     = "Either 0.8 mg/kg every 6 h over a 2 h IV infusion x 4 days (BU4 arm) or 3.2 mg/kg every 24 h over a 3 h IV infusion x 4 days (BU1 arm). Doses calculated using selected body weight (SBW: actual body weight if <= ideal body weight (IBW), IBW if ABW within 120% of IBW, adjusted IBW otherwise).",
-    regions        = "Korea (single-center: Asan Medical Center, Seoul)",
-    notes          = "Source: Choe 2012 Table 1 and Methods. 60 Korean adults (37 men, 23 women) enrolled 1:1 across BU4 and BU1 arms. 295 plasma busulfan concentrations measured by validated LC-MS/MS (LOQ 30 ng/mL); samples drawn at 2.5, 3, 4, 5, 6 h post-infusion start (BU4) or 3.5, 5, 6, 7, 22 h post-infusion start (BU1). Median AUC0-inf with the once-daily 3.2 mg/kg BU1 regimen was 6,378 umol/L*min = 26.18 mg/L*h. All subjects received concomitant phenytoin (15 mg/kg loading + maintenance) for seizure prophylaxis. NONMEM VI ADVAN1 TRANS2 with FOCEi."
+    disease_state = "Adult patients with hematologic malignancies (AML/acute mixed leukemia, ALL, CML, MDS, other) receiving intravenous busulfan as conditioning therapy prior to hematopoietic stem cell transplantation (BuCy, BuFluATG, or Bu-only regimens). Patients had adequate cardiac, hepatic and renal function and Karnofsky performance scores >=70.",
+    dose_range = "Either 0.8 mg/kg every 6 h over a 2 h IV infusion x 4 days (BU4 arm) or 3.2 mg/kg every 24 h over a 3 h IV infusion x 4 days (BU1 arm). Doses calculated using selected body weight (SBW: actual body weight if <= ideal body weight (IBW), IBW if ABW within 120% of IBW, adjusted IBW otherwise).",
+    regions = "Korea (single-center: Asan Medical Center, Seoul)",
+    notes = "Source: Choe 2012 Table 1 and Methods. 60 Korean adults (37 men, 23 women) enrolled 1:1 across BU4 and BU1 arms. 295 plasma busulfan concentrations measured by validated LC-MS/MS (LOQ 30 ng/mL); samples drawn at 2.5, 3, 4, 5, 6 h post-infusion start (BU4) or 3.5, 5, 6, 7, 22 h post-infusion start (BU1). Median AUC0-inf with the once-daily 3.2 mg/kg BU1 regimen was 6,378 umol/L*min = 26.18 mg/L*h. All subjects received concomitant phenytoin (15 mg/kg loading + maintenance) for seizure prophylaxis. NONMEM VI ADVAN1 TRANS2 with FOCEi."
   )
 
   ini({

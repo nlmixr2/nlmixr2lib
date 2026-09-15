@@ -22,34 +22,34 @@ Nguyen_2021_ganciclovir <- function() {
     sep = " "
   )
   vignette <- "Yang_2023_ganciclovir_model_repository"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on every disposition parameter, normalized to the",
         "cohort median of 11.7 kg (Yang 2023 Table 2 reports median weight",
         "11.7 kg, range 2.6-80 kg): exponent 0.75 on CL and Q, exponent 1 on Vc",
         "and Vp. Weight was retained on CL, Vc, Q and Vp (Yang 2023 Table 4).",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Estimated glomerular filtration rate (eGFR), BSA-normalized. Yang 2023",
         "Table 3 footnote defines eGFR as 'the estimated glomerular filtration",
         "rate (mL/min/1.73 m^2)'; the review does not state which estimating",
@@ -57,10 +57,10 @@ Nguyen_2021_ganciclovir <- function() {
         "the primary publication.",
         sep = " "
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on clearance normalized to a reference of",
         "167 mL/min/1.73 m^2 with exponent 0.763: (eGFR/167)^0.763. The reference",
         "value is high for an adult scale but is consistent with a cohort whose",
@@ -70,14 +70,14 @@ Nguyen_2021_ganciclovir <- function() {
         "column, which accepts BSA-normalized creatinine-based estimates.",
         sep = " "
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     DIS_CRITILL = list(
-      description        = "Critical illness / ICU-admission indicator (1 = critically ill, 0 = not critically ill)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Critical illness / ICU-admission indicator (1 = critically ill, 0 = not critically ill)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not critically ill)",
-      notes              = paste(
+      notes = paste(
         "Yang 2023 Table 3 footnote: 'critically ill: 1 for critically ill",
         "patients and 0 for others'. Applied as a multiplicative power factor",
         "0.806^DIS_CRITILL on clearance, so a critically ill child has clearance",
@@ -92,35 +92,35 @@ Nguyen_2021_ganciclovir <- function() {
         "canonical.",
         sep = " "
       ),
-      source_name        = "critically ill"
+      source_name = "critically ill"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 105L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 105L,
+    n_studies = 1L,
     n_observations = 374L,
-    age_median     = "2.5 years (range 0.01-17.3 years)",
-    weight_median  = "11.7 kg (range 2.6-80 kg)",
+    age_median = "2.5 years (range 0.01-17.3 years)",
+    weight_median = "11.7 kg (range 2.6-80 kg)",
     sex_female_pct = 43.8,
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Pediatric patients receiving ganciclovir or valganciclovir; the cohort",
       "includes critically ill children, whose contrast against the",
       "non-critically-ill children in the same dataset is carried by the",
       "DIS_CRITILL covariate on clearance.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "IV ganciclovir a median 10 mg/kg/day (range 1.2-15.4) and oral",
       "valganciclovir a median 36 mg/kg/day (range 14.6-83.8), both administered",
       "twice daily.",
       sep = " "
     ),
-    regions        = "France (prospective).",
-    bioassay       = "LC-MS, LLOQ 0.05 ug/mL.",
-    notes          = paste(
+    regions = "France (prospective).",
+    bioassay = "LC-MS, LLOQ 0.05 ug/mL.",
+    notes = paste(
       "Demographics and dosing from Yang 2023 Table 2 (105 subjects, 59 male /",
       "46 female, 374 observations); the sampling schedule is recorded as not",
       "reported. Estimated in Monolix with the SAEM algorithm. Covariates tested:",

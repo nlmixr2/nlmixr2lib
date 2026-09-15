@@ -12,17 +12,17 @@ Xu_2026_caspofungin <- function() {
   # unbound, concentration -- the authors list this explicitly as a
   # limitation, noting caspofungin's high protein binding.
   compartmentData <- list(
-    central     = list(analyte = "caspofungin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "caspofungin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "caspofungin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area computed with the Mosteller formula from body weight and height",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area computed with the Mosteller formula from body weight and height",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The body-size descriptor of the final model, entering as a power",
         "term on all four disposition parameters: (BSA / 0.79)^0.66 on CL and",
         "Q, and (BSA / 0.79)^1 on V1 and V2. Both exponents were FIXED, not",
@@ -53,14 +53,14 @@ Xu_2026_caspofungin <- function() {
         "be strictly positive; it enters a power term. Studied range",
         "0.286-1.89 m^2 (Table 1)."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     ECMO_STATUS = list(
-      description        = "Extracorporeal membrane oxygenation support indicator (1 = receiving ECMO)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Extracorporeal membrane oxygenation support indicator (1 = receiving ECMO)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no ECMO support)",
-      notes              = paste(
+      notes = paste(
         "The ONLY clinical covariate retained by stepwise covariate",
         "modelling (forward P < 0.05, backward P < 0.01), and only on the",
         "central volume: dOFV = -13.262, P < 0.001 (Results, 'Population",
@@ -93,7 +93,7 @@ Xu_2026_caspofungin <- function() {
         "so the two extracorporeal circuits are not fully separable in this",
         "cohort."
       ),
-      source_name        = "ECMO"
+      source_name = "ECMO"
     )
   )
 
@@ -114,9 +114,9 @@ Xu_2026_caspofungin <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Tested a priori as an allometric body-size descriptor and rejected",
         "in favour of BSA. Table S6 run 2 (weight, exponents 0.75 / 1 FIXED)",
         "gives OFV 438.633 / AIC 456.633 against run 5 (BSA, 0.66 / 1 FIXED)",
@@ -129,51 +129,51 @@ Xu_2026_caspofungin <- function() {
     ),
     LBW = list(
       description = "Lean body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested a priori as an allometric body-size descriptor and rejected in favour of BSA. Table S6 run 3 (exponents 0.75 / 1 FIXED): OFV 438.798 / AIC 456.798. Not tabulated in Table 1. The estimating formula is not stated in the source."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested a priori as an allometric body-size descriptor and rejected in favour of BSA. Table S6 run 3 (exponents 0.75 / 1 FIXED): OFV 438.798 / AIC 456.798. Not tabulated in Table 1. The estimating formula is not stated in the source."
     ),
     FFM = list(
       description = "Fat-free mass",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested a priori as an allometric body-size descriptor and rejected in favour of BSA. Table S6 run 4 (exponents 0.75 / 1 FIXED): OFV 438.535 / AIC 456.535 -- the best of the three weight-like descriptors, still short of BSA. Not tabulated in Table 1. The estimating formula is not stated in the source."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested a priori as an allometric body-size descriptor and rejected in favour of BSA. Table S6 run 4 (exponents 0.75 / 1 FIXED): OFV 438.535 / AIC 456.535 -- the best of the three weight-like descriptors, still short of BSA. Not tabulated in Table 1. The estimating formula is not stated in the source."
     ),
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in stepwise covariate modelling, not retained. Cohort median 5.33 years (range 0.330-16.0; Table 1); the Abstract and Results quote the range as 0.33-16 years and a median of 4.63 years, the latter matching the n = 14 intensive-sampling subset of Table S1 rather than the full cohort."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in stepwise covariate modelling, not retained. Cohort median 5.33 years (range 0.330-16.0; Table 1); the Abstract and Results quote the range as 0.33-16 years and a median of 4.63 years, the latter matching the n = 14 intensive-sampling subset of Table S1 rather than the full cohort."
     ),
     SEXF = list(
       description = "Female sex indicator (1 = female)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in stepwise covariate modelling, not retained. Table 1 reports 12 male / 17 female, i.e. 58.6% female. The source column records the male/female split, so the canonical SEXF requires the transformation SEXF = 1 - SEXM; immaterial here because the term is absent from the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in stepwise covariate modelling, not retained. Table 1 reports 12 male / 17 female, i.e. 58.6% female. The source column records the male/female split, so the canonical SEXF requires the transformation SEXF = 1 - SEXM; immaterial here because the term is absent from the final model."
     ),
     WBC = list(
       description = "White blood cell count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened as a marker of immune status, not retained. Cohort median 4.92 x 10^9/L (range 0.100-54.1; Table 1)."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened as a marker of immune status, not retained. Cohort median 4.92 x 10^9/L (range 0.100-54.1; Table 1)."
     ),
     RBC = list(
       description = "Red blood cell count",
-      units       = "10^12/L",
-      type        = "continuous",
-      notes       = "Screened, not retained. Cohort median 2.98 x 10^12/L (range 1.95-5.45; Table 1)."
+      units = "10^12/L",
+      type = "continuous",
+      notes = "Screened, not retained. Cohort median 2.98 x 10^12/L (range 1.95-5.45; Table 1)."
     ),
     HGB = list(
       description = "Blood hemoglobin concentration",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened, not retained. Cohort median 85.5 g/L (range 54.0-168; Table 1). Already in SI units, so no g/dL conversion is needed."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened, not retained. Cohort median 85.5 g/L (range 54.0-168; Table 1). Already in SI units, so no g/dL conversion is needed."
     ),
     AST = list(
       description = "Serum aspartate aminotransferase activity",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Screened as a hepatic-function marker, not retained in the final",
         "model -- the Discussion states 'Other factors, including AST and ALT",
         "levels, did not appear to influence the PK of caspofungin.' Cohort",
@@ -186,50 +186,50 @@ Xu_2026_caspofungin <- function() {
     ),
     ALT = list(
       description = "Serum alanine aminotransferase activity",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker, not retained -- see the AST note for the Discussion sentence covering both. Cohort median 24.1 U/L (range 3.51-2,510; Table 1). Five children (reported as 35.7%, a percentage taken from the n = 14 subset) had abnormal liver function tests before caspofungin."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker, not retained -- see the AST note for the Discussion sentence covering both. Cohort median 24.1 U/L (range 3.51-2,510; Table 1). Five children (reported as 35.7%, a percentage taken from the n = 14 subset) had abnormal liver function tests before caspofungin."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker, not retained. Cohort median 8.50 umol/L (range 2.10-329; Table 1). Direct bilirubin was also tabulated (median 4.10, range 1.00-262 umol/L) but is not listed among the screened covariates."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker, not retained. Cohort median 8.50 umol/L (range 2.10-329; Table 1). Direct bilirubin was also tabulated (median 4.10, range 1.00-262 umol/L) but is not listed among the screened covariates."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as the renal-function marker, not retained. Cohort median 29.7 umol/L (range 6.50-223; Table 1). Five patients (reported as 35.7%, again an n = 14 percentage) had moderate renal impairment with eGFR 30-59 mL/min/1.73 m^2."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as the renal-function marker, not retained. Cohort median 29.7 umol/L (range 6.50-223; Table 1). Five patients (reported as 35.7%, again an n = 14 percentage) had moderate renal impairment with eGFR 30-59 mL/min/1.73 m^2."
     ),
     URIC_ACID = list(
       description = "Serum uric acid",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened, not retained. Cohort median 140 umol/L (range 6.69-736; Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened, not retained. Cohort median 140 umol/L (range 6.69-736; Table 1)."
     ),
     RRT_CRRT_STATUS = list(
       description = "Continuous renal-replacement-therapy treatment-status indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened alongside ECMO_STATUS, not retained. Only 1 of 29 patients (3.4%) underwent CRRT (Table 1), so the indicator is essentially unestimable in this cohort; that single patient was also on ECMO, which is why the retained ECMO effect cannot be fully separated from CRRT."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened alongside ECMO_STATUS, not retained. Only 1 of 29 patients (3.4%) underwent CRRT (Table 1), so the indicator is essentially unestimable in this cohort; that single patient was also on ECMO, which is why the retained ECMO effect cannot be fully separated from CRRT."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 29L,
-    n_studies      = 1L,
-    n_samples      = 138L,
-    age_range      = "0.330-16.0 years (Table 1). Eligibility 3 months to 18 years.",
-    age_median     = "5.33 years (Table 1). The Abstract, Results and Table S1 quote 4.63 years, which is the median of the n = 14 intensive-sampling subset.",
-    weight_range   = "4.90-74.0 kg (Table 1). The Abstract quotes a range of 4.9-64 kg, matching the n = 14 subset of Table S1.",
-    weight_median  = "16.0 kg (Table 1). The Abstract quotes 15.9 kg, the n = 14 subset median.",
-    height_median  = "104 cm (range 54.0-173; Table 1)",
-    bsa_median     = "0.660 m^2 (range 0.286-1.89; Table 1). NOT the model's standardisation constant, which is 0.79 m^2.",
+    species = "human",
+    n_subjects = 29L,
+    n_studies = 1L,
+    n_samples = 138L,
+    age_range = "0.330-16.0 years (Table 1). Eligibility 3 months to 18 years.",
+    age_median = "5.33 years (Table 1). The Abstract, Results and Table S1 quote 4.63 years, which is the median of the n = 14 intensive-sampling subset.",
+    weight_range = "4.90-74.0 kg (Table 1). The Abstract quotes a range of 4.9-64 kg, matching the n = 14 subset of Table S1.",
+    weight_median = "16.0 kg (Table 1). The Abstract quotes 15.9 kg, the n = 14 subset median.",
+    height_median = "104 cm (range 54.0-173; Table 1)",
+    bsa_median = "0.660 m^2 (range 0.286-1.89; Table 1). NOT the model's standardisation constant, which is 0.79 m^2.",
     sex_female_pct = 58.6,
     race_ethnicity = "Chinese. Single-centre enrolment at the Children's Hospital of Fudan University, Shanghai; the source reports no further race or ethnicity breakdown.",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill children admitted to the paediatric intensive care unit",
       "and treated with caspofungin for suspected or proven invasive fungal",
       "infection. The cohort was deliberately enriched for the",
@@ -243,7 +243,7 @@ Xu_2026_caspofungin <- function() {
       "the commonest isolate was Candida parapsilosis (n = 9), then C.",
       "albicans (n = 2), C. tropicalis (n = 1) and C. guilliermondii (n = 1)."
     ),
-    ecmo_support   = paste(
+    ecmo_support = paste(
       "4 of 29 patients (13.8%) received ECMO during caspofungin",
       "administration. The source does not report ECMO mode (VV vs VA), flow",
       "rate, or cannulation timing relative to dosing, so the covariate is",
@@ -261,11 +261,11 @@ Xu_2026_caspofungin <- function() {
     ),
     renal_function = "Serum creatinine median 29.7 umol/L (range 6.50-223; Table 1). Five patients had moderate renal impairment (eGFR 30-59 mL/min/1.73 m^2). Neither creatinine nor CRRT was retained as a covariate.",
     hepatic_function = "ALT median 24.1 U/L (range 3.51-2,510), AST median 50.0 U/L (range 18.3-10,900), total bilirubin median 8.50 umol/L (range 2.10-329), albumin median 35.8 g/L (range 24.8-49.9) (Table 1). The extreme transaminase maxima reflect the PICU setting. Neither AST nor ALT was retained in the final model.",
-    dose_range     = "Once-daily 1 h intravenous infusion on a BSA-based regimen: loading dose 70 mg/m^2 on day 1 and maintenance dose 50 mg/m^2 thereafter, each capped at 70 mg (per the product label, source reference 14). Monte Carlo dose simulations additionally explored maintenance doses of 10, 20, 30, 40, 50, 60 and 70 mg/m^2 for BSA <= 1.4 m^2, and flat daily doses above the 70 mg/day cap for BSA > 1.4 m^2.",
-    regions        = "China (single centre: Children's Hospital of Fudan University, National Children's Medical Center, Shanghai), 1 November 2022 to 30 December 2024",
-    sampling       = "Two stages. Stage 1 (intensive, n = 14) sampled pre-dose and 1, 2, 4, 8 (if feasible) and 16 h (if feasible) after the sixth dose. Stage 2 used an optimal sparse design derived from the stage-1 model -- windows of 0-1, 0.5-1.5, 6-7 and 23-24 h after the sixth dose. 138 concentrations total, median 7.475 mg/L (range 0.155-58.300), ALL above the 0.05 ug/mL LLOQ, so the planned M1 below-quantification-limit handling never had to be applied.",
+    dose_range = "Once-daily 1 h intravenous infusion on a BSA-based regimen: loading dose 70 mg/m^2 on day 1 and maintenance dose 50 mg/m^2 thereafter, each capped at 70 mg (per the product label, source reference 14). Monte Carlo dose simulations additionally explored maintenance doses of 10, 20, 30, 40, 50, 60 and 70 mg/m^2 for BSA <= 1.4 m^2, and flat daily doses above the 70 mg/day cap for BSA > 1.4 m^2.",
+    regions = "China (single centre: Children's Hospital of Fudan University, National Children's Medical Center, Shanghai), 1 November 2022 to 30 December 2024",
+    sampling = "Two stages. Stage 1 (intensive, n = 14) sampled pre-dose and 1, 2, 4, 8 (if feasible) and 16 h (if feasible) after the sixth dose. Stage 2 used an optimal sparse design derived from the stage-1 model -- windows of 0-1, 0.5-1.5, 6-7 and 23-24 h after the sixth dose. 138 concentrations total, median 7.475 mg/L (range 0.155-58.300), ALL above the 0.05 ug/mL LLOQ, so the planned M1 below-quantification-limit handling never had to be applied.",
     protein_binding = "Not fitted. Caspofungin is highly protein-bound; the authors assayed and modelled TOTAL plasma concentration, list unbound concentrations as future work, and note that albumin has been reported to influence caspofungin PK elsewhere. The tAUC(ss,24h)/MIC targets the paper simulates against are likewise defined on total drug.",
-    notes          = paste(
+    notes = paste(
       "Structural model selection: a two-compartment model was selected,",
       "consistent with three of the four prior paediatric caspofungin popPK",
       "studies. Body-size incorporation was tested a priori across weight,",

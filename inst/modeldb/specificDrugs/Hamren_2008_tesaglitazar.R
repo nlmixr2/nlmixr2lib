@@ -1,6 +1,6 @@
 Hamren_2008_tesaglitazar <- function() {
   description <- "Mechanistic parent + acyl-glucuronide population PK model for tesaglitazar (a dual PPAR alpha/gamma agonist) in 41 adult subjects with varying degrees of renal function (Hamren 2008). Parent tesaglitazar follows a two-compartment disposition with first-order oral absorption (ka fixed at 1.5 1/h, F fixed at 1); renal clearance CLrt = 0.027 L/h directs parent to a cumulative urine compartment, and metabolic clearance CLmt = 1.91 L/h generates the acyl glucuronide metabolite. The metabolite follows a one-compartment disposition (Vcm = 8.5 L) with saturable Michaelis-Menten renal clearance (Vmax = 0.188 umol/h, Km = 0.041 umol/L) routing to a cumulative urine compartment, linear non-renal clearance (CLnrm = 1.2 L/h), and biliary excretion (kbm = 11.7 1/h) into a paper-specific gut compartment. The gut compartment releases interconverted parent tesaglitazar back into the parent central compartment at rate kicv = 0.79 1/h, completing the futile-cycle interconversion loop that the source paper proposes as the mechanism for increased tesaglitazar exposure in renal-impairment subjects. Covariates: BSA-normalized renal function CRCL (iohexol-clearance-measured GFR, mL/min/1.73 m^2; linear centered slope on CLrt and direct linear normalised scaling on metabolite Vmax), per-subject free fraction FU (% by ultrafiltration; linear centered slope on CLmt), sex SEXF (women have 31% lower CLrt than men), concomitant probenecid CONMED_PROBENECID (75% reduction of both CLrt and metabolite Vmax), and body weight WT (shared centered linear slope on Vct and Vpt). Concentrations are molar (umol/L) and amounts are molar (umol) throughout to match the Michaelis-Menten parameterisation of the acyl-glucuronide renal elimination; the user converts mg-of-tesaglitazar doses to umol using the molecular weight of 408.45 g/mol (1 mg = 2.45 umol)."
-  reference   <- paste(
+  reference <- paste(
     "Hamren B, Ericsson H, Samuelsson O, Karlsson MO.",
     "Mechanistic modelling of tesaglitazar pharmacokinetic data in subjects",
     "with various degrees of renal function -- evidence of interconversion.",
@@ -9,7 +9,7 @@ Hamren_2008_tesaglitazar <- function() {
     sep = " "
   )
   vignette <- "Hamren_2008_tesaglitazar"
-  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   paper_specific_compartments <- c("gut_gluc")
 
@@ -18,75 +18,80 @@ Hamren_2008_tesaglitazar <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "tesaglitazar", units = "umol", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "tesaglitazar", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "tesaglitazar", units = "umol", specimen = "plasma", verified = FALSE),
-    central_gluc = list(analyte = "tesaglitazar acyl-glucuronide", units = "umol", specimen = "plasma", verified = FALSE),
-    gut_gluc     = list(analyte = "tesaglitazar acyl-glucuronide", units = "umol", specimen = "tissue", verified = FALSE),
-    urine        = list(analyte = "tesaglitazar", units = "umol", specimen = "urine", verified = FALSE),
-    urine_gluc   = list(analyte = "tesaglitazar acyl-glucuronide", units = "umol", specimen = "urine", verified = FALSE)
+    depot = list(analyte = "tesaglitazar", units = "umol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tesaglitazar", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tesaglitazar", units = "umol", specimen = "plasma", verified = FALSE),
+    central_gluc = list(
+      analyte = "tesaglitazar acyl-glucuronide",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    gut_gluc = list(analyte = "tesaglitazar acyl-glucuronide", units = "umol", specimen = "tissue", verified = FALSE),
+    urine = list(analyte = "tesaglitazar", units = "umol", specimen = "urine", verified = FALSE),
+    urine_gluc = list(analyte = "tesaglitazar acyl-glucuronide", units = "umol", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "BSA-normalized glomerular filtration rate measured by plasma iohexol clearance (mL/min/1.73 m^2). Iohexol is an exogenous contrast agent cleared exclusively by glomerular filtration; its plasma clearance is the clinical gold standard for measured GFR. Distinct from a creatinine-based estimate (eGFR or measured CrCl); the canonical CRCL register covers both creatinine-based and tracer-measured renal function as of the 2026-06-17 register update.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "BSA-normalized glomerular filtration rate measured by plasma iohexol clearance (mL/min/1.73 m^2). Iohexol is an exogenous contrast agent cleared exclusively by glomerular filtration; its plasma clearance is the clinical gold standard for measured GFR. Distinct from a creatinine-based estimate (eGFR or measured CrCl); the canonical CRCL register covers both creatinine-based and tracer-measured renal function as of the 2026-06-17 register update.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Hamren 2008 Methods: 'During the study (days 1 and 42), plasma iohexol clearance (CLiohexol) was determined and used as a measure of renal function.' Reference 76 mL/min/1.73 m^2 is the pooled-cohort median observed CLiohexol (subjects with renal insufficiency median 32 mL/min/1.73 m^2 [range 16-94]; healthy controls median 90 mL/min/1.73 m^2 [range 75-120], Table 1). Enters the model two ways inside model(): (a) a linear centered slope on parent CLrt with 1 + 0.0099 * (CRCL - 76) (Table 2 'GFR on CLrt 0.99 %/(ml min-1 1.73m-2)'); (b) a direct linear normalised scaling on metabolite Vmax with (CRCL / 76) (Table 2 footnote 'Centred on a male subject with GFR 76 ml min-1 1.73m-2'). Per the standing tracer-measured-GFR-policy decision recorded in this task's sidecar response 001 (2026-06-17), CLiohexol is encoded under the broadened CRCL canonical rather than a separate GFR_TRACER canonical.",
-      source_name        = "CLiohexol"
+      notes = "Hamren 2008 Methods: 'During the study (days 1 and 42), plasma iohexol clearance (CLiohexol) was determined and used as a measure of renal function.' Reference 76 mL/min/1.73 m^2 is the pooled-cohort median observed CLiohexol (subjects with renal insufficiency median 32 mL/min/1.73 m^2 [range 16-94]; healthy controls median 90 mL/min/1.73 m^2 [range 75-120], Table 1). Enters the model two ways inside model(): (a) a linear centered slope on parent CLrt with 1 + 0.0099 * (CRCL - 76) (Table 2 'GFR on CLrt 0.99 %/(ml min-1 1.73m-2)'); (b) a direct linear normalised scaling on metabolite Vmax with (CRCL / 76) (Table 2 footnote 'Centred on a male subject with GFR 76 ml min-1 1.73m-2'). Per the standing tracer-measured-GFR-policy decision recorded in this task's sidecar response 001 (2026-06-17), CLiohexol is encoded under the broadened CRCL canonical rather than a separate GFR_TRACER canonical.",
+      source_name = "CLiohexol"
     ),
     FU = list(
-      description        = "Per-subject measured fraction unbound of tesaglitazar in plasma at day 42, by ultrafiltration (%).",
-      units              = "%",
-      type               = "continuous",
+      description = "Per-subject measured fraction unbound of tesaglitazar in plasma at day 42, by ultrafiltration (%).",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Hamren 2008 Results 'Pharmacokinetic analysis': 'Median (and range) of tesaglitazar fraction unbound at day 42 was 0.11% (0.08-0.2) and 0.09% (0.06-0.12) for subjects with IRF and controls, respectively. Fraction unbound data were missing for three individuals; for these, the median value (0.1%) was imputed.' Reference 0.1% is used in the linear centered effect 1 + 5.55 * (FU - 0.1) on the parent metabolic clearance CLmt. The realised cohort fu range 0.06-0.2% drives CLmt from approximately 1.5 L/h (FU = 0.06%) to 3.0 L/h (FU = 0.2%) at the typical individual (Table 2 footnote 'fu varied between 0.06 and 0.2%, hence mean CLmt varies from 1.5 to 3.0 l h-1').",
-      source_name        = "f_u"
+      notes = "Hamren 2008 Results 'Pharmacokinetic analysis': 'Median (and range) of tesaglitazar fraction unbound at day 42 was 0.11% (0.08-0.2) and 0.09% (0.06-0.12) for subjects with IRF and controls, respectively. Fraction unbound data were missing for three individuals; for these, the median value (0.1%) was imputed.' Reference 0.1% is used in the linear centered effect 1 + 5.55 * (FU - 0.1) on the parent metabolic clearance CLmt. The realised cohort fu range 0.06-0.2% drives CLmt from approximately 1.5 L/h (FU = 0.06%) to 3.0 L/h (FU = 0.2%) at the typical individual (Table 2 footnote 'fu varied between 0.06 and 0.2%, hence mean CLmt varies from 1.5 to 3.0 l h-1').",
+      source_name = "f_u"
     ),
     SEXF = list(
-      description        = "Sex indicator: 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator: 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Hamren 2008 Table 1: 17 male / 6 female in the renal-insufficiency cohort and 10 male / 8 female in the control cohort (cohort-pooled 27 male / 14 female; sex_female_pct 34.1). Used as a multiplicative covariate on CLrt: 1 + (-0.31) * SEXF so that women have 31% lower renal clearance of tesaglitazar than men at the same iohexol-measured GFR (Table 2 'Gender on CLrt (% difference in female vs male) -31%').",
-      source_name        = "SEX"
+      notes = "Hamren 2008 Table 1: 17 male / 6 female in the renal-insufficiency cohort and 10 male / 8 female in the control cohort (cohort-pooled 27 male / 14 female; sex_female_pct 34.1). Used as a multiplicative covariate on CLrt: 1 + (-0.31) * SEXF so that women have 31% lower renal clearance of tesaglitazar than men at the same iohexol-measured GFR (Table 2 'Gender on CLrt (% difference in female vs male) -31%').",
+      source_name = "SEX"
     ),
     CONMED_PROBENECID = list(
-      description        = "Concomitant probenecid indicator: 1 = subject received probenecid co-administration around the modeled tesaglitazar dose, 0 = no probenecid.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant probenecid indicator: 1 = subject received probenecid co-administration around the modeled tesaglitazar dose, 0 = no probenecid.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no probenecid)",
-      notes              = "Hamren 2008 Methods: 'For exploratory purposes, probenecid was administered to four subjects in the control group in order to investigate the likelihood of a drug-drug interaction with tesaglitazar. The first oral probenecid dose (500 mg) was given in the evening the day before start of tesaglitazar treatment, the second dose at start of tesaglitazar dosing and the third, on the same day, in the evening.' Used as a multiplicative covariate on the parent renal clearance CLrt and on the metabolite saturable renal Vmax: 1 + (-0.75) * CONMED_PROBENECID reduces both by 75% during probenecid intake (Table 2 'Probenecid on CLrt and Vmax (% difference during probenecid intake) -75%'). The published model used a single shared theta estimated jointly across both target parameters; this packaged encoding carries two separate effect parameters e_probenecid_cl_renal and e_probenecid_vmax_gluc initialised to the same -0.75 value to keep each covariate-parameter pair canonically named (see vignette Assumptions and deviations). Treated as time-fixed at the subject level here because the three probenecid doses around the first tesaglitazar dose were the only co-administration period; CLrt and Vmax effects are applied throughout for the four affected subjects to reproduce the published static-effect estimate.",
-      source_name        = "PROBENECID"
+      notes = "Hamren 2008 Methods: 'For exploratory purposes, probenecid was administered to four subjects in the control group in order to investigate the likelihood of a drug-drug interaction with tesaglitazar. The first oral probenecid dose (500 mg) was given in the evening the day before start of tesaglitazar treatment, the second dose at start of tesaglitazar dosing and the third, on the same day, in the evening.' Used as a multiplicative covariate on the parent renal clearance CLrt and on the metabolite saturable renal Vmax: 1 + (-0.75) * CONMED_PROBENECID reduces both by 75% during probenecid intake (Table 2 'Probenecid on CLrt and Vmax (% difference during probenecid intake) -75%'). The published model used a single shared theta estimated jointly across both target parameters; this packaged encoding carries two separate effect parameters e_probenecid_cl_renal and e_probenecid_vmax_gluc initialised to the same -0.75 value to keep each covariate-parameter pair canonically named (see vignette Assumptions and deviations). Treated as time-fixed at the subject level here because the three probenecid doses around the first tesaglitazar dose were the only co-administration period; CLrt and Vmax effects are applied throughout for the four affected subjects to reproduce the published static-effect estimate.",
+      source_name = "PROBENECID"
     ),
     WT = list(
-      description        = "Body weight (baseline; treated as time-fixed in the source paper).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline; treated as time-fixed in the source paper).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Hamren 2008 Table 1: median 84 kg (range 62-107) in the renal-insufficiency cohort and median 75 kg (range 60-97) in the control cohort. Reference 80 kg per the Table 2 footnote 'Centred on a subject with a body weight of 80 kg'. Linear centered effect 1 + 0.0094 * (WT - 80) shared on Vct and Vpt (Table 2 'Body weight on Vct and Vpt (% kg-1) 0.94'). Encoded as a single shared parameter e_wt_vc_vp per the canonical shared-exponent convention.",
-      source_name        = "WT"
+      notes = "Hamren 2008 Table 1: median 84 kg (range 62-107) in the renal-insufficiency cohort and median 75 kg (range 60-97) in the control cohort. Reference 80 kg per the Table 2 footnote 'Centred on a subject with a body weight of 80 kg'. Linear centered effect 1 + 0.0094 * (WT - 80) shared on Vct and Vpt (Table 2 'Body weight on Vct and Vpt (% kg-1) 0.94'). Encoded as a single shared parameter e_wt_vc_vp per the canonical shared-exponent convention.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
     n_observations = "707 plasma tesaglitazar + 323 plasma acyl glucuronide + 163 urine tesaglitazar + 163 urine acyl glucuronide concentration-time records (Results: Pharmacokinetic analysis).",
-    age_range      = "34-78 years (renal-insufficiency cohort 34-78; healthy controls 41-73)",
-    age_median     = "55 years (renal-insufficiency cohort), 53 years (healthy controls), Table 1",
-    weight_range   = "60-107 kg (renal-insufficiency cohort 62-107 kg; healthy controls 60-97 kg)",
-    weight_median  = "84 kg (renal-insufficiency cohort), 75 kg (healthy controls), Table 1",
+    age_range = "34-78 years (renal-insufficiency cohort 34-78; healthy controls 41-73)",
+    age_median = "55 years (renal-insufficiency cohort), 53 years (healthy controls), Table 1",
+    weight_range = "60-107 kg (renal-insufficiency cohort 62-107 kg; healthy controls 60-97 kg)",
+    weight_median = "84 kg (renal-insufficiency cohort), 75 kg (healthy controls), Table 1",
     sex_female_pct = 34.1,
     race_ethnicity = "Not reported in source paper; recruitment at Swedish nephrology and clinical pharmacology sites (study SHSBC-0007, AstraZeneca R&D Molndal + Sahlgrenska University Hospital, Gothenburg).",
-    disease_state  = "Adults with varying degrees of renal function. Renal-insufficiency cohort (n = 23, Part II only): mild GFR 51-80, moderate GFR 31-50, severe GFR 10-30 mL/min/1.73 m^2; no subjects on dialysis. Healthy controls (n = 18) matched for age and sex with renal-insufficiency subjects. Part I pilot study (n = 6 subjects with moderate or severe renal insufficiency) was pooled into the Part II analysis. Four healthy-control subjects also received oral probenecid (500 mg x 3 doses around the first tesaglitazar dose) as a probenecid-tesaglitazar drug-drug-interaction probe.",
+    disease_state = "Adults with varying degrees of renal function. Renal-insufficiency cohort (n = 23, Part II only): mild GFR 51-80, moderate GFR 31-50, severe GFR 10-30 mL/min/1.73 m^2; no subjects on dialysis. Healthy controls (n = 18) matched for age and sex with renal-insufficiency subjects. Part I pilot study (n = 6 subjects with moderate or severe renal insufficiency) was pooled into the Part II analysis. Four healthy-control subjects also received oral probenecid (500 mg x 3 doses around the first tesaglitazar dose) as a probenecid-tesaglitazar drug-drug-interaction probe.",
     renal_function = "Assessed by plasma iohexol clearance (CLiohexol) on days 1 and 42; median 32 mL/min/1.73 m^2 (range 16-94) in the renal-insufficiency cohort, median 90 mL/min/1.73 m^2 (range 75-120) in the healthy-control cohort; pooled-cohort median 76 mL/min/1.73 m^2 used as the modelling reference.",
-    dose_range     = "Tesaglitazar 0.5 mg orally once daily for 7 days (Part I pilot; 6 subjects with moderate or severe renal insufficiency) AND tesaglitazar 1 mg orally once daily for 42 +/- 3 days (Part II; 23 subjects with mild / moderate / severe renal insufficiency plus 18 healthy controls). 1 mg tesaglitazar approx 2.45 umol; 0.5 mg approx 1.22 umol (tesaglitazar molecular weight 408.45 g/mol).",
-    regions        = "Sweden (open, stratified two-centre study SHSBC-0007).",
-    sampling       = "Part I: predose and 1, 4, 24 h postdose on days 1 and 7. Part II: predose and 1, 2, 4, 12, 24 h postdose on days 1 and 42, trough samples on days 14 and 28, and four additional samples on days 3 +/- 1, 6 +/- 1, 9 +/- 1, 21 +/- 2 after the last dose intake. Urine: 0-6, 6-12, 12-24 h on day 1 and 0-24 h on day 42 of Part II.",
-    notes          = "Patient characteristics from Table 1. One subject discontinued the study on day 28; data collected up to discontinuation were retained. Fraction-unbound data were missing for three individuals; the cohort median 0.1% was imputed for these. Probenecid was given to four control-cohort subjects as an exploratory drug-drug-interaction probe (Methods: 'Study design and population')."
+    dose_range = "Tesaglitazar 0.5 mg orally once daily for 7 days (Part I pilot; 6 subjects with moderate or severe renal insufficiency) AND tesaglitazar 1 mg orally once daily for 42 +/- 3 days (Part II; 23 subjects with mild / moderate / severe renal insufficiency plus 18 healthy controls). 1 mg tesaglitazar approx 2.45 umol; 0.5 mg approx 1.22 umol (tesaglitazar molecular weight 408.45 g/mol).",
+    regions = "Sweden (open, stratified two-centre study SHSBC-0007).",
+    sampling = "Part I: predose and 1, 4, 24 h postdose on days 1 and 7. Part II: predose and 1, 2, 4, 12, 24 h postdose on days 1 and 42, trough samples on days 14 and 28, and four additional samples on days 3 +/- 1, 6 +/- 1, 9 +/- 1, 21 +/- 2 after the last dose intake. Urine: 0-6, 6-12, 12-24 h on day 1 and 0-24 h on day 42 of Part II.",
+    notes = "Patient characteristics from Table 1. One subject discontinued the study on day 28; data collected up to discontinuation were retained. Fraction-unbound data were missing for three individuals; the cohort median 0.1% was imputed for these. Probenecid was given to four control-cohort subjects as an exploratory drug-drug-interaction probe (Methods: 'Study design and population')."
   )
 
   ini({

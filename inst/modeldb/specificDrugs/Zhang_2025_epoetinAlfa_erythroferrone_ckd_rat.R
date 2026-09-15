@@ -38,12 +38,12 @@ Zhang_2025_epoetinAlfa_erythroferrone_ckd_rat <- function() {
   vignette <- "Zhang_2025_erythroferrone"
 
   units <- list(
-    time                      = "h",
-    dosing                    = "mIU/kg",
-    concentration             = "mIU/mL",
-    erythroferrone            = "ng/mL",
-    hemoglobin                = "g/dL",
-    red_blood_cells           = "1e12 cells/L"
+    time = "h",
+    dosing = "mIU/kg",
+    concentration = "mIU/mL",
+    erythroferrone = "ng/mL",
+    hemoglobin = "g/dL",
+    red_blood_cells = "1e12 cells/L"
   )
 
   # The three erythroferrone states are paper-mechanistic decompositions of
@@ -57,27 +57,27 @@ Zhang_2025_epoetinAlfa_erythroferrone_ckd_rat <- function() {
   paper_specific_compartments <- c("erfe", "erfe_base", "erfe_induced")
 
   compartmentData <- list(
-    central      = list(analyte = "epoetin alfa",   units = "mIU/kg",       specimen = "plasma",         verified = TRUE),
-    peripheral1  = list(analyte = "epoetin alfa",   units = "mIU/kg",       specimen = "plasma",         verified = TRUE),
-    precursor1   = list(analyte = "BFU-E cells",    units = "1e12 cells/L", specimen = "not applicable",    verified = TRUE),
-    precursor2   = list(analyte = "CFU-E cells",    units = "1e12 cells/L", specimen = "not applicable",    verified = TRUE),
-    precursor3   = list(analyte = "erythroblasts",  units = "1e12 cells/L", specimen = "not applicable",    verified = TRUE),
-    precursor4   = list(analyte = "reticulocytes",  units = "1e12 cells/L", specimen = "blood cell",     verified = TRUE),
-    erythrocytes = list(analyte = "red blood cells", units = "1e12 cells/L", specimen = "blood cell",    verified = TRUE),
-    erfe_base    = list(analyte = "erythroferrone", units = "ng/mL",        specimen = "not applicable", verified = TRUE),
-    erfe_induced = list(analyte = "erythroferrone", units = "ng/mL",        specimen = "not applicable", verified = TRUE),
-    transit1     = list(analyte = "erythroferrone", units = "ng/mL",        specimen = "not applicable", verified = TRUE),
-    transit2     = list(analyte = "erythroferrone", units = "ng/mL",        specimen = "not applicable", verified = TRUE),
-    erfe         = list(analyte = "erythroferrone", units = "ng/mL",        specimen = "plasma",         verified = TRUE)
+    central = list(analyte = "epoetin alfa", units = "mIU/kg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "epoetin alfa", units = "mIU/kg", specimen = "plasma", verified = TRUE),
+    precursor1 = list(analyte = "BFU-E cells", units = "1e12 cells/L", specimen = "not applicable", verified = TRUE),
+    precursor2 = list(analyte = "CFU-E cells", units = "1e12 cells/L", specimen = "not applicable", verified = TRUE),
+    precursor3 = list(analyte = "erythroblasts", units = "1e12 cells/L", specimen = "not applicable", verified = TRUE),
+    precursor4 = list(analyte = "reticulocytes", units = "1e12 cells/L", specimen = "blood cell", verified = TRUE),
+    erythrocytes = list(analyte = "red blood cells", units = "1e12 cells/L", specimen = "blood cell", verified = TRUE),
+    erfe_base = list(analyte = "erythroferrone", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    erfe_induced = list(analyte = "erythroferrone", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    transit1 = list(analyte = "erythroferrone", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    transit2 = list(analyte = "erythroferrone", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    erfe = list(analyte = "erythroferrone", units = "ng/mL", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "rat (Sprague-Dawley, male)",
-    n_subjects     = 17L,
-    n_studies      = 1L,
-    weight_range   = "250-300 g at study entry",
+    species = "rat (Sprague-Dawley, male)",
+    n_subjects = 17L,
+    n_studies = 1L,
+    weight_range = "250-300 g at study entry",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Adenine-induced chronic-kidney-disease anemia. Adenine 600 mg/kg",
       "once daily by gavage for 6 days, then 300 mg/kg once daily for 6",
       "days, then a 1-week stabilisation, on a standard diet supplemented",
@@ -86,14 +86,14 @@ Zhang_2025_epoetinAlfa_erythroferrone_ckd_rat <- function() {
       "for at least 1 month (Zhang 2025 Figure S3A,B). Model baseline",
       "hemoglobin MCH * RBC0 / 10 = 12.4 g/dL."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous rHuEPO (EPOGEN, epoetin alfa) 1350 IU/kg (n = 6) or",
       "450 IU/kg (n = 6) three times weekly for 2 weeks, or saline",
       "(n = 5). Doses enter the model in mIU/kg (1350 IU/kg = 1.35e6",
       "mIU/kg)."
     ),
-    regions        = "Hong Kong SAR, China (The Chinese University of Hong Kong)",
-    notes          = paste(
+    regions = "Hong Kong SAR, China (The Chinese University of Hong Kong)",
+    notes = paste(
       "ERFE assayed at 0, 1, 2, 4, 6, 8, 10, 12 and 24 h after the first",
       "injection by validated ELISA (FineTest ER1573); hemoglobin and RBC",
       "on 'Week 0' days 0, 4, 10, 15, 20, 25, 30 and 34 on a BC2800VET",

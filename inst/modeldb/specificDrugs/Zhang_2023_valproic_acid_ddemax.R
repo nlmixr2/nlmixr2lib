@@ -7,67 +7,72 @@ Zhang_2023_valproic_acid_ddemax <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "valproic acid", units = "mg", specimen = "plasma", verified = TRUE,
-                   notes = "Holds total valproic acid amount; central/(V/F) is the TOTAL plasma concentration. Unlike the paper's Models I, II and IV, this strategy carries no explicit binding isotherm - the protein-binding non-linearity is absorbed empirically into the dose dependence of CL/F.")
+    depot = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(
+      analyte = "valproic acid",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE,
+      notes = "Holds total valproic acid amount; central/(V/F) is the TOTAL plasma concentration. Unlike the paper's Models I, II and IV, this strategy carries no explicit binding isotherm - the protein-binding non-linearity is absorbed empirically into the dose dependence of CL/F."
+    )
   )
 
   covariateData <- list(
     DOSE_VPA_MGD = list(
-      description        = "Patient's own total daily valproic acid dose",
-      units              = "mg/d",
-      type               = "continuous",
+      description = "Patient's own total daily valproic acid dose",
+      units = "mg/d",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the sigmoid-Emax term on apparent clearance (Zhang 2023 Eq. 5): cl = CLp/F * (1 + Emax * DOSE_VPA_MGD^gamma / (DD50^gamma + DOSE_VPA_MGD^gamma)). Per-dose-record covariate, constant within an inter-dose interval and updated when the prescriber alters the daily dose. Observed range 60-1250 mg/day (median 480, mean 513.04; Zhang 2023 Table 2). Must be strictly positive. Eq. 5's text defines DD in mg/kg/day, but DD50 is only reconcilable with the paper's reported clearance and predictive metrics on the mg/day scale - operator-ratified reading, see the model file comment on dd_50 and the vignette Errata.",
-      source_name        = "DD"
+      notes = "Drives the sigmoid-Emax term on apparent clearance (Zhang 2023 Eq. 5): cl = CLp/F * (1 + Emax * DOSE_VPA_MGD^gamma / (DD50^gamma + DOSE_VPA_MGD^gamma)). Per-dose-record covariate, constant within an inter-dose interval and updated when the prescriber alters the daily dose. Observed range 60-1250 mg/day (median 480, mean 513.04; Zhang 2023 Table 2). Must be strictly positive. Eq. 5's text defines DD in mg/kg/day, but DD50 is only reconcilable with the paper's reported clearance and predictive metrics on the mg/day scale - operator-ratified reading, see the model file comment on dd_50 and the vignette Errata.",
+      source_name = "DD"
     ),
     FORM_TABLET = list(
-      description        = "Conventional (immediate-release) oral tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Conventional (immediate-release) oral tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral syrup, the reference formulation in this cohort)",
-      notes              = "Selects the FIXED conventional-tablet absorption rate constant Ka = 1.57 1/h. Oral syrup (Ka = 2.64 1/h) is the reference formulation: FORM_TABLET = 0 and FORM_VPA_SR = 0. The Zhang 2023 evaluation cohort itself received only syrup (194 records) or sustained-release tablet (61 records); the conventional-tablet level is retained so the full literature Ka set the authors quote is reachable. Zhang 2023 Supplementary Table S3 footnote.",
-      source_name        = "conventional tablet"
+      notes = "Selects the FIXED conventional-tablet absorption rate constant Ka = 1.57 1/h. Oral syrup (Ka = 2.64 1/h) is the reference formulation: FORM_TABLET = 0 and FORM_VPA_SR = 0. The Zhang 2023 evaluation cohort itself received only syrup (194 records) or sustained-release tablet (61 records); the conventional-tablet level is retained so the full literature Ka set the authors quote is reachable. Zhang 2023 Supplementary Table S3 footnote.",
+      source_name = "conventional tablet"
     ),
     FORM_VPA_SR = list(
-      description        = "Sustained-release valproic acid tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sustained-release valproic acid tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral syrup, the reference formulation in this cohort)",
-      notes              = "Selects the FIXED sustained-release-tablet absorption rate constant Ka = 0.46 1/h. 61 of 255 observation records in the Zhang 2023 cohort were on the sustained-release tablet (Table 2). Zhang 2023 Supplementary Table S3 footnote.",
-      source_name        = "sustained release tablet"
+      notes = "Selects the FIXED sustained-release-tablet absorption rate constant Ka = 0.46 1/h. 61 of 255 observation records in the Zhang 2023 cohort were on the sustained-release tablet (Table 2). Zhang 2023 Supplementary Table S3 footnote.",
+      source_name = "sustained release tablet"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Collected in the evaluation cohort (median 19.00 kg, range 4.00-70.00; Zhang 2023 Table 2) but NOT retained on CL/F or V/F in any of the authors' own six models. Zhang 2023 Supplementary Table S3 reports no weight term, and on the ratified mg/day reading of Eq. 5 weight does not enter this model even indirectly."
+      units = "kg",
+      type = "continuous",
+      notes = "Collected in the evaluation cohort (median 19.00 kg, range 4.00-70.00; Zhang 2023 Table 2) but NOT retained on CL/F or V/F in any of the authors' own six models. Zhang 2023 Supplementary Table S3 reports no weight term, and on the ratified mg/day reading of Eq. 5 weight does not enter this model even indirectly."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Collected in the evaluation cohort (mean 42.21 g/L, median 42.10, range 29.70-70.50; Zhang 2023 Table 2). Albumin enters explicitly only in the Model I one-binding-site strategy (Eq. 3); this model represents binding saturation empirically through the dose dependence of CL/F."
+      units = "g/L",
+      type = "continuous",
+      notes = "Collected in the evaluation cohort (mean 42.21 g/L, median 42.10, range 29.70-70.50; Zhang 2023 Table 2). Albumin enters explicitly only in the Model I one-binding-site strategy (Eq. 3); this model represents binding saturation empirically through the dose dependence of CL/F."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 202,
-    n_studies      = 1,
-    age_range      = "0.17-15.00 years",
-    age_median     = "4.92 years",
-    weight_range   = "4.00-70.00 kg",
-    weight_median  = "19.00 kg",
+    species = "human",
+    n_subjects = 202,
+    n_studies = 1,
+    age_range = "0.17-15.00 years",
+    age_median = "4.92 years",
+    weight_range = "4.00-70.00 kg",
+    weight_median = "19.00 kg",
     sex_female_pct = 31.2,
     race_ethnicity = "Chinese (single-centre Han-predominant cohort; sub-ethnicity not reported)",
-    disease_state  = "Childhood epilepsy on maintenance valproic acid with routine therapeutic drug monitoring",
-    dose_range     = "60-1250 mg/day (median 480); 8.70-57.69 mg/kg/day (median 23.44); oral syrup or sustained-release tablet given once, twice or three times daily",
-    regions        = "China (Wuhan Children's Hospital, single centre, January 2016 - November 2018)",
-    notes          = "255 total plasma valproic acid trough concentrations in 202 children (139 male / 63 female), measured by gas chromatography (LOQ 1 mg/L, calibration range 12.5-150 mg/L, CV < 10%). Observed concentrations 22.60-118.50 mg/L (median 50.40). All samples were troughs collected under steady-state conditions, so absorption and distribution parameters are only weakly identified. This model was the poorest performer of the five strategies: its objective function value (1773.0) is 20.9 points WORSE than the linear base model's (1752.1), and it had the highest MAPE (27.67%) and lowest F30 (52.94%) of the five (Zhang 2023 Table 3, Supplementary Table S3). The authors nonetheless note it is the only empirical strategy whose tendency plot reproduces a genuinely non-linear dose-clearance relationship. Baseline demographics: Zhang 2023 Table 2."
+    disease_state = "Childhood epilepsy on maintenance valproic acid with routine therapeutic drug monitoring",
+    dose_range = "60-1250 mg/day (median 480); 8.70-57.69 mg/kg/day (median 23.44); oral syrup or sustained-release tablet given once, twice or three times daily",
+    regions = "China (Wuhan Children's Hospital, single centre, January 2016 - November 2018)",
+    notes = "255 total plasma valproic acid trough concentrations in 202 children (139 male / 63 female), measured by gas chromatography (LOQ 1 mg/L, calibration range 12.5-150 mg/L, CV < 10%). Observed concentrations 22.60-118.50 mg/L (median 50.40). All samples were troughs collected under steady-state conditions, so absorption and distribution parameters are only weakly identified. This model was the poorest performer of the five strategies: its objective function value (1773.0) is 20.9 points WORSE than the linear base model's (1752.1), and it had the highest MAPE (27.67%) and lowest F30 (52.94%) of the five (Zhang 2023 Table 3, Supplementary Table S3). The authors nonetheless note it is the only empirical strategy whose tendency plot reproduces a genuinely non-linear dose-clearance relationship. Baseline demographics: Zhang 2023 Table 2."
   )
 
   ini({

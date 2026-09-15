@@ -8,36 +8,36 @@ Royer_2010_HuHMFG1 <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "HuHMFG1", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "HuHMFG1", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "HuHMFG1", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AST = list(
-      description        = "Baseline serum aspartate aminotransferase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum aspartate aminotransferase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the typical-CL equation additively as 0.0036 * (AST / ASTmed), with ASTmed = 29 U/L (study population median from Royer 2010 Table 2). The Royer 2010 covariate parameterisation is additive (intercept 0.016 L/h + 0.0036 L/h * (AST / 29)) rather than the more common power form (AST / ref)^exponent. Source column 'AST' maps to the canonical AST covariate.",
-      source_name        = "AST"
+      notes = "Enters the typical-CL equation additively as 0.0036 * (AST / ASTmed), with ASTmed = 29 U/L (study population median from Royer 2010 Table 2). The Royer 2010 covariate parameterisation is additive (intercept 0.016 L/h + 0.0036 L/h * (AST / 29)) rather than the more common power form (AST / ref)^exponent. Source column 'AST' maps to the canonical AST covariate.",
+      source_name = "AST"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 26L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 26L,
+    n_studies = 1L,
     n_observations = 435L,
-    age_range      = "32-72 years (median 55)",
-    weight_range   = "50-108 kg (median 73.1)",
-    height_range   = "155-179 cm (median 165)",
-    bmi_range      = "18.00-40.65 kg/m^2 (median 25.75)",
+    age_range = "32-72 years (median 55)",
+    weight_range = "50-108 kg (median 73.1)",
+    height_range = "155-179 cm (median 165)",
+    bmi_range = "18.00-40.65 kg/m^2 (median 25.75)",
     sex_female_pct = NA_real_,
-    disease_state  = "Locally advanced or metastatic breast cancer, previously treated with up to three chemotherapeutic regimens (including neoadjuvant and adjuvant therapy)",
-    dose_range     = "1, 3, 9, or 16 mg/kg IV infusion; infusion duration depended on the dose level (60 min at 1-3 mg/kg, 120 min at 9 mg/kg, 180 min at 16 mg/kg). Multiple administrations were given (up to 10 in one patient) per the study schedule.",
-    regions        = "Multi-centre (France and United States; Antisoma-sponsored phase I study reported by Pegram 2009)",
-    baseline_labs  = "Median (range) per Royer 2010 Table 2: total protein 68 g/L (54-82), albumin 41 g/L (27-48), creatinine clearance 85.3 mL/min (37.2-648.9), alkaline phosphatase 86 U/L (47-1127), ALT 27 U/L (6-252), AST 29 U/L (14-1392), GGT 37 U/L (9-1386), CA15-3 45 (9-16400), CA27.29 31.3 (3.5-1723).",
-    notes          = "Patient population described in Royer 2010 Table 2 (n = 26; 3, 9, 6, and 8 patients in the 1, 3, 9, and 16 mg/kg dose cohorts respectively). Sex distribution is not explicitly tabulated in Royer 2010; the parent phase I study (Pegram 2009) enrolled women with breast cancer. Human anti-human antibody (HAHA) testing was negative in every assessable patient (HAHA detected in 0 of 23) and was therefore not investigated further. Data were analysed with NONMEM VI level 1.0 (ADVAN3 TRANS4, FOCE with INTERACTION)."
+    disease_state = "Locally advanced or metastatic breast cancer, previously treated with up to three chemotherapeutic regimens (including neoadjuvant and adjuvant therapy)",
+    dose_range = "1, 3, 9, or 16 mg/kg IV infusion; infusion duration depended on the dose level (60 min at 1-3 mg/kg, 120 min at 9 mg/kg, 180 min at 16 mg/kg). Multiple administrations were given (up to 10 in one patient) per the study schedule.",
+    regions = "Multi-centre (France and United States; Antisoma-sponsored phase I study reported by Pegram 2009)",
+    baseline_labs = "Median (range) per Royer 2010 Table 2: total protein 68 g/L (54-82), albumin 41 g/L (27-48), creatinine clearance 85.3 mL/min (37.2-648.9), alkaline phosphatase 86 U/L (47-1127), ALT 27 U/L (6-252), AST 29 U/L (14-1392), GGT 37 U/L (9-1386), CA15-3 45 (9-16400), CA27.29 31.3 (3.5-1723).",
+    notes = "Patient population described in Royer 2010 Table 2 (n = 26; 3, 9, 6, and 8 patients in the 1, 3, 9, and 16 mg/kg dose cohorts respectively). Sex distribution is not explicitly tabulated in Royer 2010; the parent phase I study (Pegram 2009) enrolled women with breast cancer. Human anti-human antibody (HAHA) testing was negative in every assessable patient (HAHA detected in 0 of 23) and was therefore not investigated further. Data were analysed with NONMEM VI level 1.0 (ADVAN3 TRANS4, FOCE with INTERACTION)."
   )
 
   ini({

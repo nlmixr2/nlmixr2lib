@@ -37,8 +37,8 @@ Deferm_2025_lactation_physiology <- function() {
   )
   vignette <- "Deferm_2025_lactation_physiology"
   units <- list(
-    time          = "month (postpartum age, PpT; valid 0 to 12)",
-    dosing        = "n/a (no exogenous dosing; maternal / milk physiology model)",
+    time = "month (postpartum age, PpT; valid 0 to 12)",
+    dosing = "n/a (no exogenous dosing; maternal / milk physiology model)",
     concentration = paste(
       "n/a (no drug concentration). Outputs carry their own units:",
       "milk_volume L/day, milk_ph unitless, milk_fat g/dL,",
@@ -57,9 +57,9 @@ Deferm_2025_lactation_physiology <- function() {
   covariatesDataExcluded <- list(
     PARITY = list(
       description = "Number of previous births",
-      units       = "(count)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(count)",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained: 'as many subject-specific",
         "characteristics, such as parity, ethnicity, or delivery type,",
         "were not consistently reported, these covariates were not",
@@ -70,9 +70,9 @@ Deferm_2025_lactation_physiology <- function() {
     ),
     DELIVERY_CAESAREAN = list(
       description = "Caesarean-section delivery indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but not retained (Deferm 2025 Results 3.1 and section",
         "3.7): 'Since the type of delivery was not consistently",
         "reported across studies, no distinction was made between",
@@ -84,15 +84,15 @@ Deferm_2025_lactation_physiology <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20801L,
-    n_studies      = 230L,
-    age_range      = "20.8 to 40 years (weighted mean 28.59 years)",
-    weight_range   = "45 to 100.40 kg (weighted mean 63.93 kg)",
-    height_range   = "149 to 173.50 cm (weighted mean 163.78 cm)",
+    species = "human",
+    n_subjects = 20801L,
+    n_studies = 230L,
+    age_range = "20.8 to 40 years (weighted mean 28.59 years)",
+    weight_range = "45 to 100.40 kg (weighted mean 63.93 kg)",
+    height_range = "149 to 173.50 cm (weighted mean 163.78 cm)",
     sex_female_pct = 100,
     race_ethnicity = "Not reported / not analysed (Deferm 2025 Results 3.1: ethnicity inconsistently reported across the 230 pooled studies)",
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy breastfeeding women after an uncomplicated, full-term",
       "pregnancy, taking no medication during or after pregnancy",
       "(Deferm 2025 Methods 2.3 inclusion criteria 1-6). Studies",
@@ -101,11 +101,11 @@ Deferm_2025_lactation_physiology <- function() {
       "were used only where full-term cases represented at least 90% of",
       "the study."
     ),
-    dose_range     = "n/a (no drug administered)",
+    dose_range = "n/a (no drug administered)",
     postpartum_range = "Immediately after childbirth to 12 months postpartum; 60% of data points fall within the first month and only 251 data points after 7 months",
-    n_datapoints   = 36689L,
-    regions        = "Not restricted (no language or date restriction applied to the PubMed / Google Scholar search)",
-    notes          = paste(
+    n_datapoints = 36689L,
+    regions = "Not restricted (no language or date restriction applied to the PubMed / Google Scholar search)",
+    notes = paste(
       "Per-parameter contributing evidence (Deferm 2025 sections 3.2",
       "to 3.9, Supplementary Table 1): milk volume 11 studies / 312",
       "points / 763 mothers; milk pH 15 / 790 / 328; milk fat 43 /",

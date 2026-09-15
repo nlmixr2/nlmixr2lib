@@ -46,11 +46,11 @@ Sager_2023_sotrovimab <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters as a power model on CL and on the peripheral volume V3, ",
         "each normalised to 83.6 kg -- the median body weight of the PopPK ",
         "analysis population (Sager 2023 Results, 'PopPK demographics and ",
@@ -59,14 +59,14 @@ Sager_2023_sotrovimab <- function() {
         "estimated (0.494 on CL, 0.757 on V3), not fixed at the allometric ",
         "0.75 / 1. Body weight was not retained on V2 or Q."
       ),
-      source_name        = "body weight"
+      source_name = "body weight"
     ),
     BMI = list(
-      description        = "Body mass index at baseline.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters as a power model on KA normalised to 30.41 kg/m^2 (Sager ",
         "2023 Table 1 row label 'Absorption rate in male participants with ",
         "BMI of 30.41 kg/m2'); the population median BMI is reported as ",
@@ -74,14 +74,14 @@ Sager_2023_sotrovimab <- function() {
         "(-0.711): higher BMI slows intramuscular absorption. Relevant only ",
         "to intramuscular dosing."
       ),
-      source_name        = "body mass index (BMI)"
+      source_name = "body mass index (BMI)"
     ),
     SEXF = list(
-      description        = "Sex indicator; 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator; 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; every Table 1 typical value is quoted for male participants)",
-      notes              = paste0(
+      notes = paste0(
         "Two distinct effects, both intramuscular-only. (1) On KA as a ",
         "proportional shift: KA_female = KA_male * (1 - 0.323). (2) On F_IM ",
         "as an ADDITIVE shift of -0.449 on the LOGIT scale, per the Sager ",
@@ -91,69 +91,74 @@ Sager_2023_sotrovimab <- function() {
         "quoted in the Results text. The analysis population was 44.9% ",
         "male, i.e. 55.1% female."
       ),
-      source_name        = "sex"
+      source_name = "sex"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the covariate analysis (Sager 2023 Methods, 'PopPK model development') but not retained in the final model."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the covariate analysis (Sager 2023 Methods, 'PopPK model development') but not retained in the final model."
     ),
     ALB = list(
       description = "Serum albumin concentration at baseline.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Albumin was unavailable in the healthy-volunteer study, so the screen for this factor was restricted to the four COVID-19 studies (Sager 2023 Methods)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained. Albumin was unavailable in the healthy-volunteer study, so the screen for this factor was restricted to the four COVID-19 studies (Sager 2023 Methods)."
     ),
     DIS_COVID19 = list(
       description = "Disease-state indicator; 1 = patient with COVID-19, 0 = healthy volunteer.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as 'disease state (healthy vs. COVID-19)' but not retained. The analysis set contained 1891 patients with COVID-19 and 38 healthy volunteers."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as 'disease state (healthy vs. COVID-19)' but not retained. The analysis set contained 1891 patients with COVID-19 and 38 healthy volunteers."
     ),
     SARS_VLOAD = list(
       description = "Baseline SARS-CoV-2 viral load.",
-      units       = "log10 copies/mL",
-      type        = "continuous",
-      notes       = "Screened but not retained in the PopPK model. It is also screened, and likewise not retained, in the companion exposure-response model."
+      units = "log10 copies/mL",
+      type = "continuous",
+      notes = "Screened but not retained in the PopPK model. It is also screened, and likewise not retained, in the companion exposure-response model."
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "sotrovimab", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "sotrovimab",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "sotrovimab", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "sotrovimab",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "sotrovimab", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "sotrovimab",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1984L,
-    n_studies      = 5L,
+    species = "human",
+    n_subjects = 1984L,
+    n_studies = 5L,
     n_observations = "11,772 serum sotrovimab concentrations retained of 14,269 contributed (2497 excluded for missing/duplicate sample times, below-quantification predose and postdose samples, measurable predose concentrations, CWRES outliers beyond +/-5, or non-physiologic end-of-infusion concentrations); Sager 2023 Results and Table S3",
-    age_median     = "49 years (range 15-96)",
-    weight_median  = "83.6 kg (range 44.0-183.0)",
-    bmi_median     = "30.4 kg/m^2 (range 15.9-71.1)",
+    age_median = "49 years (range 15-96)",
+    weight_median = "83.6 kg (range 44.0-183.0)",
+    bmi_median = "30.4 kg/m^2 (range 15.9-71.1)",
     sex_female_pct = 55.1,
-    race_ethnicity = c(White = 88.4, `Black/African American` = 6.2,
-                       Asian = 4.1, Other = 0.7, Missing = 0.6),
-    disease_state  = "non-hospitalized mild-to-moderate COVID-19 at high risk of progression to hospitalization or death (1891 participants), plus 38 healthy volunteers of Japanese or Caucasian descent",
+    race_ethnicity = c(White = 88.4, `Black/African American` = 6.2, Asian = 4.1, Other = 0.7, Missing = 0.6),
+    disease_state = "non-hospitalized mild-to-moderate COVID-19 at high risk of progression to hospitalization or death (1891 participants), plus 38 healthy volunteers of Japanese or Caucasian descent",
     renal_function = "1415 normal, 401 mild, 65 moderate, 5 severe impairment (MDRD-based eGFR categories)",
     hepatic_function = "1393 normal, 487 mild, 5 moderate impairment (NCI criteria)",
-    dose_range     = "single dose: 500 mg intravenous, or 250 mg or 500 mg intramuscular",
-    regions        = "COMET-ICE, COMET-TAIL, COMET-PEAK and BLAZE-4 were multinational; COMET-TAIL enrolment was 85% from Florida, USA",
-    notes          = paste0(
+    dose_range = "single dose: 500 mg intravenous, or 250 mg or 500 mg intramuscular",
+    regions = "COMET-ICE, COMET-TAIL, COMET-PEAK and BLAZE-4 were multinational; COMET-TAIL enrolment was 85% from Florida, USA",
+    notes = paste0(
       "Five studies: COMET-ICE (NCT04545060), COMET-TAIL (NCT04913675), ",
       "COMET-PEAK (NCT04779879), BLAZE-4 (NCT04634409) and a healthy-",
       "volunteer study in participants of Japanese or Caucasian descent ",

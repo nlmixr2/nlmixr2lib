@@ -8,40 +8,40 @@ Garmann_2017_BAY81_8973 <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "BAY81 8973", units = "IU", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "BAY81 8973", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "BAY81 8973", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body weight (canonical column LBM; source paper uses LBW)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body weight (canonical column LBM; source paper uses LBW)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL and Vc with reference LBW = 51.1 kg, the cohort median (Garmann 2017 Table 2 footnote; Table 1 reports median LBW 51.1 kg). Body-composition formula not stated in the paper; in haemophilia popPK literature LBW is most commonly computed via the Hume (1966) or James (1976) formula. Stored under canonical LBM (lean body mass) per inst/references/covariate-columns.md; LBW and LBM refer to the same quantity. Body weight, height, and BMI were screened during covariate analysis but only LBW was retained in the final model.",
-      source_name        = "LBW"
+      notes = "Power scaling on CL and Vc with reference LBW = 51.1 kg, the cohort median (Garmann 2017 Table 2 footnote; Table 1 reports median LBW 51.1 kg). Body-composition formula not stated in the paper; in haemophilia popPK literature LBW is most commonly computed via the Hume (1966) or James (1976) formula. Stored under canonical LBM (lean body mass) per inst/references/covariate-columns.md; LBW and LBM refer to the same quantity. Body weight, height, and BMI were screened during covariate analysis but only LBW was retained in the final model.",
+      source_name = "LBW"
     )
   )
 
   population <- list(
-    n_subjects     = 183L,
-    n_studies      = 3L,
-    age_range      = "1-61 years",
-    age_median     = "22 years (mean 23.3, SD 14.6)",
-    weight_range   = "11-124 kg",
-    weight_median  = "60 kg (mean 57.7, SD 24.8)",
-    height_range   = "74-192 cm",
-    height_median  = "170 cm (mean 160, SD 25.8)",
-    bmi_range      = "13-38.3 kg/m^2",
-    bmi_median     = "20.4 kg/m^2 (mean 21.3, SD 5.14)",
-    lbw_range      = "9.25-79.2 kg",
-    lbw_median     = "51.1 kg (mean 46.2, SD 16.7); used as the covariate-centering reference",
+    n_subjects = 183L,
+    n_studies = 3L,
+    age_range = "1-61 years",
+    age_median = "22 years (mean 23.3, SD 14.6)",
+    weight_range = "11-124 kg",
+    weight_median = "60 kg (mean 57.7, SD 24.8)",
+    height_range = "74-192 cm",
+    height_median = "170 cm (mean 160, SD 25.8)",
+    bmi_range = "13-38.3 kg/m^2",
+    bmi_median = "20.4 kg/m^2 (mean 21.3, SD 5.14)",
+    lbw_range = "9.25-79.2 kg",
+    lbw_median = "51.1 kg (mean 46.2, SD 16.7); used as the covariate-centering reference",
     sex_female_pct = 0,
     race_ethnicity = c(White = 132L, Asian = 31L, Black = 10L, Hispanic = 9L, Other = 1L),
-    disease_state  = "Severe haemophilia A (FVIII activity < 1% by one-stage clotting assay) with no history of FVIII inhibitors and >= 150 (LEOPOLD I and II) or >= 50 (LEOPOLD Kids part A) prior FVIII exposure days",
-    dose_range     = "Single and repeat IV infusions over ~10 minutes; simulations in the paper used 25 or 50 IU/kg twice weekly",
-    regions        = "Multinational LEOPOLD trials (LEOPOLD I [adults/adolescents 12-61 y], LEOPOLD II [adults/adolescents 12-61 y], LEOPOLD Kids part A [<= 12 y])",
-    notes          = "Pooled analysis of 1535 chromogenic FVIII activity observations from 183 male haemophilia A patients across the 3 LEOPOLD trials; 16.5% of samples were below the lower limit of quantitation (1.5 IU/dL for the majority; 3 IU/dL for a small number). Sex is essentially all-male because haemophilia A is X-linked. Haemophilia B is a different disease (factor IX deficiency); see Koopman_2023_factorix.R for the analogous FIX model."
+    disease_state = "Severe haemophilia A (FVIII activity < 1% by one-stage clotting assay) with no history of FVIII inhibitors and >= 150 (LEOPOLD I and II) or >= 50 (LEOPOLD Kids part A) prior FVIII exposure days",
+    dose_range = "Single and repeat IV infusions over ~10 minutes; simulations in the paper used 25 or 50 IU/kg twice weekly",
+    regions = "Multinational LEOPOLD trials (LEOPOLD I [adults/adolescents 12-61 y], LEOPOLD II [adults/adolescents 12-61 y], LEOPOLD Kids part A [<= 12 y])",
+    notes = "Pooled analysis of 1535 chromogenic FVIII activity observations from 183 male haemophilia A patients across the 3 LEOPOLD trials; 16.5% of samples were below the lower limit of quantitation (1.5 IU/dL for the majority; 3 IU/dL for a small number). Sex is essentially all-male because haemophilia A is X-linked. Haemophilia B is a different disease (factor IX deficiency); see Koopman_2023_factorix.R for the analogous FIX model."
   )
 
   ini({

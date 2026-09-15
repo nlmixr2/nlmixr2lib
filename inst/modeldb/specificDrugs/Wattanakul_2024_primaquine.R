@@ -24,59 +24,59 @@ Wattanakul_2024_primaquine <- function() {
   # (NMOL)"). verified = TRUE: analyte and specimen were read off the
   # $MODEL block comments of the source control stream.
   compartmentData <- list(
-    depot       = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit4    = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "primaquine", units = "nmol", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "primaquine", units = "nmol", specimen = "plasma", verified = TRUE),
     central_cpq = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "plasma", verified = TRUE),
-    milk        = list(analyte = "primaquine", units = "nmol", specimen = "milk", verified = TRUE),
-    milk_cpq    = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "milk", verified = TRUE)
+    milk = list(analyte = "primaquine", units = "nmol", specimen = "milk", verified = TRUE),
+    milk_cpq = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "milk", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Maternal body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Maternal body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline. Reference WT = 51 kg = the median maternal weight of the study cohort (Wattanakul 2024 Table 1, 51 kg (35-81)). Allometric exponents fixed a priori at 0.75 on CL/F for both analytes and 1 on V/F for both analytes (Results paragraph 3: 'Allometric scaling of body weight was implemented a priori on both clearance and volume of distribution ... Although the allometric scaling of body weight did not improve the model fit, it was retained'). Source column WT.",
-      source_name        = "WT"
+      notes = "Baseline. Reference WT = 51 kg = the median maternal weight of the study cohort (Wattanakul 2024 Table 1, 51 kg (35-81)). Allometric exponents fixed a priori at 0.75 on CL/F for both analytes and 1 on V/F for both analytes (Results paragraph 3: 'Allometric scaling of body weight was implemented a priori on both clearance and volume of distribution ... Although the allometric scaling of body weight did not improve the model fit, it was retained'). Source column WT.",
+      source_name = "WT"
     ),
     WT_INFANT = list(
-      description        = "Breastfed infant body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Breastfed infant body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Body weight of the mother's breastfed infant, i.e. of the DYAD PARTNER rather than of the modelled subject. It enters this maternal model only through the volume of the breast-milk compartments, which the paper derives from the amount of milk the infant ingests per feed: V_M = (0.15 L/kg/day * WT_INFANT) / feeds-per-day (Wattanakul 2024 Eq. 1 and Methods, using an average daily milk intake of 150 mL/kg infant body weight). Cohort median 6.8 kg (4.13-10.8) per Table 1; the resulting milk-compartment volumes ranged 0.062-0.162 L (Results, 'Pharmacokinetics in breastfeeding women'). Source column INFWT.",
-      source_name        = "INFWT"
+      notes = "Body weight of the mother's breastfed infant, i.e. of the DYAD PARTNER rather than of the modelled subject. It enters this maternal model only through the volume of the breast-milk compartments, which the paper derives from the amount of milk the infant ingests per feed: V_M = (0.15 L/kg/day * WT_INFANT) / feeds-per-day (Wattanakul 2024 Eq. 1 and Methods, using an average daily milk intake of 150 mL/kg infant body weight). Cohort median 6.8 kg (4.13-10.8) per Table 1; the resulting milk-compartment volumes ranged 0.062-0.162 L (Results, 'Pharmacokinetics in breastfeeding women'). Source column INFWT.",
+      source_name = "INFWT"
     ),
     OCC = list(
-      description        = "Integer-valued sampling-occasion indicator for inter-occasion-variability multiplexing.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued sampling-occasion indicator for inter-occasion-variability multiplexing.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Values 1, 2, 3, 4 identify the four blood-sampling occasions -- day 0, day 3, day 7, and day 13 of the 14-day treatment course (Wattanakul 2024 Methods, 'Pharmacokinetics in breastfeeding women': 'The IOV ... was ... evaluated ... between sampling occasions i.e., day 0, day 3, day 7, and day 13'). Decomposed inside model() into binary indicators oc1 .. oc4 that multiplex the four IOV etas on relative bioavailability and on mean transit time, exactly as the source $PK block builds IOVF1 and IOVMTT from ETA(11)-ETA(18). For single-occasion simulations pass OCC = 1 so the first IOV eta applies. Source column OCC.",
-      source_name        = "OCC"
+      notes = "Values 1, 2, 3, 4 identify the four blood-sampling occasions -- day 0, day 3, day 7, and day 13 of the 14-day treatment course (Wattanakul 2024 Methods, 'Pharmacokinetics in breastfeeding women': 'The IOV ... was ... evaluated ... between sampling occasions i.e., day 0, day 3, day 7, and day 13'). Decomposed inside model() into binary indicators oc1 .. oc4 that multiplex the four IOV etas on relative bioavailability and on mean transit time, exactly as the source $PK block builds IOVF1 and IOVMTT from ETA(11)-ETA(18). For single-occasion simulations pass OCC = 1 so the first IOV eta applies. Source column OCC.",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21,
-    n_studies      = 1,
-    age_range      = "18-40 years",
-    age_median     = "23 years",
-    weight_range   = "35-81 kg",
-    weight_median  = "51 kg",
+    species = "human",
+    n_subjects = 21,
+    n_studies = 1,
+    age_range = "18-40 years",
+    age_median = "23 years",
+    weight_range = "35-81 kg",
+    weight_median = "51 kg",
     sex_female_pct = 100,
-    disease_state  = "Lactating women with a history of Plasmodium vivax infection and no previous primaquine radical-cure treatment; G6PD-normal by fluorescent spot test and Mahidol-variant genotyping in both mother and infant.",
-    dose_range     = "Primaquine 0.5 mg base/kg once daily for 14 days, given orally under non-fasting conditions as directly observed therapy.",
-    regions        = "Thai-Myanmar border (three Shoklo Malaria Research Unit clinics), enrolled 11 November 2012 to 24 June 2014; ClinicalTrials.gov NCT01780753.",
+    disease_state = "Lactating women with a history of Plasmodium vivax infection and no previous primaquine radical-cure treatment; G6PD-normal by fluorescent spot test and Mahidol-variant genotyping in both mother and infant.",
+    dose_range = "Primaquine 0.5 mg base/kg once daily for 14 days, given orally under non-fasting conditions as directly observed therapy.",
+    regions = "Thai-Myanmar border (three Shoklo Malaria Research Unit clinics), enrolled 11 November 2012 to 24 June 2014; ClinicalTrials.gov NCT01780753.",
     infant_partner = "Each mother had one breastfeeding infant at least 28 days old: n = 21, age 0.42 years (0.13-1.81), weight 6.8 kg (4.13-10.8), 14 male / 7 female (Wattanakul 2024 Table 1). Infant weight enters this model only through the breast-milk compartment volume.",
     feeding_pattern = "Average 11 breastfeeds per day (6-18) and calculated infant daily milk intake 1020 mL (619-1620) per Table 1; the model's square-wave breastfeeding function uses the rounded average of 10 feeds/day (Results, 'Predicting infant concentrations').",
-    notes          = "Baseline demographics from Wattanakul 2024 Table 1. Sampling: dense venous sampling on days 0 and 13 (0, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 18, 24 h post-dose), sparse venous sampling on days 3 and 7 (pre-dose and 2 h); capillary sampling at 0, 2, 6, 12 h on days 0 and 13; breast milk by manual expression in the 1-3, 3-7, 7-12, and 12-24 h windows on days 0 and 13 plus one 1-3 h sample on days 3 and 7. LLOQ 1.14 ng/mL (primaquine) and 4.88 ng/mL (carboxyprimaquine) in all matrices, with relative standard error below 10% for all drug measurements."
+    notes = "Baseline demographics from Wattanakul 2024 Table 1. Sampling: dense venous sampling on days 0 and 13 (0, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 18, 24 h post-dose), sparse venous sampling on days 3 and 7 (pre-dose and 2 h); capillary sampling at 0, 2, 6, 12 h on days 0 and 13; breast milk by manual expression in the 1-3, 3-7, 7-12, and 12-24 h windows on days 0 and 13 plus one 1-3 h sample on days 3 and 7. LLOQ 1.14 ng/mL (primaquine) and 4.88 ng/mL (carboxyprimaquine) in all matrices, with relative standard error below 10% for all drug measurements."
   )
 
   ini({

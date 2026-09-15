@@ -23,10 +23,10 @@ Beredaki_2023_micafungin_eucast <- function() {
   paper_specific_compartments <- c("fauc_0_24", "bact")
 
   population <- list(
-    species        = "in vitro (four Candida albicans clinical isolates; two-compartment closed dialysis/diffusion PK/PD model)",
-    n_subjects     = 4L,
-    n_studies      = 1L,
-    organism       = paste(
+    species = "in vitro (four Candida albicans clinical isolates; two-compartment closed dialysis/diffusion PK/PD model)",
+    n_subjects = 4L,
+    n_studies = 1L,
+    organism = paste(
       "Four Candida albicans isolates (Beredaki 2023 Table 1, median MIC in mg/L,",
       "EUCAST E.Def 7.3 / CLSI M27): CA 580 fks1 wild-type 0.016/0.008;",
       "CA 9817 fks1 wild-type 0.03/0.03; CA SSI-5318 fks1 F641L (weak resistance)",
@@ -35,7 +35,7 @@ Beredaki_2023_micafungin_eucast <- function() {
       "candidiasis model. Quality control: Candida parapsilosis ATCC 22019 and",
       "Candida krusei ATCC 6258."
     ),
-    system         = paste(
+    system = paste(
       "Previously described two-compartment closed diffusion/dialysis in vitro",
       "PK/PD model: an external compartment (conical flask on a peristaltic pump)",
       "connected to an internal compartment consisting of a 10 mL semipermeable",
@@ -45,15 +45,15 @@ Beredaki_2023_micafungin_eucast <- function() {
       "0.165 M MOPS and supplemented with 100 mg/L chloramphenicol, containing",
       "10% heat-inactivated pooled human serum (56 degrees C for 45 min)."
     ),
-    disease_state  = "In vitro infection of the internal compartment at a starting inoculum of 10^4 CFU/mL",
-    dose_range     = paste(
+    disease_state = "In vitro infection of the internal compartment at a starting inoculum of 10^4 CFU/mL",
+    dose_range = paste(
       "Micafungin target peak concentrations Cmax 0.004-32 mg/L simulated q24h",
       "for 72 h; the serum arms shown in Figure 4 used total Cmax of 0.25, 1, 4,",
       "8, 16 and 32 mg/L plus a drug-free control. Target half-life 15 h",
       "(human micafungin); achieved in vitro half-life 14 h (range 9-15 h) with",
       "10% serum and 9 h (range 8-10 h) without serum."
     ),
-    sampling       = paste(
+    sampling = paste(
       "PK: 100 uL from the internal compartment at repeated intervals",
       "(Figure 2 shows 0, 4, 8, 12 h within each 24 h interval) assayed by",
       "microbiological diffusion against Aspergillus fumigatus AZN8196;",
@@ -62,8 +62,8 @@ Beredaki_2023_micafungin_eucast <- function() {
       "(Figure 4 shows 0, 8, 24, 48 and 72 h), plated on SGC2 and counted",
       "after 24 h at 30 degrees C."
     ),
-    regions        = "Greece (Attikon University Hospital, Athens); isolates from Greece and Statens Serum Institut, Denmark",
-    notes          = paste(
+    regions = "Greece (Attikon University Hospital, Athens); isolates from Greece and Statens Serum Institut, Denmark",
+    notes = paste(
       "Two independent experiments were conducted; Beredaki 2023 Table 2 reports",
       "the mean (95% CI) PK/PD targets across them while Figure 5 shows a single",
       "pooled Emax fit, which is why the packaged coefficients reproduce Table 2",
@@ -79,9 +79,9 @@ Beredaki_2023_micafungin_eucast <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central   = list(analyte = "micafungin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "micafungin", units = NA_character_, specimen = "plasma", verified = FALSE),
     fauc_0_24 = list(analyte = "micafungin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact      = list(analyte = "Candida albicans", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    bact = list(analyte = "Candida albicans", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   ini({

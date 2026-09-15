@@ -16,10 +16,14 @@ Bulitta_2009_ceftazidime <- function() {
   )
 
   paper_specific_compartments <- c(
-    "bact_s1", "bact_s2",
-    "bact_r1", "bact_r2",
-    "alys_s", "alys_r",
-    "csig1", "csig2",
+    "bact_s1",
+    "bact_s2",
+    "bact_r1",
+    "bact_r2",
+    "alys_s",
+    "alys_r",
+    "csig1",
+    "csig2",
     "cb"
   )
 
@@ -28,32 +32,62 @@ Bulitta_2009_ceftazidime <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_s1 = list(analyte = "Pseudomonas aeruginosa (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_s2 = list(analyte = "Pseudomonas aeruginosa (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_r1 = list(analyte = "Pseudomonas aeruginosa (resistant)", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_r2 = list(analyte = "Pseudomonas aeruginosa (resistant)", units = NA_character_, specimen = "bile", verified = FALSE),
-    alys_s  = list(analyte = "autolysin (susceptible)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    alys_r  = list(analyte = "autolysin (resistant)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    csig1   = list(analyte = "ceftazidime", units = NA_character_, specimen = "bile", verified = FALSE),
-    csig2   = list(analyte = "ceftazidime", units = NA_character_, specimen = "bile", verified = FALSE),
-    cb      = list(analyte = "ceftazidime", units = NA_character_, specimen = "administration site", verified = FALSE)
+    bact_s1 = list(
+      analyte = "Pseudomonas aeruginosa (susceptible)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_s2 = list(
+      analyte = "Pseudomonas aeruginosa (susceptible)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_r1 = list(
+      analyte = "Pseudomonas aeruginosa (resistant)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_r2 = list(
+      analyte = "Pseudomonas aeruginosa (resistant)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    alys_s = list(
+      analyte = "autolysin (susceptible)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    alys_r = list(
+      analyte = "autolysin (resistant)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    csig1 = list(analyte = "ceftazidime", units = NA_character_, specimen = "bile", verified = FALSE),
+    csig2 = list(analyte = "ceftazidime", units = NA_character_, specimen = "bile", verified = FALSE),
+    cb = list(analyte = "ceftazidime", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species             = "in vitro (Pseudomonas aeruginosa, PAO1 clinical isolate from the R.E.W. Hancock laboratory)",
-    n_subjects          = NA_integer_,
-    n_studies           = 1L,
-    organism            = "Pseudomonas aeruginosa PAO1 (ceftazidime MIC 2 mg/L); the same model was also fit to P. aeruginosa ATCC 27853 in an external-qualification arm with the ATCC parameter set reported in Table 2 (not packaged here; only the primary PAO1 NONMEM fit is reproduced)",
-    system              = "Static time-kill experiments at five inocula (10^5 / 10^6 / 10^7 / 10^8 / 10^9 CFU/mL); samples at 0, 0.5, 1, 2, 4, 8, 24 h (10^7 also at 37 and 48 h); duplicate per concentration",
-    medium              = "Luria-Bertani broth supplemented with calcium 25 mg/L and magnesium 12.5 mg/L",
-    temperature         = "37 C",
-    duration            = "24 h (48 h for 10^7 CFU/mL)",
-    mic_values          = c(ceftazidime = "2 mg/L"),
+    species = "in vitro (Pseudomonas aeruginosa, PAO1 clinical isolate from the R.E.W. Hancock laboratory)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Pseudomonas aeruginosa PAO1 (ceftazidime MIC 2 mg/L); the same model was also fit to P. aeruginosa ATCC 27853 in an external-qualification arm with the ATCC parameter set reported in Table 2 (not packaged here; only the primary PAO1 NONMEM fit is reproduced)",
+    system = "Static time-kill experiments at five inocula (10^5 / 10^6 / 10^7 / 10^8 / 10^9 CFU/mL); samples at 0, 0.5, 1, 2, 4, 8, 24 h (10^7 also at 37 and 48 h); duplicate per concentration",
+    medium = "Luria-Bertani broth supplemented with calcium 25 mg/L and magnesium 12.5 mg/L",
+    temperature = "37 C",
+    duration = "24 h (48 h for 10^7 CFU/mL)",
+    mic_values = c(ceftazidime = "2 mg/L"),
     concentration_range = c(ceftazidime = "0-128 mg/L (0-64 x MIC)"),
-    regimens            = "Ceftazidime monotherapy at static concentrations 0, 2, 4, 8, 16, 32, 64, 128 mg/L applied at t=0; broth concentration degrades first-order at fixed half-life 45.9 h (Viaene 1973)",
-    notes               = "In-vitro pharmacodynamic study; no human or animal subjects. Final NONMEM fit reports the additive residual SD on log10(CFU/mL) only (sigma = 0.224); IIV / between-replicate etas were not estimated because the duplicate-run variability was small. An S-ADAPT confirmation run with BSV on every parameter is reported in Table 2 but those BSV variances are not packaged. Parameters here reproduce the PAO1 NONMEM column of Table 2."
+    regimens = "Ceftazidime monotherapy at static concentrations 0, 2, 4, 8, 16, 32, 64, 128 mg/L applied at t=0; broth concentration degrades first-order at fixed half-life 45.9 h (Viaene 1973)",
+    notes = "In-vitro pharmacodynamic study; no human or animal subjects. Final NONMEM fit reports the additive residual SD on log10(CFU/mL) only (sigma = 0.224); IIV / between-replicate etas were not estimated because the duplicate-run variability was small. An S-ADAPT confirmation run with BSV on every parameter is reported in Table 2 but those BSV variances are not packaged. Parameters here reproduce the PAO1 NONMEM column of Table 2."
   )
 
   ini({

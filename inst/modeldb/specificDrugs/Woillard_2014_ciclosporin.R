@@ -14,87 +14,87 @@ Woillard_2014_ciclosporin <- function() {
   covariatesDataExcluded <- list(
     HGB = list(
       description = "Whole-blood haemoglobin concentration.",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Tested but not retained. Median 10.0 g/dL (range 8.2-14.8) in the development cohort (Table 1). Spearman screening followed by NONMEM OFV test (P < 0.001, 1 d.f., i.e. decrease of 10.83 in OFV) did not retain a covariate effect."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Tested but not retained. Median 10.0 g/dL (range 8.2-14.8) in the development cohort (Table 1). Spearman screening followed by NONMEM OFV test (P < 0.001, 1 d.f., i.e. decrease of 10.83 in OFV) did not retain a covariate effect."
     ),
     HCT = list(
       description = "Haematocrit, expressed as a percentage.",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Tested and reached the NONMEM screening threshold on apparent clearance (OFV decreased by 17 points) but was not retained in the final model because its addition worsened the precision of inter-patient variability estimates (Results, 'Covariate analysis'). Median 29 % (range 23-43) in the development cohort (Table 1). The authors note clinical plausibility through CsA's red-blood-cell binding."
+      units = "%",
+      type = "continuous",
+      notes = "Tested and reached the NONMEM screening threshold on apparent clearance (OFV decreased by 17 points) but was not retained in the final model because its addition worsened the precision of inter-patient variability estimates (Results, 'Covariate analysis'). Median 29 % (range 23-43) in the development cohort (Table 1). The authors note clinical plausibility through CsA's red-blood-cell binding."
     ),
     TBILI = list(
       description = "Total serum bilirubin.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Tested but not retained. Median 11 umol/L (range 4-74) in the development cohort (Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Tested but not retained. Median 11 umol/L (range 4-74) in the development cohort (Table 1)."
     ),
     CREAT = list(
       description = "Serum creatinine.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Tested but not retained. Median 77 umol/L (range 34-198) in the development cohort (Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Tested but not retained. Median 77 umol/L (range 34-198) in the development cohort (Table 1)."
     ),
     ALB = list(
       description = "Serum albumin.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Tested but not retained. Median 31.4 g/L (range 18.8-55.1) in the development cohort (Table 1; n = 62 with albumin available out of 72 profiles)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Tested but not retained. Median 31.4 g/L (range 18.8-55.1) in the development cohort (Table 1; n = 62 with albumin available out of 72 profiles)."
     ),
     ALT = list(
       description = "Alanine aminotransferase (ALAT in the source paper).",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested but not retained. Median 35 U/L (range 8-195) in the development cohort (Table 1; source paper reports IU/L, value-identical to the SI canonical U/L). The source paper uses the European 'ALAT' abbreviation; the canonical nlmixr2lib name is ALT and the canonical unit string is U/L per the 2026-06-19 SI register."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested but not retained. Median 35 U/L (range 8-195) in the development cohort (Table 1; source paper reports IU/L, value-identical to the SI canonical U/L). The source paper uses the European 'ALAT' abbreviation; the canonical nlmixr2lib name is ALT and the canonical unit string is U/L per the 2026-06-19 SI register."
     ),
     AST = list(
       description = "Aspartate aminotransferase (ASAT in the source paper).",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested but not retained. Median 27 U/L (range 10-146) in the development cohort (Table 1; source paper reports IU/L, value-identical to the SI canonical U/L). The source paper uses the European 'ASAT' abbreviation; the canonical nlmixr2lib name is AST and the canonical unit string is U/L per the 2026-06-19 SI register."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested but not retained. Median 27 U/L (range 10-146) in the development cohort (Table 1; source paper reports IU/L, value-identical to the SI canonical U/L). The source paper uses the European 'ASAT' abbreviation; the canonical nlmixr2lib name is AST and the canonical unit string is U/L per the 2026-06-19 SI register."
     ),
     WT = list(
       description = "Body weight at the sampling occasion.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested but not retained. Median 71 kg (range 47-101) in the development cohort (Table 1; n = 71 of 72 profiles with weight recorded). The authors did not investigate allometric scaling on the structural parameters."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested but not retained. Median 71 kg (range 47-101) in the development cohort (Table 1; n = 71 of 72 profiles with weight recorded). The authors did not investigate allometric scaling on the structural parameters."
     )
   )
 
   population <- list(
-    species               = "human",
-    n_subjects            = 45L,
-    n_studies             = 1L,
-    n_profiles            = 87L,
-    n_dev_subjects        = 40L,
-    n_dev_profiles        = 72L,
+    species = "human",
+    n_subjects = 45L,
+    n_studies = 1L,
+    n_profiles = 87L,
+    n_dev_subjects = 40L,
+    n_dev_profiles = 72L,
     n_validation_profiles = 15L,
-    age_range             = "24-70 years (overall range across development and validation)",
-    age_median            = "Development cohort 59 years (24-67); validation cohort 63 years (48-70)",
-    weight_range          = "47-101 kg",
-    weight_median         = "Development cohort 71 kg (47-101); validation cohort 72 kg (66-100)",
-    sex_female_pct        = 37.5,
-    race_ethnicity        = "Not reported in source paper (single-centre French cohort).",
-    disease_state         = "Adult HSCT (haematopoietic stem cell transplant) recipients on ciclosporin for graft-versus-host disease (GVHD) prophylaxis. All patients received a reduced-intensity conditioning regimen prior to HSCT (most commonly fludarabine + busulfan + anti-T lymphocyte globulin). 96 % received peripheral blood stem cells, 4 % cord blood. 89 % received T-cell depletion with anti-T lymphocyte globulin. Co-immunosuppression: CsA alone for HLA-sibling donors (n = 11) or CsA + mycophenolate mofetil for matched unrelated donors (n = 29) or HLA-sibling donors without ATG (n = 5). Primary disease was a mix of myeloid acute leukemia, chronic lymphoid leukemia, non-Hodgkin's and Hodgkin's lymphoma, myelodysplastic syndrome, acute lymphoblastic leukemia, and myelofibrosis.",
-    dose_range            = "Ciclosporin oral 3 mg/kg twice daily, starting 3 days before engraftment (day -3) and titrated by blood trough concentrations monitored twice weekly. Target inter-dose AUC(0,12h) = 4.3 mg/L*h, taken from prior renal-transplant literature. If no GVHD was noted, CsA was tapered progressively over 4 weeks starting day 100.",
-    regions               = "France (single centre: Limoges University Hospital).",
-    sampling_schedule     = "Per profile: 10 samples at pre-dose and 0.33, 0.66, 1, 2, 3, 4, 6, 8 and 12 hours post-dose. One patient had 4 sampling periods, 8 patients had 3, 21 had 2, and 17 had 1. Sampling periods spanned day 0 to day 100 post-transplant.",
-    bioanalytical         = "Whole-blood ciclosporin quantified by turbulent-flow LC-MS/MS (Cyclone P online extraction, Propel MS C18 analytical column, TSQ Quantum Discovery MS/MS) with calibration over 10-2000 ug/L, LOD = 10 ug/L and LOQ = 20 ug/L. Inter-assay precision (RSD) -3.1 to 11.8 %, mean relative error 4.0 to 11.7 %.",
+    age_range = "24-70 years (overall range across development and validation)",
+    age_median = "Development cohort 59 years (24-67); validation cohort 63 years (48-70)",
+    weight_range = "47-101 kg",
+    weight_median = "Development cohort 71 kg (47-101); validation cohort 72 kg (66-100)",
+    sex_female_pct = 37.5,
+    race_ethnicity = "Not reported in source paper (single-centre French cohort).",
+    disease_state = "Adult HSCT (haematopoietic stem cell transplant) recipients on ciclosporin for graft-versus-host disease (GVHD) prophylaxis. All patients received a reduced-intensity conditioning regimen prior to HSCT (most commonly fludarabine + busulfan + anti-T lymphocyte globulin). 96 % received peripheral blood stem cells, 4 % cord blood. 89 % received T-cell depletion with anti-T lymphocyte globulin. Co-immunosuppression: CsA alone for HLA-sibling donors (n = 11) or CsA + mycophenolate mofetil for matched unrelated donors (n = 29) or HLA-sibling donors without ATG (n = 5). Primary disease was a mix of myeloid acute leukemia, chronic lymphoid leukemia, non-Hodgkin's and Hodgkin's lymphoma, myelodysplastic syndrome, acute lymphoblastic leukemia, and myelofibrosis.",
+    dose_range = "Ciclosporin oral 3 mg/kg twice daily, starting 3 days before engraftment (day -3) and titrated by blood trough concentrations monitored twice weekly. Target inter-dose AUC(0,12h) = 4.3 mg/L*h, taken from prior renal-transplant literature. If no GVHD was noted, CsA was tapered progressively over 4 weeks starting day 100.",
+    regions = "France (single centre: Limoges University Hospital).",
+    sampling_schedule = "Per profile: 10 samples at pre-dose and 0.33, 0.66, 1, 2, 3, 4, 6, 8 and 12 hours post-dose. One patient had 4 sampling periods, 8 patients had 3, 21 had 2, and 17 had 1. Sampling periods spanned day 0 to day 100 post-transplant.",
+    bioanalytical = "Whole-blood ciclosporin quantified by turbulent-flow LC-MS/MS (Cyclone P online extraction, Propel MS C18 analytical column, TSQ Quantum Discovery MS/MS) with calibration over 10-2000 ug/L, LOD = 10 ug/L and LOQ = 20 ug/L. Inter-assay precision (RSD) -3.1 to 11.8 %, mean relative error 4.0 to 11.7 %.",
     baseline_demographics = "Median (range) in the development cohort (Table 1): age 59 (24-67) years, weight 71 (47-101) kg, sex M/F 25/15, haematocrit 29 (23-43) %, haemoglobin 10.0 (8.2-14.8) g/dL, serum creatinine 77 (34-198) umol/L, total bilirubin 11 (4-74) umol/L, albumin 31.4 (18.8-55.1) g/L, ALAT 35 (8-195) U/L, ASAT 27 (10-146) U/L. Sampling time post-transplant median 4 days (range 0-99).",
-    notes                 = "Three independent modelling approaches (NONMEM, iterative two-stage ITS, non-parametric Pmetrics) were fit in parallel to compare Bayesian estimators of CsA AUC(0,12h) under a three-sample limited sampling strategy. The packaged model file encodes the NONMEM final model (Table 2) parameterised in standard CL/V/Q form. The ITS and Pmetrics fits used a gamma-law absorption with macro-constant disposition (FAIV, FBIV, alpha, beta in Table 3) and are not packaged here; see the vignette's Assumptions and deviations section for rationale."
+    notes = "Three independent modelling approaches (NONMEM, iterative two-stage ITS, non-parametric Pmetrics) were fit in parallel to compare Bayesian estimators of CsA AUC(0,12h) under a three-sample limited sampling strategy. The packaged model file encodes the NONMEM final model (Table 2) parameterised in standard CL/V/Q form. The ITS and Pmetrics fits used a gamma-law absorption with macro-constant disposition (FAIV, FBIV, alpha, beta in Table 3) and are not packaged here; see the vignette's Assumptions and deviations section for rationale."
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 

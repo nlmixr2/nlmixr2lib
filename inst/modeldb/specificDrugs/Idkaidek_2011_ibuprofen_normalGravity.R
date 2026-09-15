@@ -7,22 +7,22 @@ Idkaidek_2011_ibuprofen_normalGravity <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "ibuprofen", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "ibuprofen", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "ibuprofen", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 6,
-    n_studies      = 1,
-    age_range      = "18-45 years",
+    species = "human",
+    n_subjects = 6,
+    n_studies = 1,
+    age_range = "18-45 years",
     sex_female_pct = 0,
-    disease_state  = "Healthy adult male volunteers (Idkaidek 2011 'Human Participants'): body mass index 18.5-24.9 kg/m2, no clinically significant deviation from a normal medical condition on medical history, vital signs, physical examination, electrocardiogram or laboratory safety tests.",
-    dose_range     = "Single 600 mg oral ibuprofen tablet with 240 mL water after a 10-hour overnight fast.",
-    regions        = "Jordan (Jordan Center for Pharmaceutical Research, Al-Mowasah Hospital, Amman).",
-    notes          = "Body position for this model file is the NORMAL-GRAVITY (1G) leg of a two-period sequential crossover with a 7-day washout; the same six men were also studied in the simulated-microgravity antiorthostatic bed-rest position (see Idkaidek_2011_ibuprofen_microgravity). Sample size of 6 was based on a previous ibuprofen intersubject PK variability of 25% giving 80% power at 95% confidence. Plasma was sampled at 0, 0.25, 0.5, 0.75, 1, 1.33, 1.66, 2, 2.5, 3, 4, 5, 6 and 8 h and assayed by a validated HPLC method with a linear range of 0.5-30 ug/mL. Saliva was also collected but ibuprofen was not detected in any saliva sample, so no salivary model exists."
+    disease_state = "Healthy adult male volunteers (Idkaidek 2011 'Human Participants'): body mass index 18.5-24.9 kg/m2, no clinically significant deviation from a normal medical condition on medical history, vital signs, physical examination, electrocardiogram or laboratory safety tests.",
+    dose_range = "Single 600 mg oral ibuprofen tablet with 240 mL water after a 10-hour overnight fast.",
+    regions = "Jordan (Jordan Center for Pharmaceutical Research, Al-Mowasah Hospital, Amman).",
+    notes = "Body position for this model file is the NORMAL-GRAVITY (1G) leg of a two-period sequential crossover with a 7-day washout; the same six men were also studied in the simulated-microgravity antiorthostatic bed-rest position (see Idkaidek_2011_ibuprofen_microgravity). Sample size of 6 was based on a previous ibuprofen intersubject PK variability of 25% giving 80% power at 95% confidence. Plasma was sampled at 0, 0.25, 0.5, 0.75, 1, 1.33, 1.66, 2, 2.5, 3, 4, 5, 6 and 8 h and assayed by a validated HPLC method with a linear range of 0.5-30 ug/mL. Saliva was also collected but ibuprofen was not detected in any saliva sample, so no salivary model exists."
   )
 
   ini({

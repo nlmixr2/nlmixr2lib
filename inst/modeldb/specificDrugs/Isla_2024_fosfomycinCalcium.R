@@ -38,18 +38,18 @@ Isla_2024_fosfomycinCalcium <- function() {
   # measured matrix is plasma (Methods 'Data collection and drug assay':
   # blood samples centrifuged to plasma, fosfomycin quantified by HPLC-MS/MS).
   compartmentData <- list(
-    depot       = list(analyte = "fosfomycin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "fosfomycin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated by the Cockcroft-Gault equation, raw mL/min and NOT BSA-normalized",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the Cockcroft-Gault equation, raw mL/min and NOT BSA-normalized",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Raw Cockcroft-Gault creatinine clearance in mL/min; Isla 2024 Table 1",
         "footnote (a) states the estimator explicitly and the table reports the",
         "value in mL/min with no BSA normalisation. Cohort mean 109.4, median",
@@ -69,14 +69,14 @@ Isla_2024_fosfomycinCalcium <- function() {
         "upper bound, so it extrapolates without limit above the fitted range.",
         sep = " "
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Cohort mean 65.1, median 64.3, SD 9.6, range 51.7-94.8 kg (Isla 2024",
         "Table 1). Applied as a LINEAR ratio to a 64 kg reference on the",
         "apparent central volume only: V1/F = theta_V1 * (BW / 64) (Isla 2024",
@@ -93,14 +93,14 @@ Isla_2024_fosfomycinCalcium <- function() {
         "against extrapolating the volume term to obese women.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     FORM_SYRUP = list(
-      description        = "Oral suspension (Fosfocina 250 mg/5 mL) versus capsule (Fosfocina 500 mg) formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral suspension (Fosfocina 250 mg/5 mL) versus capsule (Fosfocina 500 mg) formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Fosfocina 500 mg hard capsule, the reference formulation carrying theta_KA1 and theta_TLAG1)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-occasion indicator: every subject received both formulations",
         "in the randomized crossover, so the column varies within subject",
         "across study periods. 1 = the manufactured 250 mg/5 mL oral suspension",
@@ -128,14 +128,14 @@ Isla_2024_fosfomycinCalcium <- function() {
         "formulation effect is purely on absorption rate and lag.",
         sep = " "
       ),
-      source_name        = "formulation type (capsule or suspension)"
+      source_name = "formulation type (capsule or suspension)"
     ),
     OCC = list(
-      description        = "Study period / crossover occasion index (1-4) driving the inter-occasion variability",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Study period / crossover occasion index (1-4) driving the inter-occasion variability",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Integer 1-4 identifying which of the four randomized crossover",
         "treatment periods a record belongs to (Isla 2024 Methods 'Drug",
         "administration and dosing': 500 mg capsule single dose, 1000 mg",
@@ -150,19 +150,19 @@ Isla_2024_fosfomycinCalcium <- function() {
         "Pass OCC = 1 for single-occasion data so the first IOV eta applies.",
         sep = " "
       ),
-      source_name        = "study occasion"
+      source_name = "study occasion"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
     n_observations = 1124L,
-    age_range      = "19-49 years (mean 32, median 32, SD 9); protocol eligibility 18-55 years",
-    weight_range   = "51.7-94.8 kg (mean 65.1, median 64.3, SD 9.6)",
+    age_range = "19-49 years (mean 32, median 32, SD 9); protocol eligibility 18-55 years",
+    weight_range = "51.7-94.8 kg (mean 65.1, median 64.3, SD 9.6)",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult women volunteers with no evidence of significant organic",
       "or psychiatric disease, normal clinical laboratory values, normal",
       "electrocardiogram and vital signs, and negative hepatitis B / hepatitis",
@@ -184,7 +184,7 @@ Isla_2024_fosfomycinCalcium <- function() {
       "protein were screened as covariates and none was retained.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Four treatments per subject in a randomized crossover with washout",
       "exceeding one week between periods: (i) 500 mg fosfomycin as one",
       "Fosfocina 500 mg capsule, single dose; (ii) 1000 mg as two Fosfocina",
@@ -195,8 +195,8 @@ Isla_2024_fosfomycinCalcium <- function() {
       "withheld from 1 h before until 1 h after dosing.",
       sep = " "
     ),
-    regions        = "Spain (single centre: Clinical Trial Unit, Araba University Hospital, Vitoria-Gasteiz).",
-    notes          = paste(
+    regions = "Spain (single centre: Clinical Trial Unit, Araba University Hospital, Vitoria-Gasteiz).",
+    notes = paste(
       "Regulatory identifiers: AEMPS code PD7522.22, EudraCT 2020-001664-28.",
       "Thirteen plasma samples per subject per period (pre-dose and 1, 1.5, 2,",
       "2.5, 3, 3.5, 4, 4.5, 6, 8, 12 and 24 h), giving 1124 concentration-time",

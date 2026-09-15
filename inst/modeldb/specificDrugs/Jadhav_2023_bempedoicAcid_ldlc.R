@@ -1,188 +1,188 @@
 Jadhav_2023_bempedoicAcid_ldlc <- function() {
   description <- "Joint population PK + PK/PD model for bempedoic acid and serum low-density lipoprotein cholesterol (LDL-C) in patients with dyslipidemia (Jadhav 2023). The PK layer is the two-compartment / single-transit-absorption popPK model from the companion Jadhav_2023_bempedoicAcid.R file (Table 2). The PD layer (Table 3) is a type 1 indirect-response model in which bempedoic acid inhibits LDL-C production, with covariate effects on the maximum fractional inhibition Imax (sex, body weight, Black race, concomitant statin intensity, concomitant ezetimibe, prior statin therapy) and on baseline LDL-C (concomitant statin intensity, HeFH, type 2 diabetes, prior ezetimibe therapy, prior statin therapy). The authors fit the PD layer sequentially, conditioned on individual post hoc PK parameters from the popPK model."
-  reference   <- "Jadhav SB, Amore BM, Bockbrader H, Crass RL, Chapel S, Sasiela WJ, Emery MG. Population pharmacokinetic and pharmacokinetic-pharmacodynamic modeling of bempedoic acid and low-density lipoprotein cholesterol in healthy subjects and patients with dyslipidemia. J Pharmacokinet Pharmacodyn. 2023;50(5):351-364. doi:10.1007/s10928-023-09864-w"
-  vignette    <- "Jadhav_2023_bempedoicAcid"
+  reference <- "Jadhav SB, Amore BM, Bockbrader H, Crass RL, Chapel S, Sasiela WJ, Emery MG. Population pharmacokinetic and pharmacokinetic-pharmacodynamic modeling of bempedoic acid and low-density lipoprotein cholesterol in healthy subjects and patients with dyslipidemia. J Pharmacokinet Pharmacodyn. 2023;50(5):351-364. doi:10.1007/s10928-023-09864-w"
+  vignette <- "Jadhav_2023_bempedoicAcid"
   paper_specific_compartments <- c("LDL")
-  units       <- list(time = "h", dosing = "mg", concentration = "ug/mL", ldlc = "mg/dL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL", ldlc = "mg/dL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "bempedoic acid", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "bempedoic acid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "bempedoic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "bempedoic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "bempedoic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "bempedoic acid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "bempedoic acid", units = "mg", specimen = "plasma", verified = FALSE),
-    LDL         = list(analyte = "low-density lipoprotein cholesterol", units = "mg", specimen = "serum", verified = FALSE)
+    LDL = list(analyte = "low-density lipoprotein cholesterol", units = "mg", specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on CL/F (0.61) and Vc/F (0.94) in the PK layer (Table 2) and on Imax (0.544) in the PD layer (Table 3). The paper prints the covariate form theta_TV = theta_REF * (x / x_REF)^theta_x but never the reference x_REF; the model file uses the analysis-set medians from Table 1 -- 83.7 kg for the PK layer (popPK analysis set) and 84.5 kg for the PD layer (bempedoic-acid-treated popPK/PD analysis set), following the same per-layer-reference convention as Pu_2021_evinacumab.R. Median normalisation is the standard for a pooled full-covariate popPK model with ESTIMATED (not fixed-allometric) exponents, and it reconciles the model with the paper's own reported mean steady-state exposure of 12.5 ug/mL at 180 mg/day (see the vignette Assumptions and deviations section for the reconstruction and the discarded 70 kg alternative). Only absolute typical values depend on the choice; published covariate ratios are invariant to it.",
-      source_name        = "WT"
+      notes = "Power covariate on CL/F (0.61) and Vc/F (0.94) in the PK layer (Table 2) and on Imax (0.544) in the PD layer (Table 3). The paper prints the covariate form theta_TV = theta_REF * (x / x_REF)^theta_x but never the reference x_REF; the model file uses the analysis-set medians from Table 1 -- 83.7 kg for the PK layer (popPK analysis set) and 84.5 kg for the PD layer (bempedoic-acid-treated popPK/PD analysis set), following the same per-layer-reference convention as Pu_2021_evinacumab.R. Median normalisation is the standard for a pooled full-covariate popPK model with ESTIMATED (not fixed-allometric) exponents, and it reconciles the model with the paper's own reported mean steady-state exposure of 12.5 ug/mL at 180 mg/day (see the vignette Assumptions and deviations section for the reconstruction and the discarded 70 kg alternative). Only absolute typical values depend on the choice; published covariate ratios are invariant to it.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on Vc/F (0.743) in the PK layer (Table 2). Reference age not printed; the model file uses the popPK analysis-set median of 62.0 years (Table 1), i.e. the same PK-layer reference as the companion Jadhav_2023_bempedoicAcid.R, because the PK layer was estimated on that set. Not retained as a covariate in the PD layer.",
-      source_name        = "AGE"
+      notes = "Power covariate on Vc/F (0.743) in the PK layer (Table 2). Reference age not printed; the model file uses the popPK analysis-set median of 62.0 years (Table 1), i.e. the same PK-layer reference as the companion Jadhav_2023_bempedoicAcid.R, because the PK layer was estimated on that set. Not retained as a covariate in the PD layer.",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Proportional-shift covariate on CL/F (-0.127) and Vc/F (-0.0895) in the PK layer (Table 2) and on Imax (+0.203) in the PD layer (Table 3). Jadhav 2023 Online Resource 5: females -26.71% (90% CI -27.84, -25.81) vs. males -21.32% (90% CI -21.92, -20.64) LDL-C change from baseline.",
-      source_name        = "SEXF"
+      notes = "Proportional-shift covariate on CL/F (-0.127) and Vc/F (-0.0895) in the PK layer (Table 2) and on Imax (+0.203) in the PD layer (Table 3). Jadhav 2023 Online Resource 5: females -26.71% (90% CI -27.84, -25.81) vs. males -21.32% (90% CI -21.92, -20.64) LDL-C change from baseline.",
+      source_name = "SEXF"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator, 1 = Black, 0 = other race",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator, 1 = Black, 0 = other race",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black; 92.5% of the popPK/PD analysis set was White)",
-      notes              = "Proportional-shift covariate on CL/F (-0.143) in the PK layer (Table 2) and on Imax (-0.240) in the PD layer (Table 3). Jadhav 2023 Online Resource 5: Black -20.93% vs. White -23.39% LDL-C change from baseline.",
-      source_name        = "RACE_BLACK"
+      notes = "Proportional-shift covariate on CL/F (-0.143) in the PK layer (Table 2) and on Imax (-0.240) in the PD layer (Table 3). Jadhav 2023 Online Resource 5: Black -20.93% vs. White -23.39% LDL-C change from baseline.",
+      source_name = "RACE_BLACK"
     ),
     DIS_HYPERLIP = list(
-      description        = "Hyperlipidemia diagnosis indicator, 1 = participant has hyperlipidemia, 0 = no hyperlipidemia diagnosis",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hyperlipidemia diagnosis indicator, 1 = participant has hyperlipidemia, 0 = no hyperlipidemia diagnosis",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no hyperlipidemia diagnosis)",
-      notes              = "Proportional-shift covariate on CL/F (-0.0945) in the PK layer (Table 2). 97.7% of the bempedoic-acid-treated popPK/PD analysis set carried a hyperlipidemia diagnosis (Table 1). Not retained in the PD layer.",
-      source_name        = "Hyperlipidemia"
+      notes = "Proportional-shift covariate on CL/F (-0.0945) in the PK layer (Table 2). 97.7% of the bempedoic-acid-treated popPK/PD analysis set carried a hyperlipidemia diagnosis (Table 1). Not retained in the PD layer.",
+      source_name = "Hyperlipidemia"
     ),
     DIS_DIAB = list(
-      description        = "Type 2 diabetes mellitus indicator, 1 = participant has T2DM, 0 = no diabetes",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Type 2 diabetes mellitus indicator, 1 = participant has T2DM, 0 = no diabetes",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no diabetes)",
-      notes              = "Proportional-shift covariate on CL/F (-0.177) in the PK layer (Table 2) and on baseline LDL-C (-0.0661) in the PD layer (Table 3, row 'T2DM'). 21.1% of the bempedoic-acid-treated popPK/PD analysis set had diabetes (Table 1).",
-      source_name        = "T2DM"
+      notes = "Proportional-shift covariate on CL/F (-0.177) in the PK layer (Table 2) and on baseline LDL-C (-0.0661) in the PD layer (Table 3, row 'T2DM'). 21.1% of the bempedoic-acid-treated popPK/PD analysis set had diabetes (Table 1).",
+      source_name = "T2DM"
     ),
     DIS_HEFH = list(
-      description        = "Heterozygous familial hypercholesterolemia indicator, 1 = patient has HeFH, 0 = non-HeFH",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Heterozygous familial hypercholesterolemia indicator, 1 = patient has HeFH, 0 = non-HeFH",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-HeFH)",
-      notes              = "Proportional-shift covariate on baseline LDL-C (+0.0671) in the PD layer (Table 3). HeFH patients have higher baseline LDL-C than the non-HeFH reference; Online Resource 5 reports steady-state LDL-C 97.38 mg/dL for HeFH vs. 88.53 mg/dL for non-HeFH. Two phase 3 studies enrolled patients with prior ASCVD and/or HeFH on maximally tolerated statin therapy.",
-      source_name        = "HeFH"
+      notes = "Proportional-shift covariate on baseline LDL-C (+0.0671) in the PD layer (Table 3). HeFH patients have higher baseline LDL-C than the non-HeFH reference; Online Resource 5 reports steady-state LDL-C 97.38 mg/dL for HeFH vs. 88.53 mg/dL for non-HeFH. Two phase 3 studies enrolled patients with prior ASCVD and/or HeFH on maximally tolerated statin therapy.",
+      source_name = "HeFH"
     ),
     CRCL = list(
-      description        = "MDRD-estimated glomerular filtration rate, expressed in absolute mL/min WITHOUT body-surface-area adjustment",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "MDRD-estimated glomerular filtration rate, expressed in absolute mL/min WITHOUT body-surface-area adjustment",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on CL/F (0.574) in the PK layer (Table 2, row 'eGFR'). Table 1 footnote a states the values are absolute mL/min with no BSA adjustment, so raw mL/min must be supplied. Reference 89.3 mL/min, the popPK analysis-set median (Table 1), i.e. the same PK-layer reference as the companion Jadhav_2023_bempedoicAcid.R because the PK layer was estimated on that set; it sits essentially on the paper's own normal-renal-function threshold of 90 mL/min (Fig. 2). Not retained in the PD layer.",
-      source_name        = "eGFR"
+      notes = "Power covariate on CL/F (0.574) in the PK layer (Table 2, row 'eGFR'). Table 1 footnote a states the values are absolute mL/min with no BSA adjustment, so raw mL/min must be supplied. Reference 89.3 mL/min, the popPK analysis-set median (Table 1), i.e. the same PK-layer reference as the companion Jadhav_2023_bempedoicAcid.R because the PK layer was estimated on that set; it sits essentially on the paper's own normal-renal-function threshold of 90 mL/min (Fig. 2). Not retained in the PD layer.",
+      source_name = "eGFR"
     ),
     CONMED_EZE = list(
-      description        = "Concomitant ezetimibe indicator, 1 = receiving concomitant ezetimibe, 0 = not receiving ezetimibe",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant ezetimibe indicator, 1 = receiving concomitant ezetimibe, 0 = not receiving ezetimibe",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant ezetimibe)",
-      notes              = "Proportional-shift covariate on CL/F (-0.0934) in the PK layer (Table 2) and on Imax (+0.190) in the PD layer (Table 3, row 'Ezetimibe' under 'Covariates of Imax'). Ezetimibe blocks intestinal cholesterol absorption through a pathway independent of ATP-citrate lyase inhibition, so the combination increases the maximum achievable LDL-C reduction: Online Resource 5 reports -29.44% vs. -22.37% LDL-C change from baseline. Distinct from PRIOR_EZE (pre-study ezetimibe therapy), which acts on baseline LDL-C.",
-      source_name        = "Ezetimibe"
+      notes = "Proportional-shift covariate on CL/F (-0.0934) in the PK layer (Table 2) and on Imax (+0.190) in the PD layer (Table 3, row 'Ezetimibe' under 'Covariates of Imax'). Ezetimibe blocks intestinal cholesterol absorption through a pathway independent of ATP-citrate lyase inhibition, so the combination increases the maximum achievable LDL-C reduction: Online Resource 5 reports -29.44% vs. -22.37% LDL-C change from baseline. Distinct from PRIOR_EZE (pre-study ezetimibe therapy), which acts on baseline LDL-C.",
+      source_name = "Ezetimibe"
     ),
     CONMED_SIMVASTATIN = list(
-      description        = "Concomitant simvastatin indicator, 1 = receiving concomitant simvastatin, 0 = not receiving simvastatin",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant simvastatin indicator, 1 = receiving concomitant simvastatin, 0 = not receiving simvastatin",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant simvastatin)",
-      notes              = "Proportional-shift covariate on Vc/F (-0.154) in the PK layer (Table 2). Not retained in the PD layer, where statin effects enter through the three intensity strata instead.",
-      source_name        = "Simvastatin"
+      notes = "Proportional-shift covariate on Vc/F (-0.154) in the PK layer (Table 2). Not retained in the PD layer, where statin effects enter through the three intensity strata instead.",
+      source_name = "Simvastatin"
     ),
     CONMED_ATORVASTATIN = list(
-      description        = "Concomitant atorvastatin indicator, 1 = receiving concomitant atorvastatin, 0 = not receiving atorvastatin",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant atorvastatin indicator, 1 = receiving concomitant atorvastatin, 0 = not receiving atorvastatin",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant atorvastatin; the F1 = 1 anchor)",
-      notes              = "Proportional-shift covariate on relative oral bioavailability F1 (+0.142) in the PK layer (Table 2, footnote b). Not retained in the PD layer.",
-      source_name        = "Atorvastatin"
+      notes = "Proportional-shift covariate on relative oral bioavailability F1 (+0.142) in the PK layer (Table 2, footnote b). Not retained in the PD layer.",
+      source_name = "Atorvastatin"
     ),
     CONMED_STATIN_LI = list(
-      description        = "Concomitant low-intensity statin indicator, 1 = receiving a low-intensity statin regimen, 0 = not on a low-intensity statin",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant low-intensity statin indicator, 1 = receiving a low-intensity statin regimen, 0 = not on a low-intensity statin",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant statin of this intensity; the model reference is no concomitant statin at all, i.e. all three intensity indicators = 0)",
-      notes              = "Proportional-shift covariate on Imax (-0.238) and on baseline LDL-C (-0.159) in the PD layer (Table 3). The three intensity indicators are mutually exclusive: at most one may be 1 for a given patient. Jadhav 2023 Results: low-intensity statin + bempedoic acid gives -23.7% (90% CI -26.3, -21.4) LDL-C change from baseline vs. -30.5% (90% CI -31.6, -29.6) for bempedoic acid without concomitant statin.",
-      source_name        = "Low-intensity statin"
+      notes = "Proportional-shift covariate on Imax (-0.238) and on baseline LDL-C (-0.159) in the PD layer (Table 3). The three intensity indicators are mutually exclusive: at most one may be 1 for a given patient. Jadhav 2023 Results: low-intensity statin + bempedoic acid gives -23.7% (90% CI -26.3, -21.4) LDL-C change from baseline vs. -30.5% (90% CI -31.6, -29.6) for bempedoic acid without concomitant statin.",
+      source_name = "Low-intensity statin"
     ),
     CONMED_STATIN_MI = list(
-      description        = "Concomitant moderate-intensity statin indicator, 1 = receiving a moderate-intensity statin regimen, 0 = not on a moderate-intensity statin",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant moderate-intensity statin indicator, 1 = receiving a moderate-intensity statin regimen, 0 = not on a moderate-intensity statin",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant statin of this intensity)",
-      notes              = "Proportional-shift covariate on Imax (-0.302) and on baseline LDL-C (-0.268) in the PD layer (Table 3). Mutually exclusive with CONMED_STATIN_LI and CONMED_STATIN_HI. Jadhav 2023 Results: -21.8% (90% CI -22.6, -20.9) LDL-C change from baseline.",
-      source_name        = "Moderate-intensity statin"
+      notes = "Proportional-shift covariate on Imax (-0.302) and on baseline LDL-C (-0.268) in the PD layer (Table 3). Mutually exclusive with CONMED_STATIN_LI and CONMED_STATIN_HI. Jadhav 2023 Results: -21.8% (90% CI -22.6, -20.9) LDL-C change from baseline.",
+      source_name = "Moderate-intensity statin"
     ),
     CONMED_STATIN_HI = list(
-      description        = "Concomitant high-intensity statin indicator, 1 = receiving a high-intensity statin regimen, 0 = not on a high-intensity statin",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant high-intensity statin indicator, 1 = receiving a high-intensity statin regimen, 0 = not on a high-intensity statin",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant statin of this intensity)",
-      notes              = "Proportional-shift covariate on Imax (-0.424) and on baseline LDL-C (-0.293) in the PD layer (Table 3). Mutually exclusive with CONMED_STATIN_LI and CONMED_STATIN_MI. Jadhav 2023 Results: -18.0% (90% CI -18.7, -17.4) LDL-C change from baseline; the larger baseline-LDL-C reduction offsets the smaller fractional change so that absolute steady-state LDL-C is similar to the moderate-intensity group (Online Resource 5: 83.99 vs. 83.18 mg/dL).",
-      source_name        = "High-intensity statin"
+      notes = "Proportional-shift covariate on Imax (-0.424) and on baseline LDL-C (-0.293) in the PD layer (Table 3). Mutually exclusive with CONMED_STATIN_LI and CONMED_STATIN_MI. Jadhav 2023 Results: -18.0% (90% CI -18.7, -17.4) LDL-C change from baseline; the larger baseline-LDL-C reduction offsets the smaller fractional change so that absolute steady-state LDL-C is similar to the moderate-intensity group (Online Resource 5: 83.99 vs. 83.18 mg/dL).",
+      source_name = "High-intensity statin"
     ),
     PRIOR_STATIN = list(
-      description        = "Prior statin therapy indicator, 1 = patient was on established statin therapy before study entry, 0 = statin-naive at study entry",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior statin therapy indicator, 1 = patient was on established statin therapy before study entry, 0 = statin-naive at study entry",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no prior statin therapy)",
-      notes              = "Proportional-shift covariate on Imax (-0.373) and on baseline LDL-C (-0.296) in the PD layer (Table 3, rows 'Statin prior therapy'). Distinct from the concomitant-intensity indicators: PD covariate screening included 'prior established LMTs' separately from 'concomitant medication (low-, moderate-, or high-intensity statin or ezetimibe)' (Methods, PD model covariate analysis). Online Resource 5: prior-statin patients show -18.83% (90% CI -24.2, -15.34) LDL-C change from baseline vs. -23.32% for statin-naive.",
-      source_name        = "Statin prior therapy"
+      notes = "Proportional-shift covariate on Imax (-0.373) and on baseline LDL-C (-0.296) in the PD layer (Table 3, rows 'Statin prior therapy'). Distinct from the concomitant-intensity indicators: PD covariate screening included 'prior established LMTs' separately from 'concomitant medication (low-, moderate-, or high-intensity statin or ezetimibe)' (Methods, PD model covariate analysis). Online Resource 5: prior-statin patients show -18.83% (90% CI -24.2, -15.34) LDL-C change from baseline vs. -23.32% for statin-naive.",
+      source_name = "Statin prior therapy"
     ),
     PRIOR_EZE = list(
-      description        = "Prior ezetimibe therapy indicator, 1 = patient was on established ezetimibe therapy before study entry, 0 = ezetimibe-naive at study entry",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior ezetimibe therapy indicator, 1 = patient was on established ezetimibe therapy before study entry, 0 = ezetimibe-naive at study entry",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no prior ezetimibe therapy)",
-      notes              = "Proportional-shift covariate on baseline LDL-C (-0.0596) in the PD layer (Table 3, row 'Ezetimibe prior therapy'). Distinct from CONMED_EZE (concomitant ezetimibe), which acts on Imax and on CL/F. Online Resource 5 reports both a 'Prior Treatment (Ezetimibe : No Ezetimibe)' and a 'Concomitant Treatment (Ezetimibe : No Ezetimibe)' contrast, confirming they are separate columns in the analysis dataset.",
-      source_name        = "Ezetimibe prior therapy"
+      notes = "Proportional-shift covariate on baseline LDL-C (-0.0596) in the PD layer (Table 3, row 'Ezetimibe prior therapy'). Distinct from CONMED_EZE (concomitant ezetimibe), which acts on Imax and on CL/F. Online Resource 5 reports both a 'Prior Treatment (Ezetimibe : No Ezetimibe)' and a 'Concomitant Treatment (Ezetimibe : No Ezetimibe)' contrast, confirming they are separate columns in the analysis dataset.",
+      source_name = "Ezetimibe prior therapy"
     ),
     FED = list(
-      description        = "Fed-state dose-record indicator, 1 = dose administered with food, 0 = fasted",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-state dose-record indicator, 1 = dose administered with food, 0 = fasted",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Proportional-shift covariate on Ka (-0.777) in the PK layer (Table 2). Per-dose-record indicator; food slows absorption by 78% without changing the extent of absorption (Discussion).",
-      source_name        = "Food"
+      notes = "Proportional-shift covariate on Ka (-0.777) in the PK layer (Table 2). Per-dose-record indicator; food slows absorption by 78% without changing the extent of absorption (Discussion).",
+      source_name = "Food"
     ),
     SAMPLE_INTENSIVE = list(
-      description        = "Per-observation sampling-intensity indicator, 1 = serial (intensive) PK sampling, 0 = sparse PK sampling",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Per-observation sampling-intensity indicator, 1 = serial (intensive) PK sampling, 0 = sparse PK sampling",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (sparse PK sampling)",
-      notes              = "Record-level indicator that switches the PK proportional residual-error magnitude between 31.9% (serial) and 54.3% (sparse), Jadhav 2023 Table 2. Applies only to the Cc endpoint; the LDL-C endpoint has a single additive-plus-proportional residual (Table 3).",
-      source_name        = "SAMPLE_INTENSIVE"
+      notes = "Record-level indicator that switches the PK proportional residual-error magnitude between 31.9% (serial) and 54.3% (sparse), Jadhav 2023 Table 2. Applies only to the Cc endpoint; the LDL-C endpoint has a single additive-plus-proportional residual (Table 3).",
+      source_name = "SAMPLE_INTENSIVE"
     )
   )
 
   population <- list(
-    species                = "human",
-    n_subjects             = 4459L,
-    n_subjects_treated     = 2984L,
-    n_subjects_placebo     = 1475L,
-    n_observations_ldlc    = 27534L,
-    n_studies              = 15L,
-    phases                 = "Three phase 1, eight phase 2, and four phase 3 studies (a subset of the 22 popPK studies; Online Resource 1)",
-    age_range              = "21.0-91.0 years (bempedoic acid arm); 20.0-88.0 years (placebo arm)",
-    age_median             = "64.0 years (bempedoic acid arm, mean 63.3, SD 10.2)",
-    weight_range           = "42.5-160 kg (bempedoic acid arm)",
-    weight_median          = "84.5 kg (bempedoic acid arm, mean 86.0, SD 17.3)",
-    sex_female_pct         = 36.4,
-    race_ethnicity         = c(White = 92.5, Black = 5.6, Asian = 1.1, NativeAmerican = 0.1, NativeHawaiian = 0.2, Other = 0.5),
-    disease_state          = "Patients with hyperlipidemia (97.7%), including cohorts with prior ASCVD and/or heterozygous familial hypercholesterolemia on maximally tolerated statin therapy and cohorts with statin intolerance; 21.1% had type 2 diabetes mellitus. A single phase 1 study (Study 04) contributed 24 healthy subjects.",
-    ldlc_baseline          = "Observed median baseline LDL-C 113 mg/dL (mean 122, SD 39.2, range 48.0-422) in the bempedoic acid arm and 110 mg/dL (mean 118, SD 38.2, range 38.0-411) in the placebo arm. Both arms include patients on stable background lipid-modifying therapy at Day 1 and patients with no ongoing LMT.",
-    dose_range             = "Oral bempedoic acid 60-240 mg once daily (commercial regimen 180 mg once daily), or matching placebo. Placebo-treated participants entered the popPK/PD model with a bempedoic acid concentration of 0 ug/mL.",
-    regions                = "Multi-regional pool of 15 Esperion-sponsored clinical studies.",
-    notes                  = "Demographics from Jadhav 2023 Table 1 (popPK/PD columns). The PD layer was fit sequentially, conditioned on individual post hoc PK parameters from the popPK model; for the 989 (33%) bempedoic-acid-treated patients without measurable plasma concentrations, population-predicted concentrations were used. Patients and treatment periods with < 80% compliance were excluded. LDL-C data from the phase 3 studies are minimally informative about the dynamic onset of response because the first post-baseline LDL-C sample was collected on Day 29, near steady state."
+    species = "human",
+    n_subjects = 4459L,
+    n_subjects_treated = 2984L,
+    n_subjects_placebo = 1475L,
+    n_observations_ldlc = 27534L,
+    n_studies = 15L,
+    phases = "Three phase 1, eight phase 2, and four phase 3 studies (a subset of the 22 popPK studies; Online Resource 1)",
+    age_range = "21.0-91.0 years (bempedoic acid arm); 20.0-88.0 years (placebo arm)",
+    age_median = "64.0 years (bempedoic acid arm, mean 63.3, SD 10.2)",
+    weight_range = "42.5-160 kg (bempedoic acid arm)",
+    weight_median = "84.5 kg (bempedoic acid arm, mean 86.0, SD 17.3)",
+    sex_female_pct = 36.4,
+    race_ethnicity = c(White = 92.5, Black = 5.6, Asian = 1.1, NativeAmerican = 0.1, NativeHawaiian = 0.2, Other = 0.5),
+    disease_state = "Patients with hyperlipidemia (97.7%), including cohorts with prior ASCVD and/or heterozygous familial hypercholesterolemia on maximally tolerated statin therapy and cohorts with statin intolerance; 21.1% had type 2 diabetes mellitus. A single phase 1 study (Study 04) contributed 24 healthy subjects.",
+    ldlc_baseline = "Observed median baseline LDL-C 113 mg/dL (mean 122, SD 39.2, range 48.0-422) in the bempedoic acid arm and 110 mg/dL (mean 118, SD 38.2, range 38.0-411) in the placebo arm. Both arms include patients on stable background lipid-modifying therapy at Day 1 and patients with no ongoing LMT.",
+    dose_range = "Oral bempedoic acid 60-240 mg once daily (commercial regimen 180 mg once daily), or matching placebo. Placebo-treated participants entered the popPK/PD model with a bempedoic acid concentration of 0 ug/mL.",
+    regions = "Multi-regional pool of 15 Esperion-sponsored clinical studies.",
+    notes = "Demographics from Jadhav 2023 Table 1 (popPK/PD columns). The PD layer was fit sequentially, conditioned on individual post hoc PK parameters from the popPK model; for the 989 (33%) bempedoic-acid-treated patients without measurable plasma concentrations, population-predicted concentrations were used. Patients and treatment periods with < 80% compliance were excluded. LDL-C data from the phase 3 studies are minimally informative about the dynamic onset of response because the first post-baseline LDL-C sample was collected on Day 29, near steady state."
   )
 
   ini({

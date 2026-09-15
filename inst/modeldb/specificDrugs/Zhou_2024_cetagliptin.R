@@ -1,16 +1,16 @@
 Zhou_2024_cetagliptin <- function() {
   description <- "Two-compartment population PK model with first-order absorption and saturable Michaelis-Menten elimination for cetagliptin, coupled by a direct-effect sigmoid Emax model to plasma DPP-4 inhibition, in Chinese patients with type 2 diabetes mellitus. Total bilirubin is a power covariate on the peripheral volume of distribution."
-  reference   <- "Zhou C, Zhou S, Wang J, Xie L, Lv Z, Zhao Y, Wang L, Luo H, Xie D, Shao F. Safety, tolerability, pharmacokinetics and pharmacokinetic-pharmacodynamic modeling of cetagliptin in patients with type 2 diabetes mellitus. Front Endocrinol (Lausanne). 2024;15:1359407. doi:10.3389/fendo.2024.1359407"
-  vignette    <- "Zhou_2024_cetagliptin"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Zhou C, Zhou S, Wang J, Xie L, Lv Z, Zhao Y, Wang L, Luo H, Xie D, Shao F. Safety, tolerability, pharmacokinetics and pharmacokinetic-pharmacodynamic modeling of cetagliptin in patients with type 2 diabetes mellitus. Front Endocrinol (Lausanne). 2024;15:1359407. doi:10.3389/fendo.2024.1359407"
+  vignette <- "Zhou_2024_cetagliptin"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     TBILI = list(
-      description        = "Total serum bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the Zhou 2024 final population PK model.",
         "Supplementary Table 1 reports the coefficient dV2dTBIL = 0.3723 (RSE 3.066%)",
         "under the Phoenix NLME naming convention dPARAMdCOVARIATE, and Discussion",
@@ -29,7 +29,7 @@ Zhou_2024_cetagliptin <- function() {
         "Chinese clinical-chemistry laboratories report total bilirubin in umol/L, which",
         "is also the canonical unit for this column."
       ),
-      source_name        = "TBIL"
+      source_name = "TBIL"
     )
   )
 
@@ -51,122 +51,122 @@ Zhou_2024_cetagliptin <- function() {
 
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female (screened, not retained)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female (screened, not retained)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(screened_not_retained, "Source term: 'gender'."),
-      source_name        = "gender"
+      notes = paste(screened_not_retained, "Source term: 'gender'."),
+      source_name = "gender"
     ),
     WT = list(
-      description        = "Body weight (screened, not retained)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (screened, not retained)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(screened_not_retained, "Source term: 'body weight'."),
-      source_name        = "body weight"
+      notes = paste(screened_not_retained, "Source term: 'body weight'."),
+      source_name = "body weight"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase (screened, not retained)",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase (screened, not retained)",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         screened_not_retained,
         "Source term: 'glutamic-pyruvic transaminase', the older name for ALT."
       ),
-      source_name        = "glutamic-pyruvic transaminase"
+      source_name = "glutamic-pyruvic transaminase"
     ),
     TRIG = list(
-      description        = "Triglycerides (screened, not retained)",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Triglycerides (screened, not retained)",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         screened_not_retained,
         "Source term: 'triglyceride'. Units assumed mmol/L, the SI convention",
         "used by Chinese clinical-chemistry laboratories; the paper does not",
         "state the unit because no effect was retained."
       ),
-      source_name        = "triglyceride"
+      source_name = "triglyceride"
     ),
     LDLC = list(
-      description        = "Low-density lipoprotein cholesterol (screened, not retained)",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Low-density lipoprotein cholesterol (screened, not retained)",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         screened_not_retained,
         "Source term: 'low-density lipoprotein cholesterol'. Units assumed",
         "mmol/L per the SI convention; not stated in the paper."
       ),
-      source_name        = "low-density lipoprotein cholesterol"
+      source_name = "low-density lipoprotein cholesterol"
     ),
     FPG = list(
-      description        = "Fasting plasma glucose at baseline (screened, not retained)",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Fasting plasma glucose at baseline (screened, not retained)",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         screened_not_retained,
         "Source term: 'glucose'. Recorded as FPG rather than the time-varying",
         "regressor canonical GLU because the study measured fasting plasma",
         "glucose as a baseline clinical-chemistry value (Table 1 reports",
         "baseline FPG in mmol/L), not as a within-subject glucose input."
       ),
-      source_name        = "glucose"
+      source_name = "glucose"
     ),
     BUN = list(
-      description        = "Blood urea (screened, not retained)",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Blood urea (screened, not retained)",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         screened_not_retained,
         "Source term: 'urea'. Chinese clinical-chemistry laboratories report",
         "urea in mmol/L rather than as mg/dL of urea nitrogen; 1 mmol/L urea",
         "is about 2.80 mg/dL BUN."
       ),
-      source_name        = "urea"
+      source_name = "urea"
     ),
     CREAT = list(
-      description        = "Serum creatinine (screened, not retained)",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine (screened, not retained)",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         screened_not_retained,
         "Source term: 'creatinine'. Recorded as CREAT (serum creatinine)",
         "rather than CRCL: the paper screened the measured serum concentration,",
         "not a derived creatinine clearance. Units assumed umol/L per the SI",
         "convention; not stated in the paper."
       ),
-      source_name        = "creatinine"
+      source_name = "creatinine"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "cetagliptin", units = "ug", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "cetagliptin", units = "ug", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "cetagliptin", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "cetagliptin", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "cetagliptin", units = "ug", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
     n_observations = 560L,
-    age_range      = "18-65 years (protocol inclusion criterion)",
-    age_median     = "mean 47.80 (SD 4.32) years in the 50 mg arm and 45.20 (SD 9.83) years in the 100 mg arm",
-    weight_range   = "male >= 50.0 kg, female >= 45.0 kg (protocol inclusion criterion)",
-    weight_median  = "mean 69.55 (SD 7.63) kg in the 50 mg arm and 72.56 (SD 7.62) kg in the 100 mg arm",
+    age_range = "18-65 years (protocol inclusion criterion)",
+    age_median = "mean 47.80 (SD 4.32) years in the 50 mg arm and 45.20 (SD 9.83) years in the 100 mg arm",
+    weight_range = "male >= 50.0 kg, female >= 45.0 kg (protocol inclusion criterion)",
+    weight_median = "mean 69.55 (SD 7.63) kg in the 50 mg arm and 72.56 (SD 7.62) kg in the 100 mg arm",
     sex_female_pct = 20,
     race_ethnicity = "Chinese (single-centre study at the First Affiliated Hospital with Nanjing Medical University)",
-    disease_state  = "Type 2 diabetes mellitus (WHO 1999 criteria), newly diagnosed and untreated or controlled by diet and exercise with no hypoglycaemic drugs in the preceding 12 weeks. Inclusion required 6.5% <= HbA1c < 9%, fasting blood glucose < 13.4 mmol/L, and BMI 19.00-30.00 kg/m2. Baseline HbA1c was 8.21 (SD 0.66)% in the 50 mg arm and 7.79 (SD 0.53)% in the 100 mg arm; baseline fasting plasma glucose was 7.96 (SD 1.29) and 6.87 (SD 1.40) mmol/L (Table 1).",
-    dose_range     = "50 mg or 100 mg cetagliptin orally once daily under fasting conditions for 14 consecutive days",
-    regions        = "China (Nanjing; single centre, CTR20190599)",
+    disease_state = "Type 2 diabetes mellitus (WHO 1999 criteria), newly diagnosed and untreated or controlled by diet and exercise with no hypoglycaemic drugs in the preceding 12 weeks. Inclusion required 6.5% <= HbA1c < 9%, fasting blood glucose < 13.4 mmol/L, and BMI 19.00-30.00 kg/m2. Baseline HbA1c was 8.21 (SD 0.66)% in the 50 mg arm and 7.79 (SD 0.53)% in the 100 mg arm; baseline fasting plasma glucose was 7.96 (SD 1.29) and 6.87 (SD 1.40) mmol/L (Table 1).",
+    dose_range = "50 mg or 100 mg cetagliptin orally once daily under fasting conditions for 14 consecutive days",
+    regions = "China (Nanjing; single centre, CTR20190599)",
     hepatic_function = "No subject had clinically significant abnormal liver function (Results section 3.2).",
-    notes          = paste(
+    notes = paste(
       "Randomised, double-blind, placebo- and positive-controlled single- and",
       "multiple-dose study. 32 Chinese adults with T2DM were enrolled in two dose",
       "groups of 16, randomised 10:2:4 within each group to cetagliptin (50 or",

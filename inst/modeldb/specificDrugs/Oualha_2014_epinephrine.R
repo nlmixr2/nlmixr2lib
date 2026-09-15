@@ -25,53 +25,53 @@ Oualha_2014_epinephrine <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL and q0 with paper-fixed exponent 0.75, and linear scaling on Vc (Vc = 0.08*WT L per Eq. 5 of Oualha 2014, citing Linderkamp et al. circulating-volume formula). Cohort WT range 2.5-58 kg (median 4.5 kg), Table 1.",
-      source_name        = "BW"
+      notes = "Allometric scaling on CL and q0 with paper-fixed exponent 0.75, and linear scaling on Vc (Vc = 0.08*WT L per Eq. 5 of Oualha 2014, citing Linderkamp et al. circulating-volume formula). Cohort WT range 2.5-58 kg (median 4.5 kg), Table 1.",
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Subject age in years",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age in years",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Paper reports age in months and parameterises HR0 and SV*SVR0 as power-of-age effects (age in months). The canonical AGE column in nlmixr2lib carries years; model() converts AGE-years to AGE-months internally (age_mo = AGE * 12). Cohort age range 0.1-189 months (median 3.9 months) per Table 1.",
-      source_name        = "AGE"
+      notes = "Paper reports age in months and parameterises HR0 and SV*SVR0 as power-of-age effects (age in months). The canonical AGE column in nlmixr2lib carries years; model() converts AGE-years to AGE-months internally (age_mo = AGE * 12). Cohort age range 0.1-189 months (median 3.9 months) per Table 1.",
+      source_name = "AGE"
     ),
     RACHS1 = list(
-      description        = "RACHS-1 (Risk Adjustment for Congenital Heart Surgery) category, 2-4 in this cohort.",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "RACHS-1 (Risk Adjustment for Congenital Heart Surgery) category, 2-4 in this cohort.",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = "2 (low risk; baseline SV*SVR_max = 0.44)",
-      notes              = "Oualha 2014 pools RACHS-1 categories 3 and 4 (higher risk) versus category 2 (lower risk) and estimates two separate typical values for SV*SVR_max: 0.44 (RACHS-1 = 2) and 0.26 (RACHS-1 = 3 or 4). Decomposed inside model() into a binary indicator rachs1_high (= (RACHS1 >= 3)) that selects the high-risk shift. Cohort distribution: 16 patients in category 2, 17 in category 3, 6 in category 4 (Table 1).",
-      source_name        = "RACHS-1"
+      notes = "Oualha 2014 pools RACHS-1 categories 3 and 4 (higher risk) versus category 2 (lower risk) and estimates two separate typical values for SV*SVR_max: 0.44 (RACHS-1 = 2) and 0.26 (RACHS-1 = 3 or 4). Decomposed inside model() into a binary indicator rachs1_high (= (RACHS1 >= 3)) that selects the high-risk shift. Cohort distribution: 16 patients in category 2, 17 in category 3, 6 in category 4 (Table 1).",
+      source_name = "RACHS-1"
     ),
     CVP = list(
-      description        = "Central venous pressure",
-      units              = "mmHg",
-      type               = "continuous",
+      description = "Central venous pressure",
+      units = "mmHg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the MAP equation additively (Eq. 7: MAP = HR * SV*SVR + CVP). Cohort median 11 mmHg (range 8-15) per Results. The model supports a per-subject column; if absent the vignette uses the cohort median 11 mmHg as a constant.",
-      source_name        = "CVP"
+      notes = "Enters the MAP equation additively (Eq. 7: MAP = HR * SV*SVR + CVP). Cohort median 11 mmHg (range 8-15) per Results. The model supports a per-subject column; if absent the vignette uses the cohort median 11 mmHg as a constant.",
+      source_name = "CVP"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 39L,
-    n_studies      = 1L,
-    age_range      = "0.1-189 months (paediatric; including 5 preterm neonates at GA 33-36 weeks)",
-    age_median     = "3.9 months",
-    weight_range   = "2.5-58 kg",
-    weight_median  = "4.5 kg",
+    species = "human",
+    n_subjects = 39L,
+    n_studies = 1L,
+    age_range = "0.1-189 months (paediatric; including 5 preterm neonates at GA 33-36 weeks)",
+    age_median = "3.9 months",
+    weight_range = "2.5-58 kg",
+    weight_median = "4.5 kg",
     sex_female_pct = 33.3,
     race_ethnicity = "Not reported (single-centre French paediatric cardiovascular intensive care unit).",
-    disease_state  = "Critically ill children requiring continuous IV epinephrine after open heart surgical repair for congenital heart defects under cardiopulmonary bypass, co-administered with milrinone (0.3-0.7 ug/kg/min) to prevent low cardiac output syndrome.",
-    dose_range     = "Continuous IV infusion 0.01-0.23 ug/kg/min (median 0.07) via central venous catheter; infusion duration median 1.5 days (range 1-13).",
-    regions        = "France (Hopital Necker Enfants-Malades, Paris).",
-    notes          = "Per Table 1 of Oualha 2014. 26 of 39 patients were male (66.6%); 11 were preoperatively cyanotic; 19 were malnourished (< 2 SD); 9 met the LCOS definition. RACHS-1 distribution: category 2 n=16, category 3 n=17, category 4 n=6. Concentrations measured at baseline (C0, n=33), after at least 60 minutes of infusion (C1, n=39), and 40 minutes after a flow-rate change or before the 6 hour cutoff (C2, n=25); 97 PK observations, 434 HR, 464 MAP, 101 glucose, 140 lactate observations."
+    disease_state = "Critically ill children requiring continuous IV epinephrine after open heart surgical repair for congenital heart defects under cardiopulmonary bypass, co-administered with milrinone (0.3-0.7 ug/kg/min) to prevent low cardiac output syndrome.",
+    dose_range = "Continuous IV infusion 0.01-0.23 ug/kg/min (median 0.07) via central venous catheter; infusion duration median 1.5 days (range 1-13).",
+    regions = "France (Hopital Necker Enfants-Malades, Paris).",
+    notes = "Per Table 1 of Oualha 2014. 26 of 39 patients were male (66.6%); 11 were preoperatively cyanotic; 19 were malnourished (< 2 SD); 9 met the LCOS definition. RACHS-1 distribution: category 2 n=16, category 3 n=17, category 4 n=6. Concentrations measured at baseline (C0, n=33), after at least 60 minutes of infusion (C1, n=39), and 40 minutes after a flow-rate change or before the 6 hour cutoff (C2, n=25); 97 PK observations, 434 HR, 464 MAP, 101 glucose, 140 lactate observations."
   )
 
   ini({

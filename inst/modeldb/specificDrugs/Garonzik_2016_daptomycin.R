@@ -3,8 +3,8 @@ Garonzik_2016_daptomycin <- function() {
   reference <- "Garonzik SM, Lenhard JR, Forrest A, Holden PN, Bulitta JB, Tsuji BT. Defining the active fraction of daptomycin against methicillin-resistant Staphylococcus aureus (MRSA) using a pharmacokinetic and pharmacodynamic approach. PLoS ONE. 2016;11(6):e0156131. doi:10.1371/journal.pone.0156131."
   vignette <- "Garonzik_2016_daptomycin"
   units <- list(
-    time          = "h",
-    dosing        = "mg/L (static initial daptomycin concentration in the broth)",
+    time = "h",
+    dosing = "mg/L (static initial daptomycin concentration in the broth)",
     concentration = "log10 CFU/mL (observation); mg/L (daptomycin state)"
   )
 
@@ -13,22 +13,52 @@ Garonzik_2016_daptomycin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    dap                = list(analyte = "daptomycin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_susceptible1  = list(analyte = "Staphylococcus aureus (susceptible, vegetative)", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
-    bact_susceptible2  = list(analyte = "Staphylococcus aureus (susceptible, replicating)", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
-    bact_intermediate1 = list(analyte = "Staphylococcus aureus (intermediate, vegetative)", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
-    bact_intermediate2 = list(analyte = "Staphylococcus aureus (intermediate, replicating)", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
-    bact_resistant1    = list(analyte = "Staphylococcus aureus (resistant, vegetative)", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
-    bact_resistant2    = list(analyte = "Staphylococcus aureus (resistant, replicating)", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE)
+    dap = list(analyte = "daptomycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible1 = list(
+      analyte = "Staphylococcus aureus (susceptible, vegetative)",
+      units = NA_character_,
+      specimen = "bronchoalveolar lavage",
+      verified = FALSE
+    ),
+    bact_susceptible2 = list(
+      analyte = "Staphylococcus aureus (susceptible, replicating)",
+      units = NA_character_,
+      specimen = "bronchoalveolar lavage",
+      verified = FALSE
+    ),
+    bact_intermediate1 = list(
+      analyte = "Staphylococcus aureus (intermediate, vegetative)",
+      units = NA_character_,
+      specimen = "bronchoalveolar lavage",
+      verified = FALSE
+    ),
+    bact_intermediate2 = list(
+      analyte = "Staphylococcus aureus (intermediate, replicating)",
+      units = NA_character_,
+      specimen = "bronchoalveolar lavage",
+      verified = FALSE
+    ),
+    bact_resistant1 = list(
+      analyte = "Staphylococcus aureus (resistant, vegetative)",
+      units = NA_character_,
+      specimen = "bronchoalveolar lavage",
+      verified = FALSE
+    ),
+    bact_resistant2 = list(
+      analyte = "Staphylococcus aureus (resistant, replicating)",
+      units = NA_character_,
+      specimen = "bronchoalveolar lavage",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     HS = list(
-      description        = "Human serum percentage (v/v) supplementing Mueller-Hinton broth in the in-vitro time-kill experiment",
-      units              = "% v/v",
-      type               = "categorical",
+      description = "Human serum percentage (v/v) supplementing Mueller-Hinton broth in the in-vitro time-kill experiment",
+      units = "% v/v",
+      type = "categorical",
       reference_category = "0 (no human serum; factive forced to 1)",
-      notes              = paste(
+      notes = paste(
         "Five experimental levels were studied: HS in {0, 10, 30, 50, 70}.",
         "Drives the active-fraction factive(HS) that multiplies the total",
         "static daptomycin concentration to give the effective concentration",
@@ -45,24 +75,24 @@ Garonzik_2016_daptomycin <- function() {
         "for human pop-PK covariates and does not apply to this in-vitro",
         "PD model)."
       ),
-      source_name        = "% Human Serum (paper Methods + Table 2)"
+      source_name = "% Human Serum (paper Methods + Table 2)"
     )
   )
 
   population <- list(
-    species             = "in vitro (Staphylococcus aureus USA300 NRS384/FRP3757, methicillin-resistant CA-MRSA reference strain)",
-    n_subjects          = NA_integer_,
-    n_studies           = 1L,
-    organism            = "Staphylococcus aureus USA300 (NRS 384, FRP3757), daptomycin MIC = 0.5 mg/L. MBM was fit to USA300 only -- selected as the most common pulsed-field gel electrophoresis type in the USA.",
-    second_strain       = "Time-kill data were also collected for VISA Mu50 (NRS 4, HIP5836), daptomycin MIC = 1.0 mg/L, but the MBM was NOT fit to Mu50 (Hill-only PD parameters for Mu50 in Table 1; this model file reproduces the MBM in Table 2 for USA300).",
-    system              = "Static time-kill experiments, 24-hour exposure, dense sampling at 0, 1, 2, 4, 8, 24 h.",
-    medium              = "Mueller-Hinton broth supplemented with calcium and magnesium (12.5 mg/L; supplemented Mueller-Hinton broth, SMHB) plus heat-inactivated human serum at the specified HS percentage. Calcium concentration in each batch titrated to physiologic conditions (1.1-1.3 mmol/L).",
-    temperature         = "35 C (standard bacteriology incubation for S. aureus).",
-    duration            = "24 h.",
-    starting_inoculum   = "approximately 10^6 CFU/mL (model estimate Log10CFU0 = 6.22, Table 2).",
+    species = "in vitro (Staphylococcus aureus USA300 NRS384/FRP3757, methicillin-resistant CA-MRSA reference strain)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Staphylococcus aureus USA300 (NRS 384, FRP3757), daptomycin MIC = 0.5 mg/L. MBM was fit to USA300 only -- selected as the most common pulsed-field gel electrophoresis type in the USA.",
+    second_strain = "Time-kill data were also collected for VISA Mu50 (NRS 4, HIP5836), daptomycin MIC = 1.0 mg/L, but the MBM was NOT fit to Mu50 (Hill-only PD parameters for Mu50 in Table 1; this model file reproduces the MBM in Table 2 for USA300).",
+    system = "Static time-kill experiments, 24-hour exposure, dense sampling at 0, 1, 2, 4, 8, 24 h.",
+    medium = "Mueller-Hinton broth supplemented with calcium and magnesium (12.5 mg/L; supplemented Mueller-Hinton broth, SMHB) plus heat-inactivated human serum at the specified HS percentage. Calcium concentration in each batch titrated to physiologic conditions (1.1-1.3 mmol/L).",
+    temperature = "35 C (standard bacteriology incubation for S. aureus).",
+    duration = "24 h.",
+    starting_inoculum = "approximately 10^6 CFU/mL (model estimate Log10CFU0 = 6.22, Table 2).",
     concentration_range = "Daptomycin 0, 0.125 (USA300 only), 0.25, 0.5, 1, 2, 4, 8, 16, 32, 64, 128 mg/L (and 256 mg/L for USA300 per Fig 2 legend); the MBM in Table 2 was fit to these static-concentration time-kill data.",
-    hs_options          = "0%, 10%, 30%, 50%, 70% v/v human serum / SMHB.",
-    notes               = paste(
+    hs_options = "0%, 10%, 30%, 50%, 70% v/v human serum / SMHB.",
+    notes = paste(
       "In-vitro pharmacodynamic study; no human or animal subjects. Limit",
       "of detection 10^2 CFU/mL (5 colonies per agar plate from an",
       "undiluted sample). Bactericidal activity defined as >=3.0 log10",

@@ -30,18 +30,18 @@ deWit_2016_everolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "everolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "everolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "everolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed body weight used for allometric scaling of apparent",
         "clearance (exponent 0.75) and apparent central volume",
         "(exponent 1.0) at a 70 kg reference per Anderson and Holford",
@@ -51,19 +51,19 @@ deWit_2016_everolimus <- function() {
         "the canonical Anderson and Holford adult reference. Median",
         "weight in the cohort was 75 kg (range 45-105 kg) per Table 1."
       ),
-      source_name        = "Weight (kg)"
+      source_name = "Weight (kg)"
     ),
     ABCB1_HAP_TTT = list(
-      description        = paste(
+      description = paste(
         "ABCB1 TTT haplotype carrier indicator (1 = subject carries at",
         "least one TTT haplotype across the rs1128503 / rs2032582 /",
         "rs1045642 ABCB1 SNP block, 0 = no TTT haplotype). Time-fixed",
         "per subject (germline haplotype)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no TTT haplotype)",
-      notes              = paste(
+      notes = paste(
         "Carriers (1+ TTT) and non-carriers were the only contrast",
         "retained after backward elimination (dOFV = 9.6, P < 0.01,",
         "Results paragraph 2). Heterozygote and homozygote TTT carriers",
@@ -75,17 +75,17 @@ deWit_2016_everolimus <- function() {
         "bioavailability via the multiplier theta_TTT = 0.792 on F",
         "(Table 2 final model)."
       ),
-      source_name        = "ABCB1 TTT haplotype carrier (Methods 'Pharmacogenetic analysis', Table 2 final model)"
+      source_name = "ABCB1 TTT haplotype carrier (Methods 'Pharmacogenetic analysis', Table 2 final model)"
     ),
     OCC = list(
-      description        = paste(
+      description = paste(
         "Integer-valued occasion indicator (1 = day 1 sampling, 2 = day",
         "15 sampling). Multi-day steady-state contrast."
       ),
-      units              = "(count)",
-      type               = "categorical",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Day-1 and day-15 are the only two PK sampling occasions in the",
         "study (Methods, 'Pharmacokinetic sample collection and",
         "analysis'). Decomposed inside model() into binary indicators",
@@ -96,21 +96,21 @@ deWit_2016_everolimus <- function() {
         "occasion-1 (the NONMEM $OMEGA BLOCK(1) SAME pattern; nlmixr2",
         "has no SAME shortcut)."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40L,
-    n_studies      = 1L,
-    age_range      = "40-80 years",
-    age_median     = "63 years",
-    weight_range   = "45-105 kg",
-    weight_median  = "75 kg",
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 1L,
+    age_range = "40-80 years",
+    age_median = "63 years",
+    weight_range = "45-105 kg",
+    weight_median = "75 kg",
     sex_female_pct = 47.5,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with advanced thyroid carcinoma enrolled in a phase II",
       "trial (NCT01118065): 26/40 (65%) differentiated, 7/40 (17.5%)",
       "undifferentiated (anaplastic), 7/40 (17.5%) medullary. Two of the",
@@ -118,14 +118,14 @@ deWit_2016_everolimus <- function() {
       "analysis (no samples collected in one; no measurable everolimus",
       "levels in the other)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Everolimus 10 mg orally once daily continuous dosing until tumor",
       "progression / unacceptable toxicity / death / withdrawal. First",
       "dose reduction (when needed) was to 5 mg once daily; second",
       "reduction to 5 mg every other day."
     ),
-    regions        = "The Netherlands (Leiden University Medical Center + University Medical Center Groningen)",
-    notes          = paste(
+    regions = "The Netherlands (Leiden University Medical Center + University Medical Center Groningen)",
+    notes = paste(
       "Demographics from de Wit 2016 Table 1 (median, range). PK",
       "sampling occurred on study days 1 and 15: predose and 1, 2, 3 h",
       "post-dose for everyone (sparse schedule), with an optional",

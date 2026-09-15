@@ -33,21 +33,21 @@ Mehta_2023_pretomanid_mpbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "pretomanid", units = "mg", specimen = "administration site", verified = FALSE),
-    blood       = list(analyte = "pretomanid", units = "mg", specimen = "blood cell", verified = FALSE),
+    depot = list(analyte = "pretomanid", units = "mg", specimen = "administration site", verified = FALSE),
+    blood = list(analyte = "pretomanid", units = "mg", specimen = "blood cell", verified = FALSE),
     peripheral1 = list(analyte = "pretomanid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "pretomanid", units = "mg", specimen = "plasma", verified = FALSE),
-    lesion      = list(analyte = "pretomanid", units = "mg", specimen = "tissue", verified = FALSE),
-    lung        = list(analyte = "pretomanid", units = "mg", specimen = "tissue", verified = FALSE)
+    lesion = list(analyte = "pretomanid", units = "mg", specimen = "tissue", verified = FALSE),
+    lung = list(analyte = "pretomanid", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives cardiac output Qc = 312 * (WT/70)^0.75 L/h, total lung volume 0.0076 * WT L,",
         "blood-reservoir volume 0.0771 * WT L (0.0514 venous + 0.0257 arterial) and the residual",
         "body volume that is split between the two lumped peripheral pools. Also carries the 0.75",
@@ -56,14 +56,14 @@ Mehta_2023_pretomanid_mpbpk <- function() {
         "(Methods 2.2, ESM S1).",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     DOSE_PTM_MG = list(
-      description        = "Pretomanid dose amount for the current administration",
-      units              = "mg",
-      type               = "continuous",
+      description = "Pretomanid dose amount for the current administration",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-dose-record covariate driving the saturable bioavailability",
         "F = Fmax / (1 + DOSE/ED50) with Fmax assumed to be 1 (Table 1 ED50 description).",
         "Must equal the amt of the corresponding dosing record; a 200 mg dose therefore gives",
@@ -72,25 +72,25 @@ Mehta_2023_pretomanid_mpbpk <- function() {
         "algebraically identical to the form used here and avoids a division by the dose amount.",
         sep = " "
       ),
-      source_name        = "dose"
+      source_name = "dose"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 500L,
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 500L,
+    disease_state = paste(
       "Pulmonary (drug-susceptible and multidrug-resistant) tuberculosis with cavitary disease.",
       "Virtual population; cavity presence/absence and cavity size were sampled from the observed",
       "TB-PACTS distributions (Methods 2.2).",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Simulated standard pretomanid dosing of 200 mg once daily (Methods 2.5).",
       "Clinical validation data spanned 50-1200 mg (ESM S1).",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "The structural model and every drug-specific parameter were estimated on mouse data:",
       "plasma after single oral doses of 6-486 mg/kg, plus plasma, lesion and uninvolved-lung",
       "PET-imaging data after intravenous F18-pretomanid (ESM S1). The model was then translated",

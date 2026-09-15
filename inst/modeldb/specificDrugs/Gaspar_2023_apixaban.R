@@ -41,18 +41,18 @@ Gaspar_2023_apixaban <- function() {
   # Methods "Analytical method"), so the model was fitted to, and predicts,
   # plasma concentrations.
   compartmentData <- list(
-    depot       = list(analyte = "apixaban", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "apixaban", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "apixaban", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "apixaban", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "apixaban", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated with the Cockcroft-Gault equation",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated with the Cockcroft-Gault equation",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "RAW Cockcroft-Gault creatinine clearance in mL/min, NOT ",
         "BSA-normalized (Gaspar 2023 Methods 'Covariate model' lists 'creatinine ",
         "clearance [CLcr; Cockcroft and Gault equation]' among the laboratory ",
@@ -71,14 +71,14 @@ Gaspar_2023_apixaban <- function() {
         "reach clearance THROUGH this column and must not be added again as a ",
         "separate allometric term."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     AUC_FEXO = list(
-      description        = "Fexofenadine area under the curve from 2 to 6 h, the Geneva cocktail P-glycoprotein phenotyping index",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Fexofenadine area under the curve from 2 to 6 h, the Geneva cocktail P-glycoprotein phenotyping index",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Individual P-glycoprotein phenotypic activity measured with the Geneva ",
         "cocktail (Bosilkovska 2014) as the area under the fexofenadine ",
         "concentration-time curve from 2 to 6 h after the probe dose (Gaspar 2023 ",
@@ -97,14 +97,14 @@ Gaspar_2023_apixaban <- function() {
         "(digoxin, talinolol) or over a different window is NOT numerically ",
         "interchangeable with this column."
       ),
-      source_name        = "P-gp AUC2-6"
+      source_name = "P-gp AUC2-6"
     ),
     OCC = list(
-      description        = "Integer-valued occasion indicator for inter-occasion-variability multiplexing",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion indicator for inter-occasion-variability multiplexing",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "One occasion is one hospitalization: 'One occasion refers to one ",
         "hospitalization, with six patients being hospitalized twice' (Gaspar ",
         "2023 Methods 'Population pharmacokinetic analysis'), so the 100 ",
@@ -118,7 +118,7 @@ Gaspar_2023_apixaban <- function() {
         "indicators oc1 and oc2 that multiplex the two IOV etas on log-CL. For ",
         "single-occasion records pass OCC = 1 so the first IOV eta applies."
       ),
-      source_name        = "occasion"
+      source_name = "occasion"
     )
   )
 
@@ -127,11 +127,11 @@ Gaspar_2023_apixaban <- function() {
   # because the paper publishes no point estimate for any of them.
   covariatesDataExcluded <- list(
     CYP3A4 = list(
-      description        = "CYP3A4/5 phenotypic activity, Geneva cocktail midazolam metabolic ratio at 2 h",
-      units              = "(ratio)",
-      type               = "continuous",
+      description = "CYP3A4/5 phenotypic activity, Geneva cocktail midazolam metabolic ratio at 2 h",
+      units = "(ratio)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Measured as the 1'-hydroxymidazolam / midazolam concentration ratio at ",
         "2 h (Gaspar 2023 Methods 'Phenotyping'); category means (mean +/- SD) ",
         "75.3 +/- 17.5 for poor metabolizers, 27.0 +/- 14.8 for normal and 13.8 ",
@@ -144,70 +144,92 @@ Gaspar_2023_apixaban <- function() {
         "finding. Sibling to the retained AUC_FEXO P-gp phenotyping index, ",
         "measured in the same cocktail administration."
       ),
-      source_name        = "CYP3A4/5 ratio"
+      source_name = "CYP3A4/5 ratio"
     ),
     WT = list(
-      description = "Body weight", units = "kg", type = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
       notes = "Significant on CL (dOFV = -4.6, p < 0.05) and on Q (dOFV = -6.0, p < 0.05) in univariable screening but not retained after the multivariable and backward-deletion steps; no point estimate published. Median 75 kg, range 44-126 (Table 1). Body weight reaches clearance indirectly through CRCL, which is Cockcroft-Gault-derived.",
       source_name = "Body weight"
     ),
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
       notes = "Significant on CL (dOFV = -20, p < 0.01), Vp (dOFV < -4.0, p < 0.05) and Q (dOFV < -5.5, p < 0.02) in univariable screening but not retained; no point estimate published. Median 77 years, range 51-94 (Table 1). Age reaches clearance indirectly through CRCL.",
       source_name = "Age"
     ),
     SEXF = list(
-      description = "Female sex indicator (1 = female, 0 = male)", units = "(binary)", type = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
       notes = "Reported as 'gender'; significant on Vp (dOFV < -4.0, p < 0.05) and Q (dOFV < -5.5, p < 0.02) in univariable screening but not retained; no point estimate published. 42% female (Table 1).",
       source_name = "Gender"
     ),
     SMOKE = list(
-      description = "Current-smoker indicator", units = "(binary)", type = "binary",
+      description = "Current-smoker indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-smoker)",
       notes = "Significant on CL in univariable screening (dOFV = -10, p < 0.01) but not retained; no point estimate published and the cohort smoking prevalence is not tabulated.",
       source_name = "Smoking status"
     ),
     BUN = list(
-      description = "Blood urea", units = "mmol/L", type = "continuous",
+      description = "Blood urea",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Reported by the paper as 'urea'. Significant on CL in univariable screening (dOFV = -12, p < 0.01) but not retained; no point estimate published. Median 7.3 mmol/L, range 1.1-37.7 (Table 1). Collinear with CRCL.",
       source_name = "Urea"
     ),
     ALB = list(
-      description = "Serum albumin", units = "g/L", type = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Significant on CL in univariable screening (dOFV = -8.8, p < 0.01) but not retained; no point estimate published. Median 37 g/L, range 24-62 (Table 1).",
       source_name = "Albumin"
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Significant on CL in univariable screening (dOFV = -5.8, p < 0.05) but not retained; no point estimate published. Median 21 U/L, range 9-286 (Table 1).",
       source_name = "AST"
     ),
     ALT = list(
-      description = "Alanine aminotransferase", units = "U/L", type = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Screened and not significant ('any of the other tested covariates (dOFV > -3.7, p > 0.05)'); no point estimate published. Median 22 U/L, range 5-424 (Table 1).",
       source_name = "ALT"
     ),
     ALP = list(
-      description = "Alkaline phosphatase", units = "U/L", type = "continuous",
+      description = "Alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Screened and not significant; no point estimate published. Median 69 U/L, range 14-295 (Table 1).",
       source_name = "Alkaline phosphatase"
     ),
     GGT = list(
-      description = "Gamma-glutamyl transferase", units = "U/L", type = "continuous",
+      description = "Gamma-glutamyl transferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Screened and not significant; no point estimate published. Median 41 U/L, range 6-662 (Table 1).",
       source_name = "Gamma-glutamyl transferase"
     ),
     TBILI = list(
-      description = "Total bilirubin", units = "umol/L", type = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Screened and not significant; no point estimate published. Median 8 umol/L, range 2.9-37 (Table 1).",
       source_name = "Bilirubin"
@@ -215,21 +237,21 @@ Gaspar_2023_apixaban <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 100L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 100L,
+    n_studies = 1L,
     n_observations = 825L,
-    n_occasions    = 106L,
-    age_range      = "51-94 years",
-    age_median     = "77 years",
-    weight_range   = "44-126 kg",
-    weight_median  = "75 kg",
+    n_occasions = 106L,
+    age_range = "51-94 years",
+    age_median = "77 years",
+    weight_range = "44-126 kg",
+    weight_median = "75 kg",
     sex_female_pct = 42,
-    disease_state  = "hospitalized patients receiving apixaban; 89% for atrial fibrillation, 11% for venous thromboembolism",
+    disease_state = "hospitalized patients receiving apixaban; 89% for atrial fibrillation, 11% for venous thromboembolism",
     renal_function = "Cockcroft-Gault creatinine clearance median 57.2 mL/min, range 23-136 mL/min",
-    dose_range     = "2.5 mg b.i.d. (n = 40), 5 mg b.i.d. (n = 56), 10 mg b.i.d. (n = 4)",
-    regions        = "Switzerland (Geneva University Hospitals)",
-    notes          = paste0(
+    dose_range = "2.5 mg b.i.d. (n = 40), 5 mg b.i.d. (n = 56), 10 mg b.i.d. (n = 4)",
+    regions = "Switzerland (Geneva University Hospitals)",
+    notes = paste0(
       "OptimAT study (NCT03477331), a single-centre prospective observational ",
       "study of patients admitted to the Geneva University Hospitals between ",
       "January 2018 and November 2019 with a prescription of apixaban. Baseline ",

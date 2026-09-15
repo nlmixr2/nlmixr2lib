@@ -13,39 +13,39 @@ Zhao_2014_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Zhao 2014 Table 1: mean 25.7 kg (SD 15.5), median 20.2 kg (range 5.6-71.0). Reference value 20.2 kg (population median) used in the power-scaling terms in Table 3 footnote for both V (V = theta1 * (WT/20.2)^theta2) and CL (CL = theta3 * (WT/20.2)^theta4 * RF).",
-      source_name        = "WT"
+      notes = "Zhao 2014 Table 1: mean 25.7 kg (SD 15.5), median 20.2 kg (range 5.6-71.0). Reference value 20.2 kg (population median) used in the power-scaling terms in Table 3 footnote for both V (V = theta1 * (WT/20.2)^theta2) and CL (CL = theta3 * (WT/20.2)^theta4 * RF).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Schwartz-formula creatinine clearance (BSA-normalized eGFR)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Schwartz-formula creatinine clearance (BSA-normalized eGFR)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Zhao 2014 Table 1: mean 199.8 (SD 63.3), median 191, range 48.7-457 (units reported as mL/min in Table 1 but produced by the Schwartz formula, which yields eGFR in mL/min/1.73 m^2 by construction; Zhao 2014 Methods footnote b 'Creatinine clearance was calculated by the Schwartz formula'). Reference value 191 mL/min/1.73 m^2 (population median) used in the renal-function factor RF = (CLCR/191)^theta5 multiplying CL (Table 3 footnote and Results equation 7). Stored under canonical CRCL per inst/references/covariate-columns.md, which accepts the Schwartz-formula eGFR with its native BSA-normalized units.",
-      source_name        = "CLCR"
+      notes = "Zhao 2014 Table 1: mean 199.8 (SD 63.3), median 191, range 48.7-457 (units reported as mL/min in Table 1 but produced by the Schwartz formula, which yields eGFR in mL/min/1.73 m^2 by construction; Zhao 2014 Methods footnote b 'Creatinine clearance was calculated by the Schwartz formula'). Reference value 191 mL/min/1.73 m^2 (population median) used in the renal-function factor RF = (CLCR/191)^theta5 multiplying CL (Table 3 footnote and Results equation 7). Stored under canonical CRCL per inst/references/covariate-columns.md, which accepts the Schwartz-formula eGFR with its native BSA-normalized units.",
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 70L,
-    n_studies        = 1L,
-    age_range        = "0.3-17.7 years",
-    age_median       = "5.6 years (mean 6.8, SD 4.8)",
-    weight_range     = "5.6-71.0 kg",
-    weight_median    = "20.2 kg (mean 25.7, SD 15.5)",
-    sex_female_pct   = 41.4,
-    race_ethnicity   = "Not reported (single-center cohort at Robert Debre Hospital, Paris)",
-    disease_state    = "Children with malignant hematological disease (acute lymphoblastic leukemia 40/70, acute myeloblastic leukemia 17/70, juvenile myelomonocytic leukemia 5/70, lymphoma 5/70, other 3/70); 25/70 had bone marrow transplantation. Vancomycin given as empirical antibiotic therapy with therapeutic drug monitoring.",
-    dose_range       = "Vancomycin IV infusion over 60 min, empirical initial dose 40-60 mg/kg/day in four divided doses; observed individual doses 50-950 mg (median 250; mean 13.0 mg/kg, range 7.0-31.5 mg/kg). Monitoring target was steady-state trough concentration 10-20 mg/L.",
-    regions          = "France (single center, Department of Pediatric Hematology-Oncology, Robert Debre Hospital, APHP, Paris)",
-    renal_function   = "Schwartz-formula creatinine clearance median 191 mL/min/1.73 m^2 (range 48.7-457); serum creatinine median 30 umol/L (range 10-141).",
+    species = "human",
+    n_subjects = 70L,
+    n_studies = 1L,
+    age_range = "0.3-17.7 years",
+    age_median = "5.6 years (mean 6.8, SD 4.8)",
+    weight_range = "5.6-71.0 kg",
+    weight_median = "20.2 kg (mean 25.7, SD 15.5)",
+    sex_female_pct = 41.4,
+    race_ethnicity = "Not reported (single-center cohort at Robert Debre Hospital, Paris)",
+    disease_state = "Children with malignant hematological disease (acute lymphoblastic leukemia 40/70, acute myeloblastic leukemia 17/70, juvenile myelomonocytic leukemia 5/70, lymphoma 5/70, other 3/70); 25/70 had bone marrow transplantation. Vancomycin given as empirical antibiotic therapy with therapeutic drug monitoring.",
+    dose_range = "Vancomycin IV infusion over 60 min, empirical initial dose 40-60 mg/kg/day in four divided doses; observed individual doses 50-950 mg (median 250; mean 13.0 mg/kg, range 7.0-31.5 mg/kg). Monitoring target was steady-state trough concentration 10-20 mg/L.",
+    regions = "France (single center, Department of Pediatric Hematology-Oncology, Robert Debre Hospital, APHP, Paris)",
+    renal_function = "Schwartz-formula creatinine clearance median 191 mL/min/1.73 m^2 (range 48.7-457); serum creatinine median 30 umol/L (range 10-141).",
     n_concentrations = 98L,
-    notes            = "Baseline demographics from Zhao 2014 Table 1 (cohort enrolled 2010-2011). 98 vancomycin concentrations from 70 children analyzed; blood samples drawn at median 54 h after initiation of treatment, concentrations 1.8-27.3 mg/L. Vancomycin assay: fluorescence polarization immunoassay on Cobas Integra 400 plus (calibration 0.74-80 mg/L, LLOQ 0.74 mg/L). Model fit using NONMEM 7.2.0 FOCE-INTER. Final-model parameter values were confirmed by 500-replicate nonparametric bootstrap (Table 3) and externally validated in an independent group of 20 children (Bayesian estimation, r^2 = 0.99, mean PE 1.0%, mean APE 4.7%). The paper observes that vancomycin CL in this cohort (mean 0.22 L/h/kg) was substantially higher than in pediatric populations without cancer (Discussion Table 4)."
+    notes = "Baseline demographics from Zhao 2014 Table 1 (cohort enrolled 2010-2011). 98 vancomycin concentrations from 70 children analyzed; blood samples drawn at median 54 h after initiation of treatment, concentrations 1.8-27.3 mg/L. Vancomycin assay: fluorescence polarization immunoassay on Cobas Integra 400 plus (calibration 0.74-80 mg/L, LLOQ 0.74 mg/L). Model fit using NONMEM 7.2.0 FOCE-INTER. Final-model parameter values were confirmed by 500-replicate nonparametric bootstrap (Table 3) and externally validated in an independent group of 20 children (Bayesian estimation, r^2 = 0.99, mean PE 1.0%, mean APE 4.7%). The paper observes that vancomycin CL in this cohort (mean 0.22 L/h/kg) was substantially higher than in pediatric populations without cancer (Discussion Table 4)."
   )
 
   ini({

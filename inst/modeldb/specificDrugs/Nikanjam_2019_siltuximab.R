@@ -8,82 +8,82 @@ Nikanjam_2019_siltuximab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "siltuximab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "siltuximab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "siltuximab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on V1 and V2 (combined Vss); normalized as WT/73 per Nikanjam 2019 (reference: 73 kg, overall median from Table 1).",
-      source_name        = "WT"
+      notes = "Power effect on V1 and V2 (combined Vss); normalized as WT/73 per Nikanjam 2019 (reference: 73 kg, overall median from Table 1).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin",
+      description = "Serum albumin",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effects on CL and on V1/V2; normalized as ALB/4.1 per Nikanjam 2019 (reference: 4.1 g/dL, overall median from Table 1).",
-      source_name        = "ALB"
+      notes = "Power effects on CL and on V1/V2; normalized as ALB/4.1 per Nikanjam 2019 (reference: 4.1 g/dL, overall median from Table 1).",
+      source_name = "ALB"
     ),
     ALT = list(
-      description        = "Serum alanine aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as ALT/19 per Nikanjam 2019 (reference: 19 U/L, overall median from Table 1).",
-      source_name        = "ALT"
+      notes = "Power effect on CL; normalized as ALT/19 per Nikanjam 2019 (reference: 19 U/L, overall median from Table 1).",
+      source_name = "ALT"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on V1 and V2; normalized as CREAT/0.9 per Nikanjam 2019 (reference: 0.9 mg/dL, overall median from Table 1). Source paper uses the column label 'SCR' (serum creatinine); renamed to the canonical CREAT per covariate-columns.md.",
-      source_name        = "SCR"
+      notes = "Power effect on V1 and V2; normalized as CREAT/0.9 per Nikanjam 2019 (reference: 0.9 mg/dL, overall median from Table 1). Source paper uses the column label 'SCR' (serum creatinine); renamed to the canonical CREAT per covariate-columns.md.",
+      source_name = "SCR"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-volunteer cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-volunteer cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient subject from any of the pooled disease cohorts: Castleman's disease, smoldering multiple myeloma, multiple myeloma, MGUS, renal cell carcinoma, ovarian cancer, KRAS-mutated tumors, or other solid tumors)",
-      notes              = "Multiplicative effects in Nikanjam 2019: 0.77 on CL (a 23% reduction in healthy volunteers vs. the pooled patient reference) and 0.83 on V1/V2 (a 17% reduction).",
-      source_name        = "HV"
+      notes = "Multiplicative effects in Nikanjam 2019: 0.77 on CL (a 23% reduction in healthy volunteers vs. the pooled patient reference) and 0.83 on V1/V2 (a 17% reduction).",
+      source_name = "HV"
     ),
     DIS_CASTLEMAN = list(
-      description        = "Castleman's disease indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Castleman's disease indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Castleman subject; pooled across healthy volunteers and other indications)",
-      notes              = "Multiplicative effect in Nikanjam 2019: 1.24 on CL (a 24% increase in Castleman's disease vs. the pooled non-Castleman reference). No effect on V1/V2.",
-      source_name        = "CD"
+      notes = "Multiplicative effect in Nikanjam 2019: 1.24 on CL (a 24% increase in Castleman's disease vs. the pooled non-Castleman reference). No effect on V1/V2.",
+      source_name = "CD"
     ),
     DIS_SMM = list(
-      description        = "Smoldering multiple myeloma indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Smoldering multiple myeloma indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-SMM subject; pooled across healthy volunteers and other indications)",
-      notes              = "Multiplicative effect in Nikanjam 2019: 0.77 on V1/V2 (a 23% reduction in SMM vs. the pooled non-SMM reference). No effect on CL.",
-      source_name        = "SMM"
+      notes = "Multiplicative effect in Nikanjam 2019: 0.77 on V1/V2 (a 23% reduction in SMM vs. the pooled non-SMM reference). No effect on CL.",
+      source_name = "SMM"
     )
   )
 
   population <- list(
-    n_subjects     = 460L,
-    n_studies      = 7L,
-    age_range      = "18-84 years (overall, Table 1)",
-    age_median     = "51 years",
-    weight_range   = "40-170 kg",
-    weight_median  = "73 kg",
+    n_subjects = 460L,
+    n_studies = 7L,
+    age_range = "18-84 years (overall, Table 1)",
+    age_median = "51 years",
+    weight_range = "40-170 kg",
+    weight_median = "73 kg",
     sex_female_pct = 47.8,
     race_ethnicity = "White, Asian, African-American, and Other (per-study composition reported in source; race was tested as a covariate but not retained in the final model).",
-    disease_state  = "Pooled cohort: healthy volunteers (T08, n=141) plus oncology and plasma-cell-disorder patients across renal cell carcinoma (T01), non-Hodgkin's lymphoma / multiple myeloma / Castleman's disease (T03), multicentric Castleman's disease (MCD2001), MGUS / smoldering and active multiple myeloma (SMM1001), high-risk smoldering multiple myeloma (SMM2001), and advanced cancer including ovarian and KRAS-mutated tumors (STM2001).",
-    dose_range     = "0.15-15.6 mg/kg IV infusion (1-2 h) every 1-4 weeks; pooled across single-dose (T08) and multiple-dose (other) regimens.",
-    regions        = "Multi-center; geographic detail not specified in the source.",
-    notes          = "Baseline demographics and laboratory values pooled from Nikanjam 2019 Table 1. Reference covariate values used in the final-model parameterization: WT = 73 kg, ALB = 4.1 g/dL, ALT = 19 U/L, CREAT = 0.9 mg/dL, with HV = CD = SMM = 0 (i.e., the reference subject is a patient with a non-Castleman, non-SMM tumor type). 7,761 siltuximab concentrations contributed to the analysis."
+    disease_state = "Pooled cohort: healthy volunteers (T08, n=141) plus oncology and plasma-cell-disorder patients across renal cell carcinoma (T01), non-Hodgkin's lymphoma / multiple myeloma / Castleman's disease (T03), multicentric Castleman's disease (MCD2001), MGUS / smoldering and active multiple myeloma (SMM1001), high-risk smoldering multiple myeloma (SMM2001), and advanced cancer including ovarian and KRAS-mutated tumors (STM2001).",
+    dose_range = "0.15-15.6 mg/kg IV infusion (1-2 h) every 1-4 weeks; pooled across single-dose (T08) and multiple-dose (other) regimens.",
+    regions = "Multi-center; geographic detail not specified in the source.",
+    notes = "Baseline demographics and laboratory values pooled from Nikanjam 2019 Table 1. Reference covariate values used in the final-model parameterization: WT = 73 kg, ALB = 4.1 g/dL, ALT = 19 U/L, CREAT = 0.9 mg/dL, with HV = CD = SMM = 0 (i.e., the reference subject is a patient with a non-Castleman, non-SMM tumor type). 7,761 siltuximab concentrations contributed to the analysis."
   )
 
   ini({

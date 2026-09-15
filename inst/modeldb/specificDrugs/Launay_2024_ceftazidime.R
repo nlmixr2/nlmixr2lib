@@ -13,11 +13,11 @@ Launay_2024_ceftazidime <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Glomerular filtration rate estimated with the CKD-EPI equation, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Glomerular filtration rate estimated with the CKD-EPI equation, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Creatinine-based CKD-EPI eGFR, BSA-normalized to mL/min/1.73 m^2",
         "(Launay 2024 Methods section 4.4 and Table 2 footnote). Enters as a",
         "power term (CRCL / 73.90)^0.9 on clearance; 73.90 mL/min/1.73 m^2 is",
@@ -29,7 +29,7 @@ Launay_2024_ceftazidime <- function() {
         "excluded from the validation cohort.",
         sep = " "
       ),
-      source_name        = "GFR"
+      source_name = "GFR"
     )
   )
 
@@ -39,9 +39,9 @@ Launay_2024_ceftazidime <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained. Mean (SD) 91.3 (25.3) kg (Table 1). The",
         "Discussion explicitly notes that weight and BMI were not identified as",
         "significant covariates on Vd, attributed to ~48% of the cohort being",
@@ -51,9 +51,9 @@ Launay_2024_ceftazidime <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained. Mean (SD) 31.2 (9.5) kg/m^2, 47.7% obese",
         "(Table 1). Available only in the model-development dataset.",
         sep = " "
@@ -61,21 +61,21 @@ Launay_2024_ceftazidime <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained. Mean (SD) 64.5 (11.9) years (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained. Mean (SD) 64.5 (11.9) years (Table 1)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained. 67 of 86 (77.9%) were male, i.e. 22.1% female (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained. 67 of 86 (77.9%) were male, i.e. 22.1% female (Table 1)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "not reported",
-      type        = "continuous",
-      notes       = paste(
+      units = "not reported",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained as a covariate in its own right (Methods",
         "section 4.4 lists serum creatinine at baseline and at sampling). It",
         "enters the model only indirectly, through the CKD-EPI eGFR carried in",
@@ -85,15 +85,15 @@ Launay_2024_ceftazidime <- function() {
     ),
     TPRO = list(
       description = "Serum total protein concentration",
-      units       = "not reported",
-      type        = "continuous",
-      notes       = "Screened but not retained (Methods section 4.4). No summary statistics reported."
+      units = "not reported",
+      type = "continuous",
+      notes = "Screened but not retained (Methods section 4.4). No summary statistics reported."
     ),
     DIS_COVID19 = list(
       description = "Ongoing COVID-19 infection indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Methods section 4.4 lists 'status of ongoing COVID infection'). Prevalence not reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Methods section 4.4 lists 'status of ongoing COVID infection'). Prevalence not reported."
     )
   )
 
@@ -102,19 +102,19 @@ Launay_2024_ceftazidime <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 86,
-    n_studies      = 6,
+    species = "human",
+    n_subjects = 86,
+    n_studies = 6,
     n_observations = 223,
-    age_mean       = "64.5 years (SD 11.9)",
-    weight_mean    = "91.3 kg (SD 25.3)",
-    bmi_mean       = "31.2 kg/m^2 (SD 9.5); 47.7% obese",
+    age_mean = "64.5 years (SD 11.9)",
+    weight_mean = "91.3 kg (SD 25.3)",
+    bmi_mean = "31.2 kg/m^2 (SD 9.5); 47.7% obese",
     sex_female_pct = 22.1,
     renal_function = "CKD-EPI eGFR mean 87.6 mL/min/1.73 m^2 (SD 74.2), population median 73.90 mL/min/1.73 m^2",
-    disease_state  = "septic critically ill adults in intensive care",
-    dose_range     = "2 g intravenous loading dose followed by continuous infusion, median 6 g/day",
-    regions        = "France (six ICUs in the Saint-Etienne area)",
-    notes          = paste(
+    disease_state = "septic critically ill adults in intensive care",
+    dose_range = "2 g intravenous loading dose followed by continuous infusion, median 6 g/day",
+    regions = "France (six ICUs in the Saint-Etienne area)",
+    notes = paste(
       "Retrospective therapeutic drug monitoring cohort, 1 November 2019 to",
       "31 October 2021; 86 patients contributing 223 samples (1 to 9 per",
       "patient), all drawn at least 6 h after the start of the continuous",

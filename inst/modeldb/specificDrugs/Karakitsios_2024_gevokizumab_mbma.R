@@ -48,9 +48,9 @@ Karakitsios_2024_gevokizumab_mbma <- function() {
   # Material (definitions following equation (S4)) and Figure S1.
   compartmentData <- list(
     plasma = list(analyte = "gevokizumab", units = "mg", specimen = "plasma", verified = TRUE),
-    tight  = list(analyte = "gevokizumab", units = "mg", specimen = "tissue", verified = TRUE),
-    leaky  = list(analyte = "gevokizumab", units = "mg", specimen = "tissue", verified = TRUE),
-    lymph  = list(analyte = "gevokizumab", units = "mg", specimen = "lymph", verified = TRUE)
+    tight = list(analyte = "gevokizumab", units = "mg", specimen = "tissue", verified = TRUE),
+    leaky = list(analyte = "gevokizumab", units = "mg", specimen = "tissue", verified = TRUE),
+    lymph = list(analyte = "gevokizumab", units = "mg", specimen = "lymph", verified = TRUE)
   )
 
   covariateData <- list()
@@ -62,9 +62,9 @@ Karakitsios_2024_gevokizumab_mbma <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste0(
+      units = "kg",
+      type = "continuous",
+      notes = paste0(
         "Not a data column. The physiologic parameters (L = 2.9 L/day, ",
         "VISF = 15.6 L, Vlymph = 5.2 L, Vplasma = 2.6 L) are quoted for a ",
         "70 kg person (Supplementary Material, text following equation ",
@@ -76,18 +76,18 @@ Karakitsios_2024_gevokizumab_mbma <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50L,
-    n_studies      = 1L,
-    n_groups       = 5L,
-    age_range      = "adults (per Cavelti-Weder 2012 source study)",
-    weight_range   = "70 kg reference body weight (Supplementary Material, text following equation (S8))",
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
+    n_groups = 5L,
+    age_range = "adults (per Cavelti-Weder 2012 source study)",
+    weight_range = "70 kg reference body weight (Supplementary Material, text following equation (S8))",
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "Type 2 diabetes mellitus",
-    dose_range     = "0.01, 0.03, 0.1, 0.3 and 1.0 mg/kg single IV dose (0.7, 2.1, 7, 21 and 70 mg for a 70 kg person; Section 2.1)",
-    regions        = NA,
-    data_origin    = paste0(
+    disease_state = "Type 2 diabetes mellitus",
+    dose_range = "0.01, 0.03, 0.1, 0.3 and 1.0 mg/kg single IV dose (0.7, 2.1, 7, 21 and 70 mg for a 70 kg person; Section 2.1)",
+    regions = NA,
+    data_origin = paste0(
       "AGGREGATE data only. Mean plasma concentrations and their SDs versus ",
       "time were digitised with Digitizer software from the published graph ",
       "of Cavelti-Weder C et al. Diabetes Care 2012;35:1654-1662 (Section ",
@@ -96,7 +96,7 @@ Karakitsios_2024_gevokizumab_mbma <- function() {
       "5 patients were considered too few to give accurate means and SDs ",
       "(Section 2.4)."
     ),
-    notes          = paste0(
+    notes = paste0(
       "Karakitsios 2024 Table 4 (posterior means), five dosage groups of 10 ",
       "patients each (50 patients total). Sampling times 4, 8, 24, 48, 72, ",
       "96, 168, 216, 264, 336, 504, 672, 1008 and 1344 h after a single IV ",

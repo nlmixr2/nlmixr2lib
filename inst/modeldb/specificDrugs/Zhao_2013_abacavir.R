@@ -8,58 +8,58 @@ Zhao_2013_abacavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; used for allometric scaling on CL/F and V1/F with estimated exponents (0.802 and 0.810) and reference weight 17.6 kg (population median).",
-      source_name        = "WT"
+      notes = "Time-varying; used for allometric scaling on CL/F and V1/F with estimated exponents (0.802 and 0.810) and reference weight 17.6 kg (population median).",
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested in forward selection on CL/F; produced a significant OFV drop alone but did not survive backward elimination once weight was retained (paper Results section)."
+      units = "years",
+      type = "continuous",
+      notes = "Tested in forward selection on CL/F; produced a significant OFV drop alone but did not survive backward elimination once weight was retained (paper Results section)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as a covariate (paper called it 'gender'); not retained in the final model (paper Results)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as a covariate (paper called it 'gender'); not retained in the final model (paper Results)."
     ),
     FORM_TABLET = list(
       description = "Tablet vs solution formulation indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested in forward selection on CL/F; no pharmacokinetic differences between the two formulations were retained in the final model (paper Results / Conclusions)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested in forward selection on CL/F; no pharmacokinetic differences between the two formulations were retained in the final model (paper Results / Conclusions)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 69,
-    n_studies      = 3,
-    age_range      = "0.42-12.84 years",
-    age_median     = "5.66 years",
-    weight_range   = "7.6-60.9 kg",
-    weight_median  = "17.6 kg",
+    species = "human",
+    n_subjects = 69,
+    n_studies = 3,
+    age_range = "0.42-12.84 years",
+    age_median = "5.66 years",
+    weight_range = "7.6-60.9 kg",
+    weight_median = "17.6 kg",
     sex_female_pct = NULL,
     race_ethnicity = "Not stratified in source (European and Ugandan paediatric cohorts pooled).",
-    disease_state  = "HIV type-1 infected paediatric patients (infants, toddlers, and children).",
-    dose_range     = "WHO weight-band paediatric oral abacavir: 16 mg/kg/day weight-normalized or 300 / 450 / 600 mg fixed dose per day (split as 8 mg/kg twice daily or 150-300 mg twice daily; some patients received once-daily dosing). Tablet or oral solution formulation.",
-    regions        = "France (PENTA 13), multinational European (PENTA 15), Uganda (ARROW pharmacokinetic substudy).",
+    disease_state = "HIV type-1 infected paediatric patients (infants, toddlers, and children).",
+    dose_range = "WHO weight-band paediatric oral abacavir: 16 mg/kg/day weight-normalized or 300 / 450 / 600 mg fixed dose per day (split as 8 mg/kg twice daily or 150-300 mg twice daily; some patients received once-daily dosing). Tablet or oral solution formulation.",
+    regions = "France (PENTA 13), multinational European (PENTA 15), Uganda (ARROW pharmacokinetic substudy).",
     n_observations = 1065,
-    notes          = "Pooled meta-analysis of three paediatric clinical studies: PENTA 13 (n = 14, 2-13 years), PENTA 15 (n = 18, 3 months - 3 years), and the ARROW pharmacokinetic substudy (n = 37, 3-12 years). Steady-state pharmacokinetic samples taken at T0, T1, T2, T3, T4, T6, T8, T12 h post-dose (twice daily) plus T24 h for once daily; 138 profiles total. Baseline demographics in Table 1 of the source."
+    notes = "Pooled meta-analysis of three paediatric clinical studies: PENTA 13 (n = 14, 2-13 years), PENTA 15 (n = 18, 3 months - 3 years), and the ARROW pharmacokinetic substudy (n = 37, 3-12 years). Steady-state pharmacokinetic samples taken at T0, T1, T2, T3, T4, T6, T8, T12 h post-dose (twice daily) plus T24 h for once daily; 138 profiles total. Baseline demographics in Table 1 of the source."
   )
 
   ini({

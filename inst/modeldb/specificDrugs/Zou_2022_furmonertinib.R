@@ -18,58 +18,58 @@ Zou_2022_furmonertinib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot               = list(analyte = "furmonertinib", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1            = list(analyte = "furmonertinib", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2            = list(analyte = "furmonertinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central             = list(analyte = "furmonertinib", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1         = list(analyte = "furmonertinib", units = "mg", specimen = "plasma", verified = FALSE),
-    central_ast5902     = list(analyte = "AST5902", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "furmonertinib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "furmonertinib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "furmonertinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "furmonertinib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "furmonertinib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_ast5902 = list(analyte = "AST5902", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_ast5902 = list(analyte = "AST5902", units = "mg", specimen = "plasma", verified = FALSE),
-    enz_pool            = list(analyte = "EGFR", units = "mg", specimen = "not applicable", verified = FALSE)
+    enz_pool = list(analyte = "EGFR", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     ALP = list(
-      description        = "Baseline serum alkaline phosphatase; liver-function marker used as a covariate on both parent (CLbase/F) and metabolite (Clm/(F*Fm)) apparent clearances via power scaling normalised to the cohort median 77.2 U/L (Zou 2022 Table 1 and Table 2).",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum alkaline phosphatase; liver-function marker used as a covariate on both parent (CLbase/F) and metabolite (Clm/(F*Fm)) apparent clearances via power scaling normalised to the cohort median 77.2 U/L (Zou 2022 Table 1 and Table 2).",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort summary (Zou 2022 Table 1, N = 54): mean 88.1, SD 44.3, median 77.2, range 49.8-343 U/L. Two subjects had abnormally high ALP that appeared to drive the covariate significance in a sensitivity analysis (Discussion paragraph 3). Enters both CLbase/F and Clm/(F*Fm) with negative power exponents (larger ALP -> lower clearance). Reference 77.2 U/L for the power normalisation.",
-      source_name        = "ALP"
+      notes = "Cohort summary (Zou 2022 Table 1, N = 54): mean 88.1, SD 44.3, median 77.2, range 49.8-343 U/L. Two subjects had abnormally high ALP that appeared to drive the covariate significance in a sensitivity analysis (Discussion paragraph 3). Enters both CLbase/F and Clm/(F*Fm) with negative power exponents (larger ALP -> lower clearance). Reference 77.2 U/L for the power normalisation.",
+      source_name = "ALP"
     ),
     WT = list(
-      description        = "Baseline body weight; covariate on the metabolite apparent clearance Clm/(F*Fm) via a power scaling normalised to the cohort median 65 kg (Zou 2022 Table 1 and Table 2).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight; covariate on the metabolite apparent clearance Clm/(F*Fm) via a power scaling normalised to the cohort median 65 kg (Zou 2022 Table 1 and Table 2).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort summary (Zou 2022 Table 1, N = 54): mean 66.5, SD 10.4, median 65, range 48-111 kg. Enters Clm/(F*Fm) only in the final model; the GAM-screened effects of body weight on other parameters were not retained by the stepwise SCM procedure (Results 'Covariate model' paragraph). Reference 65 kg for the power normalisation.",
-      source_name        = "WT"
+      notes = "Cohort summary (Zou 2022 Table 1, N = 54): mean 66.5, SD 10.4, median 65, range 48-111 kg. Enters Clm/(F*Fm) only in the final model; the GAM-screened effects of body weight on other parameters were not retained by the stepwise SCM procedure (Results 'Covariate model' paragraph). Reference 65 kg for the power normalisation.",
+      source_name = "WT"
     ),
     FED_HIGHFAT = list(
-      description        = "Categorical food-effect indicator: 1 = dose administered immediately after ingestion of a high-fat, high-calorie breakfast; 0 = fasted (overnight fast of at least 10 h). Time-fixed per dose record.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Categorical food-effect indicator: 1 = dose administered immediately after ingestion of a high-fat, high-calorie breakfast; 0 = fasted (overnight fast of at least 10 h). Time-fixed per dose record.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Only Study 004 (n = 16 healthy males) tested the food effect via a crossover single-dose 80 mg design; Study 001 and Study 002 (NSCLC patients) dosed under fasted conditions (Zou 2022 Methods 'Study design' paragraphs 2-3). Modelled as two additive multiplicative effects (Zou 2022 covariate equations after Table 2): FTV = 1 + 0.224 * FOOD on parent oral bioavailability (F) and FmTV = 1 - 0.335 * FOOD on the fraction converted to AST5902 (Fm). The high-fat operational definition (FDA-style high-fat, high-calorie breakfast) motivates the FED_HIGHFAT canonical over the generic FED (only one meal-type was tested; the modeled effect quantifies a high-fat food-specific shift).",
-      source_name        = "FOOD (Zou 2022 covariate equations)"
+      notes = "Only Study 004 (n = 16 healthy males) tested the food effect via a crossover single-dose 80 mg design; Study 001 and Study 002 (NSCLC patients) dosed under fasted conditions (Zou 2022 Methods 'Study design' paragraphs 2-3). Modelled as two additive multiplicative effects (Zou 2022 covariate equations after Table 2): FTV = 1 + 0.224 * FOOD on parent oral bioavailability (F) and FmTV = 1 - 0.335 * FOOD on the fraction converted to AST5902 (Fm). The high-fat operational definition (FDA-style high-fat, high-calorie breakfast) motivates the FED_HIGHFAT canonical over the generic FED (only one meal-type was tested; the modeled effect quantifies a high-fat food-specific shift).",
+      source_name = "FOOD (Zou 2022 covariate equations)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 54L,
-    n_studies      = 3L,
-    age_range      = "21-68 years",
-    age_median     = "51.5 years (mean 48, SD 13.9; Zou 2022 Table 1)",
-    weight_range   = "48-111 kg",
-    weight_median  = "65 kg (mean 66.5, SD 10.4; Zou 2022 Table 1)",
+    species = "human",
+    n_subjects = 54L,
+    n_studies = 3L,
+    age_range = "21-68 years",
+    age_median = "51.5 years (mean 48, SD 13.9; Zou 2022 Table 1)",
+    weight_range = "48-111 kg",
+    weight_median = "65 kg (mean 66.5, SD 10.4; Zou 2022 Table 1)",
     sex_female_pct = 42.6,
     race_ethnicity = "Chinese (all studies conducted in China; Zou 2022 Methods paragraph 1)",
-    disease_state  = "Pooled NSCLC patients with EGFR-sensitizing / T790M-resistance mutations (Study 001 dose escalation, n = 14; Study 002 dose expansion, n = 24) and healthy adult male volunteers (Study 004 food-effect crossover, n = 16). NSCLC patients had disease progression on prior first- or second-generation EGFR-TKI therapy.",
-    dose_range     = "Furmonertinib 20, 40, 80, 160, or 240 mg orally once daily for 21 days per cycle in NSCLC patients (Study 001 and 002); single 80 mg oral dose (fed and fasted, two-period crossover) in healthy volunteers (Study 004).",
-    regions        = "China (multicenter)",
+    disease_state = "Pooled NSCLC patients with EGFR-sensitizing / T790M-resistance mutations (Study 001 dose escalation, n = 14; Study 002 dose expansion, n = 24) and healthy adult male volunteers (Study 004 food-effect crossover, n = 16). NSCLC patients had disease progression on prior first- or second-generation EGFR-TKI therapy.",
+    dose_range = "Furmonertinib 20, 40, 80, 160, or 240 mg orally once daily for 21 days per cycle in NSCLC patients (Study 001 and 002); single 80 mg oral dose (fed and fasted, two-period crossover) in healthy volunteers (Study 004).",
+    regions = "China (multicenter)",
     n_observations = "1,450 furmonertinib and 1,463 AST5902 plasma concentrations (LC/MS/MS; LLOQ 0.20 ng/mL parent, 0.050 ng/mL metabolite; Zou 2022 Methods 'Study design' paragraph 4 and Results 'Pharmacokinetic database description' paragraph 1).",
-    notes          = "Baseline demographics from Zou 2022 Table 1. Hepatic dysfunction: 48 normal, 6 mild dysfunction. ClinicalTrials.gov identifiers NCT02973763 (Study 001), NCT03127449 (Study 002), NCT03926182 (Study 004). NONMEM 7.3 with FOCE-I; PsN 4.9.0 for SCM and bootstrap. Diagnostic and simulation post-processing in R 3.6.1. Furmonertinib is also known by its development codes AST2818 and alflutinib."
+    notes = "Baseline demographics from Zou 2022 Table 1. Hepatic dysfunction: 48 normal, 6 mild dysfunction. ClinicalTrials.gov identifiers NCT02973763 (Study 001), NCT03127449 (Study 002), NCT03926182 (Study 004). NONMEM 7.3 with FOCE-I; PsN 4.9.0 for SCM and bootstrap. Diagnostic and simulation post-processing in R 3.6.1. Furmonertinib is also known by its development codes AST2818 and alflutinib."
   )
 
   ini({

@@ -33,7 +33,7 @@ Abouelhassan_2024_sulbactam_mouse <- function() {
     sep = " "
   )
   vignette <- "Abouelhassan_2024_sulbactam_elf_pneumonia"
-  units    <- list(time = "h", dosing = "mg/kg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg/kg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Amounts are per kilogram of body weight because the
@@ -41,29 +41,33 @@ Abouelhassan_2024_sulbactam_mouse <- function() {
   # L/kg), so the amount / volume quotient is still mg/L.
   compartmentData <- list(
     depot = list(
-      analyte = "sulbactam", units = "mg/kg",
-      specimen = "administration site", verified = TRUE
+      analyte = "sulbactam",
+      units = "mg/kg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     elf = list(
-      analyte = "sulbactam", units = "mg/kg",
-      specimen = "epithelial lining fluid", verified = TRUE
+      analyte = "sulbactam",
+      units = "mg/kg",
+      specimen = "epithelial lining fluid",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "mouse (ICR/CD-1, female, neutropenic Acinetobacter baumannii pneumonia model)",
-    n_subjects     = 180,
-    n_studies      = 1,
-    weight_range   = "20-22 g",
-    disease_state  = paste(
+    species = "mouse (ICR/CD-1, female, neutropenic Acinetobacter baumannii pneumonia model)",
+    n_subjects = 180,
+    n_studies = 1,
+    weight_range = "20-22 g",
+    disease_state = paste(
       "Neutropenic murine Acinetobacter baumannii pneumonia. Mice were rendered",
       "neutropenic with cyclophosphamide and uranyl nitrate, then inoculated",
       "intranasally with 10^7 cfu/mL A. baumannii in 3% mucin 2 h before the",
       "first antimicrobial dose.",
       sep = " "
     ),
-    dose_range     = "sulbactam 1, 10, 25, 100 and 200 mg/kg subcutaneously (single dose, dosed as ampicillin-sulbactam)",
-    notes          = paste(
+    dose_range = "sulbactam 1, 10, 25, 100 and 200 mg/kg subcutaneously (single dose, dosed as ampicillin-sulbactam)",
+    notes = paste(
       "Methods, 'Murine neutropenic pneumonia model' and 'Sulbactam",
       "bronchopulmonary PK studies': groups of 36 mice per dose level (5 dose",
       "levels = 180 mice), euthanised in groups of 6 at 4-6 time points per",

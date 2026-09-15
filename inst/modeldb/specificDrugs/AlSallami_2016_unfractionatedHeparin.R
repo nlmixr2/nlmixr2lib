@@ -32,24 +32,24 @@ AlSallami_2016_unfractionatedHeparin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear (exponent fixed at 1) scaling on central volume of",
         "distribution V with reference WT = 20 kg (Al-Sallami 2016 Table 2",
         "covariate model V = theta_V * WT / 20). 20 kg is the cohort median",
         "weight reported in the paper's covariate-model footnote."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     FFM = list(
-      description        = "Fat-free mass at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear (exponent fixed at 1) scaling on heparin clearance CL with",
         "reference FFM = 15 kg (Al-Sallami 2016 Table 2 covariate model",
         "CL = theta_CL * FFM / 15). 15 kg is the cohort median FFM reported",
@@ -58,35 +58,35 @@ AlSallami_2016_unfractionatedHeparin <- function() {
         "54:1169-1178) children-adapted variant of the Janmahasatian 2005",
         "semi-mechanistic adult formula."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 64L,
-    n_studies      = 1L,
-    age_range      = "0.5-15.5 years (mean 6.7)",
-    age_median     = "6.7 years (mean)",
-    weight_range   = "6.7-68.6 kg (mean 23.6)",
-    weight_median  = "23.6 kg (mean)",
-    height_range   = "65-176 cm (mean 115.7)",
-    bmi_range      = "11.5-24.7 kg/m^2 (mean 16.1)",
+    species = "human",
+    n_subjects = 64L,
+    n_studies = 1L,
+    age_range = "0.5-15.5 years (mean 6.7)",
+    age_median = "6.7 years (mean)",
+    weight_range = "6.7-68.6 kg (mean 23.6)",
+    weight_median = "23.6 kg (mean)",
+    height_range = "65-176 cm (mean 115.7)",
+    bmi_range = "11.5-24.7 kg/m^2 (mean 16.1)",
     sex_female_pct = 53.1,
     race_ethnicity = "Not reported (single-centre Royal Children's Hospital, Melbourne, Australia cohort)",
-    disease_state  = paste(
+    disease_state = paste(
       "Paediatric patients undergoing diagnostic cardiac angiography",
       "(catheterization). None of the children were being treated for",
       "thromboses at the time of the study. 8 subjects were < 2 years old."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single intravenous bolus of UFH at 75-100 IU/kg (mean 91 IU/kg,",
       "range 47.9-105.4 IU/kg). Total dose range 600-5000 IU (mean 2020 IU)."
     ),
-    regions        = "Single-centre study at the Royal Children's Hospital, Melbourne, Victoria, Australia",
+    regions = "Single-centre study at the Royal Children's Hospital, Melbourne, Victoria, Australia",
     n_observations = "231 UFH concentration measurements; 290 aPTT measurements (43% above the upper limit of quantification of 999 s)",
-    sampling       = "Blood samples drawn at baseline and at 15, 30, 45, and 120 min post-dose",
-    notes          = paste(
+    sampling = "Blood samples drawn at baseline and at 15, 30, 45, and 120 min post-dose",
+    notes = paste(
       "Baseline demographics from Al-Sallami 2016 Table 1. UFH concentration",
       "was quantified by a modified protamine titration assay; aPTT was",
       "measured with the PTT-A kit (Diagnostica Stago) on the STA-R analyser",

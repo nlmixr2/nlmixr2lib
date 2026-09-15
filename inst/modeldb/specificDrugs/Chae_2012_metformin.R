@@ -8,8 +8,8 @@ Chae_2012_metformin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "metformin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "metformin", units = "mg", specimen = "plasma", verified = FALSE),
     transit1 = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
     transit2 = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
     transit3 = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE)
@@ -17,29 +17,29 @@ Chae_2012_metformin <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance as reported by the source paper (Chae 2012 Table 1, mL/min). The paper does not state the derivation method (measured vs. Cockcroft-Gault).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance as reported by the source paper (Chae 2012 Table 1, mL/min). The paper does not state the derivation method (measured vs. Cockcroft-Gault).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on CL/F with reference 106.5 mL/min (cohort median per Chae 2012 Table 1) and exponent 0.782 (Chae 2012 final-PK structural equation). Raw mL/min as reported by the paper; not BSA-normalised. Cohort range 90-123 mL/min in 42 healthy young Korean males.",
-      source_name        = "CLCR"
+      notes = "Power covariate on CL/F with reference 106.5 mL/min (cohort median per Chae 2012 Table 1) and exponent 0.782 (Chae 2012 final-PK structural equation). Raw mL/min as reported by the paper; not BSA-normalised. Cohort range 90-123 mL/min in 42 healthy young Korean males.",
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 42L,
-    n_studies      = 1L,
-    age_range      = "21-31 years",
-    age_median     = "27 years",
-    weight_range   = "61-78 kg",
-    weight_median  = "69 kg",
+    species = "human",
+    n_subjects = 42L,
+    n_studies = 1L,
+    age_range = "21-31 years",
+    age_median = "27 years",
+    weight_range = "61-78 kg",
+    weight_median = "69 kg",
     sex_female_pct = 0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Healthy",
-    dose_range     = "500 mg single oral dose (Diabex 500 mg tablet, Daewoong)",
-    regions        = "Korea (Daejeon)",
-    notes          = "All-male healthy Korean cohort (Chae 2012 Table 1). 504 metformin plasma concentrations + 504 glucose concentrations (1008 total observations). All volunteers consumed 12 g of sugar 20 min after metformin dosing; an identical no-metformin sugar-bolus control study was performed 1 week later to derive the percent-change-in-glucose PD endpoint. Baseline fasting plasma glucose 98 +/- 7 mg/dL; haemoglobin 16 +/- 0.8 g/dL; total bilirubin 1.1 +/- 0.3 mg/dL; height 1.74 +/- 0.06 m."
+    disease_state = "Healthy",
+    dose_range = "500 mg single oral dose (Diabex 500 mg tablet, Daewoong)",
+    regions = "Korea (Daejeon)",
+    notes = "All-male healthy Korean cohort (Chae 2012 Table 1). 504 metformin plasma concentrations + 504 glucose concentrations (1008 total observations). All volunteers consumed 12 g of sugar 20 min after metformin dosing; an identical no-metformin sugar-bolus control study was performed 1 week later to derive the percent-change-in-glucose PD endpoint. Baseline fasting plasma glucose 98 +/- 7 mg/dL; haemoglobin 16 +/- 0.8 g/dL; total bilirubin 1.1 +/- 0.3 mg/dL; height 1.74 +/- 0.06 m."
   )
 
   ini({

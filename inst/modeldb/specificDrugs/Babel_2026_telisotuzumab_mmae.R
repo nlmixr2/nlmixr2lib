@@ -40,8 +40,8 @@ Babel_2026_telisotuzumab_mmae <- function() {
   vignette <- "Babel_2026_telisotuzumab"
 
   units <- list(
-    time          = "day",
-    dosing        = "mg (MMAE equivalents entering the depot, NOT milligrams of conjugate)",
+    time = "day",
+    dosing = "mg (MMAE equivalents entering the depot, NOT milligrams of conjugate)",
     concentration = "ug/mL"
   )
 
@@ -51,117 +51,127 @@ Babel_2026_telisotuzumab_mmae <- function() {
   # same ug/mL-internal / ng/mL-reported convention is used by the
   # sibling vedotin payload model Choules_2024_enfortumab.
   compartmentData <- list(
-    depot   = list(analyte = "telisotuzumab vedotin conjugate, as MMAE equivalents awaiting deconjugation", units = "mg", specimen = "not applicable", verified = FALSE),
-    central = list(analyte = "unconjugated monomethyl auristatin E (MMAE)", units = "mg", specimen = "plasma", verified = TRUE)
+    depot = list(
+      analyte = "telisotuzumab vedotin conjugate, as MMAE equivalents awaiting deconjugation",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    central = list(
+      analyte = "unconjugated monomethyl auristatin E (MMAE)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Normalised to the overall-population median of 68.9 kg inside model() (Babel 2026 Table S4, All Participants; corroborated by the Table S3 forest-plot reference group 'Body Weight <= 68.9 kg'). Acts on Vc only in the payload model. Babel 2026 Results: 'body weight was significantly correlated with Vc in the MMAE population PK model'.",
-      source_name        = "Body Weight"
+      notes = "Normalised to the overall-population median of 68.9 kg inside model() (Babel 2026 Table S4, All Participants; corroborated by the Table S3 forest-plot reference group 'Body Weight <= 68.9 kg'). Acts on Vc only in the payload model. Babel 2026 Results: 'body weight was significantly correlated with Vc in the MMAE population PK model'.",
+      source_name = "Body Weight"
     ),
     AGE = list(
-      description        = "Age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Normalised to the overall-population median of 65 years inside model() (Babel 2026 Table S4, All Participants median 65, range 30-87). Acts on the deconjugation rate ka only, with a negative exponent, so older patients deconjugate more slowly.",
-      source_name        = "Age"
+      notes = "Normalised to the overall-population median of 65 years inside model() (Babel 2026 Table S4, All Participants median 65, range 30-87). Acts on the deconjugation rate ka only, with a negative exponent, so older patients deconjugate more slowly.",
+      source_name = "Age"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Normalised to the overall-population median of 41.6 g/L inside model() (Babel 2026 Table S4, All Participants median 41.6 g/L, range 29.0-52.0). Acts on both CL and ka, and with opposite signs: the CL exponent is +1.99 and the ka exponent is -1.01, so a higher albumin both clears MMAE faster and releases it more slowly. Both push payload exposure down, which is the direction Babel 2026 Figure 1B shows (albumin > 41.6 g/L versus <= 41.6 g/L gives Cmax 0.663 and AUCtau 0.652) and which the Discussion states in words: 'unconjugated MMAE payload exposure was lower in patients with higher baseline albumin'.",
-      source_name        = "Baseline Albumin"
+      notes = "Normalised to the overall-population median of 41.6 g/L inside model() (Babel 2026 Table S4, All Participants median 41.6 g/L, range 29.0-52.0). Acts on both CL and ka, and with opposite signs: the CL exponent is +1.99 and the ka exponent is -1.01, so a higher albumin both clears MMAE faster and releases it more slowly. Both push payload exposure down, which is the direction Babel 2026 Figure 1B shows (albumin > 41.6 g/L versus <= 41.6 g/L gives Cmax 0.663 and AUCtau 0.652) and which the Discussion states in words: 'unconjugated MMAE payload exposure was lower in patients with higher baseline albumin'.",
+      source_name = "Baseline Albumin"
     ),
     RACE_BLACK = list(
-      description        = "Black or African American race indicator; 1 = Black or African American, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black or African American race indicator; 1 = Black or African American, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White; Babel 2026 Table S3 reference group 'Race: White')",
-      notes              = "Multiplicative factor on the deconjugation rate ka. Babel 2026 Table S4: 8 of 304 (3%) Black or African American. Figure 1B reports n = 8 versus n = 198 White for this comparison, and the authors caution that the small n limits conclusions.",
-      source_name        = "Race: Black or African American"
+      notes = "Multiplicative factor on the deconjugation rate ka. Babel 2026 Table S4: 8 of 304 (3%) Black or African American. Figure 1B reports n = 8 versus n = 198 White for this comparison, and the authors caution that the small n limits conclusions.",
+      source_name = "Race: Black or African American"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator; 1 = Asian, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator; 1 = Asian, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White; Babel 2026 Table S3 reference group 'Race: White')",
-      notes              = "Multiplicative factor on the deconjugation rate ka. Babel 2026 Table S4: 98 of 304 (32%) Asian. The Discussion quantifies the consequence: Asian patients had 'about 25% lower unconjugated MMAE exposures' than White patients, still inside the White exposure range. RACE_BLACK and RACE_ASIAN are mutually exclusive; a White patient carries 0 for both.",
-      source_name        = "Race: Asian"
+      notes = "Multiplicative factor on the deconjugation rate ka. Babel 2026 Table S4: 98 of 304 (32%) Asian. The Discussion quantifies the consequence: Asian patients had 'about 25% lower unconjugated MMAE exposures' than White patients, still inside the White exposure range. RACE_BLACK and RACE_ASIAN are mutually exclusive; a White patient carries 0 for both.",
+      source_name = "Race: Asian"
     ),
     RENALIMP_MILD = list(
-      description        = "Mild renal impairment indicator; 1 = mild, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild renal impairment indicator; 1 = mild, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal renal function; Babel 2026 Table S7 row 'Mild vs. Normal Renal Impairment on CL')",
-      notes              = "Multiplicative factor on MMAE CL. Babel 2026 Table S2 footnote a defines the strata on estimated glomerular filtration rate computed by Cockcroft-Gault: normal at least 90, mild 60-90, moderate 30-60 and severe below 30 mL/min/1.73 m2. Table S4: 132 of 304 (43%) mild versus 110 of 304 (36%) normal. Mutually exclusive with RENALIMP_MOD and RENALIMP_SEV; a patient with normal renal function carries 0 for all three.",
-      source_name        = "Baseline Renal Function: Mild Impairment"
+      notes = "Multiplicative factor on MMAE CL. Babel 2026 Table S2 footnote a defines the strata on estimated glomerular filtration rate computed by Cockcroft-Gault: normal at least 90, mild 60-90, moderate 30-60 and severe below 30 mL/min/1.73 m2. Table S4: 132 of 304 (43%) mild versus 110 of 304 (36%) normal. Mutually exclusive with RENALIMP_MOD and RENALIMP_SEV; a patient with normal renal function carries 0 for all three.",
+      source_name = "Baseline Renal Function: Mild Impairment"
     ),
     RENALIMP_MOD = list(
-      description        = "Moderate renal impairment indicator; 1 = moderate, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate renal impairment indicator; 1 = moderate, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal renal function)",
-      notes              = "Babel 2026 POOLED moderate and severe renal impairment into a single stratum for estimation (Table S7 row 'Moderate/Severe vs. Normal Renal Impairment on CL'), because only 2 of 304 patients had severe impairment. The single published factor is therefore applied to RENALIMP_MOD and RENALIMP_SEV alike inside model(); the two indicators are kept separate here so that a user's data can retain the clinical distinction the source could not estimate. Table S4: 59 of 304 (19%) moderate. Mutually exclusive with RENALIMP_MILD and RENALIMP_SEV.",
-      source_name        = "Baseline Renal Function: Moderate Impairment"
+      notes = "Babel 2026 POOLED moderate and severe renal impairment into a single stratum for estimation (Table S7 row 'Moderate/Severe vs. Normal Renal Impairment on CL'), because only 2 of 304 patients had severe impairment. The single published factor is therefore applied to RENALIMP_MOD and RENALIMP_SEV alike inside model(); the two indicators are kept separate here so that a user's data can retain the clinical distinction the source could not estimate. Table S4: 59 of 304 (19%) moderate. Mutually exclusive with RENALIMP_MILD and RENALIMP_SEV.",
+      source_name = "Baseline Renal Function: Moderate Impairment"
     ),
     RENALIMP_SEV = list(
-      description        = "Severe renal impairment indicator; 1 = severe, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Severe renal impairment indicator; 1 = severe, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal renal function)",
-      notes              = "Carries the SAME published factor as RENALIMP_MOD because Babel 2026 estimated a single pooled 'Moderate/Severe vs. Normal' effect; see the RENALIMP_MOD notes. Table S4: 2 of 304 (1%) severe. The Discussion is explicit that this stratum is not informative on its own: 'conclusions regarding severe renal impairment on unconjugated MMAE payload exposure are limited, given the small number of patients with severe renal impairment (n = 2)'. Mutually exclusive with RENALIMP_MILD and RENALIMP_MOD.",
-      source_name        = "Baseline Renal Function: Severe Impairment"
+      notes = "Carries the SAME published factor as RENALIMP_MOD because Babel 2026 estimated a single pooled 'Moderate/Severe vs. Normal' effect; see the RENALIMP_MOD notes. Table S4: 2 of 304 (1%) severe. The Discussion is explicit that this stratum is not informative on its own: 'conclusions regarding severe renal impairment on unconjugated MMAE payload exposure are limited, given the small number of patients with severe renal impairment (n = 2)'. Mutually exclusive with RENALIMP_MILD and RENALIMP_MOD.",
+      source_name = "Baseline Renal Function: Severe Impairment"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex indicator; 1 = female, 0 = male.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on payload CL, Vc and ka in the Babel 2026 Table S2 covariate sweep but not retained in the final payload model (Table S7 lists no sex term for the payload). Sex WAS retained on conjugate Vc; see Babel_2026_telisotuzumab."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on payload CL, Vc and ka in the Babel 2026 Table S2 covariate sweep but not retained in the final payload model (Table S7 lists no sex term for the payload). Sex WAS retained on conjugate Vc; see Babel_2026_telisotuzumab."
     ),
     ADA_POS = list(
       description = "Treatment-emergent anti-drug antibody status; 1 = positive, 0 = negative.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Babel 2026 Table S2 lists treatment-emergent ADA status as a covariate of interest for conjugate clearance only, not for the payload, and the Discussion confirms that treatment-emergent ADAs were 'significant covariates on Teliso-V conjugate CL, but not MMAE CL'. Documented here to preserve the covariate screen."
+      units = "(binary)",
+      type = "binary",
+      notes = "Babel 2026 Table S2 lists treatment-emergent ADA status as a covariate of interest for conjugate clearance only, not for the payload, and the Discussion confirms that treatment-emergent ADAs were 'significant covariates on Teliso-V conjugate CL, but not MMAE CL'. Documented here to preserve the covariate screen."
     ),
     CONMED_CYP3A_INHIB = list(
       description = "Concomitant strong CYP3A inhibitor indicator; 1 = coadministered, 0 = not.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on payload CL (Babel 2026 Table S2, 'Concomitant medications (strong CYP3A inhibitors, strong CYP3A inducers)') but not retained in the final model, so no point estimate exists anywhere on disk. MMAE is a CYP3A4 substrate, which is why the sweep included it. The sibling vedotin payload model Choules_2024_enfortumab does carry a CYP3A perpetrator effect, back-calculated from a dedicated drug-interaction simulation rather than estimated from patient data."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on payload CL (Babel 2026 Table S2, 'Concomitant medications (strong CYP3A inhibitors, strong CYP3A inducers)') but not retained in the final model, so no point estimate exists anywhere on disk. MMAE is a CYP3A4 substrate, which is why the sweep included it. The sibling vedotin payload model Choules_2024_enfortumab does carry a CYP3A perpetrator effect, back-calculated from a dedicated drug-interaction simulation rather than estimated from patient data."
     ),
     CONMED_CYP3A_IND = list(
       description = "Concomitant strong CYP3A inducer indicator; 1 = coadministered, 0 = not.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on payload CL (Babel 2026 Table S2) but not retained; see CONMED_CYP3A_INHIB."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on payload CL (Babel 2026 Table S2) but not retained; see CONMED_CYP3A_INHIB."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 304L,
-    n_studies      = 2L,
-    age_range      = "median 65 years, range 30-87 (Babel 2026 Table S4, All Participants)",
-    weight_range   = "median 68.9 kg, range 36.0-144 (Babel 2026 Table S4, All Participants)",
+    species = "human",
+    n_subjects = 304L,
+    n_studies = 2L,
+    age_range = "median 65 years, range 30-87 (Babel 2026 Table S4, All Participants)",
+    weight_range = "median 68.9 kg, range 36.0-144 (Babel 2026 Table S4, All Participants)",
     sex_female_pct = 37.8,
     race_ethnicity = c(White = 65, Asian = 32, `Black or African American` = 3),
-    disease_state  = "Advanced solid tumours likely to express c-Met (phase 1, NCT02099058, n = 35) and locally advanced or metastatic c-Met protein overexpressing non-small cell lung cancer (LUMINOSITY phase 2, NCT03539536, n = 269).",
-    dose_range     = "Phase 1: 0.15-3.3 mg/kg every 3 weeks and 1.6-2.2 mg/kg every 2 weeks. LUMINOSITY: 1.6 or 1.9 mg/kg every 2 weeks of telisotuzumab vedotin conjugate.",
-    regions        = "Europe 26%, North America 26%, Asia 28%, rest of world 20% (Babel 2026 Table S4)",
+    disease_state = "Advanced solid tumours likely to express c-Met (phase 1, NCT02099058, n = 35) and locally advanced or metastatic c-Met protein overexpressing non-small cell lung cancer (LUMINOSITY phase 2, NCT03539536, n = 269).",
+    dose_range = "Phase 1: 0.15-3.3 mg/kg every 3 weeks and 1.6-2.2 mg/kg every 2 weeks. LUMINOSITY: 1.6 or 1.9 mg/kg every 2 weeks of telisotuzumab vedotin conjugate.",
+    regions = "Europe 26%, North America 26%, Asia 28%, rest of world 20% (Babel 2026 Table S4)",
     renal_function = "normal 110 of 304 (36%), mild 132 (43%), moderate 59 (19%), severe 2 (1%), missing 1 (Babel 2026 Table S4)",
-    notes          = paste0(
+    notes = paste0(
       "The payload analysis uses the same 304 patients as the ",
       "conjugate analysis. 4.69% of payload records were below the ",
       "limit of quantitation (Babel 2026 Data S1 Methods). Payload ",

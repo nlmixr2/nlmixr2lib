@@ -38,11 +38,11 @@ Heida_2024_mycophenolic_acid <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size descriptor for every structural parameter, against",
         "a fixed 70 kg reference (Heida 2024 Methods, Model development:",
         "'all volume and flow parameters were allometrically scaled to a",
@@ -56,14 +56,14 @@ Heida_2024_mycophenolic_acid <- function() {
         "patient sits well below the reference and the scaling is an",
         "extrapolation downward."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only estimated covariate effect in the model: a power term on",
         "apparent clearance, (ALB/34)^-2.49, normalised to 34 g/L. The paper",
         "reports the albumin normalisation constant inconsistently -- Methods",
@@ -85,14 +85,14 @@ Heida_2024_mycophenolic_acid <- function() {
         "makes this term steep, so extrapolating far outside that range is",
         "not supported."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     OCC = list(
-      description        = "Sampling-occasion index used for the inter-occasion random effect on relative bioavailability",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Sampling-occasion index used for the inter-occasion random effect on relative bioavailability",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Ten occasion slots, matching the supplementary control stream's",
         "IF (OCC.EQ.1) ... IF (OCC.EQ.10) multiplexer over ETA(6)-ETA(15),",
         "each drawn from a single shared variance ($OMEGA BLOCK(1) 0.19",
@@ -104,40 +104,48 @@ Heida_2024_mycophenolic_acid <- function() {
         "with OCC outside 1-10 zero out every indicator and therefore carry",
         "no inter-occasion effect."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "mycophenolate mofetil", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "mycophenolate mofetil",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "mycophenolate mofetil", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "mycophenolate mofetil",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "mycophenolic acid", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "mycophenolic acid",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "mycophenolic acid", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "mycophenolic acid",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30L,
-    n_studies      = 1L,
-    age_range      = "4-18 years",
-    age_median     = "13 years",
-    weight_range   = "12.9-79.9 kg",
-    weight_median  = "38.5 kg",
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "4-18 years",
+    age_median = "13 years",
+    weight_range = "12.9-79.9 kg",
+    weight_median = "38.5 kg",
     sex_female_pct = 40,
     race_ethnicity = "Not reported; single-centre Dutch cohort",
-    disease_state  = paste(
+    disease_state = paste(
       "Pediatric kidney transplant recipients on maintenance",
       "immunosuppression. Median serum albumin 34 g/L (range 24-42), median",
       "height 149 cm (range 95-193), median body surface area 1.3 m2 (range",
@@ -149,14 +157,14 @@ Heida_2024_mycophenolic_acid <- function() {
       "because it inhibits MPA enterohepatic recirculation, so the model",
       "should not be extrapolated to ciclosporin co-treatment."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral mycophenolate mofetil (CellCept) 1200 mg/m2 per day for the",
       "first 2 weeks, reduced to 600 mg/m2 per day thereafter, divided over",
       "two daily doses, with subsequent TDM-guided adjustment. Observed",
       "daily dose median 1000 mg (range 500-2000)."
     ),
-    regions        = "Netherlands (Amalia Children's Hospital, Radboudumc, Nijmegen)",
-    notes          = paste(
+    regions = "Netherlands (Amalia Children's Hospital, Radboudumc, Nijmegen)",
+    notes = paste(
       "Retrospective routine-care therapeutic-drug-monitoring data collected",
       "June 2016 to April 2023. 266 MPA plasma concentrations: 20 full PK",
       "curves (approximately 8 samples at 0, 1, 2, 3, 4, 6, 8 and 12 h), 24",

@@ -1,8 +1,8 @@
 Thomson_2003_gentamicin <- function() {
   description <- "One-compartment population PK model of intramuscular gentamicin in African infants with suspected severe sepsis (Thomson 2003). The 8 mg/kg i.m. dose is modelled as an IV bolus into the central compartment because first-order absorption could not be characterised from the sparse 1 h / next-morning sampling (the paper documents that ka estimates were poorly identified and absorption appeared complete by 1 h). Apparent clearance scales linearly with body weight and as a power function of (postnatal age + 1 day) normalised to the cohort median + 1 day; apparent volume of distribution scales linearly with body weight relative to the cohort median 3 kg. Reported CL and V are apparent values (CL/F, V/F) because all doses were administered by intramuscular injection and bioavailability could not be estimated."
-  reference   <- "Thomson AH, Kokwaro GO, Muchohi SN, English M, Mohammed S, Edwards G. Population pharmacokinetics of intramuscular gentamicin administered to young infants with suspected severe sepsis in Kenya. Br J Clin Pharmacol. 2003;56(1):25-31. doi:10.1046/j.1365-2125.2003.01819.x"
-  vignette    <- "Thomson_2003_gentamicin"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Thomson AH, Kokwaro GO, Muchohi SN, English M, Mohammed S, Edwards G. Population pharmacokinetics of intramuscular gentamicin administered to young infants with suspected severe sepsis in Kenya. Br J Clin Pharmacol. 2003;56(1):25-31. doi:10.1046/j.1365-2125.2003.01819.x"
+  vignette <- "Thomson_2003_gentamicin"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -13,45 +13,45 @@ Thomson_2003_gentamicin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at the time of the dose.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at the time of the dose.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Thomson 2003 cohort median weight 3.05 kg (range 1.24-6.72 kg, Table 1). The volume-of-distribution effect uses a linear-deviation form anchored at 3 kg: V = 2.02 * (1 + 0.277 * (WT - 3)). The clearance effect is strictly linear in WT: CL = 0.0913 * WT * f_PNA. Time-varying within an episode is in principle allowed but the source data set carried a single baseline weight per infant.",
-      source_name        = "WT"
+      notes = "Thomson 2003 cohort median weight 3.05 kg (range 1.24-6.72 kg, Table 1). The volume-of-distribution effect uses a linear-deviation form anchored at 3 kg: V = 2.02 * (1 + 0.277 * (WT - 3)). The clearance effect is strictly linear in WT: CL = 0.0913 * WT * f_PNA. Time-varying within an episode is in principle allowed but the source data set carried a single baseline weight per infant.",
+      source_name = "WT"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological since birth).",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological since birth).",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Thomson 2003 reports postnatal age in DAYS (cohort median 10 days, range 0-99 days, Table 1). The canonical PNA column is in MONTHS, so the model `model()` block reparameterises the source expression: the paper's `CL = theta1 * WT * ((PNA_days + 1) / 11)^theta2` is encoded as `CL = exp(lcl + etalcl) * WT * ((PNA_months + 1/30.4375) / (11/30.4375))^e_pna_cl`. Numerically identical because the 30.4375 days/month factor cancels in the ratio. The +1 day shift (in months: 1/30.4375 = 0.03285) was added by Thomson 2003 to keep the expression defined for PNA = 0 day cohort members. Users should supply PNA in months in the dataset.",
-      source_name        = "PNA"
+      notes = "Thomson 2003 reports postnatal age in DAYS (cohort median 10 days, range 0-99 days, Table 1). The canonical PNA column is in MONTHS, so the model `model()` block reparameterises the source expression: the paper's `CL = theta1 * WT * ((PNA_days + 1) / 11)^theta2` is encoded as `CL = exp(lcl + etalcl) * WT * ((PNA_months + 1/30.4375) / (11/30.4375))^e_pna_cl`. Numerically identical because the 30.4375 days/month factor cancels in the ratio. The +1 day shift (in months: 1/30.4375 = 0.03285) was added by Thomson 2003 to keep the expression defined for PNA = 0 day cohort members. Users should supply PNA in months in the dataset.",
+      source_name = "PNA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 107L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 107L,
+    n_studies = 1L,
     n_observations = 203L,
-    age_range      = "PNA 0-99 days",
-    age_median     = "PNA 10 days",
-    weight_range   = "1.24-6.72 kg",
-    weight_median  = "3.05 kg",
+    age_range = "PNA 0-99 days",
+    age_median = "PNA 10 days",
+    weight_range = "1.24-6.72 kg",
+    weight_median = "3.05 kg",
     sex_female_pct = 36.4,
     race_ethnicity = c(Black_African = 100),
-    disease_state  = "Young infants admitted to Kilifi District Hospital, Kenya, with suspected severe sepsis. Inclusion required body weight >= 1 kg, age < 3 months (changed to < 2 months from February 2001), no prior gentamicin exposure, no anuria for >= 24 h, and creatinine clearance on admission within an acceptable range. Children with primary diagnosis of tetanus or major life-threatening congenital malformations were excluded.",
-    dose_range     = "Single intramuscular dose of 8 mg/kg gentamicin (the first dose of a once-daily regimen). The model was developed only on data following this first dose.",
-    n_peak_samples       = 97L,
-    n_nextday_samples    = 106L,
-    peak_sample_time     = "median 1.05 h after dose (range 0.49-2.9 h)",
-    nextday_sample_time  = "median 16.87 h after dose (range 8.35-32.85 h)",
-    creatinine_range     = "17-173 micromol/L (median 52)",
-    wbc_range            = "2.1-51.6 x 10^9/L (median 11.3)",
-    haemoglobin_range    = "4.2-21.5 g/dL (median 14.5)",
-    regions              = "Coastal Kenya (Kilifi District Hospital). Recruitment August 2000 - April 2001. Approval from the national Kenyan Ethical Committee.",
-    notes                = "Baseline demographics from Thomson 2003 Table 1 (n = 107). Initial data set had 124 patients and 238 concentration measurements; 14 with missing creatinine, 2 with spurious results, and 1 below LLOQ on the only sample were excluded. The 8 mg/kg i.m. dose produced a median 1 h peak of 10.6 mg/L (range 3.0-19.8) and median next-day concentration of less than 2 mg/L (range 0.3-6.2). Gentamicin was assayed by FPIA (Abbott TDx FLx) with LLOQ 0.27 mg/L."
+    disease_state = "Young infants admitted to Kilifi District Hospital, Kenya, with suspected severe sepsis. Inclusion required body weight >= 1 kg, age < 3 months (changed to < 2 months from February 2001), no prior gentamicin exposure, no anuria for >= 24 h, and creatinine clearance on admission within an acceptable range. Children with primary diagnosis of tetanus or major life-threatening congenital malformations were excluded.",
+    dose_range = "Single intramuscular dose of 8 mg/kg gentamicin (the first dose of a once-daily regimen). The model was developed only on data following this first dose.",
+    n_peak_samples = 97L,
+    n_nextday_samples = 106L,
+    peak_sample_time = "median 1.05 h after dose (range 0.49-2.9 h)",
+    nextday_sample_time = "median 16.87 h after dose (range 8.35-32.85 h)",
+    creatinine_range = "17-173 micromol/L (median 52)",
+    wbc_range = "2.1-51.6 x 10^9/L (median 11.3)",
+    haemoglobin_range = "4.2-21.5 g/dL (median 14.5)",
+    regions = "Coastal Kenya (Kilifi District Hospital). Recruitment August 2000 - April 2001. Approval from the national Kenyan Ethical Committee.",
+    notes = "Baseline demographics from Thomson 2003 Table 1 (n = 107). Initial data set had 124 patients and 238 concentration measurements; 14 with missing creatinine, 2 with spurious results, and 1 below LLOQ on the only sample were excluded. The 8 mg/kg i.m. dose produced a median 1 h peak of 10.6 mg/L (range 3.0-19.8) and median next-day concentration of less than 2 mg/L (range 0.3-6.2). Gentamicin was assayed by FPIA (Abbott TDx FLx) with LLOQ 0.27 mg/L."
   )
 
   ini({

@@ -10,47 +10,47 @@ Gupta_2017_ixazomib <- function() {
     sep = " "
   )
   vignette <- "Gupta_2017_ixazomib"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ixazomib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ixazomib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ixazomib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ixazomib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ixazomib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "ixazomib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area at baseline.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area at baseline.",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as a power covariate on the second peripheral volume V4 (canonical name `lvp2`) with reference BSA = 1.87 m^2 and exponent 2.06 (Gupta 2017 Table 3). The paper does not state the BSA formula (DuBois / Mosteller / Haycock); recorded as unspecified. The covariate-effect coefficient is encoded as `e_bsa_vp2` consistent with the e_<cov>_<param> convention. BSA was preferred over body weight in model selection because it gave a marginally larger drop in OFV and the V4 inter-individual variance (Gupta 2017 Results section 3.2).",
-      source_name        = "BSA"
+      notes = "Used as a power covariate on the second peripheral volume V4 (canonical name `lvp2`) with reference BSA = 1.87 m^2 and exponent 2.06 (Gupta 2017 Table 3). The paper does not state the BSA formula (DuBois / Mosteller / Haycock); recorded as unspecified. The covariate-effect coefficient is encoded as `e_bsa_vp2` consistent with the e_<cov>_<param> convention. BSA was preferred over body weight in model selection because it gave a marginally larger drop in OFV and the V4 inter-individual variance (Gupta 2017 Results section 3.2).",
+      source_name = "BSA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 755L,
-    n_studies      = 10L,
-    age_range      = "23-91 years (median 65)",
-    age_median     = "65 years",
-    weight_range   = "36.7-151 kg (median 75.5)",
-    weight_median  = "75.5 kg",
+    species = "human",
+    n_subjects = 755L,
+    n_studies = 10L,
+    age_range = "23-91 years (median 65)",
+    age_median = "65 years",
+    weight_range = "36.7-151 kg (median 75.5)",
+    weight_median = "75.5 kg",
     sex_female_pct = 42.4,
     race_ethnicity = c(White = 79.9, Black = 5.56, Asian = 11.7, Other = 2.91),
-    disease_state  = "Adult patients with advanced hematologic or non-hematologic malignancies: multiple myeloma (n = 632; relapsed/refractory or newly diagnosed), advanced solid tumours (n = 80), lymphoma (n = 28), and relapsed/refractory light-chain amyloidosis (n = 15).",
-    dose_range     = "Oral capsule (n = 647) at 0.2-10.6 mg per dose or intravenous (n = 108) at 0.2-8.9 mg per dose. Once-weekly dosing (28-day cycle; days 1, 8, 15; n = 560 patients) or twice-weekly dosing (21-day cycle; days 1, 4, 8, 11; n = 195 patients). Approved label dose is 4 mg orally on days 1, 8, 15 of a 28-day cycle in combination with lenalidomide and dexamethasone.",
-    regions        = "Global (TOURMALINE-MM1 phase III; plus seven phase I and two phase I/II studies including East-Asian and Japanese cohorts).",
-    studies        = "C16001, C16002, C16003, C16004, C16005, C16007, C16008, C16010/TOURMALINE-MM1, C16013, TB-MC010034 (Gupta 2017 Table 1).",
-    baseline_labs  = "Albumin 39 g/L (12-55); AST 22 U/L (4-127); total bilirubin 7 uM (1.71-39.3) = 0.4 mg/dL (0.1-2.3); creatinine clearance 86.8 mL/min (25.8-297, Cockcroft-Gault); hematocrit 0.35 (0.15-0.54); hemoglobin 11.6 g/dL (4.6-16.8). Median values with ranges per Gupta 2017 Table 2.",
-    co_medication  = "29.9% single agent; 70.1% ixazomib + lenalidomide + dexamethasone. CYP1A2-modulatory and CYP3A4-modulatory concomitant medications were screened as time-dependent covariates and found not statistically significant.",
-    smoking        = "Never 33.1%; Current 4.37%; Former 18.5%; Unknown 44.1% (Gupta 2017 Table 2).",
-    notes          = "Demographics from Gupta 2017 Table 2. Patients receiving fixed-dose oral ixazomib (the approved 4 mg once-weekly regimen) made up the majority of the pooled dataset; BSA-based dosing was used in the early phase I studies before the switch to fixed dosing supported by Gupta 2015 (Br J Clin Pharmacol 79:789-800). Severe renal impairment and moderate/severe hepatic impairment were studied separately (label dose 3 mg) and are not represented in this analysis dataset."
+    disease_state = "Adult patients with advanced hematologic or non-hematologic malignancies: multiple myeloma (n = 632; relapsed/refractory or newly diagnosed), advanced solid tumours (n = 80), lymphoma (n = 28), and relapsed/refractory light-chain amyloidosis (n = 15).",
+    dose_range = "Oral capsule (n = 647) at 0.2-10.6 mg per dose or intravenous (n = 108) at 0.2-8.9 mg per dose. Once-weekly dosing (28-day cycle; days 1, 8, 15; n = 560 patients) or twice-weekly dosing (21-day cycle; days 1, 4, 8, 11; n = 195 patients). Approved label dose is 4 mg orally on days 1, 8, 15 of a 28-day cycle in combination with lenalidomide and dexamethasone.",
+    regions = "Global (TOURMALINE-MM1 phase III; plus seven phase I and two phase I/II studies including East-Asian and Japanese cohorts).",
+    studies = "C16001, C16002, C16003, C16004, C16005, C16007, C16008, C16010/TOURMALINE-MM1, C16013, TB-MC010034 (Gupta 2017 Table 1).",
+    baseline_labs = "Albumin 39 g/L (12-55); AST 22 U/L (4-127); total bilirubin 7 uM (1.71-39.3) = 0.4 mg/dL (0.1-2.3); creatinine clearance 86.8 mL/min (25.8-297, Cockcroft-Gault); hematocrit 0.35 (0.15-0.54); hemoglobin 11.6 g/dL (4.6-16.8). Median values with ranges per Gupta 2017 Table 2.",
+    co_medication = "29.9% single agent; 70.1% ixazomib + lenalidomide + dexamethasone. CYP1A2-modulatory and CYP3A4-modulatory concomitant medications were screened as time-dependent covariates and found not statistically significant.",
+    smoking = "Never 33.1%; Current 4.37%; Former 18.5%; Unknown 44.1% (Gupta 2017 Table 2).",
+    notes = "Demographics from Gupta 2017 Table 2. Patients receiving fixed-dose oral ixazomib (the approved 4 mg once-weekly regimen) made up the majority of the pooled dataset; BSA-based dosing was used in the early phase I studies before the switch to fixed dosing supported by Gupta 2015 (Br J Clin Pharmacol 79:789-800). Severe renal impairment and moderate/severe hepatic impairment were studied separately (label dose 3 mg) and are not represented in this analysis dataset."
   )
 
   ini({

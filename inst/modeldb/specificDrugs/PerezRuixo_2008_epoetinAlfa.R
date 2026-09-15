@@ -51,39 +51,39 @@ PerezRuixo_2008_epoetinAlfa <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "epoetin alfa", units = "IU", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "epoetin alfa", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "epoetin alfa", units = "IU", specimen = "plasma", verified = FALSE),
-    transit1    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
-    transit5    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
-    precursor1  = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
-    precursor5  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
-    precursor6  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
-    precursor7  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
-    precursor8  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
-    precursor9  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    transit1 = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    precursor1 = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
+    precursor5 = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor6 = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor7 = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor8 = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor9 = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
     precursor10 = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
-    retic1      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
-    retic2      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
-    retic3      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
-    retic4      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
-    retic5      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
-    retic6      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
-    retic7      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
-    retic8      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
-    retic9      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
-    retic10     = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE)
+    retic1 = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic2 = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic3 = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic4 = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic5 = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic6 = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic7 = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic8 = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic9 = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic10 = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = paste(
+      description = paste(
         "Per-subject planned single subcutaneous rHuEPO dose in IU.",
         "Used to evaluate the dose-dependent absolute bioavailability",
         "F = F0 + Emax(F) * DOSE / (ED50(F) + DOSE) (Perez-Ruixo 2008",
@@ -95,10 +95,10 @@ PerezRuixo_2008_epoetinAlfa <- function() {
         "math, and it gives the user a single explicit place to declare",
         "the dose-dependence at simulation time."
       ),
-      units              = "IU",
-      type               = "continuous",
+      units = "IU",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject in single-dose use. Should equal the",
         "amt value of the depot and central dose records the user",
         "constructs for the dual SC absorption (the same Dose value",
@@ -108,19 +108,19 @@ PerezRuixo_2008_epoetinAlfa <- function() {
         "20000-160000 IU (= 20-160 kIU). Reference value not required",
         "because F is hyperbolic in DOSE, not power-form."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 88L,
-    n_studies      = 3L,
-    age_range      = "18-45 years",
-    weight_range   = "63.6-100 kg",
+    species = "human",
+    n_subjects = 88L,
+    n_studies = 3L,
+    age_range = "18-45 years",
+    weight_range = "63.6-100 kg",
     sex_female_pct = 0,
     race_ethnicity = "Not separately tabulated in Perez-Ruixo 2008.",
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult male volunteers; physical exam, ECG and standard",
       "laboratory tests confirmed healthy. Baseline serum erythropoietin",
       "< 30 IU/L; haemoglobin 13.8-16.4 g/dL; haematocrit 41-49%; baseline",
@@ -128,20 +128,20 @@ PerezRuixo_2008_epoetinAlfa <- function() {
       "parameters. All subjects received daily oral iron supplementation",
       "(equivalent to 210 mg elemental iron) through day 29."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single subcutaneous rHuEPO dose. Study A (1996, n=20):",
       "300/600/1200/2400 IU/kg. Study B (1996, n=20):",
       "450/900/1350/1800 IU/kg. Study C (2002, n=48; n=47 included in",
       "PD analysis): 20/40/60/90/120/160 kIU absolute. Studies A and B",
       "doses-per-kg were converted to absolute doses for the analyses."
     ),
-    regions        = paste(
+    regions = paste(
       "Study A and B: South Florida Bioavailability Clinic (Miami, FL,",
       "USA). Study C: Chiltern International (Buckinghamshire, UK)."
     ),
     n_pk_observations = 2018L,
     n_pd_observations = 1628L,
-    notes          = paste(
+    notes = paste(
       "Three open-label, randomized, placebo-controlled, parallel-group",
       "phase I studies pooled. Serum rHuEPO by modified DSL",
       "radioimmunoassay (LLOQ 7.8 IU/L; CV < 15% up to 5000 IU/L).",

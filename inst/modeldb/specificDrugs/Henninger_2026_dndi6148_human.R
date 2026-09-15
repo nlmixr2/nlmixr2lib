@@ -32,9 +32,9 @@ Henninger_2026_dndi6148_human <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Used only for the mouse-to-human allometric bridge (Methods 2.2.5, fixed",
         "exponents 0.75 for CL/F, 1.00 for Vd/F and -0.25 for ka) and to convert the",
         "mg/kg dose levels to milligrams for a 70 kg adult. Not retained as a",
@@ -45,24 +45,29 @@ Henninger_2026_dndi6148_human <- function() {
   )
 
   compartmentData <- list(
-    depot     = list(analyte = "DNDI-6148", units = "mg",     specimen = "administration site", verified = TRUE),
-    central   = list(analyte = "DNDI-6148", units = "mg",     specimen = "plasma",              verified = TRUE),
-    skin      = list(analyte = "DNDI-6148", units = "ug/mL",  specimen = "tissue",              verified = TRUE),
-    parasites = list(analyte = "Leishmania major bioluminescence", units = "photons/s", specimen = "tissue", verified = TRUE)
+    depot = list(analyte = "DNDI-6148", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "DNDI-6148", units = "mg", specimen = "plasma", verified = TRUE),
+    skin = list(analyte = "DNDI-6148", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    parasites = list(
+      analyte = "Leishmania major bioluminescence",
+      units = "photons/s",
+      specimen = "tissue",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = NA_integer_,
-    n_studies     = 0L,
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 0L,
     weight_median = "70 kg (the single simulated adult body weight)",
     disease_state = "Cutaneous leishmaniasis (Leishmania major), simulated",
-    dose_range    = paste(
+    dose_range = paste(
       "Simulated only: 3-20 mg/kg once daily for 7-14 days in 1.0 mg/kg increments,",
       "and 1.5-7.0 mg/kg twice daily for 7-10 days in 0.5 mg/kg increments",
       "(Methods 2.2.6). 10,000 subjects per dose scenario."
     ),
-    notes         = paste(
+    notes = paste(
       "This is a SIMULATION model, not a fit: no human PK or PD data were analysed.",
       "The three typical PK values are single-species allometric projections from the",
       "murine estimates and every parameter is therefore fixed. The projections were",

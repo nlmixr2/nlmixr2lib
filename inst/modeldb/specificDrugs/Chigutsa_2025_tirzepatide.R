@@ -45,31 +45,41 @@ Chigutsa_2025_tirzepatide <- function() {
   paper_specific_compartments <- c("fat", "ffm")
 
   units <- list(
-    time          = "week",
-    dosing        = "mg",
+    time = "week",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "tirzepatide", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "tirzepatide",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "tirzepatide", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "tirzepatide",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "tirzepatide", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "tirzepatide",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     fat = list(
-      analyte = "fat mass", units = "kg",
-      specimen = "not applicable", verified = TRUE
+      analyte = "fat mass",
+      units = "kg",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     ffm = list(
-      analyte = "fat-free mass", units = "kg",
-      specimen = "not applicable", verified = TRUE
+      analyte = "fat-free mass",
+      units = "kg",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
@@ -81,10 +91,10 @@ Chigutsa_2025_tirzepatide <- function() {
         "endpoints; all six effects are fractional, applied as",
         "(1 + theta * SEXF)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Supplementary Material S1 sets FEMALE = 1 when the source column",
         "SEX == 1, so the reference category is male and the Table 1",
         "covariate rows read 'in females relative to males'. The",
@@ -101,10 +111,10 @@ Chigutsa_2025_tirzepatide <- function() {
         "fat-free mass and baseline fat mass only; no Asian effect on drug",
         "response was retained."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = paste(
+      notes = paste(
         "Supplementary Material S1 sets ASIAN = 1 when the source column",
         "RACE == 58. Asian participants were estimated to have 11% lower",
         "baseline fat-free mass and 25% lower baseline fat mass",
@@ -115,24 +125,24 @@ Chigutsa_2025_tirzepatide <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2539L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_median  = "107 kg (mean baseline weight in the Table 2 simulation)",
+    species = "human",
+    n_subjects = 2539L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_median = "107 kg (mean baseline weight in the Table 2 simulation)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with obesity or overweight WITHOUT type 2 diabetes mellitus:",
       "BMI >= 30 kg/m2, or BMI >= 27 kg/m2 with at least one",
       "weight-related complication."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Placebo, 5, 10 or 15 mg tirzepatide subcutaneously once weekly for",
       "72 weeks. Dose into the `depot` compartment in mg."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "SURMOUNT-1 (NCT04184622), a phase 3 randomised (1:1:1:1) trial with",
       "monthly body weight measurements over 72 weeks. The model was",
       "developed on a random 50% of the data and externally evaluated on",

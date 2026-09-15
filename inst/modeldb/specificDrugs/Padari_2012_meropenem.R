@@ -13,60 +13,60 @@ Padari_2012_meropenem <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight at PK sampling",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight at PK sampling",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Linear scaling on Vss (V = TVV/70 * WT) and allometric scaling on CL (Rhodin 2009 fixed exponent 0.75 with reference 70 kg) per Padari 2012 Methods 'Statistical and PK analyses' / Results 'Population modeling'.",
-      source_name        = "WT"
+      notes = "Time-varying. Linear scaling on Vss (V = TVV/70 * WT) and allometric scaling on CL (Rhodin 2009 fixed exponent 0.75 with reference 70 kg) per Padari 2012 Methods 'Statistical and PK analyses' / Results 'Population modeling'.",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age + postnatal age)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age + postnatal age)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives the fixed Rhodin (2009) renal-maturation Hill function on CL (TM50 = 47.7 weeks, Hill = 3.4) per Padari 2012 Results 'Population modeling' ('the fixed Rhodin model (25) was used'). Padari 2012 reports neonates with PMA approximately equal to GA + PNA; pooled cohort mean PMA approximately 29 weeks (Table 1: GA 26.9 / 25.8 weeks + PNA 15.6 / 20.5 days at PK sampling).",
-      source_name        = "PMA"
+      notes = "Time-varying. Drives the fixed Rhodin (2009) renal-maturation Hill function on CL (TM50 = 47.7 weeks, Hill = 3.4) per Padari 2012 Results 'Population modeling' ('the fixed Rhodin model (25) was used'). Padari 2012 reports neonates with PMA approximately equal to GA + PNA; pooled cohort mean PMA approximately 29 weeks (Table 1: GA 26.9 / 25.8 weeks + PNA 15.6 / 20.5 days at PK sampling).",
+      source_name = "PMA"
     )
   )
 
   covariatesDataExcluded <- list(
     SCR = list(
       description = "Serum creatinine concentration",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened in covariate analysis (corrected for postnatal age per Ceriotti 2008 reference SCR; Padari 2012 Methods 'Statistical and PK analyses') but did not significantly improve model fit and was not retained in the final model (Padari 2012 Results 'Population modeling')."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened in covariate analysis (corrected for postnatal age per Ceriotti 2008 reference SCR; Padari 2012 Methods 'Statistical and PK analyses') but did not significantly improve model fit and was not retained in the final model (Padari 2012 Results 'Population modeling')."
     ),
     PNA = list(
       description = "Postnatal age",
-      units       = "days",
-      type        = "continuous",
-      notes       = "Screened as a covariate on CL but no significant correlation with meropenem clearance was observed; not retained in the final model (Padari 2012 Results 'Noncompartmental PK analysis' and 'Population modeling')."
+      units = "days",
+      type = "continuous",
+      notes = "Screened as a covariate on CL but no significant correlation with meropenem clearance was observed; not retained in the final model (Padari 2012 Results 'Noncompartmental PK analysis' and 'Population modeling')."
     ),
     GA = list(
       description = "Gestational age at birth",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = "Screened as a covariate but did not improve model fit and was not retained in the final model (Padari 2012 Results 'Population modeling'). GA enters the retained model only indirectly via PAGE = GA + PNA."
+      units = "weeks",
+      type = "continuous",
+      notes = "Screened as a covariate but did not improve model fit and was not retained in the final model (Padari 2012 Results 'Population modeling'). GA enters the retained model only indirectly via PAGE = GA + PNA."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 19L,
-    n_studies      = 1L,
-    age_range      = "PNA <=56 days at enrolment; PMA approximately 28-32 weeks (gestational + postnatal at PK sampling)",
-    age_median     = "PNA 15.6 days (group 1, short infusion) / 20.5 days (group 2, prolonged infusion) at PK sampling",
-    weight_range   = "Birth weight 0.84-0.90 kg (group means; Padari 2012 Table 1); current body weight 0.97-0.98 kg at PK sampling",
-    weight_median  = "0.977 kg (pooled current body weight at PK sampling, Padari 2012 Table 1)",
+    species = "human",
+    n_subjects = 19L,
+    n_studies = 1L,
+    age_range = "PNA <=56 days at enrolment; PMA approximately 28-32 weeks (gestational + postnatal at PK sampling)",
+    age_median = "PNA 15.6 days (group 1, short infusion) / 20.5 days (group 2, prolonged infusion) at PK sampling",
+    weight_range = "Birth weight 0.84-0.90 kg (group means; Padari 2012 Table 1); current body weight 0.97-0.98 kg at PK sampling",
+    weight_median = "0.977 kg (pooled current body weight at PK sampling, Padari 2012 Table 1)",
     sex_female_pct = 36.8,
     race_ethnicity = "Not reported (single-centre Estonian neonatal ICU cohort)",
-    disease_state  = "Very-low-birth-weight preterm neonates (GA <=32 weeks at birth, BW <1,500 g) receiving meropenem treatment for sepsis (n=16), pneumonia (n=3), or necrotizing enterocolitis due to proven or highly suspected resistant pathogens, or for clinical deterioration on empirical antibiotics. 95% required respiratory support; 42% required vasoactive treatment. Excluded major uncorrected congenital malformations and infants expected to die within 24 h.",
-    dose_range     = "Meropenem 20 mg/kg q12h IV; group 1 (n=9) administered over 30 min; group 2 (n=10) administered over 4 h (after at least two prolonged infusions to reach steady state). After PK sampling, all subjects returned to 30-min infusions.",
-    regions        = "Estonia (Tartu University Hospital and Tallinn Children's Hospital NICUs)",
+    disease_state = "Very-low-birth-weight preterm neonates (GA <=32 weeks at birth, BW <1,500 g) receiving meropenem treatment for sepsis (n=16), pneumonia (n=3), or necrotizing enterocolitis due to proven or highly suspected resistant pathogens, or for clinical deterioration on empirical antibiotics. 95% required respiratory support; 42% required vasoactive treatment. Excluded major uncorrected congenital malformations and infants expected to die within 24 h.",
+    dose_range = "Meropenem 20 mg/kg q12h IV; group 1 (n=9) administered over 30 min; group 2 (n=10) administered over 4 h (after at least two prolonged infusions to reach steady state). After PK sampling, all subjects returned to 30-min infusions.",
+    regions = "Estonia (Tartu University Hospital and Tallinn Children's Hospital NICUs)",
     gestational_age_range = "GA at birth 25.8-26.9 weeks (group means; Padari 2012 Table 1)",
     samples_plasma = "Approximately 6 plasma samples per subject (pre-dose and 0.5, 1.5, 4, 8, 12 h after the 4th-7th doses of meropenem)",
-    notes          = "Demographics from Padari 2012 Table 1 (n=9 short / n=10 prolonged). Mean current body weight at PK sampling 0.984 kg (group 1) and 0.969 kg (group 2). Mean serum creatinine at enrolment 51.4 umol/L (group 1) and 44.8 umol/L (group 2). Concomitant vancomycin or ibuprofen in 4/3 subjects. 11/19 had positive blood cultures (coagulase-negative staphylococci most common). Trial registration EU CTR 2009-017823-24. Sex_female_pct = 7/19 = 36.8% (groups had 6 males each of 9 and 10 subjects, so 12 males / 7 females total)."
+    notes = "Demographics from Padari 2012 Table 1 (n=9 short / n=10 prolonged). Mean current body weight at PK sampling 0.984 kg (group 1) and 0.969 kg (group 2). Mean serum creatinine at enrolment 51.4 umol/L (group 1) and 44.8 umol/L (group 2). Concomitant vancomycin or ibuprofen in 4/3 subjects. 11/19 had positive blood cultures (coagulase-negative staphylococci most common). Trial registration EU CTR 2009-017823-24. Sex_female_pct = 7/19 = 36.8% (groups had 6 males each of 9 and 10 subjects, so 12 males / 7 females total)."
   )
 
   ini({

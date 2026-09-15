@@ -16,8 +16,8 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
   )
   vignette <- "Chen_2017_TB_MTP_GPDI_mouse"
   units <- list(
-    time          = "h",
-    dosing        = "mg/kg",
+    time = "h",
+    dosing = "mg/kg",
     concentration = "log(CFU/lungs) for the model observation; mg/L for the internal drug plasma trajectories Cc_rif / Cc_inh / Cc_emb / Cc_pza"
   )
 
@@ -26,27 +26,47 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot_rif       = list(analyte = "Rifampicin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central_rif     = list(analyte = "Rifampicin", units = NA_character_, specimen = "plasma", verified = FALSE),
-    depot_inh       = list(analyte = "Isoniazid", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central_inh     = list(analyte = "Isoniazid", units = NA_character_, specimen = "plasma", verified = FALSE),
-    depot_emb       = list(analyte = "Ethambutol", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central_emb     = list(analyte = "Ethambutol", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot_rif = list(analyte = "Rifampicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central_rif = list(analyte = "Rifampicin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot_inh = list(analyte = "Isoniazid", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central_inh = list(analyte = "Isoniazid", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot_emb = list(analyte = "Ethambutol", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central_emb = list(analyte = "Ethambutol", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1_emb = list(analyte = "Ethambutol", units = NA_character_, specimen = "plasma", verified = FALSE),
-    depot_pza       = list(analyte = "Pyrazinamide", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central_pza     = list(analyte = "Pyrazinamide", units = NA_character_, specimen = "plasma", verified = FALSE),
-    fbugs           = list(analyte = "Fast-multiplying M. tuberculosis", units = NA_character_, specimen = "lymph", verified = FALSE),
-    sbugs           = list(analyte = "Slow-multiplying M. tuberculosis", units = NA_character_, specimen = "lymph", verified = FALSE),
-    nbugs           = list(analyte = "Non-multiplying M. tuberculosis", units = NA_character_, specimen = "lymph", verified = FALSE)
+    depot_pza = list(
+      analyte = "Pyrazinamide",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central_pza = list(analyte = "Pyrazinamide", units = NA_character_, specimen = "plasma", verified = FALSE),
+    fbugs = list(
+      analyte = "Fast-multiplying M. tuberculosis",
+      units = NA_character_,
+      specimen = "lymph",
+      verified = FALSE
+    ),
+    sbugs = list(
+      analyte = "Slow-multiplying M. tuberculosis",
+      units = NA_character_,
+      specimen = "lymph",
+      verified = FALSE
+    ),
+    nbugs = list(
+      analyte = "Non-multiplying M. tuberculosis",
+      units = NA_character_,
+      specimen = "lymph",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CONMED_INH_DOSE = list(
-      description        = "Per-subject assigned isoniazid dose level (mg/kg/day)",
-      units              = "mg/kg/day",
-      type               = "continuous",
+      description = "Per-subject assigned isoniazid dose level (mg/kg/day)",
+      units = "mg/kg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used to compute the dose-dependent isoniazid clearance:",
         "CL_inh = CL_inh_lowest * (1 - slope_inh * (CONMED_INH_DOSE - 12.5))",
         "(Chen 2017 Table 1 footnote b; lowest dose = 12.5 mg/kg).",
@@ -57,30 +77,30 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
         "PK and their assigned dose appears only through the event AMT).",
         "Set to 0 in regimens without isoniazid."
       ),
-      source_name        = "INH dose level (Chen 2017 Methods / Table 1)"
+      source_name = "INH dose level (Chen 2017 Methods / Table 1)"
     )
   )
 
   population <- list(
-    species        = "mouse (BALB/c, female)",
-    n_subjects     = 49L,
-    n_studies      = 2L,
-    age_range      = "13-15 weeks at infection",
-    weight_range   = "20-25 g",
+    species = "mouse (BALB/c, female)",
+    n_subjects = 49L,
+    n_studies = 2L,
+    age_range = "13-15 weeks at infection",
+    weight_range = "20-25 g",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "M. tuberculosis Beijing VN 2002-1585 genotype intratracheal infection",
       "(approx 9.5e4 CFU inoculum) plus a healthy-mouse rifampicin PK sub-study (n = 18)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Daily oral gavage, 5 days/week. Monotherapy: rifampicin 5/10/20 mg/kg",
       "(plus healthy-mouse 10/160 mg/kg supporting cohort), isoniazid",
       "12.5/25/50 mg/kg, ethambutol 50/100/200 mg/kg, pyrazinamide",
       "75/150/300 mg/kg. Combination therapies (R10H25, R10H25Z150,",
       "R10H25Z150E100) at fixed doses for up to 24 weeks."
     ),
-    regions        = "Charles River Les Oncins, France; experiments at Erasmus MC, Rotterdam, NL",
-    notes          = paste(
+    regions = "Charles River Les Oncins, France; experiments at Erasmus MC, Rotterdam, NL",
+    notes = paste(
       "TB-infected mice contributed sparse PK (one plasma sample per mouse",
       "at 1, 4, or 8 h post-dose after 4 weeks of treatment for RIF/INH or",
       "after 1 week of treatment for EMB/PZA -- the EMB and PZA monotherapy",

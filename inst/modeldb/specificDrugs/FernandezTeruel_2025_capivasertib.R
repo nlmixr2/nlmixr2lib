@@ -6,30 +6,38 @@ FernandezTeruel_2025_capivasertib <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "capivasertib", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "capivasertib",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "capivasertib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "capivasertib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "capivasertib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "capivasertib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral2 = list(
-      analyte = "capivasertib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "capivasertib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column BBW (baseline body weight). Normalised to 67 kg in both",
         "of the paper's printed covariate equations. Note that 67 kg is the",
         "NORMALISATION CONSTANT carried over from the parent model",
@@ -45,14 +53,14 @@ FernandezTeruel_2025_capivasertib <- function() {
         "Baseline-only (time-fixed); the analysis carried a single per-patient",
         "weight."
       ),
-      source_name        = "BBW"
+      source_name = "BBW"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column AGE. New in this analysis: age was NOT a covariate in",
         "the 2024 parent model. Enters CL0/F as a power term normalised to",
         "57 years, (AGE/57)^e_age_cl, with e_age_cl negative, so apparent",
@@ -62,14 +70,14 @@ FernandezTeruel_2025_capivasertib <- function() {
         "difference between the 5th and 95th percentiles of the covariate",
         "distribution as < 20%, and concludes it is not clinically relevant."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     FASTED_STRICT = list(
-      description        = "Overnight-fasted dosing indicator (1 = dose taken after an overnight fast; 0 = semi-fasted or fed)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Overnight-fasted dosing indicator (1 = dose taken after an overnight fast; 0 = semi-fasted or fed)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (semi-fasted or fed)",
-      notes              = paste(
+      notes = paste(
         "Source column FASTED. Gates the absorption lag time: the whole ALAG1",
         "term is multiplied by (1 - FASTED_STRICT), so there is no lag under an",
         "overnight fast. Carried unchanged from the 2024 parent model, whose",
@@ -79,14 +87,14 @@ FernandezTeruel_2025_capivasertib <- function() {
         "FASTED_STRICT = 0, which is the state in which the lag is active.",
         "Per dose record, not per subject."
       ),
-      source_name        = "FASTED"
+      source_name = "FASTED"
     ),
     FORM_CAPSULE = list(
-      description        = "Capsule formulation indicator (1 = capsule; 0 = tablet)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Capsule formulation indicator (1 = capsule; 0 = tablet)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet)",
-      notes              = paste(
+      notes = paste(
         "Source column CAP. The only retained formulation effect is on the",
         "absorption lag time (0.468 h capsule vs 0.287 h tablet, Table 2), both",
         "under non-overnight-fasted conditions; the formulation acts on neither",
@@ -95,14 +103,14 @@ FernandezTeruel_2025_capivasertib <- function() {
         "(FORM_CAPSULE = 0). Per dose record: the OAK study compared the two",
         "formulations within patient."
       ),
-      source_name        = "CAP"
+      source_name = "CAP"
     ),
     DOSE_CAPIVASERTIB_MG = list(
-      description        = "Planned capivasertib dose level per administration",
-      units              = "mg",
-      type               = "continuous",
+      description = "Planned capivasertib dose level per administration",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column DOSE. The planned twice-daily dose level, 80-800 mg",
         "(Table S1), not the daily total. Enters the maximal auto-inhibition of",
         "CL/F as a linear-deviation term centred on 480 mg,",
@@ -115,14 +123,14 @@ FernandezTeruel_2025_capivasertib <- function() {
         "column rather than a bare `DOSE` because rxode2's etTrans consumes a",
         "column literally named DOSE and never exposes it to model()."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     ),
     CONMED_PACLITAXEL = list(
-      description        = "Concomitant paclitaxel indicator (1 = capivasertib given with paclitaxel)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant paclitaxel indicator (1 = capivasertib given with paclitaxel)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (capivasertib monotherapy, or with fulvestrant)",
-      notes              = paste(
+      notes = paste(
         "Source column PACL. Paclitaxel was co-administered in 90 of 851",
         "patients (10.6%, Table S1), in the BEECH study and part B of the",
         "China PK study. The term (1 + PACL * Imax_pacl) is RETAINED in the",
@@ -140,7 +148,7 @@ FernandezTeruel_2025_capivasertib <- function() {
         "and capivasertib + fulvestrant, since fulvestrant was screened and",
         "not retained."
       ),
-      source_name        = "PACL"
+      source_name = "PACL"
     )
   )
 
@@ -152,11 +160,15 @@ FernandezTeruel_2025_capivasertib <- function() {
   # Figure 2b (the not-significant verdict), Table S1 (the frequencies).
   covariatesDataExcluded <- list(
     SEXF = list(
-      description = "Female sex indicator", units = "(binary)", type = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened; not significant (Figure 2b, 'gender'). 88.8% female, Table S1."
     ),
     CONMED_FULVESTRANT = list(
-      description = "Concomitant fulvestrant indicator", units = "(binary)", type = "binary",
+      description = "Concomitant fulvestrant indicator",
+      units = "(binary)",
+      type = "binary",
       notes = paste(
         "Screened explicitly as the lead covariate of interest for this update",
         "(Sect. 2.3) and NOT retained (Figure 2b). 468 of 851 patients (55.0%,",
@@ -166,15 +178,21 @@ FernandezTeruel_2025_capivasertib <- function() {
       )
     ),
     HEPATIC_IMPAIR = list(
-      description = "NCI-ODWG hepatic function category", units = "(category)", type = "categorical",
+      description = "NCI-ODWG hepatic function category",
+      units = "(category)",
+      type = "categorical",
       notes = "Screened; not significant. Normal 64.0%, mild 35.0%, moderate 0.8%, no severe, Table S1."
     ),
     RENAL_IMPAIR = list(
-      description = "Renal function category", units = "(category)", type = "categorical",
+      description = "Renal function category",
+      units = "(category)",
+      type = "categorical",
       notes = "Screened; not significant. Normal 54.4%, mild 34.3%, moderate 10.6%, no severe, Table S1."
     ),
     RACE_ASIAN = list(
-      description = "Asian race indicator", units = "(binary)", type = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       notes = paste(
         "Screened as part of the race/region covariate; not significant.",
         "27.8% of patients, Table S1. The paper additionally compared Chinese",
@@ -184,7 +202,9 @@ FernandezTeruel_2025_capivasertib <- function() {
       )
     ),
     RACE_BLACK = list(
-      description = "Black race indicator", units = "(binary)", type = "binary",
+      description = "Black race indicator",
+      units = "(binary)",
+      type = "binary",
       notes = paste(
         "Screened as part of the race covariate; not significant. 12 of 851",
         "patients (1.4%), Table S1. The Discussion cautions that the number of",
@@ -192,37 +212,46 @@ FernandezTeruel_2025_capivasertib <- function() {
       )
     ),
     REGION_CHINA = list(
-      description = "Mainland China / Taiwan region indicator", units = "(binary)", type = "binary",
+      description = "Mainland China / Taiwan region indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened; not significant. 11.0% of patients, Table S1."
     ),
     SMOKING = list(
-      description = "Current smoking status indicator", units = "(binary)", type = "binary",
+      description = "Current smoking status indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened; not significant (Figure 2b). Never 42.5%, current 4.5%, former 19.7%, missing 33.3%, Table S1."
     ),
     CONMED_ARA = list(
-      description = "Concomitant acid-reducing agent indicator", units = "(binary)", type = "binary",
+      description = "Concomitant acid-reducing agent indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened; not significant (Figure 2b, 'ARA'). 216 of 851 patients (25.4%), Table S1."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 851L,
-    n_studies      = 6L,
+    species = "human",
+    n_subjects = 851L,
+    n_studies = 6L,
     n_observations = 5960L,
-    age_range      = "26-87 years",
-    age_median     = "57 years",
-    weight_range   = "32-150 kg",
-    weight_median  = "65 kg",
+    age_range = "26-87 years",
+    age_median = "57 years",
+    weight_range = "32-150 kg",
+    weight_median = "65 kg",
     sex_female_pct = 88.8,
     race_ethnicity = c(
-      White = 60.9, Black = 1.4, Asian = 27.8,
+      White = 60.9,
+      Black = 1.4,
+      Asian = 27.8,
       `American Indian or Alaska Native` = 1.8,
       `Native Hawaiian or Other Pacific Islander` = 0.1,
-      Other = 7.5, Missing = 0.5
+      Other = 7.5,
+      Missing = 0.5
     ),
-    disease_state  = "Advanced solid malignancies, and HR-positive / HER2-negative locally advanced or metastatic breast cancer resistant to aromatase inhibitors",
-    dose_range     = paste(
+    disease_state = "Advanced solid malignancies, and HR-positive / HER2-negative locally advanced or metastatic breast cancer resistant to aromatase inhibitors",
+    dose_range = paste(
       "80-800 mg orally twice daily, most commonly 400 mg (63.8%) or 480 mg",
       "(22.4%); continuous dosing (8.0%) or one of two intermittent schedules,",
       "4 days on / 3 days off (4/3, 86.4%) or 2 days on / 5 days off",
@@ -231,9 +260,9 @@ FernandezTeruel_2025_capivasertib <- function() {
     ),
     renal_function = "Normal 54.4%, mild impairment 34.3%, moderate impairment 10.6%, no severe impairment",
     hepatic_function = "Normal 64.0%, mild impairment 35.0%, moderate impairment 0.8%, no severe impairment",
-    co_medication  = "Fulvestrant 55.0%, paclitaxel 10.6%, acid-reducing agent 25.4%",
-    regions        = "Global; China 11.0%, Asia excluding China 15.3%, rest of world 73.7%",
-    notes          = paste(
+    co_medication = "Fulvestrant 55.0%, paclitaxel 10.6%, acid-reducing agent 25.4%",
+    regions = "Global; China 11.0%, Asia excluding China 15.3%, rest of world 73.7%",
+    notes = paste(
       "Pooled from six Phase I-III studies: Study 1, BEECH, Study 4",
       "(all-Japanese), OAK, a China PK study, and the Phase III CAPItello-291",
       "trial. This analysis UPDATES the 441-patient, four-study model of",

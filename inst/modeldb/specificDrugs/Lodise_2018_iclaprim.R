@@ -10,37 +10,37 @@ Lodise_2018_iclaprim <- function() {
     sep = " "
   )
   vignette <- "Lodise_2018_iclaprim"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "iclaprim", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "iclaprim", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "iclaprim", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age at study entry",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at study entry",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Additive-linear effect on CL (Lodise 2018 Results final-model equation",
         "CL = theta2 + theta5 * AGE + ...): theta5 = -0.210 L/h per year. Older",
         "patients have lower CL. Cohort range 18-87 years; median 47.5 years",
         "(Table 3 baseline demographics). No reference centering -- the slope is",
         "applied directly to AGE so the NONMEM equation reproduces verbatim."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Total body weight at study entry",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at study entry",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Additive-linear effect on V1 (Lodise 2018 Results final-model equation",
         "V1 = theta1 + theta6 * WT): theta6 = 0.353 L per kg. Cohort range 42-143",
         "kg; median 76 kg (Table 3 baseline demographics). No effect on CL --",
@@ -49,14 +49,14 @@ Lodise_2018_iclaprim <- function() {
         "selection. No reference centering -- the slope is applied directly to",
         "WT so the NONMEM equation reproduces verbatim."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Lodise 2018 encodes sex as a male-indicator (1 = male, 0 = female) on",
         "CL: theta7 = +2.78 L/h additive shift in males. To store under the",
         "canonical SEXF (1 = female, 0 = male) while preserving Lodise's literal",
@@ -64,14 +64,14 @@ Lodise_2018_iclaprim <- function() {
         "e_sex_cl * (1 - SEXF) -- a male (SEXF = 0) adds 2.78 L/h to CL and a",
         "female (SEXF = 1) does not. Follows the Bajaj_2017_nivolumab convention."
       ),
-      source_name        = "SEX (1 = male, 0 = female)"
+      source_name = "SEX (1 = male, 0 = female)"
     ),
     OCC = list(
-      description        = "Sampling-occasion indicator (1 = day 1 or 2 of treatment; 2 = day 4 +/- 1)",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Sampling-occasion indicator (1 = day 1 or 2 of treatment; 2 = day 4 +/- 1)",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Lodise 2018 encodes a binary occasion indicator (0 = day 1 or 2 sample,",
         "1 = day 4 +/- 1 sample) as a fixed-effect categorical on CL: theta9 =",
         "+3.97 L/h additive shift for day-4 samples. Interoccasion variability",
@@ -84,14 +84,14 @@ Lodise_2018_iclaprim <- function() {
         "occ_day4 <- (OCC == 2). Per-occasion application: hold OCC = 1 across",
         "doses 1-3 (first ~36 h) and OCC = 2 from the day-3-4 boundary onward."
       ),
-      source_name        = "occasion (0 / 1)"
+      source_name = "occasion (0 / 1)"
     ),
     DIS_INFECT_CSSSI_SEV = list(
-      description        = "Complicated skin and skin-structure infection severity indicator (1 = severe; 0 = not severe)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Complicated skin and skin-structure infection severity indicator (1 = severe; 0 = not severe)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not severe cSSSI)",
-      notes              = paste(
+      notes = paste(
         "Lodise 2018 encodes a clinical severity-of-infection indicator (SOI;",
         "0 = not severe, 1 = severe) on inter-compartmental clearance Q only:",
         "theta8 = +13.5 L/h additive shift in severe-cSSSI patients (i.e., Q",
@@ -101,29 +101,29 @@ Lodise_2018_iclaprim <- function() {
         "protocol-defined within the trial dataset. Time-fixed per subject in",
         "the ASSIST analysis."
       ),
-      source_name        = "SOI (0 / 1)"
+      source_name = "SOI (0 / 1)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 470L,
-    n_studies        = 2L,
+    species = "human",
+    n_subjects = 470L,
+    n_studies = 2L,
     n_concentrations = 3061L,
-    age_range        = "18-87 years",
-    age_median       = "47.5 years",
-    weight_range     = "42-143 kg",
-    weight_median    = "76 kg",
-    bmi_range        = "16.8-54.7 kg/m^2",
-    bmi_median       = "26.0 kg/m^2",
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = "Not tabulated by category in Lodise 2018; ethnicity tested as a covariate and found not significant",
-    disease_state    = "Adult patients with complicated skin and skin-structure infections (cSSSI). Patients with BMI > 40 and estimated creatinine clearance < 30 mL/min were excluded from the ASSIST studies. cSSSI severity (severe vs not severe) was retained as a covariate on inter-compartmental clearance Q in the final model.",
-    dose_range       = "Iclaprim 0.8 mg/kg infused intravenously over 0.5 h every 12 h for 8 to 14 days (per ASSIST-1 / ASSIST-2 protocol).",
-    regions          = "ASSIST-1 and ASSIST-2 were multicenter phase 3 trials; geographic distribution not tabulated in Lodise 2018",
-    renal_function   = "Cockcroft-Gault creatinine clearance 18-172 mL/min (mean 99 +/- 29, median 102; Table 3). Patients with CLcr < 30 mL/min were excluded.",
+    age_range = "18-87 years",
+    age_median = "47.5 years",
+    weight_range = "42-143 kg",
+    weight_median = "76 kg",
+    bmi_range = "16.8-54.7 kg/m^2",
+    bmi_median = "26.0 kg/m^2",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "Not tabulated by category in Lodise 2018; ethnicity tested as a covariate and found not significant",
+    disease_state = "Adult patients with complicated skin and skin-structure infections (cSSSI). Patients with BMI > 40 and estimated creatinine clearance < 30 mL/min were excluded from the ASSIST studies. cSSSI severity (severe vs not severe) was retained as a covariate on inter-compartmental clearance Q in the final model.",
+    dose_range = "Iclaprim 0.8 mg/kg infused intravenously over 0.5 h every 12 h for 8 to 14 days (per ASSIST-1 / ASSIST-2 protocol).",
+    regions = "ASSIST-1 and ASSIST-2 were multicenter phase 3 trials; geographic distribution not tabulated in Lodise 2018",
+    renal_function = "Cockcroft-Gault creatinine clearance 18-172 mL/min (mean 99 +/- 29, median 102; Table 3). Patients with CLcr < 30 mL/min were excluded.",
     hepatic_function = "ALT 0.04-245 SI units (mean 13.4 +/- 21.6, median 1.21); total bilirubin 1.7-40.9 SI units (mean 7.5 +/- 5.4, median 6.0). ALT and total bilirubin were tested as covariates and found not significant.",
-    notes            = paste(
+    notes = paste(
       "Pooled population PK analysis of two phase 3 cSSSI trials (ASSIST-1,",
       "ASSIST-2; iclaprim 0.8 mg/kg infused IV over 0.5 h every 12 h for 8-14",
       "days). Of 492 patients who received iclaprim, PK data were available",

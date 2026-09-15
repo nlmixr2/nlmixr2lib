@@ -37,11 +37,11 @@ Petain_2008_imatinib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot          = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central        = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE),
     central_ndmima = list(
-      analyte  = "N-desmethyl imatinib (CGP74588)",
-      units    = "mg divided by the fraction of imatinib metabolized to N-desmethyl imatinib (fm)",
+      analyte = "N-desmethyl imatinib (CGP74588)",
+      units = "mg divided by the fraction of imatinib metabolized to N-desmethyl imatinib (fm)",
       specimen = "plasma",
       verified = FALSE
     )
@@ -49,11 +49,11 @@ Petain_2008_imatinib <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters imatinib CL/F as (WT/54)^0.56, imatinib Vc/F as ",
         "(WT/54)^0.79 and metabolite CLm/fm as (WT/54)^-0.62 (Yang 2025 ",
         "Table 1). The reference 54 kg is the centring constant printed ",
@@ -68,14 +68,14 @@ Petain_2008_imatinib <- function() {
         "were based on a population of both adults and children, and they ",
         "used body weight scaling in their original models')."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     AAG = list(
-      description        = "Alpha-1 acid glycoprotein concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Alpha-1 acid glycoprotein concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters imatinib CL/F as (AAG/1.13)^-0.65, imatinib Vc/F as ",
         "(AAG/1.13)^-1.01 and metabolite CLm/fm as (AAG/1.13)^-0.81 (Yang ",
         "2025 Table 1). Yang 2025 Table 1 abbreviation list gives the unit ",
@@ -90,28 +90,28 @@ Petain_2008_imatinib <- function() {
         "is what a pure binding-driven effect on a total-concentration ",
         "volume would predict."
       ),
-      source_name        = "AGP"
+      source_name = "AGP"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters imatinib CL/F as (ALB/38)^0.66 (Yang 2025 Table 1). Yang ",
         "2025 Table 1 abbreviation list: 'ALB albumin (g/L)', matching the ",
         "canonical ALB unit. The reference 38 g/L is the centring constant ",
         "printed inside the covariate term. Albumin appears on imatinib ",
         "CL/F only, not on Vc/F and not on the metabolite."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     OCC = list(
-      description        = "Occasion indicator: 1 = the day-1 (first-dose) occasion, 2 = the day-29-or-later occasion",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion indicator: 1 = the day-1 (first-dose) occasion, 2 = the day-29-or-later occasion",
+      units = "(count)",
+      type = "categorical",
       reference_category = "1 (day 1, first dose)",
-      notes              = paste0(
+      notes = paste0(
         "Yang 2025 Table 1 attaches footnote b to this model's metabolite ",
         "clearance term 'CLm/fm: 52.2 x ... x 0.7^occ'. Footnote b reads ",
         "'Occasion (OCC) with OCC = 0 for day 1 and OCC = 1 (used in this ",
@@ -124,26 +124,26 @@ Petain_2008_imatinib <- function() {
         "typical-value shift, not inter-occasion variability. Same column ",
         "and coding as Schmidli_2005_imatinib.R and Demetri_2009_imatinib.R."
       ),
-      source_name        = "occ"
+      source_name = "occ"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 67L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 67L,
+    n_studies = 1L,
     n_observations = "505 concentrations (Yang 2025 Table 1)",
-    age_range      = "2-84 years",
-    disease_state  = paste0(
+    age_range = "2-84 years",
+    disease_state = paste0(
       "Children with solid malignancies and adults with gastrointestinal ",
       "stromal tumor (GIST). Yang 2025 Results notes that the primary ",
       "'included 33 patients with solid malignancies aged 2-22 years' in a ",
       "phase II study."
     ),
-    dose_range     = "Oral imatinib 340 mg/m^2 daily (children); 400 mg daily (adults)",
-    regions        = "France",
-    bioanalytical  = "HPLC; limit of quantification 10 ng/mL for imatinib and 10 ng/mL for N-desmethyl imatinib (Yang 2025 Table 1)",
-    notes          = paste0(
+    dose_range = "Oral imatinib 340 mg/m^2 daily (children); 400 mg daily (adults)",
+    regions = "France",
+    bioanalytical = "HPLC; limit of quantification 10 ng/mL for imatinib and 10 ng/mL for N-desmethyl imatinib (Yang 2025 Table 1)",
+    notes = paste0(
       "One of only two models among the 15 evaluated by Yang 2025 that was ",
       "developed on data from both children and adults (the other is ",
       "MenonAndersen_2009_imatinib.R). Despite this, Yang 2025 found that ",

@@ -18,11 +18,11 @@ Rancic_2024_meropenem <- function() {
 
   covariateData <- list(
     CREAT = list(
-      description        = "Serum creatinine concentration.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine concentration.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters clearance as the RAW (uncentred, unnormalised) power term CREAT^0.000001.",
         "The exponent is estimated at essentially zero (Table 3 reports the estimate, its",
         "standard error and both confidence limits as 0.0000; the Results equation prints",
@@ -36,14 +36,14 @@ Rancic_2024_meropenem <- function() {
         "critically ill patients rather than to renal impairment.",
         sep = " "
       ),
-      source_name        = "CRE"
+      source_name = "CRE"
     ),
     WBC = list(
-      description        = "Total white blood cell (leukocyte) count.",
-      units              = "10^9 cells/L",
-      type               = "continuous",
+      description = "Total white blood cell (leukocyte) count.",
+      units = "10^9 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters clearance as the RAW (uncentred, unnormalised) power term WBC^(-0.165).",
         "The paper does not state the units of WBC and does not report its distribution in",
         "Table 1, so the unit was settled by internal consistency: the base model's typical",
@@ -61,14 +61,14 @@ Rancic_2024_meropenem <- function() {
         "see the vignette Errata.",
         sep = " "
       ),
-      source_name        = "WBCs"
+      source_name = "WBCs"
     ),
     DIS_HYPERT = list(
-      description        = "Hypertension recorded as a comorbidity at study entry.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hypertension recorded as a comorbidity at study entry.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no hypertension)",
-      notes              = paste(
+      notes = paste(
         "Enters clearance as an ADDITIVE shift (+0.000001 L/h when present), i.e. it is",
         "numerically inert: Table 3 reports the estimate, its standard error and both",
         "confidence limits as 0.0000, and the Results equation prints 0.000001. Retained",
@@ -76,14 +76,14 @@ Rancic_2024_meropenem <- function() {
         "p < 0.01). 33 of 101 patients (32.7%) were hypertensive (Table 1).",
         sep = " "
       ),
-      source_name        = "HTA"
+      source_name = "HTA"
     ),
     CONMED_VANCOMYCIN = list(
-      description        = "Concomitant intravenous vancomycin during the meropenem course.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant intravenous vancomycin during the meropenem course.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant vancomycin)",
-      notes              = paste(
+      notes = paste(
         "Enters clearance as an ADDITIVE shift of +0.825 L/h (95% CI 0.770 - 0.879;",
         "Table 3), not as a multiplicative factor. 17 of 101 patients (16.8%) received",
         "vancomycin and 3 (2.97%) received both vancomycin and colistin, so the two",
@@ -93,14 +93,14 @@ Rancic_2024_meropenem <- function() {
         "drug-drug interaction (Discussion).",
         sep = " "
       ),
-      source_name        = "VAN"
+      source_name = "VAN"
     ),
     CONMED_COLISTIMETHATE = list(
-      description        = "Concomitant intravenous colistimethate sodium during the meropenem course.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant intravenous colistimethate sodium during the meropenem course.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant colistimethate)",
-      notes              = paste(
+      notes = paste(
         "Enters clearance as an ADDITIVE shift of +1.28 L/h (95% CI 1.23 - 1.33;",
         "Table 3). 7 of 101 patients (6.9%) received colistin, 3 of whom (2.97%) also",
         "received vancomycin. Same interpretive caveat as CONMED_VANCOMYCIN: the paper",
@@ -109,16 +109,16 @@ Rancic_2024_meropenem <- function() {
         "limitation.",
         sep = " "
       ),
-      source_name        = "COL"
+      source_name = "COL"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at study entry.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened as (AGE/50)^theta3 and significant univariately (MOF 1277.958 vs 1283.053,",
         "difference 5.095, p < 0.05; Table 2) and retained in the full model, but dropped at",
         "backward deletion, which required a MOF increase above 6.64. Cohort mean",
@@ -127,9 +127,9 @@ Rancic_2024_meropenem <- function() {
     ),
     WT = list(
       description = "Total body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened as (TBW/70)^theta4 and significant univariately (MOF 1266.640, difference",
         "16.413, p < 0.01; Table 2, where the row label is misprinted 'TWB') and retained in",
         "the full model, but dropped at backward deletion. The final model therefore carries",
@@ -139,9 +139,9 @@ Rancic_2024_meropenem <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Listed among the demographic data collected for every patient (Methods 2.1) and",
         "among the 24 screened covariates, but it is not one of the 13 covariates carried",
         "into the full model (Table 2) and no estimate is reported. 39 of 101 patients",
@@ -150,9 +150,9 @@ Rancic_2024_meropenem <- function() {
     ),
     DIS_CANCER = list(
       description = "Malignant disease (neoplasm) recorded as a comorbidity at study entry.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as an additive shift (theta10 x NEO) and NOT significant univariately",
         "(MOF 1280.925, difference 2.128, p > 0.05; Table 2). 18 of 101 patients (17.8%)",
         "had a neoplasm (Table 1)."
@@ -160,45 +160,45 @@ Rancic_2024_meropenem <- function() {
     ),
     AST = list(
       description = "Aspartate aminotransferase activity.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Collected as one of the basic biochemical parameters screened as covariates (Methods 2.1); not among the 13 covariates carried into the full model and no estimate or cohort summary is reported."
+      units = "U/L",
+      type = "continuous",
+      notes = "Collected as one of the basic biochemical parameters screened as covariates (Methods 2.1); not among the 13 covariates carried into the full model and no estimate or cohort summary is reported."
     ),
     ALT = list(
       description = "Alanine aminotransferase activity.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Collected as one of the basic biochemical parameters screened as covariates (Methods 2.1); not among the 13 covariates carried into the full model and no estimate or cohort summary is reported."
+      units = "U/L",
+      type = "continuous",
+      notes = "Collected as one of the basic biochemical parameters screened as covariates (Methods 2.1); not among the 13 covariates carried into the full model and no estimate or cohort summary is reported."
     ),
     RBC = list(
       description = "Red blood cell count.",
-      units       = "10^12 cells/L",
-      type        = "continuous",
-      notes       = "Collected as one of the basic biochemical parameters screened as covariates (Methods 2.1); not among the 13 covariates carried into the full model and no estimate or cohort summary is reported."
+      units = "10^12 cells/L",
+      type = "continuous",
+      notes = "Collected as one of the basic biochemical parameters screened as covariates (Methods 2.1); not among the 13 covariates carried into the full model and no estimate or cohort summary is reported."
     ),
     HGB = list(
       description = "Hemoglobin concentration.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Collected as one of the basic biochemical parameters screened as covariates (Methods 2.1); not among the 13 covariates carried into the full model and no estimate or cohort summary is reported."
+      units = "g/L",
+      type = "continuous",
+      notes = "Collected as one of the basic biochemical parameters screened as covariates (Methods 2.1); not among the 13 covariates carried into the full model and no estimate or cohort summary is reported."
     ),
     PLT = list(
       description = "Platelet count.",
-      units       = "10^9 cells/L",
-      type        = "continuous",
-      notes       = "Collected as one of the basic biochemical parameters screened as covariates (Methods 2.1); not among the 13 covariates carried into the full model and no estimate or cohort summary is reported."
+      units = "10^9 cells/L",
+      type = "continuous",
+      notes = "Collected as one of the basic biochemical parameters screened as covariates (Methods 2.1); not among the 13 covariates carried into the full model and no estimate or cohort summary is reported."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 101L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 101L,
+    n_studies = 1L,
     n_observations = 202L,
-    age_range      = "21 - 86 years (mean 62.37 +/- 14.89)",
-    weight_range   = "48 - 130 kg (mean 78.97 +/- 13.76)",
+    age_range = "21 - 86 years (mean 62.37 +/- 14.89)",
+    weight_range = "48 - 130 kg (mean 78.97 +/- 13.76)",
     sex_female_pct = 38.6,
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill adults in the intensive care unit with severe infection (meningitis,",
       "pneumonia, sepsis, septic shock or febrile neutropenia) caused by multi-resistant",
       "Gram-negative bacteria. Comorbidities recorded: hypertension 32.7%, chronic renal",
@@ -208,14 +208,14 @@ Rancic_2024_meropenem <- function() {
       "augmented renal clearance rather than renal failure as the dominant phenomenon.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "1,000 - 2,000 mg meropenem every 8 or 12 h by intermittent intravenous infusion",
       "(total daily dose mean 3,000 +/- 692.82 mg/day, range 2,000 - 6,000). Patients were",
       "sampled only after at least 3 days of continuous therapy, i.e. at steady state.",
       sep = " "
     ),
-    regions        = "Serbia (Intensive Care Unit, University Clinical Centre Kragujevac).",
-    notes          = paste(
+    regions = "Serbia (Intensive Care Unit, University Clinical Centre Kragujevac).",
+    notes = paste(
       "Prospective observational case-series. Two plasma samples per patient: the first",
       "5 - 30 min after the end of the infusion (mean 40.69 +/- 16.67 mg/L, range",
       "13.07 - 88.95) and the second 3 - 4 h after the end of the infusion (mean",

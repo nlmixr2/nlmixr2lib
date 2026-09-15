@@ -13,20 +13,20 @@ Vucicevic_2025_efavirenz <- function() {
 
   covariateData <- list(
     SNP_CYP2B6_RS3745274_T_COUNT = list(
-      description        = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant. Vucicevic 2025 encodes this as the binary indicator RSA ('whether the patient is a carrier of CYP2B6 516G>T (1) or not (0)', Table 2 footnote), which the canonical count column reproduces deterministically as `SNP_CYP2B6_RS3745274_T_COUNT >= 1`.",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant. Vucicevic 2025 encodes this as the binary indicator RSA ('whether the patient is a carrier of CYP2B6 516G>T (1) or not (0)', Table 2 footnote), which the canonical count column reproduces deterministically as `SNP_CYP2B6_RS3745274_T_COUNT >= 1`.",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (germline genotype). Cohort distribution: 30/89 (33.71%) carriers (Table 1 row 'Carriers of CYP2B6 c.516G>T (rs3745274)'); Results paragraph 2 identifies the carriers as GT heterozygotes (n = 30) versus GG wild-type (n = 60), i.e. no TT homozygotes were observed, so in this dataset the carrier indicator is effectively a heterozygote indicator. (Results reports 30 + 60 = 90 genotyped subjects against the stated n = 89; see vignette Errata.) Because the published parameterization is a carrier indicator rather than a per-allele or HET/HOM decomposition, applying the model to a TT homozygote assigns the same -36.4% CL/F shift as to a heterozygote -- an extrapolation beyond the fitted cohort.",
-      source_name        = "RSA (binary indicator: carrier of CYP2B6 516G>T)"
+      notes = "Time-fixed per subject (germline genotype). Cohort distribution: 30/89 (33.71%) carriers (Table 1 row 'Carriers of CYP2B6 c.516G>T (rs3745274)'); Results paragraph 2 identifies the carriers as GT heterozygotes (n = 30) versus GG wild-type (n = 60), i.e. no TT homozygotes were observed, so in this dataset the carrier indicator is effectively a heterozygote indicator. (Results reports 30 + 60 = 90 genotyped subjects against the stated n = 89; see vignette Errata.) Because the published parameterization is a carrier indicator rather than a per-allele or HET/HOM decomposition, applying the model to a TT homozygote assigns the same -36.4% CL/F shift as to a heterozygote -- an extrapolation beyond the fitted cohort.",
+      source_name = "RSA (binary indicator: carrier of CYP2B6 516G>T)"
     ),
     SNP_CYP2B6_RS4803419_T_COUNT = list(
-      description        = "Count of CYP2B6 c.485-18C>T (rs4803419, intron 3) T-alleles per subject (0/1/2). 0 = CC homozygous wild-type, 1 = CT heterozygous, 2 = TT homozygous variant. Vucicevic 2025 encodes this as the binary indicator RSB, which the canonical count column reproduces deterministically as `SNP_CYP2B6_RS4803419_T_COUNT == 2` (a recessive / TT-versus-rest encoding).",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.485-18C>T (rs4803419, intron 3) T-alleles per subject (0/1/2). 0 = CC homozygous wild-type, 1 = CT heterozygous, 2 = TT homozygous variant. Vucicevic 2025 encodes this as the binary indicator RSB, which the canonical count column reproduces deterministically as `SNP_CYP2B6_RS4803419_T_COUNT == 2` (a recessive / TT-versus-rest encoding).",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (germline genotype). Cohort distribution: 12/89 (13.48%) flagged (Table 1). Although the Table 2 footnote calls RSB a 'carrier' indicator, three independent statements in the paper establish that the flagged group is the TT homozygous stratum, not any-T carriage: Results paragraph 2 ('a 26.8% decrease in CL/F in patients with TT genotype (n=12)') gives the same n = 12; Table 3 contrasts the simulated genotype strata as 'CYP2B6 c.485-18TT' versus 'CYP2B6 c.485-18CC'; and 13.48% is far below the ~45% any-T carrier frequency expected in a European-ancestry cohort while matching the expected TT-homozygote frequency. Heterozygotes (CT) are therefore pooled with CC wild-type in the reference group (recessive encoding, same shape as SNP_ABCG2_RS2231142_HOM).",
-      source_name        = "RSB (binary indicator: CYP2B6 c.485-18C>T TT genotype)"
+      notes = "Time-fixed per subject (germline genotype). Cohort distribution: 12/89 (13.48%) flagged (Table 1). Although the Table 2 footnote calls RSB a 'carrier' indicator, three independent statements in the paper establish that the flagged group is the TT homozygous stratum, not any-T carriage: Results paragraph 2 ('a 26.8% decrease in CL/F in patients with TT genotype (n=12)') gives the same n = 12; Table 3 contrasts the simulated genotype strata as 'CYP2B6 c.485-18TT' versus 'CYP2B6 c.485-18CC'; and 13.48% is far below the ~45% any-T carrier frequency expected in a European-ancestry cohort while matching the expected TT-homozygote frequency. Heterozygotes (CT) are therefore pooled with CC wild-type in the reference group (recessive encoding, same shape as SNP_ABCG2_RS2231142_HOM).",
+      source_name = "RSB (binary indicator: CYP2B6 c.485-18C>T TT genotype)"
     )
   )
 
@@ -38,64 +38,64 @@ Vucicevic_2025_efavirenz <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested on CL/F in linear and power functions during stepwise covariate model building; not retained in the final model. Cohort median 76 kg (IQR 66-85), Table 1. Note that V/F was fixed to a literature value quoted as '237 L/70 kg'; the 70 kg is the reference subject of the cited literature estimate, not a weight-scaling term in this model -- no weight term appears in the final-model equation of Table 2, and the covariate screen tested weight on CL/F only."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested on CL/F in linear and power functions during stepwise covariate model building; not retained in the final model. Cohort median 76 kg (IQR 66-85), Table 1. Note that V/F was fixed to a literature value quoted as '237 L/70 kg'; the 70 kg is the reference subject of the cited literature estimate, not a weight-scaling term in this model -- no weight term appears in the final-model equation of Table 2, and the covariate screen tested weight on CL/F only."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Tested on CL/F in linear and power functions; not retained in the final model. No cohort distribution reported."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Tested on CL/F in linear and power functions; not retained in the final model. No cohort distribution reported."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL/F as a categorical covariate; not retained in the final model. Table 1 reports 'Sex, male; n (%) 21 (23.60)', i.e. 76.4% female; see vignette Errata."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL/F as a categorical covariate; not retained in the final model. Table 1 reports 'Sex, male; n (%) 21 (23.60)', i.e. 76.4% female; see vignette Errata."
     ),
     SMOKE = list(
       description = "Current-smoker indicator (1 = current smoker, 0 = non-smoker)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on CL/F and entered the model during forward selection, but was removed in the backward-elimination step (Results paragraph 2: 'Smoking status was excluded from the model in the backward step of covariate model building'). Cohort prevalence 60/89 (67.41%), Table 1. Smoking WAS associated with efavirenz concentrations in the source cohort's earlier single-timepoint analysis (Olagunju 2014, reference 17)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on CL/F and entered the model during forward selection, but was removed in the backward-elimination step (Results paragraph 2: 'Smoking status was excluded from the model in the backward step of covariate model building'). Cohort prevalence 60/89 (67.41%), Table 1. Smoking WAS associated with efavirenz concentrations in the source cohort's earlier single-timepoint analysis (Olagunju 2014, reference 17)."
     ),
     SNP_NR1I3_RS2307424_T_COUNT = list(
       description = "Count of NR1I3 (CAR) c.540C>T (rs2307424) T-alleles per subject (0/1/2)",
-      units       = "(count, 0/1/2)",
-      type        = "continuous",
-      notes       = "Screened as a categorical covariate on CL/F; no significant effect detected (Discussion paragraph 4: 'No impact of these polymorphisms were observed in the current analysis'). Cohort: 53/89 (59.60%) carriers, Table 1. No point estimate is published, so no effect can be encoded."
+      units = "(count, 0/1/2)",
+      type = "continuous",
+      notes = "Screened as a categorical covariate on CL/F; no significant effect detected (Discussion paragraph 4: 'No impact of these polymorphisms were observed in the current analysis'). Cohort: 53/89 (59.60%) carriers, Table 1. No point estimate is published, so no effect can be encoded."
     ),
     SNP_NR1I3_RS3003596_C_COUNT = list(
       description = "Count of NR1I3 (CAR) c.152-1089T>C (rs3003596) C-alleles per subject (0/1/2)",
-      units       = "(count, 0/1/2)",
-      type        = "continuous",
-      notes       = "Screened as a categorical covariate on CL/F; no significant effect detected (Discussion paragraph 4). Cohort: 58/89 (65.17%) carriers, Table 1. No point estimate is published, so no effect can be encoded."
+      units = "(count, 0/1/2)",
+      type = "continuous",
+      notes = "Screened as a categorical covariate on CL/F; no significant effect detected (Discussion paragraph 4). Cohort: 58/89 (65.17%) carriers, Table 1. No point estimate is published, so no effect can be encoded."
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 89,
-    n_studies      = 1,
-    age_range      = "18 years and older (inclusion criterion); interquartile range 32-48 years",
-    age_median     = "40 years (IQR 32-48)",
-    weight_range   = "interquartile range 66-85 kg (full range not reported)",
-    weight_median  = "76 kg (IQR 66-85)",
+    species = "human",
+    n_subjects = 89,
+    n_studies = 1,
+    age_range = "18 years and older (inclusion criterion); interquartile range 32-48 years",
+    age_median = "40 years (IQR 32-48)",
+    weight_range = "interquartile range 66-85 kg (full range not reported)",
+    weight_median = "76 kg (IQR 66-85)",
     sex_female_pct = 76.40,
     race_ethnicity = c(Caucasian = 100),
-    disease_state  = "Adults with confirmed HIV-1 infection receiving efavirenz-based antiretroviral therapy for at least three months. Excluded: concomitant antituberculosis medication or other drugs known to interact significantly with efavirenz metabolism, age under 18 years, pregnancy, and incomplete pharmacokinetic or clinical data.",
-    dose_range     = "600 mg orally once daily (all subjects)",
-    regions        = "Serbia (outpatient HIV/AIDS Center, Clinic for Infectious and Tropical Diseases, University of Belgrade Teaching Hospital)",
-    smoking        = "60/89 (67.41%) smokers (Table 1)",
-    cyp2b6_freq    = "CYP2B6 c.516G>T (rs3745274): 30/89 (33.71%) carriers, identified in Results paragraph 2 as GT heterozygotes (n = 30) versus GG wild-type (n = 60), with no TT homozygotes. CYP2B6 c.485-18C>T (rs4803419): 12/89 (13.48%) flagged, identified in Results paragraph 2 as the TT genotype stratum (Table 1, Table 3).",
-    nr1i3_freq     = "NR1I3 c.540C>T (rs2307424): 53/89 (59.60%) carriers. NR1I3 c.152-1089T>C (rs3003596): 58/89 (65.17%) carriers. Neither polymorphism had a detectable effect on efavirenz CL/F in this analysis (Table 1, Discussion paragraph 4).",
-    notes          = "Sparse design: exactly ONE steady-state efavirenz plasma sample per patient, drawn 2.83-13.42 h after the last dose (Results paragraph 1; Appendix 1 Figure 4). Data are a re-analysis of the cohort first reported in Olagunju 2014 (reference 17). NONMEM 7.4 / PsN 3.4.2 under Pirana 2.9.0, FOCE-I estimation, ADVAN2 TRANS2. Internal validation by 1000-replicate bootstrap and NPDE (mean 0.058, variance 1.009; both not significantly different from 0 and 1)."
+    disease_state = "Adults with confirmed HIV-1 infection receiving efavirenz-based antiretroviral therapy for at least three months. Excluded: concomitant antituberculosis medication or other drugs known to interact significantly with efavirenz metabolism, age under 18 years, pregnancy, and incomplete pharmacokinetic or clinical data.",
+    dose_range = "600 mg orally once daily (all subjects)",
+    regions = "Serbia (outpatient HIV/AIDS Center, Clinic for Infectious and Tropical Diseases, University of Belgrade Teaching Hospital)",
+    smoking = "60/89 (67.41%) smokers (Table 1)",
+    cyp2b6_freq = "CYP2B6 c.516G>T (rs3745274): 30/89 (33.71%) carriers, identified in Results paragraph 2 as GT heterozygotes (n = 30) versus GG wild-type (n = 60), with no TT homozygotes. CYP2B6 c.485-18C>T (rs4803419): 12/89 (13.48%) flagged, identified in Results paragraph 2 as the TT genotype stratum (Table 1, Table 3).",
+    nr1i3_freq = "NR1I3 c.540C>T (rs2307424): 53/89 (59.60%) carriers. NR1I3 c.152-1089T>C (rs3003596): 58/89 (65.17%) carriers. Neither polymorphism had a detectable effect on efavirenz CL/F in this analysis (Table 1, Discussion paragraph 4).",
+    notes = "Sparse design: exactly ONE steady-state efavirenz plasma sample per patient, drawn 2.83-13.42 h after the last dose (Results paragraph 1; Appendix 1 Figure 4). Data are a re-analysis of the cohort first reported in Olagunju 2014 (reference 17). NONMEM 7.4 / PsN 3.4.2 under Pirana 2.9.0, FOCE-I estimation, ADVAN2 TRANS2. Internal validation by 1000-replicate bootstrap and NPDE (mean 0.058, variance 1.009; both not significantly different from 0 and 1)."
   )
 
   ini({

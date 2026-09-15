@@ -8,48 +8,48 @@ Roberts_2016_topotecan <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "topotecan", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "topotecan", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "topotecan", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area at the time of the pharmacokinetic study.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area at the time of the pharmacokinetic study.",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effects on V/F (exponent 0.78, theta_2) and CL/F (exponent 1.25, theta_3) centred on the cohort median BSA = 0.57 m^2 (Roberts 2016 Table 1; equations in the Results 'Population Pharmacokinetic Analysis' section). The paper does not state which BSA computation formula was used; the validation vignette therefore uses Mosteller (sqrt(height_cm * weight_kg / 3600)) as the default. The same BSA value is used both to compute the body-surface-area-normalised oral topotecan dose (0.8 mg/m^2 nominal) and as the covariate in the model.",
-      source_name        = "BSA"
+      notes = "Power-form effects on V/F (exponent 0.78, theta_2) and CL/F (exponent 1.25, theta_3) centred on the cohort median BSA = 0.57 m^2 (Roberts 2016 Table 1; equations in the Results 'Population Pharmacokinetic Analysis' section). The paper does not state which BSA computation formula was used; the validation vignette therefore uses Mosteller (sqrt(height_cm * weight_kg / 3600)) as the default. The same BSA value is used both to compute the body-surface-area-normalised oral topotecan dose (0.8 mg/m^2 nominal) and as the covariate in the model.",
+      source_name = "BSA"
     ),
     SNP_ABCG2_RS4148157 = list(
-      description        = "Binary indicator for the ABCG2 rs4148157 G>A intronic variant (1 = heterozygous AG or homozygous AA carrier, 0 = homozygous wild-type GG).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for the ABCG2 rs4148157 G>A intronic variant (1 = heterozygous AG or homozygous AA carrier, 0 = homozygous wild-type GG).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (homozygous wild-type GG)",
-      notes              = "Time-fixed per subject (germline genotype). Heterozygous (AG) and homozygous (AA) variant carriers were pooled in Roberts 2016 because only one AA homozygote was present in the cohort (Table 2). The pooled indicator is encoded as 0 (GG) or 1 (AG/AA) per the GENECAT term in the Roberts 2016 individual-Ka equation, and enters as an exponential factor on Ka: Ka_i = Ka_pop * exp(theta_1 * GENECAT) * exp(eta_Ka). The Roberts 2016 cohort distribution (Table 2) was GG = 42, AG = 9, AA = 1, missing = 9 (carrier rate 19% among the 52 genotyped patients).",
-      source_name        = "GENECAT (rs4148157 AG/AA carrier indicator)"
+      notes = "Time-fixed per subject (germline genotype). Heterozygous (AG) and homozygous (AA) variant carriers were pooled in Roberts 2016 because only one AA homozygote was present in the cohort (Table 2). The pooled indicator is encoded as 0 (GG) or 1 (AG/AA) per the GENECAT term in the Roberts 2016 individual-Ka equation, and enters as an exponential factor on Ka: Ka_i = Ka_pop * exp(theta_1 * GENECAT) * exp(eta_Ka). The Roberts 2016 cohort distribution (Table 2) was GG = 42, AG = 9, AA = 1, missing = 9 (carrier rate 19% among the 52 genotyped patients).",
+      source_name = "GENECAT (rs4148157 AG/AA carrier indicator)"
     )
   )
 
   population <- list(
-    species        = "human (paediatric)",
-    n_subjects     = 61L,
-    n_studies      = 1L,
+    species = "human (paediatric)",
+    n_subjects = 61L,
+    n_studies = 1L,
     n_observations = 182L,
-    age_range      = "0.48-4.59 years",
-    age_median     = "2.37 years",
-    weight_range   = "5.20-17.50 kg",
-    weight_median  = "12.60 kg",
-    height_range   = "59.5-102 cm",
-    height_median  = "89.1 cm",
-    bsa_range      = "0.31-0.72 m^2",
-    bsa_median     = "0.57 m^2",
+    age_range = "0.48-4.59 years",
+    age_median = "2.37 years",
+    weight_range = "5.20-17.50 kg",
+    weight_median = "12.60 kg",
+    height_range = "59.5-102 cm",
+    height_median = "89.1 cm",
+    bsa_range = "0.31-0.72 m^2",
+    bsa_median = "0.57 m^2",
     sex_female_pct = 37.7,
-    disease_state  = "Newly diagnosed primary central nervous system tumours treated on the SJYC07 protocol (Risk-Adapted Therapy for Infants and Young Children with Embryonal Brain Tumors, High Grade Glioma, Choroid Plexus Carcinoma or Ependymoma; NCT00602667). Diagnoses include embryonal tumours, high-grade glioma, choroid plexus carcinoma, and ependymoma. Patients had adequate organ function (Lansky performance status >= 30) and normal renal function at enrolment.",
-    dose_range     = "Oral topotecan 0.8 mg/m^2 once daily for 10 days on a 28-day cycle (maintenance phase of SJYC07); co-administered with oral cyclophosphamide 30 mg/m^2 for 21 days of the same cycle (cyclophosphamide is not part of the topotecan PK model). Topotecan was administered as a liquid mixed in a flavoured vehicle.",
-    regions        = "Single-centre cohort enrolled at St. Jude Children's Research Hospital, Memphis, Tennessee (the multicentre SJYC07 protocol is conducted across multiple sites but only St. Jude patients contributed to this oral topotecan PK analysis).",
+    disease_state = "Newly diagnosed primary central nervous system tumours treated on the SJYC07 protocol (Risk-Adapted Therapy for Infants and Young Children with Embryonal Brain Tumors, High Grade Glioma, Choroid Plexus Carcinoma or Ependymoma; NCT00602667). Diagnoses include embryonal tumours, high-grade glioma, choroid plexus carcinoma, and ependymoma. Patients had adequate organ function (Lansky performance status >= 30) and normal renal function at enrolment.",
+    dose_range = "Oral topotecan 0.8 mg/m^2 once daily for 10 days on a 28-day cycle (maintenance phase of SJYC07); co-administered with oral cyclophosphamide 30 mg/m^2 for 21 days of the same cycle (cyclophosphamide is not part of the topotecan PK model). Topotecan was administered as a liquid mixed in a flavoured vehicle.",
+    regions = "Single-centre cohort enrolled at St. Jude Children's Research Hospital, Memphis, Tennessee (the multicentre SJYC07 protocol is conducted across multiple sites but only St. Jude patients contributed to this oral topotecan PK analysis).",
     pharmacogenomics = "Germline genotyping for ABCG2 (rs4148157, rs2622628, rs2725252) and ABCB1 (rs1045642, rs2032582, rs1128503) variants by Illumina Infinium Omni2.5 Exome-8 BeadChip in 52 of 61 patients; missing genotype handled as a missing covariate within Monolix.",
-    notes          = "Sampling per limited-sampling model (Turner 2006): pre-dose, 15 min, 90 min, and 6 h after the first observed dose. 39% of concentrations were below the limit of quantitation (1 ng/mL) and were treated as left-censored using the Monolix M3-equivalent likelihood. Bioanalytical: isocratic HPLC with fluorescence detection (370 nm excitation, 520 nm emission). Cohort demographics per Roberts 2016 Table 1; pharmacogenomic frequencies per Table 2; final population parameter estimates per Table 3."
+    notes = "Sampling per limited-sampling model (Turner 2006): pre-dose, 15 min, 90 min, and 6 h after the first observed dose. 39% of concentrations were below the limit of quantitation (1 ng/mL) and were treated as left-censored using the Monolix M3-equivalent likelihood. Bioanalytical: isocratic HPLC with fluorescence detection (370 nm excitation, 520 nm emission). Cohort demographics per Roberts 2016 Table 1; pharmacogenomic frequencies per Table 2; final population parameter estimates per Table 3."
   )
 
   ini({

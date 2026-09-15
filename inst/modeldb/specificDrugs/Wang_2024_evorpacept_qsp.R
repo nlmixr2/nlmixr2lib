@@ -38,18 +38,18 @@ Wang_2024_evorpacept_qsp <- function() {
   vignette <- "Wang_2024_evorpacept_qsp"
 
   units <- list(
-    time          = "day",
-    dosing        = "nmol",
+    time = "day",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "human (in silico virtual cohort)",
-    n_subjects    = 629L,
+    species = "human (in silico virtual cohort)",
+    n_subjects = 629L,
     disease_state = "advanced / metastatic non-small cell lung cancer",
-    dose_range    = paste(
+    dose_range = paste(
       "Evorpacept (ALX-148) 1, 3, 10 and 30 mg/kg as a 1-h intravenous infusion,",
       "dosed weekly; durvalumab 10 mg/kg every 2 weeks. The combination",
       "scenario is 10 mg/kg evorpacept weekly with 10 mg/kg durvalumab.",

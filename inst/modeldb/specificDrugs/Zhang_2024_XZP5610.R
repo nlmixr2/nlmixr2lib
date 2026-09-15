@@ -8,8 +8,8 @@ Zhang_2024_XZP5610 <- function() {
   # biological matrix. Verified against Zhang 2024 Section 4.3.2 (one-compartment
   # oral PK model) and Table 6.
   compartmentData <- list(
-    depot   = list(analyte = "XZP-5610", units = "mg", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "XZP-5610", units = "mg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "XZP-5610", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "XZP-5610", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   # No covariate was carried into the model. The allometric scaling used a fixed
@@ -19,18 +19,18 @@ Zhang_2024_XZP5610 <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    study          = "First-in-human single ascending dose (SAD) trial in healthy Chinese adults; per-cohort n not reported",
-    age_range      = "adults (not reported)",
-    weight_range   = "60 kg assumed for the whole population (Section 4.3.2: 'The assumption of an average body weight of 60 kg for adult individuals in the Chinese population was employed')",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    study = "First-in-human single ascending dose (SAD) trial in healthy Chinese adults; per-cohort n not reported",
+    age_range = "adults (not reported)",
+    weight_range = "60 kg assumed for the whole population (Section 4.3.2: 'The assumption of an average body weight of 60 kg for adult individuals in the Chinese population was employed')",
     sex_female_pct = NA_real_,
     race_ethnicity = "Chinese",
-    disease_state  = "healthy volunteers (the therapeutic target indication is non-alcoholic steatohepatitis)",
-    dose_range     = "single oral doses 0.15 to 3 mg (Discussion: 'the initial dose of 0.15 mg and maximum dose of 3 mg were used in the SAD trial'); Figure 4 simulates 0.15, 0.5, 1 and 3 mg",
-    regions        = "China",
-    notes          = paste(
+    disease_state = "healthy volunteers (the therapeutic target indication is non-alcoholic steatohepatitis)",
+    dose_range = "single oral doses 0.15 to 3 mg (Discussion: 'the initial dose of 0.15 mg and maximum dose of 3 mg were used in the SAD trial'); Figure 4 simulates 0.15, 0.5, 1 and 3 mg",
+    regions = "China",
+    notes = paste(
       "Parameters are cross-species forward predictions, not human estimates.",
       "Source preclinical data: 24 SD rats (mean 0.245 kg) and 24 beagle dogs (mean 7.21 kg),",
       "each split into one IV group and three single-dose oral groups (Section 4.3.1, Tables 1 and 2).",

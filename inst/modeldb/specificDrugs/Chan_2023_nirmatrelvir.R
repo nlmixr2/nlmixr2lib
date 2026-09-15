@@ -15,8 +15,8 @@ Chan_2023_nirmatrelvir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "nirmatrelvir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "nirmatrelvir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "nirmatrelvir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "nirmatrelvir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "nirmatrelvir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -177,8 +177,12 @@ Chan_2023_nirmatrelvir <- function() {
     weight_median = "79.4 kg",
     sex_female_pct = 46.9,
     race_ethnicity = c(
-      White = 69.9, Black = 8.5, Asian = 13.1,
-      AmericanIndianAlaskaNative = 7.7, Other = 0.3, Unknown = 0.5
+      White = 69.9,
+      Black = 8.5,
+      Asian = 13.1,
+      AmericanIndianAlaskaNative = 7.7,
+      Other = 0.3,
+      Unknown = 0.5
     ),
     bmi_median = "27.9 kg/m^2 (range 16.6-58.1)",
     disease_state = paste(

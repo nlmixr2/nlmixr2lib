@@ -13,8 +13,8 @@ Lindauer_2017_lacosamide_dropout <- function() {
   )
   vignette <- "Lindauer_2017_lacosamide"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; treatment arm and demographics enter as time-fixed covariates)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; treatment arm and demographics enter as time-fixed covariates)",
     concentration = "probability (the model output `sur` is a survival probability, not a drug concentration)"
   )
 
@@ -28,35 +28,35 @@ Lindauer_2017_lacosamide_dropout <- function() {
 
   covariateData <- list(
     SEXF = list(
-      description        = "Subject sex indicator: 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Subject sex indicator: 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Time-fixed per subject. Enters the dropout hazard via multiplicative exponential form exp(e_sexf_drop * SEXF), giving a hazard ratio for female-vs-male of exp(0.238) = 1.27 (90% CI 1.04-1.55, Lindauer 2017 Table 2 row 'HR_SEX').",
-      source_name        = "SEX"
+      notes = "Time-fixed per subject. Enters the dropout hazard via multiplicative exponential form exp(e_sexf_drop * SEXF), giving a hazard ratio for female-vs-male of exp(0.238) = 1.27 (90% CI 1.04-1.55, Lindauer 2017 Table 2 row 'HR_SEX').",
+      source_name = "SEX"
     ),
     CONMED_LCM = list(
-      description        = "Treatment-arm indicator: 1 = subject assigned to the lacosamide (LCM) monotherapy arm; 0 = subject assigned to the carbamazepine controlled-release (CBZ-CR) monotherapy arm.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Treatment-arm indicator: 1 = subject assigned to the lacosamide (LCM) monotherapy arm; 0 = subject assigned to the carbamazepine controlled-release (CBZ-CR) monotherapy arm.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CBZ-CR arm)",
-      notes              = "Time-fixed per subject in the SP0993 parallel-group monotherapy design (each subject stays in the arm to which they were randomised). Enters the dropout hazard via multiplicative exponential form exp(e_conmed_lcm_drop * CONMED_LCM), giving a hazard ratio for LCM-vs-CBZ-CR of exp(-0.138) = 0.871 (90% CI 0.714-1.06, Lindauer 2017 Table 2 row 'HR_TYPE'). The paper's source column is `TYPE` (1 = LCM, 0 = CBZ-CR).",
-      source_name        = "TYPE"
+      notes = "Time-fixed per subject in the SP0993 parallel-group monotherapy design (each subject stays in the arm to which they were randomised). Enters the dropout hazard via multiplicative exponential form exp(e_conmed_lcm_drop * CONMED_LCM), giving a hazard ratio for LCM-vs-CBZ-CR of exp(-0.138) = 0.871 (90% CI 0.714-1.06, Lindauer 2017 Table 2 row 'HR_TYPE'). The paper's source column is `TYPE` (1 = LCM, 0 = CBZ-CR).",
+      source_name = "TYPE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 883L,
-    n_studies      = 1L,
-    age_range      = "16-87 years (median 40, IQR 26-55)",
-    weight_range   = "not reported in the on-disk trimmed paper text",
+    species = "human",
+    n_subjects = 883L,
+    n_studies = 1L,
+    age_range = "16-87 years (median 40, IQR 26-55)",
+    weight_range = "not reported in the on-disk trimmed paper text",
     sex_female_pct = 46.3,
     race_ethnicity = NULL,
-    disease_state  = "Adult patients (>=16 years) newly diagnosed with focal or generalized tonic-clonic seizures without signs of focal onset, provided they had no history or clinical or electroencephalographic findings suggestive of idiopathic generalized epilepsy (SP0993 inclusion criteria; ClinicalTrials.gov NCT01243177).",
-    dose_range     = "LCM target dose levels 200, 400, or 600 mg/day BID (randomisation starting dose 100 mg/day); CBZ-CR target dose levels 400, 800, or 1200 mg/day BID (randomisation starting dose 200 mg/day). Dose escalation to the next level was triggered by seizure occurrence during the 26-week evaluation period at the current dose.",
-    regions        = "multinational (SP0993)",
-    notes          = "Randomised 883 patients (LCM 443, CBZ-CR 440) analysed for dropout. 205 dropped out for reasons other than lack of efficacy (LCM 111, CBZ-CR 94). Baseline demographics from Lindauer 2017 Table 1. Dropout model was originally developed on the historic N01061 dataset (comparing levetiracetam and CBZ-CR; NCT00150735) and re-estimated on SP0993 as described in Lindauer 2017 Section 2.2 'Modeling Strategy and Software'."
+    disease_state = "Adult patients (>=16 years) newly diagnosed with focal or generalized tonic-clonic seizures without signs of focal onset, provided they had no history or clinical or electroencephalographic findings suggestive of idiopathic generalized epilepsy (SP0993 inclusion criteria; ClinicalTrials.gov NCT01243177).",
+    dose_range = "LCM target dose levels 200, 400, or 600 mg/day BID (randomisation starting dose 100 mg/day); CBZ-CR target dose levels 400, 800, or 1200 mg/day BID (randomisation starting dose 200 mg/day). Dose escalation to the next level was triggered by seizure occurrence during the 26-week evaluation period at the current dose.",
+    regions = "multinational (SP0993)",
+    notes = "Randomised 883 patients (LCM 443, CBZ-CR 440) analysed for dropout. 205 dropped out for reasons other than lack of efficacy (LCM 111, CBZ-CR 94). Baseline demographics from Lindauer 2017 Table 1. Dropout model was originally developed on the historic N01061 dataset (comparing levetiracetam and CBZ-CR; NCT00150735) and re-estimated on SP0993 as described in Lindauer 2017 Section 2.2 'Modeling Strategy and Software'."
   )
 
   ini({

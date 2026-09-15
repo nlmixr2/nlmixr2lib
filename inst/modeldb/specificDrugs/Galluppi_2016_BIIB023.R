@@ -8,66 +8,71 @@ Galluppi_2016_BIIB023 <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "BIIB023", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "BIIB023", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "BIIB023", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on linear CL and on central volume V per Galluppi 2016 Table 4 (dCLdBodyWeight = 0.830; dVdBodyWeight = 0.459). The paper does not report the centering / reference weight used in the model; per the canonical undefined-reference policy this implementation uses 70 kg (close to the combined-cohort mean of ~67 kg across studies 211HV102 [58.6-69.1 kg per ethnic group, Table 1] and 211RA101 [74.1 kg, Table 2]).",
-      source_name        = "WT"
+      notes = "Power effect on linear CL and on central volume V per Galluppi 2016 Table 4 (dCLdBodyWeight = 0.830; dVdBodyWeight = 0.459). The paper does not report the centering / reference weight used in the model; per the canonical undefined-reference policy this implementation uses 70 kg (close to the combined-cohort mean of ~67 kg across studies 211HV102 [58.6-69.1 kg per ethnic group, Table 1] and 211RA101 [74.1 kg, Table 2]).",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Proportional effect on central volume V per Galluppi 2016 Table 4 dVdFemale = -0.105 (95% CI -0.168, -0.040), i.e., V_female = V_male * (1 - 0.105). The paper's reference category is male, matching the canonical SEXF = 0 (male) convention.",
-      source_name        = "SEX"
+      notes = "Proportional effect on central volume V per Galluppi 2016 Table 4 dVdFemale = -0.105 (95% CI -0.168, -0.040), i.e., V_female = V_male * (1 - 0.105). The paper's reference category is male, matching the canonical SEXF = 0 (male) convention.",
+      source_name = "SEX"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age (years)",
-      units              = "year",
-      type               = "continuous",
+      description = "Age (years)",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a covariate of V, V2, CL and CL2 but had no significant effect on the objective function value and was not retained in the final model (Galluppi 2016 Methods; Results, p124)."
+      notes = "Screened as a covariate of V, V2, CL and CL2 but had no significant effect on the objective function value and was not retained in the final model (Galluppi 2016 Methods; Results, p124)."
     ),
     RACE_ASIAN = list(
-      description        = "Asian ethnicity indicator (Chinese or Japanese vs Caucasian)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian ethnicity indicator (Chinese or Japanese vs Caucasian)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian)",
-      notes              = "Screened (as 'ethnicity': Chinese, Japanese, Caucasian) but no clinically meaningful difference between groups; not retained in the final model (Galluppi 2016 Results, p124-125)."
+      notes = "Screened (as 'ethnicity': Chinese, Japanese, Caucasian) but no clinically meaningful difference between groups; not retained in the final model (Galluppi 2016 Results, p124-125)."
     ),
     STUDY_RA = list(
-      description        = "Rheumatoid arthritis study indicator (study 211RA101 vs healthy-volunteer study 211HV102)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Rheumatoid arthritis study indicator (study 211RA101 vs healthy-volunteer study 211HV102)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteers, study 211HV102)",
-      notes              = "Disease status (RA patients vs healthy volunteers) was screened as a covariate but had no significant effect on the objective function value and was not retained in the final model (Galluppi 2016 Methods; Results, p124)."
+      notes = "Disease status (RA patients vs healthy volunteers) was screened as a covariate but had no significant effect on the objective function value and was not retained in the final model (Galluppi 2016 Methods; Results, p124)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 96L,
+    species = "human",
+    n_subjects = 96L,
     n_observations = 1583L,
-    n_studies      = 2L,
-    age_range      = "18-55 years (healthy volunteers, study 211HV102); rheumatoid arthritis adults (study 211RA101, mean 54.0 +/- 9.0 years)",
-    weight_range   = "58.6-69.1 kg per ethnic group (healthy volunteers, study 211HV102, Table 1 means); 74.1 +/- 11.0 kg overall (study 211RA101 adults, Table 2)",
+    n_studies = 2L,
+    age_range = "18-55 years (healthy volunteers, study 211HV102); rheumatoid arthritis adults (study 211RA101, mean 54.0 +/- 9.0 years)",
+    weight_range = "58.6-69.1 kg per ethnic group (healthy volunteers, study 211HV102, Table 1 means); 74.1 +/- 11.0 kg overall (study 211RA101 adults, Table 2)",
     sex_female_pct = 56.3,
-    race_ethnicity = c("Chinese (healthy, n=16)" = 16.7, "Japanese (healthy, n=16)" = 16.7, "Caucasian (healthy, n=16)" = 16.7, "Caucasian (RA, n=48)" = 50.0),
-    disease_state  = "Pooled healthy volunteers (study 211HV102, Chinese / Japanese / Caucasian, n=48) and adults with rheumatoid arthritis (study 211RA101, Caucasian, n=48). Disease status was screened as a covariate and was not retained.",
-    dose_range     = "Single 1-hour intravenous infusion: 3 or 20 mg/kg in study 211HV102; ascending 0.03-20 mg/kg in study 211RA101.",
-    regions        = "Hong Kong (Chinese healthy volunteers) and Australia (Japanese and Caucasian healthy volunteers) in study 211HV102; study 211RA101 ascending-dose phase 1 in subjects with rheumatoid arthritis (Caucasian, see reference [14] of the paper).",
-    notes          = "Combined dataset of 1583 BIIB023 serum concentrations from 96 subjects (48 per study). Predose BLQ samples set to zero; 120 postdose BLQ (~8% of dataset) treated as missing per Galluppi 2016 Methods. Concentrations measured by validated ELISA (calibration range 0.800-20.0 ug/mL in neat serum). Soluble TWEAK and TWEAK:BIIB023 complex were analysed descriptively but no structural PD model was fit (Galluppi 2016 Discussion: 'Whether the observed nonlinearity in clearance of BIIB023 is due to target-mediated drug disposition could not be confirmed due to insufficient information')."
+    race_ethnicity = c(
+      "Chinese (healthy, n=16)" = 16.7,
+      "Japanese (healthy, n=16)" = 16.7,
+      "Caucasian (healthy, n=16)" = 16.7,
+      "Caucasian (RA, n=48)" = 50.0
+    ),
+    disease_state = "Pooled healthy volunteers (study 211HV102, Chinese / Japanese / Caucasian, n=48) and adults with rheumatoid arthritis (study 211RA101, Caucasian, n=48). Disease status was screened as a covariate and was not retained.",
+    dose_range = "Single 1-hour intravenous infusion: 3 or 20 mg/kg in study 211HV102; ascending 0.03-20 mg/kg in study 211RA101.",
+    regions = "Hong Kong (Chinese healthy volunteers) and Australia (Japanese and Caucasian healthy volunteers) in study 211HV102; study 211RA101 ascending-dose phase 1 in subjects with rheumatoid arthritis (Caucasian, see reference [14] of the paper).",
+    notes = "Combined dataset of 1583 BIIB023 serum concentrations from 96 subjects (48 per study). Predose BLQ samples set to zero; 120 postdose BLQ (~8% of dataset) treated as missing per Galluppi 2016 Methods. Concentrations measured by validated ELISA (calibration range 0.800-20.0 ug/mL in neat serum). Soluble TWEAK and TWEAK:BIIB023 complex were analysed descriptively but no structural PD model was fit (Galluppi 2016 Discussion: 'Whether the observed nonlinearity in clearance of BIIB023 is due to target-mediated drug disposition could not be confirmed due to insufficient information')."
   )
 
   ini({

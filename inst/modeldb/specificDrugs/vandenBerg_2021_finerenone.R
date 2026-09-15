@@ -44,34 +44,34 @@ vandenBerg_2021_finerenone <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "finerenone", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "finerenone", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "finerenone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight used for power-form effect on Vc/F:",
         "(WT / 85)^0.501 with reference 85 kg per FIDELIO-DKD popPK NONMEM",
         "control stream in ESM ('CV1 = (BW0/85)**THETA(9)'). Effect on Vc/F",
         "is independent of the CL/F-and-F covariate cluster."
       ),
-      source_name        = "BW0"
+      source_name = "BW0"
     ),
     HT = list(
-      description        = "Body height (baseline)",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height (baseline)",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body height used for power-form effect on CL/F AND F:",
         "(HT / 167)^0.720 with reference 167 cm per FIDELIO-DKD popPK",
         "NONMEM control stream in ESM ('CV3 = (HGHT/167)**THETA(11)'). The",
@@ -79,14 +79,14 @@ vandenBerg_2021_finerenone <- function() {
         "(inversely), so the net effect on AUC at steady state scales as",
         "(HT / 167)^(-2 * 0.720)."
       ),
-      source_name        = "HGHT"
+      source_name = "HGHT"
     ),
     CRCL = list(
-      description        = "Time-varying eGFR-CKD-EPI (BSA-normalized estimated glomerular filtration rate)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Time-varying eGFR-CKD-EPI (BSA-normalized estimated glomerular filtration rate)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying estimated glomerular filtration rate computed via",
         "the CKD-EPI equation (BSA-normalized to mL/min/1.73 m^2) and used",
         "for power-form effect on CL/F AND F: (CRCL / 39.1)^0.155 with",
@@ -97,14 +97,14 @@ vandenBerg_2021_finerenone <- function() {
         "eGFR. Same factor applied to CL/F (multiplicative) and F1",
         "(inversely)."
       ),
-      source_name        = "EGFREP"
+      source_name = "EGFREP"
     ),
     CREAT = list(
-      description        = "Serum creatinine (baseline)",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine (baseline)",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline serum creatinine in mg/dL used for power-form effect on",
         "CL/F AND F: (CREAT / 1.51)^0.118 with reference 1.51 mg/dL per",
         "ESM NONMEM control stream ('CV4 = (CREA/1.51)**THETA(12)'). The",
@@ -114,14 +114,14 @@ vandenBerg_2021_finerenone <- function() {
         "underlying pathophysiology where likely accumulating uremic",
         "toxins ultimately impair CYP3A4 metabolism')."
       ),
-      source_name        = "CREA"
+      source_name = "CREA"
     ),
     GGT = list(
-      description        = "Serum gamma-glutamyl-transferase (baseline)",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum gamma-glutamyl-transferase (baseline)",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline serum gamma-glutamyl-transferase used for power-form",
         "effect on CL/F ONLY: (GGT / 25)^(-0.0694) with reference 25 U/L",
         "per ESM NONMEM control stream ('CV5 = (GGT/25)**THETA(16)').",
@@ -130,14 +130,14 @@ vandenBerg_2021_finerenone <- function() {
         "body 'TVCL = ... * CV5 * ...' but 'F1 = ... / (CV2*CV3*CV4*",
         "ESMOK*ESGLT*ECYPINHR)' with CV5 absent from F1."
       ),
-      source_name        = "GGT"
+      source_name = "GGT"
     ),
     SMOKE_NEVER = list(
-      description        = "Never-smoker indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Never-smoker indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (never smoker is the reference for the paper's ever-vs-never effect)",
-      notes              = paste(
+      notes = paste(
         "FIDELIO-DKD paper's 'effect of smoking (current or former",
         "smokers)' is encoded as a single (1 - SMOKE_NEVER) ever-smoker",
         "indicator: the paper's 1.04 effect applies to subjects with",
@@ -149,14 +149,14 @@ vandenBerg_2021_finerenone <- function() {
         "ever-smoker group) is not needed in this model. Effect on both",
         "CL/F (multiplicative) and F1 (inversely)."
       ),
-      source_name        = "SMOK"
+      source_name = "SMOK"
     ),
     CONMED_SGLT2I = list(
-      description        = "Concomitant SGLT2 inhibitor coadministration indicator (long-term, >=50% of on-treatment period)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant SGLT2 inhibitor coadministration indicator (long-term, >=50% of on-treatment period)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no long-term SGLT2 inhibitor coadministration)",
-      notes              = paste(
+      notes = paste(
         "1 = subject coadministered a sodium-glucose cotransporter 2",
         "inhibitor (canagliflozin, dapagliflozin, empagliflozin, or",
         "another systemic SGLT2i) for at least 50% of the on-finerenone",
@@ -167,14 +167,14 @@ vandenBerg_2021_finerenone <- function() {
         "in the ESM NONMEM control stream encodes it. Effect on CL/F",
         "(multiplicative, 1.10) and F1 (inversely)."
       ),
-      source_name        = "SGLT"
+      source_name = "SGLT"
     ),
     CONMED_CYP3A4_INH_HI = list(
-      description        = "Concomitant CYP3A4 inhibitor (strong/moderate/weak) coadministration at >=50% of on-treatment period",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A4 inhibitor (strong/moderate/weak) coadministration at >=50% of on-treatment period",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP3A4 inhibitor coadministration in this strength-and-exposure category; CONMED_CYP3A4_INH_LO may still be 1)",
-      notes              = paste(
+      notes = paste(
         "1 = subject coadministered a CYP3A4 inhibitor classified as",
         "strong, moderate, or weak (according to FDA/EMA classifications)",
         "for at least 50% of the on-finerenone treatment period; 0",
@@ -186,14 +186,14 @@ vandenBerg_2021_finerenone <- function() {
         "exclusive with CONMED_CYP3A4_INH_LO (a subject is in at most",
         "one of the two categories)."
       ),
-      source_name        = "CYPINH"
+      source_name = "CYPINH"
     ),
     CONMED_CYP3A4_INH_LO = list(
-      description        = "Concomitant CYP3A4 inhibitor coadministration in 'other' category (unclassified at any duration, or strong/moderate/weak below the 50% threshold)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A4 inhibitor coadministration in 'other' category (unclassified at any duration, or strong/moderate/weak below the 50% threshold)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP3A4 inhibitor coadministration in this category; CONMED_CYP3A4_INH_HI may still be 1)",
-      notes              = paste(
+      notes = paste(
         "1 = subject coadministered a CYP3A4 inhibitor in any of the",
         "following sub-categories: unclassified inhibitor at any duration",
         "(CYPINH = 1 or 2 in ESM NONMEM code), or strong/moderate/weak",
@@ -202,14 +202,14 @@ vandenBerg_2021_finerenone <- function() {
         "otherwise. Effect on CL/F (multiplicative, 0.996) and F1",
         "(inversely). Mutually exclusive with CONMED_CYP3A4_INH_HI."
       ),
-      source_name        = "CYPINH"
+      source_name = "CYPINH"
     ),
     RACE_KOREAN = list(
-      description        = "Korean-heritage race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Korean-heritage race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-Korean race, including other Asian, White, Black, etc.)",
-      notes              = paste(
+      notes = paste(
         "1 = Korean-heritage subject (RACA = 3.3 in ESM NONMEM control",
         "stream), 0 otherwise. The FIDELIO-DKD popPK analysis found a",
         "single-race effect on Vc/F for Korean subjects only (no other",
@@ -218,28 +218,28 @@ vandenBerg_2021_finerenone <- function() {
         "(only 2.4% of subjects were Korean)'. Effect on Vc/F only (NOT",
         "applied to CL/F or F)."
       ),
-      source_name        = "RACA"
+      source_name = "RACA"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 2284L,
-    n_studies       = 1L,
-    n_observations  = 5057L,
-    disease_state   = "chronic kidney disease and type 2 diabetes mellitus (FIDELIO-DKD eligibility: eGFR 25 to <75 mL/min/1.73 m^2 with persistent moderately or severely elevated albuminuria, on maximally tolerated renin-angiotensin system inhibitor)",
-    dose_range      = "10 or 20 mg finerenone QD oral (starting dose 10 mg if eGFR <60, 20 mg if eGFR >=60; up- or down-titrated by potassium / eGFR), average 15.1 mg/day across follow-up",
-    follow_up       = "median 2.6 years",
-    egfr_range      = "median (5th-95th) 43.0 (26.7-66.9) mL/min/1.73 m^2 at baseline (FIDELIO-DKD population)",
-    uacr_range      = "median (5th-95th) 852 (140-3366) mg/g at baseline (FIDELIO-DKD population)",
-    reference_weight     = "85 kg (cohort median, used as ref for WT power-form on Vc/F)",
-    reference_height     = "167 cm (cohort median, used as ref for HT power-form on CL/F and F)",
+    species = "human",
+    n_subjects = 2284L,
+    n_studies = 1L,
+    n_observations = 5057L,
+    disease_state = "chronic kidney disease and type 2 diabetes mellitus (FIDELIO-DKD eligibility: eGFR 25 to <75 mL/min/1.73 m^2 with persistent moderately or severely elevated albuminuria, on maximally tolerated renin-angiotensin system inhibitor)",
+    dose_range = "10 or 20 mg finerenone QD oral (starting dose 10 mg if eGFR <60, 20 mg if eGFR >=60; up- or down-titrated by potassium / eGFR), average 15.1 mg/day across follow-up",
+    follow_up = "median 2.6 years",
+    egfr_range = "median (5th-95th) 43.0 (26.7-66.9) mL/min/1.73 m^2 at baseline (FIDELIO-DKD population)",
+    uacr_range = "median (5th-95th) 852 (140-3366) mg/g at baseline (FIDELIO-DKD population)",
+    reference_weight = "85 kg (cohort median, used as ref for WT power-form on Vc/F)",
+    reference_height = "167 cm (cohort median, used as ref for HT power-form on CL/F and F)",
     reference_creatinine = "1.51 mg/dL (cohort median, used as ref for CREAT power-form on CL/F and F)",
-    reference_egfr       = "39.1 mL/min/1.73 m^2 (cohort median time-varying value, used as ref for CRCL power-form on CL/F and F)",
-    reference_ggt        = "25 U/L (cohort median, used as ref for GGT power-form on CL/F)",
+    reference_egfr = "39.1 mL/min/1.73 m^2 (cohort median time-varying value, used as ref for CRCL power-form on CL/F and F)",
+    reference_ggt = "25 U/L (cohort median, used as ref for GGT power-form on CL/F)",
     sampling_design = "sparse: trough at month 4, post-dose at any time on yearly visit days",
-    regions         = "international (FIDELIO-DKD enrolled in North America, EU, Latin America, and Asia-Pacific)",
-    notes           = paste(
+    regions = "international (FIDELIO-DKD enrolled in North America, EU, Latin America, and Asia-Pacific)",
+    notes = paste(
       "Population is the FIDELIO-DKD per-protocol Phase III analysis",
       "set (5734 randomized total, 5674 valid for analysis, 2833 on",
       "finerenone of whom 2284 had at least one valid PK sample after",

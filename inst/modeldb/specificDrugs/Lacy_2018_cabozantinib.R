@@ -15,143 +15,145 @@ Lacy_2018_cabozantinib <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot1      = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "cabozantinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot1 = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "cabozantinib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cabozantinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effect on CL/F (exponent -0.162) and Vc/F (exponent -0.012). Reference 64 years is the overall-cohort median across the nine pooled studies (Lacy 2018 Table 2). Paper Methods: 'The approximate median value was used for xREF.'",
-      source_name        = "AGE"
+      notes = "Time-fixed baseline. Power effect on CL/F (exponent -0.162) and Vc/F (exponent -0.012). Reference 64 years is the overall-cohort median across the nine pooled studies (Lacy 2018 Table 2). Paper Methods: 'The approximate median value was used for xREF.'",
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effect on CL/F (exponent -0.028, near-null) and Vc/F (exponent +1.019, near-linear scaling). Reference 81 kg is the overall-cohort median across the nine pooled studies (Lacy 2018 Table 2). Paper Methods: 'The approximate median value was used for xREF.'",
-      source_name        = "WT"
+      notes = "Time-fixed baseline. Power effect on CL/F (exponent -0.028, near-null) and Vc/F (exponent +1.019, near-linear scaling). Reference 81 kg is the overall-cohort median across the nine pooled studies (Lacy 2018 Table 2). Paper Methods: 'The approximate median value was used for xREF.'",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male, the typical-value reference)",
-      notes              = "Time-fixed. Multiplicative fractional effect on CL/F (-0.230, i.e. 23% lower in females) and Vc/F (+0.11). Lacy 2018 Table 3.",
-      source_name        = "SEXF"
+      notes = "Time-fixed. Multiplicative fractional effect on CL/F (-0.230, i.e. 23% lower in females) and Vc/F (+0.11). Lacy 2018 Table 3.",
+      source_name = "SEXF"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black; White is the typical-value reference category when paired with RACE_ASIAN = 0 and RACE_OTHER = 0)",
-      notes              = "Time-fixed. Multiplicative fractional effect on CL/F (+0.301, i.e. 30% higher in Black subjects) and Vc/F (-0.022). Lacy 2018 Table 3. Reference = White (1283 / 1534 = 83.6% of cohort).",
-      source_name        = "RACE"
+      notes = "Time-fixed. Multiplicative fractional effect on CL/F (+0.301, i.e. 30% higher in Black subjects) and Vc/F (-0.022). Lacy 2018 Table 3. Reference = White (1283 / 1534 = 83.6% of cohort).",
+      source_name = "RACE"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian; White is the typical-value reference when paired with RACE_BLACK = 0 and RACE_OTHER = 0)",
-      notes              = "Time-fixed. Multiplicative fractional effect on CL/F (-0.078) and Vc/F (+0.05). Lacy 2018 Table 3.",
-      source_name        = "RACE"
+      notes = "Time-fixed. Multiplicative fractional effect on CL/F (-0.078) and Vc/F (+0.05). Lacy 2018 Table 3.",
+      source_name = "RACE"
     ),
     RACE_OTHER = list(
-      description        = "Race category 'Other' indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race category 'Other' indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Other; White is the typical-value reference when paired with RACE_BLACK = 0 and RACE_ASIAN = 0)",
-      notes              = "Time-fixed. Multiplicative fractional effect on CL/F (-0.007, near-null) and Vc/F (-0.059). Lacy 2018 Table 3. Race 'Other' includes mixed and unspecified categories pooled across the nine studies (39 / 1534 = 2.5% of cohort).",
-      source_name        = "RACE"
+      notes = "Time-fixed. Multiplicative fractional effect on CL/F (-0.007, near-null) and Vc/F (-0.059). Lacy 2018 Table 3. Race 'Other' includes mixed and unspecified categories pooled across the nine studies (39 / 1534 = 2.5% of cohort).",
+      source_name = "RACE"
     ),
     TUMTP_RCC = list(
-      description        = "Renal cell carcinoma indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Renal cell carcinoma indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-RCC; healthy volunteer is the typical-value reference when paired with all other TUMTP_* indicators = 0)",
-      notes              = "Time-fixed. Multiplicative fractional effect on CL/F (-0.129, 12.9% lower than HV) and Vc/F (-0.63, 63% lower than HV). Lacy 2018 Table 3. Reference = healthy volunteer (140 / 1534 = 9.1% of cohort).",
-      source_name        = "POP"
+      notes = "Time-fixed. Multiplicative fractional effect on CL/F (-0.129, 12.9% lower than HV) and Vc/F (-0.63, 63% lower than HV). Lacy 2018 Table 3. Reference = healthy volunteer (140 / 1534 = 9.1% of cohort).",
+      source_name = "POP"
     ),
     TUMTP_HRPC = list(
-      description        = "Castration-resistant prostate cancer indicator (paper writes CRPC; canonical column TUMTP_HRPC covers both HRPC and CRPC wordings)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Castration-resistant prostate cancer indicator (paper writes CRPC; canonical column TUMTP_HRPC covers both HRPC and CRPC wordings)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-CRPC; healthy volunteer is the typical-value reference)",
-      notes              = "Time-fixed. Multiplicative fractional effect on CL/F (-0.009, near-null) and Vc/F (-0.241). Lacy 2018 Table 3. Reference = healthy volunteer. CRPC patients accounted for 823 / 1534 = 53.7% of the pooled cohort across Studies 203, 306, and 307.",
-      source_name        = "POP"
+      notes = "Time-fixed. Multiplicative fractional effect on CL/F (-0.009, near-null) and Vc/F (-0.241). Lacy 2018 Table 3. Reference = healthy volunteer. CRPC patients accounted for 823 / 1534 = 53.7% of the pooled cohort across Studies 203, 306, and 307.",
+      source_name = "POP"
     ),
     TUMTP_MTC = list(
-      description        = "Medullary thyroid carcinoma indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Medullary thyroid carcinoma indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-MTC; healthy volunteer is the typical-value reference)",
-      notes              = "Time-fixed. Multiplicative fractional effect on CL/F (+0.928, 92.8% higher than HV; load-bearing finding of Lacy 2018) and Vc/F (-0.07). Reference = healthy volunteer. MTC accounted for 210 / 1534 = 13.7% of cohort, all from Study 301 dosed at 140 mg/day capsule. The MTC effect on CL/F is reported as time-dependent (negligible on day 1, fully expressed by day 29).",
-      source_name        = "POP"
+      notes = "Time-fixed. Multiplicative fractional effect on CL/F (+0.928, 92.8% higher than HV; load-bearing finding of Lacy 2018) and Vc/F (-0.07). Reference = healthy volunteer. MTC accounted for 210 / 1534 = 13.7% of cohort, all from Study 301 dosed at 140 mg/day capsule. The MTC effect on CL/F is reported as time-dependent (negligible on day 1, fully expressed by day 29).",
+      source_name = "POP"
     ),
     TUMTP_GLIO = list(
-      description        = "Glioblastoma multiforme indicator (canonical TUMTP_GLIO covers glioma of any grade including GB)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Glioblastoma multiforme indicator (canonical TUMTP_GLIO covers glioma of any grade including GB)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-glioma; healthy volunteer is the typical-value reference)",
-      notes              = "Time-fixed. Multiplicative fractional effect on CL/F (+0.216) and Vc/F (-0.569). Lacy 2018 Table 3. Reference = healthy volunteer. GB patients accounted for 39 / 1534 = 2.5% of the cohort (Study 201).",
-      source_name        = "POP"
+      notes = "Time-fixed. Multiplicative fractional effect on CL/F (+0.216) and Vc/F (-0.569). Lacy 2018 Table 3. Reference = healthy volunteer. GB patients accounted for 39 / 1534 = 2.5% of the cohort (Study 201).",
+      source_name = "POP"
     ),
     TUMTP_OTHER = list(
-      description        = "Heterogeneous 'other malignancy' pool indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Heterogeneous 'other malignancy' pool indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-other; healthy volunteer is the typical-value reference)",
-      notes              = "Time-fixed. Multiplicative fractional effect on CL/F (+0.178) and Vc/F (-0.186). Lacy 2018 Table 3. Reference = healthy volunteer. 'Other' = mixed advanced malignancies enrolled in the FIH Study 001 (n = 40 / 1534 = 2.6% of cohort); per-subject tumor composition is not enumerated by Lacy 2018.",
-      source_name        = "POP"
+      notes = "Time-fixed. Multiplicative fractional effect on CL/F (+0.178) and Vc/F (-0.186). Lacy 2018 Table 3. Reference = healthy volunteer. 'Other' = mixed advanced malignancies enrolled in the FIH Study 001 (n = 40 / 1534 = 2.6% of cohort); per-subject tumor composition is not enumerated by Lacy 2018.",
+      source_name = "POP"
     ),
     FORM_CAPSULE = list(
-      description        = "Capsule formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Capsule formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet; the typical-value reference)",
-      notes              = "Per-dose-occasion indicator (Study 010 is a tablet-vs-capsule crossover). Multiplicative fractional effect on Ka (-0.579, i.e. 57.9% lower absorption rate for capsule) and on overall bioavailability F (-0.144, i.e. 14.4% lower exposure for capsule). Reference = tablet (Cabometyx 60 mg approved for RCC / CRPC). Comparator capsule = Cometriq 140 mg approved for MTC. Aligns with the cross-study capsule-tablet bioequivalence finding (Study XL184-010).",
-      source_name        = "FORM"
+      notes = "Per-dose-occasion indicator (Study 010 is a tablet-vs-capsule crossover). Multiplicative fractional effect on Ka (-0.579, i.e. 57.9% lower absorption rate for capsule) and on overall bioavailability F (-0.144, i.e. 14.4% lower exposure for capsule). Reference = tablet (Cabometyx 60 mg approved for RCC / CRPC). Comparator capsule = Cometriq 140 mg approved for MTC. Aligns with the cross-study capsule-tablet bioequivalence finding (Study XL184-010).",
+      source_name = "FORM"
     ),
     DOSE = list(
-      description        = "Administered cabozantinib dose level",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered cabozantinib dose level",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-dose-occasion. Power covariate on first-order absorption rate constant Ka: Ka(DOSE) = Ka_ref * (DOSE/DOSE_REF)^0.677. Reference DOSE_REF = 60 mg (the standard tablet daily dose for non-MTC indications and the reference dose used in the companion Lacy 2018 exposure-response paper). The DOSE_REF value is NOT stated in the paper; the 60 mg choice was operator-approved per the sidecar resolution Q2-A and is documented in vignette Errata.",
-      source_name        = "DOSE"
+      notes = "Per-dose-occasion. Power covariate on first-order absorption rate constant Ka: Ka(DOSE) = Ka_ref * (DOSE/DOSE_REF)^0.677. Reference DOSE_REF = 60 mg (the standard tablet daily dose for non-MTC indications and the reference dose used in the companion Lacy 2018 exposure-response paper). The DOSE_REF value is NOT stated in the paper; the 60 mg choice was operator-approved per the sidecar resolution Q2-A and is documented in vignette Errata.",
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 1534L,
-    n_observations   = 8072L,
-    n_studies        = 9L,
-    age_range        = "18-87 years",
-    age_median       = "64 years (pooled across the nine studies)",
-    weight_range     = "30.4-190.7 kg",
-    weight_median    = "approximately 81 kg (pooled across the nine studies)",
-    sex_female_pct   = 14.4,
-    race_ethnicity   = "White 83.6%, Black 2.7%, Asian 3.0%, Other 2.5%, missing/not reported 8.1% (Lacy 2018 Table 2)",
-    disease_state    = "Pooled population: healthy volunteers (9.1%); castration-resistant prostate cancer (53.7%); renal cell carcinoma (18.4%); medullary thyroid cancer (13.7%); glioblastoma multiforme (2.5%); other advanced malignancies (2.6%, Study 001 mixed cohort).",
-    dose_range       = "20-200 mg/day oral cabozantinib (capsule Cometriq 140 mg/day for MTC; tablet Cabometyx 60 mg/day for RCC / CRPC; phase I HV studies 20, 40, 60, 140 mg single doses).",
-    regions          = "Multinational (Lacy 2018 Table 1 enumerates the nine studies; specific regional breakdown not reported)",
-    formulations     = "Capsule (Cometriq, 42.2% of cohort) and tablet (Cabometyx, 62.5%); a subset of subjects in the bioequivalence Study 010 received both formulations in a crossover design.",
-    studies          = c("XL184-001 (FIH, mixed malignancies, 140 or 200 mg, n=40)",
-                         "XL184-010 (HV BE crossover capsule vs tablet, 140 mg, n=77)",
-                         "XL184-020 (HV tablet 20 / 40 / 60 mg, n=63)",
-                         "XL184-201 (GB, 140 mg QD, n=39)",
-                         "XL184-203 (CRPC RDT / NRE, 40 or 100 mg QD, n=284)",
-                         "XL184-301 (MTC, 140 mg QD, n=210)",
-                         "XL184-306 (CRPC, 60 mg QD, n=41)",
-                         "XL184-307 (CRPC, 60 mg QD, n=498)",
-                         "XL184-308 (RCC, 60 mg QD, n=282)"),
-    notes            = "Baseline demographics from Lacy 2018 Table 2. BLQ rate < 1% (excluded from analysis per Methods). 79% of the 210 MTC patients in Study 301 dose-reduced from the starting 140 mg. The MTC subjects had ~93% higher CL/F than HV at steady state but not at day 1, suggesting time-varying clearance in this subgroup; the FM model captures the steady-state difference."
+    species = "human",
+    n_subjects = 1534L,
+    n_observations = 8072L,
+    n_studies = 9L,
+    age_range = "18-87 years",
+    age_median = "64 years (pooled across the nine studies)",
+    weight_range = "30.4-190.7 kg",
+    weight_median = "approximately 81 kg (pooled across the nine studies)",
+    sex_female_pct = 14.4,
+    race_ethnicity = "White 83.6%, Black 2.7%, Asian 3.0%, Other 2.5%, missing/not reported 8.1% (Lacy 2018 Table 2)",
+    disease_state = "Pooled population: healthy volunteers (9.1%); castration-resistant prostate cancer (53.7%); renal cell carcinoma (18.4%); medullary thyroid cancer (13.7%); glioblastoma multiforme (2.5%); other advanced malignancies (2.6%, Study 001 mixed cohort).",
+    dose_range = "20-200 mg/day oral cabozantinib (capsule Cometriq 140 mg/day for MTC; tablet Cabometyx 60 mg/day for RCC / CRPC; phase I HV studies 20, 40, 60, 140 mg single doses).",
+    regions = "Multinational (Lacy 2018 Table 1 enumerates the nine studies; specific regional breakdown not reported)",
+    formulations = "Capsule (Cometriq, 42.2% of cohort) and tablet (Cabometyx, 62.5%); a subset of subjects in the bioequivalence Study 010 received both formulations in a crossover design.",
+    studies = c(
+      "XL184-001 (FIH, mixed malignancies, 140 or 200 mg, n=40)",
+      "XL184-010 (HV BE crossover capsule vs tablet, 140 mg, n=77)",
+      "XL184-020 (HV tablet 20 / 40 / 60 mg, n=63)",
+      "XL184-201 (GB, 140 mg QD, n=39)",
+      "XL184-203 (CRPC RDT / NRE, 40 or 100 mg QD, n=284)",
+      "XL184-301 (MTC, 140 mg QD, n=210)",
+      "XL184-306 (CRPC, 60 mg QD, n=41)",
+      "XL184-307 (CRPC, 60 mg QD, n=498)",
+      "XL184-308 (RCC, 60 mg QD, n=282)"
+    ),
+    notes = "Baseline demographics from Lacy 2018 Table 2. BLQ rate < 1% (excluded from analysis per Methods). 79% of the 210 MTC patients in Study 301 dose-reduced from the starting 140 mg. The MTC subjects had ~93% higher CL/F than HV at steady state but not at day 1, suggesting time-varying clearance in this subgroup; the FM model captures the steady-state difference."
   )
 
   ini({

@@ -37,8 +37,8 @@ vanderWalt_2013_dapagliflozin <- function() {
   )
   vignette <- "vanderWalt_2013_dapagliflozin"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -47,19 +47,24 @@ vanderWalt_2013_dapagliflozin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "dapagliflozin", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "dapagliflozin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "dapagliflozin", units = "mg", specimen = "plasma", verified = FALSE),
-    central_d3og = list(analyte = "dapagliflozin 3-O-glucuronide (D3OG)", units = "mg", specimen = "plasma", verified = FALSE)
+    depot = list(analyte = "dapagliflozin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dapagliflozin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dapagliflozin", units = "mg", specimen = "plasma", verified = FALSE),
+    central_d3og = list(
+      analyte = "dapagliflozin 3-O-glucuronide (D3OG)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline body weight. Used for a priori allometric",
         "scaling on metabolic clearances CLP_M15 and CLP_other with",
         "exponent 0.75 and on volumes V2P, V3P, and V2M with exponent",
@@ -70,14 +75,14 @@ vanderWalt_2013_dapagliflozin <- function() {
         "and CLM are not scaled by body weight (Table 2: 'x' on the",
         "WT column for CLP_renal; CLM is driven only by CL_cr_IBW)."
       ),
-      source_name        = "BBWT"
+      source_name = "BBWT"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline age. Linear additive effect on CLP_other",
         "of (-0.0204) per year of difference from the reference age",
         "53.5 years (van der Walt 2013 Table 2 reference value;",
@@ -85,14 +90,14 @@ vanderWalt_2013_dapagliflozin <- function() {
         "increasing age above 54 years'). The covariate effect is",
         "applied as (1 + e_age_cl_nonren * (AGE - 53.5))."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) per the canonical SEXF column. van der Walt 2013 Table 2 also uses male as the reference category and reports the female multiplicative shift.",
-      notes              = paste(
+      notes = paste(
         "Time-fixed. Multiplicative fractional effects on total",
         "dapagliflozin clearance CLP (applied uniformly to each",
         "component CLP_renal / CLP_M15 / CLP_other so that the sum",
@@ -103,14 +108,14 @@ vanderWalt_2013_dapagliflozin <- function() {
         "(Table 1) and Results 'In females, CLP and CLM were 16.7 and",
         "19.6% lower, respectively'. Reference is male (SEXF = 0)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance, ideal-body-weight-corrected (Cockcroft-Gault with IBW)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance, ideal-body-weight-corrected (Cockcroft-Gault with IBW)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline value. Computed by van der Walt 2013 using",
         "the Cockcroft-Gault equation with ideal body weight (IBW) in",
         "place of total body weight (BBWT); reported as 'CL_cr,IBW' in",
@@ -127,14 +132,14 @@ vanderWalt_2013_dapagliflozin <- function() {
         "(CRCL - 80.14)). Population range across the three contributing",
         "studies: 13 to 143 mL/min."
       ),
-      source_name        = "CL_cr,IBW"
+      source_name = "CL_cr,IBW"
     ),
     HEPIMP_SEV = list(
-      description        = "Severe hepatic impairment indicator (Child-Pugh Class C, score 10-15)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Severe hepatic impairment indicator (Child-Pugh Class C, score 10-15)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-severe Child-Pugh category: normal, mild = Child-Pugh A, or moderate = Child-Pugh B). The HEPIMP_SEV = 1 cohort in the source study is the six subjects with Child-Pugh Class C in the hepatic-impairment substudy.",
-      notes              = paste(
+      notes = paste(
         "Time-fixed binary indicator of severe hepatic impairment per",
         "the Child-Pugh classification (Class C). NOT the NCI ODWG",
         "default classification carried by the canonical HEPIMP_SEV",
@@ -152,14 +157,14 @@ vanderWalt_2013_dapagliflozin <- function() {
         "category for both indicators is 'not Child-Pugh C and not",
         "Child-Pugh B-or-C' = normal or mild hepatic function."
       ),
-      source_name        = "Child-Pugh Class C"
+      source_name = "Child-Pugh Class C"
     ),
     HEPIMP_MODSEV = list(
-      description        = "Composite moderate-or-severe hepatic impairment indicator (Child-Pugh Class B or C, score >= 7)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Composite moderate-or-severe hepatic impairment indicator (Child-Pugh Class B or C, score >= 7)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function or mild Child-Pugh Class A). The HEPIMP_MODSEV = 1 cohort in the source study pools 12 subjects (6 Child-Pugh B + 6 Child-Pugh C) of the 24 subjects in the hepatic-impairment substudy.",
-      notes              = paste(
+      notes = paste(
         "Time-fixed binary indicator of moderate-or-severe hepatic",
         "impairment per the Child-Pugh classification (Class B or C",
         "pooled). NOT the NCI ODWG default classification carried by",
@@ -178,21 +183,21 @@ vanderWalt_2013_dapagliflozin <- function() {
         "= 0 AND HEPIMP_MODSEV = 1. The two indicators are nested,",
         "not mutually exclusive."
       ),
-      source_name        = "Child-Pugh Class B or C"
+      source_name = "Child-Pugh Class B or C"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 227L,
-    n_studies      = 3L,
-    age_range      = "25-92 years (per-study medians 63, 43, 67)",
-    age_median     = "67 years (largest study, MB102029)",
-    weight_range   = "51.8-148.3 kg",
-    weight_median  = "approximately 86 kg (pooled across the three studies; per-study medians 81.2, 86.3, 92.0 kg)",
+    species = "human",
+    n_subjects = 227L,
+    n_studies = 3L,
+    age_range = "25-92 years (per-study medians 63, 43, 67)",
+    age_median = "67 years (largest study, MB102029)",
+    weight_range = "51.8-148.3 kg",
+    weight_median = "approximately 86 kg (pooled across the three studies; per-study medians 81.2, 86.3, 92.0 kg)",
     sex_female_pct = 32.6,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled cohort of (i) healthy adult subjects, (ii) adults with",
       "type 2 diabetes mellitus (T2DM) with normal, mild, moderate, or",
       "severe renal impairment, and (iii) adults with hepatic",
@@ -208,14 +213,14 @@ vanderWalt_2013_dapagliflozin <- function() {
     ),
     renal_function = "Pooled cohort spans CRCL 13-143 mL/min (Table 2 baseline-covariate summary).",
     hepatic_function = "MB102027 substudy: 12 normal-or-Pugh-A, 6 Pugh B, 6 Pugh C; MB102007 and MB102029 subjects were normal or mild only.",
-    dose_range     = paste(
+    dose_range = paste(
       "Oral dapagliflozin: 50-mg single dose followed by 20-mg q.d.",
       "for 7 days (renal-impairment PK/PD study MB102007); 10-mg",
       "single dose (hepatic-impairment study MB102027); 10-mg daily",
       "(phase 3 trial MB102029)."
     ),
-    regions        = "Not specified by region in the publication; multi-centre Bristol-Myers Squibb clinical program.",
-    notes          = paste(
+    regions = "Not specified by region in the publication; multi-centre Bristol-Myers Squibb clinical program.",
+    notes = paste(
       "Demographics from van der Walt 2013 Table 2 baseline-covariate",
       "summary across the three contributing studies. NONMEM 7.1.2",
       "with FOCE and eta-eps interaction; standard errors via Monte",

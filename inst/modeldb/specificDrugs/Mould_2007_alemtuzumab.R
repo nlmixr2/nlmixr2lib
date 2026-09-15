@@ -8,35 +8,35 @@ Mould_2007_alemtuzumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "alemtuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "alemtuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "alemtuzumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WBC = list(
-      description        = "Total white blood cell count (peripheral, time-varying biomarker of B-CLL tumour burden)",
-      units              = "10^9 cells/L",
-      type               = "continuous",
+      description = "Total white blood cell count (peripheral, time-varying biomarker of B-CLL tumour burden)",
+      units = "10^9 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Power covariate on Vmax with reference 10 x 10^9/L. In the Mould 2007 cohort baseline WBC was markedly elevated (median 37.8 x 10^9/L, range 1.3-522) because circulating leukaemic B-cells dominate the count, and WBC falls during alemtuzumab treatment as the clone is depleted; simulations must therefore supply WBC at every observation time.",
-      source_name        = "WBC"
+      notes = "Time-varying. Power covariate on Vmax with reference 10 x 10^9/L. In the Mould 2007 cohort baseline WBC was markedly elevated (median 37.8 x 10^9/L, range 1.3-522) because circulating leukaemic B-cells dominate the count, and WBC falls during alemtuzumab treatment as the clone is depleted; simulations must therefore supply WBC at every observation time.",
+      source_name = "WBC"
     )
   )
 
   population <- list(
-    n_subjects       = 67,
-    n_studies        = 4,
-    age_range        = "41-75 years",
-    age_median       = "59 years",
-    weight_range     = "45-167 kg",
-    weight_median    = "72 kg",
-    sex_female_pct   = 26.9,
-    race_ethnicity   = "Not reported in the published analysis",
-    disease_state    = "B-cell chronic lymphocytic leukaemia (B-CLL), mostly relapsed/refractory",
-    dose_range       = "3-240 mg alemtuzumab as 2-h IV infusion; escalation 3 -> 10 -> 30 mg then 30 mg three times weekly (CAM005, CAM213) or 7.5-240 mg weekly for 4 weeks (CAM002)",
-    regions          = "United States and Europe (pooled Schering AG clinical studies)",
-    baseline_wbc     = "median 37.8 x 10^9/L (range 1.3-522) — reflects B-CLL leukaemic burden",
-    notes            = "Baseline demographics per Mould 2007 Table 1 (four pooled studies: CAM002, CAM005, CAM211, CAM213). Weight was tested but not retained as a covariate; WBC was the only covariate retained in the final model."
+    n_subjects = 67,
+    n_studies = 4,
+    age_range = "41-75 years",
+    age_median = "59 years",
+    weight_range = "45-167 kg",
+    weight_median = "72 kg",
+    sex_female_pct = 26.9,
+    race_ethnicity = "Not reported in the published analysis",
+    disease_state = "B-cell chronic lymphocytic leukaemia (B-CLL), mostly relapsed/refractory",
+    dose_range = "3-240 mg alemtuzumab as 2-h IV infusion; escalation 3 -> 10 -> 30 mg then 30 mg three times weekly (CAM005, CAM213) or 7.5-240 mg weekly for 4 weeks (CAM002)",
+    regions = "United States and Europe (pooled Schering AG clinical studies)",
+    baseline_wbc = "median 37.8 x 10^9/L (range 1.3-522) — reflects B-CLL leukaemic burden",
+    notes = "Baseline demographics per Mould 2007 Table 1 (four pooled studies: CAM002, CAM005, CAM211, CAM213). Weight was tested but not retained as a covariate; WBC was the only covariate retained in the final model."
   )
 
   ini({

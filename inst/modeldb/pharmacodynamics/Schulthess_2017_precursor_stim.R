@@ -35,9 +35,14 @@ Schulthess_2017_precursor_stim <- function() {
   # itself, and the supplementary R script adds dose = 0.1 to that state), so
   # the implied central volume is 1 and `central` carries a concentration.
   compartmentData <- list(
-    central    = list(analyte = "drug (generic)", units = "umol/L", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "drug (generic)", units = "umol/L", specimen = "plasma", verified = TRUE),
     precursor1 = list(analyte = "precursor pool x1", units = "mL", specimen = "not applicable", verified = TRUE),
-    effect     = list(analyte = "biomarker response x2 (the model output)", units = "mL", specimen = "not applicable", verified = TRUE)
+    effect = list(
+      analyte = "biomarker response x2 (the model output)",
+      units = "mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(

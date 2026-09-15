@@ -14,51 +14,51 @@ Jonckheere_2019_cefepime <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL, Q (exponent 3/4) and Vc, Vp (exponent 1) with reference weight 70 kg per Jonckheere 2019 Equations 1-4 and Discussion paragraph 4.",
-      source_name        = "WT"
+      notes = "Allometric scaling on CL, Q (exponent 3/4) and Vc, Vp (exponent 1) with reference weight 70 kg per Jonckheere 2019 Equations 1-4 and Discussion paragraph 4.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Estimated creatinine clearance by the Cockcroft-Gault formula (raw, NOT BSA-normalized).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated creatinine clearance by the Cockcroft-Gault formula (raw, NOT BSA-normalized).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate; carried as the raw Cockcroft-Gault value in mL/min, NOT the canonical BSA-normalized mL/min/1.73 m^2 form (the same deviation documented in Frey_2010_tocilizumab.R for the same paper-reported quantity). Reference value 60 mL/min per Jonckheere 2019 Table 2 / Equation 1, approximating the cohort median (50.4 mL/min, IQR 29.1-100). The paper interpolates eCrCL between observation times by constant backward-fill (Methods, Update of the previously reported population pharmacokinetic model paragraph). Methods state 'eCrCL was calculated according to the Cockcroft-Gault equation'; the CKD-EPI value (Table 1) is reported for context only and is NOT the covariate driving CL_renal.",
-      source_name        = "CRCL"
+      notes = "Time-varying covariate; carried as the raw Cockcroft-Gault value in mL/min, NOT the canonical BSA-normalized mL/min/1.73 m^2 form (the same deviation documented in Frey_2010_tocilizumab.R for the same paper-reported quantity). Reference value 60 mL/min per Jonckheere 2019 Table 2 / Equation 1, approximating the cohort median (50.4 mL/min, IQR 29.1-100). The paper interpolates eCrCL between observation times by constant backward-fill (Methods, Update of the previously reported population pharmacokinetic model paragraph). Methods state 'eCrCL was calculated according to the Cockcroft-Gault equation'; the CKD-EPI value (Table 1) is reported for context only and is NOT the covariate driving CL_renal.",
+      source_name = "CRCL"
     )
   )
 
   population <- list(
-    n_subjects     = 21L,
-    n_studies      = 2L,
-    age_range      = "IQR 72-78 years (median 76)",
-    weight_range   = "IQR 67-86 kg (median 76)",
+    n_subjects = 21L,
+    n_studies = 2L,
+    age_range = "IQR 72-78 years (median 76)",
+    weight_range = "IQR 67-86 kg (median 76)",
     sex_female_pct = 24.0,
-    bmi_range      = "IQR 23.5-27.8 kg/m^2 (median 26.3)",
-    bsa_range      = "IQR 1.77-2.03 m^2 (median 1.88)",
-    sofa_range     = "IQR 3-8 (median 7) at ICU inclusion",
-    crcl_cg_range  = "IQR 29.1-100 mL/min (median 50.4) Cockcroft-Gault",
+    bmi_range = "IQR 23.5-27.8 kg/m^2 (median 26.3)",
+    bsa_range = "IQR 1.77-2.03 m^2 (median 1.88)",
+    sofa_range = "IQR 3-8 (median 7) at ICU inclusion",
+    crcl_cg_range = "IQR 29.1-100 mL/min (median 50.4) Cockcroft-Gault",
     crcl_mdrd_range = "IQR 30.1-106 mL/min/1.73 m^2 (median 42.3) MDRD",
     crcl_ckdepi_range = "IQR 26.8-83.3 mL/min/1.73 m^2 (median 38.8) CKD-EPI",
     serum_creat_range = "IQR 0.66-2.14 mg/dL (median 1.49)",
-    crp_range      = "IQR 95.7-287 mg/L at study inclusion (median 197); declined over 96 h",
-    icu_los_range  = "IQR 5-10 days (median 7)",
+    crp_range = "IQR 95.7-287 mg/L at study inclusion (median 197); declined over 96 h",
+    icu_los_range = "IQR 5-10 days (median 7)",
     hospital_mortality_pct = 24.0,
     n_observations = 201L,
     obs_per_subject = "median 10 (IQR 9-11) plasma samples per patient",
-    disease_state  = "Critically ill ICU patients (n=21) on continuous-infusion cefepime via target-controlled infusion targeting 16 mg/L; indications were respiratory infection (86%), abdominal infection (5%), combined respiratory + abdominal (5%), and unknown origin (5%). Pathogens isolated in 76% of patients (Klebsiella spp., E. coli, Citrobacter spp., Proteus, Pseudomonas, Morganella, Enterobacter, S. aureus, H. influenzae).",
-    dose_range     = "Median daily cefepime dose 1.3-1.8 g/day delivered as continuous IV infusion via TCI; treatment median 4.0 days (IQR 2.0-5.0). Maximum infusion rate capped at 4 g/h.",
-    regions        = "Single-centre Belgian cohort: OLV Hospital, Aalst (intensive care unit). Patients enrolled May 2016 - August 2017. ClinicalTrials.gov NCT02688582.",
-    notes          = "Baseline demographics from Jonckheere 2019 Table 1. The model file encodes the non-dialysis population PK; intermittent hemodialysis (IHD) was a special case in the source data with CL_dialysis = 4.48 L/h applied during dialysis sessions and CL_renal = 0 between sessions (renal clearance was assumed absent in IHD patients). To simulate a dialysis patient, set CRCL = 0 and add the CL_dialysis term manually -- see vignette Errata. The model was developed by simultaneously fitting STDY1 (the Jonckheere 2017 pilot, doi:10.1128/AAC.00756-16) plus STDY2 (this study); plasma residual error from STDY2 (12.8% CV) is used here, see vignette Assumptions and deviations."
+    disease_state = "Critically ill ICU patients (n=21) on continuous-infusion cefepime via target-controlled infusion targeting 16 mg/L; indications were respiratory infection (86%), abdominal infection (5%), combined respiratory + abdominal (5%), and unknown origin (5%). Pathogens isolated in 76% of patients (Klebsiella spp., E. coli, Citrobacter spp., Proteus, Pseudomonas, Morganella, Enterobacter, S. aureus, H. influenzae).",
+    dose_range = "Median daily cefepime dose 1.3-1.8 g/day delivered as continuous IV infusion via TCI; treatment median 4.0 days (IQR 2.0-5.0). Maximum infusion rate capped at 4 g/h.",
+    regions = "Single-centre Belgian cohort: OLV Hospital, Aalst (intensive care unit). Patients enrolled May 2016 - August 2017. ClinicalTrials.gov NCT02688582.",
+    notes = "Baseline demographics from Jonckheere 2019 Table 1. The model file encodes the non-dialysis population PK; intermittent hemodialysis (IHD) was a special case in the source data with CL_dialysis = 4.48 L/h applied during dialysis sessions and CL_renal = 0 between sessions (renal clearance was assumed absent in IHD patients). To simulate a dialysis patient, set CRCL = 0 and add the CL_dialysis term manually -- see vignette Errata. The model was developed by simultaneously fitting STDY1 (the Jonckheere 2017 pilot, doi:10.1128/AAC.00756-16) plus STDY2 (this study); plasma residual error from STDY2 (12.8% CV) is used here, see vignette Assumptions and deviations."
   )
 
   ini({

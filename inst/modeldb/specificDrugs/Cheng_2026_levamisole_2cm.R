@@ -33,18 +33,18 @@ Cheng_2026_levamisole_2cm <- function() {
   # quantity in every source study pooled by Cheng 2026, so the disposition
   # states are plasma and the depot is the oral administration site.
   compartmentData <- list(
-    depot       = list(analyte = "levamisole", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "levamisole", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "levamisole", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "levamisole", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "levamisole", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives every distribution parameter through the paper's allometric relations",
         "(Fig. 2 and Table 2): Vp = 0.339*WT^1.309 L, Vt = 0.937*WT^0.885 L and",
         "CLd = 0.352*WT^0.920 L/h. Because the intercepts a1, a2 and a3 are the values at",
@@ -55,14 +55,14 @@ Cheng_2026_levamisole_2cm <- function() {
         "dog 20.7, sheep 26, pig 39.2 and human 70 kg.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     SPECIES_DUCK = list(
-      description        = "Duck species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Duck species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = duck, 0 = another species in the model. Selects the duck clearance of",
         "Table 1 (joint 2CM column). Mutually exclusive with the other SPECIES_* indicators;",
         "all of them 0 selects the human parameter set. Ducks were the species Cheng 2026",
@@ -70,53 +70,53 @@ Cheng_2026_levamisole_2cm <- function() {
         "clearance is carried per species rather than allometrically scaled in this model.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     SPECIES_RABBIT = list(
-      description        = "Rabbit species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Rabbit species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = rabbit, 0 = another species in the model. Selects the rabbit clearance of",
         "Table 1 (joint 2CM column). Cheng 2026 does not report the rabbit strain.",
         "Mutually exclusive with the other SPECIES_* indicators.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     SPECIES_CHICKEN = list(
-      description        = "Chicken species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chicken species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = chicken, 0 = another species in the model. Selects the chicken clearance of",
         "Table 1 (joint 2CM column). The source chicken data are broiler breeder hens",
         "(Supplemental Table S2, El-Kholy 2006). Mutually exclusive with the other",
         "SPECIES_* indicators.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     SPECIES_GOAT = list(
-      description        = "Goat species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Goat species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = goat, 0 = another species in the model. Selects the goat clearance of",
         "Table 1 (joint 2CM column). Mutually exclusive with the other SPECIES_* indicators.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     SPECIES_DOG = list(
-      description        = "Dog species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dog species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = dog, 0 = another species in the model. Selects the dog clearance of",
         "Table 1 (joint 2CM column). The dog intravenous profile declines essentially",
         "mono-exponentially (Supplemental Figure S1), so the shared allometric distribution",
@@ -124,52 +124,52 @@ Cheng_2026_levamisole_2cm <- function() {
         "SPECIES_* indicators.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     SPECIES_SHEEP = list(
-      description        = "Sheep species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sheep species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = sheep, 0 = another species in the model. Selects the sheep clearance of",
         "Table 1 (joint 2CM column). Mutually exclusive with the other SPECIES_* indicators.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     SPECIES_PIG = list(
-      description        = "Pig species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pig species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = pig, 0 = another species in the model. Selects the pig clearance of",
         "Table 1 (joint 2CM column). Cheng 2026 reports that the pig fit shows notable",
         "discrepancies under the joint allometric 2CM (Results, Two-compartment model",
         "fitting). Mutually exclusive with the other SPECIES_* indicators.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     )
   )
 
   population <- list(
-    species        = paste(
+    species = paste(
       "duck + rabbit + chicken + goat + dog + sheep + pig + human",
       "(joint interspecies fit; human is the model's reference species)",
       sep = " "
     ),
-    n_subjects     = NA_integer_,
-    n_studies      = 8L,
-    weight_range   = "2.5-70 kg (one typical body weight per species; Table 1)",
-    disease_state  = "Healthy / experimentally infected animals and healthy human volunteers",
-    dose_range     = paste(
+    n_subjects = NA_integer_,
+    n_studies = 8L,
+    weight_range = "2.5-70 kg (one typical body weight per species; Table 1)",
+    disease_state = "Healthy / experimentally infected animals and healthy human volunteers",
+    dose_range = paste(
       "Intravenous single doses of 5-40 mg/kg in the animal species and single oral doses of",
       "50-150 mg in humans (Supplemental Tables S2, S3 and S4).",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Meta-analysis of published levamisole PK. Concentration-time profiles were digitized",
       "from over 40 publications covering 18 species with WebPlotDigitizer; 8 species met the",
       "inclusion criteria for joint modelling (availability of intravenous data except for",

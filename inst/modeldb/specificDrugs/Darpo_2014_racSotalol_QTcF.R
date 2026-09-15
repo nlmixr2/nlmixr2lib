@@ -39,18 +39,18 @@ Darpo_2014_racSotalol_QTcF <- function() {
   vignette <- "Darpo_2014_racSotalol"
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; PD-only model fed by an external rac-sotalol plasma-concentration covariate)",
+    time = "h",
+    dosing = "(none; PD-only model fed by an external rac-sotalol plasma-concentration covariate)",
     concentration = "(observation DeltaQTcF is the change from time-matched day-0 baseline in the Fridericia-corrected QT interval QTcF = QT / RR^(1/3), ms; driving covariate CP_RACSOTALOL_UGML is in ug/mL)"
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Source paper uses 'gender' as a categorical fixed effect with",
         "the male group as the implicit reference (Darpo 2014 Methods",
         "'Statistical analysis' paragraph and Table 1; the 'Female",
@@ -59,14 +59,14 @@ Darpo_2014_racSotalol_QTcF <- function() {
         "additive slope shift).",
         "Cohort composition: 11 women / 28 men out of 39 subjects."
       ),
-      source_name        = "gender (paper notation; female = 1)"
+      source_name = "gender (paper notation; female = 1)"
     ),
     CP_RACSOTALOL_UGML = list(
-      description        = "Instantaneous rac-sotalol plasma concentration at the time of each PD observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Instantaneous rac-sotalol plasma concentration at the time of each PD observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying per event row. Drives the linear concentration-",
         "DeltaQTcF expression DeltaQTcF = e0 + slope *",
         "CP_RACSOTALOL_UGML (plus sex and centered-baseline covariate",
@@ -88,14 +88,14 @@ Darpo_2014_racSotalol_QTcF <- function() {
         "Set to 0 outside the drug-exposure window (the concentration-",
         "slope term then collapses to 0)."
       ),
-      source_name        = "rac-sotalol plasma concentration"
+      source_name = "rac-sotalol plasma concentration"
     ),
     QTC_BL = list(
-      description        = "Subject's pre-dose (day-0) Fridericia-corrected QT interval (QTcF) baseline, treated as a per-subject time-fixed covariate. Used to compute the centered baseline-QTcF effect on the linear-mixed-effects intercept: e_qtc_bl_e0 * (QTC_BL - 390). Set QTC_BL = 390 ms for the typical (median-baseline) subject -- the centered term then collapses to 0 and the model returns the pure sex- and concentration-driven DeltaQTcF prediction.",
-      units              = "ms",
-      type               = "continuous",
+      description = "Subject's pre-dose (day-0) Fridericia-corrected QT interval (QTcF) baseline, treated as a per-subject time-fixed covariate. Used to compute the centered baseline-QTcF effect on the linear-mixed-effects intercept: e_qtc_bl_e0 * (QTC_BL - 390). Set QTC_BL = 390 ms for the typical (median-baseline) subject -- the centered term then collapses to 0 and the model returns the pure sex- and concentration-driven DeltaQTcF prediction.",
+      units = "ms",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. The source paper computed each",
         "subject's baseline QTcF as the mean of the day-0 ECG QTcF",
         "values (15 nominal time points, triplicate 10-second strips,",
@@ -124,27 +124,27 @@ Darpo_2014_racSotalol_QTcF <- function() {
         "canonical covariate but interprets it as the QTcI baseline",
         "and applies a 390 ms QTcI centering reference."
       ),
-      source_name        = "baseline QTcF (day-0 Fridericia-corrected QT interval)"
+      source_name = "baseline QTcF (day-0 Fridericia-corrected QT interval)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 39L,
-    n_studies        = 1L,
-    n_observations   = 3456L,
-    age_range        = "18-45 years; mean 27 years",
-    weight_range     = "47-108 kg; mean 74 kg",
-    sex_female_pct   = round(100 * 11 / 39, 1),
-    race_ethnicity   = NA_character_,
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 39L,
+    n_studies = 1L,
+    n_observations = 3456L,
+    age_range = "18-45 years; mean 27 years",
+    weight_range = "47-108 kg; mean 74 kg",
+    sex_female_pct = round(100 * 11 / 39, 1),
+    race_ethnicity = NA_character_,
+    disease_state = paste(
       "Healthy young adult subjects meeting typical inclusion criteria",
       "for phase 1 studies. Studied at the Pharmacia Clinical Research",
       "Unit in Kalamazoo, MI under Good Clinical Practice (Darpo 2014",
       "Methods 'Study outline'). Body mass index range 18-31 kg/m^2",
       "(mean 24)."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Single 160 mg oral dose of rac-sotalol (Betapace, Berlex",
       "Laboratories) given at 08:00 in the fasted state on day 1, with",
       "a separate baseline day 0 (no drug) used to construct the",
@@ -154,8 +154,8 @@ Darpo_2014_racSotalol_QTcF <- function() {
       "from the day-1 dose; day-2 data are not part of this PD",
       "extraction (Darpo 2014 Methods 'Study outline' paragraph 2)."
     ),
-    regions          = "United States (Pharmacia Clinical Research Unit, Kalamazoo, Michigan).",
-    notes            = paste(
+    regions = "United States (Pharmacia Clinical Research Unit, Kalamazoo, Michigan).",
+    notes = paste(
       "Pooled day-0 (baseline) + day-1 (160 mg rac-sotalol) ECG data",
       "from 39 subjects: 3456 ECGs (33 missing, 49 with QT not",
       "measurable; 1.9% missing rate). Triplicate 10-second 12-lead",

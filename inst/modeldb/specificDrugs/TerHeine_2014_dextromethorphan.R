@@ -44,12 +44,12 @@ TerHeine_2014_dextromethorphan <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot           = list(analyte = "dextromethorphan", units = "mg", specimen = "administration site", verified = FALSE),
-    central         = list(analyte = "dextromethorphan", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "dextromethorphan", units = "mg", specimen = "plasma", verified = FALSE),
-    central_dxor    = list(analyte = "dextrorphan", units = "mg", specimen = "plasma", verified = FALSE),
-    central_3mm     = list(analyte = "3-methoxymorphinan", units = "mg", specimen = "plasma", verified = FALSE),
-    central_3hm     = list(analyte = "3-hydroxymorphinan", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "dextromethorphan", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dextromethorphan", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dextromethorphan", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dxor = list(analyte = "dextrorphan", units = "mg", specimen = "plasma", verified = FALSE),
+    central_3mm = list(analyte = "3-methoxymorphinan", units = "mg", specimen = "plasma", verified = FALSE),
+    central_3hm = list(analyte = "3-hydroxymorphinan", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_3mm = list(analyte = "3-methoxymorphinan", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_3hm = list(analyte = "3-hydroxymorphinan", units = "mg", specimen = "plasma", verified = FALSE)
   )
@@ -63,29 +63,29 @@ TerHeine_2014_dextromethorphan <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 39L,
-    n_studies      = 1L,
-    age_range      = "22 - 71 years",
-    age_median     = "53 years",
-    weight_range   = "48.5 - 114 kg",
-    weight_median  = "72.7 kg",
-    height_range   = "1.56 - 1.79 m",
-    height_median  = "1.69 m",
+    species = "human",
+    n_subjects = 39L,
+    n_studies = 1L,
+    age_range = "22 - 71 years",
+    age_median = "53 years",
+    weight_range = "48.5 - 114 kg",
+    weight_median = "72.7 kg",
+    height_range = "1.56 - 1.79 m",
+    height_median = "1.69 m",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Hormone-receptor-positive breast cancer on chronic oral tamoxifen",
       "(20 mg QD in 70% of subjects, 40 mg QD in 30%). Patients on",
       "moderate or strong CYP3A inhibitors / inducers or ABCB1 / ABCG2",
       "modulators were excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Dextromethorphan: single 30 mg oral dose administered 2 h after",
       "the daily tamoxifen dose. Background chronic tamoxifen at 20 or",
       "40 mg QD."
     ),
-    regions        = "The Netherlands (Erasmus MC Cancer Institute, Rotterdam)",
-    notes          = paste(
+    regions = "The Netherlands (Erasmus MC Cancer Institute, Rotterdam)",
+    notes = paste(
       "40 patients enrolled, 1 dropped due to obstruction of a venous",
       "cannula; n = 39 evaluable. Dextromethorphan plasma samples at",
       "pre-dose and 0.5, 1, 1.5, 2, 4, 6, 10, 22 h post-dose. 293",

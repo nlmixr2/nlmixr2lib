@@ -26,23 +26,23 @@ Hajjar_2018_cipaglucosidase <- function() {
     "https://metrumrg.com/wp-content/uploads/Pubs/2018-ACCP-Population-PK-of-ATB200-AT221-in-Pompe-Patients_2018-09-18-Poster_L1e.pdf"
   )
   vignette <- "Hajjar_2018_pompe_disease"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "cipaglucosidase", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cipaglucosidase", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cipaglucosidase", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight (kg). Drives the allometric scaling of all",
         "clearances (exponent 0.75 fixed) and all volumes (exponent 1.0",
         "fixed) with reference 70 kg per Hajjar 2018 Methods 'Modeling'",
@@ -52,14 +52,14 @@ Hajjar_2018_cipaglucosidase <- function() {
         "Adult cohort baseline mean age 49.4 years; sex 10 M / 5 F across",
         "the 15 adults included in the modeling (Hajjar 2018 Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE_130MG = list(
-      description        = "Indicator that 130 mg AT2221 (miglustat) is co-administered with the ATB200 dose",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that 130 mg AT2221 (miglustat) is co-administered with the ATB200 dose",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ATB200 administered without AT2221, or with the 260 mg AT2221 dose; reference linear CL applies when both DOSE_130MG and DOSE_260MG are 0)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. 1 = the ATB200 dose was administered",
         "with 130 mg AT2221 co-dosing on that occasion. Enters the",
         "ATB200 linear-CL equation as a categorical multiplier:",
@@ -72,14 +72,14 @@ Hajjar_2018_cipaglucosidase <- function() {
         "exclusive with DOSE_260MG (a single dose occasion uses at most",
         "one AT2221 dose level)."
       ),
-      source_name        = NA_character_
+      source_name = NA_character_
     ),
     DOSE_260MG = list(
-      description        = "Indicator that 260 mg AT2221 (miglustat) is co-administered with the ATB200 dose",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that 260 mg AT2221 (miglustat) is co-administered with the ATB200 dose",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ATB200 administered without AT2221, or with the 130 mg AT2221 dose; reference linear CL applies when both DOSE_130MG and DOSE_260MG are 0)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. 1 = the ATB200 dose was administered",
         "with 260 mg AT2221 co-dosing on that occasion. Enters the",
         "ATB200 linear-CL equation as a categorical multiplier:",
@@ -88,17 +88,17 @@ Hajjar_2018_cipaglucosidase <- function() {
         "for 260 mg AT2221 = 0.595'). Member of the canonical",
         "DOSE_<N>MG family. Mutually exclusive with DOSE_130MG."
       ),
-      source_name        = NA_character_
+      source_name = NA_character_
     )
   )
 
   covariatesDataExcluded <- list(
     BACT = list(
-      description        = "Prior enzyme-replacement-therapy experience indicator (1 = ERT-experienced with alglucosidase alfa; 0 = ERT-naive)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior enzyme-replacement-therapy experience indicator (1 = ERT-experienced with alglucosidase alfa; 0 = ERT-naive)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ERT-naive)",
-      notes              = paste(
+      notes = paste(
         "Screened as a categorical covariate on linear CL via the model",
         "CL * theta_ERT (Hajjar 2018 Methods 'Modeling' last two",
         "bullets: 'An exploratory covariate analysis was performed for",
@@ -111,19 +111,19 @@ Hajjar_2018_cipaglucosidase <- function() {
         "Pharmacokinetic Models' bullets 4-6). Documented here for",
         "covariate-screen provenance; not referenced inside model()."
       ),
-      source_name        = "ERT"
+      source_name = "ERT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 15L,
-    n_studies      = 1L,
-    age_range      = "24-66 years",
-    age_mean       = "49.4 years",
-    weight_range   = "not reported (paper states only that allometric scaling normalised to 70 kg)",
+    species = "human",
+    n_subjects = 15L,
+    n_studies = 1L,
+    age_range = "24-66 years",
+    age_mean = "49.4 years",
+    weight_range = "not reported (paper states only that allometric scaling normalised to 70 kg)",
     sex_female_pct = 100 * 6 / 15,
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with Pompe disease (genetic deficiency of acid",
       "alpha-glucosidase / GAA). 10 ERT-experienced adults previously",
       "treated with alglucosidase alfa (mean 4.8 years on prior ERT,",
@@ -134,15 +134,15 @@ Hajjar_2018_cipaglucosidase <- function() {
       "forced vital capacity (upright) 52% predicted (SD 13) vs 53%",
       "predicted (SD 20)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "ERT-experienced (n = 10): successive single doses of 5, 10, and",
       "20 mg/kg ATB200 alone, then 20 mg/kg ATB200 + 130 mg AT2221, then",
       "20 mg/kg ATB200 + 260 mg AT2221. ERT-naive (n = 5): single dose",
       "of 20 mg/kg ATB200 + 260 mg AT2221. Plasma samples collected over",
       "24 h periods for both ATB200 and AT2221 concentration assays."
     ),
-    regions        = "United States; ATB200-02 (NCT02675465), a phase 1/2 study sponsored by Amicus Therapeutics.",
-    notes          = paste(
+    regions = "United States; ATB200-02 (NCT02675465), a phase 1/2 study sponsored by Amicus Therapeutics.",
+    notes = paste(
       "Adult cohort only; the same poster reports Monte-Carlo",
       "simulations forward-projecting to adolescents (12 to <18 years",
       "old) with CDC age- and body-weight distributions, but the",

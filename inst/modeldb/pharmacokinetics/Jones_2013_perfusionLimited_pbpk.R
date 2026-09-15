@@ -56,22 +56,22 @@ Jones_2013_perfusionLimited_pbpk <- function() {
   # biological matrix. verified = TRUE: each state is named by the
   # deposited code's own inline comment on its `INIT A..` line.
   compartmentData <- list(
-    depot    = list(analyte = "generic small molecule", units = "mg", specimen = "administration site", verified = TRUE),
-    adipose  = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
-    bone     = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
-    brain    = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
-    gut      = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
-    heart    = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney   = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
-    liver    = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
-    lung     = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle   = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
-    skin     = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
-    spleen   = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
-    testes   = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
-    venous   = list(analyte = "generic small molecule", units = "mg", specimen = "whole blood", verified = TRUE),
+    depot = list(analyte = "generic small molecule", units = "mg", specimen = "administration site", verified = TRUE),
+    adipose = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
+    bone = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
+    gut = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
+    lung = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
+    skin = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
+    testes = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE),
+    venous = list(analyte = "generic small molecule", units = "mg", specimen = "whole blood", verified = TRUE),
     arterial = list(analyte = "generic small molecule", units = "mg", specimen = "whole blood", verified = TRUE),
-    other    = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE)
+    other = list(analyte = "generic small molecule", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   # No covariates: a single 70 kg reference adult with no demographic or
@@ -80,13 +80,13 @@ Jones_2013_perfusionLimited_pbpk <- function() {
   covariateData <- list()
 
   population <- list(
-    species       = "None (methodology/tutorial paper; human reference physiology carrying a hypothetical generic compound, no patients and no fitted estimates).",
-    n_subjects    = 0L,
-    n_studies     = 0L,
+    species = "None (methodology/tutorial paper; human reference physiology carrying a hypothetical generic compound, no patients and no fitted estimates).",
+    n_subjects = 0L,
+    n_studies = 0L,
     disease_state = "N/A (deterministic forward simulation; not a fit of any real molecule).",
-    dose_range    = "Supplementary Data {DOSING}: PODOSE = 100 mg oral bolus, IVDOSE = 0 mg. The 100 mg oral dose matches the proposed efficacious human dose simulated for the tutorial's illustrative compound X (main text, Example 1).",
-    regions       = "N/A",
-    scope_note    = paste(
+    dose_range = "Supplementary Data {DOSING}: PODOSE = 100 mg oral bolus, IVDOSE = 0 mg. The 100 mg oral dose matches the proposed efficacious human dose simulated for the tutorial's illustrative compound X (main text, Example 1).",
+    regions = "N/A",
+    scope_note = paste(
       "Filed under inst/modeldb/pharmacokinetics/ (not specificDrugs/) because there is no",
       "drug, following the operator-ratified Beal_2001_iv1cmt_bql precedent for methodology",
       "papers whose only pharmacokinetic content is an author-supplied hypothetical compound.",
@@ -100,7 +100,7 @@ Jones_2013_perfusionLimited_pbpk <- function() {
       "platform-free: every constant it consumes is printed in the supplement.",
       sep = " "
     ),
-    notes         = paste(
+    notes = paste(
       "The compound is deliberately neutral. Supplementary Data {COMPOUND SPECIFIC PARAMETERS}",
       "sets all thirteen Kp values, the blood-to-plasma ratio, the plasma unbound fraction and",
       "the microsomal unbound fraction to exactly 1, the absorption rate constant and absorbed",

@@ -35,21 +35,21 @@ Seng_2015_isoniazid <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot             = list(analyte = "isoniazid", units = "mg", specimen = "administration site", verified = FALSE),
-    central           = list(analyte = "isoniazid", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1       = list(analyte = "isoniazid", units = "mg", specimen = "plasma", verified = FALSE),
-    central_acinh     = list(analyte = "acetylisoniazid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "isoniazid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "isoniazid", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "isoniazid", units = "mg", specimen = "plasma", verified = FALSE),
+    central_acinh = list(analyte = "acetylisoniazid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_acinh = list(analyte = "acetylisoniazid", units = "mg", specimen = "plasma", verified = FALSE),
-    central_ina       = list(analyte = "isonicotinic acid", units = "mg", specimen = "plasma", verified = FALSE)
+    central_ina = list(analyte = "isonicotinic acid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on all clearance terms with exponent 0.75",
         "and on all volume terms with exponent 1.0, referenced to the",
         "rounded cohort median 63 kg (Seng 2015 Methods page 6792:",
@@ -57,34 +57,34 @@ Seng_2015_isoniazid <- function() {
         "with range 45.8-86.1 kg). Time-fixed per subject in the",
         "single-dose study window."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (Cockcroft-Gault).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (Cockcroft-Gault).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-law covariate on AcINH clearance referenced to the",
         "cohort median 113 mL/min (Seng 2015 Table 1 'Creatinine",
         "clearance' median 113.1, range 52.3-174.6 mL/min). Cockcroft",
         "& Gault equation using total body weight per Seng 2015",
         "Methods page 6792-6793. Time-fixed per subject."
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     ),
     NAT2_RAPID = list(
-      description        = paste(
+      description = paste(
         "NAT2 rapid (fast) acetylator phenotype indicator: 1 = subject",
         "classified as a rapid (fast) NAT2 acetylator, 0 = otherwise",
         "(intermediate or slow). Paired with NAT2_SLOW to encode the",
         "three-level NAT2 phenotype; joint reference (both = 0) is the",
         "intermediate acetylator group."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (intermediate or slow); joint reference with NAT2_SLOW = 0 is the intermediate acetylator group.",
-      notes              = paste(
+      notes = paste(
         "Seng 2015 Methods 'NAT2 genotyping and phenotyping' uses the",
         "Sequenom iPLEX ADME PGx panel to genotype NAT2 SNPs",
         "rs1805158, rs1801279, rs1041983, rs1801280, rs1799929,",
@@ -95,19 +95,19 @@ Seng_2015_isoniazid <- function() {
         "NAT2_SLOW to select between three typical-value INH",
         "clearances (lcl_fast, lcl_int, lcl_slow) in model()."
       ),
-      source_name        = "NAT2"
+      source_name = "NAT2"
     ),
     NAT2_SLOW = list(
-      description        = paste(
+      description = paste(
         "NAT2 slow acetylator phenotype indicator: 1 = subject",
         "classified as a slow NAT2 acetylator, 0 = otherwise",
         "(intermediate or rapid). Paired with NAT2_RAPID; joint",
         "reference (both = 0) is the intermediate acetylator group."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (intermediate or rapid); joint reference with NAT2_RAPID = 0 is the intermediate acetylator group.",
-      notes              = paste(
+      notes = paste(
         "Same NAT2 phenotyping source as NAT2_RAPID (Seng 2015",
         "Methods 'NAT2 genotyping and phenotyping'). The Seng 2015",
         "three-level usage (fast / intermediate / slow each with its",
@@ -116,21 +116,21 @@ Seng_2015_isoniazid <- function() {
         "for the heritage. Cohort distribution (Table 1):",
         "7 rapid / 15 intermediate / 11 slow."
       ),
-      source_name        = "NAT2"
+      source_name = "NAT2"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 33L,
-    n_studies      = 1L,
-    age_range      = "22-56 years",
-    age_median     = "33 years",
-    weight_range   = "45.8-86.1 kg",
-    weight_median  = "62.5 kg",
+    species = "human",
+    n_subjects = 33L,
+    n_studies = 1L,
+    age_range = "22-56 years",
+    age_median = "33 years",
+    weight_range = "45.8-86.1 kg",
+    weight_median = "62.5 kg",
     sex_female_pct = 30,
     race_ethnicity = c(Chinese = 64, Malay = 21, Indian = 15),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy Asian adults (Singapore), prior CYP2B6 516 GG (n = 23)",
       "or TT (n = 10) genotype stratification as part of an efavirenz",
       "/ rifampin interaction study. Subjects received a single 300 mg",
@@ -139,15 +139,15 @@ Seng_2015_isoniazid <- function() {
       "timepoint; pharmacokinetic blood sampling at 0, 1, 2, 4, 6, 8,",
       "10, 12, 18, and 24 h after the final INH dose."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 300 mg oral isoniazid; population pharmacokinetic",
       "simulations in the source paper additionally evaluated a 200 mg",
       "single oral dose for the 30-45 kg body-weight band per WHO",
       "guidance (Seng 2015 Methods page 6793)."
     ),
-    regions        = "Singapore",
+    regions = "Singapore",
     nat2_phenotype_distribution = c(rapid = 7L, intermediate = 15L, slow = 11L),
-    notes          = paste(
+    notes = paste(
       "Demographics in Table 1 of Seng 2015; concentrations of INH,",
       "AcINH, and INA in plasma were assayed by LC-MS/MS with LLOQs",
       "of 5, 12.5, and 12.5 ng/mL respectively (Methods page 6791).",

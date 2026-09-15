@@ -8,59 +8,59 @@ Chua_2025_mirikizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "mirikizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "mirikizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "mirikizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "mirikizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mirikizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline in Chua 2025 VIVID-1; power scaling on CL, Q, Vc, Vp with reference weight 65 kg per Table 2 footnote c/d.",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline in Chua 2025 VIVID-1; power scaling on CL, Q, Vc, Vp with reference weight 65 kg per Table 2 footnote c/d.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Time-varying serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Time-varying serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear effect on CL per Table 2 footnote c: multiplier = 1 + (ALB - 44.57) * (-0.02). Reference 44.57 g/L (VIVID-1 geometric mean).",
-      source_name        = "ALB"
+      notes = "Linear effect on CL per Table 2 footnote c: multiplier = 1 + (ALB - 44.57) * (-0.02). Reference 44.57 g/L (VIVID-1 geometric mean).",
+      source_name = "ALB"
     ),
     CRP = list(
-      description        = "Baseline C-reactive protein",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline C-reactive protein",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL with reference 7.41 mg/L per Table 2 footnote c. Standard CRP assay (not high-sensitivity); the canonical general-scope CRP covariate covers both standard and high-sensitivity assays, with the assay type documented here in the covariateData entry rather than via separate canonical names.",
-      source_name        = "CRP"
+      notes = "Power effect on CL with reference 7.41 mg/L per Table 2 footnote c. Standard CRP assay (not high-sensitivity); the canonical general-scope CRP covariate covers both standard and high-sensitivity assays, with the assay type documented here in the covariateData entry rather than via separate canonical names.",
+      source_name = "CRP"
     ),
     BMI = list(
-      description        = "Baseline body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on logit of bioavailability: logit(F) = logit(F_pop) + (-0.0354) * (BMI - 24.75). The paper reports the slope (-0.0354, Table 2) and the population F estimate (38.8%) but does not explicitly state the BMI centering value for the VIVID-1 logit parameterization; the 24.75 kg/m^2 centering is adopted from the SERENITY analysis in the same paper (Table 2 footnote e) as a reasonable default.",
-      source_name        = "BMI"
+      notes = "Linear-deviation effect on logit of bioavailability: logit(F) = logit(F_pop) + (-0.0354) * (BMI - 24.75). The paper reports the slope (-0.0354, Table 2) and the population F estimate (38.8%) but does not explicitly state the BMI centering value for the VIVID-1 logit parameterization; the 24.75 kg/m^2 centering is adopted from the SERENITY analysis in the same paper (Table 2 footnote e) as a reasonable default.",
+      source_name = "BMI"
     )
   )
 
   population <- list(
-    n_subjects     = 711L,
-    n_studies      = 1L,
-    age_range      = "18-74 years (phase 3 inclusion: 18-80 years)",
-    age_mean       = "36.3 years",
-    weight_range   = "21.1-154.0 kg",
-    weight_mean    = "68.1 kg",
+    n_subjects = 711L,
+    n_studies = 1L,
+    age_range = "18-74 years (phase 3 inclusion: 18-80 years)",
+    age_mean = "36.3 years",
+    weight_range = "21.1-154.0 kg",
+    weight_mean = "68.1 kg",
     sex_female_pct = 43.5,
     race_ethnicity = c(White = 70.7, Asian = 25.0, Other = 4.2),
-    disease_state  = "Moderately-to-severely active Crohn's disease (SES-CD >= 7, or >= 4 with isolated ileal disease; inadequate response, loss of response, or intolerance to conventional or biologic therapies).",
-    dose_range     = "Induction: 900 mg IV Q4W x 3 doses. Maintenance: 300 mg SC Q4W through Week 52. Also placebo and ustekinumab active-control arms (not used for PK modeling).",
-    regions        = "Global, multi-regional",
-    notes          = "VIVID-1 (NCT03926130) phase 3 treat-through study, July 2019 - October 2023. PK dataset: 5318 observations from 711 patients (628 mirikizumab-treated during induction + 83 placebo non-responders who crossed over after Week 12). Baseline mean SES-CD 12.9 (3.3-35.5); baseline mean SCORE_CDAI 319 (92.4-726.3). 62.4% had prior biologic therapy, 50.5% had failed prior biologic therapy (sic from Table 1; see source). Demographics from Chua 2025 Table 1."
+    disease_state = "Moderately-to-severely active Crohn's disease (SES-CD >= 7, or >= 4 with isolated ileal disease; inadequate response, loss of response, or intolerance to conventional or biologic therapies).",
+    dose_range = "Induction: 900 mg IV Q4W x 3 doses. Maintenance: 300 mg SC Q4W through Week 52. Also placebo and ustekinumab active-control arms (not used for PK modeling).",
+    regions = "Global, multi-regional",
+    notes = "VIVID-1 (NCT03926130) phase 3 treat-through study, July 2019 - October 2023. PK dataset: 5318 observations from 711 patients (628 mirikizumab-treated during induction + 83 placebo non-responders who crossed over after Week 12). Baseline mean SES-CD 12.9 (3.3-35.5); baseline mean SCORE_CDAI 319 (92.4-726.3). 62.4% had prior biologic therapy, 50.5% had failed prior biologic therapy (sic from Table 1; see source). Demographics from Chua 2025 Table 1."
   )
 
   ini({

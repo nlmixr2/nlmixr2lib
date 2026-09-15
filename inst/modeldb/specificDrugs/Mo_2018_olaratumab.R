@@ -8,36 +8,36 @@ Mo_2018_olaratumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "olaratumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "olaratumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "olaratumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at study entry",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at study entry",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline (time-fixed); Mo 2018 states covariates were held at their values at the time of initial assessment. Power scaling on CL and V1 with reference 79.7 kg (population median WTE per Mo 2018 Table 2). Renamed from source column WTE to the canonical WT per covariate-columns.md.",
-      source_name        = "WTE"
+      notes = "Baseline (time-fixed); Mo 2018 states covariates were held at their values at the time of initial assessment. Power scaling on CL and V1 with reference 79.7 kg (population median WTE per Mo 2018 Table 2). Renamed from source column WTE to the canonical WT per covariate-columns.md.",
+      source_name = "WTE"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor size (sum of diameters of target lesions per RECIST v1.1)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline tumor size (sum of diameters of target lesions per RECIST v1.1)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear deviation from population median 86.5 mm on CL (Mo 2018 Table 3 footnote a; Table 2 median). Patients without measurable tumor data (e.g., GBM substudy) are represented by the median value so the deviation term is zero. Renamed from source column TUMR to the canonical TUMSZ per covariate-columns.md.",
-      source_name        = "TUMR"
+      notes = "Linear deviation from population median 86.5 mm on CL (Mo 2018 Table 3 footnote a; Table 2 median). Patients without measurable tumor data (e.g., GBM substudy) are represented by the median value so the deviation term is zero. Renamed from source column TUMR to the canonical TUMSZ per covariate-columns.md.",
+      source_name = "TUMR"
     )
   )
 
   population <- list(
-    n_subjects     = 171,
-    n_studies      = 4,
-    age_range      = "22-82 years",
-    age_median     = "57 years",
-    weight_range   = "37.3-151 kg",
-    weight_median  = "79.7 kg",
+    n_subjects = 171,
+    n_studies = 4,
+    age_range = "22-82 years",
+    age_median = "57 years",
+    weight_range = "37.3-151 kg",
+    weight_median = "79.7 kg",
     sex_female_pct = 51,
     race_ethnicity = c(
       Caucasian = 86,
@@ -47,11 +47,11 @@ Mo_2018_olaratumab <- function() {
       `Native Hawaiian/Other Pacific Islander` = 0.6,
       Other = 2.9
     ),
-    disease_state  = "Advanced or metastatic cancer across four phase II studies: soft tissue sarcoma (STS, n=95), nonsmall cell lung cancer (NSCLC, n=50), gastrointestinal stromal tumor (GIST, n=19), glioblastoma multiforme (GBM, n=7).",
-    dose_range     = "15 mg/kg IV over 60 min on days 1 and 8 of a 21-day cycle (STS, NSCLC; monotherapy or combined with doxorubicin or paclitaxel/carboplatin) or 20 mg/kg IV over 60-90 min every 14 days (GBM, GIST; monotherapy).",
-    regions        = "Global (four phase II studies; regions not tabulated by the publication).",
+    disease_state = "Advanced or metastatic cancer across four phase II studies: soft tissue sarcoma (STS, n=95), nonsmall cell lung cancer (NSCLC, n=50), gastrointestinal stromal tumor (GIST, n=19), glioblastoma multiforme (GBM, n=7).",
+    dose_range = "15 mg/kg IV over 60 min on days 1 and 8 of a 21-day cycle (STS, NSCLC; monotherapy or combined with doxorubicin or paclitaxel/carboplatin) or 20 mg/kg IV over 60-90 min every 14 days (GBM, GIST; monotherapy).",
+    regions = "Global (four phase II studies; regions not tabulated by the publication).",
     tumor_size_range = "12-571 mm (median 86.5 mm, n=164 with RECIST data; no tumor size measured in the 7 GBM patients)",
-    notes          = "Baseline demographics per Mo 2018 Table 2. 1501 serum concentration observations from 171 patients analyzed. Treatment combination: monotherapy 31%, doxorubicin 43%, paclitaxel/carboplatin 26%. Treatment-emergent ADA incidence 5% with no effect on olaratumab PK."
+    notes = "Baseline demographics per Mo 2018 Table 2. 1501 serum concentration observations from 171 patients analyzed. Treatment combination: monotherapy 31%, doxorubicin 43%, paclitaxel/carboplatin 26%. Treatment-emergent ADA incidence 5% with no effect on olaratumab PK."
   )
 
   ini({

@@ -23,75 +23,90 @@ Wattanakul_2024_primaquine_motherinfant <- function() {
   # were read off the $MODEL block comments of the source control stream,
   # which names all seventeen compartments explicitly.
   compartmentData <- list(
-    depot                = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit1             = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit2             = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit3             = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit4             = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    central              = list(analyte = "primaquine", units = "nmol", specimen = "plasma", verified = TRUE),
-    central_cpq          = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "plasma", verified = TRUE),
-    milk                 = list(analyte = "primaquine", units = "nmol", specimen = "milk", verified = TRUE),
-    milk_cpq             = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "milk", verified = TRUE),
-    infant_depot         = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    infant_transit1      = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    infant_transit2      = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    infant_central       = list(analyte = "primaquine", units = "nmol", specimen = "plasma", verified = TRUE),
-    infant_depot_cpq     = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    infant_transit1_cpq  = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    infant_transit2_cpq  = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "administration site", verified = TRUE),
-    infant_central_cpq   = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "plasma", verified = TRUE)
+    depot = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "primaquine", units = "nmol", specimen = "plasma", verified = TRUE),
+    central_cpq = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "plasma", verified = TRUE),
+    milk = list(analyte = "primaquine", units = "nmol", specimen = "milk", verified = TRUE),
+    milk_cpq = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "milk", verified = TRUE),
+    infant_depot = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    infant_transit1 = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    infant_transit2 = list(analyte = "primaquine", units = "nmol", specimen = "administration site", verified = TRUE),
+    infant_central = list(analyte = "primaquine", units = "nmol", specimen = "plasma", verified = TRUE),
+    infant_depot_cpq = list(
+      analyte = "carboxyprimaquine",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    infant_transit1_cpq = list(
+      analyte = "carboxyprimaquine",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    infant_transit2_cpq = list(
+      analyte = "carboxyprimaquine",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    infant_central_cpq = list(analyte = "carboxyprimaquine", units = "nmol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Maternal body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Maternal body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline. Reference WT = 51 kg = the median maternal weight of the study cohort (Wattanakul 2024 Table 1). Allometric exponents fixed a priori at 0.75 on CL/F and 1 on V/F for both analytes. WT also appears in the denominator of the mother-to-infant allometric scaling (WT_INFANT / WT), so the infant's parameters are scaled from the mother's INDIVIDUAL estimates, not from the typical values. Source column WT.",
-      source_name        = "WT"
+      notes = "Baseline. Reference WT = 51 kg = the median maternal weight of the study cohort (Wattanakul 2024 Table 1). Allometric exponents fixed a priori at 0.75 on CL/F and 1 on V/F for both analytes. WT also appears in the denominator of the mother-to-infant allometric scaling (WT_INFANT / WT), so the infant's parameters are scaled from the mother's INDIVIDUAL estimates, not from the typical values. Source column WT.",
+      source_name = "WT"
     ),
     WT_INFANT = list(
-      description        = "Breastfed infant body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Breastfed infant body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Body weight of the mother's breastfed infant, i.e. of the DYAD PARTNER rather than of the modelled subject. Enters twice: it sizes the breast-milk compartments via Eq. 1, V_M = (0.15 L/kg/day * WT_INFANT) / feeds-per-day, and it scales the infant's clearances by (WT_INFANT / WT)^0.75 and volumes by (WT_INFANT / WT). Cohort median 6.8 kg (4.13-10.8) per Table 1; the dosing-scenario simulations of Figs. 4-6 sweep 2-17 kg paired with infant ages of 0-24 months, from the WHO weight-for-age standard growth curves at z-scores -3 to +3. Source column INFWT.",
-      source_name        = "INFWT"
+      notes = "Body weight of the mother's breastfed infant, i.e. of the DYAD PARTNER rather than of the modelled subject. Enters twice: it sizes the breast-milk compartments via Eq. 1, V_M = (0.15 L/kg/day * WT_INFANT) / feeds-per-day, and it scales the infant's clearances by (WT_INFANT / WT)^0.75 and volumes by (WT_INFANT / WT). Cohort median 6.8 kg (4.13-10.8) per Table 1; the dosing-scenario simulations of Figs. 4-6 sweep 2-17 kg paired with infant ages of 0-24 months, from the WHO weight-for-age standard growth curves at z-scores -3 to +3. Source column INFWT.",
+      source_name = "INFWT"
     ),
     AGE_INFANT = list(
-      description        = "Breastfed infant postnatal age",
-      units              = "months",
-      type               = "continuous",
+      description = "Breastfed infant postnatal age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Postnatal age of the breastfed infant. Drives the monoamine-oxidase-A maturation factor on the infant's primaquine clearance ONLY (MAO-A is the enzyme converting primaquine to carboxyprimaquine); the infant's carboxyprimaquine clearance carries no maturation term. The model derives postmenstrual age internally as AGE_INFANT + 9.2 months, the paper's full-term-gestation assumption of 40 weeks (Methods, 'Predicting infant concentrations', Eq. 4), because individual gestational ages were not used. Cohort infants were at least 28 days old, median 0.42 years = 5.0 months (0.13-1.81 years = 1.6-21.7 months) per Table 1. Source column INFAGE.",
-      source_name        = "INFAGE"
+      notes = "Postnatal age of the breastfed infant. Drives the monoamine-oxidase-A maturation factor on the infant's primaquine clearance ONLY (MAO-A is the enzyme converting primaquine to carboxyprimaquine); the infant's carboxyprimaquine clearance carries no maturation term. The model derives postmenstrual age internally as AGE_INFANT + 9.2 months, the paper's full-term-gestation assumption of 40 weeks (Methods, 'Predicting infant concentrations', Eq. 4), because individual gestational ages were not used. Cohort infants were at least 28 days old, median 0.42 years = 5.0 months (0.13-1.81 years = 1.6-21.7 months) per Table 1. Source column INFAGE.",
+      source_name = "INFAGE"
     ),
     OCC = list(
-      description        = "Integer-valued sampling-occasion indicator for inter-occasion-variability multiplexing.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued sampling-occasion indicator for inter-occasion-variability multiplexing.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Values 1, 2, 3, 4 identify the four maternal blood-sampling occasions -- day 0, day 3, day 7, and day 13 of the 14-day treatment course. Decomposed inside model() into binary indicators oc1 .. oc4 that multiplex the four IOV etas on maternal relative bioavailability and on maternal mean transit time, exactly as the source $PK block builds IOVF1 and IOVMTT from ETA(11)-ETA(18). The infant carries no IOV of its own. For single-occasion simulations pass OCC = 1 so the first IOV eta applies. Source column OCC.",
-      source_name        = "OCC"
+      notes = "Values 1, 2, 3, 4 identify the four maternal blood-sampling occasions -- day 0, day 3, day 7, and day 13 of the 14-day treatment course. Decomposed inside model() into binary indicators oc1 .. oc4 that multiplex the four IOV etas on maternal relative bioavailability and on maternal mean transit time, exactly as the source $PK block builds IOVF1 and IOVMTT from ETA(11)-ETA(18). The infant carries no IOV of its own. For single-occasion simulations pass OCC = 1 so the first IOV eta applies. Source column OCC.",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21,
-    n_studies      = 1,
-    age_range      = "18-40 years",
-    age_median     = "23 years",
-    weight_range   = "35-81 kg",
-    weight_median  = "51 kg",
+    species = "human",
+    n_subjects = 21,
+    n_studies = 1,
+    age_range = "18-40 years",
+    age_median = "23 years",
+    weight_range = "35-81 kg",
+    weight_median = "51 kg",
     sex_female_pct = 100,
-    disease_state  = "Lactating women with a history of Plasmodium vivax infection and no previous primaquine radical-cure treatment; G6PD-normal by fluorescent spot test and Mahidol-variant genotyping in both mother and infant.",
-    dose_range     = "Primaquine 0.5 mg base/kg once daily for 14 days, given orally under non-fasting conditions as directly observed therapy. The published simulations additionally evaluated 1.0 mg base/kg once daily for 7 days, 0.5 mg base/kg twice daily for 7 days, and a 0.25 mg base/kg single dose.",
-    regions        = "Thai-Myanmar border (three Shoklo Malaria Research Unit clinics), enrolled 11 November 2012 to 24 June 2014; ClinicalTrials.gov NCT01780753.",
+    disease_state = "Lactating women with a history of Plasmodium vivax infection and no previous primaquine radical-cure treatment; G6PD-normal by fluorescent spot test and Mahidol-variant genotyping in both mother and infant.",
+    dose_range = "Primaquine 0.5 mg base/kg once daily for 14 days, given orally under non-fasting conditions as directly observed therapy. The published simulations additionally evaluated 1.0 mg base/kg once daily for 7 days, 0.5 mg base/kg twice daily for 7 days, and a 0.25 mg base/kg single dose.",
+    regions = "Thai-Myanmar border (three Shoklo Malaria Research Unit clinics), enrolled 11 November 2012 to 24 June 2014; ClinicalTrials.gov NCT01780753.",
     infant_partner = "n = 21 breastfed infants at least 28 days old: age 0.42 years (0.13-1.81), weight 6.8 kg (4.13-10.8), 14 male / 7 female (Wattanakul 2024 Table 1). Infant capillary sampling at 0, 2, 6 h after the first breastfeed following maternal dosing on day 0, at 0 and 2 h on days 3 and 7, and at 0, 2, 6, 24 h on day 13.",
     feeding_pattern = "Average 11 breastfeeds per day (6-18) and calculated infant daily milk intake 1020 mL (619-1620) per Table 1; the model's square-wave breastfeeding function uses the rounded average of 10 feeds/day (Results, 'Predicting infant concentrations').",
-    notes          = "No infant pharmacokinetic parameter could be estimated: every infant capillary primaquine concentration was below the LLOQ except one sample at 2.59 ng/mL, and 67.5% of infant carboxyprimaquine concentrations were below the LLOQ (Methods, 'Predicting infant concentrations'). The infant layer is therefore entirely predictive -- structure and scaling assumptions carried over from the mother plus a literature maturation function -- and was evaluated by overlaying the 95% prediction interval on the observed infant data (Fig. 3), not by fitting. Treat infant predictions from this model as extrapolation, not as a fitted description of infant pharmacokinetics."
+    notes = "No infant pharmacokinetic parameter could be estimated: every infant capillary primaquine concentration was below the LLOQ except one sample at 2.59 ng/mL, and 67.5% of infant carboxyprimaquine concentrations were below the LLOQ (Methods, 'Predicting infant concentrations'). The infant layer is therefore entirely predictive -- structure and scaling assumptions carried over from the mother plus a literature maturation function -- and was evaluated by overlaying the 95% prediction interval on the observed infant data (Fig. 3), not by fitting. Treat infant predictions from this model as extrapolation, not as a fitted description of infant pharmacokinetics."
   )
 
   ini({

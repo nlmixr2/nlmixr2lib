@@ -55,21 +55,26 @@ Chotsiri_2019_lumefantrine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "lumefantrine", units = "mg", specimen = "whole blood", verified = FALSE),
+    depot = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lumefantrine", units = "mg", specimen = "whole blood", verified = FALSE),
     peripheral1 = list(analyte = "lumefantrine", units = "mg", specimen = "whole blood", verified = FALSE),
-    cumhaz      = list(analyte = "Cumulative hazard of P. falciparum reinfection", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cumhaz = list(
+      analyte = "Cumulative hazard of P. falciparum reinfection",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject at admission. Chotsiri 2019 Table 1",
         "reports median (95% CI) body weight 6.78 (5.07, 10.5) kg in the",
         "131 SAM children and 10.9 (6.84, 15.9) kg in the 160 non-SAM",
@@ -88,14 +93,14 @@ Chotsiri_2019_lumefantrine <- function() {
         "drives the dose-saturable bioavailability term.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     PNA = list(
-      description        = "Postnatal age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Postnatal (chronological) age in months. Chotsiri 2019 Table 1",
         "reports median (95% CI) age 15 (6.3, 39) months in SAM children",
         "and 27 (8.0, 53) months in non-SAM children; the trial enrolled",
@@ -112,14 +117,14 @@ Chotsiri_2019_lumefantrine <- function() {
         "and 0.903 at the non-SAM median 27 months).",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     MUAC = list(
-      description        = "Mid-upper arm circumference",
-      units              = "mm",
-      type               = "continuous",
+      description = "Mid-upper arm circumference",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject at admission. Chotsiri 2019 Table 1",
         "reports median (95% CI) MUAC 116 (104, 131) mm in SAM children",
         "and 140 (122, 163) mm in non-SAM children. MUAC was the most",
@@ -145,14 +150,14 @@ Chotsiri_2019_lumefantrine <- function() {
         "papers use to SET MAL_NOURISH).",
         sep = " "
       ),
-      source_name        = "MUAC"
+      source_name = "MUAC"
     ),
     DOSE = list(
-      description        = "Per-dose lumefantrine amount administered (mg)",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-dose lumefantrine amount administered (mg)",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-dose lumefantrine amount in milligrams, supplied as a",
         "per-dose-record covariate aligned with the corresponding event-",
         "table dosing row (use case (b) of the canonical DOSE entry,",
@@ -171,7 +176,7 @@ Chotsiri_2019_lumefantrine <- function() {
         "the Dose50 = 3.86 mg/kg saturation constant.",
         sep = " "
       ),
-      source_name        = "Dosage"
+      source_name = "Dosage"
     )
   )
 
@@ -183,9 +188,9 @@ Chotsiri_2019_lumefantrine <- function() {
   covariatesDataExcluded <- list(
     WHZ = list(
       description = "Weight-for-height z-score",
-      units       = "(z-score)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(z-score)",
+      type = "continuous",
+      notes = paste(
         "Screened as a malnutrition indicator on relative bioavailability",
         "and found significant, but MUAC gave the larger drop in objective",
         "function (dOFV = -64.4) and was retained instead; adding any",
@@ -199,33 +204,33 @@ Chotsiri_2019_lumefantrine <- function() {
     ),
     WAZ = list(
       description = "Weight-for-age z-score",
-      units       = "(z-score)",
-      type        = "continuous",
-      notes       = "Screened alongside MUAC and WHZ; not retained in the final model (see WHZ note). Chotsiri 2019 Table 1 medians: -3.40 (SAM), -1.30 (non-SAM)."
+      units = "(z-score)",
+      type = "continuous",
+      notes = "Screened alongside MUAC and WHZ; not retained in the final model (see WHZ note). Chotsiri 2019 Table 1 medians: -3.40 (SAM), -1.30 (non-SAM)."
     ),
     HAZ = list(
       description = "Height-for-age z-score",
-      units       = "(z-score)",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate search; not significant and not retained. Chotsiri 2019 Table 1 medians: -1.67 (SAM), -1.27 (non-SAM). Children with severe stunting (HAZ < -3) were excluded from the trial."
+      units = "(z-score)",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate search; not significant and not retained. Chotsiri 2019 Table 1 medians: -1.67 (SAM), -1.27 (non-SAM). Children with severe stunting (HAZ < -3) were excluded from the trial."
     ),
     SEXF = list(
       description = "Sex (1 = female)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the stepwise covariate search (supplementary methods lists sex among the covariates investigated); not retained. Chotsiri 2019 Table 1 reports 50.4% male in SAM and 46.9% male in non-SAM children."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the stepwise covariate search (supplementary methods lists sex among the covariates investigated); not retained. Chotsiri 2019 Table 1 reports 50.4% male in SAM and 46.9% male in non-SAM children."
     ),
     TEMP = list(
       description = "Axillary body temperature at admission",
-      units       = "degC",
-      type        = "continuous",
-      notes       = "Screened as 'body temperature at admission' in the stepwise covariate search; not retained. Chotsiri 2019 Table 1 medians: 38.0 degC (SAM), 38.2 degC (non-SAM)."
+      units = "degC",
+      type = "continuous",
+      notes = "Screened as 'body temperature at admission' in the stepwise covariate search; not retained. Chotsiri 2019 Table 1 medians: 38.0 degC (SAM), 38.2 degC (non-SAM)."
     ),
     PARA = list(
       description = "Plasmodium falciparum parasitaemia at admission (asexual parasites/uL)",
-      units       = "parasites/uL",
-      type        = "continuous",
-      notes       = paste(
+      units = "parasites/uL",
+      type = "continuous",
+      notes = paste(
         "Admission parasitaemia; Chotsiri 2019 Table 1 medians 11,040",
         "(SAM) and 10,780 (non-SAM) parasites/uL. Not a covariate in this",
         "model. Recurrent parasite density is used to back-extrapolate the",
@@ -238,15 +243,15 @@ Chotsiri_2019_lumefantrine <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 291L,
-    n_subjects_pk   = 291L,
-    n_subjects_pd   = 380L,
-    n_studies       = 1L,
-    age_range       = "6-59 months (inclusion criterion); median 15 months (95% CI 6.3-39) in SAM and 27 months (95% CI 8.0-53) in non-SAM children (Table 1)",
-    weight_range    = "median 6.78 kg (95% CI 5.07-10.5) in SAM and 10.9 kg (95% CI 6.84-15.9) in non-SAM children (Table 1); allometric centering value 9.62 kg",
-    sex_female_pct  = 51.2,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 291L,
+    n_subjects_pk = 291L,
+    n_subjects_pd = 380L,
+    n_studies = 1L,
+    age_range = "6-59 months (inclusion criterion); median 15 months (95% CI 6.3-39) in SAM and 27 months (95% CI 8.0-53) in non-SAM children (Table 1)",
+    weight_range = "median 6.78 kg (95% CI 5.07-10.5) in SAM and 10.9 kg (95% CI 6.84-15.9) in non-SAM children (Table 1); allometric centering value 9.62 kg",
+    sex_female_pct = 51.2,
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria, with and without",
       "severe acute malnutrition (SAM). SAM was defined per WHO criteria",
       "as weight-for-height z-score < -3 and/or mid-upper arm",
@@ -256,7 +261,7 @@ Chotsiri_2019_lumefantrine <- function() {
       "excluded.",
       sep = " "
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Fixed-dose combination tablets of 20 mg artemether + 120 mg",
       "lumefantrine (Coartem, non-dispersible), weight-band dosed",
       "(1 tablet below 15 kg, 2 tablets 15-25 kg) twice daily for 3 days",
@@ -267,8 +272,8 @@ Chotsiri_2019_lumefantrine <- function() {
       "food (Plumpy'Nut, 32.9 g fat) in SAM children.",
       sep = " "
     ),
-    regions         = "Mali (Oulessebougou District Hospital, Koulikoro region) and Niger (primary healthcare centre of Andoume, Maradi City)",
-    notes           = paste(
+    regions = "Mali (Oulessebougou District Hospital, Koulikoro region) and Niger (primary healthcare centre of Andoume, Maradi City)",
+    notes = paste(
       "MAL-NUT trial, ClinicalTrials.gov NCT01958905. The PK analysis used",
       "1,342 capillary dried-blood-spot lumefantrine concentrations (642",
       "from 131 SAM and 700 from 160 non-SAM children); 84 of 1,341",

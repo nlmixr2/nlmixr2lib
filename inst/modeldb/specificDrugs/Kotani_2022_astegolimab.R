@@ -10,67 +10,67 @@ Kotani_2022_astegolimab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "astegolimab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "astegolimab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "astegolimab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "astegolimab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "astegolimab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline-only (time-fixed per subject in Kotani 2022). Shared allometric exponent on CL and Q; separate shared exponent on Vc and Vp. Reference 79 kg (median in the PK analysis data set, Table 1).",
-      source_name        = "BWT"
+      notes = "Baseline-only (time-fixed per subject in Kotani 2022). Shared allometric exponent on CL and Q; separate shared exponent on Vc and Vp. Reference 79 kg (median in the PK analysis data set, Table 1).",
+      source_name = "BWT"
     ),
     CRCL = list(
-      description        = "Baseline MDRD-estimated glomerular filtration rate (creatinine-based, BSA-normalized); time-fixed per subject",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline MDRD-estimated glomerular filtration rate (creatinine-based, BSA-normalized); time-fixed per subject",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL. Reference 87.9 mL/min/1.73 m^2 (median in the PK analysis data set, Table 1). Source column 'BEGFR' (baseline MDRD eGFR) maps to the canonical general-scope CRCL covariate (which also accepts measured CrCl BSA-normalized in the same units); the MDRD estimation method and baseline-only semantics are documented here.",
-      source_name        = "BEGFR"
+      notes = "Power effect on CL. Reference 87.9 mL/min/1.73 m^2 (median in the PK analysis data set, Table 1). Source column 'BEGFR' (baseline MDRD eGFR) maps to the canonical general-scope CRCL covariate (which also accepts measured CrCl BSA-normalized in the same units); the MDRD estimation method and baseline-only semantics are documented here.",
+      source_name = "BEGFR"
     ),
     EOS = list(
-      description        = "Baseline blood eosinophil count; time-fixed per subject",
-      units              = "cells/uL",
-      type               = "continuous",
+      description = "Baseline blood eosinophil count; time-fixed per subject",
+      units = "cells/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL. Reference 180 cells/uL (median in the PK analysis data set, Table 1). Source column 'BEOS' maps to the canonical general-scope EOS covariate; the baseline-only semantics are documented here rather than via a separate BEOS canonical.",
-      source_name        = "BEOS"
+      notes = "Power effect on CL. Reference 180 cells/uL (median in the PK analysis data set, Table 1). Source column 'BEOS' maps to the canonical general-scope EOS covariate; the baseline-only semantics are documented here rather than via a separate BEOS canonical.",
+      source_name = "BEOS"
     ),
     DOSE_70MG = list(
-      description        = "Indicator for the 70 mg SC Q4W dose group",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for the 70 mg SC Q4W dose group",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (210 mg or 490 mg Q4W regimen)",
-      notes              = "Subject-level indicator in Kotani 2022: 1 = 70 mg dose arm, 0 = 210 mg or 490 mg dose arm (reference). Multiplicative -15.3% relative change on relative bioavailability.",
-      source_name        = "Dose70mg"
+      notes = "Subject-level indicator in Kotani 2022: 1 = 70 mg dose arm, 0 = 210 mg or 490 mg dose arm (reference). Multiplicative -15.3% relative change on relative bioavailability.",
+      source_name = "Dose70mg"
     )
   )
 
   population <- list(
-    n_subjects     = 368,
-    n_studies      = 1,
-    study_name     = "Zenyatta (NCT02918019)",
-    age_range      = "18-75 years",
-    age_median     = "53 years",
-    weight_range   = "43-130 kg",
-    weight_median  = "79 kg",
+    n_subjects = 368,
+    n_studies = 1,
+    study_name = "Zenyatta (NCT02918019)",
+    age_range = "18-75 years",
+    age_median = "53 years",
+    weight_range = "43-130 kg",
+    weight_median = "79 kg",
     sex_female_pct = 66.8,
     race_ethnicity = c(
-      White             = 84.0,
-      Black             = 5.4,
-      Asian             = 4.6,
+      White = 84.0,
+      Black = 5.4,
+      Asian = 4.6,
       `Native American` = 4.6,
-      Multiple          = 1.4
+      Multiple = 1.4
     ),
-    disease_state  = "Severe asthma on medium- or high-dose inhaled corticosteroid plus at least one additional controller, with at least one asthma exacerbation in the 12 months before screening.",
-    dose_range     = "70, 210, or 490 mg SC every 4 weeks for 52 weeks",
-    regions        = "Multinational Phase 2b trial (Zenyatta).",
-    ada_pos_pct    = 7.3,
-    notes          = "Baseline demographics and covariates from Kotani 2022 Table 1 (n = 368 patients with at least one quantifiable postdose PK observation out of 502 randomized in Zenyatta)."
+    disease_state = "Severe asthma on medium- or high-dose inhaled corticosteroid plus at least one additional controller, with at least one asthma exacerbation in the 12 months before screening.",
+    dose_range = "70, 210, or 490 mg SC every 4 weeks for 52 weeks",
+    regions = "Multinational Phase 2b trial (Zenyatta).",
+    ada_pos_pct = 7.3,
+    notes = "Baseline demographics and covariates from Kotani 2022 Table 1 (n = 368 patients with at least one quantifiable postdose PK observation out of 502 randomized in Zenyatta)."
   )
 
   ini({

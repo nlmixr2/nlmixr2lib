@@ -41,26 +41,26 @@ Comisar_2025_zavegepant <- function() {
     sep = " "
   )
   vignette <- "Comisar_2025_zavegepant"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Comisar 2025 Figure 1 (schematic of
   # the selected model) and the Results 'Population pharmacokinetic model
   # development' paragraph.
   compartmentData <- list(
-    depot       = list(analyte = "zavegepant", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "zavegepant", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "zavegepant", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "zavegepant", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "zavegepant", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "zavegepant", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline, time-fixed. Population median 74 kg (range 49-131;",
         "Comisar 2025 Table 2 'Body weight (kg)'). The allometric",
         "reference weight is 70 kg, NOT the cohort median -- Comisar 2025",
@@ -78,14 +78,14 @@ Comisar_2025_zavegepant <- function() {
         "95 kg -- all four reproduce exactly from (WT/70)^0.75 and",
         "(WT/70)^1."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     ROUTE_ORAL = list(
-      description        = "Oral (soft gelatin capsule) administration indicator on the dose record",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral (soft gelatin capsule) administration indicator on the dose record",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-oral: intranasal nasal spray, or intravenous infusion)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator selecting the oral absorption parameter",
         "set. Comisar 2025 Table 3 reports a separate bioavailability,",
         "first-order absorption rate constant and zero-order absorption",
@@ -104,14 +104,14 @@ Comisar_2025_zavegepant <- function() {
         "zavegepant, 209 (75.5%) intranasal and 6 (2.2%) intravenous",
         "(Comisar 2025 Results 'Baseline population characteristics')."
       ),
-      source_name        = "Administration route"
+      source_name = "Administration route"
     ),
     FED = list(
-      description        = "Fed-versus-fasted state at the time of the oral dose",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-versus-fasted state at the time of the oral dose",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator; 22/277 subjects (7.9%) contributed fed",
         "records (Comisar 2025 Table 2 'Fed, n (%)'). Acts only on oral",
         "bioavailability: Table 3 'Food effect on bioavailability of oral",
@@ -122,14 +122,14 @@ Comisar_2025_zavegepant <- function() {
         "the effect is applied only when ROUTE_ORAL = 1 and FED should be",
         "left at 0 on intranasal and intravenous records."
       ),
-      source_name        = "FED"
+      source_name = "FED"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function; no mild or severe strata were represented in the analysis dataset)",
-      notes              = paste(
+      notes = paste(
         "Classification scheme is Child-Pugh, NOT NCI ODWG: Comisar 2025",
         "Methods lists 'hepatic function (hepatic impairment categorized",
         "by Child-Pugh scores)' and the Abstract specifies 'Moderate",
@@ -144,14 +144,14 @@ Comisar_2025_zavegepant <- function() {
         "increases in AUC0-24 and Cmax of 63% and 12% respectively",
         "(Results 'Covariate analysis', Figure 2)."
       ),
-      source_name        = "Hepatic function, moderate impairment"
+      source_name = "Hepatic function, moderate impairment"
     ),
     CONMED_RIF = list(
-      description        = "Concomitant rifampin (rifampicin) administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampin (rifampicin) administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no rifampin)",
-      notes              = paste(
+      notes = paste(
         "Per-subject / per-occasion indicator from the BHV3500-111",
         "drug-drug interaction study; 15/277 subjects (5.4%) were",
         "co-treated (Comisar 2025 Table 2, which annotates the row 'oral",
@@ -180,14 +180,14 @@ Comisar_2025_zavegepant <- function() {
         "clearance despite rifampin being a CYP3A4 inducer) to a composite",
         "of OATP1B3 and NTCP inhibition dominating CYP3A induction."
       ),
-      source_name        = "Co-treated with rifampin"
+      source_name = "Co-treated with rifampin"
     ),
     CONMED_ITRACONAZOLE = list(
-      description        = "Concomitant itraconazole administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant itraconazole administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no itraconazole)",
-      notes              = paste(
+      notes = paste(
         "Per-subject / per-occasion indicator from the BHV3500-111 study;",
         "18/277 subjects (6.5%) received itraconazole with intranasal",
         "zavegepant and 18/277 (6.5%) with oral zavegepant (Comisar 2025",
@@ -202,7 +202,7 @@ Comisar_2025_zavegepant <- function() {
         "CONMED_ITRACONAZOLE = 1 on an intranasal or intravenous record",
         "correctly produces no effect."
       ),
-      source_name        = "Co-treated with itraconazole"
+      source_name = "Co-treated with itraconazole"
     )
   )
 
@@ -216,9 +216,9 @@ Comisar_2025_zavegepant <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Median 40 years (range 18-71; Comisar 2025 Table 2). Screened and",
         "not retained. The Discussion cautions that only 6 subjects (1.0%)",
         "were >= 65 years, limiting the evaluation in older individuals."
@@ -226,9 +226,9 @@ Comisar_2025_zavegepant <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "126/277 (45.5%) female per Comisar 2025 Table 2 'Sex, female'.",
         "Screened and not retained. Note that the Results narrative",
         "instead states 'female (49.3%)', which disagrees with Table 2;",
@@ -237,18 +237,18 @@ Comisar_2025_zavegepant <- function() {
     ),
     RACE_BLACK = list(
       description = "Black race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "32/277 (11.6%) Black, 245/277 (88.4%) Caucasian, no Asian or",
         "Other subjects (Comisar 2025 Table 2). Screened and not retained."
       )
     ),
     CRCL = list(
       description = "Creatinine clearance (renal function)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Median 115 mL/min (range 53-211; Comisar 2025 Table 2). Screened",
         "and not retained, consistent with the limited role of renal",
         "clearance in zavegepant elimination. The Discussion notes only 17",
@@ -258,9 +258,9 @@ Comisar_2025_zavegepant <- function() {
     ),
     CONMED_BIRTHCONTROL = list(
       description = "Concomitant oral contraceptive use indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "25/277 (9.0%) co-treated (Comisar 2025 Table 2). Screened in the",
         "BHV3500-109 ethinyl estradiol / levonorgestrel interaction study",
         "and not retained as a covariate on zavegepant PK."
@@ -269,19 +269,19 @@ Comisar_2025_zavegepant <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 277,
-    n_studies      = 9,
-    age_range      = "18-71 years",
-    age_median     = "40 years",
-    weight_range   = "49-131 kg",
-    weight_median  = "74 kg",
+    species = "human",
+    n_subjects = 277,
+    n_studies = 9,
+    age_range = "18-71 years",
+    age_median = "40 years",
+    weight_range = "49-131 kg",
+    weight_median = "74 kg",
     sex_female_pct = 45.5,
     race_ethnicity = c(Caucasian = 88.4, Black = 11.6, Asian = 0, Other = 0),
-    disease_state  = "healthy adults (85.9%) and patients with migraine (14.1%); 2.9% with moderate (Child-Pugh B) hepatic impairment",
-    dose_range     = "intranasal 10-100 mg, oral 10-100 mg (soft gelatin capsule), and intravenous infusion; single and multiple dose",
-    regions        = "North America",
-    notes          = paste(
+    disease_state = "healthy adults (85.9%) and patients with migraine (14.1%); 2.9% with moderate (Child-Pugh B) hepatic impairment",
+    dose_range = "intranasal 10-100 mg, oral 10-100 mg (soft gelatin capsule), and intravenous infusion; single and multiple dose",
+    regions = "North America",
+    notes = paste(
       "Comisar 2025 Table 2 (baseline demographic and laboratory data for",
       "the model-development dataset). 594 individuals were screened",
       "across all 10 phase I studies contributing 12253 concentration",

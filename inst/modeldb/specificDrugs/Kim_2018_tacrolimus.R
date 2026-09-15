@@ -19,45 +19,65 @@ Kim_2018_tacrolimus <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot           = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central         = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_mpa       = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "administration site", verified = FALSE),
-    central_mpa     = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_mpa = list(
+      analyte = "mycophenolic acid (MPA)",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central_mpa = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_mpa = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
-    central_mpag    = list(analyte = "mycophenolic acid 7-O-glucuronide (MPAG)", units = "mg", specimen = "plasma", verified = FALSE),
-    gallbladder     = list(analyte = "mycophenolic acid acyl glucuronide (AcMPAG)", units = "mg", specimen = "bile", verified = FALSE),
-    central_acmpag  = list(analyte = "mycophenolic acid acyl glucuronide (AcMPAG)", units = "mg", specimen = "plasma", verified = FALSE)
+    central_mpag = list(
+      analyte = "mycophenolic acid 7-O-glucuronide (MPAG)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    gallbladder = list(
+      analyte = "mycophenolic acid acyl glucuronide (AcMPAG)",
+      units = "mg",
+      specimen = "bile",
+      verified = FALSE
+    ),
+    central_acmpag = list(
+      analyte = "mycophenolic acid acyl glucuronide (AcMPAG)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CYP3A5_EXPR = list(
-      description        = "CYP3A5 expresser status: 1 = CYP3A5 expresser (CYP3A5*1/*1 or CYP3A5*1/*3 at rs776746), 0 = nonexpresser (CYP3A5*3/*3).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 expresser status: 1 = CYP3A5 expresser (CYP3A5*1/*1 or CYP3A5*1/*3 at rs776746), 0 = nonexpresser (CYP3A5*3/*3).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5 nonexpresser, *3/*3; 13 of 17 subjects in the Kim 2018 cohort)",
-      notes              = "Time-fixed germline genotype. In the Kim 2018 healthy-volunteer cohort 4 of 17 (23.5%) subjects were expressers (Table 1). Used as a multiplicative power-form effect on tacrolimus apparent oral clearance: cl_tac = cl_typ * e_cyp3a5_cl^CYP3A5_EXPR with e_cyp3a5_cl = 1.48 in the integrated model (equation (2); Table 3). The CYP3A5 genotype was the only clinical / genetic covariate retained in the final model.",
-      source_name        = "CYP3A5"
+      notes = "Time-fixed germline genotype. In the Kim 2018 healthy-volunteer cohort 4 of 17 (23.5%) subjects were expressers (Table 1). Used as a multiplicative power-form effect on tacrolimus apparent oral clearance: cl_tac = cl_typ * e_cyp3a5_cl^CYP3A5_EXPR with e_cyp3a5_cl = 1.48 in the integrated model (equation (2); Table 3). The CYP3A5 genotype was the only clinical / genetic covariate retained in the final model.",
+      source_name = "CYP3A5"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 17L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 17L,
+    n_studies = 1L,
     n_observations = "1,082 concentrations across 4 analytes (TAC, MPA, MPAG, AcMPAG); average 63 concentrations per subject.",
-    age_range      = "20-42 years",
-    age_median     = "25 years (Table 1)",
-    weight_range   = "57.4-88.3 kg",
-    weight_median  = "69.7 kg (Table 1)",
-    height_range   = "167.7-192.8 cm (median 173.4)",
+    age_range = "20-42 years",
+    age_median = "25 years (Table 1)",
+    weight_range = "57.4-88.3 kg",
+    weight_median = "69.7 kg (Table 1)",
+    height_range = "167.7-192.8 cm (median 173.4)",
     sex_female_pct = 0,
     race_ethnicity = "100% Korean (all subjects were of Korean ethnicity).",
-    disease_state  = "Healthy male volunteers (no known history of previous disease; normal physical exam and laboratory tests).",
-    dose_range     = "Single oral dose: 5 mg tacrolimus (Prograf) and 1,000 mg mycophenolate mofetil (CellCept), administered alone and in combination across a three-period fixed-sequence design.",
-    regions        = "Republic of Korea (Seoul National University Hospital).",
+    disease_state = "Healthy male volunteers (no known history of previous disease; normal physical exam and laboratory tests).",
+    dose_range = "Single oral dose: 5 mg tacrolimus (Prograf) and 1,000 mg mycophenolate mofetil (CellCept), administered alone and in combination across a three-period fixed-sequence design.",
+    regions = "Republic of Korea (Seoul National University Hospital).",
     cyp3a5_expressers = "4 of 17 (23.5%) were CYP3A5 expressers (Table 1).",
-    notes          = "Three-period, fixed-sequence, open-label, single-dose interaction study (NCT02743247, conducted 2015-2016). Period 1: 1000 mg MMF alone; period 2: 5 mg TAC alone; period 3: combination, with one-week washout between periods. Estimated GFR 74.1-122.3 mL/min/1.73m2 (median 104.8); serum creatinine 0.79-1.20 mg/dL; albumin 4.2-4.9 g/dL. Baseline demographics from Table 1. Variation in baseline demographics was small, so covariates other than CYP3A5 genotype were not significant."
+    notes = "Three-period, fixed-sequence, open-label, single-dose interaction study (NCT02743247, conducted 2015-2016). Period 1: 1000 mg MMF alone; period 2: 5 mg TAC alone; period 3: combination, with one-week washout between periods. Estimated GFR 74.1-122.3 mL/min/1.73m2 (median 104.8); serum creatinine 0.79-1.20 mg/dL; albumin 4.2-4.9 g/dL. Baseline demographics from Table 1. Variation in baseline demographics was small, so covariates other than CYP3A5 genotype were not significant."
   )
 
   ini({

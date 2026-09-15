@@ -31,7 +31,7 @@ Widmer_2006_imatinib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -40,9 +40,9 @@ Widmer_2006_imatinib <- function() {
   covariatesDataExcluded <- list(
     AAG = list(
       description = "Alpha-1 acid glycoprotein concentration",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste0(
+      units = "g/L",
+      type = "continuous",
+      notes = paste0(
         "The title of the primary publication is 'Population ",
         "pharmacokinetics of imatinib and the role of alpha-acid ",
         "glycoprotein', so AAG is the central scientific subject of Widmer ",
@@ -62,20 +62,20 @@ Widmer_2006_imatinib <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 59L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 59L,
+    n_studies = 1L,
     n_observations = "321 imatinib plasma concentrations (Yang 2025 Table 1)",
-    age_range      = "20-79 years",
-    disease_state  = paste0(
+    age_range = "20-79 years",
+    disease_state = paste0(
       "Adults with gastrointestinal stromal tumor (GIST) or chronic ",
       "myeloid leukemia (CML), plus one patient with acute lymphoblastic ",
       "leukemia (Yang 2025 Table 1)"
     ),
-    dose_range     = "Oral imatinib 150-800 mg total daily dose",
-    regions        = "Switzerland",
-    bioanalytical  = "HPLC, limit of quantification 50 ng/mL (Yang 2025 Table 1)",
-    notes          = paste0(
+    dose_range = "Oral imatinib 150-800 mg total daily dose",
+    regions = "Switzerland",
+    bioanalytical = "HPLC, limit of quantification 50 ng/mL (Yang 2025 Table 1)",
+    notes = paste0(
       "Demographic detail beyond the row above (weight range, sex split, ",
       "race) is not reported by the secondary source and must be read from ",
       "the primary publication."

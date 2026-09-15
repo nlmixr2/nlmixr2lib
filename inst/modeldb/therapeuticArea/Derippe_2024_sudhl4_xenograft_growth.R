@@ -19,19 +19,23 @@ Derippe_2024_sudhl4_xenograft_growth <- function() {
 
   covariatesDataExcluded <- list()
 
-
   compartmentData <- list(
-    tumor_size = list(analyte = "SU-DHL-4 xenograft tumor volume", units = "mm^3", specimen = "not applicable", verified = TRUE)
+    tumor_size = list(
+      analyte = "SU-DHL-4 xenograft tumor volume",
+      units = "mm^3",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "mouse (SU-DHL-4 subcutaneous xenograft)",
-    n_subjects     = 1L,
-    n_studies      = 1L,
-    disease_state  = "Established subcutaneous SU-DHL-4 diffuse large B-cell lymphoma xenograft",
-    dose_range     = "Vehicle control (no drug)",
-    regions        = "Preclinical (literature-digitized)",
-    notes          = "The digitized control arm is a single mean tumor volume time course (6 observations over days 0-15), so n_subjects = 1 refers to that one group-mean profile rather than to individual animals; the per-animal group size is not reported by Derippe 2024. The companion treated arms (venetoclax 50 mg/kg PO QD, A-1592668 1.5 mg/kg PO three times weekly, and the combination) are simulated by the paper's agent-based model rather than by this ODE model. No inter-individual variability was reported."
+    species = "mouse (SU-DHL-4 subcutaneous xenograft)",
+    n_subjects = 1L,
+    n_studies = 1L,
+    disease_state = "Established subcutaneous SU-DHL-4 diffuse large B-cell lymphoma xenograft",
+    dose_range = "Vehicle control (no drug)",
+    regions = "Preclinical (literature-digitized)",
+    notes = "The digitized control arm is a single mean tumor volume time course (6 observations over days 0-15), so n_subjects = 1 refers to that one group-mean profile rather than to individual animals; the per-animal group size is not reported by Derippe 2024. The companion treated arms (venetoclax 50 mg/kg PO QD, A-1592668 1.5 mg/kg PO three times weekly, and the combination) are simulated by the paper's agent-based model rather than by this ODE model. No inter-individual variability was reported."
   )
 
   ini({

@@ -40,56 +40,56 @@ Karlsson_2010_acute_stroke_bi <- function() {
   )
   vignette <- "Karlsson_2010_acute_stroke"
   units <- list(
-    time          = "day (days since the stroke event; the source NONMEM DAY / TSS column)",
-    dosing        = "n/a (no dose events; drug-free placebo-arm disease-progression model)",
+    time = "day (days since the stroke event; the source NONMEM DAY / TSS column)",
+    dosing = "n/a (no dose events; drug-free placebo-arm disease-progression model)",
     concentration = "Barthel Index points (0-100) for bi_improve / bi_decline; unitless 0-1 for imz, dez and the three probabilities"
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Age at study entry.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at study entry.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 73 years inside model(), matching the source control stream `A1AGE = THETA(13)*(AGE-73)` and `IMAGE = THETA(14)*(AGE-73)`. Analysis-set mean 71.7 years, range 26-90 (Karlsson 2010 Methods, Patients and Data). The source stream branches on AGE = -99 to zero both age effects; that NONMEM missing-value convention is NOT reproduced here -- supply a real age.",
-      source_name        = "AGE"
+      notes = "Centred at 73 years inside model(), matching the source control stream `A1AGE = THETA(13)*(AGE-73)` and `IMAGE = THETA(14)*(AGE-73)`. Analysis-set mean 71.7 years, range 26-90 (Karlsson 2010 Methods, Patients and Data). The source stream branches on AGE = -99 to zero both age effects; that NONMEM missing-value convention is NOT reproduced here -- supply a real age.",
+      source_name = "AGE"
     ),
     SCORE_BI_PREV = list(
-      description        = "Barthel Index total score recorded at the immediately preceding observation occasion, on the raw 0-100 scale in five-point steps, where 100 is full independent function. The Markov-state predictor that conditions the current occasion's transition probabilities and score reconstruction.",
-      units              = "(Barthel Index points, 0-100)",
-      type               = "continuous",
+      description = "Barthel Index total score recorded at the immediately preceding observation occasion, on the raw 0-100 scale in five-point steps, where 100 is full independent function. The Markov-state predictor that conditions the current occasion's transition probabilities and score reconstruction.",
+      units = "(Barthel Index points, 0-100)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column PBI, mapping to `PBI` in the Supplement B BI dataset excerpt. The BI was not assessed at admission (Karlsson 2010 Data Preparation: imputed baselines between 0 and 20 were tested and rejected for insufficient predictive power), so the model starts at the day-7 assessment and SCORE_BI_PREV is the day-7 score at the first modelled transition. Enters p_improve, p_notmax, the relative-improvement magnitude submodel, and both reconstruction rules. Not centred in the source stream.",
-      source_name        = "PBI"
+      notes = "Source column PBI, mapping to `PBI` in the Supplement B BI dataset excerpt. The BI was not assessed at admission (Karlsson 2010 Data Preparation: imputed baselines between 0 and 20 were tested and rejected for insufficient predictive power), so the model starts at the day-7 assessment and SCORE_BI_PREV is the day-7 score at the first modelled transition. Enters p_improve, p_notmax, the relative-improvement magnitude submodel, and both reconstruction rules. Not centred in the source stream.",
+      source_name = "PBI"
     ),
     SCORE_NIHSS = list(
-      description        = "Baseline (admission) NIHSS total score on the RAW 0-42 scale, where 0 is normal and 42 is maximal deficit. Time-fixed per subject; used here as a cross-scale severity covariate on the Barthel Index improvement magnitude.",
-      units              = "(NIHSS points, 0-42)",
-      type               = "continuous",
+      description = "Baseline (admission) NIHSS total score on the RAW 0-42 scale, where 0 is normal and 42 is maximal deficit. Time-fixed per subject; used here as a cross-scale severity covariate on the Barthel Index improvement magnitude.",
+      units = "(NIHSS points, 0-42)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column BNIH, the raw baseline NIHSS carried into the BI dataset. Note the BI control stream also computes `CBNH = 42 - BNIH` (the reversed baseline NIHSS) but never uses it -- the retained effect IMBNH = THETA(15)*BNIH is on the RAW score. Analysis-set mean 16.8, range 4-31 (Karlsson 2010 Methods). Not centred in the source stream.",
-      source_name        = "BNIH"
+      notes = "Source column BNIH, the raw baseline NIHSS carried into the BI dataset. Note the BI control stream also computes `CBNH = 42 - BNIH` (the reversed baseline NIHSS) but never uses it -- the retained effect IMBNH = THETA(15)*BNIH is on the RAW score. Analysis-set mean 16.8, range 4-31 (Karlsson 2010 Methods). Not centred in the source stream.",
+      source_name = "BNIH"
     ),
     T_PREVOBS = list(
-      description        = "Time elapsed since the subject's previous observation occasion.",
-      units              = "day",
-      type               = "continuous",
+      description = "Time elapsed since the subject's previous observation occasion.",
+      units = "day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column TLS. The Supplement B dataset legend calls TLS 'Time since start of study (i.e. time since stroke)', but the tabulated data falsify that label and the value is time since the PREVIOUS observation: in the BI excerpt subject 1 has DAY 29 -> TLS 22, DAY 60 -> TLS 31 (= 60 - 29), DAY 89 -> TLS 29 (= 89 - 60), i.e. non-monotonic in DAY, which time-since-stroke cannot be. Corroborated by Karlsson 2010 Table II, which lists 'Influence of time since previous observation' for the BI relative decline and lists 'Influence of time since baseline' separately for BI p_notmax (that second clock is TSS = DAY, carried here by rxode2's `time`). Not centred in the source stream.",
-      source_name        = "TLS"
+      notes = "Source column TLS. The Supplement B dataset legend calls TLS 'Time since start of study (i.e. time since stroke)', but the tabulated data falsify that label and the value is time since the PREVIOUS observation: in the BI excerpt subject 1 has DAY 29 -> TLS 22, DAY 60 -> TLS 31 (= 60 - 29), DAY 89 -> TLS 29 (= 89 - 60), i.e. non-monotonic in DAY, which time-since-stroke cannot be. Corroborated by Karlsson 2010 Table II, which lists 'Influence of time since previous observation' for the BI relative decline and lists 'Influence of time since baseline' separately for BI p_notmax (that second clock is TSS = DAY, carried here by rxode2's `time`). Not centred in the source stream.",
+      source_name = "TLS"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 580L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 580L,
+    n_studies = 1L,
     n_observations = "Barthel Index assessed on days 7, 30 and 90, plus a telephone assessment at day 60; no admission assessment. One imputed record was added for subjects whose observations ended before the day-90 endpoint, placed halfway between the last measured observation and the next intended appointment, to inform the dropout submodel (Karlsson 2010 Data Preparation)",
-    age_range      = "mean 71.7 years, range 26-90 (Karlsson 2010 Methods, Patients and Data)",
-    disease_state  = "acute stroke with onset within 12 h of treatment; mean baseline NIHSS 16.8, range 4-31",
-    dose_range     = "none -- placebo arm only; no drug was modelled",
-    regions        = "multinational, multicentre",
-    notes          = paste0(
+    age_range = "mean 71.7 years, range 26-90 (Karlsson 2010 Methods, Patients and Data)",
+    disease_state = "acute stroke with onset within 12 h of treatment; mean baseline NIHSS 16.8, range 4-31",
+    dose_range = "none -- placebo arm only; no drug was modelled",
+    regions = "multinational, multicentre",
+    notes = paste0(
       "Placebo arm of the double-blind, multinational, multicentre ",
       "CLASS-I trial of the novel acute-stroke compound clomethiazole ",
       "(Karlsson 2010 reference 32 = Lyden et al., Stroke ",

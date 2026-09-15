@@ -3,8 +3,8 @@ Sahota_2015_miridesap <- function() {
   reference <- "Sahota T, Berges A, Barton S, Cookson L, Zamuner S, Richards D. Target Mediated Drug Disposition Model of CPHPC in Patients With Systemic Amyloidosis. CPT Pharmacometrics Syst Pharmacol. 2015;4(2):e15. doi:10.1002/psp4.15."
   vignette <- "Sahota_2015_miridesap"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL (CPHPC plasma); ng/mL-equivalent for SAP (mg/L * 1000)"
   )
 
@@ -13,61 +13,61 @@ Sahota_2015_miridesap <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot             = list(analyte = "miridesap", units = "mg", specimen = "administration site", verified = FALSE),
-    central           = list(analyte = "miridesap", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1       = list(analyte = "miridesap", units = "mg", specimen = "plasma", verified = FALSE),
-    total_target      = list(analyte = "serum amyloid P (SAP)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "miridesap", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "miridesap", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "miridesap", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "serum amyloid P (SAP)", units = "mg", specimen = "plasma", verified = FALSE),
     target_peripheral = list(analyte = "serum amyloid P (SAP)", units = "mg", specimen = "plasma", verified = FALSE),
-    complex           = list(analyte = "miridesap-SAP complex", units = "mg", specimen = "plasma", verified = FALSE)
+    complex = list(analyte = "miridesap-SAP complex", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance calculated by the MDRD formula at baseline (Sahota 2015 Methods, Dataset production).",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Creatinine clearance calculated by the MDRD formula at baseline (Sahota 2015 Methods, Dataset production).",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Sahota 2015 Eq. 1: cl_effect = 1 + e_crcl_cl * (min(CRCL, 80) - 80); the covariate saturates at CRCL >= 80 mL/min (multiplier = 1) and linearly reduces CL with declining renal function below the 80 mL/min threshold. Reported clearance of 6.85 L/h applies at CRCL >= 80 (Sahota 2015 Table 2 footnote a). Baseline-only; not time-varying.",
-      source_name        = "CRCL"
+      notes = "Sahota 2015 Eq. 1: cl_effect = 1 + e_crcl_cl * (min(CRCL, 80) - 80); the covariate saturates at CRCL >= 80 mL/min (multiplier = 1) and linearly reduces CL with declining renal function below the 80 mL/min threshold. Reported clearance of 6.85 L/h applies at CRCL >= 80 (Sahota 2015 Table 2 footnote a). Baseline-only; not time-varying.",
+      source_name = "CRCL"
     ),
     DIS_AMYLOID_LIVER = list(
-      description        = "Hepatic amyloid involvement indicator (0 = no liver amyloid; 1 = liver amyloid present).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hepatic amyloid involvement indicator (0 = no liver amyloid; 1 = liver amyloid present).",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Sahota 2015 Eq. 2: Q4_amliver = 1 + e_amliver_q4 * DIS_AMYLOID_LIVER multiplies the typical SAP intercompartmental clearance. Patients with hepatic amyloid have a roughly 5-fold higher Q4 (1 + 4.01). Baseline-only; not time-varying. Renamed from canonical AMLIVER to DIS_AMYLOID_LIVER on 2026-06-19 per the canonical-register standardization audit.",
-      source_name        = "AMLIVER"
+      notes = "Sahota 2015 Eq. 2: Q4_amliver = 1 + e_amliver_q4 * DIS_AMYLOID_LIVER multiplies the typical SAP intercompartmental clearance. Patients with hepatic amyloid have a roughly 5-fold higher Q4 (1 + 4.01). Baseline-only; not time-varying. Renamed from canonical AMLIVER to DIS_AMYLOID_LIVER on 2026-06-19 per the canonical-register standardization audit.",
+      source_name = "AMLIVER"
     ),
     DIS_AMYLOID_LOAD = list(
-      description        = "Whole-body amyloid load ordinal score (0 = no amyloid in healthy volunteers; 1 = small; 2 = moderate; 3 = large).",
-      units              = "(categorical 0-3)",
-      type               = "categorical",
+      description = "Whole-body amyloid load ordinal score (0 = no amyloid in healthy volunteers; 1 = small; 2 = moderate; 3 = large).",
+      units = "(categorical 0-3)",
+      type = "categorical",
       reference_category = 0,
-      notes              = "Sahota 2015 Methods (Dataset production) defines the score; Eq. 2 collapses categories 0 and 1 into the reference (V4 multiplier = 1), then adds e_amload2_vp_sap once at DIS_AMYLOID_LOAD>=2 and adds e_amload3_vp_sap again at DIS_AMYLOID_LOAD=3 to enforce monotonicity. Final model yields V4 multipliers of 1, 1, 7.39, and 33.78 for DIS_AMYLOID_LOAD 0, 1, 2, and 3 respectively (Sahota 2015 Results: V4 increased 7.4-fold and 33.78-fold in moderate and large amyloid loads relative to small/none). Baseline-only; not time-varying. Renamed from canonical AMLOAD to DIS_AMYLOID_LOAD on 2026-06-19 per the canonical-register standardization audit.",
-      source_name        = "AMLOAD"
+      notes = "Sahota 2015 Methods (Dataset production) defines the score; Eq. 2 collapses categories 0 and 1 into the reference (V4 multiplier = 1), then adds e_amload2_vp_sap once at DIS_AMYLOID_LOAD>=2 and adds e_amload3_vp_sap again at DIS_AMYLOID_LOAD=3 to enforce monotonicity. Final model yields V4 multipliers of 1, 1, 7.39, and 33.78 for DIS_AMYLOID_LOAD 0, 1, 2, and 3 respectively (Sahota 2015 Results: V4 increased 7.4-fold and 33.78-fold in moderate and large amyloid loads relative to small/none). Baseline-only; not time-varying. Renamed from canonical AMLOAD to DIS_AMYLOID_LOAD on 2026-06-19 per the canonical-register standardization audit.",
+      source_name = "AMLOAD"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female; 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female; 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Sahota 2015 Eq. 2: SAP_BASE_sex = 1 + e_sexf_sap0 * SEXF, with e_sexf_sap0 = -0.30 giving ~30% lower baseline SAP in females (Sahota 2015 Results, consistent with Nelson et al. 1991 reference range of 21 mg/L in women vs 32 mg/L in men). Paper encoded SEX as 1 = male and 2 = female; convert to canonical SEXF = as.integer(SEX == 2) when ingesting paper-formatted data.",
-      source_name        = "SEX"
+      notes = "Sahota 2015 Eq. 2: SAP_BASE_sex = 1 + e_sexf_sap0 * SEXF, with e_sexf_sap0 = -0.30 giving ~30% lower baseline SAP in females (Sahota 2015 Results, consistent with Nelson et al. 1991 reference range of 21 mg/L in women vs 32 mg/L in men). Paper encoded SEX as 1 = male and 2 = female; convert to canonical SEXF = as.integer(SEX == 2) when ingesting paper-formatted data.",
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 38L,
-    n_studies      = 2L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 38L,
+    n_studies = 2L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Healthy volunteers (CPH113776; 21 male subjects) and patients with systemic amyloidosis (CPH114527; cohorts 1-4 spanning small-to-large whole-body amyloid load and normal-to-moderate-severe renal impairment per Sahota 2015 Table 1).",
-    dose_range     = "Sahota 2015 Methods: CPH113776 used 1 h IV infusions (5-70 mg) and 24 h IV infusion regimens (induction + maintenance, total 86-960 mg). CPH114527 used 48 h IV infusions (124.8-1440 mg) followed by one or three SC doses (10-60 mg). The model also supports SC dosing via the depot compartment with KSC and F fixed at the prior point estimates.",
-    regions        = NA_character_,
-    notes          = "Subject count and study identifiers from Sahota 2015 Methods (Adaptive PK-PD studies). Finer demographics (precise age and weight ranges, female %) are not enumerated in the paper Table 1; Supplementary Materials S1 and S2 were not on disk for this extraction."
+    disease_state = "Healthy volunteers (CPH113776; 21 male subjects) and patients with systemic amyloidosis (CPH114527; cohorts 1-4 spanning small-to-large whole-body amyloid load and normal-to-moderate-severe renal impairment per Sahota 2015 Table 1).",
+    dose_range = "Sahota 2015 Methods: CPH113776 used 1 h IV infusions (5-70 mg) and 24 h IV infusion regimens (induction + maintenance, total 86-960 mg). CPH114527 used 48 h IV infusions (124.8-1440 mg) followed by one or three SC doses (10-60 mg). The model also supports SC dosing via the depot compartment with KSC and F fixed at the prior point estimates.",
+    regions = NA_character_,
+    notes = "Subject count and study identifiers from Sahota 2015 Methods (Adaptive PK-PD studies). Finer demographics (precise age and weight ranges, female %) are not enumerated in the paper Table 1; Supplementary Materials S1 and S2 were not on disk for this extraction."
   )
 
   ini({

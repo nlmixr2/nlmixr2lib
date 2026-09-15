@@ -10,54 +10,54 @@ Taylor_2020_methotrexate <- function() {
     sep = " "
   )
   vignette <- "Taylor_2020_methotrexate"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear normalization to 1.73 m^2 applied to all PK parameters (CL, V1, Q2, V2, Q3, V3) per Taylor 2020 Table 2 step 2 and Table 3 column headers (parameters reported as L/h/1.73 m^2 and L/1.73 m^2). The paper does not state the BSA computation formula (DuBois / Mosteller / Haycock); record 'unspecified' when assembling event data.",
-      source_name        = "BSA"
+      notes = "Linear normalization to 1.73 m^2 applied to all PK parameters (CL, V1, Q2, V2, Q3, V3) per Taylor 2020 Table 2 step 2 and Table 3 column headers (parameters reported as L/h/1.73 m^2 and L/1.73 m^2). The paper does not state the BSA computation formula (DuBois / Mosteller / Haycock); record 'unspecified' when assembling event data.",
+      source_name = "BSA"
     ),
     CREAT = list(
-      description        = "Serum creatinine (time-varying)",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine (time-varying)",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying through the course of MTX infusion; recorded prior to each MTX cycle and at least daily during cycles. Power effect on CL only with reference 29 umol/L (the NOPHO population median; equivalent to 0.33 mg/dL) and exponent -0.247 per Taylor 2020 Table 3 and the covariate-model equation on page 638.",
-      source_name        = "SCr"
+      notes = "Time-varying through the course of MTX infusion; recorded prior to each MTX cycle and at least daily during cycles. Power effect on CL only with reference 29 umol/L (the NOPHO population median; equivalent to 0.33 mg/dL) and exponent -0.247 per Taylor 2020 Table 3 and the covariate-model equation on page 638.",
+      source_name = "SCr"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 772L,
-    n_studies      = 2L,
-    n_courses      = 4986L,
+    species = "human",
+    n_subjects = 772L,
+    n_studies = 2L,
+    n_courses = 4986L,
     n_observations = 31672L,
-    age_range      = "1-18.83 years (median 4)",
-    age_median     = "4 years",
-    weight_range   = "7.2-105 kg (median 17.8)",
-    weight_median  = "17.8 kg",
-    bsa_range      = "0.4-2.31 m^2 (median 0.745)",
-    bsa_median     = "0.745 m^2",
+    age_range = "1-18.83 years (median 4)",
+    age_median = "4 years",
+    weight_range = "7.2-105 kg (median 17.8)",
+    weight_median = "17.8 kg",
+    bsa_range = "0.4-2.31 m^2 (median 0.745)",
+    bsa_median = "0.745 m^2",
     sex_female_pct = 43,
     race_ethnicity = "Primarily European (Nordic / Baltic); race not reported in the source dataset and not used as a covariate.",
-    disease_state  = "Philadelphia-chromosome-negative acute lymphoblastic leukemia treated under the NOPHO ALL2000 and ALL2008 protocols.",
-    dose_range     = "5 or 8 g/m^2 IV over a 24 h infusion (Taylor 2020 Methods, range 0.6-10.1 g/m^2); 6-8 courses per patient with folinic acid rescue starting 36 or 42 h after the start of infusion.",
-    regions        = "Denmark (27%), Finland (10%), Norway (8%), Sweden (55%).",
-    notes          = "Patient demographics from Taylor 2020 Table 1. The NOPHO database excluded patients who received glucarpidase because the MTX immunoassay has interference from DAMPA (the glucarpidase cleavage product). 48 patients and 679 concentrations were excluded for missing dosing information; an additional 753 concentrations were excluded by the investigators as implausible because they caused NONMEM minimization errors. 5,535 of the 31,672 concentrations were recorded >= 96 h after the start of infusion (delayed-clearance follow-up). Finnish patients had ~26% faster clearance than Swedish / Danish / Norwegian patients in a post-hoc one-way ANOVA, attributed to earlier pre-hydration timing; country was not retained as a covariate in the final model."
+    disease_state = "Philadelphia-chromosome-negative acute lymphoblastic leukemia treated under the NOPHO ALL2000 and ALL2008 protocols.",
+    dose_range = "5 or 8 g/m^2 IV over a 24 h infusion (Taylor 2020 Methods, range 0.6-10.1 g/m^2); 6-8 courses per patient with folinic acid rescue starting 36 or 42 h after the start of infusion.",
+    regions = "Denmark (27%), Finland (10%), Norway (8%), Sweden (55%).",
+    notes = "Patient demographics from Taylor 2020 Table 1. The NOPHO database excluded patients who received glucarpidase because the MTX immunoassay has interference from DAMPA (the glucarpidase cleavage product). 48 patients and 679 concentrations were excluded for missing dosing information; an additional 753 concentrations were excluded by the investigators as implausible because they caused NONMEM minimization errors. 5,535 of the 31,672 concentrations were recorded >= 96 h after the start of infusion (delayed-clearance follow-up). Finnish patients had ~26% faster clearance than Swedish / Danish / Norwegian patients in a post-hoc one-way ANOVA, attributed to earlier pre-hydration timing; country was not retained as a covariate in the final model."
   )
 
   ini({

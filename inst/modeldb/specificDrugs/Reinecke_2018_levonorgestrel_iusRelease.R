@@ -40,8 +40,8 @@ Reinecke_2018_levonorgestrel_iusRelease <- function() {
   )
   vignette <- "Reinecke_2018_levonorgestrel_contraceptives"
   units <- list(
-    time          = "h",
-    dosing        = "mg (levonorgestrel loaded into the device reservoir)",
+    time = "h",
+    dosing = "mg (levonorgestrel loaded into the device reservoir)",
     concentration = "not applicable (no disposition); residual content in mg, release rate in ug/day"
   )
 
@@ -54,11 +54,11 @@ Reinecke_2018_levonorgestrel_iusRelease <- function() {
 
   covariateData <- list(
     FORM_LNG_IUS20 = list(
-      description        = "Indicator for the levonorgestrel-releasing intrauterine system 20 (LNG-IUS 20, Mirena): 1 = this device, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "categorical",
+      description = "Indicator for the levonorgestrel-releasing intrauterine system 20 (LNG-IUS 20, Mirena): 1 = this device, 0 = otherwise.",
+      units = "(binary)",
+      type = "categorical",
       reference_category = "0 (a device other than LNG-IUS 20)",
-      notes              = paste(
+      notes = paste(
         "Exactly one of FORM_LNG_IUS20, FORM_LNG_IUS12 and FORM_LNG_IUS8 must",
         "be 1; the three are mutually exclusive. LNG-IUS 20 is the only device",
         "whose first release process is first-order in the remaining reservoir",
@@ -66,54 +66,54 @@ Reinecke_2018_levonorgestrel_iusRelease <- function() {
         "switches structure as well as selecting parameter values",
         "(Supplemental Table S3a; Supplemental Table S1 footnote d)."
       ),
-      source_name        = "not a data column in the paper; the paper coded the device as a NONMEM branch on the treatment identifier"
+      source_name = "not a data column in the paper; the paper coded the device as a NONMEM branch on the treatment identifier"
     ),
     FORM_LNG_IUS12 = list(
-      description        = "Indicator for the levonorgestrel-releasing intrauterine system 12 (LNG-IUS 12, Kyleena): 1 = this device, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "categorical",
+      description = "Indicator for the levonorgestrel-releasing intrauterine system 12 (LNG-IUS 12, Kyleena): 1 = this device, 0 = otherwise.",
+      units = "(binary)",
+      type = "categorical",
       reference_category = "0 (a device other than LNG-IUS 12)",
-      notes              = paste(
+      notes = paste(
         "Mutually exclusive with FORM_LNG_IUS20 and FORM_LNG_IUS8. LNG-IUS 12",
         "shares the zero-order first release process and the fc2 value with",
         "LNG-IUS 8."
       ),
-      source_name        = "not a data column in the paper; the paper coded the device as a NONMEM branch on the treatment identifier"
+      source_name = "not a data column in the paper; the paper coded the device as a NONMEM branch on the treatment identifier"
     ),
     FORM_LNG_IUS8 = list(
-      description        = "Indicator for the levonorgestrel-releasing intrauterine system 8 (LNG-IUS 8, Jaydess/Skyla): 1 = this device, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "categorical",
+      description = "Indicator for the levonorgestrel-releasing intrauterine system 8 (LNG-IUS 8, Jaydess/Skyla): 1 = this device, 0 = otherwise.",
+      units = "(binary)",
+      type = "categorical",
       reference_category = "0 (a device other than LNG-IUS 8)",
-      notes              = paste(
+      notes = paste(
         "Mutually exclusive with FORM_LNG_IUS20 and FORM_LNG_IUS12. LNG-IUS 8",
         "shares the zero-order first release process and the fc2 value with",
         "LNG-IUS 12."
       ),
-      source_name        = "not a data column in the paper; the paper coded the device as a NONMEM branch on the treatment identifier"
+      source_name = "not a data column in the paper; the paper coded the device as a NONMEM branch on the treatment identifier"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2645L,
-    n_studies      = 3L,
-    studies        = c(
+    species = "human",
+    n_subjects = 2645L,
+    n_studies = 3L,
+    studies = c(
       "Phase 2 study 308901 and Phase 3 study 89532 (LNG-IUS 20; 64 + 87 residual-content measurements)",
       "Phase 3 study 310442, LNG-IUS 12 arm (854 residual-content measurements over 5 years)",
       "Phase 3 study 310442, LNG-IUS 8 arm (763 residual-content measurements over 3 years)"
     ),
-    age_range      = "18-40 years (median 28 years across the pooled intrauterine data, N = 2790)",
-    weight_range   = "39-160 kg (median 66 kg across the pooled intrauterine data, N = 2790)",
+    age_range = "18-40 years (median 28 years across the pooled intrauterine data, N = 2790)",
+    weight_range = "39-160 kg (median 66 kg across the pooled intrauterine data, N = 2790)",
     sex_female_pct = 100,
-    disease_state  = "Healthy premenopausal women using a levonorgestrel-releasing intrauterine system for contraception",
-    dose_range     = paste(
+    disease_state = "Healthy premenopausal women using a levonorgestrel-releasing intrauterine system for contraception",
+    dose_range = paste(
       "A single insertion of one device. The reservoir loading is not stated in",
       "the paper; it is 52 mg (LNG-IUS 20), 19.5 mg (LNG-IUS 12) and 13.5 mg",
       "(LNG-IUS 8) -- see the vignette Errata for how these are recovered from",
       "the paper's own Table 4."
     ),
-    notes          = paste(
+    notes = paste(
       "Subject counts are the sums of the intrauterine rows of Table 1",
       "(239 + 94 for LNG-IUS 20, 1306 for LNG-IUS 12, 1245 for LNG-IUS 8",
       "gives 2884 women), restricted here to the 2043 residual-content",

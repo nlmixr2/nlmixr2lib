@@ -32,24 +32,24 @@ Sawe_2025_levofloxacin <- function() {
     sep = " "
   )
   vignette <- "Sawe_2025_levofloxacin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Sawe 2025 supplementary Fig. S1 and
   # the supplementary NONMEM control stream ($MODEL: COMP=(ABS DEFDOSE),
   # COMP=(CENTRAL DEFOBSERVATION); $ERROR IPRED = A(2)/V in mg/L).
   compartmentData <- list(
-    depot   = list(analyte = "levofloxacin", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "levofloxacin", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "levofloxacin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass (Janmahasatian formula)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass (Janmahasatian formula)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying: for the pregnant participants sampled at two",
         "visits, weight (and therefore FFM) was recorded at each visit and",
         "handled as a time-varying covariate (Sawe 2025 Methods,",
@@ -67,14 +67,14 @@ Sawe_2025_levofloxacin <- function() {
         "Allometric exponents fixed at 0.75 on CL and 1 on V.",
         sep = " "
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used as a surrogate for glomerular filtration rate; the authors",
         "deliberately avoided creatinine-clearance estimating equations",
         "because these are reported to inconsistently underestimate renal",
@@ -89,14 +89,14 @@ Sawe_2025_levofloxacin <- function() {
         "umol/L in never-pregnant women (Discussion).",
         sep = " "
       ),
-      source_name        = "CREATININE"
+      source_name = "CREATININE"
     ),
     PREG = list(
-      description        = "Third-trimester pregnancy status indicator: 1 = pregnant, 0 = not pregnant",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Third-trimester pregnancy status indicator: 1 = pregnant, 0 = not pregnant",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not pregnant: pools the postpartum, never-pregnant-female and male records)",
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject, unlike the time-fixed use of PREG in",
         "cohorts that enrol pregnant and non-pregnant women in parallel:",
         "12 of the 21 pregnant participants contributed matched antepartum",
@@ -115,14 +115,14 @@ Sawe_2025_levofloxacin <- function() {
         "attributes a larger 53% increase to pregnancy (Table S3).",
         sep = " "
       ),
-      source_name        = "PREGNANT"
+      source_name = "PREGNANT"
     ),
     OCC = list(
-      description        = "Sampling-occasion indicator: 1 = antepartum unobserved dose, 2 = antepartum observed dose, 3 = postpartum unobserved dose, 4 = postpartum observed dose",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Sampling-occasion indicator: 1 = antepartum unobserved dose, 2 = antepartum observed dose, 3 = postpartum unobserved dose, 4 = postpartum observed dose",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Sawe 2025 supplementary material, 'Implementation of between",
         "occasion variability and between subject variability': an",
         "occasion is a dosing event and its associated PK samples, while a",
@@ -143,7 +143,7 @@ Sawe_2025_levofloxacin <- function() {
         "(OCC = 2 or 4) so the un-inflated BOV on F applies.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
@@ -152,10 +152,10 @@ Sawe_2025_levofloxacin <- function() {
   # only: none of these is referenced in model().
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
-      notes              = paste(
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Cohort median 58.0 kg (range 37.0-98.0, Table 1). Tested as the",
         "allometric size descriptor but beaten by fat-free mass",
         "(dOFV 3.46 for weight versus 12.9 for FFM), so it does not appear",
@@ -166,10 +166,10 @@ Sawe_2025_levofloxacin <- function() {
       )
     ),
     HT = list(
-      description        = "Height",
-      units              = "m",
-      type               = "continuous",
-      notes              = paste(
+      description = "Height",
+      units = "m",
+      type = "continuous",
+      notes = paste(
         "Cohort median 1.60 m (range 1.46-1.88, Table 1). Not a covariate",
         "in the final model; required as an input to the FFM formula,",
         "which takes height in metres.",
@@ -177,10 +177,10 @@ Sawe_2025_levofloxacin <- function() {
       )
     ),
     SEXF = list(
-      description        = "Biological sex: 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
-      notes              = paste(
+      description = "Biological sex: 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "33 of 47 participants (70%) female (Table 1). Tested as a",
         "covariate and not statistically significant, so absent from the",
         "final model; the authors attribute this to the sex difference in",
@@ -193,16 +193,16 @@ Sawe_2025_levofloxacin <- function() {
       )
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
-      notes              = "Cohort median 32 years (range 19-51, Table 1). Reported as a population descriptor; not a covariate in the final model."
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
+      notes = "Cohort median 32 years (range 19-51, Table 1). Reported as a population descriptor; not a covariate in the final model."
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
-      notes              = paste(
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Cohort median 30.5 g/L (range 17.0-40.0, Table 1). Tested on",
         "clearance and not significant. The authors reason that albumin",
         "matters less here because levofloxacin is only moderately",
@@ -212,10 +212,10 @@ Sawe_2025_levofloxacin <- function() {
       )
     ),
     HIV_POS = list(
-      description        = "HIV-positive status indicator: 1 = HIV-positive, 0 = HIV-negative",
-      units              = "(binary)",
-      type               = "binary",
-      notes              = paste(
+      description = "HIV-positive status indicator: 1 = HIV-positive, 0 = HIV-negative",
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "31 of 47 participants (66%) living with HIV and on antiretroviral",
         "therapy, most commonly dolutegravir-based (n = 15, 48%; Table 1).",
         "Tested and not significant on levofloxacin pharmacokinetics.",
@@ -223,10 +223,10 @@ Sawe_2025_levofloxacin <- function() {
       )
     ),
     EGA = list(
-      description        = "Maternal estimated gestational age at the antepartum visit",
-      units              = "weeks",
-      type               = "continuous",
-      notes              = paste(
+      description = "Maternal estimated gestational age at the antepartum visit",
+      units = "weeks",
+      type = "continuous",
+      notes = paste(
         "Tested within the pregnant participants only, using linear,",
         "exponential and power functions centred on the data-set median,",
         "and found not significant (Sawe 2025 Methods and Results). All",
@@ -235,10 +235,10 @@ Sawe_2025_levofloxacin <- function() {
       )
     ),
     STUDY_BEAT = list(
-      description        = "Source-study indicator: 1 = BEAT Tuberculosis (NCT04062201), 0 = King Dinuzulu Hospital observational cohort",
-      units              = "(binary)",
-      type               = "binary",
-      notes              = paste(
+      description = "Source-study indicator: 1 = BEAT Tuberculosis (NCT04062201), 0 = King Dinuzulu Hospital observational cohort",
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Study and study site were both tested as covariates and neither",
         "was significant (Results), so the two pooled studies share one",
         "set of parameters.",
@@ -248,22 +248,22 @@ Sawe_2025_levofloxacin <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 47L,
-    n_studies       = 2L,
-    n_observations  = 320L,
-    n_profiles      = "19 antepartum, 14 postpartum, 12 non-pregnant female, 14 male",
-    age_range       = "19-51 years (Table 1: median 32 years)",
-    weight_range    = "37.0-98.0 kg (Table 1: median 58.0 kg)",
-    height_range    = "1.46-1.88 m (Table 1: median 1.60 m)",
-    ffm_range       = "27.3-51.2 kg (Table 1: median 39.4 kg)",
-    creat_range     = "25.3-110 umol/L (Table 1: median 56.2 umol/L)",
-    alb_range       = "17.0-40.0 g/L (Table 1: median 30.5 g/L)",
-    sex_female_pct  = 70.2,
-    race_ethnicity  = "38 (81%) black, 9 (19%) white (Table 1)",
-    n_hiv_positive  = 31L,
-    n_pregnant      = 21L,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 47L,
+    n_studies = 2L,
+    n_observations = 320L,
+    n_profiles = "19 antepartum, 14 postpartum, 12 non-pregnant female, 14 male",
+    age_range = "19-51 years (Table 1: median 32 years)",
+    weight_range = "37.0-98.0 kg (Table 1: median 58.0 kg)",
+    height_range = "1.46-1.88 m (Table 1: median 1.60 m)",
+    ffm_range = "27.3-51.2 kg (Table 1: median 39.4 kg)",
+    creat_range = "25.3-110 umol/L (Table 1: median 56.2 umol/L)",
+    alb_range = "17.0-40.0 g/L (Table 1: median 30.5 g/L)",
+    sex_female_pct = 70.2,
+    race_ethnicity = "38 (81%) black, 9 (19%) white (Table 1)",
+    n_hiv_positive = 31L,
+    n_pregnant = 21L,
+    disease_state = paste(
       "Rifampicin-resistant tuberculosis (RR-TB) on treatment. 21 of the",
       "33 female participants were pregnant, sampled in the third",
       "trimester; 12 of those contributed matched antepartum and",
@@ -271,20 +271,20 @@ Sawe_2025_levofloxacin <- function() {
       "in BEAT Tuberculosis and about 6 weeks after delivery at King",
       "Dinuzulu Hospital)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Levofloxacin 750 or 1000 mg orally once daily by body-weight band",
       "per WHO guidance (34-50 kg and above 50 kg). A standard breakfast",
       "was given about 1 h before the observed dose in both studies."
     ),
-    regions         = "South Africa (two sites for BEAT Tuberculosis; King Dinuzulu Hospital, Durban)",
-    co_medication   = paste(
+    regions = "South Africa (two sites for BEAT Tuberculosis; King Dinuzulu Hospital, Durban)",
+    co_medication = paste(
       "Antiretroviral therapy in 31 participants, commonly",
       "tenofovir/lamivudine/dolutegravir; RR-TB co-treatment most",
       "commonly linezolid (40, 85%), bedaquiline (44, 94%), clofazimine",
       "(47, 100%) and delamanid (13, 28%). Concomitant medication was",
       "tested as a covariate and was not significant."
     ),
-    notes           = paste(
+    notes = paste(
       "Pooled from BEAT Tuberculosis (ClinicalTrials.gov NCT04062201, a",
       "phase 3 RCT with a pregnancy PK sub-study; sampling pre-dose and at",
       "2, 4, 6, 8, 10 and 24 h, or pre-dose and 2, 4, 6, 8 and 24 h in the",

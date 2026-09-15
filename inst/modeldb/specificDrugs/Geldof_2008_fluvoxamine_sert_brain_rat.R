@@ -45,8 +45,8 @@ Geldof_2008_fluvoxamine_sert_brain_rat <- function() {
   paper_specific_compartments <- c("brain_total")
 
   units <- list(
-    time          = "min",
-    dosing        = "ng",
+    time = "min",
+    dosing = "ng",
     concentration = "ng/mL"
   )
 
@@ -54,9 +54,9 @@ Geldof_2008_fluvoxamine_sert_brain_rat <- function() {
   # brain concentration CT of paper Eq 10 of the companion Pharm Res paper),
   # not an amount -- its units are therefore ng/mL rather than ng.
   compartmentData <- list(
-    central     = list(analyte = "fluvoxamine", units = "ng",    specimen = "plasma", verified = TRUE),
-    peripheral1 = list(analyte = "fluvoxamine", units = "ng",    specimen = "plasma", verified = TRUE),
-    peripheral2 = list(analyte = "fluvoxamine", units = "ng",    specimen = "plasma", verified = TRUE),
+    central = list(analyte = "fluvoxamine", units = "ng", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "fluvoxamine", units = "ng", specimen = "plasma", verified = TRUE),
+    peripheral2 = list(analyte = "fluvoxamine", units = "ng", specimen = "plasma", verified = TRUE),
     brain_total = list(analyte = "fluvoxamine", units = "ng/mL", specimen = "tissue", verified = TRUE)
   )
 
@@ -65,9 +65,9 @@ Geldof_2008_fluvoxamine_sert_brain_rat <- function() {
   covariatesDataExcluded <- list(
     DOSE_FLUVOXAMINE_MGKG = list(
       description = "Administered fluvoxamine dose level (1, 3.7 or 7.3 mg/kg, 30 min IV infusion)",
-      units       = "mg/kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/kg",
+      type = "continuous",
+      notes = paste(
         "Screened against the PD parameter estimates and against the plasma PK",
         "parameters; no significant correlation with either was found, so dose",
         "was not retained as a covariate (paper Results p1373-p1374)."
@@ -75,9 +75,9 @@ Geldof_2008_fluvoxamine_sert_brain_rat <- function() {
     ),
     STUDY = list(
       description = "Source protocol (brain-sampling study vs microdialysis study)",
-      units       = NA,
-      type        = "categorical",
-      notes       = paste(
+      units = NA,
+      type = "categorical",
+      notes = paste(
         "Screened as a covariate on the plasma PK and brain distribution",
         "parameters; no difference between the two protocols could be detected",
         "(paper Results p1373). Tables 1 and 2 nevertheless report the",
@@ -88,14 +88,14 @@ Geldof_2008_fluvoxamine_sert_brain_rat <- function() {
   )
 
   population <- list(
-    species        = "rat (male Wistar, Charles River Wiga GmbH, Sulzfeld, Germany)",
-    n_subjects     = 47L,
-    n_studies      = 2L,
-    age_range      = "adult (specific age not reported; group-housed 1 week on arrival, then 2 days individually after cannulation surgery for the brain-sampling animals and 7 days for the microdialysis animals)",
-    weight_range   = "226-250 g body weight at the start of the experiments",
+    species = "rat (male Wistar, Charles River Wiga GmbH, Sulzfeld, Germany)",
+    n_subjects = 47L,
+    n_studies = 2L,
+    age_range = "adult (specific age not reported; group-housed 1 week on arrival, then 2 days individually after cannulation surgery for the brain-sampling animals and 7 days for the microdialysis animals)",
+    weight_range = "226-250 g body weight at the start of the experiments",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy rats prepared with a permanent right-jugular-vein cannula for",
       "fluvoxamine administration and a permanent left-femoral-artery cannula",
       "for serial arterial blood sampling. The 26 microdialysis animals also",
@@ -106,7 +106,7 @@ Geldof_2008_fluvoxamine_sert_brain_rat <- function() {
       "expressed as a percentage of the labelling in the corresponding brain",
       "area of untreated control animals."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 30 min IV infusion of fluvoxamine free base into the right",
       "jugular vein at 1 mg/kg (24 rats) or 7.3 mg/kg (23 rats) in the",
       "brain-sampling study that provided the SERT occupancy observations",
@@ -114,8 +114,8 @@ Geldof_2008_fluvoxamine_sert_brain_rat <- function() {
       "study (26 rats: 8 / 8 / 10 at 1 / 3.7 / 7.3 mg/kg) contributed the",
       "brain ECF concentration data."
     ),
-    regions        = "preclinical (in-vivo rat); Leiden University, The Netherlands",
-    notes          = paste(
+    regions = "preclinical (in-vivo rat); Leiden University, The Netherlands",
+    notes = paste(
       "n_subjects = 47 counts the brain-sampling animals that contributed the",
       "ex vivo SERT occupancy observations used to fit the PD model (paper",
       "Figure 4 caption: 'the total population of 47 rats'). A further 26",

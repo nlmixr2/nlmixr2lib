@@ -35,12 +35,12 @@ Richardson_2025_osimertinib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot    = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
     transit1 = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
     transit2 = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
     transit3 = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
     transit4 = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central  = list(analyte = "osimertinib", units = "mg", specimen = "plasma", verified = TRUE)
+    central = list(analyte = "osimertinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   # No covariates were retained in this structure -- the search selected no
@@ -49,12 +49,12 @@ Richardson_2025_osimertinib <- function() {
   covariateData <- list()
 
   population <- list(
-    species       = "human",
-    n_subjects    = 270,
-    n_studies     = 1,
+    species = "human",
+    n_subjects = 270,
+    n_studies = 1,
     disease_state = "not reported (Phase 1 study NCT01802632 in EGFR-mutation-positive advanced non-small-cell lung cancer)",
-    dose_range    = "not reported",
-    notes         = paste(
+    dose_range = "not reported",
+    notes = paste(
       "270 participants after filtering to oral administration and parent-drug",
       "measurements only, contributing 3,766 observation records (Richardson",
       "2025 Table 1 and Supplementary Table 7). Observed concentrations were",

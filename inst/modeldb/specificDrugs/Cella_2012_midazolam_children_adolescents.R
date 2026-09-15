@@ -17,23 +17,23 @@ Cella_2012_midazolam_children_adolescents <- function() {
     sep = " "
   )
   vignette <- "Cella_2012_midazolam_paediatric_scaling"
-  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "midazolam children adolescents", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "midazolam children adolescents", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "midazolam children adolescents", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Used for per-kg linear scaling of the",
         "central volume (Vc = 1.95 * WT). The per-kg interpretation follows",
         "operator sidecar response 001 Q2 = A; the published Table 2 unit",
@@ -41,39 +41,39 @@ Cella_2012_midazolam_children_adolescents <- function() {
         "29 kg child (k10 ~ 0.097/min, t1/2 ~ 7 min). See the vignette",
         "Errata for the reasoning."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. The model uses age in months (AGE * 12)",
         "normalised to a 74-month reference for the linear scaling of the",
         "peripheral volume per Cella 2012 Table 2 ('Vp (l x months/74)' =",
         "7.14)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 18L,
-    n_studies      = 1L,
-    age_range      = "3.2 - 16.2 years",
-    age_median     = "7.7 years (mean); ~6.17 years (74 months) used as Vp reference",
-    weight_range   = "12.6 - 60.1 kg",
-    weight_median  = "29.0 kg (mean)",
+    species = "human",
+    n_subjects = 18L,
+    n_studies = 1L,
+    age_range = "3.2 - 16.2 years",
+    age_median = "7.7 years (mean); ~6.17 years (74 months) used as Vp reference",
+    weight_range = "12.6 - 60.1 kg",
+    weight_median = "29.0 kg (mean)",
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "Paediatric oncology patients undergoing invasive procedures. Sparse",
       "PK sampling (mean 4.6 samples per subject)."
     ),
-    dose_range     = "0.12 mg/kg IV bolus (mean dose; per-subject doses vary slightly)",
-    regions        = "Collaborative study between Purdue University (USA) and Sophia Children's Hospital (Netherlands)",
-    notes          = paste(
+    dose_range = "0.12 mg/kg IV bolus (mean dose; per-subject doses vary slightly)",
+    regions = "Collaborative study between Purdue University (USA) and Sophia Children's Hospital (Netherlands)",
+    notes = paste(
       "Per Cella 2012 Table 1. Informative priors from De Wildt (CL = 5",
       "mL/kg/min, Vc = 0.38 L/kg, Vp = 1.7 L/kg) were used to stabilise the",
       "model under sparse sampling per Cella 2012 Methods; the paper notes",

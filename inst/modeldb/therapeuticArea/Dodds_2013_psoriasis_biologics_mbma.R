@@ -47,95 +47,95 @@ Dodds_2013_psoriasis_biologics_mbma <- function() {
   # Vargo_2014_statins_ezetimibe_mbma so that checkModelConventions() sees a
   # parseable dosing / concentration pair.
   units <- list(
-    time          = "week (placeholder; the model is a time-independent dose-response evaluated once per subject at the end of the source's 12-week post-dose observation window, not a time course)",
-    dosing        = "mg/administration (single-dose milligrams supplied through the CONMED_<drug>_DOSE covariate columns, NOT as rxode2 dose events; the source's simulated dose levels are 0, 21, 70, 210 and 700 mg)",
+    time = "week (placeholder; the model is a time-independent dose-response evaluated once per subject at the end of the source's 12-week post-dose observation window, not a time course)",
+    dosing = "mg/administration (single-dose milligrams supplied through the CONMED_<drug>_DOSE covariate columns, NOT as rxode2 dose events; the source's simulated dose levels are 0, 21, 70, 210 and 700 mg)",
     concentration = "%/subject (percent improvement in PASI score for one subject; the lpasi output is a dimensionless log ratio. Output is NOT a drug concentration; the slash satisfies checkModelConventions parsing)"
   )
 
   covariateData <- list(
     CONMED_ADALIMUMAB_DOSE = list(
-      description        = "Single-dose adalimumab dose assigned to the subject in the simulated first-in-patient trial.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Single-dose adalimumab dose assigned to the subject in the simulated first-in-patient trial.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside an adalimumab arm; 0 in every arm makes this a placebo subject. IMPORTANT UNITS WARNING: this is a SINGLE-DOSE milligram amount read against an ED50 of 16.9 mg, which is NOT the same dose metric as the identically-named column in Mandema_2011_biologicDMARDs_mbma (mg per administration on a once-every-2-weeks maintenance regimen, ED50 17.8 mg q2w). The two models must not share a dose column value. The source's simulated dose levels are 0, 21, 70, 210 and 700 mg, chosen as the deliverable volumes of a 70 mg/mL presentation (0.3, 1, 3 and 10 mL); 700 mg is the maximum feasible dose assumed tolerated in healthy volunteers.",
-      source_name        = "Dose (Dodds 2013 Eq. 1; Table 1 adalimumab ED50 row; Table 2 dose-level assignments)"
+      notes = "0 outside an adalimumab arm; 0 in every arm makes this a placebo subject. IMPORTANT UNITS WARNING: this is a SINGLE-DOSE milligram amount read against an ED50 of 16.9 mg, which is NOT the same dose metric as the identically-named column in Mandema_2011_biologicDMARDs_mbma (mg per administration on a once-every-2-weeks maintenance regimen, ED50 17.8 mg q2w). The two models must not share a dose column value. The source's simulated dose levels are 0, 21, 70, 210 and 700 mg, chosen as the deliverable volumes of a 70 mg/mL presentation (0.3, 1, 3 and 10 mL); 700 mg is the maximum feasible dose assumed tolerated in healthy volunteers.",
+      source_name = "Dose (Dodds 2013 Eq. 1; Table 1 adalimumab ED50 row; Table 2 dose-level assignments)"
     ),
     CONMED_GOLIMUMAB_DOSE = list(
-      description        = "Single-dose golimumab dose assigned to the subject in the simulated first-in-patient trial.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Single-dose golimumab dose assigned to the subject in the simulated first-in-patient trial.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a golimumab arm. Same single-dose milligram metric as CONMED_ADALIMUMAB_DOSE above, read against an ED50 of 45.5 mg; see that entry's units warning about the Mandema_2011_biologicDMARDs_mbma column of the same name. Golimumab is the least potent of the three marketed antibodies in this analysis, which is why the source's Table 4 shows its ED50 is the one most often recovered within twofold by a 16-subject trial.",
-      source_name        = "Dose (Dodds 2013 Eq. 1; Table 1 golimumab ED50 row; Table 2 dose-level assignments)"
+      notes = "0 outside a golimumab arm. Same single-dose milligram metric as CONMED_ADALIMUMAB_DOSE above, read against an ED50 of 45.5 mg; see that entry's units warning about the Mandema_2011_biologicDMARDs_mbma column of the same name. Golimumab is the least potent of the three marketed antibodies in this analysis, which is why the source's Table 4 shows its ED50 is the one most often recovered within twofold by a 16-subject trial.",
+      source_name = "Dose (Dodds 2013 Eq. 1; Table 1 golimumab ED50 row; Table 2 dose-level assignments)"
     ),
     CONMED_USTEKINUMAB_DOSE = list(
-      description        = "Single-dose ustekinumab dose assigned to the subject in the simulated first-in-patient trial.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Single-dose ustekinumab dose assigned to the subject in the simulated first-in-patient trial.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "0 outside a ustekinumab arm. Same single-dose milligram metric as CONMED_ADALIMUMAB_DOSE above, read against an ED50 of 13.9 mg. Ustekinumab is the most potent of the three marketed antibodies here, and it is also the compound the source used to calibrate the subject-level variance model: Figure 3 compares simulated mean and standard deviation of percent PASI improvement at 45 and 90 mg against the observed PHOENIX 2 data. Those two doses are the licensed ustekinumab doses and are inside, but at the low end of, the 0-700 mg range this model was exercised over.",
-      source_name        = "Dose (Dodds 2013 Eq. 1; Table 1 ustekinumab ED50 row; Figure 3 PHOENIX 2 comparison)"
+      notes = "0 outside a ustekinumab arm. Same single-dose milligram metric as CONMED_ADALIMUMAB_DOSE above, read against an ED50 of 13.9 mg. Ustekinumab is the most potent of the three marketed antibodies here, and it is also the compound the source used to calibrate the subject-level variance model: Figure 3 compares simulated mean and standard deviation of percent PASI improvement at 45 and 90 mg against the observed PHOENIX 2 data. Those two doses are the licensed ustekinumab doses and are inside, but at the low end of, the 0-700 mg range this model was exercised over.",
+      source_name = "Dose (Dodds 2013 Eq. 1; Table 1 ustekinumab ED50 row; Figure 3 PHOENIX 2 comparison)"
     )
   )
 
   covariatesDataExcluded <- list(
     SCORE_PASI_BASE = list(
-      description        = "Baseline PASI score before treatment. Screened as a meta-analysis covariate but NOT retained in the final dose-response model.",
-      units              = "(score)",
-      type               = "continuous",
+      description = "Baseline PASI score before treatment. Screened as a meta-analysis covariate but NOT retained in the final dose-response model.",
+      units = "(score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Dodds 2013 Methods 'MBMA of biologic treatments for psoriasis' lists baseline PASI score among the characteristics evaluated for impact on the model parameters; no effect was retained and no point estimate is reported. Baseline PASI is nevertheless structurally present in this model as the DENOMINATOR of the response: the modelled quantity is log(PASI_treatment / PASI_base), so a subject's own baseline cancels out of every prediction and only the ratio is predicted. A user who wants absolute on-treatment PASI must multiply exp(lpasi) by their own baseline score.",
-      source_name        = "baseline PASI score (Dodds 2013 Methods covariate list)"
+      notes = "Dodds 2013 Methods 'MBMA of biologic treatments for psoriasis' lists baseline PASI score among the characteristics evaluated for impact on the model parameters; no effect was retained and no point estimate is reported. Baseline PASI is nevertheless structurally present in this model as the DENOMINATOR of the response: the modelled quantity is log(PASI_treatment / PASI_base), so a subject's own baseline cancels out of every prediction and only the ratio is predicted. A user who wants absolute on-treatment PASI must multiply exp(lpasi) by their own baseline score.",
+      source_name = "baseline PASI score (Dodds 2013 Methods covariate list)"
     ),
     AGE = list(
-      description        = "Patient age. Screened as a meta-analysis covariate but NOT retained in the final dose-response model.",
-      units              = "year",
-      type               = "continuous",
+      description = "Patient age. Screened as a meta-analysis covariate but NOT retained in the final dose-response model.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Listed in Dodds 2013 Methods among 'endpoint, drug, drug class, regimen, indication (psoriasis vs. psoriatic rheumatoid arthritis), failure of prior treatment, baseline PASI score, disease duration, age, weight, and gender' evaluated for impact on model parameters. No effect retained and no point estimate reported.",
-      source_name        = "age (Dodds 2013 Methods covariate list)"
+      notes = "Listed in Dodds 2013 Methods among 'endpoint, drug, drug class, regimen, indication (psoriasis vs. psoriatic rheumatoid arthritis), failure of prior treatment, baseline PASI score, disease duration, age, weight, and gender' evaluated for impact on model parameters. No effect retained and no point estimate reported.",
+      source_name = "age (Dodds 2013 Methods covariate list)"
     ),
     WT = list(
-      description        = "Patient body weight. Screened as a meta-analysis covariate but NOT retained in the final dose-response model.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Patient body weight. Screened as a meta-analysis covariate but NOT retained in the final dose-response model.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Listed in the Dodds 2013 Methods covariate screen; no effect retained and no point estimate reported. Note that all three antibodies enter this model as flat milligram doses, not mg/kg, so body weight does not enter through the dose units either.",
-      source_name        = "weight (Dodds 2013 Methods covariate list)"
+      notes = "Listed in the Dodds 2013 Methods covariate screen; no effect retained and no point estimate reported. Note that all three antibodies enter this model as flat milligram doses, not mg/kg, so body weight does not enter through the dose units either.",
+      source_name = "weight (Dodds 2013 Methods covariate list)"
     ),
     SEXF = list(
-      description        = "Sex. Screened as a meta-analysis covariate but NOT retained in the final dose-response model.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex. Screened as a meta-analysis covariate but NOT retained in the final dose-response model.",
+      units = "(binary)",
+      type = "binary",
       reference_category = NULL,
-      notes              = "Listed as 'gender' in the Dodds 2013 Methods covariate screen; no effect retained and no point estimate reported.",
-      source_name        = "gender (Dodds 2013 Methods covariate list)"
+      notes = "Listed as 'gender' in the Dodds 2013 Methods covariate screen; no effect retained and no point estimate reported.",
+      source_name = "gender (Dodds 2013 Methods covariate list)"
     ),
     DIS_DURATION_PSORIASIS = list(
-      description        = "Duration of psoriasis at trial entry. Screened as a meta-analysis covariate but NOT retained in the final dose-response model.",
-      units              = "year",
-      type               = "continuous",
+      description = "Duration of psoriasis at trial entry. Screened as a meta-analysis covariate but NOT retained in the final dose-response model.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Listed as 'disease duration' in the Dodds 2013 Methods covariate screen; no effect retained and no point estimate reported.",
-      source_name        = "disease duration (Dodds 2013 Methods covariate list)"
+      notes = "Listed as 'disease duration' in the Dodds 2013 Methods covariate screen; no effect retained and no point estimate reported.",
+      source_name = "disease duration (Dodds 2013 Methods covariate list)"
     ),
     PRIOR_TX_FAILURE = list(
-      description        = "Failure of prior treatment. Screened as a meta-analysis covariate but NOT retained in the final dose-response model.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Failure of prior treatment. Screened as a meta-analysis covariate but NOT retained in the final dose-response model.",
+      units = "(binary)",
+      type = "binary",
       reference_category = NULL,
-      notes              = "Listed as 'failure of prior treatment' in the Dodds 2013 Methods covariate screen; no effect retained and no point estimate reported.",
-      source_name        = "failure of prior treatment (Dodds 2013 Methods covariate list)"
+      notes = "Listed as 'failure of prior treatment' in the Dodds 2013 Methods covariate screen; no effect retained and no point estimate reported.",
+      source_name = "failure of prior treatment (Dodds 2013 Methods covariate list)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_studies      = 27L,
-    disease_state  = "Moderate-to-severe plaque psoriasis. The meta-analysis pooled randomized controlled trials in psoriasis AND in psoriatic rheumatoid arthritis, and tested indication as a covariate; the dose-response encoded here is the psoriasis percent-PASI-improvement arm. The endpoint is percent improvement in Psoriasis Area Severity Index over baseline, assessed in a 12-week window after a single dose.",
-    dose_range     = "Marketed-antibody doses as studied in the pooled trials; the clinical trial simulation exercised the model at single doses of 0, 21, 70, 210 and 700 mg, corresponding to 0, 0.3, 1, 3 and 10 mL of an assumed 70 mg/mL presentation. 700 mg intravenous is the maximum dose assumed to have been shown safe and well tolerated in healthy volunteers.",
-    notes          = "Two DIFFERENT populations are involved and should not be confused. (i) The dose-response parameters come from a model-based meta-analysis of 27 published randomized controlled trials of anti-tumour-necrosis-factor agents, ustekinumab and methotrexate, identified by PubMed search plus review of previous meta-analyses, clinicaltrials.gov, conference abstracts and corporate websites; the source reports no subject counts, no demographic table and no per-trial listing for this database, so n_subjects and the demographic fields are unavailable. (ii) The subject-level variance model (Eqs. 2-3) was calibrated separately, to reproduce the between-subject variability of percent PASI improvement observed in the PHOENIX 1 and PHOENIX 2 ustekinumab trials. The simulated first-in-patient trials themselves were 16 subjects each, 9,999 replicates per design per compound, run in NONMEM 7.2. The Go/No-Go criterion the source applies to this model is an absolute improvement over placebo of more than 50 percentage points at the maximum feasible dose of 700 mg; the dose-response criterion is recovery of ED50 within twofold. Simulation scope: this model predicts ONE PASI observation per subject, with no time course and no PK; it is not a repeated-measures or longitudinal model."
+    species = "human",
+    n_studies = 27L,
+    disease_state = "Moderate-to-severe plaque psoriasis. The meta-analysis pooled randomized controlled trials in psoriasis AND in psoriatic rheumatoid arthritis, and tested indication as a covariate; the dose-response encoded here is the psoriasis percent-PASI-improvement arm. The endpoint is percent improvement in Psoriasis Area Severity Index over baseline, assessed in a 12-week window after a single dose.",
+    dose_range = "Marketed-antibody doses as studied in the pooled trials; the clinical trial simulation exercised the model at single doses of 0, 21, 70, 210 and 700 mg, corresponding to 0, 0.3, 1, 3 and 10 mL of an assumed 70 mg/mL presentation. 700 mg intravenous is the maximum dose assumed to have been shown safe and well tolerated in healthy volunteers.",
+    notes = "Two DIFFERENT populations are involved and should not be confused. (i) The dose-response parameters come from a model-based meta-analysis of 27 published randomized controlled trials of anti-tumour-necrosis-factor agents, ustekinumab and methotrexate, identified by PubMed search plus review of previous meta-analyses, clinicaltrials.gov, conference abstracts and corporate websites; the source reports no subject counts, no demographic table and no per-trial listing for this database, so n_subjects and the demographic fields are unavailable. (ii) The subject-level variance model (Eqs. 2-3) was calibrated separately, to reproduce the between-subject variability of percent PASI improvement observed in the PHOENIX 1 and PHOENIX 2 ustekinumab trials. The simulated first-in-patient trials themselves were 16 subjects each, 9,999 replicates per design per compound, run in NONMEM 7.2. The Go/No-Go criterion the source applies to this model is an absolute improvement over placebo of more than 50 percentage points at the maximum feasible dose of 700 mg; the dose-response criterion is recovery of ED50 within twofold. Simulation scope: this model predicts ONE PASI observation per subject, with no time course and no PK; it is not a repeated-measures or longitudinal model."
   )
 
   ini({

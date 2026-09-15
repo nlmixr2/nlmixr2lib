@@ -26,25 +26,25 @@ Lignet_2023_m8891_mouse <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "M8891", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "M8891", units = NA_character_, specimen = "administration site", verified = FALSE),
     central = list(analyte = "M8891", units = NA_character_, specimen = "plasma", verified = FALSE),
-    effect  = list(analyte = "Met-EF1a", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    effect = list(analyte = "Met-EF1a", units = NA_character_, specimen = "not applicable", verified = FALSE),
     metef1a = list(analyte = "Met-EF1a", units = NA_character_, specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (female CD1 nu/nu, subcutaneous Caki-1 human renal-carcinoma xenograft)",
-    n_subjects     = NA_integer_,
-    n_studies      = 2L,
-    age_range      = "5-6 weeks old at tumour-cell inoculation",
-    weight_range   = NA_character_,
+    species = "mouse (female CD1 nu/nu, subcutaneous Caki-1 human renal-carcinoma xenograft)",
+    n_subjects = NA_integer_,
+    n_studies = 2L,
+    age_range = "5-6 weeks old at tumour-cell inoculation",
+    weight_range = NA_character_,
     sex_female_pct = 100,
-    disease_state  = "Subcutaneous Caki-1 (ATCC HTB-46) human renal-cell-carcinoma xenograft in the right flank; treatment started when tumours reached 300-500 mm3.",
-    dose_range     = "M8891 10, 25, or 100 mg/kg p.o. in 0.25% Methocel: a single administration (study PK/PD-01) or four daily administrations (study PK/PD-02). Plasma and tumour tissue were collected 1, 7, 24, 48, 72, and 96 h after the (last) dose.",
-    regions        = NA_character_,
-    notes          = "Lignet 2023 Methods, 'PK/PD Studies' and 'PK/PD Modeling of Caki-1 Xenograft Data'. The paper states 'mice were randomized into treatment groups (n = 5)' for each of the three dose levels in each of the two PK/PD studies, but does not tabulate a total animal count; because animals were euthanised at each sampling time (1, 7, 24, 48, 72, 96 h) the design is destructive/serial-sacrifice rather than serial-sampling, and it is not stated whether n = 5 is per group or per group-and-timepoint. n_subjects is therefore left NA rather than guessed. Modelling proceeded in three steps: (1) pool PK/PD-01 and PK/PD-02 plasma data to fit the PK model; (2) pool the Met-EF1a data and fit the PD model driven by PK-model-simulated plasma concentrations; (3) validate by simulating Met-EF1a at the doses of efficacy study EFF-01 (Fig. 3e). No time-dependent PK was observed between day 1 and day 4. Parameter estimates and their estimation CV% are Lignet 2023 Table IV."
+    disease_state = "Subcutaneous Caki-1 (ATCC HTB-46) human renal-cell-carcinoma xenograft in the right flank; treatment started when tumours reached 300-500 mm3.",
+    dose_range = "M8891 10, 25, or 100 mg/kg p.o. in 0.25% Methocel: a single administration (study PK/PD-01) or four daily administrations (study PK/PD-02). Plasma and tumour tissue were collected 1, 7, 24, 48, 72, and 96 h after the (last) dose.",
+    regions = NA_character_,
+    notes = "Lignet 2023 Methods, 'PK/PD Studies' and 'PK/PD Modeling of Caki-1 Xenograft Data'. The paper states 'mice were randomized into treatment groups (n = 5)' for each of the three dose levels in each of the two PK/PD studies, but does not tabulate a total animal count; because animals were euthanised at each sampling time (1, 7, 24, 48, 72, 96 h) the design is destructive/serial-sacrifice rather than serial-sampling, and it is not stated whether n = 5 is per group or per group-and-timepoint. n_subjects is therefore left NA rather than guessed. Modelling proceeded in three steps: (1) pool PK/PD-01 and PK/PD-02 plasma data to fit the PK model; (2) pool the Met-EF1a data and fit the PD model driven by PK-model-simulated plasma concentrations; (3) validate by simulating Met-EF1a at the doses of efficacy study EFF-01 (Fig. 3e). No time-dependent PK was observed between day 1 and day 4. Parameter estimates and their estimation CV% are Lignet 2023 Table IV."
   )
 
   ini({

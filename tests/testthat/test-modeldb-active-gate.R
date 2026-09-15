@@ -34,14 +34,39 @@
 # differ and be non-zero or the Michaels equation in Liesenfeld 2013 evaluates
 # 0/0.
 activeGateCovariateValues <- c(
-  WT = 70, HT = 170, BSA = 1.9, BMI = 25, AGE = 55, PAGE = 55, PNA = 30,
-  SEXF = 0, CRCL = 60, CREAT = 1.2, ALB = 35, TBILI = 10, HCT = 30, PLT = 200,
-  CRP = 50, GGT = 40, AST = 30, PT_SEC = 13, ANURIA = 0,
-  BFR = 250, DFR = 500, QEFF = 2000, RRT_CRRT_EFFLUENT_FLOW = 2000,
-  URINE_FLOW = 50, URINE_VOL_24H = 500, URINE_VOL_INTERVAL = 200,
-  FILT_SA = 1.5, FILT_SA_MED = 1, FILT_SA_LARGE = 0,
-  T_HEMODIAL_INIT = 24, T_POST_HEMODIAL = 12,
-  RRT_HEMODIAL_STATUS = 1, RRT_CRRT_STATUS = 1
+  WT = 70,
+  HT = 170,
+  BSA = 1.9,
+  BMI = 25,
+  AGE = 55,
+  PAGE = 55,
+  PNA = 30,
+  SEXF = 0,
+  CRCL = 60,
+  CREAT = 1.2,
+  ALB = 35,
+  TBILI = 10,
+  HCT = 30,
+  PLT = 200,
+  CRP = 50,
+  GGT = 40,
+  AST = 30,
+  PT_SEC = 13,
+  ANURIA = 0,
+  BFR = 250,
+  DFR = 500,
+  QEFF = 2000,
+  RRT_CRRT_EFFLUENT_FLOW = 2000,
+  URINE_FLOW = 50,
+  URINE_VOL_24H = 500,
+  URINE_VOL_INTERVAL = 200,
+  FILT_SA = 1.5,
+  FILT_SA_MED = 1,
+  FILT_SA_LARGE = 0,
+  T_HEMODIAL_INIT = 24,
+  T_POST_HEMODIAL = 12,
+  RRT_HEMODIAL_STATUS = 1,
+  RRT_CRRT_STATUS = 1
 )
 
 # Indicator families default to their reference level; anything else defaults to
@@ -54,8 +79,12 @@ activeGateCovariateValue <- function(nm) {
   }
   indicatorPrefixes <-
     "^(DIS_|STUDY_|RACE_|REGION_|RENALIMP_|VASCACC_|SNP_|CONMED_|APACHE_)"
-  if (grepl(indicatorPrefixes, nm)) return(0)
-  if (grepl("ACTIVE$", nm)) return(0)
+  if (grepl(indicatorPrefixes, nm)) {
+    return(0)
+  }
+  if (grepl("ACTIVE$", nm)) {
+    return(0)
+  }
   1
 }
 
@@ -73,11 +102,16 @@ activeGateModelPieces <- function(path) {
   covariateData <- NULL
   dosing <- NULL
   for (st in as.list(body(fn))[-1]) {
-    isAssign <- is.call(st) && length(st) >= 3 &&
+    isAssign <- is.call(st) &&
+      length(st) >= 3 &&
       (identical(st[[1]], as.name("<-")) || identical(st[[1]], as.name("=")))
-    if (!isAssign || !is.name(st[[2]])) next
+    if (!isAssign || !is.name(st[[2]])) {
+      next
+    }
     target <- as.character(st[[2]])
-    if (target == "covariateData") covariateData <- names(eval(st[[3]]))
+    if (target == "covariateData") {
+      covariateData <- names(eval(st[[3]]))
+    }
     if (target == "dosing") dosing <- eval(st[[3]])
   }
   list(fn = fn, name = fname, covariateData = covariateData, dosing = dosing)
@@ -102,8 +136,7 @@ activeGateMuffle <- function(expr) {
     expr,
     warning = function(w) {
       msg <- conditionMessage(w)
-      isExpected <- vapply(activeGateExpectedWarnings, grepl, logical(1),
-                           x = msg, fixed = TRUE)
+      isExpected <- vapply(activeGateExpectedWarnings, grepl, logical(1), x = msg, fixed = TRUE)
       if (any(isExpected)) invokeRestart("muffleWarning")
     }
   )
@@ -132,23 +165,28 @@ activeGateStateResponse <- function(pieces, gate) {
   if (NROW(ui$predDf) > 1L) {
     dat$dvid <- ifelse(dat$evid == 0, 1L, NA_integer_)
   }
-  for (cv in ui$allCovs) dat[[cv]] <- activeGateCovariateValue(cv)
+  for (cv in ui$allCovs) {
+    dat[[cv]] <- activeGateCovariateValue(cv)
+  }
   solveAt <- function(value) {
     dat[[gate]] <- value
     as.matrix(
-      rxode2::rxSolve(ui, dat, returnType = "data.frame",
-                      addDosing = FALSE)[, states, drop = FALSE]
+      rxode2::rxSolve(ui, dat, returnType = "data.frame", addDosing = FALSE)[, states, drop = FALSE]
     )
   }
   off <- solveAt(0)
   on <- solveAt(1)
-  if (anyNA(off) || anyNA(on)) return(NA_real_)
+  if (anyNA(off) || anyNA(on)) {
+    return(NA_real_)
+  }
   max(abs(off - on) / pmax(abs(off), abs(on), 1e-12))
 }
 
 activeGateModelFiles <- function() {
   root <- system.file("modeldb", package = "nlmixr2lib")
-  if (!nzchar(root)) skip("nlmixr2lib modeldb directory not found")
+  if (!nzchar(root)) {
+    skip("nlmixr2lib modeldb directory not found")
+  }
   list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
 }
 
@@ -163,7 +201,9 @@ test_that("every *_ACTIVE gate covariate changes the solved system", {
   cases <- list()
   for (path in files) {
     pieces <- try(activeGateModelPieces(path), silent = TRUE)
-    if (inherits(pieces, "try-error")) next
+    if (inherits(pieces, "try-error")) {
+      next
+    }
     for (gate in activeGateNames(pieces$covariateData)) {
       cases[[length(cases) + 1L]] <- list(pieces = pieces, gate = gate)
     }
@@ -179,8 +219,7 @@ test_that("every *_ACTIVE gate covariate changes the solved system", {
   unsolvable <- character(0)
   for (case in cases) {
     label <- paste0(case$pieces$name, " / ", case$gate)
-    response <- try(activeGateMuffle(activeGateStateResponse(case$pieces, case$gate)),
-                    silent = TRUE)
+    response <- try(activeGateMuffle(activeGateStateResponse(case$pieces, case$gate)), silent = TRUE)
     if (inherits(response, "try-error")) {
       unsolvable <- c(unsolvable, paste0(label, ": ", conditionMessage(attr(response, "condition"))))
     } else if (is.na(response)) {
@@ -191,7 +230,8 @@ test_that("every *_ACTIVE gate covariate changes the solved system", {
   }
 
   expect_equal(
-    inert, character(0),
+    inert,
+    character(0),
     info = paste0(
       "Gate covariate(s) that do not change any ODE state: ",
       paste(inert, collapse = "; "),
@@ -207,7 +247,8 @@ test_that("every *_ACTIVE gate covariate changes the solved system", {
   # than degrade to a silent pass. Add a value to activeGateCovariateValues (or a
   # `dosing` field to the model) until the solve succeeds.
   expect_equal(
-    unsolvable, character(0),
+    unsolvable,
+    character(0),
     info = paste0(
       "Gate covariate(s) whose model could not be solved by this gate: ",
       paste(unsolvable, collapse = "; ")

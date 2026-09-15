@@ -6,42 +6,42 @@ Lee_2024_eculizumab <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power (allometric) scaling on CL and Vc, centred on the pooled-population median weight of 80.9 kg: CL = theta1 * (WT/80.9)^theta7 and Vc = theta2 * (WT/80.9)^theta8 (Table 3 covariate equations). Exponents are estimated, not fixed: 1.1400 on CL and 0.8630 on Vc. Baseline weight; the paper's covariate screen used a power model centred on the median.",
-      source_name        = "WT"
+      notes = "Power (allometric) scaling on CL and Vc, centred on the pooled-population median weight of 80.9 kg: CL = theta1 * (WT/80.9)^theta7 and Vc = theta2 * (WT/80.9)^theta8 (Table 3 covariate equations). Exponents are estimated, not fixed: 1.1400 on CL and 0.8630 on Vc. Baseline weight; the paper's covariate screen used a power model centred on the median.",
+      source_name = "WT"
     ),
     DIS_PNH = list(
-      description        = "Paroxysmal nocturnal haemoglobinuria patient status (subject group: PNH patient versus healthy subject)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Paroxysmal nocturnal haemoglobinuria patient status (subject group: PNH patient versus healthy subject)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy subject enrolled in the phase I study)",
-      notes              = "Subject group was retained as a categorical covariate with separately estimated typical values for each category, on three parameters: Vc (Table 3: 3.47 L healthy versus 5.68 L PNH), baseline terminal complement activity E0 (Table 4: 85.90% healthy versus 101.00% PNH) and maximum inhibition Imax (Table 4: 0.93 healthy versus 0.88 PNH). Encoded here as log-scale shifts relative to the healthy typical value, so e_pnh_vc = log(5.68/3.47), e_pnh_rbase_tca = log(101.00/85.90) and e_pnh_imax_tca = log(0.88/0.93) reproduce the published patient typical values exactly. The efficacy (LDH) sub-model was fitted in PNH patients only.",
-      source_name        = "subject group (healthy subjects versus PNH patients)"
+      notes = "Subject group was retained as a categorical covariate with separately estimated typical values for each category, on three parameters: Vc (Table 3: 3.47 L healthy versus 5.68 L PNH), baseline terminal complement activity E0 (Table 4: 85.90% healthy versus 101.00% PNH) and maximum inhibition Imax (Table 4: 0.93 healthy versus 0.88 PNH). Encoded here as log-scale shifts relative to the healthy typical value, so e_pnh_vc = log(5.68/3.47), e_pnh_rbase_tca = log(101.00/85.90) and e_pnh_imax_tca = log(0.88/0.93) reproduce the published patient typical values exactly. The efficacy (LDH) sub-model was fitted in PNH patients only.",
+      source_name = "subject group (healthy subjects versus PNH patients)"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "eculizumab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "eculizumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "eculizumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 289L,
-    n_studies      = 2L,
-    age_range      = "18-79 years (phase I median 40, range 19-55; phase III median 36, range 18-79)",
-    age_median     = "40 years (phase I healthy subjects); 36 years (phase III PNH patients)",
-    weight_range   = "43.0-111.0 kg (phase I 70.0-94.3; phase III 43.0-111.0)",
-    weight_median  = "82.40 kg (phase I healthy subjects); 63.00 kg (phase III PNH patients); 80.9 kg pooled reference weight used in the covariate model",
+    species = "human",
+    n_subjects = 289L,
+    n_studies = 2L,
+    age_range = "18-79 years (phase I median 40, range 19-55; phase III median 36, range 18-79)",
+    age_median = "40 years (phase I healthy subjects); 36 years (phase III PNH patients)",
+    weight_range = "43.0-111.0 kg (phase I 70.0-94.3; phase III 43.0-111.0)",
+    weight_median = "82.40 kg (phase I healthy subjects); 63.00 kg (phase III PNH patients); 80.9 kg pooled reference weight used in the covariate model",
     sex_female_pct = 12.8,
     race_ethnicity = "Phase I: 95.8% White, 0.4% Black or African American, 0.4% Asian, 0.4% American Indian or Alaska Native, 2.9% Other. Phase III: 36.7% White, 53.1% Asian, 10.2% Native Hawaiian or Other Pacific Islander, 36.7% Other (Table 2; categories are not mutually exclusive as reported).",
-    disease_state  = "240 healthy subjects (phase I) and 49 patients with paroxysmal nocturnal haemoglobinuria (phase III).",
-    dose_range     = "Phase I: 300 mg single intravenous infusion over 35 min. Phase III: 600 mg IV every week for 4 weeks (induction), then 900 mg at week 5, then 900 mg every 2 weeks through week 50 (maintenance).",
-    regions        = "Multi-national phase III (Germany, India, Republic of Korea, Malaysia, Mexico, Romania, Taiwan, Thailand, Ukraine); phase I region not stated.",
-    notes          = "Pooled randomised double-blind phase I three-arm single-dose study in healthy subjects (SB12, EU-sourced Soliris, US-sourced Soliris; 80 per arm) and a randomised double-blind multicentre cross-over phase III study in PNH patients (SB12-to-ECU and ECU-to-SB12 sequences). 4136 quantifiable serum concentrations, 2900 terminal complement activity levels from 289 subjects and 1350 LDH levels from 49 PNH patients. Treatment group (SB12 versus reference eculizumab) was NOT a significant covariate on any PK, PD or efficacy parameter, so one parameter set describes both products. PK LLOQ 0.8 ug/mL (14.1% of serum concentrations were below LLOQ and treated as missing); PD assay range 10-125%."
+    disease_state = "240 healthy subjects (phase I) and 49 patients with paroxysmal nocturnal haemoglobinuria (phase III).",
+    dose_range = "Phase I: 300 mg single intravenous infusion over 35 min. Phase III: 600 mg IV every week for 4 weeks (induction), then 900 mg at week 5, then 900 mg every 2 weeks through week 50 (maintenance).",
+    regions = "Multi-national phase III (Germany, India, Republic of Korea, Malaysia, Mexico, Romania, Taiwan, Thailand, Ukraine); phase I region not stated.",
+    notes = "Pooled randomised double-blind phase I three-arm single-dose study in healthy subjects (SB12, EU-sourced Soliris, US-sourced Soliris; 80 per arm) and a randomised double-blind multicentre cross-over phase III study in PNH patients (SB12-to-ECU and ECU-to-SB12 sequences). 4136 quantifiable serum concentrations, 2900 terminal complement activity levels from 289 subjects and 1350 LDH levels from 49 PNH patients. Treatment group (SB12 versus reference eculizumab) was NOT a significant covariate on any PK, PD or efficacy parameter, so one parameter set describes both products. PK LLOQ 0.8 ug/mL (14.1% of serum concentrations were below LLOQ and treated as missing); PD assay range 10-125%."
   )
 
   ini({

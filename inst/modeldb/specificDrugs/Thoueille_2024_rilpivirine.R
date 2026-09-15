@@ -30,88 +30,88 @@ Thoueille_2024_rilpivirine <- function() {
 
   covariateData <- list(
     ROUTE_ORAL = list(
-      description        = "1 = the record belongs to the oral rilpivirine phase (25 mg tablet once daily), 0 = the record belongs to the long-acting intramuscular nanosuspension phase",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the record belongs to the oral rilpivirine phase (25 mg tablet once daily), 0 = the record belongs to the long-acting intramuscular nanosuspension phase",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (long-acting intramuscular gluteal injection; there is no third route in this analysis)",
-      notes              = "Row-level indicator carried on BOTH dose and observation records. Thoueille 2024 supplementary NONMEM control stream ships this column as LAI with the opposite polarity (LAI = 1 for the intramuscular records, LAI = 0 for the oral records), so ROUTE_ORAL = 1 - LAI. In the source model the column does two jobs. (i) In $PK it selects the absorption block: IF(LAI.EQ.0) the zero-order oral duration D3 = THETA(7) applies, ELSE the two intramuscular first-order rate constants KA1 and KA2 apply. That selection is structural rather than a covariate effect and is reproduced here by the dose record's target compartment instead -- an oral dose is placed in `central` as a zero-order input and never reads the depot parameters, while an intramuscular dose is placed in `depot` and `depot2` and never reads the oral parameters -- so the model body does not need ROUTE_ORAL for it. (ii) In $ERROR it selects the residual-error structure, which cannot be expressed by the target compartment, so ROUTE_ORAL is read in model() to switch between the additive oral SD and the proportional intramuscular SD. Set ROUTE_ORAL = 1 on every oral observation and 0 on every intramuscular observation.",
-      source_name        = "LAI"
+      notes = "Row-level indicator carried on BOTH dose and observation records. Thoueille 2024 supplementary NONMEM control stream ships this column as LAI with the opposite polarity (LAI = 1 for the intramuscular records, LAI = 0 for the oral records), so ROUTE_ORAL = 1 - LAI. In the source model the column does two jobs. (i) In $PK it selects the absorption block: IF(LAI.EQ.0) the zero-order oral duration D3 = THETA(7) applies, ELSE the two intramuscular first-order rate constants KA1 and KA2 apply. That selection is structural rather than a covariate effect and is reproduced here by the dose record's target compartment instead -- an oral dose is placed in `central` as a zero-order input and never reads the depot parameters, while an intramuscular dose is placed in `depot` and `depot2` and never reads the oral parameters -- so the model body does not need ROUTE_ORAL for it. (ii) In $ERROR it selects the residual-error structure, which cannot be expressed by the target compartment, so ROUTE_ORAL is read in model() to switch between the additive oral SD and the proportional intramuscular SD. Set ROUTE_ORAL = 1 on every oral observation and 0 on every intramuscular observation.",
+      source_name = "LAI"
     ),
     OCC = list(
-      description        = "Integer injection-occasion index used for the inter-occasion variability on clearance",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer injection-occasion index used for the inter-occasion variability on clearance",
+      units = "(count)",
+      type = "categorical",
       reference_category = "n/a -- decomposed inside model() into six mutually exclusive binary indicators multiplied against the per-occasion etaiov_cl_<k> slots",
-      notes              = "Thoueille 2024 Methods 'Model building and selection': 'occasions were coded to be consistent with the duration of the follow-up by including an occasion variable constructed with an incremental number within each subject for a maximum of six occasions/injections'. The supplementary control stream implements exactly six slots via $ABBR REPLACE ETA(OCC)=ETA(5,6,7,8,9,10), backed by $OMEGA BLOCK(1) 0.0167 followed by five BLOCK(1) SAME lines, so all six occasions share one variance. Values run 1 to 6; records outside the six injection occasions (in particular the oral lead-in records, which precede the first injection) take OCC = 1 so that exactly one indicator is active on every row. Thoueille 2024 Results states that the inter-occasion variability could be supported on clearance but not on the intramuscular absorption parameters.",
-      source_name        = "OCC"
+      notes = "Thoueille 2024 Methods 'Model building and selection': 'occasions were coded to be consistent with the duration of the follow-up by including an occasion variable constructed with an incremental number within each subject for a maximum of six occasions/injections'. The supplementary control stream implements exactly six slots via $ABBR REPLACE ETA(OCC)=ETA(5,6,7,8,9,10), backed by $OMEGA BLOCK(1) 0.0167 followed by five BLOCK(1) SAME lines, so all six occasions share one variance. Values run 1 to 6; records outside the six injection occasions (in particular the oral lead-in records, which precede the first injection) take OCC = 1 so that exactly one indicator is active on every row. Thoueille 2024 Results states that the inter-occasion variability could be supported on clearance but not on the intramuscular absorption parameters.",
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex at birth indicator, 1 = female, 0 = male",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened, estimated, and then deliberately NOT retained. Thoueille 2024 Results 3.1 reports that univariate analysis found an effect of female sex on the fast intramuscular absorption fraction (dOFV = -11, p < 0.001) which survived forward insertion and backward deletion, entering the logit as TEMP = ln(theta_Fi.m.fast * (1 + theta_Female) / (1 - theta_Fi.m.fast * (1 + theta_Female))) with theta_Female = -0.456, i.e. females had an Fi.m.fast 45.6% lower than males. The authors nevertheless excluded it: Results 3.2 states 'although statistically significant, the effect of sex on long-acting rilpivirine Ctrough was not considered clinically relevant, and this model was not validated', because the sex covariate explained only 11% of the between-subject variability on Fi.m.fast and moved trough concentrations by no more than 15% over 48 weeks. Table 2 ('Final population PK parameter estimates') contains no theta_Female row, and in the supplementary control stream both the covariate TEMP line and the -0.456 THETA are commented out, which is what fixes the final model as the covariate-free one encoded here. A user who wants the sex model can reinstate it by replacing logitfdepot with log(0.276 * (1 - 0.456 * SEXF) / (1 - 0.276 * (1 - 0.456 * SEXF))); the vignette shows the resulting trough comparison against Thoueille 2024 Supplementary Table S2."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, estimated, and then deliberately NOT retained. Thoueille 2024 Results 3.1 reports that univariate analysis found an effect of female sex on the fast intramuscular absorption fraction (dOFV = -11, p < 0.001) which survived forward insertion and backward deletion, entering the logit as TEMP = ln(theta_Fi.m.fast * (1 + theta_Female) / (1 - theta_Fi.m.fast * (1 + theta_Female))) with theta_Female = -0.456, i.e. females had an Fi.m.fast 45.6% lower than males. The authors nevertheless excluded it: Results 3.2 states 'although statistically significant, the effect of sex on long-acting rilpivirine Ctrough was not considered clinically relevant, and this model was not validated', because the sex covariate explained only 11% of the between-subject variability on Fi.m.fast and moved trough concentrations by no more than 15% over 48 weeks. Table 2 ('Final population PK parameter estimates') contains no theta_Female row, and in the supplementary control stream both the covariate TEMP line and the -0.456 THETA are commented out, which is what fixes the final model as the covariate-free one encoded here. A user who wants the sex model can reinstate it by replacing logitfdepot with log(0.276 * (1 - 0.456 * SEXF) / (1 - 0.276 * (1 - 0.456 * SEXF))); the vignette shows the resulting trough comparison against Thoueille 2024 Supplementary Table S2."
     ),
     AGE = list(
       description = "Age at the last recorded value",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened with a linear function on the base-model parameters (Thoueille 2024 Methods 'Model building and selection') and not retained. Cohort median 46 years, range 20-79 (Table 1). Thoueille 2024 Discussion notes that the small number of older participants may have masked an age effect reported by a PBPK analysis."
+      units = "years",
+      type = "continuous",
+      notes = "Screened with a linear function on the base-model parameters (Thoueille 2024 Methods 'Model building and selection') and not retained. Cohort median 46 years, range 20-79 (Table 1). Thoueille 2024 Discussion notes that the small number of older participants may have masked an age effect reported by a PBPK analysis."
     ),
     WT = list(
       description = "Body weight at the last recorded value",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened both as a linear function and as an allometric scaling relationship with the exponent estimated (Thoueille 2024 Methods 'Model building and selection') and not retained. Cohort median 78 kg, range 50-126 (Table 1)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened both as a linear function and as an allometric scaling relationship with the exponent estimated (Thoueille 2024 Methods 'Model building and selection') and not retained. Cohort median 78 kg, range 50-126 (Table 1)."
     ),
     BMI = list(
       description = "Body mass index at the last recorded value",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened as a linear function and as an allometric scaling relationship and reached univariate significance on the fast intramuscular absorption fraction (dOFV = -6, p < 0.05; Thoueille 2024 Results 3.1) but was dropped at backward deletion (p < 0.01) and does not appear in the final model. Cohort median 25.4 kg/m^2, range 18.2-43.3 (Table 1). Thoueille 2024 Discussion notes that no morbidly obese participants were enrolled, so a reported PBPK obesity effect could not be tested."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened as a linear function and as an allometric scaling relationship and reached univariate significance on the fast intramuscular absorption fraction (dOFV = -6, p < 0.05; Thoueille 2024 Results 3.1) but was dropped at backward deletion (p < 0.01) and does not appear in the final model. Cohort median 25.4 kg/m^2, range 18.2-43.3 (Table 1). Thoueille 2024 Discussion notes that no morbidly obese participants were enrolled, so a reported PBPK obesity effect could not be tested."
     ),
     RACE_BLACK = list(
       description = "Self-reported Black ethnicity indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Ethnicity was screened as a covariate (Thoueille 2024 Methods 'Model building and selection') and not retained. Table 1 reports White 133 (56%), Black 36 (15%), Hispanic American 19 (8%), Asian 11 (5%), Other/Missing 39 (16%). The paper reports no point estimate for any ethnicity contrast, so no coefficient can be recovered."
+      units = "(binary)",
+      type = "binary",
+      notes = "Ethnicity was screened as a covariate (Thoueille 2024 Methods 'Model building and selection') and not retained. Table 1 reports White 133 (56%), Black 36 (15%), Hispanic American 19 (8%), Asian 11 (5%), Other/Missing 39 (16%). The paper reports no point estimate for any ethnicity contrast, so no coefficient can be recovered."
     ),
     EGFR = list(
       description = "Estimated glomerular filtration rate, CKD-EPI (Levey 2009)",
-      units       = "mL/min/1.73m^2",
-      type        = "continuous",
-      notes       = "Screened as CKD-EPI eGFR categories (Thoueille 2024 Methods 'Model building and selection') and not retained. Table 1 reports G1 (>= 90) 158 (66%), G2 (60-89) 76 (32%), G3 (30-59) 4 (2%). Rilpivirine is cleared hepatically, so a renal effect was not expected."
+      units = "mL/min/1.73m^2",
+      type = "continuous",
+      notes = "Screened as CKD-EPI eGFR categories (Thoueille 2024 Methods 'Model building and selection') and not retained. Table 1 reports G1 (>= 90) 158 (66%), G2 (60-89) 76 (32%), G3 (30-59) 4 (2%). Rilpivirine is cleared hepatically, so a renal effect was not expected."
     )
   )
 
   compartmentData <- list(
-    depot        = list(analyte = "rilpivirine", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2       = list(analyte = "rilpivirine", units = "mg", specimen = "administration site", verified = TRUE),
-    central      = list(analyte = "rilpivirine", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1  = list(analyte = "rilpivirine", units = "mg", specimen = "plasma", verified = TRUE)
+    depot = list(analyte = "rilpivirine", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "rilpivirine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "rilpivirine", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "rilpivirine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 238L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 238L,
+    n_studies = 1L,
     n_observations = "1038 rilpivirine plasma concentrations: 186 after oral administration from 176 people and 852 after intramuscular injection from 222 people, with detailed within-interval sampling in 28 people (Thoueille 2024 Results, first paragraph). Median 4 samples per person (range 1-15); median follow-up 26 weeks (range 3-196). Only 10 people had concentrations assumed to be at intramuscular steady state (from week 96).",
-    age_range      = "20-79 years (median 46; Thoueille 2024 Table 1)",
-    age_median     = "46 years",
-    weight_range   = "50-126 kg (median 78; Thoueille 2024 Table 1)",
-    weight_median  = "78 kg",
-    height_range   = "151-198 cm (median 176; Thoueille 2024 Table 1)",
-    bmi_range      = "18.2-43.3 kg/m^2 (median 25.4; Thoueille 2024 Table 1). BMI < 25 in 104 (44%), 25-30 in 103 (43%), > 30 in 31 (13%). No morbidly obese participants were enrolled.",
+    age_range = "20-79 years (median 46; Thoueille 2024 Table 1)",
+    age_median = "46 years",
+    weight_range = "50-126 kg (median 78; Thoueille 2024 Table 1)",
+    weight_median = "78 kg",
+    height_range = "151-198 cm (median 176; Thoueille 2024 Table 1)",
+    bmi_range = "18.2-43.3 kg/m^2 (median 25.4; Thoueille 2024 Table 1). BMI < 25 in 104 (44%), 25-30 in 103 (43%), > 30 in 31 (13%). No morbidly obese participants were enrolled.",
     sex_female_pct = 20.2,
     race_ethnicity = c(White = 56, Black = 15, `Hispanic American` = 8, Asian = 5, `Other/Missing` = 16),
-    disease_state  = "People with HIV-1 on suppressive antiretroviral therapy switching to, or established on, long-acting cabotegravir plus rilpivirine. Plasma HIV RNA < 50 copies/mL in 233 (98%); CD4 >= 500 cells/mm^3 in 186 (78%). Liver cirrhosis in 2 (1%, both Child-Pugh class A).",
+    disease_state = "People with HIV-1 on suppressive antiretroviral therapy switching to, or established on, long-acting cabotegravir plus rilpivirine. Plasma HIV RNA < 50 copies/mL in 233 (98%); CD4 >= 500 cells/mm^3 in 186 (78%). Liver cirrhosis in 2 (1%, both Child-Pugh class A).",
     renal_function = "CKD-EPI eGFR category G1 (>= 90 mL/min/1.73m^2) in 158 (66%), G2 (60-89) in 76 (32%), G3 (30-59) in 4 (2%)",
-    dose_range     = "Oral rilpivirine 25 mg once daily during the lead-in; long-acting intramuscular gluteal rilpivirine 900 mg with cabotegravir 600 mg every 2 months, and 600 mg with cabotegravir 400 mg every 4 weeks in two people treated for compassionate use before Swiss market authorisation",
-    regions        = "Switzerland (Lausanne, Zurich, Bern, Geneva, Basel, Lugano, St Gallen)",
-    co_medication  = "Cabotegravir is co-administered in every intramuscular injection. Thoueille 2024 Methods state that no clinically relevant interacting comedication, such as a potent CYP3A4 inducer, was encountered in the study population.",
-    notes          = "Real-world therapeutic-drug-monitoring cohort nested in the Swiss HIV Cohort Study, sampled mostly sparsely at the discretion of physicians between March 2022 and June 2023, with a richer within-interval sampling substudy (pre-dose and 1, 2, 4 and 8 weeks after injection) offered to consenting participants in Lausanne and Geneva. This is an observational cohort rather than a registrational trial, which is the stated contrast with the phase III popPK analyses of Neyens 2021 and Benaboud 2023."
+    dose_range = "Oral rilpivirine 25 mg once daily during the lead-in; long-acting intramuscular gluteal rilpivirine 900 mg with cabotegravir 600 mg every 2 months, and 600 mg with cabotegravir 400 mg every 4 weeks in two people treated for compassionate use before Swiss market authorisation",
+    regions = "Switzerland (Lausanne, Zurich, Bern, Geneva, Basel, Lugano, St Gallen)",
+    co_medication = "Cabotegravir is co-administered in every intramuscular injection. Thoueille 2024 Methods state that no clinically relevant interacting comedication, such as a potent CYP3A4 inducer, was encountered in the study population.",
+    notes = "Real-world therapeutic-drug-monitoring cohort nested in the Swiss HIV Cohort Study, sampled mostly sparsely at the discretion of physicians between March 2022 and June 2023, with a richer within-interval sampling substudy (pre-dose and 1, 2, 4 and 8 weeks after injection) offered to consenting participants in Lausanne and Geneva. This is an observational cohort rather than a registrational trial, which is the stated contrast with the phase III popPK analyses of Neyens 2021 and Benaboud 2023."
   )
 
   ini({

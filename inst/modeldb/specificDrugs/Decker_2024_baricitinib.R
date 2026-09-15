@@ -9,32 +9,32 @@ Decker_2024_baricitinib <- function() {
     sep = " "
   )
   vignette <- "Decker_2024_baricitinib"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight (weight at study entry, WTE in the source paper).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight (weight at study entry, WTE in the source paper).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at the study-entry value; Figure S5 legend defines WT as baseline body weight. Allometric reference weight is 74 kg (Table 2 footnotes b-e), which is the adult rheumatoid-arthritis reference weight carried over from the adult model, NOT a pediatric cohort statistic. Cohort mean 50.2 kg, range 11.0-111 kg (Table 1); 87% of patients weighed >=30 kg. Simulations in the paper spanned 10-120 kg.",
-      source_name        = "WTE"
+      notes = "Time-fixed at the study-entry value; Figure S5 legend defines WT as baseline body weight. Allometric reference weight is 74 kg (Table 2 footnotes b-e), which is the adult rheumatoid-arthritis reference weight carried over from the adult model, NOT a pediatric cohort statistic. Cohort mean 50.2 kg, range 11.0-111 kg (Table 1); 87% of patients weighed >=30 kg. Simulations in the paper spanned 10-120 kg.",
+      source_name = "WTE"
     ),
     CRCL_BASE = list(
-      description        = "Baseline estimated glomerular filtration rate (bedside Schwartz equation), BSA-normalized and time-fixed per subject.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline estimated glomerular filtration rate (bedside Schwartz equation), BSA-normalized and time-fixed per subject.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters CLr/F as the ratio (CRCL_BASE / 93); 93 mL/min/1.73 m^2 is the median eGFR of the previous adult population PK analysis and is the reference at which the reported CLr/F typical value of 6.34 L/h applies (Table 2 footnote f). Estimated with the bedside Schwartz equation (Table 1 abbreviations), a creatinine-based pediatric eGFR already expressed per 1.73 m^2. Cohort mean 119 mL/min/1.73 m^2, range 66.5-201 (Table 1).",
-      source_name        = "baseline eGFR"
+      notes = "Enters CLr/F as the ratio (CRCL_BASE / 93); 93 mL/min/1.73 m^2 is the median eGFR of the previous adult population PK analysis and is the reference at which the reported CLr/F typical value of 6.34 L/h applies (Table 2 footnote f). Estimated with the bedside Schwartz equation (Table 1 abbreviations), a creatinine-based pediatric eGFR already expressed per 1.73 m^2. Cohort mean 119 mL/min/1.73 m^2, range 66.5-201 (Table 1).",
+      source_name = "baseline eGFR"
     ),
     CRCL = list(
-      description        = "Time-varying estimated glomerular filtration rate (bedside Schwartz equation), BSA-normalized.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Time-varying estimated glomerular filtration rate (bedside Schwartz equation), BSA-normalized.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used only through the within-subject deviation (CRCL - CRCL_BASE), which is the 'change in eGFR from baseline' (deltaeGFR) term of Table 2 footnote f -- the Wahlby 2004 baseline/difference (BCOV/DCOV) decomposition of a time-varying covariate. Set CRCL = CRCL_BASE to switch the time-varying arm off; the model then reduces to baseline-eGFR-only scaling. The source paper does not tabulate the distribution of on-treatment eGFR changes.",
-      source_name        = "eGFR"
+      notes = "Used only through the within-subject deviation (CRCL - CRCL_BASE), which is the 'change in eGFR from baseline' (deltaeGFR) term of Table 2 footnote f -- the Wahlby 2004 baseline/difference (BCOV/DCOV) decomposition of a time-varying covariate. Set CRCL = CRCL_BASE to switch the time-varying arm off; the model then reduces to baseline-eGFR-only scaling. The source paper does not tabulate the distribution of on-treatment eGFR changes.",
+      source_name = "eGFR"
     )
   )
 
@@ -47,44 +47,44 @@ Decker_2024_baricitinib <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at study entry.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate and not retained. The Discussion states explicitly that after the effect of weight was accounted for, age was not a significant covariate on the clearance or volume terms; age and weight were highly correlated (Figure S5). Cohort mean 13.3 years, range 2-17 (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a continuous covariate and not retained. The Discussion states explicitly that after the effect of weight was accounted for, age was not a significant covariate on the clearance or volume terms; age and weight were highly correlated (Figure S5). Cohort mean 13.3 years, range 2-17 (Table 1)."
     ),
     SEXF = list(
       description = "Female sex indicator.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male",
-      notes       = "Screened as 'gender' in the stepwise covariate model and not retained. Cohort: 150 of 217 female (69%) (Table 1)."
+      notes = "Screened as 'gender' in the stepwise covariate model and not retained. Cohort: 150 of 217 female (69%) (Table 1)."
     ),
     RACE_WHITE = list(
       description = "White race indicator.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "non-White",
-      notes       = "Screened as part of the categorical 'race' covariate and not retained. 149 of 217 White (69%) (Table 1)."
+      notes = "Screened as part of the categorical 'race' covariate and not retained. 149 of 217 White (69%) (Table 1)."
     ),
     RACE_BLACK = list(
       description = "Black race indicator.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "non-Black",
-      notes       = "Screened as part of the categorical 'race' covariate and not retained. 5 of 217 Black (Table 1)."
+      notes = "Screened as part of the categorical 'race' covariate and not retained. 5 of 217 Black (Table 1)."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "non-Asian",
-      notes       = "Screened as part of the categorical 'race' covariate and not retained. 48 of 217 Asian (Table 1)."
+      notes = "Screened as part of the categorical 'race' covariate and not retained. 48 of 217 Asian (Table 1)."
     ),
     RACE_JAPANESE = list(
       description = "Japanese-heritage indicator.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "non-Japanese",
-      notes       = "Screened as the 'Japanese versus non-Japanese' categorical covariate and not retained. The source paper does not tabulate the Japanese subgroup size."
+      notes = "Screened as the 'Japanese versus non-Japanese' categorical covariate and not retained. The source paper does not tabulate the Japanese subgroup size."
     )
   )
 
@@ -95,27 +95,27 @@ Decker_2024_baricitinib <- function() {
   # are recorded here in prose rather than as covariatesDataExcluded entries.
 
   compartmentData <- list(
-    central     = list(analyte = "baricitinib", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "baricitinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "baricitinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 217L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 217L,
+    n_studies = 1L,
     n_observations = 1261L,
-    age_range      = "2-17 years (enrolment criterion 2 to <18 years)",
-    age_mean       = "13.3 years",
-    weight_range   = "11.0-111 kg",
-    weight_mean    = "50.2 kg",
+    age_range = "2-17 years (enrolment criterion 2 to <18 years)",
+    age_mean = "13.3 years",
+    weight_range = "11.0-111 kg",
+    weight_mean = "50.2 kg",
     sex_female_pct = 69.1,
     race_ethnicity = c(White = 68.7, Asian = 22.1, `Native American` = 3.2, Black = 2.3, Multiple = 0.9, Missing = 2.8),
-    disease_state  = "Polyarticular-course juvenile idiopathic arthritis (polyarticular RF-positive or RF-negative, extended oligoarticular, enthesitis-related arthritis, or juvenile psoriatic arthritis) with inadequate response or intolerance to one or more prior conventional synthetic or biologic DMARDs.",
+    disease_state = "Polyarticular-course juvenile idiopathic arthritis (polyarticular RF-positive or RF-negative, extended oligoarticular, enthesitis-related arthritis, or juvenile psoriatic arthritis) with inadequate response or intolerance to one or more prior conventional synthetic or biologic DMARDs.",
     renal_function = "Baseline eGFR (bedside Schwartz) mean 119 mL/min/1.73 m^2, range 66.5-201.",
-    dose_range     = "Oral baricitinib once daily, age-based during the trial: 4 mg QD for ages 9 to <18 years and 2 mg QD for ages 2 to <9 years. The model-based simulations evaluated 1, 2 and 4 mg QD over 10-120 kg and supported the approved weight-based posology of 2 mg QD for 10 to <30 kg and 4 mg QD for >=30 kg.",
-    study          = "JUVE-BASIS (NCT03773978), an international phase 3 randomized, double-blind, placebo-controlled withdrawal efficacy and safety trial. Data pooled from the 2-week safety/PK period and the 12-week open-label lead-in period.",
-    regions        = "International (multi-region); Japanese versus non-Japanese was screened as a covariate.",
-    notes          = "Demographics from Table 1. Of 1377 plasma concentrations collected, 116 (8%) were excluded (106 below the 0.200 ng/mL LLOQ, 6 collected pre-dose or within the lag-time threshold, 4 giving biologically implausible D1 estimates), leaving 1261 records. Safety/PK-period samples were collected as dried whole blood on a Mitra VAMS microsampling device and converted to plasma equivalents with a study-specific blood/plasma ratio of 1.29 (Figure S2, n = 15 concordance pairs), then pooled with the open-label lead-in plasma samples. Estimation used NONMEM 7.4.2 with PsN 4.8.1; parameter estimates from the previous adult rheumatoid-arthritis analysis were used as priors."
+    dose_range = "Oral baricitinib once daily, age-based during the trial: 4 mg QD for ages 9 to <18 years and 2 mg QD for ages 2 to <9 years. The model-based simulations evaluated 1, 2 and 4 mg QD over 10-120 kg and supported the approved weight-based posology of 2 mg QD for 10 to <30 kg and 4 mg QD for >=30 kg.",
+    study = "JUVE-BASIS (NCT03773978), an international phase 3 randomized, double-blind, placebo-controlled withdrawal efficacy and safety trial. Data pooled from the 2-week safety/PK period and the 12-week open-label lead-in period.",
+    regions = "International (multi-region); Japanese versus non-Japanese was screened as a covariate.",
+    notes = "Demographics from Table 1. Of 1377 plasma concentrations collected, 116 (8%) were excluded (106 below the 0.200 ng/mL LLOQ, 6 collected pre-dose or within the lag-time threshold, 4 giving biologically implausible D1 estimates), leaving 1261 records. Safety/PK-period samples were collected as dried whole blood on a Mitra VAMS microsampling device and converted to plasma equivalents with a study-specific blood/plasma ratio of 1.29 (Figure S2, n = 15 concordance pairs), then pooled with the open-label lead-in plasma samples. Estimation used NONMEM 7.4.2 with PsN 4.8.1; parameter estimates from the previous adult rheumatoid-arthritis analysis were used as priors."
   )
 
   ini({

@@ -23,36 +23,36 @@ Clewe_2015_rifampicin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
     transit1 = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
     enz_pool = list(analyte = "Rifampicin", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect1  = list(analyte = "Rifampicin", units = "mg", specimen = "epithelial lining fluid", verified = FALSE),
-    effect2  = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE)
+    effect1 = list(analyte = "Rifampicin", units = "mg", specimen = "epithelial lining fluid", verified = FALSE),
+    effect2 = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass at baseline, time-fixed per subject.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass at baseline, time-fixed per subject.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the allometric scaling of CL/F (exponent 0.75) and V/F (exponent 1.0), both standardized to a 70-kg patient. The Clewe 2015 final model uses FFM (the model with one fewer parameter than the equivalent NFM scaling that gave the same OFV; Clewe 2015 Results paragraph 2). FFM is computed from WT, HT, and SEXF via the Janmahasatian / Anderson-Holford WHSMAX/WHS50 formula (Clewe 2015 Eq. 3) -- men: WHSMAX = 42.92 kg/m^2, WHS50 = 30.93 kg/m^2; women: WHSMAX = 37.99 kg/m^2, WHS50 = 35.98 kg/m^2; FFM = WHSMAX * HT^2 * WT / (WHS50 * HT^2 + WT). The vignette shows the FFM derivation chunk; user data sets supply FFM directly as a covariate column.",
-      source_name        = "FFM"
+      notes = "Drives the allometric scaling of CL/F (exponent 0.75) and V/F (exponent 1.0), both standardized to a 70-kg patient. The Clewe 2015 final model uses FFM (the model with one fewer parameter than the equivalent NFM scaling that gave the same OFV; Clewe 2015 Results paragraph 2). FFM is computed from WT, HT, and SEXF via the Janmahasatian / Anderson-Holford WHSMAX/WHS50 formula (Clewe 2015 Eq. 3) -- men: WHSMAX = 42.92 kg/m^2, WHS50 = 30.93 kg/m^2; women: WHSMAX = 37.99 kg/m^2, WHS50 = 35.98 kg/m^2; FFM = WHSMAX * HT^2 * WT / (WHS50 * HT^2 + WT). The vignette shows the FFM derivation chunk; user data sets supply FFM directly as a covariate column.",
+      source_name = "FFM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40L,
-    n_studies      = 1L,
-    age_range      = "adult (Conte 2004 source trial; specific range not reported in Clewe 2015)",
-    weight_range   = "not reported in Clewe 2015 (Conte 2004 source cohort)",
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 1L,
+    age_range = "adult (Conte 2004 source trial; specific range not reported in Clewe 2015)",
+    weight_range = "not reported in Clewe 2015 (Conte 2004 source cohort)",
     sex_female_pct = 50,
     race_ethnicity = "not reported in Clewe 2015",
-    disease_state  = "Adults without active tuberculosis: 10 women without AIDS, 10 men without AIDS, 10 women with AIDS, and 10 men with AIDS (Clewe 2015 Methods, 'Data' paragraph 1). HIV / AIDS status is descriptive of the cohort; it was not tested as a covariate on the PK parameters in Clewe 2015 (Methods paragraph 2: 'The influence of potential subpopulation-specific properties or covariates were not explored in this analysis').",
-    dose_range     = "Rifampicin 600 mg orally once daily for 5 days; bronchoalveolar lavage performed approximately 4 h after the last dose on day 5.",
-    notes          = "Original concentration data source: Conte et al. 2004 (Antimicrob Agents Chemother). Plasma sampled twice (approximately 2 h and 4 h post-dose) on day 5; BAL fluid sampled once per subject approximately 4 h after the last dose, with ELF volume estimated by urea dilution and AC volume estimated from BAL cell count. Total observations: 76 plasma, 32 ELF, 36 AC. The model also assumes ELF / AC protein binding is negligible (Clewe 2015 Methods paragraph 5)."
+    disease_state = "Adults without active tuberculosis: 10 women without AIDS, 10 men without AIDS, 10 women with AIDS, and 10 men with AIDS (Clewe 2015 Methods, 'Data' paragraph 1). HIV / AIDS status is descriptive of the cohort; it was not tested as a covariate on the PK parameters in Clewe 2015 (Methods paragraph 2: 'The influence of potential subpopulation-specific properties or covariates were not explored in this analysis').",
+    dose_range = "Rifampicin 600 mg orally once daily for 5 days; bronchoalveolar lavage performed approximately 4 h after the last dose on day 5.",
+    notes = "Original concentration data source: Conte et al. 2004 (Antimicrob Agents Chemother). Plasma sampled twice (approximately 2 h and 4 h post-dose) on day 5; BAL fluid sampled once per subject approximately 4 h after the last dose, with ELF volume estimated by urea dilution and AC volume estimated from BAL cell count. Total observations: 76 plasma, 32 ELF, 36 AC. The model also assumes ELF / AC protein binding is negligible (Clewe 2015 Methods paragraph 5)."
   )
 
   ini({

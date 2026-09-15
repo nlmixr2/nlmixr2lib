@@ -30,44 +30,44 @@ Hansson_2013_sunitinib_dbp <- function() {
 
   covariateData <- list(
     DOSE = list(
-      description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The paper Methods describes sunitinib administered at 25-75 mg PO QD on 4/2, 2/2, 2/1, or continuous schedules across studies 1004, 1047, 1045, and 013 (Table 1). For typical-cohort vignette simulations the value is held at 50 mg during on-cycles of a 4/2 schedule and 0 mg during off-cycles, matching the largest cohort (Demetri 2006 / Study 1004).",
-      source_name        = "DOSE"
+      notes = "The paper Methods describes sunitinib administered at 25-75 mg PO QD on 4/2, 2/2, 2/1, or continuous schedules across studies 1004, 1047, 1045, and 013 (Table 1). For typical-cohort vignette simulations the value is held at 50 mg during on-cycles of a 4/2 schedule and 0 mg during off-cycles, matching the largest cohort (Demetri 2006 / Study 1004).",
+      source_name = "DOSE"
     ),
     CLI = list(
-      description        = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit. Per-subject, time-fixed.",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit. Per-subject, time-fixed.",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013 e85 Methods describes the upstream popPK as a previously developed 2-compartment model (Houk et al. 2009 Clin Cancer Res 15:2497-2506; that popPK is not packaged in nlmixr2lib at extraction time). The companion Hansson_2013a / Hansson_2013c sunitinib model files use a typical-value reference of 32.819 L/h.",
-      source_name        = "CL"
+      notes = "Required input. The Hansson 2013 e85 Methods describes the upstream popPK as a previously developed 2-compartment model (Houk et al. 2009 Clin Cancer Res 15:2497-2506; that popPK is not packaged in nlmixr2lib at extraction time). The companion Hansson_2013a / Hansson_2013c sunitinib model files use a typical-value reference of 32.819 L/h.",
+      source_name = "CL"
     ),
     PLACEBO = list(
-      description        = "Binary indicator: 1 = placebo-arm subject (Study 1004 placebo run-in n=47), 0 = active sunitinib arm. Switches the typical baseline dBP0 from 71.8 mmHg (active) to 77.6 mmHg (placebo) per Hansson 2013 Table 2 row 'dBP0 placebo'.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator: 1 = placebo-arm subject (Study 1004 placebo run-in n=47), 0 = active sunitinib arm. Switches the typical baseline dBP0 from 71.8 mmHg (active) to 77.6 mmHg (placebo) per Hansson 2013 Table 2 row 'dBP0 placebo'.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (active sunitinib arm)",
-      notes              = "The paper Results: 'No increase in dBP could be identified for placebo patients. However, this group had a significantly higher baseline dBP (dBP0) when estimated separately.' Placebo-arm subjects also have DOSE = 0 (and therefore AUC = 0 and no drug-effect term). For typical-cohort simulations set every subject to 0 (active).",
-      source_name        = "(derived from treatment arm; Study 1004 placebo run-in subjects only)"
+      notes = "The paper Results: 'No increase in dBP could be identified for placebo patients. However, this group had a significantly higher baseline dBP (dBP0) when estimated separately.' Placebo-arm subjects also have DOSE = 0 (and therefore AUC = 0 and no drug-effect term). For typical-cohort simulations set every subject to 0 (active).",
+      source_name = "(derived from treatment arm; Study 1004 placebo run-in subjects only)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 303L,
-    n_studies      = 4L,
-    age_range      = "adults with imatinib-resistant GIST (paper text reports n=303 pooled across phases I-III; per-cohort baseline-demographics table not in the trimmed PDF section that includes Methods + Results + Tables)",
-    weight_range   = "not reported in the on-disk trimmed paper text",
+    species = "human",
+    n_subjects = 303L,
+    n_studies = 4L,
+    age_range = "adults with imatinib-resistant GIST (paper text reports n=303 pooled across phases I-III; per-cohort baseline-demographics table not in the trimmed PDF section that includes Methods + Results + Tables)",
+    weight_range = "not reported in the on-disk trimmed paper text",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies (Demetri 2006 study 1004, George 2009 study 1047, Shirao 2010 study 1045, Maki 2005 study 013).",
-    dose_range     = "sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 or continuous schedule (Table 1). Placebo arm: no sunitinib.",
-    regions        = "phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies' regions not stated in the trimmed paper text.",
-    biomarkers     = "Diastolic blood pressure (dBP) measured serially during treatment cycles. Median (range) observed dBP during treatment: 80 (20-120) mmHg in study 1004, 78 (40-120) in study 1047, 79 (40-120) in study 1045, 80 (50-130) in study 013 (Hansson 2013 Table 1).",
-    notes          = "n_subjects = 303 reported in Hansson 2013 e85 Methods. The dBP model was fit with Methods-specified blood pressure observations assumed to occur in the morning ('The actual times of the day for blood pressure measurements were not available and were therefore assumed to occur in the morning for all observations')."
+    disease_state = "imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies (Demetri 2006 study 1004, George 2009 study 1047, Shirao 2010 study 1045, Maki 2005 study 013).",
+    dose_range = "sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 or continuous schedule (Table 1). Placebo arm: no sunitinib.",
+    regions = "phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies' regions not stated in the trimmed paper text.",
+    biomarkers = "Diastolic blood pressure (dBP) measured serially during treatment cycles. Median (range) observed dBP during treatment: 80 (20-120) mmHg in study 1004, 78 (40-120) in study 1047, 79 (40-120) in study 1045, 80 (50-130) in study 013 (Hansson 2013 Table 1).",
+    notes = "n_subjects = 303 reported in Hansson 2013 e85 Methods. The dBP model was fit with Methods-specified blood pressure observations assumed to occur in the morning ('The actual times of the day for blood pressure measurements were not available and were therefore assumed to occur in the morning for all observations')."
   )
 
   ini({

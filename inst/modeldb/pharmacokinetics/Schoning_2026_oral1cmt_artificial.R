@@ -34,7 +34,7 @@ Schoning_2026_oral1cmt_artificial <- function() {
     sep = " "
   )
   vignette <- "Schoning_2026_oral1cmt_wgan"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Schoning 2026 section 2.2 (a
@@ -43,22 +43,26 @@ Schoning_2026_oral1cmt_artificial <- function() {
   # RsSimulx model, which builds the profile with pkmodel(ka, V, Cl).
   compartmentData <- list(
     depot = list(
-      analyte = "hypothetical drug", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "hypothetical drug",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "hypothetical drug", units = "mg",
-      specimen = "whole blood", verified = TRUE
+      analyte = "hypothetical drug",
+      units = "mg",
+      specimen = "whole blood",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate carried in the PK model. Enters central volume as",
         "(WT/70)^e_wt_vc. The 70 kg reference is NOT stated in the paper text",
         "or Table 1; it is read from the deposited RsSimulx [COVARIATE] block,",
@@ -66,7 +70,7 @@ Schoning_2026_oral1cmt_artificial <- function() {
         "kept for the fitted models.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
@@ -75,40 +79,40 @@ Schoning_2026_oral1cmt_artificial <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Supplied to the WGAN-GP one-hot encoded; never entered the popPK model.",
+      units = "(binary)",
+      type = "categorical",
+      notes = "Supplied to the WGAN-GP one-hot encoded; never entered the popPK model.",
       source_name = "sex"
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Supplied to the WGAN-GP; never entered the popPK model.",
+      units = "years",
+      type = "continuous",
+      notes = "Supplied to the WGAN-GP; never entered the popPK model.",
       source_name = "AGE"
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Supplied to the WGAN-GP; never entered the popPK model.",
+      units = "cm",
+      type = "continuous",
+      notes = "Supplied to the WGAN-GP; never entered the popPK model.",
       source_name = "HT"
     )
   )
 
   population <- list(
-    species        = "None (methodology paper; a hypothetical drug in synthetic subjects, not a fit of any real molecule).",
-    n_subjects     = 60L,
-    n_studies      = 1L,
-    age_range      = "18-65 years per section 2.2 text; the deposited generator draws runif(20, 18, 60) for the original patients.",
-    weight_range   = "Original patients normally distributed, mean 64 kg (female) and 85 kg (male), SD 10 kg (section 2.2); artificial patients drawn from the WGAN-GP.",
+    species = "None (methodology paper; a hypothetical drug in synthetic subjects, not a fit of any real molecule).",
+    n_subjects = 60L,
+    n_studies = 1L,
+    age_range = "18-65 years per section 2.2 text; the deposited generator draws runif(20, 18, 60) for the original patients.",
+    weight_range = "Original patients normally distributed, mean 64 kg (female) and 85 kg (male), SD 10 kg (section 2.2); artificial patients drawn from the WGAN-GP.",
     sex_female_pct = 50,
-    disease_state  = "N/A (Monte Carlo simulation study).",
-    dose_range     = "Single 300 mg extravascular dose at time 0 (section 2.2).",
-    regions        = "N/A",
-    n_original_patients   = 0L,
+    disease_state = "N/A (Monte Carlo simulation study).",
+    dose_range = "Single 300 mg extravascular dose at time 0 (section 2.2).",
+    regions = "N/A",
+    n_original_patients = 0L,
     n_artificial_patients = 60L,
-    scope_note     = paste(
+    scope_note = paste(
       "Filed under inst/modeldb/pharmacokinetics/ rather than specificDrugs/",
       "because there is no drug, following the precedent set by",
       "Beal_2001_iv1cmt_bql.",
@@ -116,7 +120,7 @@ Schoning_2026_oral1cmt_artificial <- function() {
       "Schoning_2026_oral1cmt_groundtruth, carries the data-generating model.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Sampling times 0.5, 1, 1.5, 2, 4, 6, 8 and 12 h after the dose;",
       "concentrations below 0.5 mg/L were censored as BLQ (section 2.2).",
       "Estimation in Monolix 2024R1 with a non-parametric bootstrap of 200",
@@ -156,4 +160,3 @@ Schoning_2026_oral1cmt_artificial <- function() {
     Cc ~ add(addSd) + prop(propSd) + combined1()
   })
 }
-

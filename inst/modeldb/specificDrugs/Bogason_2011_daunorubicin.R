@@ -8,36 +8,36 @@ Bogason_2011_daunorubicin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "daunorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "daunorubicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "daunorubicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WBC = list(
-      description        = "Baseline white blood cell count at AML diagnosis (peripheral blood). Used here as a biomarker of leukaemic cell burden and entered as an additive-fractional centred deviation on central volume of distribution.",
-      units              = "10^9 cells/L",
-      type               = "continuous",
+      description = "Baseline white blood cell count at AML diagnosis (peripheral blood). Used here as a biomarker of leukaemic cell burden and entered as an additive-fractional centred deviation on central volume of distribution.",
+      units = "10^9 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline-only (single measurement at diagnosis, time-fixed per subject). The paper reports WBC as 10^6 cells/mL blood, which is numerically equivalent to 10^9 cells/L (the canonical unit in inst/references/covariate-columns.md). Reference value 39 (10^9 cells/L) is the cohort mean / median used in the published covariate equation (Bogason 2011 Table 2 footnote).",
-      source_name        = "WBC"
+      notes = "Baseline-only (single measurement at diagnosis, time-fixed per subject). The paper reports WBC as 10^6 cells/mL blood, which is numerically equivalent to 10^9 cells/L (the canonical unit in inst/references/covariate-columns.md). Reference value 39 (10^9 cells/L) is the cohort mean / median used in the published covariate equation (Bogason 2011 Table 2 footnote).",
+      source_name = "WBC"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 40,
-    n_studies        = 1,
-    age_range        = "33-83 years",
-    age_mean         = "61.3 years",
-    weight_range     = "Not reported individually (dose 60 mg/m^2 normalised to body surface area)",
-    weight_median    = "Not reported",
-    sex_female_pct   = 52.5,
-    race_ethnicity   = "Not reported (single-centre Swedish cohort, Karolinska University Hospital)",
-    disease_state    = "Acute myeloid leukaemia (33 de novo AML, 7 secondary AML following myelodysplastic syndrome or prior chemo/radiotherapy); 26 FAB-classified subtypes (M1-M6) and 14 unclassified",
-    dose_range       = "60 mg/m^2 daunorubicin as 1-h IV infusion on days 1-3 (induction); 3 patients received reduced doses (one at 30, one at 45, one at 54 mg/m^2). Cytarabine 200 mg/m^2 2-h IV infusion days 1-7 was co-administered immediately before each DNR infusion.",
-    regions          = "Sweden (Karolinska University Hospital, Huddinge and Solna)",
-    wbc_range        = "1-219 x 10^9 cells/L (mean 39 x 10^9 cells/L) at diagnosis",
-    notes            = "Baseline demographics per Bogason 2011 Patients section and Table 1. Plasma DNR concentrations were measured at end of 1-h infusion (1 h), 5 h, and 24 h after the first DNR infusion in all 40 patients (sparse sampling). The PK model was fitted to log-transformed DNR plasma concentrations only (DOL metabolite was reported separately and not included in the final structural model). Baseline WBC was the only covariate retained after stepwise covariate analysis on CL, Vc, Q, and Vp against WBC, age, gender, body weight, and body surface area."
+    species = "human",
+    n_subjects = 40,
+    n_studies = 1,
+    age_range = "33-83 years",
+    age_mean = "61.3 years",
+    weight_range = "Not reported individually (dose 60 mg/m^2 normalised to body surface area)",
+    weight_median = "Not reported",
+    sex_female_pct = 52.5,
+    race_ethnicity = "Not reported (single-centre Swedish cohort, Karolinska University Hospital)",
+    disease_state = "Acute myeloid leukaemia (33 de novo AML, 7 secondary AML following myelodysplastic syndrome or prior chemo/radiotherapy); 26 FAB-classified subtypes (M1-M6) and 14 unclassified",
+    dose_range = "60 mg/m^2 daunorubicin as 1-h IV infusion on days 1-3 (induction); 3 patients received reduced doses (one at 30, one at 45, one at 54 mg/m^2). Cytarabine 200 mg/m^2 2-h IV infusion days 1-7 was co-administered immediately before each DNR infusion.",
+    regions = "Sweden (Karolinska University Hospital, Huddinge and Solna)",
+    wbc_range = "1-219 x 10^9 cells/L (mean 39 x 10^9 cells/L) at diagnosis",
+    notes = "Baseline demographics per Bogason 2011 Patients section and Table 1. Plasma DNR concentrations were measured at end of 1-h infusion (1 h), 5 h, and 24 h after the first DNR infusion in all 40 patients (sparse sampling). The PK model was fitted to log-transformed DNR plasma concentrations only (DOL metabolite was reported separately and not included in the final structural model). Baseline WBC was the only covariate retained after stepwise covariate analysis on CL, Vc, Q, and Vp against WBC, age, gender, body weight, and body surface area."
   )
 
   ini({

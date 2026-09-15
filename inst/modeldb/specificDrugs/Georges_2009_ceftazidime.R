@@ -1,67 +1,67 @@
 Georges_2009_ceftazidime <- function() {
   description <- "Two-compartment IV population PK model for ceftazidime in critically ill adults (ICU). Total clearance is an additive linear function of MDRD-estimated glomerular filtration rate; central volume V1 is selected by mechanical-ventilation status; peripheral volume V2 is selected by ICU admission etiology (polytrauma, postsurgical, or medical)."
-  reference   <- "Georges B, Conil J-M, Seguin T, Ruiz S, Minville V, Cougot P, Decun J-F, Gonzalez H, Houin G, Fourcade O, Saivin S. Population pharmacokinetics of ceftazidime in intensive care unit patients: influence of glomerular filtration rate, mechanical ventilation, and reason for admission. Antimicrob Agents Chemother. 2009;53(10):4483-4489. doi:10.1128/AAC.00430-09"
-  vignette    <- "Georges_2009_ceftazidime"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Georges B, Conil J-M, Seguin T, Ruiz S, Minville V, Cougot P, Decun J-F, Gonzalez H, Houin G, Fourcade O, Saivin S. Population pharmacokinetics of ceftazidime in intensive care unit patients: influence of glomerular filtration rate, mechanical ventilation, and reason for admission. Antimicrob Agents Chemother. 2009;53(10):4483-4489. doi:10.1128/AAC.00430-09"
+  vignette <- "Georges_2009_ceftazidime"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "MDRD-estimated glomerular filtration rate (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "MDRD-estimated glomerular filtration rate (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column MDRD (Modification of Diet in Renal Disease formula). Georges 2009 Methods, Patients section states '... the modification of the diet in renal disease (MDRD) (20, 21) were also calculated.' Population mean MDRD = 121 +/- 55 mL/min (Table 1, total n=72; range across the simulation scenario in Fig. 3 is 30-180 mL/min). The paper does not BSA-normalize MDRD when entering the model and the structural equation 'TVCL = theta1 + theta2 x MDRD, with MDRD in ml/min' treats it as raw mL/min. Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). The effect on CL is additive linear (TVCL = exp(lcl) + e_crcl_cl * CRCL), no centering or divisive normalization.",
-      source_name        = "MDRD"
+      notes = "Source column MDRD (Modification of Diet in Renal Disease formula). Georges 2009 Methods, Patients section states '... the modification of the diet in renal disease (MDRD) (20, 21) were also calculated.' Population mean MDRD = 121 +/- 55 mL/min (Table 1, total n=72; range across the simulation scenario in Fig. 3 is 30-180 mL/min). The paper does not BSA-normalize MDRD when entering the model and the structural equation 'TVCL = theta1 + theta2 x MDRD, with MDRD in ml/min' treats it as raw mL/min. Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). The effect on CL is additive linear (TVCL = exp(lcl) + e_crcl_cl * CRCL), no centering or divisive normalization.",
+      source_name = "MDRD"
     ),
     MECH_VENT = list(
-      description        = "Mechanical-ventilation indicator at study entry",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mechanical-ventilation indicator at study entry",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not mechanically ventilated)",
-      notes              = "Treatment-status flag captured at ICU admission. Georges 2009 Table 1 reports 12/60 no/yes for the total cohort (n=72). Selector effect on V1 in the final model: TVV1 = theta3 when MECH_VENT = 0 (18.9 L) and TVV1 = theta4 when MECH_VENT = 1 (9.02 L). The paper's Discussion attributes the V1 decrease to positive-pressure-ventilation-induced increases in plasma renin activity, aldosterone, and antidiuretic hormone (references 2 and 40 of the source paper).",
-      source_name        = "mechanical ventilation"
+      notes = "Treatment-status flag captured at ICU admission. Georges 2009 Table 1 reports 12/60 no/yes for the total cohort (n=72). Selector effect on V1 in the final model: TVV1 = theta3 when MECH_VENT = 0 (18.9 L) and TVV1 = theta4 when MECH_VENT = 1 (9.02 L). The paper's Discussion attributes the V1 decrease to positive-pressure-ventilation-induced increases in plasma renin activity, aldosterone, and antidiuretic hormone (references 2 and 40 of the source paper).",
+      source_name = "mechanical ventilation"
     ),
     ICU_ADM_POLYTRAUMA = list(
-      description        = "ICU admission etiology indicator: polytrauma",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ICU admission etiology indicator: polytrauma",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (other admission etiology -- postsurgical or medical)",
-      notes              = "One of three mutually-exclusive ICU admission etiology indicators (ICU_ADM_POLYTRAUMA + ICU_ADM_POSTSURG + ICU_ADM_MEDICAL = 1 for every subject). Georges 2009 Table 1 reports 27/72 polytrauma admissions (16 in group 1 model-building + 11 in group 2 validation). Selector effect on V2: TVV2 = theta6 (57.1 L) when ICU_ADM_POLYTRAUMA = 1; the multiplicative form uses ICU_ADM_MEDICAL = 1 as the structural reference (smallest V2 = 13.6 L per Discussion 'patients with a medical reason for admission presented a volume of distribution in the same order of magnitude as those of healthy subjects'). The reference-category indicator ICU_ADM_MEDICAL is not declared in this model's covariateData (it is implicit: ICU_ADM_MEDICAL = 1 - ICU_ADM_POLYTRAUMA - ICU_ADM_POSTSURG) and is registered as a canonical column in inst/references/covariate-columns.md for completeness.",
-      source_name        = "Admission for polytrauma"
+      notes = "One of three mutually-exclusive ICU admission etiology indicators (ICU_ADM_POLYTRAUMA + ICU_ADM_POSTSURG + ICU_ADM_MEDICAL = 1 for every subject). Georges 2009 Table 1 reports 27/72 polytrauma admissions (16 in group 1 model-building + 11 in group 2 validation). Selector effect on V2: TVV2 = theta6 (57.1 L) when ICU_ADM_POLYTRAUMA = 1; the multiplicative form uses ICU_ADM_MEDICAL = 1 as the structural reference (smallest V2 = 13.6 L per Discussion 'patients with a medical reason for admission presented a volume of distribution in the same order of magnitude as those of healthy subjects'). The reference-category indicator ICU_ADM_MEDICAL is not declared in this model's covariateData (it is implicit: ICU_ADM_MEDICAL = 1 - ICU_ADM_POLYTRAUMA - ICU_ADM_POSTSURG) and is registered as a canonical column in inst/references/covariate-columns.md for completeness.",
+      source_name = "Admission for polytrauma"
     ),
     ICU_ADM_POSTSURG = list(
-      description        = "ICU admission etiology indicator: postsurgical",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ICU admission etiology indicator: postsurgical",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (other admission etiology -- polytrauma or medical)",
-      notes              = "One of three mutually-exclusive ICU admission etiology indicators. Georges 2009 Table 1 reports 19/72 postsurgical admissions (16 + 3). Selector effect on V2: TVV2 = theta7 (25.7 L) when ICU_ADM_POSTSURG = 1. See ICU_ADM_POLYTRAUMA notes for the partition convention and the reason ICU_ADM_MEDICAL is not declared here.",
-      source_name        = "Admission for postsurgical"
+      notes = "One of three mutually-exclusive ICU admission etiology indicators. Georges 2009 Table 1 reports 19/72 postsurgical admissions (16 + 3). Selector effect on V2: TVV2 = theta7 (25.7 L) when ICU_ADM_POSTSURG = 1. See ICU_ADM_POLYTRAUMA notes for the partition convention and the reason ICU_ADM_MEDICAL is not declared here.",
+      source_name = "Admission for postsurgical"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 72L,
-    n_studies      = 1L,
-    age_range      = "Adults (>=18 years); mean 58 +/- 17 years (Table 1, total n=72)",
-    weight_range   = "Mean 76.8 +/- 15.8 kg (Table 1)",
-    height_range   = "Mean 172 +/- 7 cm (Table 1)",
+    species = "human",
+    n_subjects = 72L,
+    n_studies = 1L,
+    age_range = "Adults (>=18 years); mean 58 +/- 17 years (Table 1, total n=72)",
+    weight_range = "Mean 76.8 +/- 15.8 kg (Table 1)",
+    height_range = "Mean 172 +/- 7 cm (Table 1)",
     sex_female_pct = 15.3,
     race_ethnicity = "Not reported (French single-centre ICU cohort, Toulouse)",
-    disease_state  = "ICU adults with Pseudomonas aeruginosa nosocomial pneumonia or bacteremia presumed sensitive to ceftazidime; mechanically ventilated in 60/72 subjects; admission etiology polytrauma (27), postsurgical (19), or medical (26).",
-    dose_range     = "Three regimens: 2 g ceftazidime IV over 30 min q8h (intermittent, n=22); 6 g/day continuous infusion via syringe pump (n=22); 2 g IV loading dose over 30 min followed by 6 g/day continuous infusion (n=28).",
-    regions        = "France (Toulouse, single centre, Rangueil University Hospital ICU)",
+    disease_state = "ICU adults with Pseudomonas aeruginosa nosocomial pneumonia or bacteremia presumed sensitive to ceftazidime; mechanically ventilated in 60/72 subjects; admission etiology polytrauma (27), postsurgical (19), or medical (26).",
+    dose_range = "Three regimens: 2 g ceftazidime IV over 30 min q8h (intermittent, n=22); 6 g/day continuous infusion via syringe pump (n=22); 2 g IV loading dose over 30 min followed by 6 g/day continuous infusion (n=28).",
+    regions = "France (Toulouse, single centre, Rangueil University Hospital ICU)",
     severity_scores = "Mean SAPS I 13.9 +/- 4.4, mean SAPS II 47.8 +/- 15.6 (Table 1)",
-    renal_function  = "MDRD-eGFR mean 121 +/- 55 mL/min (Table 1; simulation range 30-180 mL/min, Fig. 3)",
-    notes          = "Baseline demographics and disease characteristics per Georges 2009 Table 1. Group 1 (n=49, 300 concentrations) used for model-building; group 2 (n=23, 143 concentrations) used for predictive validation. The two groups were then pooled (total n=72, 443 concentrations) to fit the 'final' / 'total' model whose parameter estimates are reproduced in this model file. Per the abstract: 'The mean pharmacokinetic parameters were as follows: CL, 5.48 liters/h, 40%; V1, 10.48 liters, 34%; V2, 32.12 liters, 59%; total volume, 42.60 liters, 45%; and intercompartmental clearance, 16.19 liters/h, 42%' -- these are cohort empirical means with CV%, not the structural thetas (which are encoded below)."
+    renal_function = "MDRD-eGFR mean 121 +/- 55 mL/min (Table 1; simulation range 30-180 mL/min, Fig. 3)",
+    notes = "Baseline demographics and disease characteristics per Georges 2009 Table 1. Group 1 (n=49, 300 concentrations) used for model-building; group 2 (n=23, 143 concentrations) used for predictive validation. The two groups were then pooled (total n=72, 443 concentrations) to fit the 'final' / 'total' model whose parameter estimates are reproduced in this model file. Per the abstract: 'The mean pharmacokinetic parameters were as follows: CL, 5.48 liters/h, 40%; V1, 10.48 liters, 34%; V2, 32.12 liters, 59%; total volume, 42.60 liters, 45%; and intercompartmental clearance, 16.19 liters/h, 42%' -- these are cohort empirical means with CV%, not the structural thetas (which are encoded below)."
   )
 
   ini({

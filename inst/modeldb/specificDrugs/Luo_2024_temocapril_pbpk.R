@@ -30,7 +30,7 @@ Luo_2024_temocapril_pbpk <- function() {
     sep = " "
   )
   vignette <- "Luo_2024_CES1_cirrhosis"
-  units    <- list(time = "min", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "min", dosing = "mg", concentration = "ug/mL")
 
   # Segment-resolved gut-WALL states. The gut LUMEN segments use the
   # canonical stomach / duodenum / jejunum / ileum names; the tissue (wall)
@@ -39,16 +39,25 @@ Luo_2024_temocapril_pbpk <- function() {
   # PBPK to ratify a canonical trio. portal_vein follows
   # vandenBerg_2021_uprifosbuvir_pbpk.R.
   paper_specific_compartments <- c(
-    "wall_duodenum", "wall_jejunum", "wall_ileum", "portal_vein", "wall_duodenum_temat", "wall_jejunum_temat", "wall_ileum_temat", "portal_vein_temat", "liver_temat", "kidney_temat"
+    "wall_duodenum",
+    "wall_jejunum",
+    "wall_ileum",
+    "portal_vein",
+    "wall_duodenum_temat",
+    "wall_jejunum_temat",
+    "wall_ileum_temat",
+    "portal_vein_temat",
+    "liver_temat",
+    "kidney_temat"
   )
 
   covariateData <- list(
     HEPIMP_MILD = list(
-      description        = "Mild hepatic impairment indicator (1 = Child-Pugh class A).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild hepatic impairment indicator (1 = Child-Pugh class A).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy hepatic function when HEPIMP_MOD and HEPIMP_SEV are also 0)",
-      notes              = paste(
+      notes = paste(
         "Classification scheme is Child-Pugh, NOT NCI ODWG: HEPIMP_MILD = 1",
         "selects the Child-Pugh A column of Luo 2024 Table 1. The three",
         "HEPIMP_* indicators are mutually exclusive; all three 0 selects the",
@@ -57,69 +66,69 @@ Luo_2024_temocapril_pbpk <- function() {
         "reduced to 81% of normal, so the CP-A effect is driven by liver",
         "volume, blood-flow redistribution, GFR, albumin and GI transit."
       ),
-      source_name        = "Child-Pugh A"
+      source_name = "Child-Pugh A"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment indicator (1 = Child-Pugh class B).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment indicator (1 = Child-Pugh class B).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy hepatic function when HEPIMP_MILD and HEPIMP_SEV are also 0)",
-      notes              = paste(
+      notes = paste(
         "Classification scheme is Child-Pugh, NOT NCI ODWG: HEPIMP_MOD = 1",
         "selects the Child-Pugh B column of Luo 2024 Table 1 (hepatic CES1",
         "content 1.715 mg/g liver = 70% of healthy; functional liver volume",
         "65% of normal)."
       ),
-      source_name        = "Child-Pugh B"
+      source_name = "Child-Pugh B"
     ),
     HEPIMP_SEV = list(
-      description        = "Severe hepatic impairment indicator (1 = Child-Pugh class C).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Severe hepatic impairment indicator (1 = Child-Pugh class C).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy hepatic function when HEPIMP_MILD and HEPIMP_MOD are also 0)",
-      notes              = paste(
+      notes = paste(
         "Classification scheme is Child-Pugh, NOT NCI ODWG: HEPIMP_SEV = 1",
         "selects the Child-Pugh C column of Luo 2024 Table 1 (hepatic CES1",
         "content 0.735 mg/g liver = 30% of healthy; functional liver volume",
         "53% of normal; hepatic arterial flow raised to 1020 mL/min)."
       ),
-      source_name        = "Child-Pugh C"
+      source_name = "Child-Pugh C"
     )
   )
 
   compartmentData <- list(
-    stomach                  = list(analyte = "temocapril", units = "mg", specimen = "administration site", verified = TRUE),
-    duodenum                 = list(analyte = "temocapril", units = "mg", specimen = "administration site", verified = TRUE),
-    jejunum                  = list(analyte = "temocapril", units = "mg", specimen = "administration site", verified = TRUE),
-    ileum                    = list(analyte = "temocapril", units = "mg", specimen = "administration site", verified = TRUE),
-    wall_duodenum            = list(analyte = "temocapril", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_jejunum             = list(analyte = "temocapril", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_ileum               = list(analyte = "temocapril", units = "mg", specimen = "tissue", verified = TRUE),
-    portal_vein              = list(analyte = "temocapril", units = "mg", specimen = "plasma", verified = TRUE),
-    liver                    = list(analyte = "temocapril", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney                   = list(analyte = "temocapril", units = "mg", specimen = "tissue", verified = TRUE),
-    central                  = list(analyte = "temocapril", units = "mg", specimen = "plasma", verified = TRUE),
-    wall_duodenum_temat      = list(analyte = "temocaprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_jejunum_temat       = list(analyte = "temocaprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_ileum_temat         = list(analyte = "temocaprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    portal_vein_temat        = list(analyte = "temocaprilat", units = "mg", specimen = "plasma", verified = TRUE),
-    liver_temat              = list(analyte = "temocaprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney_temat             = list(analyte = "temocaprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    central_temat            = list(analyte = "temocaprilat", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_temat        = list(analyte = "temocaprilat", units = "mg", specimen = "plasma", verified = TRUE)
+    stomach = list(analyte = "temocapril", units = "mg", specimen = "administration site", verified = TRUE),
+    duodenum = list(analyte = "temocapril", units = "mg", specimen = "administration site", verified = TRUE),
+    jejunum = list(analyte = "temocapril", units = "mg", specimen = "administration site", verified = TRUE),
+    ileum = list(analyte = "temocapril", units = "mg", specimen = "administration site", verified = TRUE),
+    wall_duodenum = list(analyte = "temocapril", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_jejunum = list(analyte = "temocapril", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_ileum = list(analyte = "temocapril", units = "mg", specimen = "tissue", verified = TRUE),
+    portal_vein = list(analyte = "temocapril", units = "mg", specimen = "plasma", verified = TRUE),
+    liver = list(analyte = "temocapril", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "temocapril", units = "mg", specimen = "tissue", verified = TRUE),
+    central = list(analyte = "temocapril", units = "mg", specimen = "plasma", verified = TRUE),
+    wall_duodenum_temat = list(analyte = "temocaprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_jejunum_temat = list(analyte = "temocaprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_ileum_temat = list(analyte = "temocaprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    portal_vein_temat = list(analyte = "temocaprilat", units = "mg", specimen = "plasma", verified = TRUE),
+    liver_temat = list(analyte = "temocaprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney_temat = list(analyte = "temocaprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    central_temat = list(analyte = "temocaprilat", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_temat = list(analyte = "temocaprilat", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 13L,
-    n_studies      = 1L,
-    age_range      = "adults",
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 13L,
+    n_studies = 1L,
+    age_range = "adults",
+    disease_state = paste(
       "Furuta 1993, a single clinical report covering both arms: healthy",
       "volunteers (n = 6) and Child-Pugh C cirrhosis patients (n = 7)."
     ),
-    dose_range     = "Temocapril hydrochloride 1 mg single oral dose",
-    notes          = paste(
+    dose_range = "Temocapril hydrochloride 1 mg single oral dose",
+    notes = paste(
       "Luo 2024 Table 3. Literature-digitised clinical data; the authors",
       "simulated 1000 virtual individuals per population by drawing CLint,",
       "CLint,K, fu,b, Vsys, Peff, ka, KL:P, KG:P and KK:P uniformly over",
@@ -348,4 +357,3 @@ Luo_2024_temocapril_pbpk <- function() {
     Cc_temat ~ prop(propSd_temat)
   })
 }
-

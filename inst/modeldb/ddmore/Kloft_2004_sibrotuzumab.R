@@ -10,38 +10,38 @@ Kloft_2004_sibrotuzumab <- function() {
   )
   vignette <- "Kloft_2004_sibrotuzumab"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
-  ddmore_id    <- "DDMODEL00000195"
+  ddmore_id <- "DDMODEL00000195"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "sibrotuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "sibrotuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "sibrotuzumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear covariate centered at 75 kg, applied as `param * (1 + e_wt_<param> * (WT - 75))` on linear CL, central volume V1, peripheral volume V2, and Michaelis-Menten Vmax. Reference WT = 75 kg per the DDMORE Executable_sibrotuzumab.mdl GROUP_VARIABLES block. The four `BETA_*_WT` effect coefficients are declared `fix = true` in the .mdl PARAMETERS block (i.e., not estimated alongside the other thetas in this DDMORE encoding).",
-      source_name        = "WT"
+      notes = "Linear covariate centered at 75 kg, applied as `param * (1 + e_wt_<param> * (WT - 75))` on linear CL, central volume V1, peripheral volume V2, and Michaelis-Menten Vmax. Reference WT = 75 kg per the DDMORE Executable_sibrotuzumab.mdl GROUP_VARIABLES block. The four `BETA_*_WT` effect coefficients are declared `fix = true` in the .mdl PARAMETERS block (i.e., not estimated alongside the other thetas in this DDMORE encoding).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Adults with metastatic fibroblast-activation-protein (FAP)-positive cancers (Kloft 2004 enrolled patients with metastatic colorectal, non-small-cell lung, and head-and-neck carcinomas in a Phase I/II program of repeated weekly IV sibrotuzumab infusions).",
-    dose_range     = "Repeated weekly intravenous sibrotuzumab infusions (Phase I dose escalation per Kloft 2004). Detailed dose levels are not reproduced in the DDMORE bundle; the bundle's Simulated_sibrotuzumab.csv ships a single 80 mg / 1-hour IV infusion per subject as a smoke test.",
-    regions        = NA_character_,
-    notes          = "Population demographic detail (n_subjects, weight range, age, sex distribution) is not reproduced in the DDMORE Foundation Model Repository bundle for DDMODEL00000195, and the original Kloft 2004 publication is not on disk in this worktree. The bundle's Simulated_sibrotuzumab.csv carries 20 virtual subjects with WT in {70, 80, 90, 100} kg drawn evenly across IDs as a regression-test cohort. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
+    disease_state = "Adults with metastatic fibroblast-activation-protein (FAP)-positive cancers (Kloft 2004 enrolled patients with metastatic colorectal, non-small-cell lung, and head-and-neck carcinomas in a Phase I/II program of repeated weekly IV sibrotuzumab infusions).",
+    dose_range = "Repeated weekly intravenous sibrotuzumab infusions (Phase I dose escalation per Kloft 2004). Detailed dose levels are not reproduced in the DDMORE bundle; the bundle's Simulated_sibrotuzumab.csv ships a single 80 mg / 1-hour IV infusion per subject as a smoke test.",
+    regions = NA_character_,
+    notes = "Population demographic detail (n_subjects, weight range, age, sex distribution) is not reproduced in the DDMORE Foundation Model Repository bundle for DDMODEL00000195, and the original Kloft 2004 publication is not on disk in this worktree. The bundle's Simulated_sibrotuzumab.csv carries 20 virtual subjects with WT in {70, 80, 90, 100} kg drawn evenly across IDs as a regression-test cohort. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
   )
 
   ini({

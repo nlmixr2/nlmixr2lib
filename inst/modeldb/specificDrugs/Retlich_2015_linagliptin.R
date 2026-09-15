@@ -10,145 +10,149 @@ Retlich_2015_linagliptin <- function() {
     "J Clin Pharmacol. 2010;50(8):873-885."
   )
   vignette <- "Retlich_2015_linagliptin"
-  units <- list(time = "h", dosing = "mg", concentration = "ng/mL (linagliptin total plasma concentration; converted from nmol/L via MW 472.54 g/mol); RFU (DPP-4 activity)")
+  units <- list(
+    time = "h",
+    dosing = "mg",
+    concentration = "ng/mL (linagliptin total plasma concentration; converted from nmol/L via MW 472.54 g/mol); RFU (DPP-4 activity)"
+  )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "linagliptin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "linagliptin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline weight; linear-deviation effect on relative bioavailability F centred at 88 kg (population median, Retlich 2015 Table 4 footnote b).",
-      source_name        = "WT"
+      notes = "Time-fixed baseline weight; linear-deviation effect on relative bioavailability F centred at 88 kg (population median, Retlich 2015 Table 4 footnote b).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on Bmax_C centred at 60 years (population median, Retlich 2015 Table 4 footnote g).",
-      source_name        = "AGE"
+      notes = "Linear-deviation effect on Bmax_C centred at 60 years (population median, Retlich 2015 Table 4 footnote g).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex (female indicator)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (female indicator)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Additive effect on Bmax_C (+0.457 nmol/L for females, Retlich 2015 Table 4) and on baseline DPP-4 activity BSL (+865 RFU for females, Retlich 2015 Table 5).",
-      source_name        = "SEX (1 = female; 0 = male)"
+      notes = "Additive effect on Bmax_C (+0.457 nmol/L for females, Retlich 2015 Table 4) and on baseline DPP-4 activity BSL (+865 RFU for females, Retlich 2015 Table 5).",
+      source_name = "SEX (1 = female; 0 = male)"
     ),
     DOSE = list(
-      description        = "Administered linagliptin dose at the current dosing record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered linagliptin dose at the current dosing record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-record dose value (linagliptin doses studied: 0.5, 1, 2.5, 5, 10 mg). Used as a covariate centred at 5 mg in the empirical dose-dependent Ka and Bmax_C effects (Retlich 2015 Table 4 footnotes c and g). Pass as a constant per subject for chronic once-daily simulations.",
-      source_name        = "DOSE"
+      notes = "Per-record dose value (linagliptin doses studied: 0.5, 1, 2.5, 5, 10 mg). Used as a covariate centred at 5 mg in the empirical dose-dependent Ka and Bmax_C effects (Retlich 2015 Table 4 footnotes c and g). Pass as a constant per subject for chronic once-daily simulations.",
+      source_name = "DOSE"
     ),
     GGT = list(
-      description        = "Serum gamma-glutamyltransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum gamma-glutamyltransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on linagliptin CL centred at 33 U/L (Retlich 2015 Table 4 footnote f, popPK median). The PD layer uses GGT centred at 32.3 U/L (Retlich 2015 Table 5 footnote b, popPK/PD median) with a piecewise threshold at 175 U/L.",
-      source_name        = "GGT"
+      notes = "Linear-deviation effect on linagliptin CL centred at 33 U/L (Retlich 2015 Table 4 footnote f, popPK median). The PD layer uses GGT centred at 32.3 U/L (Retlich 2015 Table 5 footnote b, popPK/PD median) with a piecewise threshold at 175 U/L.",
+      source_name = "GGT"
     ),
     DPP4_BL_RFU = list(
-      description        = "Baseline plasma DPP-4 enzymatic activity in relative fluorescence units",
-      units              = "RFU",
-      type               = "continuous",
+      description = "Baseline plasma DPP-4 enzymatic activity in relative fluorescence units",
+      units = "RFU",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject baseline DPP-4 activity from the linagliptin Boehringer Ingelheim assay. Linear-deviation effect on Bmax_C centred at 12,497 RFU (Retlich 2015 Table 4 footnote g, popPK median). The popPK/PD layer estimates BSL as a per-subject parameter; the BSL_EC50 covariate effect is centred at 11,600 RFU (Retlich 2015 Table 5 footnote c) and acts on the individually predicted BSL_i.",
-      source_name        = "DPP (baseline RFU)"
+      notes = "Per-subject baseline DPP-4 activity from the linagliptin Boehringer Ingelheim assay. Linear-deviation effect on Bmax_C centred at 12,497 RFU (Retlich 2015 Table 4 footnote g, popPK median). The popPK/PD layer estimates BSL as a per-subject parameter; the BSL_EC50 covariate effect is centred at 11,600 RFU (Retlich 2015 Table 5 footnote c) and acts on the individually predicted BSL_i.",
+      source_name = "DPP (baseline RFU)"
     ),
     ALT = list(
-      description        = "Serum alanine aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on baseline DPP-4 activity BSL centred at 28.8 U/L (Retlich 2015 Table 5 footnote b, popPK/PD median).",
-      source_name        = "ALT"
+      notes = "Linear-deviation effect on baseline DPP-4 activity BSL centred at 28.8 U/L (Retlich 2015 Table 5 footnote b, popPK/PD median).",
+      source_name = "ALT"
     ),
     FPG = list(
-      description        = "Fasting plasma glucose at baseline",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Fasting plasma glucose at baseline",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on baseline DPP-4 activity BSL centred at 8.90 mmol/L (Retlich 2015 Table 5 footnote b, popPK/PD median).",
-      source_name        = "FPG"
+      notes = "Linear-deviation effect on baseline DPP-4 activity BSL centred at 8.90 mmol/L (Retlich 2015 Table 5 footnote b, popPK/PD median).",
+      source_name = "FPG"
     ),
     TRIG = list(
-      description        = "Serum triglyceride concentration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum triglyceride concentration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on baseline DPP-4 activity BSL and on EC50, both centred at 160 mg/dL (Retlich 2015 Table 5 footnotes b and c, popPK/PD median).",
-      source_name        = "TG"
+      notes = "Linear-deviation effect on baseline DPP-4 activity BSL and on EC50, both centred at 160 mg/dL (Retlich 2015 Table 5 footnotes b and c, popPK/PD median).",
+      source_name = "TG"
     ),
     TCHOL = list(
-      description        = "Total serum cholesterol",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Total serum cholesterol",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on baseline DPP-4 activity BSL centred at 183 mg/dL (Retlich 2015 Table 5 footnote b, popPK/PD median).",
-      source_name        = "CHOL"
+      notes = "Linear-deviation effect on baseline DPP-4 activity BSL centred at 183 mg/dL (Retlich 2015 Table 5 footnote b, popPK/PD median).",
+      source_name = "CHOL"
     ),
     CONMED_METFORMIN = list(
-      description        = "Concomitant metformin co-administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant metformin co-administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (linagliptin monotherapy)",
-      notes              = "1 = Retlich 2015 Study 4 add-on-to-metformin cohort. Multiplicative effect on relative bioavailability F (+69% F for metformin co-administration, Retlich 2015 Table 4 row 'F in study 4'); attributed by the authors to a metformin-linagliptin DDI consistent with Graefe-Mody 2009.",
-      source_name        = "METFORMIN"
+      notes = "1 = Retlich 2015 Study 4 add-on-to-metformin cohort. Multiplicative effect on relative bioavailability F (+69% F for metformin co-administration, Retlich 2015 Table 4 row 'F in study 4'); attributed by the authors to a metformin-linagliptin DDI consistent with Graefe-Mody 2009.",
+      source_name = "METFORMIN"
     ),
     FORM_POWDER = list(
-      description        = "Linagliptin powder-in-bottle formulation indicator (Study 1)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Linagliptin powder-in-bottle formulation indicator (Study 1)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet)",
-      notes              = "1 = Retlich 2015 Study 1 powder-in-bottle formulation; 0 = tablet (formulation 1 or 2). Multiplicative effect on the absorption rate constant Ka (typical Ka for powder = 0.933 1/h vs 0.441 1/h for tablet formulation 2 = the marketed-product reference, Retlich 2015 Table 4).",
-      source_name        = "FORMPOW"
+      notes = "1 = Retlich 2015 Study 1 powder-in-bottle formulation; 0 = tablet (formulation 1 or 2). Multiplicative effect on the absorption rate constant Ka (typical Ka for powder = 0.933 1/h vs 0.441 1/h for tablet formulation 2 = the marketed-product reference, Retlich 2015 Table 4).",
+      source_name = "FORMPOW"
     ),
     FORM_LINAG_TAB1 = list(
-      description        = "Linagliptin tablet formulation 1 indicator (Study 2)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Linagliptin tablet formulation 1 indicator (Study 2)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet formulation 2 = marketed reference; or powder if FORM_POWDER = 1)",
-      notes              = "1 = Retlich 2015 Study 2 tablet formulation 1 (development formulation, not marketed); 0 = tablet formulation 2 (the marketed linagliptin tablet) OR powder. Multiplicative effect on Ka (typical Ka for tablet formulation 1 = 0.795 1/h vs 0.441 1/h for tablet formulation 2 reference, Retlich 2015 Table 4).",
-      source_name        = "FORMTAB1"
+      notes = "1 = Retlich 2015 Study 2 tablet formulation 1 (development formulation, not marketed); 0 = tablet formulation 2 (the marketed linagliptin tablet) OR powder. Multiplicative effect on Ka (typical Ka for tablet formulation 1 = 0.795 1/h vs 0.441 1/h for tablet formulation 2 reference, Retlich 2015 Table 4).",
+      source_name = "FORMTAB1"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 607L,
-    n_subjects_pk  = 462L,
+    species = "human",
+    n_subjects = 607L,
+    n_subjects_pk = 462L,
     n_subjects_pkpd = 607L,
-    n_studies      = 4L,
-    studies        = "Studies 1-2: phase 1 (single + multiple oral dose, powder-in-bottle [Study 1] and tablet formulation 1 [Study 2], 12 days / 4 weeks). Studies 3-4: phase 2b (12 weeks; Study 3 linagliptin monotherapy, Study 4 add-on to metformin; both used tablet formulation 2 = marketed product).",
-    age_range      = "30-78 years (pooled, Retlich 2015 Table 3)",
-    age_median     = "60 years",
-    weight_range   = "55-138 kg (pooled, Retlich 2015 Table 3)",
-    weight_median  = "89 kg",
-    bmi_median     = "30.6 kg/m^2 (range 20.4-42.2)",
+    n_studies = 4L,
+    studies = "Studies 1-2: phase 1 (single + multiple oral dose, powder-in-bottle [Study 1] and tablet formulation 1 [Study 2], 12 days / 4 weeks). Studies 3-4: phase 2b (12 weeks; Study 3 linagliptin monotherapy, Study 4 add-on to metformin; both used tablet formulation 2 = marketed product).",
+    age_range = "30-78 years (pooled, Retlich 2015 Table 3)",
+    age_median = "60 years",
+    weight_range = "55-138 kg (pooled, Retlich 2015 Table 3)",
+    weight_median = "89 kg",
+    bmi_median = "30.6 kg/m^2 (range 20.4-42.2)",
     sex_female_pct = 33.9,
     race_ethnicity = c(Caucasian = 92.1, Black = 2.5, Asian = 1.8, Hispanic = 3.6),
-    disease_state  = "Type 2 diabetes mellitus (T2DM). Patients with normal hepatic function and normal renal function or mild renal impairment.",
-    dose_range     = "0.5-10 mg PO once daily linagliptin (Studies 3 and 4 marketed-dose range bracketed by 0.5-10 mg in phase 2b).",
-    regions        = "Multiregional (Retlich 2015 Methods); ethnic origin coded as Caucasian / Black / Asian / Hispanic.",
-    co_medication  = "Metformin in Study 4 (267/607 patients, 44%); linagliptin monotherapy in Studies 1, 2, 3.",
+    disease_state = "Type 2 diabetes mellitus (T2DM). Patients with normal hepatic function and normal renal function or mild renal impairment.",
+    dose_range = "0.5-10 mg PO once daily linagliptin (Studies 3 and 4 marketed-dose range bracketed by 0.5-10 mg in phase 2b).",
+    regions = "Multiregional (Retlich 2015 Methods); ethnic origin coded as Caucasian / Black / Asian / Hispanic.",
+    co_medication = "Metformin in Study 4 (267/607 patients, 44%); linagliptin monotherapy in Studies 1, 2, 3.",
     n_observations = "PK dataset: 6907 linagliptin plasma concentrations (462 subjects). PK/PD dataset: 9674 paired linagliptin + DPP-4 activity measurements (607 subjects including placebo arms).",
     baseline_fpg_median = "9.9 mmol/L (range 5.1-20.0)",
-    notes          = "Demographics summarised in Retlich 2015 Table 3."
+    notes = "Demographics summarised in Retlich 2015 Table 3."
   )
 
   ini({

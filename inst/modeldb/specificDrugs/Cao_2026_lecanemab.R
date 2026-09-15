@@ -46,12 +46,22 @@ Cao_2026_lecanemab <- function() {
   # the paper's own symbols (Eq 1-2 and the "Full ODE system" section of
   # Methods) so the source trace is one-to-one.
   paper_specific_compartments <- c(
-    "A", "O", "F", "P", "N", "I0", "I1", "I2", "DN", "TS", "TP"
+    "A",
+    "O",
+    "F",
+    "P",
+    "N",
+    "I0",
+    "I1",
+    "I2",
+    "DN",
+    "TS",
+    "TP"
   )
 
   units <- list(
-    time          = "year",
-    dosing        = paste(
+    time = "year",
+    dosing = paste(
       "(this model has no dosing events; anti-amyloid drug exposure enters",
       "through the time-varying covariate CSS_LEC, the steady-state average",
       "serum concentration in ug/mL. See covariateData.)",
@@ -69,7 +79,7 @@ Cao_2026_lecanemab <- function() {
 
   covariateData <- list(
     AGE = list(
-      description        = paste(
+      description = paste(
         "Baseline age in years. Enters three log-scale multiplicative",
         "effects, all UNCENTRED (the raw age in years multiplies the",
         "coefficient): on the plasma A-beta 42/40 ratio floor PABFLOOR",
@@ -87,19 +97,19 @@ Cao_2026_lecanemab <- function() {
         "none of the three.",
         sep = " "
       ),
-      units              = "years",
-      type               = "continuous",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "UNCENTRED - use the raw age, not age minus a reference. Cohort",
         "means (Supplementary Table A1): ADNI 73.4 (SD 7.7), Study 201",
         "71.3 (8.2), Study 301 71.3 (7.8); overall range 50-91 years.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     APOE4_HET = list(
-      description        = paste(
+      description = paste(
         "1 = subject carries exactly one APOE-epsilon4 allele",
         "(heterozygous); 0 = otherwise (non-carrier or homozygote).",
         "Paired with APOE4_HOM to encode the three-level APOE4 genotype",
@@ -108,10 +118,10 @@ Cao_2026_lecanemab <- function() {
         "(Supplementary Table S14, beta_kAggAO_APOEGEN_Hetero = 0.15).",
         sep = " "
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = APOE-epsilon4 non-carrier (the reference genotype in the paper's covariate model)",
-      notes              = paste(
+      notes = paste(
         "APOE4_HET and APOE4_HOM are mutually exclusive; a non-carrier has",
         "both set to 0. Cohort frequencies (Table A1): heterozygous 41.2%",
         "(ADNI), 54.9% (Study 201), 53.3% (Study 301). The paper reports",
@@ -120,28 +130,28 @@ Cao_2026_lecanemab <- function() {
         "APOE4_COUNT cannot reproduce this model.",
         sep = " "
       ),
-      source_name        = "APOEGEN (Monolix categorical covariate, level 'Hetero')"
+      source_name = "APOEGEN (Monolix categorical covariate, level 'Hetero')"
     ),
     APOE4_HOM = list(
-      description        = paste(
+      description = paste(
         "1 = subject carries two APOE-epsilon4 alleles (homozygous);",
         "0 = otherwise (non-carrier or heterozygote). Multiplicative",
         "log-scale effect on kAggAO (Supplementary Table S14,",
         "beta_kAggAO_APOEGEN_Homo = 0.18).",
         sep = " "
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = APOE-epsilon4 non-carrier",
-      notes              = paste(
+      notes = paste(
         "Cohort frequencies (Table A1): homozygous 13.4% (ADNI), 16.5%",
         "(Study 201), 15.3% (Study 301). See APOE4_HET.",
         sep = " "
       ),
-      source_name        = "APOEGEN (Monolix categorical covariate, level 'Homo')"
+      source_name = "APOEGEN (Monolix categorical covariate, level 'Homo')"
     ),
     APOE4_CARRIER = list(
-      description        = paste(
+      description = paste(
         "1 = subject carries at least one APOE-epsilon4 allele",
         "(heterozygous or homozygous); 0 = non-carrier. The paper uses",
         "this binary collapse - separately from the three-level genotype",
@@ -151,20 +161,20 @@ Cao_2026_lecanemab <- function() {
         "beta_alpha_adas_tAPOECarrier = -0.097 on alphaAdas).",
         sep = " "
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = APOE-epsilon4 non-carrier",
-      notes              = paste(
+      notes = paste(
         "Derivable as APOE4_CARRIER = max(APOE4_HET, APOE4_HOM); carried",
         "as its own column because the paper fits it as a distinct",
         "covariate from the three-level genotype. Both codings are",
         "required to reproduce the published model.",
         sep = " "
       ),
-      source_name        = "tAPOECarrier (Monolix transformed binary carrier covariate)"
+      source_name = "tAPOECarrier (Monolix transformed binary carrier covariate)"
     ),
     RACE_ASIAN = list(
-      description        = paste(
+      description = paste(
         "1 = Asian race (including the Japanese, Korean, Chinese and",
         "'Other Asian' categories reported separately in Supplementary",
         "Table A1); 0 = otherwise. Multiplicative log-scale effects on",
@@ -174,19 +184,19 @@ Cao_2026_lecanemab <- function() {
         "Supplementary Table S14.",
         sep = " "
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = non-Asian (predominantly White: 92.9% ADNI, 90.6% Study 201, 76.9% Study 301)",
-      notes              = paste(
+      notes = paste(
         "Study 301 enrolled a substantial East Asian cohort (Japanese",
         "8.5%, Korean 7.2%, Chinese 0.7%, Other Asian 0.3%, Asian 0.2% =",
         "about 17% in total); Study 201 about 6.5%; ADNI 1.8%.",
         sep = " "
       ),
-      source_name        = "RACE (Monolix categorical covariate, level 'Asian')"
+      source_name = "RACE (Monolix categorical covariate, level 'Asian')"
     ),
     DIS_AD_LMCI = list(
-      description        = paste(
+      description = paste(
         "1 = baseline diagnosis of late mild cognitive impairment (LMCI,",
         "an ADNI diagnostic category); 0 = otherwise. One of four",
         "indicators encoding the pooled baseline-diagnosis covariate with",
@@ -195,10 +205,10 @@ Cao_2026_lecanemab <- function() {
         "(beta_alpha_adas_bDIAG_LMCI = 0.13; Supplementary Table S14).",
         sep = " "
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0; the reference level of the baseline-diagnosis covariate is EMCI (all four DIS_AD_* indicators set to 0)",
-      notes              = paste(
+      notes = paste(
         "The pooled dataset carries study-specific diagnostic vocabularies",
         "(Supplementary Table A1): ADNI recorded EMCI / LMCI / Mild AD",
         "dementia, while Studies 201 and 301 recorded MCI / Mild Dementia",
@@ -208,10 +218,10 @@ Cao_2026_lecanemab <- function() {
         "levels map to which source category.",
         sep = " "
       ),
-      source_name        = "bDIAG (Monolix categorical covariate, level 'LMCI')"
+      source_name = "bDIAG (Monolix categorical covariate, level 'LMCI')"
     ),
     DIS_AD_MCI = list(
-      description        = paste(
+      description = paste(
         "1 = baseline diagnosis of mild cognitive impairment (MCI, the",
         "Study 201 / Study 301 category); 0 = otherwise. Multiplicative",
         "log-scale effects on the A-beta monomer aggregation rate kAggAO",
@@ -219,18 +229,18 @@ Cao_2026_lecanemab <- function() {
         "(beta_alpha_adas_bDIAG_MCI = 0.14); Supplementary Table S14.",
         sep = " "
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0; reference level EMCI",
-      notes              = paste(
+      notes = paste(
         "Cohort frequencies (Table A1): MCI 64.1% (Study 201), 61.9%",
         "(Study 301). See DIS_AD_LMCI.",
         sep = " "
       ),
-      source_name        = "DIAG / bDIAG (Monolix categorical covariate, level 'MCI')"
+      source_name = "DIAG / bDIAG (Monolix categorical covariate, level 'MCI')"
     ),
     DIS_AD_MILD = list(
-      description        = paste(
+      description = paste(
         "1 = baseline diagnosis of mild dementia due to Alzheimer's",
         "disease (the Study 201 / Study 301 category 'Mild Dementia due",
         "to AD'); 0 = otherwise. Multiplicative log-scale effects on",
@@ -239,18 +249,18 @@ Cao_2026_lecanemab <- function() {
         "(beta_alpha_adas_bDIAG_Mild_AD = 0.16); Supplementary Table S14.",
         sep = " "
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0; reference level EMCI",
-      notes              = paste(
+      notes = paste(
         "Cohort frequencies (Table A1): mild dementia due to AD 35.9%",
         "(Study 201), 38.1% (Study 301). See DIS_AD_LMCI.",
         sep = " "
       ),
-      source_name        = "DIAG / bDIAG (Monolix categorical covariate, level 'Mild_AD')"
+      source_name = "DIAG / bDIAG (Monolix categorical covariate, level 'Mild_AD')"
     ),
     DIS_AD_DEMENTIA = list(
-      description        = paste(
+      description = paste(
         "1 = baseline diagnosis of Alzheimer's dementia recorded under the",
         "ADNI vocabulary ('Mild AD dementia', the level printed as 'AD' in",
         "Supplementary Table S14); 0 = otherwise. Multiplicative log-scale",
@@ -258,20 +268,20 @@ Cao_2026_lecanemab <- function() {
         "(beta_alpha_adas_bDIAG_AD = 0.39).",
         sep = " "
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0; reference level EMCI",
-      notes              = paste(
+      notes = paste(
         "Cohort frequency (Table A1): Mild AD dementia 27.6% of the ADNI",
         "cohort. Kept distinct from DIS_AD_MILD because Supplementary",
         "Table S14 estimates separate coefficients for the 'AD' and",
         "'Mild_AD' levels (0.39 vs 0.18 on alphaCdr). See DIS_AD_LMCI.",
         sep = " "
       ),
-      source_name        = "bDIAG (Monolix categorical covariate, level 'AD')"
+      source_name = "bDIAG (Monolix categorical covariate, level 'AD')"
     ),
     CSS_LEC = list(
-      description        = paste(
+      description = paste(
         "Steady-state average serum concentration of lecanemab, generated",
         "externally by the lecanemab population PK model (Hayato et al.,",
         "references 22 and 24 of the paper) and fed into the QSP model as",
@@ -282,10 +292,10 @@ Cao_2026_lecanemab <- function() {
         "system').",
         sep = " "
       ),
-      units              = "ug/mL (micrograms per millilitre; DELECAF and DELECAP carry the reciprocal units mL/ug per Supplementary Table S13)",
-      type               = "continuous",
+      units = "ug/mL (micrograms per millilitre; DELECAF and DELECAP carry the reciprocal units mL/ug per Supplementary Table S13)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TIME-VARYING and equal to 0 whenever no anti-amyloid antibody is",
         "on board. The paper writes the drug effect as an if / elseif /",
         "else block over two treatment windows (Core and OLE) that sets",
@@ -303,34 +313,59 @@ Cao_2026_lecanemab <- function() {
         "multipliers, which the paper does not tabulate.",
         sep = " "
       ),
-      source_name        = "CSSAV01 / CSSAV02 (per-window steady-state average concentration in the paper's Methods pseudocode)"
+      source_name = "CSSAV01 / CSSAV02 (per-window steady-state average concentration in the paper's Methods pseudocode)"
     )
   )
 
   compartmentData <- list(
-    A  = list(analyte = "Amyloid-beta 42 monomer",       units = "pg/mL", specimen = "brain ISF", verified = TRUE),
-    O  = list(analyte = "Amyloid-beta oligomer",         units = "pg/mL", specimen = "brain ISF", verified = TRUE),
-    F  = list(analyte = "Amyloid-beta protofibril",      units = "pg/mL", specimen = "brain ISF", verified = TRUE),
-    P  = list(analyte = "Amyloid-beta plaque",           units = "pg/mL", specimen = "brain ISF", verified = TRUE),
-    N  = list(analyte = "Healthy neurons (no tau pathology)",              units = "neurons/mL", specimen = "tissue", verified = TRUE),
-    I0 = list(analyte = "Neurons with minimal misfolded tau",              units = "neurons/mL", specimen = "tissue", verified = TRUE),
-    I1 = list(analyte = "Neurons with misfolded tau oligomers",            units = "neurons/mL", specimen = "tissue", verified = TRUE),
-    I2 = list(analyte = "Neurons with tau neurofibrillary tangles",        units = "neurons/mL", specimen = "tissue", verified = TRUE),
-    DN = list(analyte = "Degenerated (irreversibly lost) neurons",         units = "neurons/mL", specimen = "tissue", verified = TRUE),
-    TS = list(analyte = "Tau seed",                     units = "pg/mL", specimen = "brain ISF", verified = TRUE),
-    TP = list(analyte = "Phosphorylated tau 181",       units = "pg/mL", specimen = "CSF",       verified = TRUE)
+    A = list(analyte = "Amyloid-beta 42 monomer", units = "pg/mL", specimen = "brain ISF", verified = TRUE),
+    O = list(analyte = "Amyloid-beta oligomer", units = "pg/mL", specimen = "brain ISF", verified = TRUE),
+    F = list(analyte = "Amyloid-beta protofibril", units = "pg/mL", specimen = "brain ISF", verified = TRUE),
+    P = list(analyte = "Amyloid-beta plaque", units = "pg/mL", specimen = "brain ISF", verified = TRUE),
+    N = list(
+      analyte = "Healthy neurons (no tau pathology)",
+      units = "neurons/mL",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    I0 = list(
+      analyte = "Neurons with minimal misfolded tau",
+      units = "neurons/mL",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    I1 = list(
+      analyte = "Neurons with misfolded tau oligomers",
+      units = "neurons/mL",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    I2 = list(
+      analyte = "Neurons with tau neurofibrillary tangles",
+      units = "neurons/mL",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    DN = list(
+      analyte = "Degenerated (irreversibly lost) neurons",
+      units = "neurons/mL",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    TS = list(analyte = "Tau seed", units = "pg/mL", specimen = "brain ISF", verified = TRUE),
+    TP = list(analyte = "Phosphorylated tau 181", units = "pg/mL", specimen = "CSF", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 4056L,
-    n_studies      = 3L,
-    age_range      = "50-91 years (ADNI 54.4-91.4, Study 201 50-90, Study 301 50-90; Supplementary Table A1)",
-    age_median     = "72 years (Studies 201 and 301); 73.9 years (ADNI)",
-    weight_range   = "(body weight was not a covariate in this model and is not tabulated in the source)",
+    species = "human",
+    n_subjects = 4056L,
+    n_studies = 3L,
+    age_range = "50-91 years (ADNI 54.4-91.4, Study 201 50-90, Study 301 50-90; Supplementary Table A1)",
+    age_median = "72 years (Studies 201 and 301); 73.9 years (ADNI)",
+    weight_range = "(body weight was not a covariate in this model and is not tabulated in the source)",
     sex_female_pct = 48.0,
     race_ethnicity = c(White = 83.7, Asian = 9.5, Black = 3.0, Other = 3.8),
-    disease_state  = paste(
+    disease_state = paste(
       "Amyloid-positive early symptomatic Alzheimer's disease: mild",
       "cognitive impairment or mild dementia due to AD. Baseline CDR-SB",
       "mean (SD) 2.3 (1.8) in ADNI, 2.9 (1.4) in Study 201, 3.2 (1.3) in",
@@ -344,15 +379,15 @@ Cao_2026_lecanemab <- function() {
       "(Study 301).",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Lecanemab 2.5, 5 and 10 mg/kg IV every two weeks or monthly",
       "(Study 201 Core), 10 mg/kg IV every two weeks (Study 301 Clarity",
       "AD Core and both open-label extensions). The model itself takes",
       "exposure as the CSS_LEC covariate rather than dose amounts.",
       sep = " "
     ),
-    regions        = "North America, Europe, Japan, China, South Korea and other Asia-Pacific sites (Studies 201 and 301); North America (ADNI)",
-    notes          = paste(
+    regions = "North America, Europe, Japan, China, South Korea and other Asia-Pacific sites (Studies 201 and 301); North America (ADNI)",
+    notes = paste(
       "Model time is YEARS SINCE ESTIMATED AD PATHOLOGICAL ONSET, not",
       "study time. Individual onset times were estimated with the GRACE",
       "method (Donohue et al.) from ADNI plus lecanemab data, then shifted",

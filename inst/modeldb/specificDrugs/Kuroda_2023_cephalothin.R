@@ -44,36 +44,36 @@ Kuroda_2023_cephalothin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "cephalothin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "cephalothin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "cephalothin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "cephalothin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cephalothin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "cephalothin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed adult-horse body weight. Kuroda 2023 Table 1 reports every structural parameter per kilogram (l/kg, l/kg/h), so WT enters as a linear multiplier (exponent 1) on cl, vc, q, vp, q2 and vp2 rather than as an estimated allometric term. Study horses weighed 490-570 kg.",
-      source_name        = "bwt (body weight; Kuroda 2023 Methods paragraph 1)"
+      notes = "Time-fixed adult-horse body weight. Kuroda 2023 Table 1 reports every structural parameter per kilogram (l/kg, l/kg/h), so WT enters as a linear multiplier (exponent 1) on cl, vc, q, vp, q2 and vp2 rather than as an estimated allometric term. Study horses weighed 490-570 kg.",
+      source_name = "bwt (body weight; Kuroda 2023 Methods paragraph 1)"
     )
   )
 
   population <- list(
-    species        = "horse (Thoroughbred)",
-    n_subjects     = 20L,
-    n_studies      = 2L,
-    age_range      = "4-9 years (intramuscular cohort)",
-    weight_range   = "490-570 kg (intramuscular cohort)",
+    species = "horse (Thoroughbred)",
+    n_subjects = 20L,
+    n_studies = 2L,
+    age_range = "4-9 years (intramuscular cohort)",
+    weight_range = "490-570 kg (intramuscular cohort)",
     sex_female_pct = 50,
-    disease_state  = "healthy",
-    dose_range     = "11 mg/kg bwt cephalothin as a single intramuscular bolus (<30 sec) into the right lateral neck, dissolved in 25 mL sterile physiological saline (this study); pooled with 22 mg/kg bwt single intravenous doses from Kuroda 2021",
-    sampling       = "Plasma at 0, 5, 10, 20, 30 and 45 min and 1, 2, 3, 4, 6, 8 and 12 hr after the intramuscular dose; 10 mL blood from the left jugular vein via a 16 G catheter, LC-MS/MS assay (Nexera X2 / QTRAP 4500) with a limit of quantification of 0.1 ug/mL",
-    regions        = "Japan (Equine Research Institute, Japan Racing Association, Tochigi)",
-    organism       = "Streptococcus equi subsp. zooepidemicus (MIC90 0.12 mg/L) and Staphylococcus aureus (MIC90 0.5 mg/L), equine isolates (McGorum and Pirie 2010, reference 7 of Kuroda 2023)",
-    notes          = "Eight Thoroughbred horses (four stallions and four mares) received the intramuscular dose; the model was fitted after aggregating those data with intravenous data from 12 different horses given 22 mg/kg (Kuroda 2021). Kuroda 2023 Table 1's caption says 'six horses' for the intramuscular arm, which conflicts with the Abstract, Methods and the Fig. 2 caption; all three state eight, and Fig. 2 plots eight profiles, so eight is used here. Ethics approvals 22-7 and 23-5 (Animal Care and Use Committee of the Equine Research Institute, Japan Racing Association). No neck pain, diarrhea or other side effects were observed."
+    disease_state = "healthy",
+    dose_range = "11 mg/kg bwt cephalothin as a single intramuscular bolus (<30 sec) into the right lateral neck, dissolved in 25 mL sterile physiological saline (this study); pooled with 22 mg/kg bwt single intravenous doses from Kuroda 2021",
+    sampling = "Plasma at 0, 5, 10, 20, 30 and 45 min and 1, 2, 3, 4, 6, 8 and 12 hr after the intramuscular dose; 10 mL blood from the left jugular vein via a 16 G catheter, LC-MS/MS assay (Nexera X2 / QTRAP 4500) with a limit of quantification of 0.1 ug/mL",
+    regions = "Japan (Equine Research Institute, Japan Racing Association, Tochigi)",
+    organism = "Streptococcus equi subsp. zooepidemicus (MIC90 0.12 mg/L) and Staphylococcus aureus (MIC90 0.5 mg/L), equine isolates (McGorum and Pirie 2010, reference 7 of Kuroda 2023)",
+    notes = "Eight Thoroughbred horses (four stallions and four mares) received the intramuscular dose; the model was fitted after aggregating those data with intravenous data from 12 different horses given 22 mg/kg (Kuroda 2021). Kuroda 2023 Table 1's caption says 'six horses' for the intramuscular arm, which conflicts with the Abstract, Methods and the Fig. 2 caption; all three state eight, and Fig. 2 plots eight profiles, so eight is used here. Ethics approvals 22-7 and 23-5 (Animal Care and Use Committee of the Equine Research Institute, Japan Racing Association). No neck pain, diarrhea or other side effects were observed."
   )
 
   ini({

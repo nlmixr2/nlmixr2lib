@@ -28,62 +28,62 @@ Birgersson_2019_artesunate <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot              = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
-    transit1           = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
-    transit2           = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
-    transit3           = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
-    central            = list(analyte = "artesunate", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "artesunate", units = "nmol", specimen = "plasma", verified = FALSE),
     central_dihydroart = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Allometric scaling with reference weight 52 kg (the population median in the Burkina Faso cohort) is applied to artesunate CL (exponent 0.75) and Vc (exponent 1.0) and to dihydroartemisinin CL (exponent 0.75) and Vc (exponent 1.0). Reference weight 52 kg is hard-coded in the source NONMEM .mod ($PK block: TVCLP = THETA(1)*((WT/52)**0.75) etc.).",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline. Allometric scaling with reference weight 52 kg (the population median in the Burkina Faso cohort) is applied to artesunate CL (exponent 0.75) and Vc (exponent 1.0) and to dihydroartemisinin CL (exponent 0.75) and Vc (exponent 1.0). Reference weight 52 kg is hard-coded in the source NONMEM .mod ($PK block: TVCLP = THETA(1)*((WT/52)**0.75) etc.).",
+      source_name = "WT"
     ),
     PREG = list(
-      description        = "Pregnancy status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "1 = pregnant, 0 = non-pregnant. The Birgersson 2019 cohort consists of 24 pregnant women in their second or third trimester paired with 24 non-pregnant women, all with uncomplicated Plasmodium falciparum malaria. The source NONMEM .mod uses pregnant women as the within-paper reference (CLMPREG = 1 when PREG = 1; CLMPREG = 1 + THETA(7) when PREG = 0). Verbatim source values are preserved by applying the effect parameter via (1 - PREG) in the model code: structural TVCLM = 190 L/h corresponds to pregnant women, and non-pregnant women have CLM scaled by (1 + e_preg_cl_dihydroart) = 0.786.",
-      source_name        = "PREG"
+      notes = "1 = pregnant, 0 = non-pregnant. The Birgersson 2019 cohort consists of 24 pregnant women in their second or third trimester paired with 24 non-pregnant women, all with uncomplicated Plasmodium falciparum malaria. The source NONMEM .mod uses pregnant women as the within-paper reference (CLMPREG = 1 when PREG = 1; CLMPREG = 1 + THETA(7) when PREG = 0). Verbatim source values are preserved by applying the effect parameter via (1 - PREG) in the model code: structural TVCLM = 190 L/h corresponds to pregnant women, and non-pregnant women have CLM scaled by (1 + e_preg_cl_dihydroart) = 0.786.",
+      source_name = "PREG"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase activity at admission (baseline, time-fixed per subject)",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase activity at admission (baseline, time-fixed per subject)",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centered at the population median 20.75 U/L (hard-coded in the source NONMEM .mod). Linear-deviation effect on artesunate relative bioavailability F1: F1ALT = 1 + e_alt_fdepot * (ALT - 20.75) with e_alt_fdepot = +0.0215 per U/L. Birgersson 2019 includes ALT as a marker of acute liver-status change in symptomatic malaria.",
-      source_name        = "ALT"
+      notes = "Centered at the population median 20.75 U/L (hard-coded in the source NONMEM .mod). Linear-deviation effect on artesunate relative bioavailability F1: F1ALT = 1 + e_alt_fdepot * (ALT - 20.75) with e_alt_fdepot = +0.0215 per U/L. Birgersson 2019 includes ALT as a marker of acute liver-status change in symptomatic malaria.",
+      source_name = "ALT"
     ),
     LNPC = list(
-      description        = "Natural logarithm of the asexual Plasmodium falciparum parasite count at admission (parasites per microlitre of blood)",
-      units              = "log(parasites/uL)",
-      type               = "continuous",
+      description = "Natural logarithm of the asexual Plasmodium falciparum parasite count at admission (parasites per microlitre of blood)",
+      units = "log(parasites/uL)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at admission. Centered at the population median 5.88 log(parasites/uL) (hard-coded in the source NONMEM .mod). Linear-deviation effect on artesunate relative bioavailability F1: F1LNPC = 1 + e_lnpc_fdepot * (LNPC - 5.88) with e_lnpc_fdepot = +0.138 per log-unit increase in parasitaemia. The companion source column PARA carries the raw parasite count per microlitre; LNPC = log(PARA) is the active model covariate.",
-      source_name        = "LNPC"
+      notes = "Time-fixed at admission. Centered at the population median 5.88 log(parasites/uL) (hard-coded in the source NONMEM .mod). Linear-deviation effect on artesunate relative bioavailability F1: F1LNPC = 1 + e_lnpc_fdepot * (LNPC - 5.88) with e_lnpc_fdepot = +0.138 per log-unit increase in parasitaemia. The companion source column PARA carries the raw parasite count per microlitre; LNPC = log(PARA) is the active model covariate.",
+      source_name = "LNPC"
     )
   )
 
   population <- list(
-    n_subjects     = 48,
-    n_studies      = 1,
-    n_pregnant     = 24,
-    n_nonpregnant  = 24,
-    age_range      = "Adult women",
-    weight_range   = "Adult women (population median 52 kg, the WT allometric reference)",
+    n_subjects = 48,
+    n_studies = 1,
+    n_pregnant = 24,
+    n_nonpregnant = 24,
+    age_range = "Adult women",
+    weight_range = "Adult women (population median 52 kg, the WT allometric reference)",
     sex_female_pct = 100,
-    disease_state  = "Uncomplicated Plasmodium falciparum malaria; pregnant women in the second or third trimester paired with matched non-pregnant women",
-    dose_range     = "Oral artesunate (fixed-dose combination with mefloquine) once daily for three days at the standard adult dose. The DDMORE-shipped Simulated_run1.csv encodes a 520264 nmol single oral dose, equivalent to ~200 mg artesunate using the 384.42 g/mol molar mass.",
-    regions        = "Burkina Faso (Bobo-Dioulasso and Nanoro)",
+    disease_state = "Uncomplicated Plasmodium falciparum malaria; pregnant women in the second or third trimester paired with matched non-pregnant women",
+    dose_range = "Oral artesunate (fixed-dose combination with mefloquine) once daily for three days at the standard adult dose. The DDMORE-shipped Simulated_run1.csv encodes a 520264 nmol single oral dose, equivalent to ~200 mg artesunate using the 384.42 g/mol molar mass.",
+    regions = "Burkina Faso (Bobo-Dioulasso and Nanoro)",
     trial_registration = "ClinicalTrials.gov NCT00701961",
-    notes          = "Demographics summarized from the publication abstract (PMID 32025570) and the DDMORE bundle metadata (DDMODEL00000297). The publication PDF was not on disk during this extraction; the DDMORE bundle ships only Executable_run1.mod (a MAXEVAL=0 posthoc run with the published final estimates fixed as $THETA / $OMEGA / $SIGMA inputs), Output_simulated_run1.lst (a one-subject re-evaluation), Simulated_run1.csv, and DDMODEL00000297.rdf. No Output_real_*.lst or Model_Accomodations.text is included; final estimates were taken from the .mod file, which under MAXEVAL=0 functions as the authoritative source for the published estimates."
+    notes = "Demographics summarized from the publication abstract (PMID 32025570) and the DDMORE bundle metadata (DDMODEL00000297). The publication PDF was not on disk during this extraction; the DDMORE bundle ships only Executable_run1.mod (a MAXEVAL=0 posthoc run with the published final estimates fixed as $THETA / $OMEGA / $SIGMA inputs), Output_simulated_run1.lst (a one-subject re-evaluation), Simulated_run1.csv, and DDMODEL00000297.rdf. No Output_real_*.lst or Model_Accomodations.text is included; final estimates were taken from the .mod file, which under MAXEVAL=0 functions as the authoritative source for the published estimates."
   )
 
   ini({

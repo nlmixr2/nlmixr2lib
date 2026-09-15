@@ -19,8 +19,8 @@ Lu_2017_polatuzumab_neuropathy <- function() {
   )
   vignette <- "Lu_2017_polatuzumab_neuropathy"
   units <- list(
-    time          = "h",
-    dosing        = "ug",
+    time = "h",
+    dosing = "ug",
     concentration = "ng/mL"
   )
 
@@ -29,135 +29,135 @@ Lu_2017_polatuzumab_neuropathy <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "polatuzumab vedotin", units = "ug", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "polatuzumab vedotin", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "polatuzumab vedotin", units = "ug", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "acMMAE", units = "ug", specimen = "not applicable", verified = FALSE),
-    cumhaz      = list(analyte = "PN hazard", units = "ug", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "acMMAE", units = "ug", specimen = "not applicable", verified = FALSE),
+    cumhaz = list(analyte = "PN hazard", units = "ug", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     # ----- Shared between PK and TTE PD layers -----
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Two distinct reference values: (1) Lu 2019 PK side uses 75 kg as the allometric reference (power effects on acMMAE CL_SS exponent 0.73 and on Vc/Vp/Q shared exponent 0.50); (2) Lu 2017 TTE side uses 80 kg as the centering reference (linear effect on log-hazard via `e_wt_haz * (WT - 80)`). Same physical column, two independent normalizations.",
-      source_name        = "BWT"
+      notes = "Time-fixed baseline value. Two distinct reference values: (1) Lu 2019 PK side uses 75 kg as the allometric reference (power effects on acMMAE CL_SS exponent 0.73 and on Vc/Vp/Q shared exponent 0.50); (2) Lu 2017 TTE side uses 80 kg as the centering reference (linear effect on log-hazard via `e_wt_haz * (WT - 80)`). Same physical column, two independent normalizations.",
+      source_name = "BWT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Used on both PK side (Lu 2019 effects on Vc and CL_SS, with value-coding flip from the source NONMEM `SEX = SEXN - 1` male-indicator convention -- see Lu_2019_polatuzumab.R covariateData[[SEXF]]$notes) and TTE PD side (Lu 2017 paper's `female` indicator equals SEXF directly, log-hazard effect `e_sexf_haz * SEXF`).",
-      source_name        = "SEXN"
+      notes = "Time-fixed. Used on both PK side (Lu 2019 effects on Vc and CL_SS, with value-coding flip from the source NONMEM `SEX = SEXN - 1` male-indicator convention -- see Lu_2019_polatuzumab.R covariateData[[SEXF]]$notes) and TTE PD side (Lu 2017 paper's `female` indicator equals SEXF directly, log-hazard effect `e_sexf_haz * SEXF`).",
+      source_name = "SEXN"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value (SI units). Two distinct reference values: (1) Lu 2019 PK side uses 35 g/L (power effects on CL_SS exponent -0.247); (2) Lu 2017 TTE side uses 39 g/L as the centering reference (linear effect on log-hazard via `e_alb_haz * (ALB - 39)`). Same physical column, two independent normalizations.",
-      source_name        = "BALBUM"
+      notes = "Time-fixed baseline value (SI units). Two distinct reference values: (1) Lu 2019 PK side uses 35 g/L (power effects on CL_SS exponent -0.247); (2) Lu 2017 TTE side uses 39 g/L as the centering reference (linear effect on log-hazard via `e_alb_haz * (ALB - 39)`). Same physical column, two independent normalizations.",
+      source_name = "BALBUM"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor sum of the products of perpendicular dimensions (SPD)",
-      units              = "mm^2",
-      type               = "continuous",
+      description = "Baseline tumor sum of the products of perpendicular dimensions (SPD)",
+      units = "mm^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Two distinct reference values: (1) Lu 2019 PK side uses 5000 mm^2 for the linear effect on CL_SS and as the half-maximal Michaelis-Menten anchor for the effect on CL_TIME (`TUMSZ / (1150 + TUMSZ)`); (2) Lu 2017 TTE side uses 3000 mm^2 as the log-normalization reference (linear effect on log-hazard via `e_tumsz_haz * log(TUMSZ / 3000)`). Same physical column, two independent normalizations.",
-      source_name        = "BTMBD"
+      notes = "Time-fixed baseline value. Two distinct reference values: (1) Lu 2019 PK side uses 5000 mm^2 for the linear effect on CL_SS and as the half-maximal Michaelis-Menten anchor for the effect on CL_TIME (`TUMSZ / (1150 + TUMSZ)`); (2) Lu 2017 TTE side uses 3000 mm^2 as the log-normalization reference (linear effect on log-hazard via `e_tumsz_haz * log(TUMSZ / 3000)`). Same physical column, two independent normalizations.",
+      source_name = "BTMBD"
     ),
     CONMED_RITUX = list(
-      description        = "Concomitant rituximab combination indicator, 1 = pola co-administered with rituximab, 0 = single-agent pola",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rituximab combination indicator, 1 = pola co-administered with rituximab, 0 = single-agent pola",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed in the Lu 2017 cohort. Used on both PK side (interpreted as the COMBO_RG anti-CD20-combination indicator; this is exact for the Lu 2017 sub-cohort because no Lu 2017 patient received obinutuzumab combination -- the dataset predates the Pola+G GO29365 / GO29044 studies that motivated the Lu 2019 obinutuzumab branch) and TTE PD side (Lu 2017 paper's `rituximab` indicator equals CONMED_RITUX directly, log-hazard effect `e_conmed_ritux_haz * CONMED_RITUX`).",
-      source_name        = "COMBO"
+      notes = "Time-fixed in the Lu 2017 cohort. Used on both PK side (interpreted as the COMBO_RG anti-CD20-combination indicator; this is exact for the Lu 2017 sub-cohort because no Lu 2017 patient received obinutuzumab combination -- the dataset predates the Pola+G GO29365 / GO29044 studies that motivated the Lu 2019 obinutuzumab branch) and TTE PD side (Lu 2017 paper's `rituximab` indicator equals CONMED_RITUX directly, log-hazard effect `e_conmed_ritux_haz * CONMED_RITUX`).",
+      source_name = "COMBO"
     ),
     # ----- PK-side-only covariates (Lu 2019) -----
     LINE_1L = list(
-      description        = "First-line-therapy indicator: 1 = treatment-naive, 0 = relapsed/refractory (>= second line)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "First-line-therapy indicator: 1 = treatment-naive, 0 = relapsed/refractory (>= second line)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. PK-side covariate carried over from the Lu 2019 popPK; not used by the Lu 2017 TTE. Set to 0 for the all-R/R Lu 2017 cohort when simulating.",
-      source_name        = "RRFN"
+      notes = "Time-fixed. PK-side covariate carried over from the Lu 2019 popPK; not used by the Lu 2017 TTE. Set to 0 for the all-R/R Lu 2017 cohort when simulating.",
+      source_name = "RRFN"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator, 1 = Asian, 0 = non-Asian",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator, 1 = Asian, 0 = non-Asian",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. PK-side covariate carried over from the Lu 2019 popPK; not used by the Lu 2017 TTE.",
-      source_name        = "RACEN"
+      notes = "Time-fixed. PK-side covariate carried over from the Lu 2019 popPK; not used by the Lu 2017 TTE.",
+      source_name = "RACEN"
     ),
     BLBCELL = list(
-      description        = "Baseline CD19+ B cell count",
-      units              = "cells/uL",
-      type               = "continuous",
+      description = "Baseline CD19+ B cell count",
+      units = "cells/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. PK-side covariate carried over from the Lu 2019 popPK (two effects: power on CL_SS via `max(1, BLBCELL)^0.0212`, power on CL_TIME via `max(1, BLBCELL/121)^0.578`); not used by the Lu 2017 TTE.",
-      source_name        = "BBCC"
+      notes = "Time-fixed baseline value. PK-side covariate carried over from the Lu 2019 popPK (two effects: power on CL_SS via `max(1, BLBCELL)^0.0212`, power on CL_TIME via `max(1, BLBCELL/121)^0.578`); not used by the Lu 2017 TTE.",
+      source_name = "BBCC"
     ),
     # ----- TTE-side-only covariates (Lu 2017) -----
     AGE = list(
-      description        = "Subject age at study entry",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at study entry",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Centered at 65 years for the Lu 2017 TTE log-hazard effect `e_age_haz * (AGE - 65)`. Not used by the Lu 2019 PK side (Lu 2019 did not retain age as a covariate).",
-      source_name        = "AGE"
+      notes = "Time-fixed at baseline. Centered at 65 years for the Lu 2017 TTE log-hazard effect `e_age_haz * (AGE - 65)`. Not used by the Lu 2019 PK side (Lu 2019 did not retain age as a covariate).",
+      source_name = "AGE"
     ),
     BL_PN_GR1 = list(
-      description        = "Active grade 1 peripheral neuropathy at study entry indicator, 1 = active grade 1 PN at baseline, 0 = no active PN",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active grade 1 peripheral neuropathy at study entry indicator, 1 = active grade 1 PN at baseline, 0 = no active PN",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed baseline AE status. The Lu 2017 protocol allowed enrollment of patients with grade 1 PN at study entry; this indicator captures that subset. Log-hazard effect `e_bl_pn_gr1_haz * BL_PN_GR1`. Distinct from a Markov-state AE-grade covariate (see `PREV_AE_SCORE` in the canonical register) -- this is time-fixed at baseline and does not update during the analysis window. The Lu 2017 paper reports a sensitivity analysis in which this indicator was replaced by a broader 'history of prior PN' indicator with similar (inconclusive) results.",
-      source_name        = "BLPN"
+      notes = "Time-fixed baseline AE status. The Lu 2017 protocol allowed enrollment of patients with grade 1 PN at study entry; this indicator captures that subset. Log-hazard effect `e_bl_pn_gr1_haz * BL_PN_GR1`. Distinct from a Markov-state AE-grade covariate (see `PREV_AE_SCORE` in the canonical register) -- this is time-fixed at baseline and does not update during the analysis window. The Lu 2017 paper reports a sensitivity analysis in which this indicator was replaced by a broader 'history of prior PN' indicator with similar (inconclusive) results.",
+      source_name = "BLPN"
     ),
     PRIOR_RADIATION = list(
-      description        = "Prior radiotherapy exposure indicator, 1 = received prior radiotherapy, 0 = radiotherapy-naive",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior radiotherapy exposure indicator, 1 = received prior radiotherapy, 0 = radiotherapy-naive",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed at baseline. Log-hazard effect `e_prior_radiation_haz * PRIOR_RADIATION`.",
-      source_name        = "PRRADIOTX"
+      notes = "Time-fixed at baseline. Log-hazard effect `e_prior_radiation_haz * PRIOR_RADIATION`.",
+      source_name = "PRRADIOTX"
     ),
     PRIOR_VINCA = list(
-      description        = "Prior vinca-alkaloid chemotherapy indicator, 1 = received any prior vinca alkaloid (vincristine, vinblastine, vinorelbine, vindesine), 0 = vinca-naive",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior vinca-alkaloid chemotherapy indicator, 1 = received any prior vinca alkaloid (vincristine, vinblastine, vinorelbine, vindesine), 0 = vinca-naive",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed at baseline. The Lu 2017 hypothesis is that prior antimicrotubule exposure could sensitize patients to subsequent vc-MMAE-induced PN. Log-hazard effect `e_prior_vinca_haz * PRIOR_VINCA`.",
-      source_name        = "PRVINCA"
+      notes = "Time-fixed at baseline. The Lu 2017 hypothesis is that prior antimicrotubule exposure could sensitize patients to subsequent vc-MMAE-induced PN. Log-hazard effect `e_prior_vinca_haz * PRIOR_VINCA`.",
+      source_name = "PRVINCA"
     ),
     PRIOR_PLATIN = list(
-      description        = "Prior platinum-based chemotherapy indicator, 1 = received any prior platinum agent (cisplatin, carboplatin, oxaliplatin, etc.), 0 = platinum-naive",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior platinum-based chemotherapy indicator, 1 = received any prior platinum agent (cisplatin, carboplatin, oxaliplatin, etc.), 0 = platinum-naive",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed at baseline. The Lu 2017 hypothesis is that platinum-induced sensory PN history could compound subsequent antimicrotubule-induced PN. Log-hazard effect `e_prior_platin_haz * PRIOR_PLATIN`.",
-      source_name        = "PRPLATIN"
+      notes = "Time-fixed at baseline. The Lu 2017 hypothesis is that platinum-induced sensory PN history could compound subsequent antimicrotubule-induced PN. Log-hazard effect `e_prior_platin_haz * PRIOR_PLATIN`.",
+      source_name = "PRPLATIN"
     ),
     TUMTP_DLBCL = list(
-      description        = "Diffuse large B-cell lymphoma indicator, 1 = DLBCL, 0 = other tumor histology",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Diffuse large B-cell lymphoma indicator, 1 = DLBCL, 0 = other tumor histology",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Part of the Lu 2017 three-level tumor-histology decomposition (FL reference, DLBCL, otherNonFL). FL is the implicit reference when both TUMTP_DLBCL = 0 and TUMTP_OTHER_NHL = 0. Log-hazard effect `e_tumtp_dlbcl_haz * TUMTP_DLBCL`.",
-      source_name        = "DLBCL"
+      notes = "Time-fixed. Part of the Lu 2017 three-level tumor-histology decomposition (FL reference, DLBCL, otherNonFL). FL is the implicit reference when both TUMTP_DLBCL = 0 and TUMTP_OTHER_NHL = 0. Log-hazard effect `e_tumtp_dlbcl_haz * TUMTP_DLBCL`.",
+      source_name = "DLBCL"
     ),
     TUMTP_OTHER_NHL = list(
-      description        = "Non-FL non-DLBCL NHL histology indicator, 1 = any NHL histology other than FL or DLBCL, 0 = FL or DLBCL",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Non-FL non-DLBCL NHL histology indicator, 1 = any NHL histology other than FL or DLBCL, 0 = FL or DLBCL",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Captures the 'others' bucket in Lu 2017's three-level tumor-histology decomposition. Log-hazard effect `e_tumtp_other_nhl_haz * TUMTP_OTHER_NHL`. The Lu 2017 paper does not enumerate the specific histologies in this residual bucket; in the source phase I/II datasets these include marginal-zone lymphoma, small lymphocytic lymphoma, mantle cell lymphoma, and chronic lymphocytic leukemia (CLL).",
-      source_name        = "OTHERNONFL"
+      notes = "Time-fixed. Captures the 'others' bucket in Lu 2017's three-level tumor-histology decomposition. Log-hazard effect `e_tumtp_other_nhl_haz * TUMTP_OTHER_NHL`. The Lu 2017 paper does not enumerate the specific histologies in this residual bucket; in the source phase I/II datasets these include marginal-zone lymphoma, small lymphocytic lymphoma, mantle cell lymphoma, and chronic lymphocytic leukemia (CLL).",
+      source_name = "OTHERNONFL"
     )
   )
 
@@ -169,25 +169,25 @@ Lu_2017_polatuzumab_neuropathy <- function() {
   covariatesDataExcluded <- list(
     TUMTP_FL = list(
       description = "Follicular lymphoma indicator, 1 = FL, 0 = other tumor histology",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Implicit reference category for the Lu 2017 tumor-histology covariate decomposition (FL reference, DLBCL, otherNonFL). Recorded here so the FL reference is visible in the model file metadata without triggering a convention warning."
+      units = "(binary)",
+      type = "binary",
+      notes = "Implicit reference category for the Lu 2017 tumor-histology covariate decomposition (FL reference, DLBCL, otherNonFL). Recorded here so the FL reference is visible in the model file metadata without triggering a convention warning."
     )
   )
 
   population <- list(
-    n_subjects     = 155L,
-    n_studies      = 2L,
-    n_events       = "First grade >= 2 PN event or right-censoring across 155 patients with R/R B-cell NHL pooled from phase I (DCS4968g, NCT01290549) and phase II (GO27834 / ROMULUS, NCT01691898) studies.",
-    age_range      = "Adults with R/R B-cell NHL; Lu 2017 does not tabulate age quantiles in the main paper but the Figure 3 sensitivity panels reference 50 vs 65 years and 80 years as covariate-effect anchor points.",
-    weight_range   = "Lu 2017 Figure 3 references 60 / 80 / 100 kg as covariate-effect anchor points (5th-95th percentile inferred). 80 kg used as the TTE-covariate centering reference.",
+    n_subjects = 155L,
+    n_studies = 2L,
+    n_events = "First grade >= 2 PN event or right-censoring across 155 patients with R/R B-cell NHL pooled from phase I (DCS4968g, NCT01290549) and phase II (GO27834 / ROMULUS, NCT01691898) studies.",
+    age_range = "Adults with R/R B-cell NHL; Lu 2017 does not tabulate age quantiles in the main paper but the Figure 3 sensitivity panels reference 50 vs 65 years and 80 years as covariate-effect anchor points.",
+    weight_range = "Lu 2017 Figure 3 references 60 / 80 / 100 kg as covariate-effect anchor points (5th-95th percentile inferred). 80 kg used as the TTE-covariate centering reference.",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Relapsed/refractory B-cell non-Hodgkin lymphoma (NHL): follicular lymphoma (FL), diffuse large B-cell lymphoma (DLBCL), and other non-FL non-DLBCL histologies (mantle cell lymphoma, marginal-zone lymphoma, small lymphocytic lymphoma, transformed FL, CLL).",
-    dose_range     = "Polatuzumab vedotin 0.1-2.4 mg/kg IV every 3 weeks (Q3W); the analyzed dose levels for the model-application section are 1.8 and 2.4 mg/kg Q3W. Phase II patients were treated until progression or for a maximum of 17 cycles; phase I patients were treated until progression or unacceptable toxicity. Patients at 2.4 mg/kg were permitted a dose reduction to 1.8 mg/kg for AEs.",
-    regions        = "Multi-regional phase I/II studies.",
-    studies        = "DCS4968g (NCT01290549, phase I single-agent and Pola+R dose-escalation; N=76 of 77 analyzed), GO27834 / ROMULUS (NCT01691898, phase II Pola+R Q3W; N=19+60 = 79 analyzed across FL 1.8 mg/kg arm, FL 2.4 mg/kg arm, and DLBCL 2.4 mg/kg arm).",
-    notes          = "Data-cut July 2014. The TTE PD parameters in this file were fit by Lu 2017 NONMEM v7.3 using empirical-Bayes individual PK parameters from a previously developed (unpublished) population PK model presented at ASCPT 2015 (Lu D et al, 116th Annual Meeting, 2015; reference 19 of Lu 2017). That upstream Lu 2015 popPK is not on disk for this extraction; per the standing nlmixr2lib policy of reusing a published same-drug PK as the upstream layer, this file inlines the acMMAE side of the published Lu 2019 integrated two-analyte popPK model. The Lu 2019 PK is more sophisticated than the Lu 2015 poster popPK (Lu 2019 adds Hill-shaped time-decay on CL_NS, separate exponential decay on CL_t, Michaelis-Menten elimination, and several additional covariates) and therefore produces somewhat different acMMAE concentration profiles than were used to fit the Lu 2017 TTE PD parameters; this difference is documented in the validation vignette's Assumptions and deviations section."
+    disease_state = "Relapsed/refractory B-cell non-Hodgkin lymphoma (NHL): follicular lymphoma (FL), diffuse large B-cell lymphoma (DLBCL), and other non-FL non-DLBCL histologies (mantle cell lymphoma, marginal-zone lymphoma, small lymphocytic lymphoma, transformed FL, CLL).",
+    dose_range = "Polatuzumab vedotin 0.1-2.4 mg/kg IV every 3 weeks (Q3W); the analyzed dose levels for the model-application section are 1.8 and 2.4 mg/kg Q3W. Phase II patients were treated until progression or for a maximum of 17 cycles; phase I patients were treated until progression or unacceptable toxicity. Patients at 2.4 mg/kg were permitted a dose reduction to 1.8 mg/kg for AEs.",
+    regions = "Multi-regional phase I/II studies.",
+    studies = "DCS4968g (NCT01290549, phase I single-agent and Pola+R dose-escalation; N=76 of 77 analyzed), GO27834 / ROMULUS (NCT01691898, phase II Pola+R Q3W; N=19+60 = 79 analyzed across FL 1.8 mg/kg arm, FL 2.4 mg/kg arm, and DLBCL 2.4 mg/kg arm).",
+    notes = "Data-cut July 2014. The TTE PD parameters in this file were fit by Lu 2017 NONMEM v7.3 using empirical-Bayes individual PK parameters from a previously developed (unpublished) population PK model presented at ASCPT 2015 (Lu D et al, 116th Annual Meeting, 2015; reference 19 of Lu 2017). That upstream Lu 2015 popPK is not on disk for this extraction; per the standing nlmixr2lib policy of reusing a published same-drug PK as the upstream layer, this file inlines the acMMAE side of the published Lu 2019 integrated two-analyte popPK model. The Lu 2019 PK is more sophisticated than the Lu 2015 poster popPK (Lu 2019 adds Hill-shaped time-decay on CL_NS, separate exponential decay on CL_t, Michaelis-Menten elimination, and several additional covariates) and therefore produces somewhat different acMMAE concentration profiles than were used to fit the Lu 2017 TTE PD parameters; this difference is documented in the validation vignette's Assumptions and deviations section."
   )
 
   ini({

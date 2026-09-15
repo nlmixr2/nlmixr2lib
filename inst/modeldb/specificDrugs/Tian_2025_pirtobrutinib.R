@@ -50,7 +50,7 @@ Tian_2025_pirtobrutinib <- function() {
     sep = " "
   )
   vignette <- "Tian_2025_pirtobrutinib"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Tian 2025 Figure 2 (the proposed
@@ -59,16 +59,22 @@ Tian_2025_pirtobrutinib <- function() {
   # "SAC kout (1/h)" and "SAC Q (L/h)".
   compartmentData <- list(
     depot = list(
-      analyte = "pirtobrutinib", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "pirtobrutinib",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "pirtobrutinib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "pirtobrutinib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "pirtobrutinib", units = "mg",
-      specimen = "tissue", verified = TRUE
+      analyte = "pirtobrutinib",
+      units = "mg",
+      specimen = "tissue",
+      verified = TRUE
     )
   )
 
@@ -92,7 +98,7 @@ Tian_2025_pirtobrutinib <- function() {
         "reported relationship."
       ),
       units = "kg",
-      type  = "continuous",
+      type = "continuous",
       notes = "Implicit in the L/kg volume inputs; not needed by this reduction."
     ),
     AGE = list(
@@ -105,7 +111,7 @@ Tian_2025_pirtobrutinib <- function() {
         "age relationship is printed, so none is carried."
       ),
       units = "years",
-      type  = "continuous",
+      type = "continuous",
       notes = "Sets the virtual-population sampling range only; no printed relationship."
     ),
     SEXF = list(
@@ -117,22 +123,22 @@ Tian_2025_pirtobrutinib <- function() {
         "files; no sex effect on any pirtobrutinib parameter is printed."
       ),
       units = "unitless",
-      type  = "categorical",
+      type = "categorical",
       notes = "Sets the virtual-population sex split only; no printed relationship."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 100L,
-    n_studies      = 9L,
-    age_range      = "20-55 years for the 200 mg once-daily simulation (Data S3); 19-55 years for the single-dose simulation (Table S4)",
-    weight_median  = "not reported; the Simcyp Sim-Healthy Volunteers default distribution was used",
+    species = "human",
+    n_subjects = 100L,
+    n_studies = 9L,
+    age_range = "20-55 years for the 200 mg once-daily simulation (Data S3); 19-55 years for the single-dose simulation (Table S4)",
+    weight_median = "not reported; the Simcyp Sim-Healthy Volunteers default distribution was used",
     sex_female_pct = 25,
-    disease_state  = "Healthy adult volunteers, fasted, CYP3A5 genotype unrestricted for the pirtobrutinib-alone simulations.",
-    dose_range     = "Single oral dose of 200 mg, and 200 mg once daily for 13 doses (Data S3).",
-    regions        = "Simcyp Sim-Healthy Volunteers virtual population (Data S3).",
-    studies        = paste(
+    disease_state = "Healthy adult volunteers, fasted, CYP3A5 genotype unrestricted for the pirtobrutinib-alone simulations.",
+    dose_range = "Single oral dose of 200 mg, and 200 mg once daily for 13 doses (Data S3).",
+    regions = "Simcyp Sim-Healthy Volunteers virtual population (Data S3).",
+    studies = paste(
       "Nine clinical pharmacology studies supplied the observations and",
       "the compound-layer inputs (Supplemental Material 1).",
       "The absolute bioavailability study (n = 5 healthy males, age",
@@ -154,7 +160,7 @@ Tian_2025_pirtobrutinib <- function() {
       "NCT06180980), the CYP cocktail study (NCT06215430) and the",
       "repaglinide study (NCT06165146) are model verification studies."
     ),
-    notes          = paste(
+    notes = paste(
       "n_subjects records the 100 virtual subjects (10 trials of 10)",
       "Data S3 simulated for pirtobrutinib alone, because this is a PBPK",
       "analysis rather than a population-PK fit: there is no pooled",

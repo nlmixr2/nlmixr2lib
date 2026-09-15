@@ -16,43 +16,43 @@ Oualha_2018_enoxaparin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
     central = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Pre-operative body weight (BWPREOP)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Pre-operative body weight (BWPREOP)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject at the pre-operative measurement. Drives the allometric scaling of CL/F with fixed exponent 0.75 against the 70 kg adult reference, and (in combination with PFA) sets the initial value of the time-varying post-operative bodyweight BW(t) computed inside model() which then drives the allometric scaling of V/F with fixed exponent 1. Cohort median 10.6 kg, range 6.7-34 kg (Table 1 of Oualha 2018).",
-      source_name        = "BWPREOP"
+      notes = "Time-fixed per subject at the pre-operative measurement. Drives the allometric scaling of CL/F with fixed exponent 0.75 against the 70 kg adult reference, and (in combination with PFA) sets the initial value of the time-varying post-operative bodyweight BW(t) computed inside model() which then drives the allometric scaling of V/F with fixed exponent 1. Cohort median 10.6 kg, range 6.7-34 kg (Table 1 of Oualha 2018).",
+      source_name = "BWPREOP"
     ),
     PFA = list(
-      description        = "Perioperative intra-operative fluid administration volume",
-      units              = "mL",
-      type               = "continuous",
+      description = "Perioperative intra-operative fluid administration volume",
+      units = "mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Total volume of saline / albumin / fresh-frozen-plasma / blood / platelet replacement administered intra-operatively, summed over the entire liver-transplant procedure. Time-fixed per subject. Enters the time-varying post-operative bodyweight curve BW(t) algebraically as (BWPREOP + PFA/1000), with the /1000 conversion applying the conventional 1 mL ~ 1 g fluid-density-1 mapping so that PFA in mL maps onto a kg increment of body weight. Cohort median 2634 mL, range 1008-6520 mL (Table 1 of Oualha 2018).",
-      source_name        = "PFA"
+      notes = "Total volume of saline / albumin / fresh-frozen-plasma / blood / platelet replacement administered intra-operatively, summed over the entire liver-transplant procedure. Time-fixed per subject. Enters the time-varying post-operative bodyweight curve BW(t) algebraically as (BWPREOP + PFA/1000), with the /1000 conversion applying the conventional 1 mL ~ 1 g fluid-density-1 mapping so that PFA in mL maps onto a kg increment of body weight. Cohort median 2634 mL, range 1008-6520 mL (Table 1 of Oualha 2018).",
+      source_name = "PFA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 22L,
-    n_studies      = 1L,
-    age_range      = "5-154 months (paediatric; 0.4-12.8 years)",
-    age_median     = "21.5 months",
-    weight_range   = "6.7-34 kg (BWPREOP)",
-    weight_median  = "10.6 kg (BWPREOP)",
+    species = "human",
+    n_subjects = 22L,
+    n_studies = 1L,
+    age_range = "5-154 months (paediatric; 0.4-12.8 years)",
+    age_median = "21.5 months",
+    weight_range = "6.7-34 kg (BWPREOP)",
+    weight_median = "10.6 kg (BWPREOP)",
     sex_female_pct = 63.6,
     race_ethnicity = "Not reported (single-centre French paediatric intensive-care cohort).",
-    disease_state  = "Paediatric liver-transplant recipients in the first post-operative week. Indication for transplantation: biliary cirrhosis (n=20), metabolic disease (n=1), tumour (n=1). Left split liver graft n=18 (81.8%); median percent of graft weight to BWPREOP 3.4% (range 1.2-8.7).",
-    dose_range     = "Initial subcutaneous 50 IU/kg every 12 hours (range 43-59 IU/kg at initiation), with empirical dose adjustments up to 108 IU/kg every 12 hours based on anti-Xa activity therapeutic-drug-monitoring.",
-    regions        = "France (Hopital Necker Enfants-Malades, Paris, paediatric intensive care unit).",
-    notes          = "Per Table 1 of Oualha 2018. 19 of 22 patients required perioperative vasopressor support (norepinephrine). Acute renal dysfunction (transient) in 7 patients (31.8%); baseline creatinine 25 umol/L (range 13-100); baseline creatinine clearance 143.3 mL/min/1.73 m^2 (range 79-308). Median perioperative fluid administration 2634 mL (range 1008-6520 mL). 136 anti-Xa activity samples collected within 10-156 h after enoxaparin initiation; 37 samples below the 0.1 IU/mL limit of quantification (Monolix M3 censored handling). Target therapeutic anti-Xa activity 0.2-0.4 IU/mL was reached in only 23 of 74 steady-state samples (31%); all 22 children experienced at least one sub-therapeutic exposure during the first post-operative week."
+    disease_state = "Paediatric liver-transplant recipients in the first post-operative week. Indication for transplantation: biliary cirrhosis (n=20), metabolic disease (n=1), tumour (n=1). Left split liver graft n=18 (81.8%); median percent of graft weight to BWPREOP 3.4% (range 1.2-8.7).",
+    dose_range = "Initial subcutaneous 50 IU/kg every 12 hours (range 43-59 IU/kg at initiation), with empirical dose adjustments up to 108 IU/kg every 12 hours based on anti-Xa activity therapeutic-drug-monitoring.",
+    regions = "France (Hopital Necker Enfants-Malades, Paris, paediatric intensive care unit).",
+    notes = "Per Table 1 of Oualha 2018. 19 of 22 patients required perioperative vasopressor support (norepinephrine). Acute renal dysfunction (transient) in 7 patients (31.8%); baseline creatinine 25 umol/L (range 13-100); baseline creatinine clearance 143.3 mL/min/1.73 m^2 (range 79-308). Median perioperative fluid administration 2634 mL (range 1008-6520 mL). 136 anti-Xa activity samples collected within 10-156 h after enoxaparin initiation; 37 samples below the 0.1 IU/mL limit of quantification (Monolix M3 censored handling). Target therapeutic anti-Xa activity 0.2-0.4 IU/mL was reached in only 23 of 74 steady-state samples (31%); all 22 children experienced at least one sub-therapeutic exposure during the first post-operative week."
   )
 
   ini({

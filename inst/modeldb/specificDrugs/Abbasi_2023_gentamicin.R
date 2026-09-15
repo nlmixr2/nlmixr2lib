@@ -13,28 +13,28 @@ Abbasi_2023_gentamicin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (dosing weight)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (dosing weight)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Abbasi 2023 Results: pooled dosing weight 70.8 +/- 19.9 kg (mean +/- SD) across the 21 published studies (n=1215 critically ill adult patients). WT enters the model as a linear (exponent = 1) structural scaler on Vc because the pooled typical Vd was reported per kg (0.33 L/kg). WT does NOT scale CL: the paper pooled CL as total L/h (4.70 +/- 2.89 L/h) rather than L/h/kg, so CL is encoded as WT-independent in this extraction. In the Monte Carlo Simulation WT was truncated at >= 40 kg (Methods, Monte Carlo Simulations: 'total body weight (kg) was set at the range 40 to infinity in MCS analysis'). Dose was computed as mg/kg * WT.",
-      source_name        = "TBW"
+      notes = "Abbasi 2023 Results: pooled dosing weight 70.8 +/- 19.9 kg (mean +/- SD) across the 21 published studies (n=1215 critically ill adult patients). WT enters the model as a linear (exponent = 1) structural scaler on Vc because the pooled typical Vd was reported per kg (0.33 L/kg). WT does NOT scale CL: the paper pooled CL as total L/h (4.70 +/- 2.89 L/h) rather than L/h/kg, so CL is encoded as WT-independent in this extraction. In the Monte Carlo Simulation WT was truncated at >= 40 kg (Methods, Monte Carlo Simulations: 'total body weight (kg) was set at the range 40 to infinity in MCS analysis'). Dose was computed as mg/kg * WT.",
+      source_name = "TBW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1215L,
-    n_studies      = 21L,
-    age_range      = "Not reported at the pooled level; underlying studies enrolled adult intensive care unit patients (Methods, Pharmacokinetic Model Development: 'critically ill adult patients'; pregnant women were excluded).",
-    weight_range   = "Pooled dosing weight 70.8 +/- 19.9 kg (mean +/- SD across 21 studies); MCS truncated total body weight at >= 40 kg.",
+    species = "human",
+    n_subjects = 1215L,
+    n_studies = 21L,
+    age_range = "Not reported at the pooled level; underlying studies enrolled adult intensive care unit patients (Methods, Pharmacokinetic Model Development: 'critically ill adult patients'; pregnant women were excluded).",
+    weight_range = "Pooled dosing weight 70.8 +/- 19.9 kg (mean +/- SD across 21 studies); MCS truncated total body weight at >= 40 kg.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported at the pooled level.",
-    disease_state  = "Critically ill adult patients admitted to medical, surgical, or traumatic intensive care units. Among the 1215 pooled patients, 90.5% were confirmed to have severe infections (Results). Exclusions: pregnant women, patients receiving extracorporeal membrane oxygenation, and patients receiving renal replacement therapy (Methods, Pharmacokinetic Model Development).",
-    dose_range     = "5-10 mg/kg once daily as a 0.5-h intravenous infusion, 24-h dosing interval, evaluated over 72 h (3 daily doses).",
-    regions        = "Global (systematic pooling across 21 previously published critically-ill-adult ICU gentamicin PK studies indexed in PubMed / EMBASE / SCOPUS / CINAHL / EBSCO up to September 2022; individual-study geography was not aggregated).",
+    disease_state = "Critically ill adult patients admitted to medical, surgical, or traumatic intensive care units. Among the 1215 pooled patients, 90.5% were confirmed to have severe infections (Results). Exclusions: pregnant women, patients receiving extracorporeal membrane oxygenation, and patients receiving renal replacement therapy (Methods, Pharmacokinetic Model Development).",
+    dose_range = "5-10 mg/kg once daily as a 0.5-h intravenous infusion, 24-h dosing interval, evaluated over 72 h (3 daily doses).",
+    regions = "Global (systematic pooling across 21 previously published critically-ill-adult ICU gentamicin PK studies indexed in PubMed / EMBASE / SCOPUS / CINAHL / EBSCO up to September 2022; individual-study geography was not aggregated).",
     renal_function = "Heterogeneous ICU renal function; patients requiring renal replacement therapy were excluded. Seven studies contributed acute-phase (first-dose, within 48-72 h) PK; two studies contributed steady-state PK.",
-    notes          = "Pooled meta-analytic PK parameters (Table S1 lists the 21 contributing studies; Table S2 lists 'additional parameters used in the model' [dosing / target / MIC inputs] and is not on disk in this extraction). No individual-level baseline demographic table appears in the paper. Search cut-off: September 2022. See references 14-34 of the paper for the 21 contributing studies. Additional (non-critically-ill) Vd range reported in Discussion: 0.27-0.83 L/kg."
+    notes = "Pooled meta-analytic PK parameters (Table S1 lists the 21 contributing studies; Table S2 lists 'additional parameters used in the model' [dosing / target / MIC inputs] and is not on disk in this extraction). No individual-level baseline demographic table appears in the paper. Search cut-off: September 2022. See references 14-34 of the paper for the 21 contributing studies. Additional (non-critically-ill) Vd range reported in Discussion: 0.27-0.83 L/kg."
   )
 
   ini({

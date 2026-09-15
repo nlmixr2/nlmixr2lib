@@ -5,130 +5,130 @@ Hu_2024_nivolumab <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    central     = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on baseline CL with reference 75 kg, and on Q with the same exponent (Hu 2024 Results equations for CL0TV and Q; the Q exponent was constrained equal to the CL exponent per Figure 1 caption). Reference 75 kg is the approximate dataset median (Table 4 Note). Missing values were imputed to the reference in the source NONMEM code (Appendix File S2).",
-      source_name        = "WTB"
+      notes = "Power scaling on baseline CL with reference 75 kg, and on Q with the same exponent (Hu 2024 Results equations for CL0TV and Q; the Q exponent was constrained equal to the CL exponent per Figure 1 caption). Reference 75 kg is the approximate dataset median (Table 4 Note). Missing values were imputed to the reference in the source NONMEM code (Appendix File S2).",
+      source_name = "WTB"
     ),
     LBM = list(
-      description        = "Baseline lean body mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline lean body mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on VC with reference 55 kg, and on VP with the same exponent (Hu 2024 Results equations for VC and VP; the VP exponent was constrained equal to the VC exponent per Figure 1 caption). Table 1 Note: LBM was estimated using the Boer equation (adults) and the Peter equation (children). Missing values were imputed to the reference in the source NONMEM code (Appendix File S2).",
-      source_name        = "ELBMB"
+      notes = "Power scaling on VC with reference 55 kg, and on VP with the same exponent (Hu 2024 Results equations for VC and VP; the VP exponent was constrained equal to the VC exponent per Figure 1 caption). Table 1 Note: LBM was estimated using the Boer equation (adults) and the Peter equation (children). Missing values were imputed to the reference in the source NONMEM code (Appendix File S2).",
+      source_name = "ELBMB"
     ),
     CRCL = list(
-      description        = "Baseline estimated glomerular filtration rate, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline estimated glomerular filtration rate, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on baseline CL with reference 90 mL/min/1.73 m^2 (Hu 2024 Results, CL0TV equation and the reference-value list following it). Stored under the canonical CRCL; the source column name is eGFR / EGFRB. The eGFR estimating equation is not restated in Hu 2024; it is inherited from the Bajaj 2017 adult base model that this analysis re-estimated.",
-      source_name        = "EGFRB"
+      notes = "Power scaling on baseline CL with reference 90 mL/min/1.73 m^2 (Hu 2024 Results, CL0TV equation and the reference-value list following it). Stored under the canonical CRCL; the source column name is eGFR / EGFRB. The eGFR estimating equation is not restated in Hu 2024; it is inherited from the Bajaj 2017 adult base model that this analysis re-estimated.",
+      source_name = "EGFRB"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Exponential effect on baseline CL (exp(-0.0998) = 0.905) and on VC (exp(0.0195) = 1.020). The source NONMEM column SEXN is coded 1 = male (reference), 2 = female; SEXF = 1 reproduces the paper's female-vs-male contrast (Appendix File S2: 'IF (SEX_I .EQ. 2) TVCL = TVCL * EXP(CL_FEMALE); reference is SEX=1 (Male)').",
-      source_name        = "SEXN"
+      notes = "Exponential effect on baseline CL (exp(-0.0998) = 0.905) and on VC (exp(0.0195) = 1.020). The source NONMEM column SEXN is coded 1 = male (reference), 2 = female; SEXF = 1 reproduces the paper's female-vs-male contrast (Appendix File S2: 'IF (SEX_I .EQ. 2) TVCL = TVCL * EXP(CL_FEMALE); reference is SEX=1 (Male)').",
+      source_name = "SEXN"
     ),
     ECOG_GE1 = list(
-      description        = "Baseline ECOG performance-status indicator (1 if performance status > 0, else 0)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline ECOG performance-status indicator (1 if performance status > 0, else 0)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG performance status 0; fully active)",
-      notes              = "Exponential effect on baseline CL (exp(0.166) = 1.181) and additive effect on the time-varying-CL Emax parameter (-0.157). Table 1 Note: performance status was based on the Eastern Cooperative Oncology Group (ECOG) Performance Status Scale. Hu 2024 collapses the four-level scale to PS = 0 versus PS > 0; missing values were imputed to PS = 1 in the source NONMEM code (Appendix File S2).",
-      source_name        = "PS"
+      notes = "Exponential effect on baseline CL (exp(0.166) = 1.181) and additive effect on the time-varying-CL Emax parameter (-0.157). Table 1 Note: performance status was based on the Eastern Cooperative Oncology Group (ECOG) Performance Status Scale. Hu 2024 collapses the four-level scale to PS = 0 versus PS > 0; missing values were imputed to PS = 1 in the source NONMEM code (Appendix File S2).",
+      source_name = "PS"
     ),
     RACE_BLACK = list(
-      description        = "Race indicator: Black / African American",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator: Black / African American",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White or Other; Hu 2024 pools White and Other into a single reference group)",
-      notes              = "Exponential effect on baseline CL (CL_RAAA = 0.0693; 95% CI -0.0237 to 0.159, i.e. not statistically significant). Source column RACEN coded 1 = White/Other (reference), 2 = African American, 3 = Asian. Renamed to the canonical RACE_BLACK per covariate-columns.md.",
-      source_name        = "RACEN"
+      notes = "Exponential effect on baseline CL (CL_RAAA = 0.0693; 95% CI -0.0237 to 0.159, i.e. not statistically significant). Source column RACEN coded 1 = White/Other (reference), 2 = African American, 3 = Asian. Renamed to the canonical RACE_BLACK per covariate-columns.md.",
+      source_name = "RACEN"
     ),
     RACE_ASIAN = list(
-      description        = "Race indicator: Asian",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator: Asian",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White or Other; same composite reference as RACE_BLACK)",
-      notes              = "Exponential effect on baseline CL (CL_RAAS = 0.00333; RSE 1090%, 95% CI -0.0693 to 0.0786, i.e. effectively null). Source column RACEN level 3. Renamed to the canonical RACE_ASIAN per covariate-columns.md.",
-      source_name        = "RACEN"
+      notes = "Exponential effect on baseline CL (CL_RAAS = 0.00333; RSE 1090%, 95% CI -0.0693 to 0.0786, i.e. effectively null). Source column RACEN level 3. Renamed to the canonical RACE_ASIAN per covariate-columns.md.",
+      source_name = "RACEN"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used only through the three age bands that define the paper's patient-population and volume covariates: young pediatric (< 12 years), adolescent (12-17 years), adult (>= 18 years). Appendix File S2 applies the splits as AGE <= 11 and 12 <= AGE <= 17. The numeric power effect of age on CL (CL_AGE, THETA(8)) was fixed to zero in the selected Full1c model, so age enters this model only categorically.",
-      source_name        = "AGE"
+      notes = "Used only through the three age bands that define the paper's patient-population and volume covariates: young pediatric (< 12 years), adolescent (12-17 years), adult (>= 18 years). Appendix File S2 applies the splits as AGE <= 11 and 12 <= AGE <= 17. The numeric power effect of age on CL (CL_AGE, THETA(8)) was fixed to zero in the selected Full1c model, so age enters this model only categorically.",
+      source_name = "AGE"
     ),
     TUMTP_LYMPH = list(
-      description        = "Tumor-type indicator: lymphoma (pooled classical Hodgkin, Hodgkin, and non-Hodgkin lymphoma)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator: lymphoma (pooled classical Hodgkin, Hodgkin, and non-Hodgkin lymphoma)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (melanoma, CNS tumor, or other solid tumor)",
-      notes              = "Exponential effects on baseline CL: adults exp(-0.382) = 0.682 (32% lower than adult melanoma); pediatric subjects (< 18 years) exp(-0.411) = 0.663 (34% lower). Additive effect on Emax in adults only (+0.132); pediatric lymphoma Emax was assumed equal to adult melanoma and fixed at zero (Methods; Appendix File S2 THETA(39) = 0 FIX). Hu 2024 Methods: 'cHL, HL, and non-HL were combined into a single HL category because of the small sample size' (adult n = 274 from Table 1; pediatric n = 46 comprising classical Hodgkin lymphoma n = 31, non-Hodgkin lymphoma n = 9, Hodgkin lymphoma n = 6).",
-      source_name        = "POPN"
+      notes = "Exponential effects on baseline CL: adults exp(-0.382) = 0.682 (32% lower than adult melanoma); pediatric subjects (< 18 years) exp(-0.411) = 0.663 (34% lower). Additive effect on Emax in adults only (+0.132); pediatric lymphoma Emax was assumed equal to adult melanoma and fixed at zero (Methods; Appendix File S2 THETA(39) = 0 FIX). Hu 2024 Methods: 'cHL, HL, and non-HL were combined into a single HL category because of the small sample size' (adult n = 274 from Table 1; pediatric n = 46 comprising classical Hodgkin lymphoma n = 31, non-Hodgkin lymphoma n = 9, Hodgkin lymphoma n = 6).",
+      source_name = "POPN"
     ),
     TUMTP_CNS_PRIM = list(
-      description        = "Tumor-type indicator: primary central nervous system tumor",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator: primary central nervous system tumor",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (melanoma, lymphoma, or other solid tumor)",
-      notes              = "Exponential effects on baseline CL: adults exp(-0.578) = 0.561 (44% lower than adult melanoma); pediatric subjects (< 18 years) exp(-0.801) = 0.449 (55% lower). The adult CNS-tumor cohort is essentially all glioblastoma (Table 1: adult GBM n = 556, of which GBM n = 542), which is why Table 4 labels the coefficient CL_GBM. Pediatric CNS tumors additionally carry an Emax offset of +0.696, and adult CNS tumors have Emax set to exactly zero (stationary CL) in the source NONMEM code (Appendix File S2: 'IF (POP_I .EQ. 4) EMAX = 0'). Pediatric composition (Table 1 footnote f): diffuse intrinsic pontine glioma n = 34, medulloblastoma n = 28, high-grade glioma n = 20, ependymoma n = 19, diffuse midline glioma n = 9, atypical teratoid rhabdoid tumor n = 7, and others.",
-      source_name        = "POPN"
+      notes = "Exponential effects on baseline CL: adults exp(-0.578) = 0.561 (44% lower than adult melanoma); pediatric subjects (< 18 years) exp(-0.801) = 0.449 (55% lower). The adult CNS-tumor cohort is essentially all glioblastoma (Table 1: adult GBM n = 556, of which GBM n = 542), which is why Table 4 labels the coefficient CL_GBM. Pediatric CNS tumors additionally carry an Emax offset of +0.696, and adult CNS tumors have Emax set to exactly zero (stationary CL) in the source NONMEM code (Appendix File S2: 'IF (POP_I .EQ. 4) EMAX = 0'). Pediatric composition (Table 1 footnote f): diffuse intrinsic pontine glioma n = 34, medulloblastoma n = 28, high-grade glioma n = 20, ependymoma n = 19, diffuse midline glioma n = 9, atypical teratoid rhabdoid tumor n = 7, and others.",
+      source_name = "POPN"
     ),
     TUMTP_OTHER = list(
-      description        = "Tumor-type indicator: other solid tumors (the residual non-melanoma, non-lymphoma, non-CNS pool)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator: other solid tumors (the residual non-melanoma, non-lymphoma, non-CNS pool)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (melanoma, lymphoma, or CNS tumor)",
-      notes              = "Exponential effects on baseline CL: adults exp(0.00699) = 1.007 (no meaningful difference from adult melanoma); adolescents 12-17 years exp(-0.223) = 0.800 (20% lower); young pediatric subjects < 12 years exp(-0.580) = 0.560 (44% lower). Additive effect on Emax in adults only (+0.118); pediatric solid-tumor Emax was assumed equal to adult melanoma and fixed at zero (Methods; Appendix File S2 THETA(38) = 0 FIX). Per-paper composition -- adult other (n = 227, Table 1 footnote c): NSCLC n = 139, renal cell carcinoma n = 35, colorectal cancer n = 18, prostate cancer n = 11, others; pediatric other solid tumors (n = 79, Table 1 footnote d): osteosarcoma n = 19, neuroblastoma n = 18, rhabdomyosarcoma n = 17, Ewing sarcoma n = 10, melanoma n = 1, other n = 14.",
-      source_name        = "POPN"
+      notes = "Exponential effects on baseline CL: adults exp(0.00699) = 1.007 (no meaningful difference from adult melanoma); adolescents 12-17 years exp(-0.223) = 0.800 (20% lower); young pediatric subjects < 12 years exp(-0.580) = 0.560 (44% lower). Additive effect on Emax in adults only (+0.118); pediatric solid-tumor Emax was assumed equal to adult melanoma and fixed at zero (Methods; Appendix File S2 THETA(38) = 0 FIX). Per-paper composition -- adult other (n = 227, Table 1 footnote c): NSCLC n = 139, renal cell carcinoma n = 35, colorectal cancer n = 18, prostate cancer n = 11, others; pediatric other solid tumors (n = 79, Table 1 footnote d): osteosarcoma n = 19, neuroblastoma n = 18, rhabdomyosarcoma n = 17, Ewing sarcoma n = 10, melanoma n = 1, other n = 14.",
+      source_name = "POPN"
     ),
     CONMED_IPI_1Q3W = list(
-      description        = "Coadministration regimen: nivolumab + ipilimumab 1 mg/kg every 3 weeks",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Coadministration regimen: nivolumab + ipilimumab 1 mg/kg every 3 weeks",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (nivolumab monotherapy or any other combination regimen)",
-      notes              = "Exponential effect on baseline CL (exp(0.0973) = 1.102; 95% CI -0.00235 to 0.208). Source column COMBO level 1 (Appendix File S2). Table 1: n = 122 of 2325 received nivolumab + ipilimumab 1 mg/kg q3w.",
-      source_name        = "COMBO"
+      notes = "Exponential effect on baseline CL (exp(0.0973) = 1.102; 95% CI -0.00235 to 0.208). Source column COMBO level 1 (Appendix File S2). Table 1: n = 122 of 2325 received nivolumab + ipilimumab 1 mg/kg q3w.",
+      source_name = "COMBO"
     ),
     CONMED_IPI_3Q3W = list(
-      description        = "Coadministration regimen: nivolumab + ipilimumab 3 mg/kg every 3 weeks",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Coadministration regimen: nivolumab + ipilimumab 3 mg/kg every 3 weeks",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (nivolumab monotherapy or any other combination regimen)",
-      notes              = "Exponential effect on baseline CL (exp(0.349) = 1.418; the largest single covariate effect on nivolumab CL in this model). Source column COMBO level 2 (Appendix File S2). Table 1: n = 385 of 2325.",
-      source_name        = "COMBO"
+      notes = "Exponential effect on baseline CL (exp(0.349) = 1.418; the largest single covariate effect on nivolumab CL in this model). Source column COMBO level 2 (Appendix File S2). Table 1: n = 385 of 2325.",
+      source_name = "COMBO"
     ),
     CONMED_BRENTUXIMAB = list(
-      description        = "Coadministration regimen: nivolumab + brentuximab vedotin",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Coadministration regimen: nivolumab + brentuximab vedotin",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (nivolumab monotherapy or any other combination regimen)",
-      notes              = "Exponential effect on baseline CL (exp(0.132) = 1.141; 95% CI -0.0572 to 0.282). Source column COMBO level 4 (Appendix File S2). The regimen is brentuximab vedotin 1.8 mg/kg q3w for 4 doses with nivolumab 3 mg/kg q3w in the pediatric / young-adult classical Hodgkin lymphoma study CA209744 (Table S1). Table 1: n = 44 of 2325.",
-      source_name        = "COMBO"
+      notes = "Exponential effect on baseline CL (exp(0.132) = 1.141; 95% CI -0.0572 to 0.282). Source column COMBO level 4 (Appendix File S2). The regimen is brentuximab vedotin 1.8 mg/kg q3w for 4 doses with nivolumab 3 mg/kg q3w in the pediatric / young-adult classical Hodgkin lymphoma study CA209744 (Table S1). Table 1: n = 44 of 2325.",
+      source_name = "COMBO"
     ),
     CONMED_IPI_ANY = list(
-      description        = "Any-ipilimumab-coadministration indicator (regimen-agnostic)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Any-ipilimumab-coadministration indicator (regimen-agnostic)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no ipilimumab coadministration)",
-      notes              = "Additive effect on the time-varying-CL Emax parameter (-0.124; 95% CI -0.361 to 0.0274). Source column IPICO / COMBO levels 1-3 (Appendix File S2: 'IF (COMBO_I.LE.3.AND.COMBO_I.GE.1) EMAX = EMAX + EMAX_IPICO'). Coexists with CONMED_IPI_1Q3W and CONMED_IPI_3Q3W because those act on baseline CL rather than on Emax.",
-      source_name        = "COMBO"
+      notes = "Additive effect on the time-varying-CL Emax parameter (-0.124; 95% CI -0.361 to 0.0274). Source column IPICO / COMBO levels 1-3 (Appendix File S2: 'IF (COMBO_I.LE.3.AND.COMBO_I.GE.1) EMAX = EMAX + EMAX_IPICO'). Coexists with CONMED_IPI_1Q3W and CONMED_IPI_3Q3W because those act on baseline CL rather than on Emax.",
+      source_name = "COMBO"
     )
   )
 
@@ -140,9 +140,9 @@ Hu_2024_nivolumab <- function() {
   covariatesDataExcluded <- list(
     TUMTP_MEL = list(
       description = "Tumor-type indicator: melanoma -- the reference level of the patient-population factor",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Fourth level of the patient-population factor (melanoma / lymphoma / CNS tumor /",
         "other solid tumor) that Hu 2024 crosses with the age bands. Adult melanoma is the",
         "reference patient population, so TUMTP_MEL carries no CL or Emax coefficient at any",
@@ -158,43 +158,43 @@ Hu_2024_nivolumab <- function() {
     ),
     CONMED_IPI_1Q6W = list(
       description = "Coadministration regimen: nivolumab + ipilimumab 1 mg/kg every 6 weeks",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "COMBO level 3 in the source NONMEM code (Appendix File S2); THETA(30) CL_I1Q6 was declared 0 FIX and does not appear in Table 4. Retained as a data column but with no estimated effect in this analysis."
+      units = "(binary)",
+      type = "binary",
+      notes = "COMBO level 3 in the source NONMEM code (Appendix File S2); THETA(30) CL_I1Q6 was declared 0 FIX and does not appear in Table 4. Retained as a data column but with no estimated effect in this analysis."
     ),
     CONMED_RADIOTHERAPY = list(
       description = "Coadministration regimen: nivolumab + radiotherapy (adult glioblastoma studies)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "COMBO level 5 in the source NONMEM code (Appendix File S2); THETA(32) CL_RT was declared 0 FIX and does not appear in Table 4. Table 1 records n = 314 receiving nivolumab + radiotherapy."
+      units = "(binary)",
+      type = "binary",
+      notes = "COMBO level 5 in the source NONMEM code (Appendix File S2); THETA(32) CL_RT was declared 0 FIX and does not appear in Table 4. Table 1 records n = 314 receiving nivolumab + radiotherapy."
     ),
     CONMED_RADIOTHERAPY_TEMOZOLOMIDE = list(
       description = "Coadministration regimen: nivolumab + radiotherapy + temozolomide (adult glioblastoma)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "COMBO level 6 in the source NONMEM code (Appendix File S2); THETA(33) CL_RTTMZ was declared 0 FIX and does not appear in Table 4. Table 1 records n = 52 receiving nivolumab + radiotherapy + temozolomide."
+      units = "(binary)",
+      type = "binary",
+      notes = "COMBO level 6 in the source NONMEM code (Appendix File S2); THETA(33) CL_RTTMZ was declared 0 FIX and does not appear in Table 4. Table 1 records n = 52 receiving nivolumab + radiotherapy + temozolomide."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2325L,
-    n_studies      = 13L,
+    species = "human",
+    n_subjects = 2325L,
+    n_studies = 13L,
     n_observations = 13104L,
-    n_pediatric    = 275L,
-    age_range      = "1-90 years (pediatric 1-17 years; adult >= 18 years)",
-    age_median     = "55 years overall; pediatric solid tumors 12 y, pediatric lymphoma 15 y, pediatric CNS tumors 10 y",
-    weight_range   = "9.3-168 kg",
-    weight_median  = "76.2 kg overall; pediatric solid tumors 43.2 kg, pediatric lymphoma 58.2 kg, pediatric CNS tumors 33 kg",
+    n_pediatric = 275L,
+    age_range = "1-90 years (pediatric 1-17 years; adult >= 18 years)",
+    age_median = "55 years overall; pediatric solid tumors 12 y, pediatric lymphoma 15 y, pediatric CNS tumors 10 y",
+    weight_range = "9.3-168 kg",
+    weight_median = "76.2 kg overall; pediatric solid tumors 43.2 kg, pediatric lymphoma 58.2 kg, pediatric CNS tumors 33 kg",
     sex_female_pct = 36.5,
     race_ethnicity = c(White = 90.3, `Black/African American` = 2.8, Asian = 3.7, Other = 3.2),
-    disease_state  = "Advanced melanoma (n = 994), Hodgkin / non-Hodgkin lymphoma (n = 320), central nervous system tumors including adult glioblastoma (n = 706), and other solid tumors (n = 305). Analysis populations: adult MEL n = 993, adult HL n = 274, adult GBM n = 556, adult other ST n = 227, pediatric ST n = 79, pediatric HL n = 46, pediatric CNST n = 150.",
-    dose_range     = "Nivolumab 0.1-20 mg/kg or 240/480 mg flat intravenous infusion q2w, q3w, or q4w, alone or combined with ipilimumab 1 or 3 mg/kg q3w, brentuximab vedotin, radiotherapy, or radiotherapy plus temozolomide",
-    regions        = "Pooled global phase I, I/II, II, and III studies (13 trials; Table S1)",
+    disease_state = "Advanced melanoma (n = 994), Hodgkin / non-Hodgkin lymphoma (n = 320), central nervous system tumors including adult glioblastoma (n = 706), and other solid tumors (n = 305). Analysis populations: adult MEL n = 993, adult HL n = 274, adult GBM n = 556, adult other ST n = 227, pediatric ST n = 79, pediatric HL n = 46, pediatric CNST n = 150.",
+    dose_range = "Nivolumab 0.1-20 mg/kg or 240/480 mg flat intravenous infusion q2w, q3w, or q4w, alone or combined with ipilimumab 1 or 3 mg/kg q3w, brentuximab vedotin, radiotherapy, or radiotherapy plus temozolomide",
+    regions = "Pooled global phase I, I/II, II, and III studies (13 trials; Table S1)",
     performance_status = "ECOG PS 0 50.5%, PS 1 45.1%, PS 2 4.3%, PS 3 0.04%",
     renal_function = "Baseline eGFR mean 93.8 (SD 22.8) mL/min/1.73 m^2, median 92.9",
     body_composition = "Baseline lean body mass mean 54.5 (SD 13.8) kg, median 55.8 kg; estimated by the Boer equation (adults) and the Peter equation (children)",
-    notes          = "Baseline demographics per Hu 2024 Table 1 (N = 2325 across 13 nivolumab studies, of whom 275 were pediatric). Three phase I/II studies contributed the pediatric data (ADVL1412 / CA209070, CA209908, CA209744; Table S1)."
+    notes = "Baseline demographics per Hu 2024 Table 1 (N = 2325 across 13 nivolumab studies, of whom 275 were pediatric). Three phase I/II studies contributed the pediatric data (ADVL1412 / CA209070, CA209908, CA209744; Table S1)."
   )
 
   ini({

@@ -8,11 +8,11 @@ Fromage_2025_mycophenolic_acid <- function() {
   # biological matrix.
   compartmentData <- list(
     depot = list(
-      analyte  = "enteric-coated mycophenolate sodium",
-      units    = "mg",
+      analyte = "enteric-coated mycophenolate sodium",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE,
-      notes    = paste(
+      notes = paste(
         "Dose-registration state only, and it is deliberately always empty.",
         "Fromage 2025 published C(t) in closed form (Section 2.2.1) and fitted",
         "that analytic solution in Monolix, so this file evaluates the same",
@@ -28,10 +28,10 @@ Fromage_2025_mycophenolic_acid <- function() {
   covariateData <- list(
     TX_HEART = list(
       description = "Heart (cardiac) transplant recipient indicator",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       source_name = "Indication (cardiac transplantation)",
-      notes       = paste(
+      notes = paste(
         "Fromage 2025 Section 2.2.2 pools the indication into three groups and",
         "estimates ONE effect for group (ii): cardiac + pulmonary + bone marrow",
         "transplantation. This file keeps the three transplant types as separate",
@@ -43,17 +43,17 @@ Fromage_2025_mycophenolic_acid <- function() {
     ),
     TX_LUNG = list(
       description = "Lung (pulmonary) transplant recipient indicator",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       source_name = "Indication (pulmonary transplantation)",
-      notes       = "Member of the pooled group (ii); see TX_HEART notes."
+      notes = "Member of the pooled group (ii); see TX_HEART notes."
     ),
     TX_HCT = list(
       description = "Haematopoietic cell (bone marrow / stem cell) transplant recipient indicator",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       source_name = "Indication (bone marrow transplantation)",
-      notes       = paste(
+      notes = paste(
         "Fromage 2025 writes 'bone marrow transplantation' in the covariate",
         "definition (Section 2.2.2) and 'haematopoietic stem cell (HSC)",
         "recipients' in the Abstract; both denote the same group (ii) member.",
@@ -64,10 +64,10 @@ Fromage_2025_mycophenolic_acid <- function() {
     ),
     DIS_AUTOIMMUNE = list(
       description = "Autoimmune-disease indication indicator (pooled)",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       source_name = "Indication (autoimmune diseases)",
-      notes       = paste(
+      notes = paste(
         "Fromage 2025 group (iii): systemic lupus erythematosus, lupus nephritis",
         "and nephrotic syndrome, pooled into a single indicator (Section 2.1 and",
         "Section 2.2.2). Pooled rather than DIS_SLE because the group also",
@@ -88,51 +88,51 @@ Fromage_2025_mycophenolic_acid <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as a qualitative covariate (Section 2.2.2); not retained. Sex was unknown for 34-37% of occasions (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as a qualitative covariate (Section 2.2.2); not retained. Sex was unknown for 34-37% of occasions (Table 1)."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested as a continuous covariate via the median-normalised power model (Section 2.2.2); not retained. Cohort median 45 years (range 6-80), Table 1."
+      units = "years",
+      type = "continuous",
+      notes = "Tested as a continuous covariate via the median-normalised power model (Section 2.2.2); not retained. Cohort median 45 years (range 6-80), Table 1."
     ),
     TAT = list(
       description = "Time since transplantation (time since EC-MPS initiation)",
-      units       = "days",
-      type        = "continuous",
-      notes       = "Tested as a continuous covariate (Section 2.2.2); not retained. Cohort median 771 days (range 6-10488), Table 1."
+      units = "days",
+      type = "continuous",
+      notes = "Tested as a continuous covariate (Section 2.2.2); not retained. Cohort median 771 days (range 6-10488), Table 1."
     ),
     CONMED_CICLOSPORIN = list(
       description = "Ciclosporin co-medication indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as one level of a three-level immunosuppressive co-treatment covariate (none / ciclosporin / other) because ciclosporin inhibits the enterohepatic recirculation of MPA (Section 3.1); not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as one level of a three-level immunosuppressive co-treatment covariate (none / ciclosporin / other) because ciclosporin inhibits the enterohepatic recirculation of MPA (Section 3.1); not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 129L,
-    n_studies      = 1L,
-    n_profiles     = 153L,
+    species = "human",
+    n_subjects = 129L,
+    n_studies = 1L,
+    n_profiles = 153L,
     n_observations = 863L,
-    age_range      = "Median 45 years (range 6-80); 20 of 127 patients were paediatric (< 18 years)",
-    weight_range   = "Not reported (body weight was not available in the ISBA extraction; Section 4)",
+    age_range = "Median 45 years (range 6-80); 20 of 127 patients were paediatric (< 18 years)",
+    weight_range = "Not reported (body weight was not available in the ISBA extraction; Section 4)",
     sex_female_pct = 27,
     race_ethnicity = "Not reported (single-centre French cohort)",
-    disease_state  = paste(
+    disease_state = paste(
       "Multi-indication: renal, hepatic, cardiac and pulmonary transplantation,",
       "bone marrow / haematopoietic cell transplantation, and autoimmune disease",
       "(systemic lupus erythematosus, lupus nephritis, nephrotic syndrome).",
       "116 patients with solid-organ or haematopoietic cell transplantation and",
       "13 with autoimmune disease."
     ),
-    dose_range     = "Oral EC-MPS (Myfortic) 180-1440 mg per intake; median 360 mg",
+    dose_range = "Oral EC-MPS (Myfortic) 180-1440 mg per intake; median 360 mg",
     administration = "Oral, enteric-coated delayed-release tablet",
-    regions        = "France (single centre: CHU de Limoges, ISBA / ABIS 3.0 platform)",
-    notes          = paste(
+    regions = "France (single centre: CHU de Limoges, ISBA / ABIS 3.0 platform)",
+    notes = paste(
       "Retrospective real-world therapeutic-drug-monitoring data extracted from",
       "the ISBA Bayesian dosing-adaptation platform. Development set 75% /",
       "validation set 25%, split on PK profiles, plus a separate later",

@@ -12,44 +12,44 @@ Harun_2019_cysticFibrosis <- function() {
 
   covariateData <- list(
     BMIZ = list(
-      description        = "Body-mass-index z-score (age- and sex-standardised) at the time of the FEV1% predicted measurement",
-      units              = "unitless (z-score)",
-      type               = "continuous",
+      description = "Body-mass-index z-score (age- and sex-standardised) at the time of the FEV1% predicted measurement",
+      units = "unitless (z-score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying per-visit z-score; reference value is 0 (population mean for age and sex). Linear-deviation effect on baseline FEV1% predicted: e_bmi_baseline * (BMIZ - 0). Source paper does not state which growth-reference standard was used to compute the z-score; ACFBAL paediatric CF cohorts conventionally use the WHO 2007 Growth Reference for school-aged children and adolescents.",
-      source_name        = "BMI"
+      notes = "Time-varying per-visit z-score; reference value is 0 (population mean for age and sex). Linear-deviation effect on baseline FEV1% predicted: e_bmi_baseline * (BMIZ - 0). Source paper does not state which growth-reference standard was used to compute the z-score; ACFBAL paediatric CF cohorts conventionally use the WHO 2007 Growth Reference for school-aged children and adolescents.",
+      source_name = "BMI"
     ),
     AIR_TRAP_5Y = list(
-      description        = "Severe air trapping (Brody-II HRCT component score > 0) on the chest HRCT scan performed at age 5 years",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Severe air trapping (Brody-II HRCT component score > 0) on the chest HRCT scan performed at age 5 years",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no air trapping at age 5)",
-      notes              = "Time-fixed per subject; captures the single end-of-study HRCT performed at age 5 in the ACFBAL study. Coefficient e_at_baseline applies only to baseline FEV1% predicted at age 5 (not to dmax or t50max).",
-      source_name        = "ATS5C"
+      notes = "Time-fixed per subject; captures the single end-of-study HRCT performed at age 5 in the ACFBAL study. Coefficient e_at_baseline applies only to baseline FEV1% predicted at age 5 (not to dmax or t50max).",
+      source_name = "ATS5C"
     ),
     HOSPRA = list(
-      description        = "Hospitalisation due to a pulmonary exacerbation at the time of the FEV1% predicted measurement",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hospitalisation due to a pulmonary exacerbation at the time of the FEV1% predicted measurement",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not hospitalised at this visit)",
-      notes              = "Time-varying per-visit indicator; affects both the maximum drop in FEV1% predicted (e_hpe_dmax) and the age at which 50% of the maximum drop occurs (e_hpe_t50max). Hospitalised visits accelerate both the magnitude and the onset of FEV1% decline.",
-      source_name        = "HOSPRA"
+      notes = "Time-varying per-visit indicator; affects both the maximum drop in FEV1% predicted (e_hpe_dmax) and the age at which 50% of the maximum drop occurs (e_hpe_t50max). Hospitalised visits accelerate both the magnitude and the onset of FEV1% decline.",
+      source_name = "HOSPRA"
     )
   )
 
   population <- list(
-    n_subjects     = 79L,
-    n_studies      = 2L,
-    age_range      = "4.8-14.4 years",
-    age_median     = "9.1 years",
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    n_subjects = 79L,
+    n_studies = 2L,
+    age_range = "4.8-14.4 years",
+    age_median = "9.1 years",
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 46.8,
     race_ethnicity = NA_character_,
-    disease_state  = "Children with classic cystic fibrosis (two CFTR mutations, sweat chloride > 60 mmol/L, pancreatic insufficiency, or meconium ileus). Subset of the 156 ACFBAL participants who consented to longitudinal follow-up via the Australian Cystic Fibrosis Data Registry between ages 5 and 14 years.",
-    dose_range     = "Not applicable -- disease-progression model with no drug dosing.",
-    regions        = "Australia (multi-site: New South Wales, Northern Territory, Queensland, South Australia, Victoria, Australian Capital Territory) and New Zealand",
-    notes          = "n=79 from the ACFBAL longitudinal sub-cohort; 2651 FEV1% predicted observations (median 33 per child) collected over a median of 8.0 years of follow-up. The age-5-years baseline FEV1% measurements were obtained from the ACFBAL study; subsequent FEV1% measurements at ages 6-14 years were obtained from the Australian Cystic Fibrosis Data Registry. Population characteristics from Table 1 of the source paper (n=79 column) and Table 2."
+    disease_state = "Children with classic cystic fibrosis (two CFTR mutations, sweat chloride > 60 mmol/L, pancreatic insufficiency, or meconium ileus). Subset of the 156 ACFBAL participants who consented to longitudinal follow-up via the Australian Cystic Fibrosis Data Registry between ages 5 and 14 years.",
+    dose_range = "Not applicable -- disease-progression model with no drug dosing.",
+    regions = "Australia (multi-site: New South Wales, Northern Territory, Queensland, South Australia, Victoria, Australian Capital Territory) and New Zealand",
+    notes = "n=79 from the ACFBAL longitudinal sub-cohort; 2651 FEV1% predicted observations (median 33 per child) collected over a median of 8.0 years of follow-up. The age-5-years baseline FEV1% measurements were obtained from the ACFBAL study; subsequent FEV1% measurements at ages 6-14 years were obtained from the Australian Cystic Fibrosis Data Registry. Population characteristics from Table 1 of the source paper (n=79 column) and Table 2."
   )
 
   ini({

@@ -41,12 +41,15 @@ Westerhout_2012_acetaminophen_rat_pbpk <- function() {
   # names.md, so they are declared here as paper-mechanistic.
   paper_specific_compartments <- c(
     "brain_ecf",
-    "csf_lv", "csf_tfv", "csf_cm", "csf_sas"
+    "csf_lv",
+    "csf_tfv",
+    "csf_cm",
+    "csf_sas"
   )
 
   units <- list(
-    time          = "min",
-    dosing        = "ng",
+    time = "min",
+    dosing = "ng",
     concentration = "ng/mL"
   )
 
@@ -55,27 +58,27 @@ Westerhout_2012_acetaminophen_rat_pbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "acetaminophen", units = "ng", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "acetaminophen", units = "ng", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "acetaminophen", units = "ng", specimen = "plasma", verified = FALSE),
-    brain_ecf   = list(analyte = "acetaminophen", units = "ng", specimen = "tissue", verified = FALSE),
-    csf_lv      = list(analyte = "acetaminophen", units = "ng", specimen = "CSF", verified = FALSE),
-    csf_tfv     = list(analyte = "acetaminophen", units = "ng", specimen = "CSF", verified = FALSE),
-    csf_cm      = list(analyte = "acetaminophen", units = "ng", specimen = "CSF", verified = FALSE),
-    csf_sas     = list(analyte = "acetaminophen", units = "ng", specimen = "CSF", verified = FALSE)
+    brain_ecf = list(analyte = "acetaminophen", units = "ng", specimen = "tissue", verified = FALSE),
+    csf_lv = list(analyte = "acetaminophen", units = "ng", specimen = "CSF", verified = FALSE),
+    csf_tfv = list(analyte = "acetaminophen", units = "ng", specimen = "CSF", verified = FALSE),
+    csf_cm = list(analyte = "acetaminophen", units = "ng", specimen = "CSF", verified = FALSE),
+    csf_sas = list(analyte = "acetaminophen", units = "ng", specimen = "CSF", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = paste(
+      description = paste(
         "Total administered acetaminophen dose per subject. Used by the",
         "enterohepatic-recirculation term F_abs * DOSE in the plasma ODE,",
         "which adds a continuous mass input to plasma proportional to the",
         "originally administered dose."
       ),
-      units              = "ng",
-      type               = "continuous",
+      units = "ng",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "For the Westerhout 2012 rat protocol (15 mg/kg IV infusion over",
         "10 min in 225-275 g rats), DOSE = 15 mg/kg * WT_kg * 1e6 ng/mg.",
         "A 250-g rat receives DOSE = 3.75e6 ng. The same value must also",
@@ -84,18 +87,18 @@ Westerhout_2012_acetaminophen_rat_pbpk <- function() {
         "administered total mass so the F_abs continuous input term can be",
         "computed inside model() without reading the event-table amt."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species        = "rat (male Wistar WU)",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "adult",
-    weight_range   = "225-275 g (mean ~250 g)",
+    species = "rat (male Wistar WU)",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "adult",
+    weight_range = "225-275 g (mean ~250 g)",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult male Wistar WU rats (Charles River, Maastricht, NL).",
       "Housed under standard conditions (21 C, 60 percent humidity, 12/12 h",
       "light/dark, ad libitum food and water). 24 rats randomized to three",
@@ -108,21 +111,21 @@ Westerhout_2012_acetaminophen_rat_pbpk <- function() {
       "approved by the Animal Ethics Committee of Leiden University",
       "(UDEC no. 07068)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 15 mg/kg acetaminophen IV infusion over 10 min delivered via",
       "automated pump (Pump 22 Multiple Syringe Pump, Harvard Apparatus)",
       "at 200 uL/min/kg. A second 15 mg/kg infusion at t = 240 min was",
       "given solely to determine plasma protein binding at C_max; the",
       "structural PK model fits only the first-dose 0-240 min interval."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Blood samples at t = -5 (blank), 2, 7, 10, 15, 30, 60, 120, 180,",
       "and 240 min (100 uL each, from the arterial cannula). Microdialysate",
       "collected at 10-min intervals from t = -1 h to t = +2 h and at 20-min",
       "intervals from t = +2 h to t = +4 h. Acetaminophen quantified by",
       "HPLC with electrochemical detection."
     ),
-    regions        = "Leiden University, The Netherlands",
+    regions = "Leiden University, The Netherlands",
     plasma_protein_binding = paste(
       "Linear plasma protein binding determined by Centrifree",
       "ultrafiltration: fu_p = 0.805 +/- 0.042 (i.e., 19.5 +/- 4.2 percent",
@@ -140,7 +143,7 @@ Westerhout_2012_acetaminophen_rat_pbpk <- function() {
       "2012 are dialysate concentrations divided by the location-specific",
       "in-vivo recovery; this conversion is upstream of the model."
     ),
-    notes          = paste(
+    notes = paste(
       "Recirculation: the additional plateau-shaping zero-order input",
       "F_abs * DOSE represents reabsorption of biliary acetaminophen-",
       "glucuronide and acetaminophen-sulfate metabolites that are",

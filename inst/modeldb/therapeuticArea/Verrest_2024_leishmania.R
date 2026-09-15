@@ -70,8 +70,8 @@ Verrest_2024_leishmania <- function() {
   vignette <- "Verrest_2024_leishmania"
 
   units <- list(
-    time          = "h",
-    dosing        = paste(
+    time = "h",
+    dosing = paste(
       "mg/kg (K-PD body amount per kilogram body weight; dose events land in",
       "depot_kpd_amphotericinb and depot_kpd_ssg. The lambda_Amb and",
       "lambda_SSG units of mg^-1*kg*h^-1 in Table 2 fix the K-PD state to",
@@ -87,20 +87,20 @@ Verrest_2024_leishmania <- function() {
 
   compartmentData <- list(
     parasites = list(
-      analyte  = "Leishmania donovani kinetoplast DNA (blood parasite load)",
-      units    = "parasites/mL",
+      analyte = "Leishmania donovani kinetoplast DNA (blood parasite load)",
+      units = "parasites/mL",
       specimen = "whole blood",
       verified = TRUE
     ),
     depot_kpd_amphotericinb = list(
-      analyte  = "liposomal amphotericin B (AmBisome) K-PD body amount",
-      units    = "mg/kg",
+      analyte = "liposomal amphotericin B (AmBisome) K-PD body amount",
+      units = "mg/kg",
       specimen = "not applicable",
       verified = TRUE
     ),
     depot_kpd_ssg = list(
-      analyte  = "sodium stibogluconate (SSG) K-PD body amount",
-      units    = "mg/kg",
+      analyte = "sodium stibogluconate (SSG) K-PD body amount",
+      units = "mg/kg",
       specimen = "not applicable",
       verified = TRUE
     )
@@ -108,14 +108,14 @@ Verrest_2024_leishmania <- function() {
 
   covariateData <- list(
     CP_MILTEFOSINE_UGML = list(
-      description        = paste(
+      description = paste(
         "Instantaneous individual predicted miltefosine plasma concentration,",
         "supplied per event record as a time-varying PD driver."
       ),
-      units              = "ug/mL (= mg/L)",
-      type               = "continuous",
+      units = "ug/mL (= mg/L)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "UNIT: Table 2 prints lambda_MF in ug^-1*L*h^-1, which would put this",
         "column in ug/L. That reading is falsified by the paper's own Table 4.",
         "Miltefosine accumulates to roughly 5 ug/mL averaged over Days 0-10 on",
@@ -140,19 +140,19 @@ Verrest_2024_leishmania <- function() {
         "(NCT01067443) and can generate this trajectory (see the vignette",
         "Assumptions and deviations section)."
       ),
-      source_name        = "individual predicted miltefosine concentration (Methods 2.4.2; Fig 2 'C drug')"
+      source_name = "individual predicted miltefosine concentration (Methods 2.4.2; Fig 2 'C drug')"
     ),
     CP_FEXINIDAZOLE_M1M2_UGML = list(
-      description        = paste(
+      description = paste(
         "Instantaneous individual predicted whole-blood concentration of the",
         "SUM of the two active fexinidazole metabolites, fexinidazole",
         "sulfoxide (M1) and fexinidazole sulfone (M2), supplied per event",
         "record as a time-varying PD driver."
       ),
-      units              = "ug/mL (= mg/L)",
-      type               = "continuous",
+      units = "ug/mL (= mg/L)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "UNIT: as for CP_MILTEFOSINE_UGML, Table 2's printed lambda_fexi unit",
         "of ug^-1*L*h^-1 is falsified by Table 4. Inverting the Fexi10D arm's",
         "Day 1 -> Day 10 decline (3732 -> 105 parasites/mL) gives an implied",
@@ -172,7 +172,7 @@ Verrest_2024_leishmania <- function() {
         "53:565-580). Set to 0 for arms that do not receive fexinidazole",
         "(all four non-Fexi10D regimens)."
       ),
-      source_name        = "individual predicted M1 + M2 concentration (Methods 2.4.2; Fig 2 'C drug')"
+      source_name = "individual predicted M1 + M2 concentration (Methods 2.4.2; Fig 2 'C drug')"
     )
   )
 
@@ -186,9 +186,9 @@ Verrest_2024_leishmania <- function() {
   covariatesDataExcluded <- list(
     WBC = list(
       description = "White blood cell count on Day 56, absolute or relative to baseline",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "10^9/L",
+      type = "continuous",
+      notes = paste(
         "The most extensively screened candidate. Verrest 2024 Methods 2.4.3",
         "tested WBC two ways: (Eq 2) as a linear-slope covariate on Imax and",
         "on IT50, PTV = Ppop * (1 + (WBC_i - WBC_med) * l); and (Eq 3) as the",
@@ -201,27 +201,27 @@ Verrest_2024_leishmania <- function() {
     ),
     HGB = list(
       description = "Haemoglobin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened graphically as a driver of parasite suppression (Methods 2.4.3, Fig D in S1 File); no relationship with parasitological response, not retained."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened graphically as a driver of parasite suppression (Methods 2.4.3, Fig D in S1 File); no relationship with parasitological response, not retained."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened graphically as a driver of parasite suppression (Methods 2.4.3, Fig D in S1 File); not retained."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened graphically as a driver of parasite suppression (Methods 2.4.3, Fig D in S1 File); not retained."
     ),
     NEUT = list(
       description = "Absolute neutrophil count (LEAP0714 and FEXI-VL-001 only)",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened graphically (Methods 2.4.3); available only in two of the three trials; not retained."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened graphically (Methods 2.4.3); available only in two of the three trials; not retained."
     ),
     ALB = list(
       description = "Serum albumin (FEXI-VL-001 only)",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Screened graphically (Methods 2.4.3); available only in FEXI-VL-001.",
         "The Discussion notes albumin and lymphocytes were higher and total",
         "protein lower in cured patients, 'although these results should be",
@@ -235,23 +235,23 @@ Verrest_2024_leishmania <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 172L,
-    n_studies      = 3L,
-    age_range      = "4-50 years",
-    age_mean       = "14 years",
-    weight_range   = "13-69 kg",
-    weight_mean    = "34 kg",
+    species = "human",
+    n_subjects = 172L,
+    n_studies = 3L,
+    age_range = "4-50 years",
+    age_mean = "14 years",
+    weight_range = "13-69 kg",
+    weight_mean = "34 kg",
     sex_female_pct = 33.7,
     race_ethnicity = "Eastern African (Kenya, Sudan, Uganda); no further breakdown reported",
-    disease_state  = paste(
+    disease_state = paste(
       "Parasitologically confirmed primary visceral leishmaniasis (fever plus",
       "splenomegaly plus confirmatory microscopy). All patients HIV negative;",
       "none had severe VL, severe malnutrition, or serious underlying disease",
       "or concomitant severe infection at diagnosis. 138 of 172 (80%) achieved",
       "final cure; 34 of 172 (20%) relapsed during 210 days of follow-up."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Five regimens across three trials.",
       "AmB+SSG10D (n=40): liposomal amphotericin B 10 mg/kg IV on day 1 then",
       "sodium stibogluconate 20 mg/kg/day IM on days 2-11.",
@@ -264,14 +264,14 @@ Verrest_2024_leishmania <- function() {
       "Fexi10D (n=13): oral fexinidazole 1800 mg/day for 4 days then 1200",
       "mg/day for 6 days."
     ),
-    regions        = "Eastern Africa (Kenya: Kimalel, Kacheliba; Sudan: Dooka, Kassab; Uganda: Amudat)",
-    trials         = paste(
+    regions = "Eastern Africa (Kenya: Kimalel, Kacheliba; Sudan: Dooka, Kassab; Uganda: Amudat)",
+    trials = paste(
       "LEAP0208 (NCT01067443; AmB+SSG10D, AmB+MF10D, MFC28D arms),",
       "LEAP0714 (NCT02431143; MFA28D paediatric arm),",
       "FEXI-VL-001 (NCT01980199; Fexi10D arm). All three are phase II",
       "open-label randomized trials."
     ),
-    samples        = paste(
+    samples = paste(
       "1260 whole-blood EDTA samples collected for kinetoplast-DNA qPCR from",
       "188 patients; 992 observations from 172 patients retained after",
       "exclusions (21% excluded: 2 initial treatment failures, samples after",
@@ -282,7 +282,7 @@ Verrest_2024_leishmania <- function() {
       "Sampling days: 0, 3, 7, 14, 28, 56, 210 (LEAP0208); 0, 3, 7, 14, 21,",
       "28, 56 (LEAP0714); 0, 1, 3, 5, 8, 11, 14, 28, 56, 210 (FEXI-VL-001)."
     ),
-    notes          = paste(
+    notes = paste(
       "Demographics from Verrest 2024 Table 1 (mean and range at baseline,",
       "pooled across the five treatment arms). Sex is reported as 114 of 172",
       "(66%) male, hence 33.7% female. NONMEM 7.5, FOCE-I; parameter",

@@ -23,7 +23,7 @@ Rolsma_2025_tazobactam <- function() {
     sep = " "
   )
   vignette <- "Rolsma_2025_betalactams_cysticfibrosis"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
     central = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = TRUE)
@@ -31,11 +31,11 @@ Rolsma_2025_tazobactam <- function() {
 
   covariateData <- list(
     OCC = list(
-      description        = "Integer-valued occasion indicator for interoccasion variability on the volume of distribution",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion indicator for interoccasion variability on the volume of distribution",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Three occasions. Supplemental Table 6D caption: 'Parameter estimates",
         "of the final tazobactam model with IOV on V (n=3 occasions)'; the",
         "Supplemental Methods state 'The inclusion of inter-occasion",
@@ -57,16 +57,16 @@ Rolsma_2025_tazobactam <- function() {
         "is most plausibly a sampling occasion. For single-occasion simulation",
         "pass OCC = 1."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened and NOT retained -- the headline negative finding for this",
         "model. Abstract: 'No covariates were identified for piperacillin and",
         "tazobactam.' Results 'PopPK Modeling': 'The elimination clearance and",
@@ -78,9 +78,9 @@ Rolsma_2025_tazobactam <- function() {
     ),
     FFM = list(
       description = "Fat-free mass by the Janmahasatian formula (reported by the source as lean body weight)",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened as part of the pre-defined base covariate set and not",
         "retained. Cohort 41.01 +/- 11.72 kg (median 38.25, range 13.6 to",
         "59.3) per Supplemental Table 3."
@@ -88,9 +88,9 @@ Rolsma_2025_tazobactam <- function() {
     ),
     CRCL = list(
       description = "Estimated creatinine clearance computed on lean body weight (raw, not BSA-normalized)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened as part of the pre-defined base covariate set and not",
         "retained, unlike in the companion cefepime and meropenem models where",
         "CLCR,LBW is the strongest covariate on clearance. Results 'PopPK",
@@ -101,9 +101,9 @@ Rolsma_2025_tazobactam <- function() {
     ),
     CFTRMOD = list(
       description = "CFTR modulator use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened and explicitly rejected. Results 'PopPK Modeling': 'Other",
         "covariates, such as sample acquisition site, CFTR mutation, use of",
         "CFTR modulators ..., or complications of CF (eg, diabetes) did not",
@@ -115,9 +115,9 @@ Rolsma_2025_tazobactam <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened (Methods 'PopPK Model Development' covariate list) but not",
         "retained. Cohort 24.8 +/- 11.9 years (median 22.0, range 5 to 54) per",
         "Supplemental Table 3."
@@ -125,9 +125,9 @@ Rolsma_2025_tazobactam <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Screened (Methods covariate list) but not retained. Cohort 21.04 +/-",
         "4.36 kg/m^2 (median 20.15, range 15.4 to 33.1) per Supplemental",
         "Table 3."
@@ -135,18 +135,18 @@ Rolsma_2025_tazobactam <- function() {
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "m^2",
+      type = "continuous",
+      notes = paste(
         "Screened (Methods covariate list) but not retained. Cohort 1.57 +/-",
         "0.31 m^2 (median 1.60, range 0.7 to 2.1) per Supplemental Table 3."
       )
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Screened (Methods covariate list) but not retained. Cohort 161.20",
         "+/- 16.06 cm (median 164.00, range 99.1 to 186.0) per Supplemental",
         "Table 3."
@@ -154,9 +154,9 @@ Rolsma_2025_tazobactam <- function() {
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened (Methods covariate list) but not retained. 53% female among",
         "piperacillin-tazobactam enrollments (18 of 34) per Supplemental",
         "Table 2."
@@ -165,17 +165,17 @@ Rolsma_2025_tazobactam <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 31L,
-    n_studies      = 1L,
-    n_enrollments  = 34L,
-    age_range      = "5 to 54 years",
-    age_median     = "22.0 years (mean 24.8 +/- 11.9)",
-    weight_range   = "17.6 to 93.3 kg total body weight",
-    weight_median  = "54.05 kg total body weight (mean 55.74 +/- 16.37); lean body weight median 38.25 kg (mean 41.01 +/- 11.72)",
+    species = "human",
+    n_subjects = 31L,
+    n_studies = 1L,
+    n_enrollments = 34L,
+    age_range = "5 to 54 years",
+    age_median = "22.0 years (mean 24.8 +/- 11.9)",
+    weight_range = "17.6 to 93.3 kg total body weight",
+    weight_median = "54.05 kg total body weight (mean 55.74 +/- 16.37); lean body weight median 38.25 kg (mean 41.01 +/- 11.72)",
     sex_female_pct = 100 * 18 / 34,
     race_ethnicity = c(White = 91, `Multi-Racial` = 9, `Hispanic or Latino (ethnicity)` = 6),
-    disease_state  = paste(
+    disease_state = paste(
       "Cystic fibrosis, admitted for a pulmonary exacerbation or for",
       "microbial eradication therapy. 97% of the piperacillin-tazobactam",
       "group carried at least one copy of the DF508 mutation. 35% reported",
@@ -187,7 +187,7 @@ Rolsma_2025_tazobactam <- function() {
       "common sputum isolates. Participants with a history of solid-organ or",
       "hematologic transplantation were excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous infusion of the piperacillin-tazobactam combination",
       "product, standard of care as ordered by the treating team. The paper",
       "reports doses in terms of the piperacillin component: the majority",
@@ -201,8 +201,8 @@ Rolsma_2025_tazobactam <- function() {
       "hours were 0.5 (108 doses), 3 (6 doses), 4 (524 doses) and 6 (6",
       "doses)."
     ),
-    regions        = "United States (Vanderbilt University Medical Center, Nashville TN; University of Iowa Hospital, Iowa City IA).",
-    notes          = paste(
+    regions = "United States (Vanderbilt University Medical Center, Nashville TN; University of Iowa Hospital, Iowa City IA).",
+    notes = paste(
       "Opportunistic sampling during hospitalization, January 2018 to March",
       "2020. 107 of the 667 total plasma samples in the study were",
       "piperacillin/tazobactam. Assay LC-MS/MS, linear 0.25 to 150 mg/L for",

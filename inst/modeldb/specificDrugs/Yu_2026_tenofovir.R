@@ -41,11 +41,11 @@ Yu_2026_tenofovir <- function() {
 
   covariateData <- list(
     EGA = list(
-      description        = "Estimated gestational age of the mother",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Estimated gestational age of the mother",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used only to derive the paper's second- and third-trimester indicator",
         "variables TRI2 and TRI3; the model has no continuous EGA effect. Per the",
         "EGA register entry, a source paper that reports trimesters rather than",
@@ -61,14 +61,14 @@ Yu_2026_tenofovir <- function() {
         "for 0 < EGA < 14 weeks; such a record is scored as non-pregnant.",
         sep = " "
       ),
-      source_name        = "TRI2 / TRI3 (trimester indicator variables)"
+      source_name = "TRI2 / TRI3 (trimester indicator variables)"
     ),
     TPP = list(
-      description        = "Time postpartum (time elapsed since delivery)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Time postpartum (time elapsed since delivery)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used only to derive the paper's postpartum indicator PP; the model has no",
         "continuous TPP effect and applies a single step change for any TPP > 0.",
         "Yu 2026 sampled the postpartum state at 6-12 weeks after delivery, so the",
@@ -77,7 +77,7 @@ Yu_2026_tenofovir <- function() {
         "during pregnancy and for non-pregnant subjects.",
         sep = " "
       ),
-      source_name        = "PP (postpartum indicator variable)"
+      source_name = "PP (postpartum indicator variable)"
     )
   )
 
@@ -89,20 +89,25 @@ Yu_2026_tenofovir <- function() {
   # units (umol/L), not amounts -- the paper writes their ODEs directly in
   # dC/dt form, so no volume divides them at the observation step.
   compartmentData <- list(
-    depot           = list(analyte = "tenofovir alafenamide", units = "umol",   specimen = "administration site", verified = TRUE),
-    central         = list(analyte = "tenofovir alafenamide", units = "umol",   specimen = "plasma",              verified = TRUE),
-    transit1        = list(analyte = "tenofovir alafenamide-derived tenofovir precursor", units = "umol", specimen = "not applicable", verified = TRUE),
-    depot_tfv       = list(analyte = "tenofovir",             units = "umol",   specimen = "administration site", verified = TRUE),
-    central_tfv     = list(analyte = "tenofovir",             units = "umol",   specimen = "plasma",              verified = TRUE),
-    peripheral1_tfv = list(analyte = "tenofovir",             units = "umol",   specimen = "plasma",              verified = TRUE),
-    pbmc_tfvdp      = list(analyte = "tenofovir diphosphate", units = "umol/L", specimen = "blood cell", verified = TRUE),
-    rbc_tfvdp       = list(analyte = "tenofovir diphosphate", units = "umol/L", specimen = "blood cell",          verified = TRUE)
+    depot = list(analyte = "tenofovir alafenamide", units = "umol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "tenofovir alafenamide", units = "umol", specimen = "plasma", verified = TRUE),
+    transit1 = list(
+      analyte = "tenofovir alafenamide-derived tenofovir precursor",
+      units = "umol",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    depot_tfv = list(analyte = "tenofovir", units = "umol", specimen = "administration site", verified = TRUE),
+    central_tfv = list(analyte = "tenofovir", units = "umol", specimen = "plasma", verified = TRUE),
+    peripheral1_tfv = list(analyte = "tenofovir", units = "umol", specimen = "plasma", verified = TRUE),
+    pbmc_tfvdp = list(analyte = "tenofovir diphosphate", units = "umol/L", specimen = "blood cell", verified = TRUE),
+    rbc_tfvdp = list(analyte = "tenofovir diphosphate", units = "umol/L", specimen = "blood cell", verified = TRUE)
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 224L,
-    n_studies     = 4L,
+    species = "human",
+    n_subjects = 224L,
+    n_studies = 4L,
     sex_female_pct = 100,
     disease_state = paste(
       "Women receiving TDF 300 mg or TAF 10-25 mg once daily. The structural",
@@ -121,7 +126,7 @@ Yu_2026_tenofovir <- function() {
       "contributed a TAF 10 mg arm",
       sep = " "
     ),
-    regions      = "USA and international IMPAACT network sites; CONRAD 137 and DOT-DBS conducted in the USA",
+    regions = "USA and international IMPAACT network sites; CONRAD 137 and DOT-DBS conducted in the USA",
     co_medication = paste(
       "Participants co-administered TAF with a pharmacokinetic booster (cobicistat",
       "or ritonavir) were excluded, because P-glycoprotein inhibition raises TAF",

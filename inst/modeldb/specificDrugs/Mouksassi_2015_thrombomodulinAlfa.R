@@ -29,7 +29,7 @@ Mouksassi_2015_thrombomodulinAlfa <- function() {
     sep = " "
   )
   vignette <- "Mouksassi_2015_thrombomodulinAlfa"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Confirmed against Mouksassi 2015 Methods "Population PK
@@ -42,11 +42,11 @@ Mouksassi_2015_thrombomodulinAlfa <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters both clearance and central volume as a power function",
         "normalized to 68 kg, which is the median body weight of the pooled",
         "392-subject analysis population (Mouksassi 2015 Table 1, Combined",
@@ -57,14 +57,14 @@ Mouksassi_2015_thrombomodulinAlfa <- function() {
         "covariate and retained the continuous power form.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance by the Cockcroft-Gault equation, raw (not BSA-normalized), truncated at 150 mL/min",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance by the Cockcroft-Gault equation, raw (not BSA-normalized), truncated at 150 mL/min",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column CRCL. Computed with the Cockcroft-Gault equation in",
         "raw mL/min and NOT BSA-normalized to mL/min/1.73 m^2; stored under",
         "the canonical CRCL column per inst/references/covariate-columns.md,",
@@ -85,21 +85,21 @@ Mouksassi_2015_thrombomodulinAlfa <- function() {
         "for dialysis or ESRD.",
         sep = " "
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 392L,
-    n_studies      = 2L,
-    age_range      = "18-93 years",
-    age_median     = "59 years",
-    weight_range   = "30-150 kg",
-    weight_median  = "68 kg",
+    species = "human",
+    n_subjects = 392L,
+    n_studies = 2L,
+    age_range = "18-93 years",
+    age_median = "59 years",
+    weight_range = "30-150 kg",
+    weight_median = "68 kg",
     sex_female_pct = 37.4,
     race_ethnicity = c(Caucasian = 62.1, Indian = 26.1, Asian = 5.8, Black = 3.4, Other = 2.4, Hispanic = 0.3),
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled: 24 normal healthy volunteers (Phase I single-dose study) and",
       "368 adults with sepsis and suspected disseminated intravascular",
       "coagulation (Phase IIb randomized, double-blind, placebo-controlled",
@@ -108,14 +108,14 @@ Mouksassi_2015_thrombomodulinAlfa <- function() {
       "end-stage renal disease or acute kidney injury were excluded.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Phase I: single IV 0.02 or 0.06 mg/kg. Phase IIb: 0.06 mg/kg/day up",
       "to a maximum of 6 mg once daily for six consecutive days, given as an",
       "IV bolus injection or a 15-minute IV infusion. 1 mg of thrombomodulin",
       "alfa is approximately 6400 U.",
       sep = " "
     ),
-    regions        = "Not reported by region; the Phase IIb study population includes Caucasian, Indian, Asian, Black, Other and Hispanic subjects",
+    regions = "Not reported by region; the Phase IIb study population includes Caucasian, Indian, Asian, Black, Other and Hispanic subjects",
     renal_function = paste(
       "Cockcroft-Gault creatinine clearance, truncated at 150 mL/min:",
       "combined mean 74.6 mL/min (range 5.0-150). Phase I mean 114.2",
@@ -125,7 +125,7 @@ Mouksassi_2015_thrombomodulinAlfa <- function() {
       "(30-59, median 45) and severe (15-30, median 22).",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics per Mouksassi 2015 Table 1. Sex and race",
       "percentages are reported over 380 subjects (142 female / 238 male;",
       "236 Caucasian, 99 Indian, 22 Asian, 13 Black, 9 Other, 1 Hispanic),",
